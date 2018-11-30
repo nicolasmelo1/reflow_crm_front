@@ -10,7 +10,6 @@
 .navbar-toggle {
   border-width: 0;
   height: 60px;
-  background-color: #777777;
 }
 .navbar-right {
   padding-top: 13px;
@@ -24,13 +23,9 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  background-color: #777777;
-  color: #FFFFFF;
-  border-width: 0;
-}
-.nav-item {
-  background-color: #777777 !important;
   color: #FFFFFF !important;
+  background-color: #777777 !important;
+  border-width: 0;
 }
 
 .dropdown-menu {
@@ -48,7 +43,7 @@
   display: inline-block;
   margin-top: 12px;
   font-weight: bold;
-  color: #ffffff;
+  color: #FFFFFF;
   margin-left: 20px;
 }
 

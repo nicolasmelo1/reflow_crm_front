@@ -5,14 +5,17 @@
   "dependencies": {
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
+    "react-router": "^4.3.1",
+    "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.1",
     "sass": "^1.15.1"
   },
   "scripts": {
     "start": "sass src/style/scss:src/style/css && react-scripts start",
-    "build": "react-scripts build",
+    "build": "sass src/style/scss:src/style/css && react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "sass": "sass --watch src/style/scss:src/style/css"
   },
   "eslintConfig": {
     "extends": "react-app"

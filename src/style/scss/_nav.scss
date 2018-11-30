@@ -11,7 +11,6 @@
   &-toggle{
     border-width: 0;
     height: 60px;
-    background-color: #777777
   }
   &-right{
     padding-top: 13px
@@ -19,7 +18,7 @@
 }
 
 .nav{
-  &-link{
+  &-link {
     cursor: pointer;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -27,8 +26,8 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    background-color: #777777;
-    color: #FFFFFF;
+    color: #FFFFFF !important;
+    background-color: #777777 !important;
     border-width: 0;
   }
 }
@@ -51,7 +50,7 @@
     display: inline-block;
     margin-top: 12px;
     font-weight: bold;
-    color: #ffffff;
+    color: #FFFFFF;
     margin-left: 20px;
   }
 }
