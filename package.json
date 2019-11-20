@@ -1,29 +1,31 @@
 {
-  "name": "reflow-front",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "react": "^16.6.3",
-    "react-dom": "^16.6.3",
-    "react-router": "^4.3.1",
-    "react-router-dom": "^4.3.1",
-    "react-scripts": "2.1.1",
-    "sass": "^1.15.1"
-  },
+  "name": "reflow_crm_front",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "start": "sass src/style/scss:src/style/css && react-scripts start",
-    "build": "sass src/style/scss:src/style/css && react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "sass": "sass --watch src/style/scss:src/style/css"
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
   },
-  "eslintConfig": {
-    "extends": "react-app"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nicolasmelo1/reflow_crm_front.git"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ]
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nicolasmelo1/reflow_crm_front/issues"
+  },
+  "homepage": "https://github.com/nicolasmelo1/reflow_crm_front#readme",
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.25",
+    "@fortawesome/free-solid-svg-icons": "^5.11.2",
+    "@fortawesome/react-fontawesome": "^0.1.7",
+    "isomorphic-unfetch": "^3.0.0",
+    "next": "^9.1.3",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  }
 }

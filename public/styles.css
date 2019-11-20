@@ -1,0 +1,16 @@
+/* Navbar links */
+.nav-link{
+  margin-right: 2px;
+  color: #444444;
+  font-size: 20px;
+}
+li{
+  margin-right: 2px;
+}
+.active {
+  color: #0dbf7e;
+}
+.navbar{
+  border: 1px solid #707070;
+}
+
