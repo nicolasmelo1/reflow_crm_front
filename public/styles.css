@@ -14,3 +14,17 @@ li{
   border: 1px solid #707070;
 }
 
+.navbar-span {
+    padding: 10px;
+}
+.navbar-icon {
+    height: 20px;
+    margin: 5px;
+    display: inline-block;
+}
+
+.navbar-label {
+    font-size: 15px;
+    display: inline-block;
+}
+

@@ -1,11 +1,11 @@
-import Layout from '../components/Layout';
+import Base from '../components/Base';
 import Link from 'next/link';
 
 const Index = () => {
     return (
-        <Layout>
+        <Base>
             Hello World!
-        </Layout>
+        </Base>
     )
 }
 export default Index;
