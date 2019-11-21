@@ -23,9 +23,13 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
     "@fortawesome/react-fontawesome": "^0.1.7",
+    "@trendmicro/react-sidenav": "^0.4.5",
+    "bootstrap": "^4.3.1",
     "isomorphic-unfetch": "^3.0.0",
     "next": "^9.1.4",
     "react": "^16.12.0",
+    "react-bootstrap": "^1.0.0-beta.16",
+    "react-bootstrap-sidebar": "0.0.1",
     "react-dom": "^16.12.0"
   }
 }
