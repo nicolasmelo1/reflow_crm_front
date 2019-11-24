@@ -6,8 +6,8 @@ import Nav from 'react-bootstrap/Nav'
 import Container from 'react-bootstrap/Container'
 
 const Header = () => (
-    
-        <Navbar expand="lg">
+        <div>
+        <Navbar className="navbar-main" expand="lg">
             <Navbar.Brand href="#"><img src="/images/logo_3.png" width="249" height="72" /></Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
@@ -20,6 +20,7 @@ const Header = () => (
                 </Nav>
             </Navbar.Collapse>
         </Navbar>
+        </div>
 );
 
 export default Header;

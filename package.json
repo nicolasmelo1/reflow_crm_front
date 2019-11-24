@@ -30,6 +30,7 @@
     "react": "^16.12.0",
     "react-bootstrap": "^1.0.0-beta.16",
     "react-bootstrap-sidebar": "0.0.1",
+    "react-burger-menu": "^2.6.12",
     "react-dom": "^16.12.0"
   }
 }

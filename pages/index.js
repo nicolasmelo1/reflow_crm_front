@@ -4,8 +4,13 @@ import Link from 'next/link';
 import Container from 'react-bootstrap/Container'
 const Index = () => {
     return (
-        <Base />
-            
+        <div id="App">
+            <Base>
+                <main id="page-wrap">
+                </main>
+            </Base>
+        </div>
+
     )
 }
 export default Index;

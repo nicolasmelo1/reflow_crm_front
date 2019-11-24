@@ -1,17 +1,14 @@
 /* Navbar links */
-.nav-link{
-  margin-right: 2px;
+#basic-navbar-nav .nav-link{
   color: #444444;
   font-size: 20px;
 }
-li{
-  margin-right: 2px;
-}
-.active {
+
+.nav-link .active {
   color: #0dbf7e;
 }
 .navbar{
-  border: 1px solid #707070;
+  border-bottom: 1px solid #707070;
 }
 
 .navbar-span {
@@ -27,5 +24,23 @@ li{
     font-size: 15px;
     display: inline-block;
 }
+.bm-item-list {
+  text-align: center;
+}
+.bm-item-list .card .card-header{
+  background-color: #535353;
+  color: white;
+}
 
+.bm-item-list .card .card-body{
+  background-color: #5d5d5d;
+}
+
+.bm-item-list .card .card-body a{
+  color: #0dbf7e;
+}
+.bm-item-list .btn .btn-primary{
+  background: #0dbf7e;
+  color: #ffffff
+}
 
