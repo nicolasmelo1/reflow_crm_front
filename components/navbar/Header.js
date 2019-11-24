@@ -11,10 +11,10 @@ const Header = () => (
             <Navbar.Brand href="#"><img src="/images/logo_3.png" width="249" height="72" /></Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
-                <Nav className="ml-auto" activeKey="">
-                    <Link href="#" passHref><Nav.Link><NavbarLink icon='tasks' label='headerManagementLabel'></NavbarLink></Nav.Link></Link>
-                    <Link href="#" passHref><Nav.Link><NavbarLink icon='chart-bar' label='headerDashboardLabel'></NavbarLink></Nav.Link></Link>
-                    <Link href="#" passHref><Nav.Link><NavbarLink icon='cog' label='headerSettingsLabel'></NavbarLink></Nav.Link></Link>
+                <Nav className="ml-auto" activeKey="/gestao">
+                    <Link href="/gestao" passHref><Nav.Link><NavbarLink icon='tasks' label='headerManagementLabel'></NavbarLink></Nav.Link></Link>
+                    <Link href="/dashboard" passHref><Nav.Link><NavbarLink icon='chart-bar' label='headerDashboardLabel'></NavbarLink></Nav.Link></Link>
+                    <Link href="/configs" passHref><Nav.Link><NavbarLink icon='cog' label='headerSettingsLabel'></NavbarLink></Nav.Link></Link>
                     <Link href="#" passHref><Nav.Link><NavbarLink icon='bell' label='headerNotificationLabel'></NavbarLink></Nav.Link></Link>
                     <Link href="#" passHref><Nav.Link><NavbarLink icon='circle' label='headerHelplabel'></NavbarLink></Nav.Link></Link>
                 </Nav>
