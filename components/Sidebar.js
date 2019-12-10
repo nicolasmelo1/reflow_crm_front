@@ -3,6 +3,8 @@ import { slide as Menu } from 'react-burger-menu'
 import Accordion from 'react-bootstrap/Accordion'
 import Card from 'react-bootstrap/Card'
 import Button from 'react-bootstrap/Button'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 var styles = {
 
     bmBurgerButton: {
@@ -52,6 +54,8 @@ var styles = {
 
 
 const Sidebar = () => (
+  <Row>
+    <Col>
     <div id="sidebar-wrapper">
         <Menu disableOverlayClick burgerButtonClassName={ "my-class" } width={ '184px' } pageWrapId="page-wrap" outerContainerId={"App"} noOverlay styles={ styles }>
             <Accordion>
@@ -78,7 +82,8 @@ const Sidebar = () => (
             </Button>            
         </Menu>
     </div>
-
+    </Col>
+    </Row>
 );
         
 export default Sidebar;
