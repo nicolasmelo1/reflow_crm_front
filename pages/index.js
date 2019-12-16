@@ -7,7 +7,7 @@ import Button from 'react-bootstrap/Button'
 const Index = () => {
     return (
         <div id="App">
-            <Link href="/gestao"><Button>Entrar</Button></Link>
+            <Link href="/gestao/kanban/[id]" as="/gestao/kanban/t1"><Button><a>Entrar</a></Button></Link>
         </div>
 
     )

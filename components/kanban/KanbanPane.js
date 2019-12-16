@@ -4,12 +4,15 @@ import Dropdown from 'react-bootstrap/Dropdown'
 import Row from 'react-bootstrap/Row'
 import KanbanMain from './KanbanMain'
 import Button from 'react-bootstrap/Button'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-const KanbanPane = () => {
+const KanbanPane = (props) => {
+    const id = props.id;
+    console.log(id)
     return (
         <div className="kanban-pane">
             <Col sm={{ span: 6 }}>
-                <div class="parent">
+                <div className="parent">
                     <style type="text/css">
                         {`
                         .inline-block-child {
@@ -37,8 +40,10 @@ const KanbanPane = () => {
             <Row>
                 <Col sm={{ span: 3, }}>
                     <Dropdown>
-                        <Dropdown.Toggle variant="secondary" id="dropdown-config" size="sm">
-                            Configurações Obrigatórias
+                        <Dropdown.Toggle variant="secondary" id="dropdown-config" size="sm" style={{ background: "#444444", borderRadius: "20px" }}>
+                            <span style={{ fontSize: "20px", fontWeight: "400" }}>
+                                Configurações Obrigatórias
+                            </span>
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                             <Dropdown.Item>config 1</Dropdown.Item>
@@ -47,11 +52,14 @@ const KanbanPane = () => {
                         </Dropdown.Menu>
                     </Dropdown>
                 </Col>
-                <Col lg={{ span: 2, offset: 10 }}>
-                    <Button size="sm">Filtro</Button>
+                <Col lg={{ span: 2, offset: 7 }}>
+                    <Button style={{ background: "#444444", borderRadius: "20px", width: "126px", padding: "5px 5px" }}>
+                        <FontAwesomeIcon icon="filter" style={{ width: "24px", color: "white" }} />
+                        <span style={{ fontSize: "20px", fontWeight: "400" }}> Filtro</span>
+                    </Button>
                 </Col>
             </Row>
-            <KanbanMain />
+            <KanbanMain id={id}/>
         </div>
     )
 }

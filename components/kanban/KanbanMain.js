@@ -1,28 +1,19 @@
 import React from 'react'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import KanbanList from './KanbanList'
+import KanbanList from './list/KanbanList'
+import planilha1 from '../texts/planilha-1'
 
-const KanbanMain = () => {
-    return (
-        <Row>
-            <Col sm={{ span: 2}}>
-                <KanbanList name="Prospecção" />
-            </Col>
-            <Col sm={{ span: 2 }}>
-                <KanbanList name="Negociação" />
-            </Col>
-            <Col sm={{ span: 2 }}>
-                <KanbanList name="Fechado" />
-            </Col>
-            <Col sm={{ span: 2 }}>
-                <KanbanList name="Perdido" />
-            </Col>
-            <Col sm={{ span: 2 }}>
-                <KanbanList name="Aaaaaaaaaa" />
-            </Col>
-        </Row>
-    )
+
+const KanbanMain = (props) => {
+    console.log(props.id)
+    let ret = planilha1['tabelas'][props.id]['content'].map(function (namer) {
+        return <Col sm={{ span: 3 }}><KanbanList name={namer} /></Col>;
+        });
+
+    return <Row>{ret}</Row>
 }
 
 export default KanbanMain;
+
+    
