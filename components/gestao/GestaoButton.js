@@ -11,8 +11,8 @@ const GestaoButton = () => {
     const handleShow = () => setShow(true);
     return (
         <>
-            <Button style={{ position: "fixed", bottom: "0", right: "0", marginRight: "50px" }} size="lg" onClick={handleShow}>
-                Adicionar Novo
+            <Button style={{border:"1px solid #707070", position: "fixed", bottom: "0", right: "0", marginRight: "50px", width: "350px", height:"83px", borderRadius:"20px 20px 0 0", background:"#0dbf7e"}} size="lg" onClick={handleShow}>
+                <span style={{fontWeight:"400", fontSize:"30px"}}>Adicionar Novo</span>
             </Button>
 
             <Modal show={show} onHide={handleClose}>

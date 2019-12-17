@@ -15,7 +15,6 @@ import ListagemPane from '../listagem/ListagemPane'
 
 const GestaoTab = (props) => {
     const id = props.id;
-    console.log(id);
     return (
         <div className="gestao-tab">
             <Tab.Container id="gestao-tabs" defaultActiveKey="kanban">
