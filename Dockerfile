@@ -13,3 +13,4 @@ COPY . .
 # Building app
 # Running the app
 CMD [ "npm", "run", "dev" ]
+EXPOSE 3000
