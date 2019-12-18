@@ -37,44 +37,7 @@ const ListagemPane = () => {
                     </div>
                 </div>
             </Col>
-            <Row>
-                <Col sm={{ span: 5,  }}>
-                <p>Totais</p>
-                </Col>
-            </Row>
-            <Row>
-                <Col sm={{span: "auto", }}>
-                {/* <Col sm="auto"> */}
-                    <CardGroup>
-                        <ListagemCard />
-                        <ListagemCard />
-                    </CardGroup>
-                </Col>
-            </Row>
-            <Row>
-                <Col sm={{span: 2, }}>
-                <Button size="sm">Filtro</Button>
-                <Button size="sm">Extrair</Button>
-                </Col>
-                <Col sm={{ span: 4, offset: 5 }}>
-                    <Dropdown>
-                        <Dropdown.Toggle size="sm" variant="secondary" id="dropdown-config" block>
-                            Configurações Obrigatórias
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu>
-                            <Dropdown.Item>config 1</Dropdown.Item>
-                            <Dropdown.Item>config 2</Dropdown.Item>
-                            <Dropdown.Item>config 3</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                </Col>
-            </Row>
-            <Row>
-                <Col sm={{span: 11}}>
-                <ListagemTable />
-                </Col>
-            </Row>
-        </div>
+            
     )
 }
 

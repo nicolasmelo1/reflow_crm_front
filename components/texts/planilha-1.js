@@ -21,13 +21,32 @@ const planilha1 = {
                     {titulo:"Cliente 14", subtitulo:"Comercial 4", valor: "480", foot:"Confirmado"}, 
                     {titulo:"Cliente 15", subtitulo:"Comercial 1", valor: "6300", foot:"Confirmado"}],[
                         {titulo:"Cliente 16", subtitulo:"Comercial 1", valor: "2000000", foot:"Nulo"} 
-                    ]]
-
+                    ]],
+                    tableheader: ["Nome Comercial","Valor", "Expectativa",	"Data de Atualização", "Data de Inclusão", "Anexo",	"Historico", "Status", "Produto"],
+                    table:[["Comercial 1", "20000", "Alta", "20/08/2019", "Porposta.pdf", "Cliente pediu bla lba bla bla bla", "Negociação", "Transporte"],
+                    ["Comercial 1", "20000", "Alta", "20/08/2019", "Porposta.pdf", "Cliente pediu bla lba bla bla bla", "Negociação", "Transporte"],
+                    ["Comercial 1", "20000", "Alta", "20/08/2019", "Porposta.pdf", "Cliente pediu bla lba bla bla bla", "Negociação", "Transporte"],
+                    ["Comercial 1", "20000", "Alta", "20/08/2019", "Porposta.pdf", "Cliente pediu bla lba bla bla bla", "Negociação", "Transporte"],
+                    ["Comercial 1", "20000", "Alta", "20/08/2019", "Porposta.pdf", "Cliente pediu bla lba bla bla bla", "Negociação", "Transporte"],
+                    ["Comercial 1", "20000", "Alta", "20/08/2019", "Porposta.pdf", "Cliente pediu bla lba bla bla bla", "Negociação", "Transporte"],
+                    ["Comercial 1", "20000", "Alta", "20/08/2019", "Porposta.pdf", "Cliente pediu bla lba bla bla bla", "Negociação", "Transporte"],
+                    ["Comercial 1", "20000", "Alta", "20/08/2019", "Porposta.pdf", "Cliente pediu bla lba bla bla bla", "Negociação", "Transporte"],
+                    ]    
         },
         t2 : {
             default: 'listagem',
             name : 'Clientes',
-            content :['Pessoal', 'Empresarial', 'Acadêmico']
+            content :['Pessoal', 'Empresarial', 'Acadêmico'], 
+            tableheader: ["Nome Comercial","Valor", "Expectativa",	"Data de Atualização", "Data de Inclusão", "Anexo",	"Historico", "Status", "Produto"],
+            table:[["Comercial 1", "20000", "Alta", "20/08/2019", "Porposta.pdf", "Cliente pediu bla lba bla bla bla", "Negociação", "Transporte"],
+            ["Comercial 5", "20000", "Alta", "20/08/2019", "Porposta.pdf", "Cliente pediu bla lba bla bla bla", "Negociação", "Transporte"],
+            ["Comercial 5", "20000", "Alta", "20/08/2019", "Porposta.pdf", "Cliente pediu bla lba bla bla bla", "Negociação", "Transporte"],
+            ["Comercial 5", "20000", "Alta", "20/08/2019", "Porposta.pdf", "Cliente pediu bla lba bla bla bla", "Negociação", "Transporte"],
+            ["Comercial 5", "20000", "Alta", "20/08/2019", "Porposta.pdf", "Cliente pediu bla lba bla bla bla", "Negociação", "Transporte"],
+            ["Comercial 5", "20000", "Alta", "20/08/2019", "Porposta.pdf", "Cliente pediu bla lba bla bla bla", "Negociação", "Transporte"],
+            ["Comercial 5", "20000", "Alta", "20/08/2019", "Porposta.pdf", "Cliente pediu bla lba bla bla bla", "Negociação", "Transporte"],
+            ["Comercial 5", "20000", "Alta", "20/08/2019", "Porposta.pdf", "Cliente pediu bla lba bla bla bla", "Negociação", "Transporte"],
+            ]   
             
         }
     }
