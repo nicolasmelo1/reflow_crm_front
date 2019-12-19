@@ -10,10 +10,10 @@ const GestaoDataAtualizacao = () => {
                 }
                 `}
             </style>
-            <div class="inline-block-child">
+            <div className="inline-block-child">
                 <p style={{ color: "#444444", fontSize: "30px", fontWeight: "600", fontStyle: "italic", fontFamily: "Segoe UI" }}>Data de Atualização: </p>
             </div>
-            <div class="inline-block-child">
+            <div className="inline-block-child">
                 <Dropdown>
                     <Dropdown.Toggle id="dropdown-basic" style={{ backgroundColor: "Transparent", color: "#0dbf7e", outline: "none", border: "none", fontSize: "30px", fontWeight: "600" }}>
                         16/07/2019 - 13/09/2019

@@ -19,7 +19,7 @@ const GestaoTab = (props) => {
         <div className="gestao-tab">
             <Tab.Container id="gestao-tabs" defaultActiveKey="kanban">
                 <Row>
-                    <Col sm={{ span: 2, offset: 9 }}>
+                    <Col sm={{ span: 3, offset: 9 }}>
                         <Nav className="mr-auto gestao-tab" style={{ fontSize: "30px", padding: '0px' }}>
                             <Nav.Item>
                                 <Link href="/gestao/kanban/[id]" as={`/gestao/kanban/${id}`} passHref><Nav.Link eventKey="kanban" style={{ textDecoration: 'none', color: '#0dbf7e', fontWeight: '700' }}><a>Kanban</a></Nav.Link></Link>

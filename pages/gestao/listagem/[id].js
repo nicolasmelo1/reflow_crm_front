@@ -22,50 +22,47 @@ const GestaoListagem = () => {
     console.log(router.query);
     return (
         <Base>
-            <body>
-                <div id="App">
-                    <main id="page-wrap" style={{ backgroundColor: "whitesmoke" }}>
-                        <Container fluid="true">
-                                <Sidebar id={router.query.id} />
-                            <Col sm={{offset: 1}}>
-                                <GestaoTab id={router.query.id} />
-                                <div className="listagem-pane">
-                                    <Col sm={{ span: 6 }}>
-                                        <GestaoDataAtualizacao />
+            <div id="App">
+                <main id="page-wrap" style={{ backgroundColor: "whitesmoke" }}>
+                    <Container fluid="true">
+                        <Sidebar id={router.query.id} />
+                        <Col sm={{ offset: 1, span: 11 }}>
+                            <GestaoTab id={router.query.id} />
+                            <div className="listagem-pane">
+                                <Col sm={{ span: 6 }}>
+                                    <GestaoDataAtualizacao />
+                                </Col>
+                                <Row>
+                                    <Col sm={{ span: 5, }}>
+                                        <p>Totais</p>
                                     </Col>
-                                    <Row>
-                                        <Col sm={{ span: 5, }}>
-                                            <p>Totais</p>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col sm={{ span: "auto", }}>
-                                            {/* <Col sm="auto"> */}
-                                            <CardGroup>
-                                                <ListagemCard />
-                                                <ListagemCard />
-                                            </CardGroup>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col sm={{ span: 2 }}>
-                                            <Button size="sm" style={{ background: "#444444", borderRadius: "20px", width: "126px", padding: "5px 5px" }}> <FontAwesomeIcon icon="filter" style={{ width: "24px", color: "white" }} />Filtro</Button>
-                                            <Button size="sm" style={{ background: "#444444", borderRadius: "20px", width: "126px", padding: "5px 5px" }}>Extrair</Button>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col sm={{ span: 11 }}>
-                                            <ListagemTable id={router.query.id} />   
-                                        </Col>
-                                    </Row>
-                                </div>
-    
-                                <GestaoButton />
-                            </Col>
-                        </Container>
-                    </main>
-                </div>
-            </body>
+                                </Row>
+                                <Row>
+                                    <Col sm={{ span: "auto", }}>
+                                        {/* <Col sm="auto"> */}
+                                        <CardGroup>
+                                            <ListagemCard />
+                                            <ListagemCard />
+                                        </CardGroup>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col sm={{ span: 2 }}>
+                                        <Button size="sm" style={{ background: "#444444", borderRadius: "20px", width: "126px", padding: "5px 5px" }}> <FontAwesomeIcon icon="filter" style={{ width: "24px", color: "white" }} />Filtro</Button>
+                                        <Button size="sm" style={{ background: "#444444", borderRadius: "20px", width: "126px", padding: "5px 5px" }}>Extrair</Button>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col sm={{ span: 11 }}>
+                                        <ListagemTable id={router.query.id} />
+                                    </Col>
+                                </Row>
+                            </div>
+                            <GestaoButton />
+                        </Col>
+                    </Container>
+                </main>
+            </div>
         </Base >
     );
 }

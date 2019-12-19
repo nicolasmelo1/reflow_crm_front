@@ -23,14 +23,14 @@ const planilha1 = {
                         {titulo:"Cliente 16", subtitulo:"Comercial 1", valor: "2000000", foot:"Nulo"} 
                     ]],
                     tableheader: ["Nome Comercial","Valor", "Expectativa",	"Data de Atualização", "Data de Inclusão", "Anexo",	"Historico", "Status", "Produto"],
-                    table:[["Comercial 1", "20000", "Alta", "20/08/2019", "Porposta.pdf", "Cliente pediu bla lba bla bla bla", "Negociação", "Transporte"],
-                    ["Comercial 1", "20000", "Alta", "20/08/2019", "Porposta.pdf", "Cliente pediu bla lba bla bla bla", "Negociação", "Transporte"],
-                    ["Comercial 1", "20000", "Alta", "20/08/2019", "Porposta.pdf", "Cliente pediu bla lba bla bla bla", "Negociação", "Transporte"],
-                    ["Comercial 1", "20000", "Alta", "20/08/2019", "Porposta.pdf", "Cliente pediu bla lba bla bla bla", "Negociação", "Transporte"],
-                    ["Comercial 1", "20000", "Alta", "20/08/2019", "Porposta.pdf", "Cliente pediu bla lba bla bla bla", "Negociação", "Transporte"],
-                    ["Comercial 1", "20000", "Alta", "20/08/2019", "Porposta.pdf", "Cliente pediu bla lba bla bla bla", "Negociação", "Transporte"],
-                    ["Comercial 1", "20000", "Alta", "20/08/2019", "Porposta.pdf", "Cliente pediu bla lba bla bla bla", "Negociação", "Transporte"],
-                    ["Comercial 1", "20000", "Alta", "20/08/2019", "Porposta.pdf", "Cliente pediu bla lba bla bla bla", "Negociação", "Transporte"],
+                    table:[["Comercial 1", "20000", "Alta", "20/08/2019","20/08/2019", "Porposta.pdf", "Cliente pediu bla lba bla bla bla", "Negociação", "Transporte"],
+                    ["Comercial 1", "20000", "Alta", "20/08/2019","20/08/2019", "Porposta.pdf", "Cliente não pediu bla lba bla bla bla", "Negociação", "Transporte"],
+                    ["Comercial 1", "20000", "Alta", "20/08/2019","20/08/2019", "resposta.pdf", "Cliente adiou essa merda", "Negociação", "Transporte"],
+                    ["Comercial 1", "20000", "Alta", "20/08/2019","20/08/2019", "Porposta.pdf", "Cliente pediu bla lba bla bla bla", "Negociação", "Transporte"],
+                    ["Comercial 1", "20000", "Alta", "20/08/2019","20/08/2019", "Porposta.pdf", "Cliente pediu bla lba bla bla bla", "Negociação", "Transporte"],
+                    ["Comercial 1", "20000", "Alta", "20/08/2019","20/08/2019", "Porposta.pdf", "Cliente pediu bla lba bla bla bla", "Negociação", "Transporte"],
+                    ["Comercial 1", "20000", "Alta", "20/08/2019","20/08/2019", "Porposta.pdf", "Cliente pediu bla lba bla bla bla", "Negociação", "Transporte"],
+                    ["Comercial 1", "20000", "Alta", "20/08/2019","20/08/2019", "Porposta.pdf", "Cliente pediu bla lba bla bla bla", "Negociação", "Transporte"],
                     ]    
         },
         t2 : {

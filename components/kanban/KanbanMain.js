@@ -8,7 +8,9 @@ import planilha1 from '../texts/planilha-1'
 const KanbanMain = (props) => {
     console.log(props.id)
     let ret = planilha1['tabelas'][props.id]['content'].map(function (namer) {
-        return <Col sm={{ span: 3 }}><KanbanList name={namer} /></Col>;
+        return <Col sm={{ span: 3 }}><div style={{width:'400px'}}>
+        	<KanbanList name={namer} />
+        </div></Col>;
         });
 
     return <Row>{ret}</Row>
