@@ -35,7 +35,7 @@ const TblPopover = (props) => {
         
             
             <OverlayTrigger trigger="click" placement="bottom" overlay={popover}>
-                <th>
+                <th style={{backgroundColor:"#f2f2f2", color:"#0dbf7e", fontSize:"20px", fontWeight:"700"}}>
                 <FontAwesomeIcon icon="sort-amount-down" style={{ width: "19px", color: "gray" }} />
                 {props.element}
                 </th>

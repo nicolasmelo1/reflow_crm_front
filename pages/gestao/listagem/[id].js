@@ -46,10 +46,13 @@ const GestaoListagem = () => {
                                         </CardGroup>
                                     </Col>
                                 </Row>
-                                <Row>
+                                <Row style={{marginBottom:"10px"}}>
                                     <Col sm={{ span: 2 }}>
                                         <Button size="sm" style={{ background: "#444444", borderRadius: "20px", width: "126px", padding: "5px 5px" }}> <FontAwesomeIcon icon="filter" style={{ width: "24px", color: "white" }} />Filtro</Button>
                                         <Button size="sm" style={{ background: "#444444", borderRadius: "20px", width: "126px", padding: "5px 5px" }}>Extrair</Button>
+                                    </Col>
+                                    <Col sm={{span:5, offset: 4 }}>
+                                        <Button size="sm" block style={{background: "#444444", borderRadius: "20px", padding: "5px 5px" }}>Todas as colunas selecionadas</Button>
                                     </Col>
                                 </Row>
                                 <Row>

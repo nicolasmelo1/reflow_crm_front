@@ -22,7 +22,7 @@ const ListagemTable = (props) => {
     
     return (
         <Table bordered hover style={{textAlign:"center", overflowY:"scroll", maxHeight:"600px"}}>
-            <thead className="thead-dark">
+            <thead>
                 <tr>
                     {ret}
                 </tr>
