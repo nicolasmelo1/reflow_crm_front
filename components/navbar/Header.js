@@ -25,23 +25,23 @@ const Header = () => (
                             </NavbarLink>
                         </Nav.Link>
                     </Link>
-                    <Link href="/configs" passHref>
+                    
                         <Nav.Link>
                             <Dropdown >
                                 <Dropdown.Toggle as={CustomToggle} style={{color:"#444444"}}>
                                     <NavbarLink icon='cog' label='headerSettingsLabel' />
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                    <Dropdown.Item eventKey="1">Indicar usuários</Dropdown.Item>
-                                    <Dropdown.Item eventKey="2">Empresa</Dropdown.Item>
-                                    <Dropdown.Item eventKey="3">Alterar dados</Dropdown.Item>
-                                    <Dropdown.Item eventKey="4">Pagamentos</Dropdown.Item>
+                                    <Dropdown.Item as="button">Indicar usuários</Dropdown.Item>
+                                    <Dropdown.Item as="button">Empresa</Dropdown.Item>
+                                    <Dropdown.Item as="button">Alterar dados</Dropdown.Item>
+                                    <Link href="/configuracoes/pagamento" passHref><Dropdown.Item as="button">Pagamentos</Dropdown.Item></Link>
                                     <Dropdown.Divider />
-                                    <Dropdown.Item eventKey="5">Logout</Dropdown.Item>
+                                    <Dropdown.Item as="button">Logout</Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown>
                         </Nav.Link>
-                    </Link>
+                    
                     <Link href="#" passHref>
                         <Nav.Link>
                             <NavbarLink icon='bell' label='headerNotificationLabel'>

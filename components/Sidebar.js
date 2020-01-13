@@ -73,9 +73,11 @@ const Sidebar = (props) => (
               </Accordion.Collapse>
             </Card>
           </Accordion>
-          <Button>
-            Adicionar Template
-            </Button>
+          <Link href="/gestao/templates" passHref>
+            <Button>
+              Adicionar Template
+              </Button>
+          </Link>
         </Menu>
       </div>
     </Col>

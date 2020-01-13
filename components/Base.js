@@ -1,10 +1,10 @@
 import Header from "./navbar/Header";
 import Head from "next/head";
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faTrash, faCircle, faTasks, faChartBar, faCog, faBell, faArrowsAlt, faEdit, faCloudUploadAlt, faBars, faPen, faFilter, faSortAmountDown} from '@fortawesome/free-solid-svg-icons'
+import { faPlusSquare, faEnvelope, faCalendarAlt, faSquareRootAlt, faPhone, faAlignLeft, faLink, faCheckSquare, faClipboardList, faParagraph, faFilePdf, faRulerHorizontal, faClock, faTrash, faCircle, faTasks, faChartBar, faCog, faBell, faArrowsAlt, faEdit, faCloudUploadAlt, faBars, faPen, faFilter, faSortAmountDown} from '@fortawesome/free-solid-svg-icons'
 import Sidebar from "./Sidebar"
 
-library.add(faTrash, faBell, faChartBar, faCircle, faCog, faTasks, faArrowsAlt, faEdit, faCloudUploadAlt, faBars, faPen, faFilter, faSortAmountDown)
+library.add(faPlusSquare, faEnvelope, faCalendarAlt, faSquareRootAlt, faPhone, faAlignLeft, faLink, faCheckSquare, faClipboardList, faParagraph, faFilePdf, faRulerHorizontal, faClock, faTrash, faBell, faChartBar, faCircle, faCog, faTasks, faArrowsAlt, faEdit, faCloudUploadAlt, faBars, faPen, faFilter, faSortAmountDown)
 
 const Base = ( props ) => {
   return (
