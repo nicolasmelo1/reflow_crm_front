@@ -12,6 +12,8 @@ const appReducer = combineReducers({
  
 const rootReducer = (state, action) => {
     if (action.type === DEAUTHENTICATE) {
+        window.localStorage.setItem('refreshToken', '')
+        window.localStorage.setItem('token', '')
         state = undefined;
     }
     

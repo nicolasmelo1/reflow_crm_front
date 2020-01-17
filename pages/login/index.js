@@ -50,4 +50,4 @@ class Login extends React.Component {
 }
 
 
-export default connect(state => state, actions)(Login);
+export default connect(state => ({ errors: state.errors, login: state.login }), actions)(Login);

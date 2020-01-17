@@ -11,6 +11,7 @@ export const initStore = (initialState = {}) => {
     );
     const persistedReducer = persistReducer({
         key: 'primary',
+        whitelist: ['login'],
         storage
     }, reducer)
     return createStore(persistedReducer, initialState, enhancer);

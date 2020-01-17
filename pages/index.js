@@ -11,6 +11,8 @@ import Layout from 'components/Layout'
 class Index extends React.Component {
     constructor(props){
         super(props)
+        console.log('Index')
+
     }
     checkIfLogged() {
         return !(!window.localStorage.getItem('token') || window.localStorage.getItem('token') === '')
@@ -27,4 +29,4 @@ class Index extends React.Component {
     }
 }
 
-export default connect(state => state, actions)(Index);
+export default connect(state => ({ login: state.login }), actions)(Index);

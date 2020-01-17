@@ -27,4 +27,4 @@ class Data extends React.Component {
     }
 }
 
-export default  connect(state => state, actions)(Data)
+export default  connect(state => ({home: state.home}), actions)(Data)
