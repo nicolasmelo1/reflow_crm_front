@@ -6,7 +6,15 @@ import SidebarCard from './SidebarCard'
 import SidebarCardBody from './SidebarCardBody'
 import SidebarFormItem from './SidebarFormItem'
 import SidebarLink from './SidebarLink'
+import SidebarIcons from './SidebarIcons'
+import SidebarIconsContainer from './SidebarIconsContainer'
+import SidebarGroupInput from './SidebarGroupInput'
+import SidebarDisabledGroupLabel from './SidebarDisabledGroupLabel'
 
+export { SidebarDisabledGroupLabel }
+export { SidebarGroupInput }
+export { SidebarIconsContainer }
+export { SidebarIcons }
 export { SidebarMenu }
 export { SidebarAccordionToggle }
 export { SidebarCardHeader }

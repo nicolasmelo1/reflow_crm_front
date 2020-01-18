@@ -31,7 +31,7 @@ const styles = {
       position: 'fixed',
       height: '100%',
       left: '0px',
-      height: '88%'
+      height: '80%'
     },
     bmMenu: {
       background: '#444444',

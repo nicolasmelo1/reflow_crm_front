@@ -8,7 +8,8 @@ const strings = {
         passLoginLabel: 'Senha',
         submitButtonLabel: 'Entrar',
         incorrectPassOrUserError: 'Login e/ou senha incorretos',
-        managementPageTitle: 'Gestão - Reflow'
+        managementPageTitle: 'Gestão - Reflow',
+        disabledGroupLabel: 'O Grupo está desativado'
     }
 }
 
