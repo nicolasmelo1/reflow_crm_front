@@ -5,9 +5,10 @@ import { SidebarAccordionToggle, SidebarCardHeader, SidebarAccordion, SidebarCar
 
 
 const SidebarGroup = (props) => {
-    const onChangeGroupValue = (e) => {
+    const onChangeGroupName = (e, group) => {
         e.preventDefault()
-        
+        group.name = e.target.value
+        props.onCreateOrUpdateGroup(group)
     }
 
     const editingMode = (element, index) => {
@@ -16,7 +17,7 @@ const SidebarGroup = (props) => {
                 <SidebarAccordion key={index}>
                     <SidebarCard>
                         <SidebarCardHeader>
-                            <Form.Control value={element.name} onChange={e=>{onChangeGroupValue(e)}}/>
+                            <Form.Control value={element.name} onChange={e=>{onChangeGroupName(e, element)}}/>
                         </SidebarCardHeader>
                         <div>
                             <SidebarForm forms={element.form_group}/>

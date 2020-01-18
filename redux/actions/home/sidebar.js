@@ -1,6 +1,7 @@
 import { 
     GET_FORMS,
-    UPDATE_GROUP_NAME,
+    GET_UPDATE_FORMS,
+    UPDATE_GROUP,
     ERROR 
 } from 'redux/types';
 import agent from 'redux/agent'
@@ -13,15 +14,24 @@ const onGetForms = () => {
     };
 };
 
-const updateGroupName = (newName) => {
-    return (dispatch) => {
-        dispatch({
-            type: UPDATE_GROUP_NAME, payload: newName
-        })
+const onGetUpdateForms = () => {
+    return async (dispatch) => {
+        let response = await agent.HOME.getUpdateForms()
+        dispatch({ type: GET_UPDATE_FORMS, payload: response.data })
     }
 }
 
+const onCreateOrUpdateGroup = (body) => {
+    return async (dispatch) => {
+        if (body.id && body.id !== ''){
+            agent.HOME.updateGroup(body, body.id)
+        }
+        dispatch({ type: UPDATE_GROUP, payload: body })
+    }
+} 
+
 export default {
     onGetForms,
-    updateGroupName
+    onGetUpdateForms,
+    onCreateOrUpdateGroup
 };

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { API, BEARER } from '../config';
 import Router from 'next/router';
-
+import { paths } from 'utils/constants'
 
 const API_ROOT = API;
 
@@ -34,7 +34,7 @@ let setHeader = (token) => {
 const refreshToken = async (response, callback, url, params, headers) => {
     if (response !== undefined && response.data && response.data.reason) {
         if (response.data.reason === 'expired_token') {
-            response = await LOGIN.getNewToken(window.localStorage.getItem('refreshToken'))
+            response = await requests.get('refresh_token/', {}, setHeader(window.localStorage.getItem('refreshToken')))
             // checks if the response was an error and handles it next
             if (response.status!==200){
                 window.localStorage.setItem('refreshToken', '')
@@ -85,8 +85,9 @@ const requests = {
         }
     },
     put: async (url, body, headers={}) => {
+        console.log(Object.assign(setHeader(token), headers))
         try {
-            return await axios.put(`${API_ROOT}${url}`, body, Object.assign(setHeader(token), headers))
+            return await axios.put(`${API_ROOT}${url}`, body, { headers: Object.assign(setHeader(token), headers) })
         }
         catch(exception){
             return await refreshToken(exception.response, requests.put, url, body, headers)
@@ -94,7 +95,7 @@ const requests = {
     },
     post: async (url, body, headers={}) => {
         try {
-            return await axios.post(`${API_ROOT}${url}`, body, Object.assign(setHeader(token), headers))
+            return await axios.post(`${API_ROOT}${url}`, body, { headers: Object.assign(setHeader(token), headers) })
         }
         catch(exception){
             return await refreshToken(exception.response, requests.post, url, body, headers)
@@ -106,18 +107,21 @@ const requests = {
 const LOGIN = {
     makeLogin: async (body) => {
         return await requests.post('login/', body)
-    },
-    getNewToken: async (refresh_token) => {
-        return await requests.get('refresh_token/', {}, setHeader(refresh_token))
     }
-
 }
 
 
 const HOME = {
     getForms: async () => {
         return await requests.get(`${companyId}/data/api/forms/`)
+    },
+    getUpdateForms: async () => {
+        return await requests.get(`${companyId}/settings/api/formulary`)
+    },
+    updateGroup: async (body, id) => {
+        return await requests.put(`${companyId}/settings/api/formulary/${id}/`, body)
     }
+    
 }
 
 export default {

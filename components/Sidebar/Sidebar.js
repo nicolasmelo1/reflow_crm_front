@@ -12,24 +12,35 @@ import { connect } from 'react-redux';
 class Sidebar extends React.Component {
     constructor(props){
         super(props)
-        this.props.onGetForms(this.state)
-        this.props.cleanErrors()
         this.state = {
             isEditing: false
         }
+        this.props.onGetForms()
     }
     enterEditMode(e) {
         e.preventDefault()
-        this.setState(state => ({
-            isEditing: !state.isEditing
-        }))
+        this.setState(state => {
+            if (!state.isEditing){
+                this.props.onGetUpdateForms()
+            } else {
+                this.props.onGetForms()
+            }
+            return {
+                isEditing: !state.isEditing
+            }
+        })
     }
-    render () {
-        return  (
+
+    render () {  
+        return (
             <Row>
                 <Col>
                     <SidebarMenu pageWrapId="content-container" outerContainerId="main-container">
-                        <SidebarGroup elements={this.props.home} isEditing={this.state.isEditing}/>
+                        <SidebarGroup 
+                        elements={(this.state.isEditing) ? this.props.sidebar.update : this.props.sidebar.initial } 
+                        isEditing={this.state.isEditing}
+                        onCreateOrUpdateGroup={this.props.onCreateOrUpdateGroup}
+                        />
                         <Button onClick={e => this.enterEditMode(e)}>Editar template</Button>
                     </SidebarMenu>
                 </Col>
@@ -38,4 +49,4 @@ class Sidebar extends React.Component {
     }
 }
 
-export default connect(state => ({ home: state.home }), actions)(Sidebar);
+export default connect(state => ({ sidebar: state.home.sidebar }), actions)(Sidebar);
