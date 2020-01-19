@@ -6,15 +6,14 @@ import { SidebarCardBody, SidebarFormItem, SidebarFormInput, SidebarIconsContain
 
 const SidebarFormEdit = (props) => {
 
-    const onChangeFormName = (e, form) => {
+    const onChangeFormName = (e, form, index) => {
         e.preventDefault()
         form.label_name = e.target.value
-        props.onCreateOrUpdateForm(form)
+        props.onCreateOrUpdateForm(form, props.groupIndex, index)
     }
 
     const onDisableForm = (e) => {
         e.preventDefault()
-        console.log('teste')
     }
 
     
@@ -30,7 +29,7 @@ const SidebarFormEdit = (props) => {
                                 <SidebarIcons size="sm" type="form" icon="arrows-alt" />
                             </div>
                         </SidebarIconsContainer> 
-                        <SidebarFormInput value={element.label_name} onChange={e=>{onChangeFormName(e, element)}}/>
+                        <SidebarFormInput value={element.label_name} onChange={e=>{onChangeFormName(e, element, index)}}/>
                     
                     </SidebarFormItem>
                 )

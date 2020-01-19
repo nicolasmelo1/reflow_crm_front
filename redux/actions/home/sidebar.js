@@ -4,7 +4,6 @@ import {
     ERROR 
 } from 'redux/types';
 import agent from 'redux/agent'
-import { initStore } from 'redux/store';
 
 
 const onGetForms = () => {
@@ -21,35 +20,18 @@ const onGetUpdateForms = () => {
     }
 }
 
-const onCreateOrUpdateGroup = (body) => {
+const onCreateOrUpdateGroup = (body, index) => {
     return async (dispatch, getState) => {
         let stateData = getState().home.sidebar.update
-        for (let i=0; i<stateData.length; i++) {
-            if (stateData[i].id === body.id) {
-                agent.HOME.updateGroup(body, body.id)
-                stateData[i] = body
-                break
-            } 
-        }
+        agent.HOME.updateGroup(body, body.id)
+        stateData[index] = body
         dispatch({ type: UPDATE_GROUPS, payload: stateData })
     }
 } 
 
-const onReorderGroup = (movedGroup, targetGroup) => {
+const onReorderGroup = (movedGroup, movedIndex, targetGroup, targetIndex) => {
     return async (dispatch, getState) => {
         let stateData = getState().home.sidebar.update
-
-        let movedIndex = null;
-        let targetIndex = null;
-
-        for (let i=0; i<stateData.length; i++){
-            if (stateData[i].order === movedGroup.order){
-                movedIndex = i
-            }
-            if (stateData[i].order === targetGroup.order){
-                targetIndex = i
-            }
-        }
 
         stateData[targetIndex] = movedGroup
         stateData[movedIndex] = targetGroup
@@ -66,30 +48,12 @@ const onReorderGroup = (movedGroup, targetGroup) => {
     }
 }
 
-const onCreateOrUpdateForm = (body) => {
+const onCreateOrUpdateForm = (body, groupIndex, index) => {
     return async (dispatch, getState) => {
         let stateData = getState().home.sidebar.update
-
-        let group = null
-        let groupIndex = null
-        //get group
-        for (let i=0; i<stateData.length; i++) {
-            if (stateData[i].id === body.group) {
-                group = stateData[i]
-                groupIndex = i
-                break
-            } 
-        }
-        
-        //get and update form
-        for (let i=0; i<group.form_group.length; i++) {
-            if (group.form_group[i].id === body.id) {
-                stateData[groupIndex].form_group[i] = body
-                agent.HOME.updateForm(body, body.group, body.id)
-            } 
-        }
+        stateData[groupIndex].form_group[index] = body
+        agent.HOME.updateForm(body, body.group, body.id)
         dispatch({ type: UPDATE_GROUPS, payload: stateData })
-
     }
 }
 

@@ -7,22 +7,23 @@ const SidebarGroupEdit = (props) => {
     const [isDragging,  setIsDragging] = useState(false)
 
 
-    const onChangeGroupName = (e, group) => {
+    const onChangeGroupName = (e, group, index) => {
         e.preventDefault()
         group.name = e.target.value
-        props.onCreateOrUpdateGroup(group)
+        props.onCreateOrUpdateGroup(group, index)
     }
-    const onDisableGroup = (e, group) => {
+    const onDisableGroup = (e, group, index) => {
         e.preventDefault()
         group.enabled = !group.enabled
-        props.onCreateOrUpdateGroup(group)
+        props.onCreateOrUpdateGroup(group, index)
     }
 
-    const onMoveGroup = (e, group) => {
+    const onMoveGroup = (e, group, index) => {
         let groupContainer = e.currentTarget.closest('.group-container')
         let elementRect = e.currentTarget.getBoundingClientRect()
         e.dataTransfer.setDragImage(groupContainer, elementRect.width-elementRect.left - ( elementRect.right - elementRect.width ), 20)
         e.dataTransfer.setData('groupToMove', JSON.stringify(group))
+        e.dataTransfer.setData('groupToMoveIndex', index)
         setIsDragging(true)
     }
 
@@ -39,14 +40,16 @@ const SidebarGroupEdit = (props) => {
     const onDragEnd = (e) => {
         e.preventDefault()
         e.stopPropagation()
-        props.setIsDragging(false)
+        setIsDragging(false)
     }
     
-    const onDrop = (e, group) => {
+    const onDrop = (e, group, index) => {
         e.preventDefault()
         e.stopPropagation()
         let movedGroup = JSON.parse(e.dataTransfer.getData('groupToMove'))
-        props.onReorderGroup(movedGroup, group)
+        let movedGroupIndex = parseInt(e.dataTransfer.getData('groupToMoveIndex'))
+
+        props.onReorderGroup(movedGroup, movedGroupIndex, group, index)
     }
 
 
@@ -54,24 +57,24 @@ const SidebarGroupEdit = (props) => {
         <div>
             { props.elements.map((element, index) => (
                 <SidebarAccordion key={index}>
-                    <SidebarCard onDragOver={e=> {onDragOver(e)}} onDrop={e=> {onDrop(e, element)}}>
+                    <SidebarCard onDragOver={e=> {onDragOver(e)}} onDrop={e=> {onDrop(e, element, index)}}>
                         <SidebarCardHeader className="group-container">
                             <SidebarIconsContainer>
-                                <SidebarIcons icon="eye" onClick={e=>{onDisableGroup(e, element)}}/>
+                                <SidebarIcons icon="eye" onClick={e=>{onDisableGroup(e, element, index)}}/>
                                 <SidebarIcons icon="trash"/>
-                                <div draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveGroup(e, element)}} onDragEnd={e=>{onDragEnd(e)}}  >
+                                <div draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveGroup(e, element, index)}} onDragEnd={e=>{onDragEnd(e)}}  >
                                     <SidebarIcons icon="arrows-alt" />
                                 </div>
                             </SidebarIconsContainer> 
                             { (element.enabled) ? 
-                                (<SidebarGroupInput value={element.name} onChange={e=>{onChangeGroupName(e, element)}}/>) :
+                                (<SidebarGroupInput value={element.name} onChange={e=>{onChangeGroupName(e, element, index)}}/>) :
                                 (<SidebarDisabledGroupLabel eventKey="0">{strings['pt-br']['disabledGroupLabel']}</SidebarDisabledGroupLabel>)
                             }                           
                         </SidebarCardHeader>
                         { (isDragging) ? 
                         (<div/>) : 
                         (<div>
-                            <SidebarFormEdit onCreateOrUpdateForm={props.onCreateOrUpdateForm} forms={element.form_group}/>
+                            <SidebarFormEdit onCreateOrUpdateForm={props.onCreateOrUpdateForm} forms={element.form_group} groupIndex={index}/>
                         </div>)
                         }
                     </SidebarCard>
