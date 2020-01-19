@@ -11,7 +11,9 @@ import SidebarIconsContainer from './SidebarIconsContainer'
 import SidebarGroupInput from './SidebarGroupInput'
 import SidebarFormInput from './SidebarFormInput'
 import SidebarDisabledGroupLabel from './SidebarDisabledGroupLabel'
+import SidebarDisabledFormLabel from './SidebarDisabledFormLabel'
 
+export { SidebarDisabledFormLabel }
 export { SidebarFormInput }
 export { SidebarDisabledGroupLabel }
 export { SidebarGroupInput }
