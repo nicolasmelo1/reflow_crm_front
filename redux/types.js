@@ -2,5 +2,4 @@ export const AUTHENTICATE = 'AUTHENTICATE';
 export const DEAUTHENTICATE = 'DEAUTHENTICATE';
 export const ERROR = 'ERROR';
 export const GET_FORMS = 'GET_FORMS';
-export const GET_UPDATE_FORMS = 'GET_UPDATE_FORMS';
-export const UPDATE_GROUP = 'UPDATE_GROUP';
+export const UPDATE_GROUPS = 'UPDATE_GROUPS';

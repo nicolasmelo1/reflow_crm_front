@@ -2,6 +2,7 @@ import { Row, Col, Button } from 'react-bootstrap'
 import React from 'react'
 import { SidebarMenu } from 'styles/Sidebar'
 import SidebarGroup from './SidebarGroup'
+import SidebarGroupEdit from './SidebarGroupEdit'
 import actions from 'redux/actions'
 import { connect } from 'react-redux';
 
@@ -17,6 +18,7 @@ class Sidebar extends React.Component {
         }
         this.props.onGetForms()
     }
+    
     enterEditMode(e) {
         e.preventDefault()
         this.setState(state => {
@@ -36,11 +38,16 @@ class Sidebar extends React.Component {
             <Row>
                 <Col>
                     <SidebarMenu pageWrapId="content-container" outerContainerId="main-container">
-                        <SidebarGroup 
-                        elements={(this.state.isEditing) ? this.props.sidebar.update : this.props.sidebar.initial } 
-                        isEditing={this.state.isEditing}
-                        onCreateOrUpdateGroup={this.props.onCreateOrUpdateGroup}
-                        />
+                        { (this.state.isEditing) ? (
+                            <SidebarGroupEdit 
+                            elements={this.props.sidebar.update}
+                            onCreateOrUpdateGroup={this.props.onCreateOrUpdateGroup}
+                            onReorderGroup = {this.props.onReorderGroup}
+                            onCreateOrUpdateForm={this.props.onCreateOrUpdateForm}
+                            />
+                        ): (
+                            <SidebarGroup elements={this.props.sidebar.initial}/>
+                        )}
                         <Button onClick={e => this.enterEditMode(e)}>Editar template</Button>
                     </SidebarMenu>
                 </Col>

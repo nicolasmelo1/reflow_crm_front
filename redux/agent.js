@@ -85,7 +85,6 @@ const requests = {
         }
     },
     put: async (url, body, headers={}) => {
-        console.log(Object.assign(setHeader(token), headers))
         try {
             return await axios.put(`${API_ROOT}${url}`, body, { headers: Object.assign(setHeader(token), headers) })
         }
@@ -120,6 +119,9 @@ const HOME = {
     },
     updateGroup: async (body, id) => {
         return await requests.put(`${companyId}/settings/api/formulary/${id}/`, body)
+    },
+    updateForm: async (body, groupId, id) => {
+        return await requests.put(`${companyId}/settings/api/formulary/${groupId}/${id}/`, body)
     }
     
 }

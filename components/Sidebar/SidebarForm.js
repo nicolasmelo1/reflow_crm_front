@@ -10,9 +10,7 @@ class SidebarForm extends React.Component {
     constructor(props) {
         super(props)
     }
-    showProps() {
-        return this.props
-    }
+    
     render () {
         return (
             <SidebarCardBody>

@@ -1,7 +1,7 @@
 import { Provider } from 'react-redux';
 import App from 'next/app';
 import withRedux from 'next-redux-wrapper';
-import { initStore } from '../redux/store';
+import { initStore } from 'redux/store';
 import React from 'react';
 import { persistStore } from 'redux-persist'
 import { PersistGate } from 'redux-persist/integration/react'

@@ -5,13 +5,14 @@ export default styled(Form.Control)`
     background-color: transparent;
     border: 0px solid black;
     transition: all !important;
-    border-bottom: 2px solid #fff;
-    color: #ffffff;
-    font-weight: bold;
+    border-bottom: 1px solid #0dbf7e;
+    font-size: 15px;
+    padding: 0px 5px 5px 5px; 
+    color: #0dbf7e;
     &:focus {
-        color: #0dbf7e;
+        color: #fff;
         background-color: transparent;
-        border-bottom: 2px solid #fff;
+        border-bottom: 1px solid #0dbf7e;
         box-shadow: none;
         outline: 0;
       }

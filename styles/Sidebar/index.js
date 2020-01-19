@@ -9,8 +9,10 @@ import SidebarLink from './SidebarLink'
 import SidebarIcons from './SidebarIcons'
 import SidebarIconsContainer from './SidebarIconsContainer'
 import SidebarGroupInput from './SidebarGroupInput'
+import SidebarFormInput from './SidebarFormInput'
 import SidebarDisabledGroupLabel from './SidebarDisabledGroupLabel'
 
+export { SidebarFormInput }
 export { SidebarDisabledGroupLabel }
 export { SidebarGroupInput }
 export { SidebarIconsContainer }
