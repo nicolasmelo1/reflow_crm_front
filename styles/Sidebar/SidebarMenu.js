@@ -1,7 +1,22 @@
 import { push as Menu } from 'react-burger-menu'
 import React from 'react'
+import styled from 'styled-components'
 
-const styles = {
+
+export default styled(({sidebarIsOpen, ...rest}) => <nav {...rest}/>)`
+    justify-content: center;
+    background: #444;
+    height: calc(100vh - 3.25rem);
+    overflow-y: auto;
+    text-align: auto;
+    padding: 0 0 2rem 0;
+    position: absolute;
+    top: 0;
+    transition: width 0.3s ease-in-out;
+    width: ${({ sidebarIsOpen }) => sidebarIsOpen ? '310px' : '0'};
+`
+
+/*const styles = {
     bmBurgerButton: {
       position: 'relative',
       width: '40px',
@@ -60,4 +75,4 @@ const SidebarMenu = (props) => (
     </Menu>
 )
 
-export default SidebarMenu
+export default SidebarMenu*/

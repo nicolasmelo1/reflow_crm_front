@@ -13,7 +13,13 @@ import SidebarFormInput from './SidebarFormInput'
 import SidebarDisabledGroupLabel from './SidebarDisabledGroupLabel'
 import SidebarDisabledFormLabel from './SidebarDisabledFormLabel'
 import SidebarAddButton from  './SidebarAddButton'
+import SidebarToggle from './SidebarToggle'
+import SidebarEditTemplateButton from './SidebarEditTemplateButton'
+import SidebarAddNewTemplateButton from  './SidebarAddNewTemplateButton'
 
+export { SidebarAddNewTemplateButton }
+export { SidebarEditTemplateButton }
+export { SidebarToggle }
 export { SidebarAddButton }
 export { SidebarDisabledFormLabel }
 export { SidebarFormInput }
