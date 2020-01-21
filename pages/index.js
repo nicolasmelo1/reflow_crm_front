@@ -11,7 +11,6 @@ import Layout from 'components/Layout'
 class Index extends React.Component {
     constructor(props){
         super(props)
-        console.log('Index')
 
     }
     checkIfLogged() {

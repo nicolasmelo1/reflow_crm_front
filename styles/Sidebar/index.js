@@ -6,7 +6,27 @@ import SidebarCard from './SidebarCard'
 import SidebarCardBody from './SidebarCardBody'
 import SidebarFormItem from './SidebarFormItem'
 import SidebarLink from './SidebarLink'
+import SidebarIcons from './SidebarIcons'
+import SidebarIconsContainer from './SidebarIconsContainer'
+import SidebarGroupInput from './SidebarGroupInput'
+import SidebarFormInput from './SidebarFormInput'
+import SidebarDisabledGroupLabel from './SidebarDisabledGroupLabel'
+import SidebarDisabledFormLabel from './SidebarDisabledFormLabel'
+import SidebarAddButton from  './SidebarAddButton'
+import SidebarToggle from './SidebarToggle'
+import SidebarEditTemplateButton from './SidebarEditTemplateButton'
+import SidebarAddNewTemplateButton from  './SidebarAddNewTemplateButton'
 
+export { SidebarAddNewTemplateButton }
+export { SidebarEditTemplateButton }
+export { SidebarToggle }
+export { SidebarAddButton }
+export { SidebarDisabledFormLabel }
+export { SidebarFormInput }
+export { SidebarDisabledGroupLabel }
+export { SidebarGroupInput }
+export { SidebarIconsContainer }
+export { SidebarIcons }
 export { SidebarMenu }
 export { SidebarAccordionToggle }
 export { SidebarCardHeader }

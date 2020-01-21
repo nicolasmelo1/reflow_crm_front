@@ -7,5 +7,6 @@ export default styled(Accordion.Toggle)`
     padding: 0;
     border-radius: 0;
     border: 0;
-    color: #ffffff
+    color: #ffffff;
+    width: 100%
 `

@@ -8,7 +8,13 @@ const strings = {
         passLoginLabel: 'Senha',
         submitButtonLabel: 'Entrar',
         incorrectPassOrUserError: 'Login e/ou senha incorretos',
-        managementPageTitle: 'Gestão - Reflow'
+        managementPageTitle: 'Gestão - Reflow',
+        disabledGroupLabel: 'O Grupo está desativado',
+        disabledFormLabel: 'O Formulário está desativado',
+        addNewFormButtonLabel: 'Adicionar novo formulário',
+        sidebarEditTemplateButtonLabel: 'Editar templates',
+        sidebarAddNewTemplateButtonLabel: 'Adicionar novo',
+        goBack: 'Voltar'
     }
 }
 

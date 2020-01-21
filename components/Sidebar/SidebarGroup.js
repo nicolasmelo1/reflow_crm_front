@@ -1,32 +1,13 @@
-import React from 'react'
-import { Card, Accordion, Form } from 'react-bootstrap'
+import React, { useState } from 'react'
+import { Accordion } from 'react-bootstrap'
 import SidebarForm from './SidebarForm'
 import { SidebarAccordionToggle, SidebarCardHeader, SidebarAccordion, SidebarCard } from 'styles/Sidebar'
-
+import SidebarGroupEdit from './SidebarGroupEdit'
 
 const SidebarGroup = (props) => {
-    const onChangeGroupName = (e, group) => {
-        e.preventDefault()
-        group.name = e.target.value
-        props.onCreateOrUpdateGroup(group)
-    }
-
-    const editingMode = (element, index) => {
-        if (props.isEditing) {
-            return (
-                <SidebarAccordion key={index}>
-                    <SidebarCard>
-                        <SidebarCardHeader>
-                            <Form.Control value={element.name} onChange={e=>{onChangeGroupName(e, element)}}/>
-                        </SidebarCardHeader>
-                        <div>
-                            <SidebarForm forms={element.form_group}/>
-                        </div>
-                    </SidebarCard>
-                </SidebarAccordion>
-            )
-        } else {
-            return (
+    return (
+        <div>
+            { props.elements.map((element, index) => (
                 <SidebarAccordion key={index}>
                     <SidebarCard>
                         <SidebarCardHeader>
@@ -39,14 +20,6 @@ const SidebarGroup = (props) => {
                         </Accordion.Collapse>
                     </SidebarCard>
                 </SidebarAccordion>
-            )
-        }
-    }
-
-    return (
-        <div>
-            { props.elements.map((element, index) => (
-                editingMode(element, index)
             ))}
         </div>
     )

@@ -1,4 +1,4 @@
-import { GET_FORMS, GET_UPDATE_FORMS, UPDATE_GROUP } from 'redux/types';
+import { GET_FORMS, UPDATE_GROUPS } from 'redux/types';
 
 let initialState = {
     initial: [],
@@ -12,22 +12,10 @@ export default (state=initialState, action) => {
                 ...state,
                 initial: action.payload.data
             }
-        case GET_UPDATE_FORMS:
+        case UPDATE_GROUPS:
             return {
                 ...state,
-                update: action.payload.data
-            }
-        case UPDATE_GROUP:
-            let data = state.update
-            for (let i=0; i<data.length; i++) {
-                if (data[i].id === action.payload.id) {
-                    data[i] = action.payload
-                    break
-                }
-            }
-            return {
-                ...state,
-                update: data
+                update: action.payload
             }
         default:
             return state;
