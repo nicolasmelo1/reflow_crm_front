@@ -13,7 +13,7 @@ export default styled(({sidebarIsOpen, ...rest}) => <button {...rest}/>)`
     background: #444;
     border-radius: 0 20px 20px 0;
     border: none;
-    z-index:10;
+    z-index: 10;
     cursor: pointer;
     color: #0dbf7e
 `

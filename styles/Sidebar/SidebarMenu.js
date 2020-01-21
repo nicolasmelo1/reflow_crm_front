@@ -12,6 +12,7 @@ export default styled(({sidebarIsOpen, ...rest}) => <nav {...rest}/>)`
     padding: 0 0 2rem 0;
     position: absolute;
     top: 0;
+    z-index: 10;
     transition: width 0.3s ease-in-out;
     width: ${({ sidebarIsOpen }) => sidebarIsOpen ? '310px' : '0'};
 `

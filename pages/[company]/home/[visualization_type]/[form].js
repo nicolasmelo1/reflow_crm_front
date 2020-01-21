@@ -1,6 +1,6 @@
 import React from 'react';
 import actions from 'redux/actions';
-import Layout from 'components/Layout';
+import { Layout, Formulary } from 'components';
 import { connect } from 'react-redux';
 import { strings, paths } from 'utils/constants';
 import { Button } from 'react-bootstrap';
@@ -21,7 +21,8 @@ class Data extends React.Component {
     render () {
         return (
             <Layout title={strings['pt-br']['managementPageTitle']} showSideBar={true}>
-                  <Button type="submit" onClick={e => this.handleLogout(e)}>Logout</Button>
+                <Formulary/>
+                <Button type="submit" onClick={e => this.handleLogout(e)}>Logout</Button>
             </Layout>
         )
     }
