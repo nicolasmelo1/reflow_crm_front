@@ -42,8 +42,11 @@ class Sidebar extends React.Component {
                             <SidebarGroupEdit 
                             elements={this.props.sidebar.update}
                             onCreateOrUpdateGroup={this.props.onCreateOrUpdateGroup}
-                            onReorderGroup = {this.props.onReorderGroup}
+                            onReorderGroup={this.props.onReorderGroup}
                             onCreateOrUpdateForm={this.props.onCreateOrUpdateForm}
+                            onReorderForm={this.props.onReorderForm}
+                            onAddNewForm={this.props.onAddNewForm}
+                            onRemoveForm={this.props.onRemoveForm}
                             />
                         ): (
                             <SidebarGroup elements={this.props.sidebar.initial}/>

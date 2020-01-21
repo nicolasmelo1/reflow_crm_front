@@ -62,7 +62,7 @@ const refreshToken = async (response, callback, url, params, headers) => {
  * > requests.post('login/', body)
  */
 const requests = {
-    del: async (url, params={}, headers={}) => {
+    delete: async (url, params={}, headers={}) => {
         try {
             return await axios.delete(`${API_ROOT}${url}`, {
                 params: params,
@@ -70,7 +70,7 @@ const requests = {
             })
         }
         catch(exception){
-            return await refreshToken(exception.response, requests.del, url, params, headers)
+            return await refreshToken(exception.response, requests.delete, url, params, headers)
         }
     },
     get: async (url, params={}, headers={}) => {
@@ -120,8 +120,14 @@ const HOME = {
     updateGroup: async (body, id) => {
         return await requests.put(`${companyId}/settings/api/formulary/${id}/`, body)
     },
+    createForm: async (body, groupId) => {
+        return await requests.post(`${companyId}/settings/api/formulary/${groupId}/`, body)
+    },
     updateForm: async (body, groupId, id) => {
         return await requests.put(`${companyId}/settings/api/formulary/${groupId}/${id}/`, body)
+    },
+    removeForm: async (groupId, id)=> {
+        return await requests.delete(`${companyId}/settings/api/formulary/${groupId}/${id}/`)
     }
     
 }

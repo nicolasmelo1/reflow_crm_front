@@ -6,7 +6,6 @@ import { strings } from 'utils/constants'
 const SidebarGroupEdit = (props) => {
     const [isDragging,  setIsDragging] = useState(false)
 
-
     const onChangeGroupName = (e, group, index) => {
         e.preventDefault()
         group.name = e.target.value
@@ -73,9 +72,15 @@ const SidebarGroupEdit = (props) => {
                         </SidebarCardHeader>
                         { (isDragging) ? 
                         (<div/>) : 
-                        (<div>
-                            <SidebarFormEdit onCreateOrUpdateForm={props.onCreateOrUpdateForm} forms={element.form_group} groupIndex={index}/>
-                        </div>)
+                        (<SidebarFormEdit 
+                        onCreateOrUpdateForm={props.onCreateOrUpdateForm} 
+                        forms={element.form_group} 
+                        groupIndex={index} 
+                        group={element}
+                        onReorderForm={props.onReorderForm}
+                        onAddNewForm={props.onAddNewForm}
+                        onRemoveForm={props.onRemoveForm}
+                        />)
                         }
                     </SidebarCard>
                 </SidebarAccordion>

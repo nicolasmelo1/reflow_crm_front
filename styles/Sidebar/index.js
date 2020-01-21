@@ -12,7 +12,9 @@ import SidebarGroupInput from './SidebarGroupInput'
 import SidebarFormInput from './SidebarFormInput'
 import SidebarDisabledGroupLabel from './SidebarDisabledGroupLabel'
 import SidebarDisabledFormLabel from './SidebarDisabledFormLabel'
+import SidebarAddButton from  './SidebarAddButton'
 
+export { SidebarAddButton }
 export { SidebarDisabledFormLabel }
 export { SidebarFormInput }
 export { SidebarDisabledGroupLabel }
