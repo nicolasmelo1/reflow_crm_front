@@ -128,6 +128,9 @@ const HOME = {
     },
     removeForm: async (groupId, id)=> {
         return await requests.delete(`${companyId}/settings/api/formulary/${groupId}/${id}/`)
+    },
+    getFormulary: async (formName) => {
+        return await requests.get(`${companyId}/formulary/api/${formName}/`)
     }
     
 }

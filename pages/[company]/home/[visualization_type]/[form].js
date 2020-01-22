@@ -5,10 +5,15 @@ import { connect } from 'react-redux';
 import { strings, paths } from 'utils/constants';
 import { Button } from 'react-bootstrap';
 import Router from 'next/router'
+import { useRouter } from 'next/router';
 
 class Data extends React.Component {
     constructor(props) {
         super(props)
+    }
+
+    static async getInitialProps(context) {
+        return { query: context.query }
     }
 
     // TEMPORARY
@@ -21,7 +26,7 @@ class Data extends React.Component {
     render () {
         return (
             <Layout title={strings['pt-br']['managementPageTitle']} showSideBar={true}>
-                <Formulary/>
+                <Formulary query={this.props.query}/>
                 <Button type="submit" onClick={e => this.handleLogout(e)}>Logout</Button>
             </Layout>
         )

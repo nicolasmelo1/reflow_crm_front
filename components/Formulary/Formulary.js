@@ -1,10 +1,14 @@
 import React from 'react'
 import { FormularyContainer, FormularyButton, FormularyContentContainer } from 'styles/Formulary'
 import { Row, Col } from 'react-bootstrap'
+import FormularySection from './FormularySection'
+import actions from 'redux/actions'
+import { connect } from 'react-redux'
 
 class Formulary extends React.Component {
     constructor(props) {
         super(props)
+        this.props.onGetFormulary(this.props.query.form)
         this.state = {
             isOpen: false
         }
@@ -30,7 +34,7 @@ class Formulary extends React.Component {
                 <Row>
                     <Col>
                         <FormularyContentContainer isOpen={this.state.isOpen}>
-                            
+                            <FormularySection sections={(this.props.formulary.loaded.depends_on_form) ? this.props.formulary.loaded.depends_on_form: []}/>
                         </FormularyContentContainer>
                     </Col>
                 </Row>
@@ -39,4 +43,4 @@ class Formulary extends React.Component {
     }
 }
 
-export default Formulary
+export default connect(state => ({ formulary: state.home.formulary }), actions)(Formulary);

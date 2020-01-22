@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { strings } from 'utils/constants'
 import { SidebarCardBody, SidebarAddButton, SidebarFormItem, SidebarFormInput, SidebarIconsContainer, SidebarIcons, SidebarDisabledFormLabel } from 'styles/Sidebar'
 
+
 const SidebarFormEdit = (props) => {
     const onAddNewForm = (e) => {
         e.preventDefault()
