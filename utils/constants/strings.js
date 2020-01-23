@@ -14,7 +14,16 @@ const strings = {
         addNewFormButtonLabel: 'Adicionar novo formulário',
         sidebarEditTemplateButtonLabel: 'Editar templates',
         sidebarAddNewTemplateButtonLabel: 'Adicionar novo',
-        goBack: 'Voltar'
+        goBack: 'Voltar',
+        headerGestaoLabel: 'Gestão',
+        headerDashboardLabel: 'Dashboard',
+        headerSettingsLabel: 'Configurações',
+        headerRefferalLabel: 'Indicar usuários',
+        headerCompanyLabel: 'Empresa',
+        headerChangeDataLabel: 'Alterar Dados',
+        headerBillingLabel: 'Pagamento',
+        headerNotificationLabel: 'Notificações',
+        headerHelpLabel: 'Ajuda'
     }
 }
 

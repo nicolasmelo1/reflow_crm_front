@@ -29,7 +29,7 @@ class Layout extends React.Component {
         if (!window.localStorage.getItem('token') || window.localStorage.getItem('token') === '') {
             Router.push(paths.login())
         }
-        this.state={
+        this.state = {
             sidebarIsOpen: false
         }
     }
@@ -42,22 +42,22 @@ class Layout extends React.Component {
         })
     }
 
-    render () {
+    render() {
         return (
             <Body>
-                { this.props.hideNavBar ? '' : ''}
+                {this.props.hideNavBar ? '' : ''}
                 <Header title={this.props.title}></Header>
                 <div className="notifications-container"></div>
                 <div id="main-container">
-                    { this.props.hideNavBar ? '' : <NavBar/>}
-                    { this.props.showSideBar ? <Sidebar sidebarIsOpen={this.state.sidebarIsOpen} setSidebarIsOpen={this.setSidebarIsOpen} /> : ''}
+                    {this.props.hideNavBar ? '' : <NavBar />}
+                    {this.props.showSideBar ? <Sidebar sidebarIsOpen={this.state.sidebarIsOpen} setSidebarIsOpen={this.setSidebarIsOpen} /> : ''}
                     <ContentContainer sidebarIsOpen={this.state.sidebarIsOpen}>
-                        { this.props.children }
+                        {this.props.children}
                     </ContentContainer>
                 </div>
             </Body>
-        ) 
+        )
     }
 }
 
-export default connect(state=> ({ login: state.login }), actions)(Layout);
+export default connect(state => ({ login: state.login }), actions)(Layout);
