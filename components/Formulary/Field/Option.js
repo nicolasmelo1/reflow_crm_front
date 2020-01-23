@@ -9,7 +9,7 @@ const Option = (props) => {
     }
 
     return (
-        <Select options={data} onChange={onChange} multiple={true}/>
+        <Select options={data} onChange={onChange}/>
     )
 }
 
