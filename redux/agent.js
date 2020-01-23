@@ -13,7 +13,7 @@ let companyId = ''
  * 
  * @param token - the token, usually the token variable that we set in Layout component
  */
-let setHeader = (token) => { 
+let setHeader = (token) => {
     return {
         'Authorization': `${BEARER} ${token}`
     }
@@ -36,7 +36,7 @@ const refreshToken = async (response, callback, url, params, headers) => {
         if (response.data.reason === 'expired_token') {
             response = await requests.get('refresh_token/', {}, setHeader(window.localStorage.getItem('refreshToken')))
             // checks if the response was an error and handles it next
-            if (response.status!==200){
+            if (response.status !== 200) {
                 window.localStorage.setItem('refreshToken', '')
                 window.localStorage.setItem('token', '')
                 token = ''
@@ -46,7 +46,7 @@ const refreshToken = async (response, callback, url, params, headers) => {
                 token = response.data.access_token
             }
         }
-        if (['invalid_token', 'login_required'].includes(response.data.reason)){
+        if (['invalid_token', 'login_required'].includes(response.data.reason)) {
             Router.push(paths.login())
         }
         return callback(url, params, headers)
@@ -62,41 +62,41 @@ const refreshToken = async (response, callback, url, params, headers) => {
  * > requests.post('login/', body)
  */
 const requests = {
-    delete: async (url, params={}, headers={}) => {
+    delete: async (url, params = {}, headers = {}) => {
         try {
             return await axios.delete(`${API_ROOT}${url}`, {
                 params: params,
                 headers: Object.assign(setHeader(token), headers)
             })
         }
-        catch(exception){
+        catch (exception) {
             return await refreshToken(exception.response, requests.delete, url, params, headers)
         }
     },
-    get: async (url, params={}, headers={}) => {
+    get: async (url, params = {}, headers = {}) => {
         try {
             return await axios.get(`${API_ROOT}${url}`, {
                 params: params,
                 headers: Object.assign(setHeader(token), headers)
             })
         }
-        catch(exception){
+        catch (exception) {
             return await refreshToken(exception.response, requests.get, url, params, headers)
         }
     },
-    put: async (url, body, headers={}) => {
+    put: async (url, body, headers = {}) => {
         try {
             return await axios.put(`${API_ROOT}${url}`, body, { headers: Object.assign(setHeader(token), headers) })
         }
-        catch(exception){
+        catch (exception) {
             return await refreshToken(exception.response, requests.put, url, body, headers)
         }
     },
-    post: async (url, body, headers={}) => {
+    post: async (url, body, headers = {}) => {
         try {
             return await axios.post(`${API_ROOT}${url}`, body, { headers: Object.assign(setHeader(token), headers) })
         }
-        catch(exception){
+        catch (exception) {
             return await refreshToken(exception.response, requests.post, url, body, headers)
         }
     }
@@ -126,15 +126,24 @@ const HOME = {
     updateForm: async (body, groupId, id) => {
         return await requests.put(`${companyId}/settings/api/formulary/${groupId}/${id}/`, body)
     },
-    removeForm: async (groupId, id)=> {
+    removeForm: async (groupId, id) => {
         return await requests.delete(`${companyId}/settings/api/formulary/${groupId}/${id}/`)
     }
-    
+}
+
+const LISTING = {
+    getData: async (params, formName) => {
+        return await requests.get(`${companyId}/data/api/data/${formName}/`, params)
+    },
+    getHeader: async (formName) => {
+        return await requests.get(`${companyId}/data/api/listing/header/${formName}/`)
+    }
 }
 
 export default {
-    setCompanyId: _companyId => { companyId = _companyId},
+    setCompanyId: _companyId => { companyId = _companyId },
     setToken: (_token) => { token = _token; },
     LOGIN,
-    HOME
-}
+    HOME,
+    LISTING
+};

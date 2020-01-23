@@ -1,12 +1,14 @@
 import React from 'react';
 import actions from 'redux/actions';
-import { Layout, Formulary } from 'components';
+import { Layout, Formulary, DataContainer } from 'components';
 import { connect } from 'react-redux';
 import { strings, paths } from 'utils/constants';
 import { Button } from 'react-bootstrap';
-import Router from 'next/router'
+import { Router, useRouter } from 'next/router'
+import GestaoTab from 'components/Gestao/GestaoTab'
 
 class Data extends React.Component {
+
     constructor(props) {
         super(props)
     }
@@ -18,14 +20,17 @@ class Data extends React.Component {
         Router.push(paths.login())
     }
 
-    render () {
+    render() {
         return (
             <Layout title={strings['pt-br']['managementPageTitle']} showSideBar={true}>
-                <Formulary/>
+                <Formulary />
                 <Button type="submit" onClick={e => this.handleLogout(e)}>Logout</Button>
+                <GestaoTab defaultActive='listing' />
+
+                <DataContainer visualization='listing' />
             </Layout>
         )
     }
 }
 
-export default  connect(state => ({home: state.home}), actions)(Data)
+export default connect(state => ({ home: state.home }), actions)(Data)

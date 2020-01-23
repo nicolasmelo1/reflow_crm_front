@@ -1,7 +1,4 @@
-import Router from 'next/router';
-import axios from 'axios';
 import { DEAUTHENTICATE, AUTHENTICATE, ERROR } from '../types';
-import { API } from '../../config';
 import agent from '../agent'
 
 // gets token from the api and stores it in the redux store and in cookie
