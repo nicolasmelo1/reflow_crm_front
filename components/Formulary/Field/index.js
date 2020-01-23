@@ -2,7 +2,8 @@ import Text from './Text'
 import Number from './Number'
 import Date from './Date'
 import Email from './Email'
-import Select from './Select'
+import Option from './Option'
+import MultiOption from './MultiOption'
 
 const Field = (props) => {
     const getFieldType = () => {
@@ -16,7 +17,10 @@ const Field = (props) => {
             case "email": 
                 return (<Email data={props.field}/>)
             case "option":
-                return (<Select data={props.field}/>)
+                return (<Option data={props.field}/>)
+            case "multi_option":
+                return (<MultiOption data={props.field}/>)
+
         }
     }
     return (
