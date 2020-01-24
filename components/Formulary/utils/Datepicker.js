@@ -2,31 +2,36 @@ import React, { useState, useEffect } from 'react'
 import { Field } from 'styles/Formulary'
 
 const DatePicker = (props) => {
+    const rows = 6
+    const cols = 7
+    const dateGridLength = cols*rows
+    const dateGrid = Array.apply(null, Array(rows)).map((x, i) => i)
     const oneDay = 60 * 60 * 24 * 1000;
     const todayTimestamp = Date.now() - (Date.now() % oneDay) + (new Date().getTimezoneOffset() * 1000 * 60);
-    const [isOpen, _setIsOpen] = useState(false)
-    
-    const getMonthDetails = (year, month) => {
-        const firstDay = (new Date(year, month)).getDay();
-        //const numberOfDays = this.getNumberOfDays(year, month);
-        let monthArray = [];
-        let rows = 6;
-        let currentDay = null;
-        let index = 0; 
-        let cols = 7;
 
-        for(let row=0; row<rows; row++) {
-            for(let col=0; col<cols; col++) { 
-                console.log(index)
-                console.log(firstDay)
-                console.log(year)
-                console.log(month)
-                monthArray.push(currentDay);
-                index++;
-            }
+    const [isOpen, _setIsOpen] = useState(false)
+    const [monthDates, setMonthDates] = useState(getMonthDetails(2020,0))
+
+    // we define this way because it needs for the JS compiler, please read this:
+    // https://stackoverflow.com/a/9973503 
+    // so we have to use the function keyword, without it, you might get into some errors, test it!
+    function getMonthDetails (year, month) {
+        const monthDayOfTheWeekStart = (new Date(year, month)).getDay()
+        let monthArray = []
+
+        for (let index=0; index<dateGridLength; index++) {
+            const dayOfheWeek = index - monthDayOfTheWeekStart; 
+            const date = new Date(year, month, dayOfheWeek+1)
+            monthArray.push(date)
         }
-        return monthArray;
+        return monthArray
     }
+    
+    const updateMonthDetails = (year, month) => {
+        const monthDetails = getMonthDetails(year, month)
+        setMonthDates(monthDetails)
+    }
+
     // check Select Component in components/Formulary/utils
     const setIsOpenRef = React.useRef(isOpen);
     const setIsOpen = data => {
@@ -50,22 +55,24 @@ const DatePicker = (props) => {
         }
     })
 
-    const [datePickerData, setDatePickerData] = useState(()=> {
-        const date = new Date();
-        const year = date.getFullYear();
-        const month = date.getMonth();
-        return {
-            year,
-            month,
-            selectedDay: todayTimestamp,
-            monthDetails: getMonthDetails(year, month)
-        }
-    })
-
+    console.log(dateGrid)
     return (
         <div style={{position:'relative'}}>
             {isOpen ? (
                 <Field.Datepicker.PickerContainer>
+                    <table>
+                        <tbody>
+                            {dateGrid.map((_, index)=> (
+                                <tr key={index}>
+                                    {monthDates.slice(index*7, (index*7)+7).map((monthDate, index)=> (
+                                        <td key={index}>
+                                            {monthDate.getDate()}
+                                        </td>
+                                    ))}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </Field.Datepicker.PickerContainer>
             ): ''}
         </div>
