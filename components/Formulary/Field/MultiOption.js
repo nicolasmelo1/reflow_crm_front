@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import Select from './Select'
+import Select from 'components/Formulary/utils/Select'
 
 const Option = (props) => {
     const [data, setData] = useState(props.data.field_option.map(option => { return {value: option.option, label: option.option} }))
