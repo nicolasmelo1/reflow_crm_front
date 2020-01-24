@@ -9,7 +9,7 @@ import Router from 'next/router';
 import Sidebar from './Sidebar'
 import { paths } from 'utils/constants'
 import agent from 'redux/agent'
-import NavBar from './NavBar'
+import Navbar from './Navbar'
 import ContentContainer from 'styles/ContentContainer'
 
 library.add(faPlusSquare, faEnvelope, faCalendarAlt, faSquareRootAlt, faPhone, faAlignLeft, faLink, faCheckSquare, faClipboardList, faParagraph, faFilePdf, faRulerHorizontal, faClock, faTrash, faBell, faChartBar, faCircle, faCog, faTasks, faArrowsAlt, faEdit, faCloudUploadAlt, faBars, faPen, faFilter, faSortAmountDown, faEye, faArrowsAlt)
@@ -49,7 +49,7 @@ class Layout extends React.Component {
                 <Header title={this.props.title}></Header>
                 <div className="notifications-container"></div>
                 <div id="main-container">
-                    {this.props.hideNavBar ? '' : <NavBar />}
+                    {this.props.hideNavBar ? '' : <Navbar />}
                     {this.props.showSideBar ? <Sidebar sidebarIsOpen={this.state.sidebarIsOpen} setSidebarIsOpen={this.setSidebarIsOpen} /> : ''}
                     <ContentContainer sidebarIsOpen={this.state.sidebarIsOpen}>
                         {this.props.children}
