@@ -8,7 +8,7 @@ const Navbar = (props) => {
     const configDropdown = [
         {
             label: strings['pt-br']['headerRefferalLabel'],
-            href: '#'
+            href: '#',
         },
         {
             label: strings['pt-br']['headerCompanyLabel'],
