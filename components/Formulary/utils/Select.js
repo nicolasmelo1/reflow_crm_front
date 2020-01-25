@@ -17,13 +17,13 @@ import { Field } from 'styles/Formulary'
 const Option = (props) => {
     const filteredOptions = props.options.filter(option=> props.selectedOptions.find(selectedOption=> selectedOption.value === option.value) === undefined);
 
-    const onSelectValue = (e, value, label) => {
+    const onSelectValue = (e, option) => {
         e.preventDefault();
         e.stopPropagation();
         if (props.multiple || props.selectedOptions.length===0) {
-            props.selectedOptions.push({value:value, label:label, selected: false})
+            props.selectedOptions.push({value: option.value, label: option.label, selected: false})
         } else {
-            props.selectedOptions[0] = {value:value, label:label, selected: false}
+            props.selectedOptions[0] = {value: option.value, label: option.label, selected: false}
         }
         props.onChange(props.selectedOptions.map(selectedOption=> selectedOption.value))
         props.setSelectedOptions([...props.selectedOptions])
@@ -33,7 +33,7 @@ const Option = (props) => {
     return (
         <Field.Select.OptionsListContainer>
             {filteredOptions.map((option, index)=>(
-                <Field.Select.OptionItem key={index} onClick={e=>{ onSelectValue(e, option.value) }}>{option.label}</Field.Select.OptionItem> 
+                <Field.Select.OptionItem key={index} onClick={e=>{ onSelectValue(e, option) }}>{option.label}</Field.Select.OptionItem> 
             ))}
         </Field.Select.OptionsListContainer>
     )
@@ -116,7 +116,7 @@ const Select = (props) => {
             document.removeEventListener("mousedown", onSelectClick);
         };
     }, [onSelectClick]);
-    
+
     return(
         <Field.Select.Select isOpen={isOpen} ref={selectRef} onClick={e=>{inputRef.current.focus()}}>
             <Field.Select.SelectedOptionsContainer>
