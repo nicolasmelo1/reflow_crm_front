@@ -154,7 +154,6 @@ const DatePicker = (props) => {
             ): ''}
         </Field.Datepicker.Container>
     )
-    
 }
 
 export default DatePicker
