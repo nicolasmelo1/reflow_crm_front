@@ -14,7 +14,26 @@ const strings = {
         addNewFormButtonLabel: 'Adicionar novo formulário',
         sidebarEditTemplateButtonLabel: 'Editar templates',
         sidebarAddNewTemplateButtonLabel: 'Adicionar novo',
-        goBack: 'Voltar'
+        goBack: 'Voltar',
+        calendarMonthReferenceJanuary: 'Janeiro',
+        calendarMonthReferenceFebruary: 'Fevereiro',
+        calendarMonthReferenceMarch: 'Março',
+        calendarMonthReferenceApril: 'Abril',
+        calendarMonthReferenceMay: 'May',
+        calendarMonthReferenceJune: 'Junho',
+        calendarMonthReferenceJuly: 'Julho',
+        calendarMonthReferenceAugust: 'Agosto',
+        calendarMonthReferenceSeptember: 'Setembro',
+        calendarMonthReferenceOctober: 'Outubro',
+        calendarMonthReferenceNovember: 'Novembro',
+        calendarMonthReferenceDecember: 'Dezembro',
+        calendardayOfTheWeekReferenceSunday: 'Dom',
+        calendardayOfTheWeekReferenceMonday: 'Seg',
+        calendardayOfTheWeekReferenceTuesday: 'Ter',
+        calendardayOfTheWeekReferenceWednesday: 'Qua',
+        calendardayOfTheWeekReferenceThursday: 'Qui',
+        calendardayOfTheWeekReferenceFriday: 'Sex',
+        calendardayOfTheWeekReferenceSaturday: 'Sáb'
     }
 }
 

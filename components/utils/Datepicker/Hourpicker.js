@@ -11,42 +11,48 @@ const Hourpicker = (props) => {
         const month = props.selectedDay.getMonth()
         const year = props.selectedDay.getFullYear()
         const newDate = new Date(year, month, day, hour, minute)
-        props.setSelectedDay(newDate)
+        props.updateDate(newDate)
     }
+    
     return (
-        <Field.Datepicker.HourpickerTable>
-            <tbody>
-                <tr>
-                    <Field.Datepicker.HourpickerItem>
-                        <Field.Datepicker.HourpickerArrow icon="chevron-up" onClick={e=>{updateHour(props.selectedDay.getHours()+1, props.selectedDay.getMinutes())}}/>
-                    </Field.Datepicker.HourpickerItem>
-                    <Field.Datepicker.HourpickerItem/>
-                    <Field.Datepicker.HourpickerItem>
-                        <Field.Datepicker.HourpickerArrow icon="chevron-up" onClick={e=>{updateHour(props.selectedDay.getHours(), props.selectedDay.getMinutes()+1)}}/> 
-                    </Field.Datepicker.HourpickerItem>
-                </tr>
-                <tr>
-                    <Field.Datepicker.HourpickerItem>
-                        {props.selectedDay.getHours() < 10 ? '0'+props.selectedDay.getHours().toString() :props.selectedDay.getHours()}
-                    </Field.Datepicker.HourpickerItem>
-                    <Field.Datepicker.HourpickerItem>
-                        :
-                    </Field.Datepicker.HourpickerItem>
-                    <Field.Datepicker.HourpickerItem>
-                        {props.selectedDay.getMinutes() < 10 ? '0'+props.selectedDay.getMinutes().toString() :props.selectedDay.getMinutes()}
-                    </Field.Datepicker.HourpickerItem>
-                </tr>
-                <tr>
-                    <Field.Datepicker.HourpickerItem>
-                        <Field.Datepicker.HourpickerArrow icon="chevron-down" onClick={e=>{updateHour(props.selectedDay.getHours()-1, props.selectedDay.getMinutes())}}/>
-                    </Field.Datepicker.HourpickerItem>
-                    <Field.Datepicker.HourpickerItem/>
-                    <Field.Datepicker.HourpickerItem>
-                        <Field.Datepicker.HourpickerArrow icon="chevron-down" onClick={e=>{updateHour(props.selectedDay.getHours(), props.selectedDay.getMinutes()-1)}}/> 
-                    </Field.Datepicker.HourpickerItem>
-                </tr>
-            </tbody>
-        </Field.Datepicker.HourpickerTable>
+        <Field.Datepicker.HourpickerContainer>
+            <Field.Datepicker.HourpickerDatepickerToggle onClick={e=>{props.setHourPickerIsOpen(false)}}>
+                <FontAwesomeIcon icon="calendar-alt" />
+            </Field.Datepicker.HourpickerDatepickerToggle>
+            <Field.Datepicker.HourpickerTable>
+                <tbody>
+                    <tr>
+                        <Field.Datepicker.HourpickerItem>
+                            <Field.Datepicker.HourpickerArrow icon="chevron-up" onClick={e=>{updateHour(props.selectedDay.getHours()+1, props.selectedDay.getMinutes())}}/>
+                        </Field.Datepicker.HourpickerItem>
+                        <Field.Datepicker.HourpickerItem/>
+                        <Field.Datepicker.HourpickerItem>
+                            <Field.Datepicker.HourpickerArrow icon="chevron-up" onClick={e=>{updateHour(props.selectedDay.getHours(), props.selectedDay.getMinutes()+1)}}/> 
+                        </Field.Datepicker.HourpickerItem>
+                    </tr>
+                    <tr>
+                        <Field.Datepicker.HourpickerItem>
+                            {props.selectedDay.getHours() < 10 ? '0'+props.selectedDay.getHours().toString() :props.selectedDay.getHours()}
+                        </Field.Datepicker.HourpickerItem>
+                        <Field.Datepicker.HourpickerItem>
+                            :
+                        </Field.Datepicker.HourpickerItem>
+                        <Field.Datepicker.HourpickerItem>
+                            {props.selectedDay.getMinutes() < 10 ? '0'+props.selectedDay.getMinutes().toString() :props.selectedDay.getMinutes()}
+                        </Field.Datepicker.HourpickerItem>
+                    </tr>
+                    <tr>
+                        <Field.Datepicker.HourpickerItem>
+                            <Field.Datepicker.HourpickerArrow icon="chevron-down" onClick={e=>{updateHour(props.selectedDay.getHours()-1, props.selectedDay.getMinutes())}}/>
+                        </Field.Datepicker.HourpickerItem>
+                        <Field.Datepicker.HourpickerItem/>
+                        <Field.Datepicker.HourpickerItem>
+                            <Field.Datepicker.HourpickerArrow icon="chevron-down" onClick={e=>{updateHour(props.selectedDay.getHours(), props.selectedDay.getMinutes()-1)}}/> 
+                        </Field.Datepicker.HourpickerItem>
+                    </tr>
+                </tbody>
+            </Field.Datepicker.HourpickerTable>
+        </Field.Datepicker.HourpickerContainer>
     )
 }
 
