@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import Hourpicker from './Hourpicker'
 import { Field } from 'styles/Formulary'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
@@ -6,8 +7,8 @@ const DatePicker = (props) => {
     const rows = 6
     const cols = 7
     const dateGridLength = cols*rows
-    const rowGrid = Array.apply(null, Array(rows)).map((x, i) => i)
-    const colGrid = Array.apply(null, Array(cols)).map((x, i) => i)
+    const rowGrid = Array.apply(null, Array(rows)).map((_, i) => i)
+    const colGrid = Array.apply(null, Array(cols)).map((_, i) => i)
     const today = new Date()
     const dayOfTheWeekReference = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
     const monthReference = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
@@ -19,6 +20,7 @@ const DatePicker = (props) => {
     const [year, setYear] = useState(2020)
     const [translate3D, setTranslate3D] = useState(0)
     const [selectedDay, setSelectedDay] = useState(today)
+    const [hourPickerIsOpen, setHourPickerIsOpen] = useState(false)
 
     const datePickerContainerRef = React.useRef(null)
     const datePickerRef = React.useRef(null);
@@ -104,52 +106,59 @@ const DatePicker = (props) => {
         <Field.Datepicker.Container ref={datePickerContainerRef}>
             {isOpen ? (
                 <Field.Datepicker.PickerContainer translate={translate3D} ref={datePickerRef}>
-                    <Field.Datepicker.YearContainer>
-                        <Field.Datepicker.YearContainerItems onClick={e=>updateMonthDetails(year-1, month)}>
-                            <FontAwesomeIcon icon='chevron-left'/>
-                        </Field.Datepicker.YearContainerItems>
-                        <Field.Datepicker.YearContainerItems>
-                            {year}
-                        </Field.Datepicker.YearContainerItems>
-                        <Field.Datepicker.YearContainerItems onClick={e=>updateMonthDetails(year+1, month)}>
-                            <FontAwesomeIcon icon='chevron-right'/>
-                        </Field.Datepicker.YearContainerItems>
-                    </Field.Datepicker.YearContainer>
-                    <Field.Datepicker.MonthContainer>
-                        <Field.Datepicker.MonthContainerItems onClick={e=>updateMonthDetails(year, month-1)}>
-                            <FontAwesomeIcon icon='chevron-left'/>
-                        </Field.Datepicker.MonthContainerItems>
-                        <Field.Datepicker.MonthContainerItems>
-                            {monthReference[month]}
-                        </Field.Datepicker.MonthContainerItems>
-                        <Field.Datepicker.MonthContainerItems onClick={e=>updateMonthDetails(year, month+1)}>
-                            <FontAwesomeIcon icon='chevron-right'/>
-                        </Field.Datepicker.MonthContainerItems>
-                    </Field.Datepicker.MonthContainer>
-                <Field.Datepicker.Table>
-                        <thead>
-                            <tr>
-                            {colGrid.map((_, index)=> (
-                                <Field.Datepicker.WeekdaysContainer key={index}>{dayOfTheWeekReference[index]}</Field.Datepicker.WeekdaysContainer>
-                            ))}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {rowGrid.map((_, index)=> (
-                                <tr key={index}>
-                                    {monthDates.slice(index*7, (index*7)+7).map((monthDate, index)=> (
-                                        <Field.Datepicker.DateContainer 
-                                        key={index} 
-                                        isCurrentMonth={isCurrentMonth(monthDate.getMonth())} 
-                                        isSelectedDay={isSelectedDay(monthDate)} 
-                                        onClick={e=>{updateDate(monthDate)}} >
-                                            {monthDate.getDate()}
-                                        </Field.Datepicker.DateContainer>
+                    {hourPickerIsOpen ? (<Hourpicker selectedDay={selectedDay} setSelectedDay={setSelectedDay}/>) : (
+                        <div>
+                            <Field.Datepicker.YearContainer>
+                                <Field.Datepicker.YearContainerItems onClick={e=>updateMonthDetails(year-1, month)}>
+                                    <FontAwesomeIcon icon='chevron-left'/>
+                                </Field.Datepicker.YearContainerItems>
+                                <Field.Datepicker.YearContainerItems>
+                                    {year}
+                                </Field.Datepicker.YearContainerItems>
+                                <Field.Datepicker.YearContainerItems onClick={e=>updateMonthDetails(year+1, month)}>
+                                    <FontAwesomeIcon icon='chevron-right'/>
+                                </Field.Datepicker.YearContainerItems>
+                            </Field.Datepicker.YearContainer>
+                            <Field.Datepicker.MonthContainer>
+                                <Field.Datepicker.MonthContainerItems onClick={e=>updateMonthDetails(year, month-1)}>
+                                    <FontAwesomeIcon icon='chevron-left'/>
+                                </Field.Datepicker.MonthContainerItems>
+                                <Field.Datepicker.MonthContainerItems>
+                                    {monthReference[month]}
+                                </Field.Datepicker.MonthContainerItems>
+                                <Field.Datepicker.MonthContainerItems onClick={e=>updateMonthDetails(year, month+1)}>
+                                    <FontAwesomeIcon icon='chevron-right'/>
+                                </Field.Datepicker.MonthContainerItems>
+                            </Field.Datepicker.MonthContainer>
+                            <Field.Datepicker.Table>
+                                <thead>
+                                    <tr>
+                                    {colGrid.map((_, index)=> (
+                                        <Field.Datepicker.WeekdaysContainer key={index}>{dayOfTheWeekReference[index]}</Field.Datepicker.WeekdaysContainer>
                                     ))}
-                                </tr>
-                            ))}
-                        </tbody>
-                    </Field.Datepicker.Table>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {rowGrid.map((_, index)=> (
+                                        <tr key={index}>
+                                            {monthDates.slice(index*7, (index*7)+7).map((monthDate, index)=> (
+                                                <Field.Datepicker.DateContainer 
+                                                key={index} 
+                                                isCurrentMonth={isCurrentMonth(monthDate.getMonth())} 
+                                                isSelectedDay={isSelectedDay(monthDate)} 
+                                                onClick={e=>{updateDate(monthDate)}} >
+                                                    {monthDate.getDate()}
+                                                </Field.Datepicker.DateContainer>
+                                            ))}
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Field.Datepicker.Table>
+                            <div style={{width: '100%', textAlign: 'center'}}>
+                                <FontAwesomeIcon icon="clock"/>
+                            </div>
+                        </div>
+                    )}
                 </Field.Datepicker.PickerContainer>
             ): ''}
         </Field.Datepicker.Container>

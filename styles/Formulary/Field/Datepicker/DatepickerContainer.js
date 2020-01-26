@@ -6,7 +6,7 @@ export default styled.div`
     padding: 5px;
     background: #444;
     width: 234px;
-    height: 290px;
+    height: 320px;
     box-shadow: 10px 10px 40px rgba(0,0,0,0.2);
     border-radius: 20px;
     overflow: hidden;

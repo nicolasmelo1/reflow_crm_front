@@ -7,6 +7,9 @@ import DatepickerMonthContainer from './DatepickerMonthContainer'
 import DatepickerWeekdays from './DatepickerWeekdays'
 import DatepickerMain from './DatepickerMain'
 import DatepickerMonthItemsContainer from './DatepickerMonthItemsContainer'
+import HourpickerTable from './HourpickerTable'
+import HourpickerItem from './HourpickerItem'
+import HourpickerArrow from './HourpickerArrow'
 
 export default {
     Container: DatepickerMain,
@@ -17,5 +20,8 @@ export default {
     MonthContainerItems: DatepickerMonthItemsContainer,
     DateContainer: DatapickerDate,
     YearContainer: DatepickerYearContainer,
-    MonthContainer: DatepickerMonthContainer
+    MonthContainer: DatepickerMonthContainer,
+    HourpickerTable: HourpickerTable,
+    HourpickerItem: HourpickerItem,
+    HourpickerArrow: HourpickerArrow
 }
