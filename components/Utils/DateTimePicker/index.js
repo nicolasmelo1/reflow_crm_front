@@ -1,15 +1,45 @@
 import React, {useEffect, useState} from 'react'
-import Datepicker from './Datepicker'
-import Hourpicker from './Hourpicker'
-import { Field } from 'styles/Formulary'
+import DatePicker from './DatePicker'
+import HourPicker from './HourPicker'
+import Utils from 'styles/Utils'
 
-export default (props) => {
+/**
+ * PLEASE, IMPORT THIS IN YOUR FILES, DO NOT IMPORT THE OTHER COMPONENTS IN THIS FOLDER DIRECTLY,
+ * THEY ARE ONLY TO SUPPORT THIS ONE
+ * 
+ * Main component for the DateTimePicker, holds most of the logic od the datetimepicker component.
+ * Rows defines the number of rows of the calendar, and cols defines the number of columns of the calendar.
+ * Most of the logic of this component is defined using the JS Date API. 
+ * The main logic of this happens on getMonthDetails function, i will explaing briefly how it works:
+ * ```
+ * new Date(2020, 0, 11); //returns 11th of January of the Year 2020
+ * ```
+ * Now here is another example:
+ * ```
+ * new Date(2020, 0, 40); //returns 9th of Februrary of the Year 2020
+ * ```
+ * With this, we only need to loop though the 42 dates grid (6*7) using the same month, year, hour and minute 
+ * (hour and minute is necessary for the hour picker)
+ * Don't forget the days of the week number, we need to sum it with our index to display the days before day 1 of the month we 
+ * want to display.
+ * 
+ * @param {Array<String>} dayOfTheWeekReference - __(opitional)__ - If you want to override the default day of the week values, 
+ * please use 3 characters maximum on each String 
+ * @param {Array<String>} monthReference - __(opitional)__ - If you want to override the default month names reference to 
+ * display for the user
+ * @param {Date} initialDay - The initial Date selected, don't forget to send a Date type value
+ * @param {function} onChange - The function to be called when the user changes the date
+ * @param {React.Ref} input - The React reference to the input, we use this to open the Datetimepicker when the user clicks
+ * @param {Boolean} withoutHourPicker - send `true` if you don't want the hourPicker, defaults to `false`
+ */
+const DateTimePicker = (props) => {
     const rows = 6
     const cols = 7
     const dateGridLength = cols*rows
     const today = new Date()
     const dayOfTheWeekReference = props.dayOfTheWeekReference || ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
     const monthReference = props.monthReference || ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
+    const withoutHourPicker = props.withoutHourPicker || false 
 
     const [isOpen, _setIsOpen] = useState(false)
     const [month, setMonth] = useState(today.getMonth())
@@ -18,7 +48,7 @@ export default (props) => {
     const [translate3D, setTranslate3D] = useState(0)
     const [selectedDay, setSelectedDay] = useState(props.initialDay || today)
     const [hourPickerIsOpen, setHourPickerIsOpen] = useState(false)
-
+    
     const datePickerContainerRef = React.useRef(null)
     const datePickerRef = React.useRef(null);
 
@@ -97,21 +127,22 @@ export default (props) => {
     })
 
     return (
-        <Field.Datepicker.Container ref={datePickerContainerRef}>
+        <Utils.Datepicker.Container ref={datePickerContainerRef}>
             {isOpen ? (
-                <Field.Datepicker.PickerContainer translate={translate3D} ref={datePickerRef}>
+                <Utils.Datepicker.PickerContainer translate={translate3D} ref={datePickerRef}>
                     {
                     hourPickerIsOpen ? 
-                    (<Hourpicker 
+                    (<HourPicker 
                     selectedDay={selectedDay} 
                     updateDate={updateDate}
                     setHourPickerIsOpen={setHourPickerIsOpen}
                     />) 
                     : 
-                    (<Datepicker 
+                    (<DatePicker 
                     dayOfTheWeekReference={dayOfTheWeekReference}
                     setHourPickerIsOpen={setHourPickerIsOpen}
                     updateMonthDetails={updateMonthDetails}
+                    withoutHourPicker={withoutHourPicker}
                     monthReference={monthReference}
                     selectedDay={selectedDay}
                     monthDates={monthDates}
@@ -123,8 +154,11 @@ export default (props) => {
                     cols={cols}
                     />)
                     }
-                </Field.Datepicker.PickerContainer>
+                </Utils.Datepicker.PickerContainer>
             ) : ''}
-        </Field.Datepicker.Container>
+        </Utils.Datepicker.Container>
     )
 }
+
+
+export default DateTimePicker

@@ -4,6 +4,7 @@ import Date from './Date'
 import Email from './Email'
 import Option from './Option'
 import MultiOption from './MultiOption'
+import Attachment from './Attachment'
 
 const Field = (props) => {
     const getFieldType = () => {
@@ -20,7 +21,8 @@ const Field = (props) => {
                 return (<Option data={props.field}/>)
             case "multi_option":
                 return (<MultiOption data={props.field}/>)
-
+            case "attachment":
+                return (<Attachment data={props.field}/>)
         }
     }
     return (

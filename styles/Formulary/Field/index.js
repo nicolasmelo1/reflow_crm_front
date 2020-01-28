@@ -1,9 +1,13 @@
 import FieldTextInput from './FieldTextInput'
-import Select from './Select'
-import Datepicker from './Datepicker'
+import FieldAttachmentImage from './FieldAttachmentImage'
+import FieldAttachmentInput from './FieldAttachmentInput'
+import FieldAttachmentContainer from './FieldAttachmentContainer'
 
 export default {
     Text: FieldTextInput,
-    Select: Select,
-    Datepicker: Datepicker
+    Attachment: {
+        Image: FieldAttachmentImage,
+        Input: FieldAttachmentInput,
+        Container: FieldAttachmentContainer
+    }
 }

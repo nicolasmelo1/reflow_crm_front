@@ -3,7 +3,7 @@ import { Form } from 'react-bootstrap'
 
 export default styled(Form.Control)`
     border: 0;
-    background-color: white;
+    background-color: white !important;
     color: #444;
     border: 1px solid #0dbf7e;
 

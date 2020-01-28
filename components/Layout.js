@@ -1,7 +1,7 @@
 import Header from './Header'
 import { connect } from 'react-redux';
 import actions from '../redux/actions';
-import { faPlusSquare, faEnvelope, faCalendarAlt, faSquareRootAlt, faPhone, faAlignLeft, faLink, faCheckSquare, faClipboardList, faParagraph, faFilePdf, faRulerHorizontal, faClock, faTrash, faCircle, faTasks, faChartBar, faCog, faBell, faArrowsAlt, faEdit, faCloudUploadAlt, faBars, faPen, faFilter, faSortAmountDown, faEye, faChevronLeft, faChevronRight, faChevronUp, faChevronDown} from '@fortawesome/free-solid-svg-icons'
+import { faPlusSquare, faEnvelope, faCalendarAlt, faSquareRootAlt, faPhone, faAlignLeft, faLink, faCheckSquare, faClipboardList, faParagraph, faFilePdf, faRulerHorizontal, faClock, faTrash, faCircle, faTasks, faChartBar, faCog, faBell, faArrowsAlt, faEdit, faCloudUploadAlt, faBars, faPen, faFilter, faSortAmountDown, faEye, faChevronLeft, faChevronRight, faChevronUp, faChevronDown, faFileUpload} from '@fortawesome/free-solid-svg-icons'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import React from 'react'
 import Body from 'styles/Body'
@@ -12,7 +12,7 @@ import agent from 'redux/agent'
 import NavBar from './NavBar'
 import ContentContainer from 'styles/ContentContainer'
 
-library.add(faPlusSquare, faEnvelope, faCalendarAlt, faSquareRootAlt, faPhone, faAlignLeft, faLink, faCheckSquare, faClipboardList, faParagraph, faFilePdf, faRulerHorizontal, faClock, faTrash, faBell, faChartBar, faCircle, faCog, faTasks, faArrowsAlt, faEdit, faCloudUploadAlt, faBars, faPen, faFilter, faSortAmountDown, faEye, faArrowsAlt, faChevronLeft, faChevronRight, faChevronUp, faChevronDown)
+library.add(faPlusSquare, faEnvelope, faCalendarAlt, faSquareRootAlt, faPhone, faAlignLeft, faLink, faCheckSquare, faClipboardList, faParagraph, faFilePdf, faRulerHorizontal, faClock, faTrash, faBell, faChartBar, faCircle, faCog, faTasks, faArrowsAlt, faEdit, faCloudUploadAlt, faBars, faPen, faFilter, faSortAmountDown, faEye, faArrowsAlt, faChevronLeft, faChevronRight, faChevronUp, faChevronDown, faFileUpload)
 
 /*** 
  * This is the main component of the page, we use this custom layout component so pages can override from this.

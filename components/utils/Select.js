@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import { Field } from 'styles/Formulary'
-
+import React, { useState, useEffect } from 'react'
+import Utils from 'styles/Utils'
 
 /**
  * This __MUST NOT__ be called from outside the file, this is only used to build the select options
@@ -31,11 +30,11 @@ const Option = (props) => {
         
     }
     return (
-        <Field.Select.OptionsListContainer>
+        <Utils.Select.OptionsListContainer>
             {filteredOptions.map((option, index)=>(
-                <Field.Select.OptionItem key={index} onClick={e=>{ onSelectValue(e, option) }}>{option.label}</Field.Select.OptionItem> 
+                <Utils.Select.OptionItem key={index} onClick={e=>{ onSelectValue(e, option) }}>{option.label}</Utils.Select.OptionItem> 
             ))}
-        </Field.Select.OptionsListContainer>
+        </Utils.Select.OptionsListContainer>
     )
 }
 
@@ -118,29 +117,29 @@ const Select = (props) => {
     }, [onSelectClick]);
 
     return(
-        <Field.Select.Select isOpen={isOpen} ref={selectRef} onClick={e=>{inputRef.current.focus()}}>
-            <Field.Select.SelectedOptionsContainer>
+        <Utils.Select.Select isOpen={isOpen} ref={selectRef} onClick={e=>{inputRef.current.focus()}}>
+            <Utils.Select.SelectedOptionsContainer>
                 {selectedOptions.map((selectedOption, index)=> (
-                    <Field.Select.SelectedOption 
+                    <Utils.Select.SelectedOption 
                     key={index} 
                     color={selectedItemColors[index - Math.floor(index/selectedItemColors.length)*selectedItemColors.length]} 
                     selected={selectedOption.selected} 
                     onClick={e=>{onClickSelectedOption(e, index)}}
                     >
                         {selectedOption.label}
-                    </Field.Select.SelectedOption>
+                    </Utils.Select.SelectedOption>
                 ))}
-                <Field.Select.Input 
+                <Utils.Select.Input 
                 ref={inputRef} 
                 type="text" 
                 value={searchValue} 
                 onChange={e => {updateOptions(e.target.value)}} 
                 onKeyUp={e=>onRemoveSelectedOption(e)}
                 />
-            </Field.Select.SelectedOptionsContainer>
+            </Utils.Select.SelectedOptionsContainer>
             <div style={{position: 'relative'}}>
                 {(isOpen) ? (
-                    <Field.Select.OptionsContainer>
+                    <Utils.Select.OptionsContainer>
                         <Option 
                         options={options}
                         setSelectedOptions={setSelectedOptions} 
@@ -148,10 +147,10 @@ const Select = (props) => {
                         onChange={props.onChange} 
                         selectedOptions={selectedOptions}
                         multiple={props.multiple}/>
-                    </Field.Select.OptionsContainer>
+                    </Utils.Select.OptionsContainer>
                 ): ''}
             </div>
-        </Field.Select.Select>
+        </Utils.Select.Select>
     )
 }
 
