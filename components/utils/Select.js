@@ -16,23 +16,10 @@ import Utils from 'styles/Utils'
 const Option = (props) => {
     const filteredOptions = props.options.filter(option=> props.selectedOptions.find(selectedOption=> selectedOption.value === option.value) === undefined);
 
-    const onSelectValue = (e, option) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (props.multiple || props.selectedOptions.length===0) {
-            props.selectedOptions.push({value: option.value, label: option.label, selected: false})
-        } else {
-            props.selectedOptions[0] = {value: option.value, label: option.label, selected: false}
-        }
-        props.onChange(props.selectedOptions.map(selectedOption=> selectedOption.value))
-        props.setSelectedOptions([...props.selectedOptions])
-        props.updateOptions('')
-        
-    }
     return (
         <Utils.Select.OptionsListContainer>
             {filteredOptions.map((option, index)=>(
-                <Utils.Select.OptionItem key={index} onClick={e=>{ onSelectValue(e, option) }}>{option.label}</Utils.Select.OptionItem> 
+                <Utils.Select.OptionItem key={index} onClick={e=>{ props.onSelectOption(e, option) }}>{props.renderLabel(option.label, index)}</Utils.Select.OptionItem> 
             ))}
         </Utils.Select.OptionsListContainer>
     )
@@ -40,8 +27,16 @@ const Option = (props) => {
 
 /**
  * Custom select component used in our formulary, if you need to change something in the select, change this component.
- * @param {Array<Object>} data - Array of objects. The objects must contain: `label` and `value` keys
+ * You can send labels as components on this element, if you do this, please send a onFilter function that returns the options filtered
+ * @param {Array<Object>} data - Array of objects. The objects must contain: `label` and `value` keys.
+ * - `value`: must be a string
+ * - `label`: can be a string or a react component, if you send a custom component, send don't forget to add the component as the `label` 
+ * props and a `onFilter` function
  * @param {Function} onChange - a onChange function to be called when the user changes the value
+ * @param {React.Component} label - (optional) - Instead of a simple text, display a custom label, if you do this, please define a onFilter
+ * function
+ * @param {Function} onFilter - (optional) - Defines a custom on filter function that recieves a string, and MUST return the Array of 
+ * objects filtered
  * @param {Boolean} multiple - (optional) use this to inform if you want multiple objects to be selected.
  */
 const Select = (props) => {
@@ -63,10 +58,14 @@ const Select = (props) => {
         _setIsOpen(data);
     };
 
-    const updateOptions = (value) => {
+    const updateOptions = (value, selectedOptions) => {
         let filteredOptions = props.options.filter(option=> selectedOptions.find(selectedOption=> selectedOption.value === option.value) === undefined);
         if (value !== '') {
-            filteredOptions = filteredOptions.filter(option=> option.label.includes(value))
+            if (props.onFilter) {
+                filteredOptions = props.onFilter(value)
+            } else {
+                filteredOptions = filteredOptions.filter(option=> option.label.includes(value))
+            }
         }
         setSearchValue(value)
         setOptions(filteredOptions)
@@ -80,6 +79,19 @@ const Select = (props) => {
             setIsOpen(false)
             onClickSelectedOption()
         }
+    }
+
+    const onSelectOption = (e, option) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (props.multiple || selectedOptions.length===0) {
+            selectedOptions.push({value: option.value, label: option.label, selected: false})
+        } else {
+            selectedOptions[0] = {value: option.value, label: option.label, selected: false}
+        }
+        //props.onChange(selectedOptions.map(selectedOption=> selectedOption.value))
+        setSelectedOptions([...selectedOptions])
+        updateOptions('', [...selectedOptions])
     }
 
     const onClickSelectedOption = (e, index) => {
@@ -106,6 +118,16 @@ const Select = (props) => {
                 if(newSelectedOptions[newSelectedOptions.length-1]) newSelectedOptions[newSelectedOptions.length-1].selected = true
             }
             setSelectedOptions([...newSelectedOptions])
+            updateOptions('', [...newSelectedOptions])
+        }
+    }
+
+    const renderLabel = (label, index) => {
+        if (typeof label === 'string') {
+            return label
+        } else {
+            const CustomLabelComponent = props.label
+            return (<CustomLabelComponent key={index} {...label.props}/>)
         }
     }
 
@@ -115,7 +137,7 @@ const Select = (props) => {
             document.removeEventListener("mousedown", onSelectClick);
         };
     }, [onSelectClick]);
-
+    
     return(
         <Utils.Select.Select isOpen={isOpen} ref={selectRef} onClick={e=>{inputRef.current.focus()}}>
             <Utils.Select.SelectedOptionsContainer>
@@ -126,14 +148,14 @@ const Select = (props) => {
                     selected={selectedOption.selected} 
                     onClick={e=>{onClickSelectedOption(e, index)}}
                     >
-                        {selectedOption.label}
+                        {renderLabel(selectedOption.label, index)}
                     </Utils.Select.SelectedOption>
                 ))}
                 <Utils.Select.Input 
                 ref={inputRef} 
                 type="text" 
                 value={searchValue} 
-                onChange={e => {updateOptions(e.target.value)}} 
+                onChange={e => {updateOptions(e.target.value, [...selectedOptions])}} 
                 onKeyUp={e=>onRemoveSelectedOption(e)}
                 />
             </Utils.Select.SelectedOptionsContainer>
@@ -142,11 +164,10 @@ const Select = (props) => {
                     <Utils.Select.OptionsContainer>
                         <Option 
                         options={options}
-                        setSelectedOptions={setSelectedOptions} 
-                        updateOptions={updateOptions}
-                        onChange={props.onChange} 
+                        onSelectOption={onSelectOption}
                         selectedOptions={selectedOptions}
-                        multiple={props.multiple}/>
+                        renderLabel={renderLabel}
+                        />
                     </Utils.Select.OptionsContainer>
                 ): ''}
             </div>

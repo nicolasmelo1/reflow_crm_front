@@ -5,29 +5,45 @@ import Email from './Email'
 import Option from './Option'
 import MultiOption from './MultiOption'
 import Attachment from './Attachment'
+import Id from './Id'
+import LongText from './LongText'
 
 const Field = (props) => {
     const getFieldType = () => {
         switch (props.field.field_type) {
+            case "id":
+                return Id
             case "text":
-                return (<Text data={props.field}/>)
+                return Text
             case "number":
-                return (<Number data={props.field}/>)
+                return Number
             case "date":
-                return (<Date data={props.field}/>)
+                return Date
             case "email": 
-                return (<Email data={props.field}/>)
+                return Email
             case "option":
-                return (<Option data={props.field}/>)
+                return Option
             case "multi_option":
-                return (<MultiOption data={props.field}/>)
+                return MultiOption
             case "attachment":
-                return (<Attachment data={props.field}/>)
+                return Attachment
+            case "long_text":
+                return LongText
         }
     }
+
+    const renderFieldType = () => {
+        const Component = getFieldType()
+        if (Component) {
+            return (<Component data={props.field}/>)
+        } else {
+            return ''
+        }
+    }
+
     return (
         <div>
-            {getFieldType()}
+            {renderFieldType()}
         </div>
     )
 }

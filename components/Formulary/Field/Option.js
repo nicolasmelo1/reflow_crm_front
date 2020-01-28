@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import Select from 'components/utils/Select'
+import Select from 'components/Utils/Select'
 
 const Option = (props) => {
     const [data, _] = useState(props.data.field_option.map(option => { return {value: option.option, label: option.option} }))

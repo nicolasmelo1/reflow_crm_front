@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
-import Select from 'components/utils/Select'
+import Select from 'components/Utils/Select'
 
-const Option = (props) => {
-    const [data, setData] = useState(props.data.field_option.map(option => { return {value: option.option, label: option.option} }))
+
+const MultiOption = (props) => {
+    const [data, _] = useState(props.data.field_option.map(option => { return {value: option.option, label: option.option} }))
+    const [value, setValue] = useState([])
 
     const onChange = (newData) => {
-        setData(newData)
+        setValue(newData)
     }
 
     return (
@@ -13,4 +15,4 @@ const Option = (props) => {
     )
 }
 
-export default Option
+export default MultiOption
