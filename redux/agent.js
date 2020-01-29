@@ -34,7 +34,7 @@ let setHeader = (token) => {
 const refreshToken = async (response, callback, url, params, headers) => {
     if (response !== undefined && response.data && response.data.reason) {
         if (response.data.reason === 'expired_token') {
-            response = await requests.get('refresh_token/', {}, setHeader(window.localStorage.getItem('refreshToken')))
+            response = await requests.get('login/refresh_token/', {}, setHeader(window.localStorage.getItem('refreshToken')))
             // checks if the response was an error and handles it next
             if (response.status!==200){
                 window.localStorage.setItem('refreshToken', '')

@@ -33,7 +33,16 @@ const strings = {
         calendardayOfTheWeekReferenceWednesday: 'Qua',
         calendardayOfTheWeekReferenceThursday: 'Qui',
         calendardayOfTheWeekReferenceFriday: 'Sex',
-        calendardayOfTheWeekReferenceSaturday: 'Sáb'
+        calendardayOfTheWeekReferenceSaturday: 'Sáb',
+        headerGestaoLabel: 'Gestão',
+        headerDashboardLabel: 'Dashboard',
+        headerSettingsLabel: 'Configurações',
+        headerRefferalLabel: 'Indicar usuários',
+        headerCompanyLabel: 'Empresa',
+        headerChangeDataLabel: 'Alterar Dados',
+        headerBillingLabel: 'Pagamento',
+        headerNotificationLabel: 'Notificações',
+        headerHelpLabel: 'Ajuda'
     }
 }
 
