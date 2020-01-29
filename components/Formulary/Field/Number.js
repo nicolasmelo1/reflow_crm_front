@@ -3,7 +3,7 @@ import { Field } from 'styles/Formulary'
 
 
 const Number = (props) => {
-    const [value, setValue] = useState('')
+    const [value, setValue] = useState(props.getFieldFormValues(props.field.name))
     const [elementSelectionStart, setElementSelectionStart] = useState(0)
     let input = React.createRef()
 
@@ -60,8 +60,9 @@ const Number = (props) => {
     }
 
     const onChangeNumberValue = (e) => {
-        const newValue  = numberMasker(e.target, props.data.number_configuration_number_format_type)
-        return (newValue===undefined) ? '': newValue
+        const formattedValue = numberMasker(e.target, props.field.number_configuration_number_format_type)
+        const newValue = props.singleValueFieldsHelper(props.field.name, (formattedValue===undefined) ? '': formattedValue)
+        setValue(newValue)
     }
 
     useEffect (() => {
@@ -69,8 +70,10 @@ const Number = (props) => {
         input.current.selectionEnd = elementSelectionStart
     })
 
+    const fieldValue = (value.length === 0) ? '': value[0].value
+
     return (
-        <Field.Text type="text" value={value} ref={input} onChange={e => {setValue(onChangeNumberValue(e))}}/>
+        <Field.Text type="text" value={fieldValue} ref={input} onChange={e => {onChangeNumberValue(e)}}/>
     )
 }
 

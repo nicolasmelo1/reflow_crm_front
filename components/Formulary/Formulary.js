@@ -10,18 +10,29 @@ class Formulary extends React.Component {
         super(props)
         this.props.onGetFormulary(this.props.query.form)
         this.state = {
-            isOpen: false
+            isOpen: false,
+            data: {
+                depends_on_dynamic_form : []
+            }
         }
     }
     
     setIsOpen = (e) => {
-        e.preventDefault;
+        e.preventDefault();
         this.setState(state=>{
             return {
                 isOpen: !state.isOpen
             }
         })
-    } 
+    }
+
+    setData = (data) => {
+        this.setState(state=>{
+            return {
+                data: {...state.data}
+            }
+        })
+    }
 
     render() {
         return (
@@ -34,7 +45,11 @@ class Formulary extends React.Component {
                 <Row>
                     <Col>
                         <FormularyContentContainer isOpen={this.state.isOpen}>
-                            <FormularySection sections={(this.props.formulary.loaded.depends_on_form) ? this.props.formulary.loaded.depends_on_form: []}/>
+                            <FormularySection 
+                            data={this.state.data}
+                            setData={this.setData}
+                            sections={(this.props.formulary.loaded.depends_on_form) ? this.props.formulary.loaded.depends_on_form: []}
+                            />
                         </FormularyContentContainer>
                     </Col>
                 </Row>

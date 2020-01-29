@@ -32,10 +32,23 @@ const Field = (props) => {
         }
     }
 
+    // Fields that accept a single value usually have the same logic,
+    // so we use this function to don't repeat code in components
+    const singleValueFieldsHelper = (field_name, value) => {
+        if (props.getFieldFormValues(props.field.name).length === 0) {
+            props.addFieldFormValue(field_name, value)
+        } else if (value === '') {
+            props.removeFieldFormValue(field_name, props.getFieldFormValues(props.field.name)[0].value)
+        } else {
+            props.updateFieldFormValue(field_name, props.getFieldFormValues(props.field.name)[0].value, value)
+        }
+        return props.getFieldFormValues(props.field.name)
+    }
+
     const renderFieldType = () => {
         const Component = getFieldType()
         if (Component) {
-            return (<Component data={props.field}/>)
+            return (<Component singleValueFieldsHelper={singleValueFieldsHelper} {...props}/>)
         } else {
             return ''
         }

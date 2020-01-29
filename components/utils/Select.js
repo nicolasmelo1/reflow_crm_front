@@ -28,6 +28,8 @@ const Option = (props) => {
 /**
  * Custom select component used in our formulary, if you need to change something in the select, change this component.
  * You can send labels as components on this element, if you do this, please send a onFilter function that returns the options filtered
+ * @param {Array<String>} initialValues - as the name of the variable says, the values already selected following the object format of the `data``
+ * props
  * @param {Array<Object>} data - Array of objects. The objects must contain: `label` and `value` keys.
  * - `value`: must be a string
  * - `label`: can be a string or a react component, if you send a custom component, send don't forget to add the component as the `label` 
@@ -40,7 +42,7 @@ const Option = (props) => {
  * @param {Boolean} multiple - (optional) use this to inform if you want multiple objects to be selected.
  */
 const Select = (props) => {
-    const [selectedOptions, setSelectedOptions] = useState([])
+    const [selectedOptions, setSelectedOptions] = useState(props.initialValues.map(initialValue=> {return{ ...initialValue, selected:false }}))
     const [isOpen, _setIsOpen] = useState(false)
     const [searchValue, setSearchValue] = useState('')
     const [options, setOptions] = useState(props.options)
@@ -67,6 +69,7 @@ const Select = (props) => {
                 filteredOptions = filteredOptions.filter(option=> option.label.includes(value))
             }
         }
+        props.onChange(selectedOptions.map(selectedOption=> selectedOption.value))
         setSearchValue(value)
         setOptions(filteredOptions)
     }
@@ -89,7 +92,6 @@ const Select = (props) => {
         } else {
             selectedOptions[0] = {value: option.value, label: option.label, selected: false}
         }
-        //props.onChange(selectedOptions.map(selectedOption=> selectedOption.value))
         setSelectedOptions([...selectedOptions])
         updateOptions('', [...selectedOptions])
     }
