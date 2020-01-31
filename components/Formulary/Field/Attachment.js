@@ -1,45 +1,80 @@
 import React, {useState} from 'react'
 import Field from 'styles/Formulary/Field'
-import { Row, Col } from 'react-bootstrap'
+import { Row, Button } from 'react-bootstrap'
+import { strings } from 'utils/constants'
 
 const AttachmentItem = (props) => {
-    return  (
+    return (
         <Field.Attachment.Container isInitial={props.isInitial}>
             <Field.Attachment.Label isInitial={props.isInitial}>
                 <Field.Attachment.Image isInitial={props.isInitial} src={(props.isInitial) ? "/add_icon.png" : props.imageSrc}/>
-                <Field.Attachment.Text isInitial={props.isInitial}>{(props.isInitial) ? 'Clique ou arraste arquivos aqui': props.fileName}</Field.Attachment.Text>
-                <Field.Attachment.Input type="file" onChange={e => { props.addFile(e, props.index) }}/>
+                <Field.Attachment.Text isInitial={props.isInitial}>{(props.isInitial) ? strings['pt-br']['formularyFieldAttachmentDefaultLabel']: props.fileName}</Field.Attachment.Text>
+                {(props.addFile) ? (
+                    <Field.Attachment.Input type="file" onChange={e => { props.addFile(e, props.index) }}/>
+                ) : ''}
             </Field.Attachment.Label>
+            {(props.removeFile) ? (
+                <Button onClick={e=> {props.removeFile(e, props.index, props.fileName)}}> Excluir arquivo </Button>
+            ): ''}
         </Field.Attachment.Container>
     )
 }
 
 const Attachment = (props) => {
-    const [inputs, setInputs] = useState([<AttachmentItem isInitial={true} addFile={addFile}/>])
-    const [values, setValues] = useState([])
+    const [inputsProps, setInputsProps] = useState([{ 
+        isInitial: true, 
+        addFile: addFile 
+    }])
 
-    function addFile(e, index) {
+    // check Select Component in components/utils
+    const valuesRef = React.useRef(props.values);
+    const _setValues = data => {
+        valuesRef.current = data;
+        props.setValues(data);
+    };
+
+    // check DateTimePicker index.js file in components/utils/DateTimePicker for explanation on why use function
+    // instead of arrow function
+    function addFile(e) {
         e.preventDefault();
-        values.push(e.target.files[0])
+        const attachmentValues = valuesRef.current.map(value => value.value)
+        attachmentValues.push(e.target.files[0].name)
+
         const splittedFullName = e.target.files[0].name.split('.');
         const fileFormat = splittedFullName[splittedFullName.length-1];
         const fileName = e.target.files[0].name;
-        if (index === 0) {
-            index = inputs.length
-            inputs.push(<AttachmentItem initial={false} addFile={addFile} imageSrc={`/${fileFormat}_icon.png`} fileName={fileName}/>)
-        } else {
-            inputs.splice(index, 1, <AttachmentItem initial={false} addFile={addFile} imageSrc={`/${fileFormat}_icon.png`} fileName={fileName}/>)
+        const inputProps = { 
+            initial: false,
+            imageSrc:`/${fileFormat}_icon.png`, 
+            fileName: fileName,
+            removeFile: removeFile
         }
-        setValues([...values])
-        setInputs([...inputs])
+
+        inputsProps.push(inputProps)
+
+        const formValues = props.multipleValueFieldHelper(attachmentValues)
+        _setValues([...formValues])
+        setInputsProps([...inputsProps])
+    }
+
+    function removeFile(e, index, value) {
+        e.preventDefault();
+        const attachmentValues = valuesRef.current.map(value => value.value)
+        const indexToRemove = valuesRef.current.findIndex(formValue => formValue.value === value)
+        attachmentValues.splice(indexToRemove, 1)
+        inputsProps.splice(index, 1)
+
+        const formValues = props.multipleValueFieldHelper(attachmentValues)
+
+        _setValues([...formValues])
+        setInputsProps([...inputsProps])
     }
 
     return (
         <div>
             <Row>
-                {inputs.map((input, index)=> {
-                    const AttachmentItemCopy = AttachmentItem
-                    return (<AttachmentItemCopy key={index} index={index} {...input.props}/>)
+                {inputsProps.map((inputProps, index)=> {
+                    return (<AttachmentItem key={index} index={index} {...inputProps}/>)
                 })}
             </Row>
         </div>

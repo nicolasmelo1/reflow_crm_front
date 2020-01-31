@@ -42,7 +42,8 @@ const strings = {
         headerChangeDataLabel: 'Alterar Dados',
         headerBillingLabel: 'Pagamento',
         headerNotificationLabel: 'Notificações',
-        headerHelpLabel: 'Ajuda'
+        headerHelpLabel: 'Ajuda',
+        formularyFieldAttachmentDefaultLabel: 'Clique ou arraste arquivos aqui'
     }
 }
 

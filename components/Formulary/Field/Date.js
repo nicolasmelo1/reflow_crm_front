@@ -6,7 +6,6 @@ import moment from 'moment'
 
 const Date = (props) => {
     const inputRef = React.useRef(null)
-    const [value, setValue] = useState(props.getFieldFormValues(props.field.name))
 
     const monthReference = [
         strings['pt-br']['calendarMonthReferenceJanuary'],
@@ -84,11 +83,11 @@ const Date = (props) => {
 
     const onChange = (dateValue) => {
         const stringValue = jsDateToStringFormat(dateValue)
-        const newValue = props.singleValueFieldsHelper(props.field.name, stringValue)
-        setValue(newValue)
+        const newValue = props.singleValueFieldsHelper(stringValue)
+        props.setValues(newValue)
     }
 
-    const fieldValue = (value.length === 0) ? '': value[0].value
+    const fieldValue = (props.values.length === 0) ? '': props.values[0].value
 
     return (
         <>

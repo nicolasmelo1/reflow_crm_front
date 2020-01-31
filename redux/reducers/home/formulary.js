@@ -1,8 +1,12 @@
-import { GET_FORMULARY } from 'redux/types';
+import { GET_FORMULARY, SET_FORMULARY_DATA } from 'redux/types';
 
 let initialState = {
-    loaded: {},
-    filled_data: {},
+    loaded: {
+        depends_on_form: []
+    },
+    filled_data: {
+        depends_on_form: []
+    },
     update: {}
 }
 
@@ -12,6 +16,11 @@ export default (state=initialState, action) => {
             return {
                 ...state,
                 loaded: action.payload.data
+            }
+        case SET_FORMULARY_DATA:
+            return {
+                ...state,
+                filled_data: action.payload
             }
         default:
             return state;

@@ -4,3 +4,4 @@ export const ERROR = 'ERROR';
 export const GET_FORMS = 'GET_FORMS';
 export const UPDATE_GROUPS = 'UPDATE_GROUPS';
 export const GET_FORMULARY = 'GET_FORMULARY';
+export const SET_FORMULARY_DATA = 'SET_FORMULARY_DATA';

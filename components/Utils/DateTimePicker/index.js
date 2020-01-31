@@ -23,14 +23,14 @@ import Utils from 'styles/Utils'
  * Don't forget the days of the week number, we need to sum it with our index to display the days before day 1 of the month we 
  * want to display.
  * 
- * @param {Array<String>} dayOfTheWeekReference - __(opitional)__ - If you want to override the default day of the week values, 
+ * @param {Array<String>} dayOfTheWeekReference - __(optional)__ - If you want to override the default day of the week values, 
  * please use 3 characters maximum on each String 
- * @param {Array<String>} monthReference - __(opitional)__ - If you want to override the default month names reference to 
+ * @param {Array<String>} monthReference - __(optional)__ - If you want to override the default month names reference to 
  * display for the user
  * @param {Date} initialDay - The initial Date selected, don't forget to send a Date type value
  * @param {function} onChange - The function to be called when the user changes the date
  * @param {React.Ref} input - The React reference to the input, we use this to open the Datetimepicker when the user clicks
- * @param {Boolean} withoutHourPicker - send `true` if you don't want the hourPicker, defaults to `false`
+ * @param {Boolean} withoutHourPicker - __(optional)__ - send `true` if you don't want the hourPicker, defaults to `false`
  */
 const DateTimePicker = (props) => {
     const rows = 6
@@ -53,9 +53,9 @@ const DateTimePicker = (props) => {
     const datePickerRef = React.useRef(null);
 
     // check Select Component in components/utils
-     const setIsOpenRef = React.useRef(isOpen);
+     const isOpenRef = React.useRef(isOpen);
      const setIsOpen = data => {
-         setIsOpenRef.current = data;
+         isOpenRef.current = data;
          _setIsOpen(data);
      };
 
@@ -100,7 +100,7 @@ const DateTimePicker = (props) => {
         if ((props.input.current && props.input.current.contains(e.target)) || (datePickerRef.current && datePickerRef.current.contains(e.target))) {
             setIsOpen(true)
             topOrDown(e)
-        } else if (setIsOpenRef.current) {
+        } else if (isOpenRef.current) {
             setIsOpen(false)
         }
     }
@@ -125,7 +125,7 @@ const DateTimePicker = (props) => {
             document.removeEventListener("scroll", topOrDown, true)
         }
     })
-
+    
     return (
         <Utils.Datepicker.Container ref={datePickerContainerRef}>
             {isOpen ? (

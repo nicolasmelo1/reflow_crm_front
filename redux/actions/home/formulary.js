@@ -1,4 +1,4 @@
-import { GET_FORMULARY } from 'redux/types';
+import { GET_FORMULARY, SET_FORMULARY_DATA } from 'redux/types';
 import agent from 'redux/agent'
 
 const onGetFormulary = (formName) => {
@@ -7,6 +7,11 @@ const onGetFormulary = (formName) => {
         dispatch({type: (response.status === 200) ? GET_FORMULARY : ERROR, payload: response.data});
     };
 };
+
+const onChangeFormularyData = (formData) => {
+    return (dispatch) => 
+    dispatch({ type: SET_FORMULARY_DATA, payload: formData})
+}
 
 
 export default {

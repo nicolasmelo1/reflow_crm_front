@@ -43,3 +43,420 @@
         }
     ]
 }
+
+ {
+    "id": 95,
+    "form_name": "negocios",
+    "label_name": "Neg\u00f3cios",
+    "depends_on_form": [
+        {
+            "id": 96,
+            "label_name": "Informa\u00e7\u00f5es Gerais",
+            "form_type": "form",
+            "conditional_value": null,
+            "form_fields": [
+                {
+                    "id": 413,
+                    "field_type": "number",
+                    "form_field_as_option": null,
+                    "field_option": [],
+                    "user_option": null,
+                    "date_configuration_date_format_type": "%d/%m/%Y",
+                    "period_configuration_period_interval_type": "Dias",
+                    "number_configuration_number_format_type": {
+                        "type": "number",
+                        "label_name": "Numero",
+                        "precision": 1,
+                        "prefix": null,
+                        "suffix": null,
+                        "thousand_separator": null,
+                        "decimal_separator": null,
+                        "order": 1
+                    },
+                    "number_configuration_mask": null,
+                    "formula_configuration": "{{261}}+100",
+                    "name": "calculo",
+                    "label_name": "Calculo",
+                    "placeholder": null,
+                    "required": false,
+                    "order": 0,
+                    "is_unique": false,
+                    "field_is_hidden": false,
+                    "label_is_hidden": false,
+                    "date_configuration_auto_create": false,
+                    "date_configuration_auto_update": false,
+                    "number_configuration_allow_negative": true,
+                    "number_configuration_allow_zero": true,
+                    "enabled": true,
+                    "type": 1,
+                    "form": 96
+                },
+                {
+                    "id": 259,
+                    "field_type": "form",
+                    "form_field_as_option": {
+                        "form_name": "clientes",
+                        "field_value": [
+                            {
+                                "form_id": 1166,
+                                "value": "Patricia"
+                            },
+                            {
+                                "form_id": 1199,
+                                "value": "Lucas"
+                            },
+                            {
+                                "form_id": 1205,
+                                "value": "Anderson"
+                            }
+                        ]
+                    },
+                    "field_option": [],
+                    "user_option": null,
+                    "date_configuration_date_format_type": "%d/%m/%Y",
+                    "period_configuration_period_interval_type": "Dias",
+                    "number_configuration_number_format_type": null,
+                    "number_configuration_mask": "9",
+                    "formula_configuration": null,
+                    "name": "corretor",
+                    "label_name": "Corretor",
+                    "placeholder": null,
+                    "required": true,
+                    "order": 0,
+                    "is_unique": false,
+                    "field_is_hidden": false,
+                    "label_is_hidden": false,
+                    "date_configuration_auto_create": false,
+                    "date_configuration_auto_update": false,
+                    "number_configuration_allow_negative": true,
+                    "number_configuration_allow_zero": true,
+                    "enabled": true,
+                    "type": 5,
+                    "form": 96
+                },
+                {
+                    "id": 272,
+                    "field_type": "option",
+                    "form_field_as_option": null,
+                    "field_option": [
+                        {
+                            "option": "Garantia"
+                        },
+                        {
+                            "option": "Fian\u00e7a Locaticia"
+                        },
+                        {
+                            "option": "Transporte"
+                        }
+                    ],
+                    "user_option": null,
+                    "date_configuration_date_format_type": "%d/%m/%Y",
+                    "period_configuration_period_interval_type": "Dias",
+                    "number_configuration_number_format_type": null,
+                    "number_configuration_mask": "9",
+                    "formula_configuration": null,
+                    "name": "produto",
+                    "label_name": "Produto",
+                    "placeholder": null,
+                    "required": true,
+                    "order": 2,
+                    "is_unique": false,
+                    "field_is_hidden": false,
+                    "label_is_hidden": false,
+                    "date_configuration_auto_create": false,
+                    "date_configuration_auto_update": false,
+                    "number_configuration_allow_negative": true,
+                    "number_configuration_allow_zero": true,
+                    "enabled": true,
+                    "type": 4,
+                    "form": 96
+                },
+                {
+                    "id": 260,
+                    "field_type": "date",
+                    "form_field_as_option": null,
+                    "field_option": [],
+                    "user_option": null,
+                    "date_configuration_date_format_type": "%d/%m/%Y",
+                    "number_configuration_number_format_type": null,
+                    "number_configuration_mask": null,
+                    "formula_configuration": null,
+                    "name": "previsaodefechamento",
+                    "label_name": "Previs\u00e3o de Fechamento",
+                    "placeholder": null,
+                    "required": true,
+                    "order": 3,
+                    "is_unique": false,
+                    "field_is_hidden": false,
+                    "label_is_hidden": false,
+                    "date_configuration_auto_create": false,
+                    "date_configuration_auto_update": false,
+                    "number_configuration_allow_negative": true,
+                    "number_configuration_allow_zero": true,
+                    "enabled": true,
+                    "type": 3,
+                    "form": 96
+                },
+                {
+                    "id": 261,
+                    "field_type": "number",
+                    "form_field_as_option": null,
+                    "field_option": [],
+                    "user_option": null,
+                    "number_configuration_number_format_type": {
+                        "type": "currency",
+                        "label_name": "Moeda",
+                        "precision": 100,
+                        "prefix": null,
+                        "suffix": null,
+                        "thousand_separator": ".",
+                        "decimal_separator": ",",
+                        "order": 2
+                    },
+                    "number_configuration_mask": "#.##0,00",
+                    "formula_configuration": null,
+                    "name": "valor_1",
+                    "label_name": "Valor",
+                    "placeholder": null,
+                    "required": true,
+                    "order": 4,
+                    "is_unique": false,
+                    "field_is_hidden": false,
+                    "label_is_hidden": false,
+                    "date_configuration_auto_create": false,
+                    "date_configuration_auto_update": false,
+                    "number_configuration_allow_negative": true,
+                    "number_configuration_allow_zero": true,
+                    "enabled": true,
+                    "type": 1,
+                    "form": 96
+                },
+                {
+                    "id": 262,
+                    "field_type": "option",
+                    "form_field_as_option": null,
+                    "field_option": [
+                        {
+                            "option": "Proposta"
+                        },
+                        {
+                            "option": "Negocia\u00e7\u00e3o"
+                        },
+                        {
+                            "option": "Contatado"
+                        },
+                        {
+                            "option": "Fechado"
+                        },
+                        {
+                            "option": "Perdido"
+                        },
+                        {
+                            "option": "Prospec\u00e7\u00e3o"
+                        },
+                        {
+                            "option": "Reuni\u00e3o"
+                        }
+                    ],
+                    "user_option": null,
+                    "date_configuration_date_format_type": "%d/%m/%Y",
+                    "period_configuration_period_interval_type": "Dias",
+                    "number_configuration_number_format_type": null,
+                    "number_configuration_mask": "9",
+                    "formula_configuration": null,
+                    "name": "status_1",
+                    "label_name": "Status",
+                    "placeholder": null,
+                    "required": true,
+                    "order": 5,
+                    "is_unique": false,
+                    "field_is_hidden": false,
+                    "label_is_hidden": false,
+                    "date_configuration_auto_create": false,
+                    "date_configuration_auto_update": false,
+                    "number_configuration_allow_negative": true,
+                    "number_configuration_allow_zero": true,
+                    "enabled": true,
+                    "type": 4,
+                    "form": 96
+                }
+            ]
+        },
+        {
+            "id": 97,
+            "label_name": "Detalhe de Perda",
+            "form_type": "form",
+            "conditional_on_field_name": "status_1",
+            "conditional_type_type": "equal",
+            "conditional_value": "Perdido",
+            "form_fields": [
+                {
+                    "id": 263,
+                    "field_type": "option",
+                    "form_field_as_option": null,
+                    "field_option": [
+                        {
+                            "option": "Valor alto"
+                        },
+                        {
+                            "option": "Perda de Prazo"
+                        },
+                        {
+                            "option": "Cliente desistiu de comprar o produto"
+                        },
+                        {
+                            "option": "N\u00e3o foi mais poss\u00edvel contatar o cliente"
+                        }
+                    ],
+                    "user_option": null,
+                    "number_configuration_number_format_type": null,
+                    "number_configuration_mask": null,
+                    "formula_configuration": null,
+                    "name": "motivodeperda",
+                    "label_name": "Motivo de Perda",
+                    "placeholder": null,
+                    "required": true,
+                    "order": 0,
+                    "is_unique": false,
+                    "field_is_hidden": false,
+                    "label_is_hidden": false,
+                    "date_configuration_auto_create": false,
+                    "date_configuration_auto_update": false,
+                    "number_configuration_allow_negative": true,
+                    "number_configuration_allow_zero": true,
+                    "enabled": true,
+                    "type": 4,
+                    "form": 97
+                },
+                {
+                    "id": 264,
+                    "field_type": "long_text",
+                    "form_field_as_option": null,
+                    "field_option": [],
+                    "user_option": null,
+                    "number_configuration_number_format_type": null,
+                    "number_configuration_mask": null,
+                    "formula_configuration": null,
+                    "name": "comentarios",
+                    "label_name": "Coment\u00e1rios",
+                    "placeholder": null,
+                    "required": false,
+                    "order": 1,
+                    "is_unique": false,
+                    "field_is_hidden": false,
+                    "label_is_hidden": false,
+                    "date_configuration_auto_create": false,
+                    "date_configuration_auto_update": false,
+                    "number_configuration_allow_negative": true,
+                    "number_configuration_allow_zero": true,
+                    "enabled": true,
+                    "type": 7,
+                    "form": 97
+                }
+            ]
+        },
+        {
+            "id": 102,
+            "label_name": "Detalhe de Fechamento",
+            "form_type": "form",
+            "conditional_on_field_name": "status_1",
+            "conditional_type_type": "equal",
+            "conditional_value": "Fechado",
+            "form_fields": [
+                {
+                    "id": 273,
+                    "field_type": "date",
+                    "form_field_as_option": null,
+                    "field_option": [],
+                    "user_option": null,
+                    "date_configuration_date_format_type": "%d/%m/%Y",
+                    "period_configuration_period_interval_type": "Dias",
+                    "number_configuration_number_format_type": null,
+                    "number_configuration_mask": "9",
+                    "formula_configuration": null,
+                    "name": "vencimentodaapolice",
+                    "label_name": "Vencimento da Ap\u00f3lice",
+                    "placeholder": "Insira a data de vencimento desta ap\u00f3lice",
+                    "required": true,
+                    "order": 0,
+                    "is_unique": false,
+                    "field_is_hidden": false,
+                    "label_is_hidden": false,
+                    "date_configuration_auto_create": false,
+                    "date_configuration_auto_update": false,
+                    "number_configuration_allow_negative": true,
+                    "number_configuration_allow_zero": true,
+                    "enabled": true,
+                    "type": 3,
+                    "form": 102
+                }
+            ]
+        },
+        {
+            "id": 98,
+            "label_name": "Anexos",
+            "form_type": "form",
+            "conditional_value": null,
+            "form_fields": [
+                {
+                    "id": 265,
+                    "field_type": "attachment",
+                    "form_field_as_option": null,
+                    "field_option": [],
+                    "user_option": null,
+                    "number_configuration_number_format_type": null,
+                    "number_configuration_mask": null,
+                    "formula_configuration": null,
+                    "name": "anexos",
+                    "label_name": "Anexos",
+                    "placeholder": null,
+                    "required": false,
+                    "order": 0,
+                    "is_unique": false,
+                    "field_is_hidden": false,
+                    "label_is_hidden": true,
+                    "date_configuration_auto_create": false,
+                    "date_configuration_auto_update": false,
+                    "number_configuration_allow_negative": true,
+                    "number_configuration_allow_zero": true,
+                    "enabled": true,
+                    "type": 6,
+                    "form": 98
+                }
+            ]
+        },
+        {
+            "id": 99,
+            "label_name": "Hist\u00f3rico",
+            "form_type": "multi-form",
+            "conditional_value": null,
+            "form_fields": [
+                {
+                    "id": 266,
+                    "field_type": "long_text",
+                    "form_field_as_option": null,
+                    "field_option": [],
+                    "user_option": null,
+                    "number_configuration_number_format_type": null,
+                    "number_configuration_mask": null,
+                    "formula_configuration": null,
+                    "name": "historico",
+                    "label_name": "Hist\u00f3rico",
+                    "placeholder": null,
+                    "required": false,
+                    "order": 0,
+                    "is_unique": false,
+                    "field_is_hidden": false,
+                    "label_is_hidden": false,
+                    "date_configuration_auto_create": false,
+                    "date_configuration_auto_update": false,
+                    "number_configuration_allow_negative": true,
+                    "number_configuration_allow_zero": true,
+                    "enabled": true,
+                    "type": 7,
+                    "form": 99
+                }
+            ]
+        }
+    ]
+}

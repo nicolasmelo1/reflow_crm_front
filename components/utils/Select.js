@@ -19,7 +19,7 @@ const Option = (props) => {
     return (
         <Utils.Select.OptionsListContainer>
             {filteredOptions.map((option, index)=>(
-                <Utils.Select.OptionItem key={index} onClick={e=>{ props.onSelectOption(e, option) }}>{props.renderLabel(option.label, index)}</Utils.Select.OptionItem> 
+                <Utils.Select.OptionItem key={option.value} onClick={e=>{ props.onSelectOption(e, option) }}>{props.renderLabel(option.label, index)}</Utils.Select.OptionItem> 
             ))}
         </Utils.Select.OptionsListContainer>
     )
@@ -42,7 +42,7 @@ const Option = (props) => {
  * @param {Boolean} multiple - (optional) use this to inform if you want multiple objects to be selected.
  */
 const Select = (props) => {
-    const [selectedOptions, setSelectedOptions] = useState(props.initialValues.map(initialValue=> {return{ ...initialValue, selected:false }}))
+    const [selectedOptions, setSelectedOptions] = useState([])
     const [isOpen, _setIsOpen] = useState(false)
     const [searchValue, setSearchValue] = useState('')
     const [options, setOptions] = useState(props.options)
@@ -140,12 +140,16 @@ const Select = (props) => {
         };
     }, [onSelectClick]);
     
+    useEffect(() => {
+        setSelectedOptions(props.initialValues.map(initialValue=> {return{ ...initialValue, selected:false }}))
+    }, [props.initialValues])
+
     return(
         <Utils.Select.Select isOpen={isOpen} ref={selectRef} onClick={e=>{inputRef.current.focus()}}>
             <Utils.Select.SelectedOptionsContainer>
                 {selectedOptions.map((selectedOption, index)=> (
                     <Utils.Select.SelectedOption 
-                    key={index} 
+                    key={selectedOption.value} 
                     color={selectedItemColors[index - Math.floor(index/selectedItemColors.length)*selectedItemColors.length]} 
                     selected={selectedOption.selected} 
                     onClick={e=>{onClickSelectedOption(e, index)}}

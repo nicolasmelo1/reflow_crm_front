@@ -5,14 +5,16 @@ import FormularySection from './FormularySection'
 import actions from 'redux/actions'
 import { connect } from 'react-redux'
 
+/**
+ * Okay, so now the important part, exist two types of data that our front
+ */
 class Formulary extends React.Component {
     constructor(props) {
         super(props)
-        this.props.onGetFormulary(this.props.query.form)
         this.state = {
             isOpen: false,
             data: {
-                depends_on_dynamic_form : []
+                depends_on_form: []
             }
         }
     }
@@ -34,6 +36,23 @@ class Formulary extends React.Component {
         })
     }
 
+    componentDidMount = () => {
+        this.props.onGetFormulary(this.props.query.form)
+    }
+
+    componentDidUpdate = (prevProps) => {
+        if (prevProps.formulary.loaded !== this.props.formulary.loaded) {
+            this.state.data.depends_on_form = this.props.formulary.loaded.depends_on_form.map(section=> {
+                return {
+                    id: null,
+                    form_id: section.id,
+                    dynamic_form_value: []
+                }
+            })
+            this.setData(this.state.data)
+        }
+    }
+
     render() {
         return (
             <FormularyContainer>
@@ -48,7 +67,7 @@ class Formulary extends React.Component {
                             <FormularySection 
                             data={this.state.data}
                             setData={this.setData}
-                            sections={(this.props.formulary.loaded.depends_on_form) ? this.props.formulary.loaded.depends_on_form: []}
+                            sections={this.props.formulary.loaded.depends_on_form}
                             />
                         </FormularyContentContainer>
                     </Col>
