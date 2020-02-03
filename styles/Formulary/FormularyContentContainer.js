@@ -9,6 +9,7 @@ export default styled(({isOpen, ...rest}) => <div {...rest}/>)`
     float: right; 
     display: block;
     margin-right: 15px;
+    padding: ${props=> props.isOpen ? '10px' : '0'};
     height: ${props=> props.isOpen ? '80vh' : '0'};
-    transition: height 0.7s ease-in-out;
+    transition: height 0.7s ease-in-out, padding 0.7s ease-in-out;
 `

@@ -9,8 +9,11 @@ const Form = (props) => {
         props.setValues(newValue)
     }
 
-    const fieldValue =  (props.values.length === 0) ? []: [{ value:props.values[0].value, label: props.values[0].value }]
-
+    let fieldValue = []
+    if(props.values.length !== 0){
+        const selectedOption = props.field.form_field_as_option.field_value.filter(option => option.form_id.toString() === props.values[0].value.toString())
+        fieldValue = [{ value: selectedOption[0].form_id, label: selectedOption[0].value }]
+    }
     return (
         <Select options={data} onChange={onChange} initialValues={fieldValue}/>
     )

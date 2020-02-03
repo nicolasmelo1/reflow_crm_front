@@ -28,29 +28,18 @@ class Formulary extends React.Component {
         })
     }
 
-    setData = (data) => {
-        this.setState(state=>{
+    setData = (sectionsData) => {
+        this.setState(()=>{
             return {
-                data: {...state.data}
+                data: {
+                    depends_on_form: [...sectionsData]
+                }
             }
         })
     }
 
     componentDidMount = () => {
         this.props.onGetFormulary(this.props.query.form)
-    }
-
-    componentDidUpdate = (prevProps) => {
-        if (prevProps.formulary.loaded !== this.props.formulary.loaded) {
-            this.state.data.depends_on_form = this.props.formulary.loaded.depends_on_form.map(section=> {
-                return {
-                    id: null,
-                    form_id: section.id,
-                    dynamic_form_value: []
-                }
-            })
-            this.setData(this.state.data)
-        }
     }
 
     render() {

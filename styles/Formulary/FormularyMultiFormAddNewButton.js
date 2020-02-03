@@ -5,4 +5,7 @@ export default styled.button`
     color: #fff; 
     background-color: #0dbf7e;
     margin-bottom: 10px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 0
 `

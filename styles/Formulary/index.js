@@ -4,13 +4,15 @@ import FormularyContentContainer from './FormularyContentContainer'
 import FormularySectionTitle from './FormularySectionTitle'
 import FormularyMultiFormAddNewButton from './FormularyMultiFormAddNewButton'
 import Field from './Field'
-import FormularyFieldLabel from './FormularyFieldLabel'
 import FormularyFieldContainer from './FormularyFieldContainer'
+import FormularyFieldsContainer from './FormularyFieldsContainer'
 import FormularySectionContainer from './FormularySectionContainer'
+import FormularyRemoveMultiFormButton from './FormularyRemoveMultiFormButton'
 
+export { FormularyRemoveMultiFormButton }
+export { FormularyFieldsContainer }
 export { FormularySectionContainer }
 export { FormularyFieldContainer }
-export { FormularyFieldLabel }
 export { Field }
 export { FormularyMultiFormAddNewButton }
 export { FormularySectionTitle }

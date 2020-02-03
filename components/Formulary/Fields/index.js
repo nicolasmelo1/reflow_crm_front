@@ -9,9 +9,9 @@ import Attachment from './Attachment'
 import Id from './Id'
 import LongText from './LongText'
 import Form from './Form'
-import { FormularyFieldLabel } from 'styles/Formulary'
+import { Field } from 'styles/Formulary'
 
-const Field = (props) => {
+const Fields = (props) => {
     const [values, setValues] = useState([])
 
     const getFieldType = () => {
@@ -39,7 +39,8 @@ const Field = (props) => {
         }
     }
 
-
+    // Fields that accept multiple values usually have the same logic,
+    // so we use this function to don't repeat code in each component
     const multipleValueFieldHelper = (values) => {
         const formValues = props.fieldFormValues
         values.forEach(value => {
@@ -80,13 +81,22 @@ const Field = (props) => {
     useEffect(()=> {
         setValues(props.fieldFormValues)
     }, [props.fieldFormValues])
-
+    
     return (
         <div>
-            <FormularyFieldLabel>{ props.field.label_name }</FormularyFieldLabel>
-            {renderFieldType()}
+            {(props.field_is_hidden) ? '' : (
+                <div>
+                    {(props.field.label_is_hidden) ? '' : (
+                        <Field.FieldTitle.Label>
+                            { props.field.label_name }
+                            <Field.FieldTitle.Required>{(props.field.required) ? '*': ''}</Field.FieldTitle.Required>
+                        </Field.FieldTitle.Label>
+                    )}
+                    {renderFieldType()}
+                </div>
+            )}
         </div>
     )
 }
 
-export default Field
+export default Fields

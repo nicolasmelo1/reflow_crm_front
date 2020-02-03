@@ -10,7 +10,7 @@ const LongText = (props) => {
     }
 
     const fieldValue = (props.values.length === 0) ? '': props.values[0].value
-    console.log('teste')
+
     return (
         <Form.Control as="textarea" value={fieldValue} onChange={e=> {onChange(e)}}/>
     )

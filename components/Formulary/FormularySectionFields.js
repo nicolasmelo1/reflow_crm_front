@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react'
-import { FormularyFieldContainer } from 'styles/Formulary'
-import Field from './Field'
-
+import React, { useState } from 'react'
+import { FormularyFieldContainer, FormularyFieldsContainer, FormularyRemoveMultiFormButton } from 'styles/Formulary'
+import Fields from './Fields'
+import { Col, Row } from 'react-bootstrap'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+ 
 /**
  * 
  * @param {function} onUpdateMultiSection - (opitional) - if not Set, onUPDATEMULTISECTION must be defined
@@ -53,11 +55,19 @@ const FormularySectionFields = (props) => {
     }
 
     return (
-        <div>
-            {props.removeSection ? (<button onClick={e=> {props.removeSection(props.section.id, props.sectionDataIndex)}}>Remover</button>): ''}
+        <FormularyFieldsContainer isConditional={props.removeSection !== null}>
+            {props.removeSection ? (
+                <Row>
+                    <Col>
+                        <FormularyRemoveMultiFormButton onClick={e=> {props.removeSection(props.section.id, props.sectionDataIndex)}}>
+                            <FontAwesomeIcon icon="trash"/>
+                        </FormularyRemoveMultiFormButton>
+                    </Col>
+                </Row>
+            ): ''}
             {props.fields.map((element, index)=>(
                 <FormularyFieldContainer key={element.id}>
-                    <Field 
+                    <Fields 
                     field={element}
                     fieldFormValues={getFieldFormValues(element.name)} 
                     getFieldFormValues={getFieldFormValues}
@@ -69,7 +79,7 @@ const FormularySectionFields = (props) => {
                     />
                 </FormularyFieldContainer>
             ))}
-        </div>
+        </FormularyFieldsContainer>
     )
 }
 
