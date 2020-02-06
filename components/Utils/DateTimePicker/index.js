@@ -46,7 +46,7 @@ const DateTimePicker = (props) => {
     const [year, setYear] = useState(today.getFullYear())
     const [monthDates, setMonthDates] = useState(getMonthDetails(year, month, today.getHours(), today.getMinutes()))
     const [translate3D, setTranslate3D] = useState(0)
-    const [selectedDay, setSelectedDay] = useState(props.initialDay || today)
+    const [selectedDay, setSelectedDay] = useState(today)
     const [hourPickerIsOpen, setHourPickerIsOpen] = useState(false)
     
     const datePickerContainerRef = React.useRef(null)
@@ -64,12 +64,14 @@ const DateTimePicker = (props) => {
     // https://stackoverflow.com/a/9973503 
     // so we have to use the function keyword, without it, you might get into some errors, test it!
     function getMonthDetails(year, month, hour, minute) {
+        hour = hour || today.getHours()
+        minute = minute || today.getMinutes()
         const monthDayOfTheWeekStart = (new Date(year, month)).getDay()
         let monthArray = []
 
         for (let index=0; index<dateGridLength; index++) {
-            const dayOfheWeek = index - monthDayOfTheWeekStart; 
-            const date = new Date(year, month, dayOfheWeek+1, hour, minute)
+            const dayOfTheWeek = index - monthDayOfTheWeekStart; 
+            const date = new Date(year, month, dayOfTheWeek+1, hour, minute)
             monthArray.push(date)
         }
         return monthArray
@@ -126,6 +128,12 @@ const DateTimePicker = (props) => {
         }
     })
     
+    useEffect(() => {
+        const dateToConsider = (props.initialDay !== '') ? props.initialDay : today
+        setSelectedDay(dateToConsider)
+        updateMonthDetails(dateToConsider.getFullYear(), dateToConsider.getMonth(), dateToConsider.getHours(), dateToConsider.getMinutes())
+    }, [props.initialDay])
+
     return (
         <Utils.Datepicker.Container ref={datePickerContainerRef}>
             {isOpen ? (

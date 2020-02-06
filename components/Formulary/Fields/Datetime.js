@@ -1,10 +1,10 @@
-import React, {useState} from 'react'
+import React, { useEffect } from 'react'
 import { Field } from 'styles/Formulary'
-import DateTimePicker from 'components/utils/DateTimePicker'
+import DateTimePicker from 'components/Utils/DateTimePicker'
 import { strings } from 'utils/constants'
 import moment from 'moment'
 
-const Date = (props) => {
+const Datetime = (props) => {
     const inputRef = React.useRef(null)
 
     const monthReference = [
@@ -86,22 +86,57 @@ const Date = (props) => {
         const newValue = props.singleValueFieldsHelper(stringValue)
         props.setValues(newValue)
     }
+    
+    /*if (props.values.length === 0) {
+        if (props.field.date_configuration_auto_update) {
+            const date = new Date()
+            const stringValue = jsDateToStringFormat(date)
+            const newValue = props.singleValueFieldsHelper(stringValue)
+            console.log(newValue)
+            //props.setValues(newValue)
+        }
+    }*/
 
-    const fieldValue = (props.values.length === 0) ? '': props.values[0].value
+    let fieldValue = (props.values.length === 0) ? '': props.values[0].value
 
+    if (props.field.date_configuration_auto_update) {
+        const today = new Date()
+        fieldValue = jsDateToStringFormat(today)
+    } else if (props.field.date_configuration_auto_create && props.values.length === 0) {
+        const today = new Date()
+        fieldValue = jsDateToStringFormat(today)
+    }
+
+    /*
+    useEffect(() => {
+        const today = new Date()
+        const stringValue = jsDateToStringFormat(today)
+        const currentValue = (props.values.length === 0) ? '': props.values[0].value
+
+        if (props.field.date_configuration_auto_update && currentValue !== stringValue) {
+            const newValue = props.singleValueFieldsHelper(stringValue)
+            props.setValues(newValue)
+        } else if (props.field.date_configuration_auto_create && props.values.length === 0) {
+            //const newValue = props.singleValueFieldsHelper(stringValue)
+            //props.setValues(newValue)
+        }
+    }, [props.values])
+    */
     return (
         <>
             <Field.Text ref={inputRef} type="text" value={fieldValue} readOnly={true}/>
-            <DateTimePicker 
-            withoutHourPicker={false}
-            input={inputRef} 
-            onChange={onChange} 
-            initialDay={stringToJsDateFormat(fieldValue)}
-            monthReference={monthReference} 
-            dayOfTheWeekReference={dayOfTheWeekReference}
-            />
+            {(props.field.date_configuration_auto_update || props.field.date_configuration_auto_create) ? '' : (
+                <DateTimePicker 
+                withoutHourPicker={!(props.field.date_configuration_date_format_type.includes('%H') || props.field.date_configuration_date_format_type.includes('%M'))}
+                input={inputRef} 
+                onChange={onChange} 
+                initialDay={(fieldValue !== '') ? stringToJsDateFormat(fieldValue) : ''}
+                monthReference={monthReference} 
+                dayOfTheWeekReference={dayOfTheWeekReference}
+                />
+            )}
         </>
     )
 }
 
-export default Date
+export default Datetime

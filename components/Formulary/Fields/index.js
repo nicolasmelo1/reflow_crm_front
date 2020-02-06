@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Text from './Text'
 import Number from './Number'
-import Date from './Date'
+import Datetime from './Datetime'
 import Email from './Email'
 import Option from './Option'
 import MultiOption from './MultiOption'
@@ -23,7 +23,7 @@ const Fields = (props) => {
             case "number":
                 return Number
             case "date":
-                return Date
+                return Datetime
             case "email": 
                 return Email
             case "option":

@@ -20,14 +20,14 @@ const FormularySection = (props) => {
         }
     }
     
-    const onChangeSectionData = (sections, sectionsData) => {
-        const [newSections, newSectionsData] = toggleConditionals(sections, sectionsData)
+    const onChangeSectionData = (sections, sectionsData, conditionals=conditionalSections) => {
+        const [newSections, newSectionsData] = toggleConditionals(sections, sectionsData, conditionals)
         setSections([...newSections])
         setSectionsData([...newSectionsData])
         props.setData(newSectionsData)
     }
 
-    const toggleConditionals = (sections, sectionsData) => {
+    const toggleConditionals = (sections, sectionsData, conditionals) => {
         //CONDITIONALS LOGIC
         let newSections = [...sections]
         let newSectionsData = [...sectionsData]
@@ -36,7 +36,7 @@ const FormularySection = (props) => {
 
         // for conditionals we run through all sections formvalues, filter the conditionals with the field and checks if the value
         // matches the conditional value telling if it is to show the conditional or not
-        const conditionalsToToggle = conditionalSections.map(conditionalSection => {
+        const conditionalsToToggle = conditionals.map(conditionalSection => {
             const filteredFormValues = formValues.filter(formValue => conditionalSection.conditional_on_field_name === formValue.field_name)
             return {
                 id: conditionalSection.id,
@@ -177,12 +177,13 @@ const FormularySection = (props) => {
             }*/
         ]
         const newSections = props.sections.filter(section=> ['', null].includes(section.conditional_value))
-        setConditionalSections(props.sections.filter(section => !['', null].includes(section.conditional_value)))
+        const conditionals = props.sections.filter(section => !['', null].includes(section.conditional_value))
+        setConditionalSections(conditionals)
         /*setSectionsData(props.sections
             .filter(section => !(!['', null].includes(section.conditional_value) || section.form_type==='multi-form'))
             .map(section=> addNewSectionsData(section.id))
         )*/
-        onChangeSectionData(newSections, newSectionsData)
+        onChangeSectionData(newSections, newSectionsData, conditionals)
     }, [props.sections])
 
 
