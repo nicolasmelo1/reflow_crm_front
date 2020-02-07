@@ -23,7 +23,7 @@ const AttachmentItem = (props) => {
 const Attachment = (props) => {
     const [inputsProps, setInputsProps] = useState([{ 
         isInitial: true, 
-        addFile: addFile 
+        addFile: addFile
     }])
 
     // check Select Component in components/utils

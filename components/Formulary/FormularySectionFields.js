@@ -5,7 +5,7 @@ import { Col, Row } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
  
 /**
- * 
+ * This Components controls ALL of the fields in a section
  * @param {function} onUpdateMultiSection - (opitional) - if not Set, onUPDATEMULTISECTION must be defined
  */
 const FormularySectionFields = (props) => {

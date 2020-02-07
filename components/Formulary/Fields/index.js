@@ -80,6 +80,9 @@ const Fields = (props) => {
 
     useEffect(()=> {
         setValues(props.fieldFormValues)
+        if (props.fieldFormValues.length === 0 && props.field.field_is_hidden) {
+            props.addFieldFormValue(props.field.name, '')
+        }
     }, [props.fieldFormValues])
     
     return (

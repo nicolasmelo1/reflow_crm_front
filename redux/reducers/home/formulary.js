@@ -4,9 +4,7 @@ let initialState = {
     loaded: {
         depends_on_form: []
     },
-    filled_data: {
-        depends_on_form: []
-    },
+    filled_data: {},
     update: {}
 }
 
@@ -20,7 +18,7 @@ export default (state=initialState, action) => {
         case SET_FORMULARY_DATA:
             return {
                 ...state,
-                filled_data: action.payload
+                filled_data: (action.payload) ? action.payload : initialState.filled_data
             }
         default:
             return state;

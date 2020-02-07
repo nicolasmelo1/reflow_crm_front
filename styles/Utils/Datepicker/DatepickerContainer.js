@@ -11,5 +11,6 @@ export default styled.div`
     border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 4px 20px 0 #444444; 
+    z-index: 6;
     transform: translate3d(0px, ${props=> props.translate.toString()}px, 0px)
 `

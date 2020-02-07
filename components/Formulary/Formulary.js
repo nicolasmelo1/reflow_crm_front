@@ -6,22 +6,19 @@ import actions from 'redux/actions'
 import { connect } from 'react-redux'
 
 /**
- * Okay, so now the important part, exist two types of data that our front
- */
+ * You might want to read the README to understand how this and all of it's components work.
+ * */
 class Formulary extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            isOpen: false,
-            data: {
-                depends_on_form: []
-            }
+            isOpen: false
         }
     }
-    
+
     setIsOpen = (e) => {
         e.preventDefault();
-        this.setState(state=>{
+        this.setState(state => {
             return {
                 isOpen: !state.isOpen
             }
@@ -29,17 +26,26 @@ class Formulary extends React.Component {
     }
 
     setData = (sectionsData) => {
-        this.setState(()=>{
-            return {
-                data: {
-                    depends_on_form: [...sectionsData]
-                }
-            }
+        this.props.onChangeFormularyData({
+            depends_on_dynamic_form: sectionsData
         })
     }
 
+    onSubmit = () => {
+        if (this.props.formularyId) {
+            this.props.onUpdateFormularyData(this.props.formulary.filled_data, this.props.query.form, this.props.formularyId)
+        } else {
+            this.props.onCreateFormularyData(this.props.formulary.filled_data, this.props.query.form)
+        }
+        this.props.setFormularyId(null)
+       // this.props.onGetBuildFormulary(this.props.query.form)
+    }
+
     componentDidMount = () => {
-        this.props.onGetFormulary(this.props.query.form)
+        this.props.onGetBuildFormulary(this.props.query.form)
+        if (this.props.formularyId) {
+            this.props.onGetFormularyData(this.props.query.form, this.props.formularyId)
+        } 
     }
 
     render() {
@@ -54,13 +60,15 @@ class Formulary extends React.Component {
                     <Col>
                         <FormularyContentContainer isOpen={this.state.isOpen}>
                             <FormularySection 
-                            data={this.state.data}
+                            data={this.props.formulary.filled_data}
                             setData={this.setData}
+                            formularyId={(this.props.formularyId !== null) ? this.props.formularyId : null}
                             sections={this.props.formulary.loaded.depends_on_form}
                             />
+                            <button onClick={e=> {this.onSubmit()}}>Salvar</button>
                         </FormularyContentContainer>
                     </Col>
-                </Row>
+                </Row>  
             </FormularyContainer>
         )
     }

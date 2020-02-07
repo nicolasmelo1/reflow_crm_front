@@ -10,6 +10,9 @@ import { useRouter } from 'next/router';
 class Data extends React.Component {
     constructor(props) {
         super(props)
+        this.state = {
+            formularyId: null
+        }
     }
 
     static async getInitialProps(context) {
@@ -23,10 +26,18 @@ class Data extends React.Component {
         Router.push(paths.login())
     }
 
+    setFormularyId = (newValue) => {
+        this.setState(() => {
+            return {
+                formularyId: newValue
+            }
+        })
+    }
+
     render () {
         return (
             <Layout title={strings['pt-br']['managementPageTitle']} showSideBar={true}>
-                <Formulary query={this.props.query}/>
+                <Formulary query={this.props.query} formularyId={this.state.formularyId} setFormularyId={this.setFormularyId}/>
                 <Button type="submit" onClick={e => this.handleLogout(e)}>Logout</Button>
             </Layout>
         )

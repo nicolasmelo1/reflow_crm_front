@@ -4,7 +4,9 @@ import FormularySectionFields from './FormularySectionFields'
 
 /**
  * This component controls all sections and contains all sections data. It is one of the main components from the formulary.
- * @param {*} props 
+ * @param {*} data - defines the WHAT to render from the form. if nothing is provided we build one from scratch
+ * @param {Function} setData - sets the data from the formulary main component
+ * @param {Array<Object>} sections - defines the HOW to build the formulary, this json contains all of the information about each section, 
  */
 const FormularySection = (props) => {
     const [conditionalSections,  setConditionalSections] = useState(props.sections.filter(element => !['', null].includes(element.conditional_value)))
@@ -20,7 +22,7 @@ const FormularySection = (props) => {
         }
     }
     
-    const onChangeSectionData = (sections, sectionsData, conditionals=conditionalSections) => {
+    const onChangeSectionData = (sections, sectionsData, conditionals=conditionalSections, ) => {
         const [newSections, newSectionsData] = toggleConditionals(sections, sectionsData, conditionals)
         setSections([...newSections])
         setSectionsData([...newSectionsData])
@@ -88,11 +90,7 @@ const FormularySection = (props) => {
 
     const addSection = (e, section) => {
         e.preventDefault()
-        sectionsData.push({
-            id: null,
-            form_id:section.id,
-            dynamic_form_value: []
-        })
+        sectionsData.push(addNewSectionsData(section.id))
         setSectionsData([...sectionsData])
     }
 
@@ -115,77 +113,30 @@ const FormularySection = (props) => {
         onChangeSectionData(sections, changedData)
     }
 
-
+    /**
+     * This effect is used when the user opens the formulary, so when we have the data on HOW 
+     * we should render the form. With this we have two options: 1-Build a data if there is none or 
+     * 2- Wait for the data to be retrieved from the backend
+     */
     useEffect (() => {
-        const newSectionsData = [
-            {
-                "id": "1230", 
-                "form_id": "98", 
-                "dynamic_form_value": []
-            }, {
-                "id": "1229", 
-                "form_id": "96", 
-                "dynamic_form_value": [
-                    {
-                        "id": "4157", 
-                        "value": "1199", 
-                        "field_name": "corretor"
-                    }, {
-                        "id": "4158", 
-                        "value": "Garantia", 
-                        "field_name": "produto"
-                    }, {
-                        "id": "4159", 
-                        "value": "25/12/2019", 
-                        "field_name": "previsaodefechamento"
-                    }, {
-                        "id": "4160", 
-                        "value": "2.000,00",
-                        "field_name": "valor_1"
-                    }, {
-                        "id": "4161", 
-                        "value": "Perdido", 
-                        "field_name": "status_1"
-                    }, {
-                        "id": "4208", 
-                        "value": "2100", 
-                        "field_name": "calculo"
-                    }
-                ]
-            },
-            {
-                "id": "1250", 
-                "form_id": "99", 
-                "dynamic_form_value": [
-                    {
-                        "id": "123123123123", 
-                        "value": "teste",
-                        "field_name": "historico"
-                    }
-                ]
-            }
-            /*{
-                "id": "17849124", 
-                "form_id": "102", 
-                "dynamic_form_value": [
-                    {
-                        "id": "92929292929", 
-                        "value": "13/02/2020",
-                        "field_name": "vencimentodaapolice"
-                    }
-                ]
-            }*/
-        ]
         const newSections = props.sections.filter(section=> ['', null].includes(section.conditional_value))
         const conditionals = props.sections.filter(section => !['', null].includes(section.conditional_value))
         setConditionalSections(conditionals)
-        /*setSectionsData(props.sections
-            .filter(section => !(!['', null].includes(section.conditional_value) || section.form_type==='multi-form'))
-            .map(section=> addNewSectionsData(section.id))
-        )*/
-        onChangeSectionData(newSections, newSectionsData, conditionals)
+
+        if (props.formularyId === null) {
+            const newSectionsData = props.sections
+                .filter(section => !(!['', null].includes(section.conditional_value) || section.form_type==='multi-form'))
+                .map(section=> addNewSectionsData(section.id))
+            onChangeSectionData(newSections, newSectionsData, conditionals)
+        } else {
+            setSections([...newSections])
+        }
     }, [props.sections])
 
+
+    useEffect (() => {
+        //setSectionsData(props.data.depends_on_dynamic_form || [])
+    }, [props.data])
 
     return (
         <div>

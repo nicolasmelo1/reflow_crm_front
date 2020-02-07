@@ -32,7 +32,7 @@ let setHeader = (token) => {
  * @param headers - the headers parameter from the function
  */
 const refreshToken = async (response, callback, url, params, headers) => {
-    if (response !== undefined && response.data && response.data.reason) {
+    if (response && response.data && response.data.reason && ['invalid_token', 'login_required', 'expired_token'].includes(response.data.reason)) {
         if (response.data.reason === 'expired_token') {
             response = await requests.get('login/refresh_token/', {}, setHeader(window.localStorage.getItem('refreshToken')))
             // checks if the response was an error and handles it next
@@ -129,8 +129,19 @@ const HOME = {
     removeForm: async (groupId, id)=> {
         return await requests.delete(`${companyId}/settings/api/formulary/${groupId}/${id}/`)
     },
-    getFormulary: async (formName) => {
+    getBuildFormulary: async (formName) => {
         return await requests.get(`${companyId}/formulary/api/${formName}/`)
+    },
+    createFormularyData: async (body, formName) => {
+        let formData = new FormData();
+        formData.append('data', JSON.stringify(body));
+        return await requests.post(`${companyId}/formulary/api/${formName}/`, formData, {'Content-Type': 'multipart/form-data'})
+    },
+    getFormularyData: async (formName, formId) => {
+        return await requests.get(`${companyId}/formulary/api/${formName}/${formId}/`)
+    },
+    updateFormularyData: async (body, formName, formId) => {
+        return await requests.put(`${companyId}/formulary/api/${formName}/${formId}/`, body)
     }
     
 }
