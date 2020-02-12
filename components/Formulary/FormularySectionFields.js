@@ -6,11 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
  
 /**
  * This Components controls ALL of the fields in a section
- * @param {function} onUpdateMultiSection - (opitional) - if not Set, onUPDATEMULTISECTION must be defined
  */
 const FormularySectionFields = (props) => {
-    //const updateSection = (props.onUpdateMultiSection)
-    const sectionFormValues = props.sectionData
     // files UPLOADED only
     const [sectionFiles, setSectionFiles] = useState([])
 
@@ -51,7 +48,7 @@ const FormularySectionFields = (props) => {
     const removeFieldFile = (field_name, file_name) => {
         const indexToRemove = sectionFiles.findIndex(sectionFile => sectionFile.field_name === field_name && sectionFile.name === file_name)
         sectionFiles.splice(indexToRemove, 1)
-        setSectionFiles([...sectionFormValues])
+        setSectionFiles([...sectionFiles])
     }
 
     return (
