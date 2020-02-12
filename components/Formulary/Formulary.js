@@ -14,10 +14,20 @@ class Formulary extends React.Component {
         this.state = {
             isOpen: false
         }
+        this.loadData = false
     }
 
     setIsOpen = (e) => {
-        e.preventDefault();
+        if (e) {
+            e.preventDefault();
+        }
+        
+        // when user closes we reset the states on the formulary
+        if (this.state.isOpen) {
+            this.props.setFormularyId(null)
+            this.props.onChangeFormularyData({})
+        }
+        
         this.setState(state => {
             return {
                 isOpen: !state.isOpen
@@ -37,8 +47,6 @@ class Formulary extends React.Component {
         } else {
             this.props.onCreateFormularyData(this.props.formulary.filled_data, this.props.query.form)
         }
-        this.props.setFormularyId(null)
-       // this.props.onGetBuildFormulary(this.props.query.form)
     }
 
     componentDidMount = () => {
@@ -60,10 +68,11 @@ class Formulary extends React.Component {
                     <Col>
                         <FormularyContentContainer isOpen={this.state.isOpen}>
                             <FormularySection 
+                            loadData={this.loadData}
                             data={this.props.formulary.filled_data}
                             setData={this.setData}
                             formularyId={(this.props.formularyId !== null) ? this.props.formularyId : null}
-                            sections={this.props.formulary.loaded.depends_on_form}
+                            sections={(this.props.formulary.loaded.depends_on_form) ? this.props.formulary.loaded.depends_on_form : []}
                             />
                             <button onClick={e=> {this.onSubmit()}}>Salvar</button>
                         </FormularyContentContainer>

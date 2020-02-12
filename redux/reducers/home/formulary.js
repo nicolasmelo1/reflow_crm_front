@@ -1,9 +1,7 @@
 import { GET_FORMULARY, SET_FORMULARY_DATA } from 'redux/types';
 
 let initialState = {
-    loaded: {
-        depends_on_form: []
-    },
+    loaded: {},
     filled_data: {},
     update: {}
 }

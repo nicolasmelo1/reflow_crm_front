@@ -102,6 +102,11 @@ const requests = {
     }
 };
 
+const formEncodeData = (appendToKey, body) => {
+    let formData = new FormData();
+    formData.append(appendToKey, JSON.stringify(body));
+    return formData
+}
 
 const LOGIN = {
     makeLogin: async (body) => {
@@ -133,15 +138,13 @@ const HOME = {
         return await requests.get(`${companyId}/formulary/api/${formName}/`)
     },
     createFormularyData: async (body, formName) => {
-        let formData = new FormData();
-        formData.append('data', JSON.stringify(body));
-        return await requests.post(`${companyId}/formulary/api/${formName}/`, formData, {'Content-Type': 'multipart/form-data'})
+        return await requests.post(`${companyId}/formulary/api/${formName}/`, formEncodeData('data', body), {'Content-Type': 'multipart/form-data'})
     },
     getFormularyData: async (formName, formId) => {
         return await requests.get(`${companyId}/formulary/api/${formName}/${formId}/`)
     },
     updateFormularyData: async (body, formName, formId) => {
-        return await requests.put(`${companyId}/formulary/api/${formName}/${formId}/`, body)
+        return await requests.put(`${companyId}/formulary/api/${formName}/${formId}/`, formEncodeData('data', body), {'Content-Type': 'multipart/form-data'})
     }
     
 }

@@ -5,13 +5,12 @@ import { connect } from 'react-redux';
 import { strings, paths } from 'utils/constants';
 import { Button } from 'react-bootstrap';
 import Router from 'next/router'
-import { useRouter } from 'next/router';
 
 class Data extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            formularyId: null
+            formularyId: '51003'
         }
     }
 

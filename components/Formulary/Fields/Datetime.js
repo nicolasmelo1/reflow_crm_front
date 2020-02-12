@@ -86,16 +86,6 @@ const Datetime = (props) => {
         const newValue = props.singleValueFieldsHelper(stringValue)
         props.setValues(newValue)
     }
-    
-    /*if (props.values.length === 0) {
-        if (props.field.date_configuration_auto_update) {
-            const date = new Date()
-            const stringValue = jsDateToStringFormat(date)
-            const newValue = props.singleValueFieldsHelper(stringValue)
-            console.log(newValue)
-            //props.setValues(newValue)
-        }
-    }*/
 
     let fieldValue = (props.values.length === 0) ? '': props.values[0].value
 
@@ -107,21 +97,7 @@ const Datetime = (props) => {
         fieldValue = jsDateToStringFormat(today)
     }
 
-    /*
-    useEffect(() => {
-        const today = new Date()
-        const stringValue = jsDateToStringFormat(today)
-        const currentValue = (props.values.length === 0) ? '': props.values[0].value
 
-        if (props.field.date_configuration_auto_update && currentValue !== stringValue) {
-            const newValue = props.singleValueFieldsHelper(stringValue)
-            props.setValues(newValue)
-        } else if (props.field.date_configuration_auto_create && props.values.length === 0) {
-            //const newValue = props.singleValueFieldsHelper(stringValue)
-            //props.setValues(newValue)
-        }
-    }, [props.values])
-    */
     return (
         <>
             <Field.Text ref={inputRef} type="text" value={fieldValue} readOnly={true}/>

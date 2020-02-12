@@ -16,14 +16,16 @@ const onGetFormularyData = (formName, formId) => {
 }
 
 const onCreateFormularyData = (body, formName) => {
-    return async () => {
+    return async (dispatch) => {
        await agent.HOME.createFormularyData(body, formName)
+       dispatch({ type: SET_FORMULARY_DATA, payload: []})
     }
 }
 
 const onUpdateFormularyData = (body, formName, formId) => {
-    return async () => {
+    return async (dispatch) => {
        await agent.HOME.updateFormularyData(body, formName, formId)
+       dispatch({ type: SET_FORMULARY_DATA, payload: []})
     }
 }
 

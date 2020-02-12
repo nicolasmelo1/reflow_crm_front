@@ -9,10 +9,8 @@ import FormularySectionFields from './FormularySectionFields'
  * @param {Array<Object>} sections - defines the HOW to build the formulary, this json contains all of the information about each section, 
  */
 const FormularySection = (props) => {
-    const [conditionalSections,  setConditionalSections] = useState(props.sections.filter(element => !['', null].includes(element.conditional_value)))
-    const [sections, setSections] = useState([])
+    const [conditionalSections,  setConditionalSections] = useState([])
     const [sectionsData, setSectionsData] = useState([])
-
 
     const addNewSectionsData = (sectionId) => {
         return {
@@ -22,16 +20,14 @@ const FormularySection = (props) => {
         }
     }
     
-    const onChangeSectionData = (sections, sectionsData, conditionals=conditionalSections, ) => {
-        const [newSections, newSectionsData] = toggleConditionals(sections, sectionsData, conditionals)
-        setSections([...newSections])
+    const onChangeSectionData = (sectionsData, conditionals=conditionalSections) => {
+        const newSectionsData = toggleConditionals(sectionsData, conditionals)
         setSectionsData([...newSectionsData])
         props.setData(newSectionsData)
     }
 
-    const toggleConditionals = (sections, sectionsData, conditionals) => {
+    const toggleConditionals = (sectionsData, conditionals) => {
         //CONDITIONALS LOGIC
-        let newSections = [...sections]
         let newSectionsData = [...sectionsData]
         let formValues = sectionsData.map(sectionData=> sectionData.dynamic_form_value)
         formValues = [].concat(...formValues);
@@ -54,21 +50,12 @@ const FormularySection = (props) => {
         })
 
         // sectionIds are all sectionIds shown in the current state
-        const sectionIds = newSections.map(section=> section.id.toString())
         const sectionDataIds = newSectionsData.map(sectionData=> sectionData.form_id.toString())
 
-        // this appends or removes the conditionals from the sections and sectionsData states, if the show is set to false we remove,
-        // otherwise we add a new section and sectionData, the section must BE ADDED ACCORDING TO THE ORDER RECIEVED FROM THE BACKEND
-        // that`s why we use props.sections to open the sections
+        // this appends or removes the conditionals from the  sectionsData state, if the show is set to false we remove,
+        // otherwise we add a new sectionData
         conditionalsToToggle.forEach(conditionalToToggle => {
             if (conditionalToToggle.show) {
-                if (!sectionIds.includes(conditionalToToggle.id.toString())) {
-                    // when we loop, if the section is set to `show === true` we need to append the id to the sectionIds 
-                    // to basically say it is in the open state now
-                    sectionIds.push(conditionalToToggle.id.toString())
-
-                    newSections = props.sections.filter(section => sectionIds.includes(section.id.toString()))
-                }
                 // we check if the sectionId is already in the sectionData array and if the section is a multiForm, 
                 // this way we can safely append a new sectionData
                 if (!sectionDataIds.includes(conditionalToToggle.id.toString()) && conditionalToToggle.form_type !== 'multi-form') {
@@ -79,12 +66,11 @@ const FormularySection = (props) => {
                     )
                 }
             } else if (!conditionalToToggle.show) {
-                newSections = newSections.filter(section => !(conditionalToToggle.id.toString() === section.id.toString()))
                 newSectionsData = newSectionsData.filter(sectionData => !(conditionalToToggle.id.toString() === sectionData.form_id.toString()))
             }
         })
 
-        return [newSections, newSectionsData]
+        return newSectionsData
     }
 
 
@@ -101,7 +87,7 @@ const FormularySection = (props) => {
         changedData[sectionDataIndex] = newData
         changedData = changedData.concat(unchangedData)
 
-        onChangeSectionData(sections, changedData)
+        onChangeSectionData(changedData)
     }
 
     const removeSection = (sectionId, sectionDataIndex) => {
@@ -110,37 +96,40 @@ const FormularySection = (props) => {
 
         changedData.splice(sectionDataIndex, 1)
         changedData = changedData.concat(unchangedData)
-        onChangeSectionData(sections, changedData)
+
+        onChangeSectionData(changedData)
     }
 
-    /**
-     * This effect is used when the user opens the formulary, so when we have the data on HOW 
-     * we should render the form. With this we have two options: 1-Build a data if there is none or 
-     * 2- Wait for the data to be retrieved from the backend
-     */
-    useEffect (() => {
-        const newSections = props.sections.filter(section=> ['', null].includes(section.conditional_value))
-        const conditionals = props.sections.filter(section => !['', null].includes(section.conditional_value))
-        setConditionalSections(conditionals)
 
-        if (props.formularyId === null) {
-            const newSectionsData = props.sections
+    function buildInitialData(conditionals) {
+        const newSectionsData = props.sections
                 .filter(section => !(!['', null].includes(section.conditional_value) || section.form_type==='multi-form'))
                 .map(section=> addNewSectionsData(section.id))
-            onChangeSectionData(newSections, newSectionsData, conditionals)
-        } else {
-            setSections([...newSections])
-        }
-    }, [props.sections])
-
-
+        onChangeSectionData(newSectionsData, conditionals)
+    }
+    /**
+     * This effect is used to sync between the redux and this component. First the sections, the sections are usually HOW we render so it MUST render first
+     * second is the data, the data is WHAT to render so it usually needs to be loaded second. We use the same effect because sometimes the order of the ones that 
+     * loads first and second might change. If we only check props.data changes, we can't know that the sections were updated.
+     */
     useEffect (() => {
-        //setSectionsData(props.data.depends_on_dynamic_form || [])
-    }, [props.data])
+        const conditionals = props.sections.filter(section => !['', null].includes(section.conditional_value))
+        if (JSON.stringify(conditionalSections) !== JSON.stringify(conditionals)) {
+            setConditionalSections(conditionals)
+        }
+
+        if (props.sections.length > 0 && JSON.stringify(props.data.depends_on_dynamic_form) !== JSON.stringify(sectionsData)) {
+            if (props.formularyId && props.data.depends_on_dynamic_form) {
+                setSectionsData(props.data.depends_on_dynamic_form)
+            } else {
+                buildInitialData(conditionals)
+            }
+        }
+    }, [props.sections, props.data])
 
     return (
         <div>
-            {sections.map((section, index) => (
+            { props.sections.filter(section=> sectionsData.map(sectionData => sectionData.form_id.toString()).includes(section.id.toString())).map((section, index) => (
                 <FormularySectionContainer key={index} isConditional={section.conditional_value !== null}>
                     <FormularySectionTitle>{ section.label_name }</FormularySectionTitle>
                     {section.form_type==='multi-form' ? (

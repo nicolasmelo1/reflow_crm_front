@@ -37,8 +37,8 @@ Okay, i think it's okay until now in formal language so let's try to explain in 
 
 ## HARDER EXPLANATION
 
-THIS IS THE data recieved from the __HOW__ to build the formulary. Looking at this JSON you quickly realize you have stuff like placeholder,
-is_required that defines if the field is required, conditionals from the sections, and all of that.
+THIS IS THE data recieved from the __HOW__ to build the formulary. Looking at this JSON you quickly realize you have stuff like `placeholder`,
+`is_required` that defines if the field is required, conditionals from the sections, and all of that.
 
 ```json
 {
