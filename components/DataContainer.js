@@ -4,10 +4,10 @@ import GestaoListing from 'components/Listing'
 
 const DataContainer = (props) => {
 
-    if (props.visualization == 'kanban') {
+    if (props.visualization == 'listing') {
         return (<GestaoListing />)
     } else {
-        return (<GestaoListing />)
+        return (<GestaoKanban />)
     }
 
 }

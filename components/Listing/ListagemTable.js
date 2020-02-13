@@ -1,6 +1,9 @@
 import React from 'react'
-import Table from 'react-bootstrap/Table'
+
 import ListagemTableHead from './ListagemTableHead'
+import ListagemTableContent from './ListagemTableContent'
+import { ListingTable } from 'styles/Listing'
+
 
 const ListagemTable = (props) => {
 
@@ -18,11 +21,12 @@ const ListagemTable = (props) => {
         });
         return <tr>{row}</tr>
     }); */
-    console.log(props.elements)
     return (
-        <Table bordered hover style={{ textAlign: "center", overflowY: "scroll", maxHeight: "600px" }}>
-            <ListagemTableHead things={props.elements} />
-        </Table>
+        <ListingTable bordered hover size="sm">
+            <ListagemTableHead things={props.heading} />
+            <ListagemTableContent contents={props.elements} headers={props.heading} />
+
+        </ListingTable>
     )
 }
 

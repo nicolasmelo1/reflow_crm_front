@@ -34,7 +34,7 @@ let setHeader = (token) => {
 const refreshToken = async (response, callback, url, params, headers) => {
     if (response !== undefined && response.data && response.data.reason) {
         if (response.data.reason === 'expired_token') {
-            response = await requests.get('refresh_token/', {}, setHeader(window.localStorage.getItem('refreshToken')))
+            response = await requests.get('login/refresh_token/', {}, setHeader(window.localStorage.getItem('refreshToken')))
             // checks if the response was an error and handles it next
             if (response.status !== 200) {
                 window.localStorage.setItem('refreshToken', '')
@@ -129,14 +129,22 @@ const HOME = {
     removeForm: async (groupId, id) => {
         return await requests.delete(`${companyId}/settings/api/formulary/${groupId}/${id}/`)
     }
+
 }
+
 
 const LISTING = {
     getData: async (params, formName) => {
         return await requests.get(`${companyId}/data/api/data/${formName}/`, params)
     },
     getHeader: async (formName) => {
-        return await requests.get(`${companyId}/data/api/listing/header/${formName}/`)
+        return await requests.get(`${companyId}/data/api/listing/${formName}/`)
+    },
+    getTotals: async (formName) => {
+        return await requests.get(`${companyId}/data/api/listing/${formName}/total/`)
+    },
+    updateSelectedFields: async (body, formName) => {
+        return await requests.post(`${companyId}/data/api/listing/${formName}/selected/`, body)
     }
 }
 

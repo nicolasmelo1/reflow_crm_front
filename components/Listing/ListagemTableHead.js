@@ -3,14 +3,22 @@ import React from 'react'
 import TblPopover from './TblPopover'
 
 const ListagemTableHead = (props) => {
-    console.log(props)
+    const headers = props.things.field_headers || []
     return (
         <thead>
             <tr>
-                {props.things.map((data, index) => (
-                    <TblPopover element={data} key={index} />
-                ))}
+                {headers.map(function (data, index) {
+                    if (data.user_selected) {
+                        return (
+                            <TblPopover element={data.label_name} key={index} />
+                        )
+                    }
+                }
+                )}
+                <TblPopover element="Editar" />
+                <TblPopover element="Deletar" />
             </tr>
+
         </thead>
     )
 

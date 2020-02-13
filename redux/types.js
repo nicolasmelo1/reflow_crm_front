@@ -4,3 +4,7 @@ export const ERROR = 'ERROR';
 export const GET_FORMS = 'GET_FORMS';
 export const UPDATE_GROUPS = 'UPDATE_GROUPS';
 export const GET_DATA = 'GET_DATA';
+export const GET_HEADERS = 'GET_HEADERS';
+export const GET_TOTALS = 'GET_TOTALS';
+export const UPDATE_HEAD_SELECT = 'UPDATE_HEAD_SELECT'
+export const UPDATE_FILTERS = 'UPDATE_FILTERS'

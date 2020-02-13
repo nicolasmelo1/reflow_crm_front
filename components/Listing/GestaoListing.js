@@ -1,10 +1,12 @@
-import { Row, Col, Button } from 'react-bootstrap'
+import { Row, Col } from 'react-bootstrap'
 import React from 'react'
 import actions from 'redux/actions'
 import { connect } from 'react-redux'
-import { render } from 'react-dom'
 import ListagemTable from './ListagemTable'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import ListingFilter from './ListingFilter'
+import ListingTotalCardGroup from './ListingTotalCardGroup'
+import ListingColumnSelectButton from './ListingColumnSelectButton'
+import { ListingTotalLabel, ListingFilterButton } from 'styles/Listing'
 
 class GestaoListing extends React.Component {
     constructor(props) {
@@ -17,27 +19,38 @@ class GestaoListing extends React.Component {
             to: '23/01/2020',
             page: 1
         }, 'negocios')
-        this.props.onGetHeader('negocios')
+        this.props.onGetHeader('negocios'),
+            this.props.onGetTotal('negocios')
     }
 
 
     render() {
-        console.log(this.props);
+        console.log(this.props.list);
+
+
         return (
             <>
                 <Row>
-                    <Col sm={{ span: 2 }}>
-                        <Button size="sm" style={{ background: "#444444", borderRadius: "20px", width: "126px", padding: "5px 5px" }}> <FontAwesomeIcon icon="filter" style={{ width: "24px", color: "white" }} />Filtro</Button>
-                        <Button size="sm" style={{ background: "#444444", borderRadius: "20px", width: "126px", padding: "5px 5px" }}>Extrair</Button>
+                    <ListingTotalLabel> Totais </ListingTotalLabel>
+                </Row>
+                <Row>
+                    <ListingTotalCardGroup cards={this.props.list.totals} />
+                </Row>
+                <Row>
+                    <Col sm={{}}>
+                        <ListingFilter onGetData={this.props.onGetData} headers={this.props.list.header} />
+                    </Col>
+                    <Col>
+                        <ListingFilterButton size="sm" >Extrair</ListingFilterButton>
                     </Col>
                     <Col sm={{ span: 5, offset: 4 }}>
-                        <Button size="sm" block style={{ background: "#444444", borderRadius: "20px", padding: "5px 5px" }}>Todas as colunas selecionadas</Button>
+                        <ListingColumnSelectButton headers={this.props.list.header} onUpdateSelected={this.props.onUpdateSelected} />
                     </Col>
                 </Row>
                 <Row>
                     <Col sm={{ span: 11 }}>
 
-                        <ListagemTable elements={this.props.listing.data} />
+                        <ListagemTable heading={this.props.list.header} elements={this.props.list.data} />
                     </Col>
                 </Row>
             </>
@@ -45,4 +58,4 @@ class GestaoListing extends React.Component {
     }
 }
 
-export default connect(state => ({ listing: state.home.list }), actions)(GestaoListing)
+export default connect(state => ({ list: state.home.list }), actions)(GestaoListing)
