@@ -10,7 +10,7 @@ class Data extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            formularyId: '51003'
+            formularyId: null//'51003'
         }
     }
 

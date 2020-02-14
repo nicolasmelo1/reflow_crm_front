@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 
 export default styled.div`
-    ${props => props.isHidden ? 'display: none;': ''}
+    border-radius: 10px;
+    padding: 5px;
+    ${props => props.invalid ? 'border: 1px solid red;': ''}
 `

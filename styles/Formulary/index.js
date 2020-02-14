@@ -8,7 +8,9 @@ import FormularyFieldContainer from './FormularyFieldContainer'
 import FormularyFieldsContainer from './FormularyFieldsContainer'
 import FormularySectionContainer from './FormularySectionContainer'
 import FormularyRemoveMultiFormButton from './FormularyRemoveMultiFormButton'
+import FormularyNavigatorButton from './FormularyNavigatorButton'
 
+export { FormularyNavigatorButton }
 export { FormularyRemoveMultiFormButton }
 export { FormularyFieldsContainer }
 export { FormularySectionContainer }

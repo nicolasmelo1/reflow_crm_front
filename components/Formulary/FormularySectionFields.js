@@ -65,6 +65,8 @@ const FormularySectionFields = (props) => {
             {props.fields.map((element, index)=>(
                 <FormularyFieldContainer key={element.id}>
                     <Fields 
+                    errors={props.errors}
+                    onChangeFormulary={props.onChangeFormulary}
                     field={element}
                     fieldFormValues={getFieldFormValues(element.name)} 
                     getFieldFormValues={getFieldFormValues}

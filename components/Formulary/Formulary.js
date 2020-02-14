@@ -1,9 +1,10 @@
 import React from 'react'
-import { FormularyContainer, FormularyButton, FormularyContentContainer } from 'styles/Formulary'
+import { FormularyContainer, FormularyButton, FormularyContentContainer, FormularyNavigatorButton } from 'styles/Formulary'
 import { Row, Col } from 'react-bootstrap'
 import FormularySection from './FormularySection'
 import actions from 'redux/actions'
 import { connect } from 'react-redux'
+import { strings } from 'utils/constants'
 
 /**
  * You might want to read the README to understand how this and all of it's components work.
@@ -12,9 +13,10 @@ class Formulary extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            isOpen: false
+            isOpen: false,
+            errors: {},
+            auxOriginalInitial: {}
         }
-        this.loadData = false
     }
 
     setIsOpen = (e) => {
@@ -26,11 +28,25 @@ class Formulary extends React.Component {
         if (this.state.isOpen) {
             this.props.setFormularyId(null)
             this.props.onChangeFormularyData({})
+            this.setErrors({})
         }
         
         this.setState(state => {
             return {
+                ...state,
                 isOpen: !state.isOpen
+            }
+        })
+    }
+
+    setAuxOriginalInitial = () => {
+        this.setState(state => {
+            return {
+                ...state,
+                auxOriginalInitial: {
+                    buildData: {...this.props.formulary.buildData},
+                    filledData: {...this.props.formulary.filledData}
+                } 
             }
         })
     }
@@ -41,38 +57,73 @@ class Formulary extends React.Component {
         })
     }
 
+    setErrors = (errors) => {
+        this.setState(state => {
+            return {
+                ...state,
+                errors: errors
+            }
+        })
+    }
+
     onSubmit = () => {
+        let response = null
         if (this.props.formularyId) {
-            this.props.onUpdateFormularyData(this.props.formulary.filled_data, this.props.query.form, this.props.formularyId)
+            response = this.props.onUpdateFormularyData(this.props.formulary.filledData, this.props.query.form, this.props.formularyId)
         } else {
-            this.props.onCreateFormularyData(this.props.formulary.filled_data, this.props.query.form)
+            response = this.props.onCreateFormularyData(this.props.formulary.filledData, this.props.query.form)
+        }
+        
+        if (response) {
+            response.then(response=> {
+                if (response.status !== 200) {
+                    this.setErrors(response.data.error)
+                }
+            })
         }
     }
 
-    componentDidMount = () => {
-        this.props.onGetBuildFormulary(this.props.query.form)
-        if (this.props.formularyId) {
-            this.props.onGetFormularyData(this.props.query.form, this.props.formularyId)
+
+    buildFormulary = (formName, formId=null) => {
+        this.props.onGetBuildFormulary(formName)
+        if (formId) {
+            this.props.onGetFormularyData(formName, formId)
         } 
     }
 
+
+    onChangeFormulary = (formName, formId=null) => {
+        this.setAuxOriginalInitial()
+        this.props.onFullResetFormulary()
+        this.buildFormulary(formName, formId)
+    }
+
+    componentDidMount = () => {
+        this.buildFormulary(this.props.query.form, this.props.formularyId)
+    }
+
+    
     render() {
         return (
             <FormularyContainer>
                 <Row>
                     <Col>
-                        <FormularyButton onClick={e=>{this.setIsOpen(e)}}>Adicionar</FormularyButton>
+                        <FormularyButton onClick={e=>{this.setIsOpen(e)}}>{strings['pt-br']['formularyOpenButtonLabel']}</FormularyButton>
                     </Col>
                 </Row>
                 <Row>
                     <Col>
                         <FormularyContentContainer isOpen={this.state.isOpen}>
+                            {(this.props.formulary.buildData && this.props.formulary.buildData.form_name !== this.props.query.form) ? (
+                                <FormularyNavigatorButton onClick={e => {this.props.onFullResetFormulary(this.state.auxOriginalInitial.filledData, this.state.auxOriginalInitial.buildData)}}>&lt;&nbsp;Voltar</FormularyNavigatorButton>
+                            ) : ''}
                             <FormularySection 
+                            errors={this.state.errors}
+                            onChangeFormulary={this.onChangeFormulary}
                             loadData={this.loadData}
-                            data={this.props.formulary.filled_data}
+                            data={this.props.formulary.filledData}
                             setData={this.setData}
-                            formularyId={(this.props.formularyId !== null) ? this.props.formularyId : null}
-                            sections={(this.props.formulary.loaded.depends_on_form) ? this.props.formulary.loaded.depends_on_form : []}
+                            sections={(this.props.formulary.buildData && this.props.formulary.buildData.depends_on_form) ? this.props.formulary.buildData.depends_on_form : []}
                             />
                             <button onClick={e=> {this.onSubmit()}}>Salvar</button>
                         </FormularyContentContainer>

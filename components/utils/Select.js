@@ -134,6 +134,10 @@ const Select = (props) => {
     }
 
     useEffect(() => {
+        setOptions(props.options)
+    }, [props.options])
+
+    useEffect(() => {
         document.addEventListener("mousedown", onSelectClick); 
         return () => {
             document.removeEventListener("mousedown", onSelectClick);

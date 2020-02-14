@@ -10,6 +10,7 @@ import Id from './Id'
 import LongText from './LongText'
 import Form from './Form'
 import { Field } from 'styles/Formulary'
+import { errors } from 'utils/constants'
 
 const Fields = (props) => {
     const [values, setValues] = useState([])
@@ -78,27 +79,51 @@ const Fields = (props) => {
         }
     }
 
+    const checkErrors = () => {
+        if (Object.keys(props.errors).length !== 0 && props.errors.detail.includes(props.field.name)) {
+            switch (props.errors.reason[0]) {
+                case 'required_field':
+                    return values.length === 0 || values.filter(value => value.value === '').length !== 0
+                case 'already_exists':
+                    return values.filter(value => props.errors.data.includes(value.value)) !== 0
+                case 'invalid_file':
+                    return values.filter(value => props.errors.data.includes(value.value)) !== 0
+                default:
+                    return false
+            }
+        }
+        return false
+    }
+
+
     useEffect(()=> {
         setValues(props.fieldFormValues)
         if (props.fieldFormValues.length === 0 && props.field.field_is_hidden) {
             props.addFieldFormValue(props.field.name, '')
         }
     }, [props.fieldFormValues])
+
     
     return (
-        <div>
+        <Field.Container invalid={checkErrors()}>
             {(props.field_is_hidden) ? '' : (
                 <div>
                     {(props.field.label_is_hidden) ? '' : (
                         <Field.FieldTitle.Label>
                             { props.field.label_name }
                             <Field.FieldTitle.Required>{(props.field.required) ? '*': ''}</Field.FieldTitle.Required>
+                            {(props.field.field_type === 'form') ? (
+                                <Field.FieldTitle.FormButton onClick={e => {props.onChangeFormulary(props.field.form_field_as_option.form_name)}}>Adicionar Novo</Field.FieldTitle.FormButton>
+                            ) : ''}
                         </Field.FieldTitle.Label>
                     )}
                     {renderFieldType()}
                 </div>
             )}
-        </div>
+            {(checkErrors()) ? (
+                <Field.Errors>{errors('pt-br', props.errors.reason[0])}</Field.Errors>
+            ) : ''}
+        </Field.Container>
     )
 }
 

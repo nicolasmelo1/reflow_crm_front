@@ -145,6 +145,9 @@ const HOME = {
     },
     updateFormularyData: async (body, formName, formId) => {
         return await requests.put(`${companyId}/formulary/api/${formName}/${formId}/`, formEncodeData('data', body), {'Content-Type': 'multipart/form-data'})
+    },
+    getFormularyFormFieldOptions: async (formName, fieldId) => {
+        return await requests.get(`${companyId}/formulary/api/${formName}/${fieldId}/form/options/`)
     }
     
 }

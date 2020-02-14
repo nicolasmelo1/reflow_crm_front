@@ -119,7 +119,7 @@ const FormularySection = (props) => {
         }
 
         if (props.sections.length > 0 && JSON.stringify(props.data.depends_on_dynamic_form) !== JSON.stringify(sectionsData)) {
-            if (props.formularyId && props.data.depends_on_dynamic_form) {
+            if (props.data.depends_on_dynamic_form) {
                 setSectionsData(props.data.depends_on_dynamic_form)
             } else {
                 buildInitialData(conditionals)
@@ -137,6 +137,8 @@ const FormularySection = (props) => {
                     ): ''} 
                     {sectionsData.filter(sectionData=> section.id.toString() === sectionData.form_id.toString()).map((sectionData, index) => (
                         <FormularySectionFields 
+                        errors={props.errors}
+                        onChangeFormulary={props.onChangeFormulary}
                         key={(sectionsData.id) ? sectionData.id: index} 
                         sectionData={sectionData} 
                         updateSection={updateSection}
