@@ -1,5 +1,13 @@
-import { GET_FORMULARY, SET_FORMULARY_DATA, SET_FORMULARY_DATA_ERROR } from 'redux/types';
+import { GET_FORMULARY, SET_FORMULARY_DATA, SET_FORMULARY_OPEN } from 'redux/types';
 import agent from 'redux/agent'
+
+
+const onOpenOrCloseFormulary = (isOpen=false) => {
+    return (dispatch) => {
+        dispatch({type: SET_FORMULARY_OPEN, payload: isOpen})
+    }
+}
+
 
 const onGetBuildFormulary = (formName) => {
     return async (dispatch) => {
@@ -52,6 +60,7 @@ const onChangeFormularyData = (formData) => {
 
 
 export default {
+    onOpenOrCloseFormulary,
     onGetBuildFormulary,
     onChangeFormularyData,
     onGetFormularyData,

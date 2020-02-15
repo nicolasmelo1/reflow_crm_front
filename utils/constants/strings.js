@@ -47,7 +47,9 @@ const strings = {
         formularyFieldAttachmentDefaultLabel: 'Clique ou arraste arquivos aqui',
         formularyRequiredFieldError: 'Este campo é obrigatório',
         formularyInvalidFileError: 'O tipo de arquivo não é suportado, aceitamos apenas .doc, .docx, .jpeg, .jpg, .pdf, .png, .wav, .xls, .xlsx, .zip',
-        formularyUniqueFieldError: 'Os valores deste campo são unicos e tente inserir outro valor'
+        formularyUniqueFieldError: 'Os valores deste campo são unicos e tente inserir outro valor',
+        formularyFormFieldAddNewButtonLabel: 'Adicionar novo',
+        formularyFormFieldEditButtonLabel: 'Editar'
     }
 }
 

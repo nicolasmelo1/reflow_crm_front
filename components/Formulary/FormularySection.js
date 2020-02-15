@@ -111,6 +111,9 @@ const FormularySection = (props) => {
      * This effect is used to sync between the redux and this component. First the sections, the sections are usually HOW we render so it MUST render first
      * second is the data, the data is WHAT to render so it usually needs to be loaded second. We use the same effect because sometimes the order of the ones that 
      * loads first and second might change. If we only check props.data changes, we can't know that the sections were updated.
+     * 
+     * When you make a change the changes propagate upper in the hierarchy, but since the upper data is equal the data here, we don't go down when a
+     * change is made. When the user load some data is the only moment the data propagate down in the hierarchy
      */
     useEffect (() => {
         const conditionals = props.sections.filter(section => !['', null].includes(section.conditional_value))

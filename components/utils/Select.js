@@ -134,7 +134,9 @@ const Select = (props) => {
     }
 
     useEffect(() => {
-        setOptions(props.options)
+        if (JSON.stringify(props.options) !== JSON.stringify(options)) {
+            setOptions(props.options)
+        }
     }, [props.options])
 
     useEffect(() => {
@@ -145,7 +147,10 @@ const Select = (props) => {
     }, [onSelectClick]);
     
     useEffect(() => {
-        setSelectedOptions(props.initialValues.map(initialValue=> {return{ ...initialValue, selected:false }}))
+        const selectedInitialValues = props.initialValues.map(initialValue=> {return{ ...initialValue, selected:false }})
+        let filteredOptions = props.options.filter(option=> selectedInitialValues.find(selectedOption=> selectedOption.value === option.value) === undefined);
+        setSelectedOptions(selectedInitialValues)
+        setOptions(filteredOptions)
     }, [props.initialValues])
 
     return(
@@ -154,7 +159,7 @@ const Select = (props) => {
                 {selectedOptions.map((selectedOption, index)=> (
                     <Utils.Select.SelectedOption 
                     key={selectedOption.value} 
-                    color={selectedItemColors[index - Math.floor(index/selectedItemColors.length)*selectedItemColors.length]} 
+                    color={selectedItemColors[Math.floor(Math.random() * selectedItemColors.length)]} 
                     selected={selectedOption.selected} 
                     onClick={e=>{onClickSelectedOption(e, index)}}
                     >

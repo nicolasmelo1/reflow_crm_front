@@ -10,7 +10,7 @@ import Id from './Id'
 import LongText from './LongText'
 import Form from './Form'
 import { Field } from 'styles/Formulary'
-import { errors } from 'utils/constants'
+import { errors, strings } from 'utils/constants'
 
 const Fields = (props) => {
     const [values, setValues] = useState([])
@@ -96,6 +96,14 @@ const Fields = (props) => {
     }
 
 
+    const formFieldLabelButtonText = () => {
+        if (values.length === 0) {
+            return strings['pt-br']['formularyFormFieldAddNewButtonLabel']
+        } else {
+            return strings['pt-br']['formularyFormFieldEditButtonLabel']
+        }
+    }
+
     useEffect(()=> {
         setValues(props.fieldFormValues)
         if (props.fieldFormValues.length === 0 && props.field.field_is_hidden) {
@@ -103,7 +111,6 @@ const Fields = (props) => {
         }
     }, [props.fieldFormValues])
 
-    
     return (
         <Field.Container invalid={checkErrors()}>
             {(props.field_is_hidden) ? '' : (
@@ -113,7 +120,11 @@ const Fields = (props) => {
                             { props.field.label_name }
                             <Field.FieldTitle.Required>{(props.field.required) ? '*': ''}</Field.FieldTitle.Required>
                             {(props.field.field_type === 'form') ? (
-                                <Field.FieldTitle.FormButton onClick={e => {props.onChangeFormulary(props.field.form_field_as_option.form_name)}}>Adicionar Novo</Field.FieldTitle.FormButton>
+                                <Field.FieldTitle.FormButton 
+                                onClick={e => {props.onChangeFormulary(props.field.form_field_as_option.form_name, (values.length > 0) ? values[0].value: null)}}
+                                >
+                                    {formFieldLabelButtonText()}
+                                </Field.FieldTitle.FormButton>
                             ) : ''}
                         </Field.FieldTitle.Label>
                     )}

@@ -2,6 +2,7 @@ import React from 'react'
 import { FormularyContainer, FormularyButton, FormularyContentContainer, FormularyNavigatorButton } from 'styles/Formulary'
 import { Row, Col } from 'react-bootstrap'
 import FormularySection from './FormularySection'
+import FormularySectionEdit from './FormularySectionEdit'
 import actions from 'redux/actions'
 import { connect } from 'react-redux'
 import { strings } from 'utils/constants'
@@ -13,7 +14,7 @@ class Formulary extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            isOpen: false,
+            isEditing: true,
             errors: {},
             auxOriginalInitial: {}
         }
@@ -27,16 +28,15 @@ class Formulary extends React.Component {
         // when user closes we reset the states on the formulary
         if (this.state.isOpen) {
             this.props.setFormularyId(null)
-            this.props.onChangeFormularyData({})
+            if (this.state.auxOriginalInitial.filledData && this.state.auxOriginalInitial.buildData) {
+                this.props.onFullResetFormulary({}, this.state.auxOriginalInitial.buildData)
+            } else {
+                this.props.onChangeFormularyData({})
+            }
             this.setErrors({})
         }
         
-        this.setState(state => {
-            return {
-                ...state,
-                isOpen: !state.isOpen
-            }
-        })
+        this.props.onOpenOrCloseFormulary(!this.props.formulary.isOpen)
     }
 
     setAuxOriginalInitial = () => {
@@ -47,6 +47,15 @@ class Formulary extends React.Component {
                     buildData: {...this.props.formulary.buildData},
                     filledData: {...this.props.formulary.filledData}
                 } 
+            }
+        })
+    }
+
+    setIsEditing = () => {
+        this.setState(state => {
+            return {
+                ...state,
+                isEditing: !state.isEditing
             }
         })
     }
@@ -113,19 +122,27 @@ class Formulary extends React.Component {
                 </Row>
                 <Row>
                     <Col>
-                        <FormularyContentContainer isOpen={this.state.isOpen}>
-                            {(this.props.formulary.buildData && this.props.formulary.buildData.form_name !== this.props.query.form) ? (
-                                <FormularyNavigatorButton onClick={e => {this.props.onFullResetFormulary(this.state.auxOriginalInitial.filledData, this.state.auxOriginalInitial.buildData)}}>&lt;&nbsp;Voltar</FormularyNavigatorButton>
-                            ) : ''}
-                            <FormularySection 
-                            errors={this.state.errors}
-                            onChangeFormulary={this.onChangeFormulary}
-                            loadData={this.loadData}
-                            data={this.props.formulary.filledData}
-                            setData={this.setData}
-                            sections={(this.props.formulary.buildData && this.props.formulary.buildData.depends_on_form) ? this.props.formulary.buildData.depends_on_form : []}
-                            />
-                            <button onClick={e=> {this.onSubmit()}}>Salvar</button>
+                        <FormularyContentContainer isOpen={this.props.formulary.isOpen}>
+                            {(this.state.isEditing) ? (
+                                <div>
+                                    <FormularySectionEdit/>
+                                </div>
+                            ): (
+                                <div>
+                                    {(this.props.formulary.buildData && this.props.formulary.buildData.form_name !== this.props.query.form) ? (
+                                        <FormularyNavigatorButton onClick={e => {this.props.onFullResetFormulary(this.state.auxOriginalInitial.filledData, this.state.auxOriginalInitial.buildData)}}>&lt;&nbsp;Voltar</FormularyNavigatorButton>
+                                    ) : ''}
+                                    <FormularySection 
+                                    errors={this.state.errors}
+                                    onChangeFormulary={this.onChangeFormulary}
+                                    loadData={this.loadData}
+                                    data={this.props.formulary.filledData}
+                                    setData={this.setData}
+                                    sections={(this.props.formulary.buildData && this.props.formulary.buildData.depends_on_form) ? this.props.formulary.buildData.depends_on_form : []}
+                                    />
+                                    <button onClick={e=> {this.onSubmit()}}>Salvar</button>
+                                </div> 
+                            )}
                         </FormularyContentContainer>
                     </Col>
                 </Row>  
