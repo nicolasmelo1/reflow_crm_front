@@ -1,4 +1,4 @@
-import { GET_FORMULARY, SET_FORMULARY_DATA, SET_FORMULARY_OPEN } from 'redux/types';
+import { GET_FORMULARY, SET_FORMULARY_DATA, SET_FORMULARY_OPEN, SET_FORMULARY_SETTINGS_DATA } from 'redux/types';
 import agent from 'redux/agent'
 
 
@@ -8,13 +8,12 @@ const onOpenOrCloseFormulary = (isOpen=false) => {
     }
 }
 
-
 const onGetBuildFormulary = (formName) => {
     return async (dispatch) => {
         let response = await agent.HOME.getBuildFormulary(formName)
         dispatch({type: GET_FORMULARY, payload: response.data.data});
-    };
-};
+    }
+}
 
 const onGetFormularyData = (formName, formId) => {
     return async (dispatch) => {
@@ -58,8 +57,15 @@ const onChangeFormularyData = (formData) => {
     }
 }
 
+const onGetFormularySettings = (groupId, formularyId) => {
+    return async (dispatch) => {
+        const response = await agent.HOME.getFormularySettingsData(groupId, formularyId)
+        dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: response.data.data })
+    }
+}
 
 export default {
+    onGetFormularySettings,
     onOpenOrCloseFormulary,
     onGetBuildFormulary,
     onChangeFormularyData,

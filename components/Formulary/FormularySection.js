@@ -122,7 +122,11 @@ const FormularySection = (props) => {
         }
 
         if (props.sections.length > 0 && JSON.stringify(props.data.depends_on_dynamic_form) !== JSON.stringify(sectionsData)) {
-            if (props.data.depends_on_dynamic_form) {
+            const sectionIds = props.sections.map(section => section.id.toString())
+            const sectionDataIds = (props.data.depends_on_dynamic_form) ? props.data.depends_on_dynamic_form.map(sectionData=> sectionData.form_id.toString()) : []
+            
+            let formDataLoadedIsFromFormBuilded = sectionDataIds.every(sectionDataId=> sectionIds.includes(sectionDataId))
+            if (props.data.depends_on_dynamic_form && formDataLoadedIsFromFormBuilded) {
                 setSectionsData(props.data.depends_on_dynamic_form)
             } else {
                 buildInitialData(conditionals)

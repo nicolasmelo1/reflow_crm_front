@@ -1,4 +1,4 @@
-import { GET_FORMULARY, SET_FORMULARY_DATA, SET_FORMULARY_OPEN } from 'redux/types';
+import { GET_FORMULARY, SET_FORMULARY_DATA, SET_FORMULARY_OPEN, SET_FORMULARY_SETTINGS_DATA } from 'redux/types';
 
 let initialState = {
     isOpen: false,
@@ -23,6 +23,11 @@ export default (state=initialState, action) => {
             return {
                 ...state,
                 isOpen: !state.isOpen
+            }
+        case SET_FORMULARY_SETTINGS_DATA:
+            return {
+                ...state,
+                update: action.payload
             }
         default:
             return state;

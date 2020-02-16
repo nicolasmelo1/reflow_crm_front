@@ -148,13 +148,16 @@ const HOME = {
     },
     getFormularyFormFieldOptions: async (formName, fieldId) => {
         return await requests.get(`${companyId}/formulary/api/${formName}/${fieldId}/form/options/`)
+    },
+    getFormularySettingsData: async (groupId, formId) => {
+        return await requests.get(`${companyId}/settings/api/formulary/${groupId}/${formId}/section/`)
     }
     
 }
 
 export default {
-    setCompanyId: _companyId => { companyId = _companyId},
-    setToken: (_token) => { token = _token; },
+    setCompanyId: _companyId => { companyId = _companyId },
+    setToken: _token => { token = _token },
     LOGIN,
     HOME
 }

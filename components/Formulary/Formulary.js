@@ -14,7 +14,7 @@ class Formulary extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            isEditing: true,
+            isEditing: false,
             errors: {},
             auxOriginalInitial: {}
         }
@@ -52,6 +52,12 @@ class Formulary extends React.Component {
     }
 
     setIsEditing = () => {
+        if (!this.state.isEditing) {
+            this.props.onGetFormularySettings(
+                this.props.formulary.buildData.group_id,
+                this.props.formulary.buildData.id
+            )
+        }
         this.setState(state => {
             return {
                 ...state,
@@ -129,6 +135,9 @@ class Formulary extends React.Component {
                                 </div>
                             ): (
                                 <div>
+                                    {(this.props.formulary.buildData.group_id && this.props.formulary.buildData.id) ? (
+                                        <button onClick={e=> {this.setIsEditing()}}>Editar campos</button>
+                                    ) : ''}
                                     {(this.props.formulary.buildData && this.props.formulary.buildData.form_name !== this.props.query.form) ? (
                                         <FormularyNavigatorButton onClick={e => {this.props.onFullResetFormulary(this.state.auxOriginalInitial.filledData, this.state.auxOriginalInitial.buildData)}}>&lt;&nbsp;Voltar</FormularyNavigatorButton>
                                     ) : ''}
