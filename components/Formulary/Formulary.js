@@ -98,14 +98,12 @@ class Formulary extends React.Component {
         }
     }
 
-
     buildFormulary = (formName, formId=null) => {
         this.props.onGetBuildFormulary(formName)
         if (formId) {
             this.props.onGetFormularyData(formName, formId)
         } 
     }
-
 
     onChangeFormulary = (formName, formId=null) => {
         this.setAuxOriginalInitial()
@@ -131,7 +129,9 @@ class Formulary extends React.Component {
                         <FormularyContentContainer isOpen={this.props.formulary.isOpen}>
                             {(this.state.isEditing) ? (
                                 <div>
-                                    <FormularySectionEdit/>
+                                    <FormularySectionEdit
+                                    sections={(this.props.formulary.update.depends_on_form) ? this.props.formulary.update.depends_on_form : []}
+                                    />
                                 </div>
                             ): (
                                 <div>
