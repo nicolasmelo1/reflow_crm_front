@@ -34,7 +34,7 @@ const SidebarFormEdit = (props) => {
         props.onRemoveForm(form, props.groupIndex, index)
     }
 
-    const onMoveGroup = (e, form, index) => {
+    const onMoveForm = (e, form, index) => {
         let formContainer = e.currentTarget.closest('.form-container')
         let elementRect = e.currentTarget.getBoundingClientRect()
         e.dataTransfer.setDragImage(formContainer, elementRect.width-elementRect.left - ( elementRect.right - elementRect.width ), 20)
@@ -78,7 +78,7 @@ const SidebarFormEdit = (props) => {
                         <SidebarIconsContainer>
                             <SidebarIcons size="sm" type="form" icon="eye" onClick={e=>{onDisableForm(e, element, index)}}/>
                             <SidebarIcons size="sm" type="form" icon="trash" onClick={e=>{onRemoveForm(e, element, index)}}/>
-                            <div draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveGroup(e, element, index)}} onDragEnd={e=>{onDragEnd(e)}}  >
+                            <div draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveForm(e, element, index)}} onDragEnd={e=>{onDragEnd(e)}}  >
                                 <SidebarIcons size="sm" type="form" icon="arrows-alt" />
                             </div>
                         </SidebarIconsContainer> 

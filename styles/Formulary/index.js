@@ -9,7 +9,15 @@ import FormularyFieldsContainer from './FormularyFieldsContainer'
 import FormularySectionContainer from './FormularySectionContainer'
 import FormularyRemoveMultiFormButton from './FormularyRemoveMultiFormButton'
 import FormularyNavigatorButton from './FormularyNavigatorButton'
+import FormularySectionEditContainer from './FormularySectionEditContainer'
+import FormularySectionEditNameInput from './FormularySectionEditNameInput'
+import FormularySectionEditIconContainer from './FormularySectionEditIconContainer'
+import FormularySectionEditIcon from './FormularySectionEditIcon'
 
+export { FormularySectionEditIcon }
+export { FormularySectionEditIconContainer }
+export { FormularySectionEditNameInput }
+export { FormularySectionEditContainer }
 export { FormularyNavigatorButton }
 export { FormularyRemoveMultiFormButton }
 export { FormularyFieldsContainer }
