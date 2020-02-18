@@ -13,7 +13,11 @@ import FormularySectionEditContainer from './FormularySectionEditContainer'
 import FormularySectionEditNameInput from './FormularySectionEditNameInput'
 import FormularySectionEditIconContainer from './FormularySectionEditIconContainer'
 import FormularySectionEditIcon from './FormularySectionEditIcon'
+import FormularySectionEditSettingsContainer from './FormularySectionEditSettingsContainer'
+import FormularySectionEditFieldsContainer from './FormularySectionEditFieldsContainer'
 
+export { FormularySectionEditFieldsContainer }
+export { FormularySectionEditSettingsContainer }
 export { FormularySectionEditIcon }
 export { FormularySectionEditIconContainer }
 export { FormularySectionEditNameInput }

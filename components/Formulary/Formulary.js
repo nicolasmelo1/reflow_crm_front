@@ -130,6 +130,7 @@ class Formulary extends React.Component {
                             {(this.state.isEditing) ? (
                                 <div>
                                     <FormularySectionEdit
+                                    setIsEditing={this.setIsEditing}
                                     sections={(this.props.formulary.update.depends_on_form) ? this.props.formulary.update.depends_on_form : []}
                                     />
                                 </div>
