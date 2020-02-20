@@ -30,7 +30,6 @@ const SidebarFormEdit = (props) => {
 
     const onRemoveForm = (e, form, index) => {
         e.preventDefault()
-        console.log('teste')
         props.onRemoveForm(form, props.groupIndex, index)
     }
 

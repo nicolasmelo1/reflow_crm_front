@@ -1,8 +1,8 @@
 import React from 'react'
 import { FormularyContainer, FormularyButton, FormularyContentContainer, FormularyNavigatorButton } from 'styles/Formulary'
 import { Row, Col } from 'react-bootstrap'
-import FormularySection from './FormularySection'
-import FormularySectionEdit from './FormularySectionEdit'
+import FormularySections from './FormularySections'
+import FormularySectionsEdit from './FormularySectionsEdit'
 import actions from 'redux/actions'
 import { connect } from 'react-redux'
 import { strings } from 'utils/constants'
@@ -129,7 +129,7 @@ class Formulary extends React.Component {
                         <FormularyContentContainer isOpen={this.props.formulary.isOpen}>
                             {(this.state.isEditing) ? (
                                 <div>
-                                    <FormularySectionEdit
+                                    <FormularySectionsEdit
                                     setIsEditing={this.setIsEditing}
                                     sections={(this.props.formulary.update.depends_on_form) ? this.props.formulary.update.depends_on_form : []}
                                     />
@@ -142,7 +142,7 @@ class Formulary extends React.Component {
                                     {(this.props.formulary.buildData && this.props.formulary.buildData.form_name !== this.props.query.form) ? (
                                         <FormularyNavigatorButton onClick={e => {this.props.onFullResetFormulary(this.state.auxOriginalInitial.filledData, this.state.auxOriginalInitial.buildData)}}>&lt;&nbsp;Voltar</FormularyNavigatorButton>
                                     ) : ''}
-                                    <FormularySection 
+                                    <FormularySections 
                                     errors={this.state.errors}
                                     onChangeFormulary={this.onChangeFormulary}
                                     loadData={this.loadData}

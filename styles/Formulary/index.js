@@ -15,7 +15,9 @@ import FormularySectionEditIconContainer from './FormularySectionEditIconContain
 import FormularySectionEditIcon from './FormularySectionEditIcon'
 import FormularySectionEditSettingsContainer from './FormularySectionEditSettingsContainer'
 import FormularySectionEditFieldsContainer from './FormularySectionEditFieldsContainer'
+import FormularySectionEditIconsContainer from  './FormularySectionEditIconsContainer'
 
+export { FormularySectionEditIconsContainer }
 export { FormularySectionEditFieldsContainer }
 export { FormularySectionEditSettingsContainer }
 export { FormularySectionEditIcon }

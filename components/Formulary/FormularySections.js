@@ -8,7 +8,7 @@ import FormularySectionFields from './FormularySectionFields'
  * @param {Function} setData - sets the data from the formulary main component
  * @param {Array<Object>} sections - defines the HOW to build the formulary, this json contains all of the information about each section, 
  */
-const FormularySection = (props) => {
+const FormularySections = (props) => {
     const [conditionalSections,  setConditionalSections] = useState([])
     const [sectionsData, setSectionsData] = useState([])
 
@@ -162,4 +162,4 @@ const FormularySection = (props) => {
     )
 }
 
-export default FormularySection
+export default FormularySections
