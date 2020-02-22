@@ -1,5 +1,5 @@
 import React from 'react'
-import { FormularyContainer, FormularyButton, FormularyContentContainer, FormularyNavigatorButton } from 'styles/Formulary'
+import { Formularies } from 'styles/Formulary'
 import { Row, Col } from 'react-bootstrap'
 import FormularySections from './FormularySections'
 import FormularySectionsEdit from './FormularySectionsEdit'
@@ -54,7 +54,6 @@ class Formulary extends React.Component {
     setIsEditing = () => {
         if (!this.state.isEditing) {
             this.props.onGetFormularySettings(
-                this.props.formulary.buildData.group_id,
                 this.props.formulary.buildData.id
             )
         }
@@ -118,20 +117,22 @@ class Formulary extends React.Component {
     
     render() {
         return (
-            <FormularyContainer>
+            <Formularies.Container>
                 <Row>
                     <Col>
-                        <FormularyButton onClick={e=>{this.setIsOpen(e)}}>{strings['pt-br']['formularyOpenButtonLabel']}</FormularyButton>
+                        <Formularies.Button onClick={e=>{this.setIsOpen(e)}}>{strings['pt-br']['formularyOpenButtonLabel']}</Formularies.Button>
                     </Col>
                 </Row>
                 <Row>
                     <Col>
-                        <FormularyContentContainer isOpen={this.props.formulary.isOpen}>
+                        <Formularies.ContentContainer isOpen={this.props.formulary.isOpen}>
                             {(this.state.isEditing) ? (
                                 <div>
                                     <FormularySectionsEdit
+                                    onUpdateFormularySettings={this.props.onUpdateFormularySettings}
+                                    types={this.props.types}
                                     setIsEditing={this.setIsEditing}
-                                    sections={(this.props.formulary.update.depends_on_form) ? this.props.formulary.update.depends_on_form : []}
+                                    data={this.props.formulary.update}
                                     />
                                 </div>
                             ): (
@@ -140,7 +141,7 @@ class Formulary extends React.Component {
                                         <button onClick={e=> {this.setIsEditing()}}>Editar campos</button>
                                     ) : ''}
                                     {(this.props.formulary.buildData && this.props.formulary.buildData.form_name !== this.props.query.form) ? (
-                                        <FormularyNavigatorButton onClick={e => {this.props.onFullResetFormulary(this.state.auxOriginalInitial.filledData, this.state.auxOriginalInitial.buildData)}}>&lt;&nbsp;Voltar</FormularyNavigatorButton>
+                                        <Formularies.Navigator onClick={e => {this.props.onFullResetFormulary(this.state.auxOriginalInitial.filledData, this.state.auxOriginalInitial.buildData)}}>&lt;&nbsp;Voltar</Formularies.Navigator>
                                     ) : ''}
                                     <FormularySections 
                                     errors={this.state.errors}
@@ -153,12 +154,12 @@ class Formulary extends React.Component {
                                     <button onClick={e=> {this.onSubmit()}}>Salvar</button>
                                 </div> 
                             )}
-                        </FormularyContentContainer>
+                        </Formularies.ContentContainer>
                     </Col>
                 </Row>  
-            </FormularyContainer>
+            </Formularies.Container>
         )
     }
 }
 
-export default connect(state => ({ formulary: state.home.formulary }), actions)(Formulary);
+export default connect(state => ({ formulary: state.home.formulary, types: state.login.types }), actions)(Formulary);

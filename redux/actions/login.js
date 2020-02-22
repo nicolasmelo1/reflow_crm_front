@@ -1,6 +1,6 @@
 import Router from 'next/router';
 import axios from 'axios';
-import { DEAUTHENTICATE, AUTHENTICATE, ERROR } from '../types';
+import { DEAUTHENTICATE, AUTHENTICATE, ERROR, DATA_TYPES } from '../types';
 import { API } from '../../config';
 import agent from '../agent'
 
@@ -18,7 +18,18 @@ const onDeauthenticate = () => {
     }
 }
 
+const getDataTypes = () => {
+    return async (dispatch, getState) => {
+        const stateData = getState().login
+        let response = await agent.LOGIN.getDataTypes()
+        if (JSON.stringify(stateData.types) !== JSON.stringify(response.data.data)) {
+            dispatch({ type: DATA_TYPES, payload: response.data.data });
+        }
+    };
+}
+
 export default {
     onAuthenticate,
-    onDeauthenticate
+    onDeauthenticate,
+    getDataTypes
 };

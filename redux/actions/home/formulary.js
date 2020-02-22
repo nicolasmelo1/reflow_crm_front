@@ -57,14 +57,21 @@ const onChangeFormularyData = (formData) => {
     }
 }
 
-const onGetFormularySettings = (groupId, formularyId) => {
+const onGetFormularySettings = (formularyId) => {
     return async (dispatch) => {
-        const response = await agent.HOME.getFormularySettingsData(groupId, formularyId)
+        const response = await agent.HOME.getFormularySettingsData(formularyId)
         dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: response.data.data })
     }
 }
 
+const onUpdateFormularySettings = (formSettingsData) => {
+    return (dispatch) => {
+        dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: formSettingsData })
+    }
+}
+
 export default {
+    onUpdateFormularySettings,
     onGetFormularySettings,
     onOpenOrCloseFormulary,
     onGetBuildFormulary,

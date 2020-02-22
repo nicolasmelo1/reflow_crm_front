@@ -1,4 +1,5 @@
 export const AUTHENTICATE = 'AUTHENTICATE';
+export const DATA_TYPES = 'DATA_TYPES'
 export const DEAUTHENTICATE = 'DEAUTHENTICATE';
 export const ERROR = 'ERROR';
 export const GET_FORMS = 'GET_FORMS';

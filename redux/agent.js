@@ -111,6 +111,9 @@ const formEncodeData = (appendToKey, body) => {
 const LOGIN = {
     makeLogin: async (body) => {
         return await requests.post('login/', body)
+    },
+    getDataTypes: async () => {
+        return await requests.get('types/')
     }
 }
 
@@ -123,16 +126,16 @@ const HOME = {
         return await requests.get(`${companyId}/settings/api/formulary`)
     },
     updateGroup: async (body, id) => {
-        return await requests.put(`${companyId}/settings/api/formulary/${id}/`, body)
+        return await requests.put(`${companyId}/settings/api/formulary/groups/${id}/`, body)
     },
-    createForm: async (body, groupId) => {
-        return await requests.post(`${companyId}/settings/api/formulary/${groupId}/`, body)
+    createForm: async (body) => {
+        return await requests.post(`${companyId}/settings/api/formulary/forms/`, body)
     },
-    updateForm: async (body, groupId, id) => {
-        return await requests.put(`${companyId}/settings/api/formulary/${groupId}/${id}/`, body)
+    updateForm: async (body, id) => {
+        return await requests.put(`${companyId}/settings/api/formulary/forms/${id}/`, body)
     },
-    removeForm: async (groupId, id)=> {
-        return await requests.delete(`${companyId}/settings/api/formulary/${groupId}/${id}/`)
+    removeForm: async (id)=> {
+        return await requests.delete(`${companyId}/settings/api/formulary/forms/${id}/`)
     },
     getBuildFormulary: async (formName) => {
         return await requests.get(`${companyId}/formulary/api/${formName}/`)
@@ -149,8 +152,8 @@ const HOME = {
     getFormularyFormFieldOptions: async (formName, fieldId) => {
         return await requests.get(`${companyId}/formulary/api/${formName}/${fieldId}/form/options/`)
     },
-    getFormularySettingsData: async (groupId, formId) => {
-        return await requests.get(`${companyId}/settings/api/formulary/${groupId}/${formId}/section/`)
+    getFormularySettingsData: async (formId) => {
+        return await requests.get(`${companyId}/settings/api/formulary/${formId}/sections/`)
     }
     
 }

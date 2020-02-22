@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { FormularySectionTitle, FormularyMultiFormAddNewButton, FormularySectionContainer } from 'styles/Formulary'
-import FormularySectionFields from './FormularySectionFields'
+import { Formularies } from 'styles/Formulary'
+import FormularySection from './FormularySection'
 
 /**
  * This component controls all sections and contains all sections data. It is one of the main components from the formulary.
@@ -102,9 +102,11 @@ const FormularySections = (props) => {
 
 
     function buildInitialData(conditionals) {
+
         const newSectionsData = props.sections
                 .filter(section => !(!['', null].includes(section.conditional_value) || section.form_type==='multi-form'))
                 .map(section=> addNewSectionsData(section.id))
+        console.log(newSectionsData)
         onChangeSectionData(newSectionsData, conditionals)
     }
     /**
@@ -125,7 +127,6 @@ const FormularySections = (props) => {
         const sectionDataIds = (props.data.depends_on_dynamic_form) ? props.data.depends_on_dynamic_form.map(sectionData=> sectionData.form_id.toString()) : []
         const formDataLoadedIsFromFormBuilded = sectionDataIds.every(sectionDataId=> sectionIds.includes(sectionDataId))
 
-
         if (props.sections.length > 0 && (JSON.stringify(props.data.depends_on_dynamic_form) !== JSON.stringify(sectionsData) || !formDataLoadedIsFromFormBuilded)) {
             if (props.data.depends_on_dynamic_form && formDataLoadedIsFromFormBuilded) {
                 setSectionsData(props.data.depends_on_dynamic_form)
@@ -137,14 +138,14 @@ const FormularySections = (props) => {
 
     return (
         <div>
-            { props.sections.filter(section=> sectionsData.map(sectionData => sectionData.form_id.toString()).includes(section.id.toString())).map((section, index) => (
-                <FormularySectionContainer key={index} isConditional={section.conditional_value !== null}>
-                    <FormularySectionTitle>{ section.label_name }</FormularySectionTitle>
+            { props.sections.filter(section=> (section.form_type==='multi-form' || sectionsData.map(sectionData => sectionData.form_id.toString()).includes(section.id.toString())) ).map((section, index) => (
+                <Formularies.SectionContainer key={index} isConditional={section.conditional_value !== null}>
+                    <Formularies.TitleLabel>{ section.label_name }</Formularies.TitleLabel>
                     {section.form_type==='multi-form' ? (
-                        <FormularyMultiFormAddNewButton onClick={e=>addSection(e, section)}>Adicionar</FormularyMultiFormAddNewButton>
+                        <Formularies.MultiForm.AddButton onClick={e=>addSection(e, section)}>Adicionar</Formularies.MultiForm.AddButton>
                     ): ''} 
                     {sectionsData.filter(sectionData=> section.id.toString() === sectionData.form_id.toString()).map((sectionData, index) => (
-                        <FormularySectionFields 
+                        <FormularySection 
                         errors={props.errors}
                         onChangeFormulary={props.onChangeFormulary}
                         key={(sectionsData.id) ? sectionData.id: index} 
@@ -156,7 +157,7 @@ const FormularySections = (props) => {
                         removeSection={section.form_type==='multi-form' ? removeSection: null}
                         />
                     ))}
-                </FormularySectionContainer>            
+                </Formularies.SectionContainer>            
             ))}
         </div>
     )

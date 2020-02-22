@@ -1,5 +1,3 @@
-import login from "../../redux/actions/login"
-
 const strings = {
     'pt-br': {
         indexPageTitle: 'Reflow',
@@ -49,7 +47,9 @@ const strings = {
         formularyInvalidFileError: 'O tipo de arquivo não é suportado, aceitamos apenas .doc, .docx, .jpeg, .jpg, .pdf, .png, .wav, .xls, .xlsx, .zip',
         formularyUniqueFieldError: 'Os valores deste campo são unicos e tente inserir outro valor',
         formularyFormFieldAddNewButtonLabel: 'Adicionar novo',
-        formularyFormFieldEditButtonLabel: 'Editar'
+        formularyFormFieldEditButtonLabel: 'Editar',
+        formTypeSingle: 'Único',
+        formTypeMultiple: 'Múltiplo',
     }
 }
 

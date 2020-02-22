@@ -54,30 +54,32 @@ const Datetime = (props) => {
 
     function jsDateToStringFormat(date) {
         let newValue = props.field.date_configuration_date_format_type
-        Object.keys(momentJSDateFormat).forEach(possibleFormat => {
-            switch(possibleFormat) {
-                case '%Y':
-                    newValue = newValue.replace(possibleFormat, date.getFullYear().toString())
-                    break;
-                case '%m':
-                    newValue = newValue.replace(possibleFormat, (date.getMonth()+1 < 10 ) ? '0' + (date.getMonth()+1).toString(): (date.getMonth()+1).toString())
-                    break;
-                case '%d':
-                    newValue = newValue.replace(possibleFormat, (date.getDate() < 10 ) ? '0' + date.getDate().toString(): date.getDate().toString())
-                    break;
-                case '%H':
-                    newValue = newValue.replace(possibleFormat, (date.getHours() < 10 ) ? '0' + date.getHours().toString(): date.getHours().toString())
-                    break;
-                case '%M':
-                    newValue = newValue.replace(possibleFormat, (date.getMinutes() < 10 ) ? '0' + date.getMinutes().toString(): date.getMinutes().toString())
-                    break;
-                case '%S':
-                    newValue = newValue.replace(possibleFormat, (date.getSeconds() < 10 ) ? '0' + date.getSeconds().toString(): date.getSeconds().toString())
-                    break;
-                default:
-                    newValue
-            }
-        })
+        if (typeof newValue === 'string') {
+            Object.keys(momentJSDateFormat).forEach(possibleFormat => {
+                switch(possibleFormat) {
+                    case '%Y':
+                        newValue = newValue.replace(possibleFormat, date.getFullYear().toString())
+                        break;
+                    case '%m':
+                        newValue = newValue.replace(possibleFormat, (date.getMonth()+1 < 10 ) ? '0' + (date.getMonth()+1).toString(): (date.getMonth()+1).toString())
+                        break;
+                    case '%d':
+                        newValue = newValue.replace(possibleFormat, (date.getDate() < 10 ) ? '0' + date.getDate().toString(): date.getDate().toString())
+                        break;
+                    case '%H':
+                        newValue = newValue.replace(possibleFormat, (date.getHours() < 10 ) ? '0' + date.getHours().toString(): date.getHours().toString())
+                        break;
+                    case '%M':
+                        newValue = newValue.replace(possibleFormat, (date.getMinutes() < 10 ) ? '0' + date.getMinutes().toString(): date.getMinutes().toString())
+                        break;
+                    case '%S':
+                        newValue = newValue.replace(possibleFormat, (date.getSeconds() < 10 ) ? '0' + date.getSeconds().toString(): date.getSeconds().toString())
+                        break;
+                    default:
+                        newValue
+                }
+            })
+        }
         return newValue
     }
 
@@ -97,13 +99,12 @@ const Datetime = (props) => {
         fieldValue = jsDateToStringFormat(today)
     }
 
-
     return (
         <>
             <Field.Text ref={inputRef} type="text" value={fieldValue} readOnly={true}/>
             {(props.field.date_configuration_auto_update || props.field.date_configuration_auto_create) ? '' : (
                 <DateTimePicker 
-                withoutHourPicker={!(props.field.date_configuration_date_format_type.includes('%H') || props.field.date_configuration_date_format_type.includes('%M'))}
+                withoutHourPicker={typeof props.field.date_configuration_date_format_type === 'string' && (!(props.field.date_configuration_date_format_type.includes('%H') || props.field.date_configuration_date_format_type.includes('%M')))}
                 input={inputRef} 
                 onChange={onChange} 
                 initialDay={(fieldValue !== '') ? stringToJsDateFormat(fieldValue) : ''}

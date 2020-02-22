@@ -32,6 +32,7 @@ class Layout extends React.Component {
         this.state = {
             sidebarIsOpen: false
         }
+        this.props.getDataTypes()
     }
 
     setSidebarIsOpen = () => {

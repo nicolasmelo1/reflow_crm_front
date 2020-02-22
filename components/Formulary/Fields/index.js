@@ -16,7 +16,8 @@ const Fields = (props) => {
     const [values, setValues] = useState([])
 
     const getFieldType = () => {
-        switch (props.field.field_type) {
+        const type = (props.field.type.type) ? props.field.type.type : props.field.field_type
+        switch (type) {
             case "id":
                 return Id
             case "text":

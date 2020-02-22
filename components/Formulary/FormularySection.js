@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
-import { FormularyFieldContainer, FormularyFieldsContainer, FormularyRemoveMultiFormButton } from 'styles/Formulary'
+import { Formularies } from 'styles/Formulary'
 import Fields from './Fields'
 import { Col, Row } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
  
 /**
- * This Components controls ALL of the fields in a section
+ * This Components controls each section individually
  */
-const FormularySectionFields = (props) => {
+const FormularySection = (props) => {
     // files UPLOADED only
     const [sectionFiles, setSectionFiles] = useState([])
 
@@ -52,18 +52,18 @@ const FormularySectionFields = (props) => {
     }
 
     return (
-        <FormularyFieldsContainer isConditional={props.removeSection !== null}>
+        <Formularies.FieldsContainer isConditional={props.removeSection !== null}>
             {props.removeSection ? (
                 <Row>
                     <Col>
-                        <FormularyRemoveMultiFormButton onClick={e=> {props.removeSection(props.section.id, props.sectionDataIndex)}}>
+                        <Formularies.MultiForm.RemoveButton onClick={e=> {props.removeSection(props.section.id, props.sectionDataIndex)}}>
                             <FontAwesomeIcon icon="trash"/>
-                        </FormularyRemoveMultiFormButton>
+                        </Formularies.MultiForm.RemoveButton>
                     </Col>
                 </Row>
             ): ''}
             {props.fields.map((element, index)=>(
-                <FormularyFieldContainer key={element.id}>
+                <Formularies.FieldContainer key={element.id}>
                     <Fields 
                     errors={props.errors}
                     onChangeFormulary={props.onChangeFormulary}
@@ -76,10 +76,10 @@ const FormularySectionFields = (props) => {
                     addFieldFile={addFieldFile}
                     removeFieldFile={removeFieldFile}
                     />
-                </FormularyFieldContainer>
+                </Formularies.FieldContainer>
             ))}
-        </FormularyFieldsContainer>
+        </Formularies.FieldsContainer>
     )
 }
 
-export default FormularySectionFields
+export default FormularySection
