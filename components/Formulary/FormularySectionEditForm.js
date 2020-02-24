@@ -2,9 +2,10 @@ import React, { useState } from 'react'
 import { Col, Row } from 'react-bootstrap'
 import { FormulariesEdit }  from 'styles/Formulary'
 import { types } from 'utils/constants'
+import Select from 'components/Utils/Select'
 
 const FormularySectionEditForm = (props) => {
-
+    const [conditionalField, setConditionalField] = useState([])
     const onSetFormType = (formTypeId) => {
         props.section.type = formTypeId
         props.onUpdateSection(props.sectionIndex, {...props.section})
@@ -13,6 +14,10 @@ const FormularySectionEditForm = (props) => {
     const getFixedFormType = (formType) => {
         return (formType ==='multi-form') ? 'multi_form': formType
     }
+
+    const initialConditionalFieldValue =  (conditionalField.length!==0) ? [{ value: conditionalField[0], label: conditionalField[0] }]: []
+
+
     return (
         <div>
             <label style={{fontWeight: 'bold'}}>Qual o tipo da seção?</label>
@@ -35,8 +40,22 @@ const FormularySectionEditForm = (props) => {
             </Row>
             {props.isConditional ? (
                 <Row>
-                    <Col>
-                        Quando o <input style={{border: 0, backgroundColor: 'transparent', borderBottom: '1px solid #f2f2f2'}} type='text'/> for <input style={{border: 0, backgroundColor: 'transparent', borderBottom: '1px solid #f2f2f2'}} type='text'/> a <input style={{border: 0, backgroundColor: 'transparent', borderBottom: '1px solid #f2f2f2'}} type='text'/>
+                    <Col style={{ display: 'inline-block'}}>
+                        <div>Quando o campo</div>
+                        <div style={{border: 0, backgroundColor: 'transparent', borderBottom: '1px solid #f2f2f2', margin:'auto', maxWidth:'200px', textAlign: 'left'}} > 
+                            <Select 
+                            options={[{value:'teste', label:'teste'},{value:'teste2', label:'teste2'}]} 
+                            initialValues={initialConditionalFieldValue} 
+                            onChange={setConditionalField} 
+                            optionColor={'#444'}
+                            optionBackgroundColor={'#f2f2f2'}
+                            optionDividerColor={'#0dbf7e'} 
+                            searchValueColor={'#f2f2f2'}/>
+                        </div>
+                        <div> for </div> 
+                        <input style={{border: 0, backgroundColor: 'transparent', borderBottom: '1px solid #f2f2f2'}} type='text'/> 
+                        <div> valor </div> 
+                        <input style={{border: 0, backgroundColor: 'transparent', borderBottom: '1px solid #f2f2f2'}} type='text'/>
                     </Col>
                 </Row>
             ) : ''}

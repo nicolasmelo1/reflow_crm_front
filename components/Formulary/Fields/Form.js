@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 const Form = (props) => {
     const [options, setOptions] = useState([])
     const router = useRouter()
-
+    const [isOpen, setIsOpen] = useState(false)
     
     const onChange = (newData) => {
         const newValue = props.singleValueFieldsHelper((newData.length === 0) ? '': newData[0])
@@ -44,7 +44,9 @@ const Form = (props) => {
 
 
     return (
-        <Select options={options} onChange={onChange} initialValues={fieldValue}/>
+        <Field.Select isOpen={isOpen}>
+            <Select options={options} onChange={onChange} initialValues={fieldValue} isOpen={isOpen} setIsOpen={setIsOpen}/>
+        </Field.Select>
     )
 }
 

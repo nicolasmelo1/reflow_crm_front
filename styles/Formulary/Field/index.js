@@ -9,6 +9,7 @@ import FieldRequiredLabel from './FieldRequiredLabel'
 import FieldContainer from './FieldContainer'
 import FieldErrorLabel from './FieldErrorLabel'
 import FieldFormLabelButton from './FieldFormLabelButton'
+import FieldSelect from './FieldSelect'
 
 export default {
     FieldTitle: {
@@ -18,6 +19,7 @@ export default {
     },
     Container: FieldContainer,
     Text: FieldTextInput,
+    Select: FieldSelect,
     Attachment: {
         Image: FieldAttachmentImage,
         Input: FieldAttachmentInput,

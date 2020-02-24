@@ -11,6 +11,9 @@ import Utils from 'styles/Utils'
  * - `label`: the value to display to the user
  * - `value`: the internal value, usually unique
  * - `selected`: usually `false` to tell if the user has selected this so we can delete
+ * @param {String} optionDividerColor - (optional) - default to #fff
+ * @param {String} optionOnHoverColor - (optional) - default to #444
+ * @param {String} optionOnHoverBackgroundColor - (optional) - default to #bfbfbf
  * @param {Boolean} multiple - Explained in Select component
  */
 const Option = (props) => {
@@ -19,7 +22,15 @@ const Option = (props) => {
     return (
         <Utils.Select.OptionsListContainer>
             {filteredOptions.map((option, index)=>(
-                <Utils.Select.OptionItem key={option.value} onClick={e=>{ props.onSelectOption(e, option) }}>{props.renderLabel(option.label, index)}</Utils.Select.OptionItem> 
+                <Utils.Select.OptionItem 
+                key={option.value} 
+                optionDividerColor={props.optionDividerColor}
+                optionOnHoverColor={props.optionOnHoverColor}
+                optionOnHoverBackgroundColor={props.optionOnHoverBackgroundColor}
+                onClick={e=>{ props.onSelectOption(e, option) }}
+                >
+                    {props.renderLabel(option.label, index)}
+                </Utils.Select.OptionItem> 
             ))}
         </Utils.Select.OptionsListContainer>
     )
@@ -35,6 +46,14 @@ const Option = (props) => {
  * - `label`: can be a string or a react component, if you send a custom component, send don't forget to add the component as the `label` 
  * props and a `onFilter` function
  * @param {Function} onChange - a onChange function to be called when the user changes the value
+ * @param {Boolean} isOpen - (optional) - state to show if the options are opened or closed, this way you can style this outside of the component.
+ * @param {Function} setIsOpen = (optional) - set isOpenState to true so you know outside of this component that this is on an open state
+ * @param {string} searchValueColor - (optional) - set color to search value, that the user types to search
+ * @param {String} optionColor - (optional) - default to #f2f2f2
+ * @param {String} optionBackgroundColor - (optional) - default to #444
+ * @param {String} optionDividerColor - (optional) - default to #fff
+ * @param {String} optionOnHoverColor - (optional) - default to #444
+ * @param {String} optionOnHoverBackgroundColor - (optional) - default to #bfbfbf
  * @param {React.Component} label - (optional) - Instead of a simple text, display a custom label, if you do this, please define a onFilter
  * function
  * @param {Function} onFilter - (optional) - Defines a custom on filter function that recieves a string, and MUST return the Array of 
@@ -42,8 +61,13 @@ const Option = (props) => {
  * @param {Boolean} multiple - (optional) use this to inform if you want multiple objects to be selected.
  */
 const Select = (props) => {
+    let isOpen = props.isOpen
+    let _setIsOpen = props.setIsOpen
     const [selectedOptions, setSelectedOptions] = useState([])
-    const [isOpen, _setIsOpen] = useState(false)
+
+    if (props.isOpen === undefined && props.setIsOpen === undefined) {
+        [isOpen, _setIsOpen] = useState(false)
+    }
     const [searchValue, setSearchValue] = useState('')
     const [options, setOptions] = useState(props.options)
     const inputRef = React.useRef(null)
@@ -69,7 +93,7 @@ const Select = (props) => {
                 filteredOptions = filteredOptions.filter(option=> option.label.includes(value))
             }
         }
-        props.onChange(selectedOptions.map(selectedOption=> selectedOption.value))
+        //
         setSearchValue(value)
         setOptions(filteredOptions)
     }
@@ -93,6 +117,7 @@ const Select = (props) => {
             selectedOptions[0] = {value: option.value, label: option.label, selected: false}
         }
         setSelectedOptions([...selectedOptions])
+        props.onChange(selectedOptions.map(selectedOption=> selectedOption.value))
         updateOptions('', [...selectedOptions])
     }
 
@@ -116,6 +141,7 @@ const Select = (props) => {
                 newSelectedOptions = selectedOptions.filter(selectedOption=>{
                     return selectedOption.selected === false
                 })
+                props.onChange(newSelectedOptions.map(selectedOption=> selectedOption.value))
             } else {
                 if(newSelectedOptions[newSelectedOptions.length-1]) newSelectedOptions[newSelectedOptions.length-1].selected = true
             }
@@ -170,14 +196,21 @@ const Select = (props) => {
                 ref={inputRef} 
                 type="text" 
                 value={searchValue} 
+                searchValueColor={props.searchValueColor}
                 onChange={e => {updateOptions(e.target.value, [...selectedOptions])}} 
                 onKeyUp={e=>onRemoveSelectedOption(e)}
                 />
             </Utils.Select.SelectedOptionsContainer>
             <div style={{position: 'relative'}}>
                 {(isOpen) ? (
-                    <Utils.Select.OptionsContainer>
+                    <Utils.Select.OptionsContainer 
+                    optionBackgroundColor={props.optionBackgroundColor}
+                    optionColor={props.optionColor}
+                    >
                         <Option 
+                        optionDividerColor={props.optionDividerColor}
+                        optionOnHoverColor={props.optionOnHoverColor}
+                        optionOnHoverBackgroundColor={props.optionOnHoverBackgroundColor}
                         options={options}
                         onSelectOption={onSelectOption}
                         selectedOptions={selectedOptions}
