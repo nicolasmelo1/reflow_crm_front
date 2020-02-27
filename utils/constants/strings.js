@@ -50,6 +50,19 @@ const strings = {
         formularyFormFieldEditButtonLabel: 'Editar',
         formTypeSingle: 'Único',
         formTypeMultiple: 'Múltiplo',
+        conditionalTypeEqual: 'Igual ao',
+        fieldTypeNumber: 'Número',
+        fieldTypeText: 'Texto',
+        fieldTypeDate: 'Data',
+        fieldTypeOption: 'Opção',
+        fieldTypeForm: 'Conexão',
+        fieldTypeAttachment: 'Anexo',
+        fieldTypeLongText: 'Texto Longo',
+        fieldTypeEmail: 'E-mail',
+        fieldTypeMultiOption: 'Múltiplas Opções',
+        fieldTypeId: 'Id',
+        fieldTypeUser: 'Usuário',
+        fieldTypePeriod: 'Período'
     }
 }
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Fields from './Fields'
 import { Col, Row } from 'react-bootstrap'
-import FormularyFieldEdit from './FormularyFieldEdit'
+import FormularyFieldsEdit from './FormularyFieldsEdit'
 import { FormulariesEdit }  from 'styles/Formulary'
 import { types } from 'utils/constants'
 import FormularySectionEditForm from './FormularySectionEditForm'
@@ -48,11 +48,11 @@ const FormularySectionEdit = (props) => {
     }
 
     return (
-        <div style={{margin: '5px 0', border: '1px solid #f2f2f2', borderRadius: '10px'}}>
-            <FormulariesEdit.SectionContainer isConditional={isConditional}>
+        <FormulariesEdit.Section.Container>
+            <FormulariesEdit.Section.TitleAndIconsContainer isConditional={isConditional}>
                 <Row>
                     <Col>
-                        <FormulariesEdit.SectionLabelInput
+                        <FormulariesEdit.Section.LabelInput
                             value={props.section.label_name} 
                             onChange={e=> {onChangeSectionName(e)}} 
                             isConditional={isConditional}
@@ -85,9 +85,9 @@ const FormularySectionEdit = (props) => {
                         <small>Mover</small>
                     </FormulariesEdit.Button>
                 </FormulariesEdit.ButtonsContainer>
-            </FormulariesEdit.SectionContainer>
+            </FormulariesEdit.Section.TitleAndIconsContainer>
             {openedSection ? (
-                <FormulariesEdit.SectionEditionFormularyContainer isConditional={isConditional}>
+                <FormulariesEdit.Section.Formulary.Container isConditional={isConditional}>
                     <FormularySectionEditForm
                     types={props.types}
                     isConditional={isConditional}
@@ -95,16 +95,20 @@ const FormularySectionEdit = (props) => {
                     section={props.section}
                     sectionIndex={props.sectionIndex}
                     onUpdateSection={props.onUpdateSection}
+                    fieldOptions={props.fieldOptions}
                     />
-                </FormulariesEdit.SectionEditionFormularyContainer>
+                </FormulariesEdit.Section.Formulary.Container>
             ) : (
                 <FormulariesEdit.FieldContainer>
-                    <FormularyFieldEdit
+                    <FormularyFieldsEdit
+                    sectionIndex={props.sectionIndex}
+                    types={props.types}
                     fields={props.section.form_fields}
+                    onUpdateField={props.onUpdateField}
                     />
                 </FormulariesEdit.FieldContainer>
             )}
-        </div>
+        </FormulariesEdit.Section.Container>
     )
 }
 

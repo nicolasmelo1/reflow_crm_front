@@ -137,7 +137,7 @@ class Formulary extends React.Component {
                                 </div>
                             ): (
                                 <div>
-                                    {(this.props.formulary.buildData.group_id && this.props.formulary.buildData.id) ? (
+                                    {(this.props.formulary.buildData && this.props.formulary.buildData.group_id && this.props.formulary.buildData.id) ? (
                                         <button onClick={e=> {this.setIsEditing()}}>Editar campos</button>
                                     ) : ''}
                                     {(this.props.formulary.buildData && this.props.formulary.buildData.form_name !== this.props.query.form) ? (
@@ -145,6 +145,7 @@ class Formulary extends React.Component {
                                     ) : ''}
                                     <FormularySections 
                                     errors={this.state.errors}
+                                    types={this.props.types}
                                     onChangeFormulary={this.onChangeFormulary}
                                     loadData={this.loadData}
                                     data={this.props.formulary.filledData}

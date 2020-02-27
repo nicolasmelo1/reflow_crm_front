@@ -125,6 +125,9 @@ const HOME = {
     getUpdateForms: async () => {
         return await requests.get(`${companyId}/settings/api/formulary`)
     },
+    getFieldOptions: async (formName) => {
+        return await requests.get(`${companyId}settings/api/formulary/${formName}/field_options/`)
+    },
     updateGroup: async (body, id) => {
         return await requests.put(`${companyId}/settings/api/formulary/groups/${id}/`, body)
     },

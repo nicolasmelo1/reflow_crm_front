@@ -16,8 +16,12 @@ const Fields = (props) => {
     const [values, setValues] = useState([])
 
     const getFieldType = () => {
-        const type = (props.field.type.type) ? props.field.type.type : props.field.field_type
-        switch (type) {
+        const typeId = (props.field.type.type) ? props.field.type.type : props.field.type
+
+        let typeName = (props.types.data) ? props.types.data.field_type.filter(fieldType => fieldType.id === typeId): []
+        typeName = (typeName.length !== 0) ? typeName[0].type : ''
+
+        switch (typeName) {
             case "id":
                 return Id
             case "text":

@@ -106,7 +106,6 @@ const FormularySections = (props) => {
         const newSectionsData = props.sections
                 .filter(section => !(!['', null].includes(section.conditional_value) || section.form_type==='multi-form'))
                 .map(section=> addNewSectionsData(section.id))
-        console.log(newSectionsData)
         onChangeSectionData(newSectionsData, conditionals)
     }
     /**
@@ -154,6 +153,7 @@ const FormularySections = (props) => {
                         sectionDataIndex={index} 
                         section={section} 
                         fields={section.form_fields}
+                        types={props.types}
                         removeSection={section.form_type==='multi-form' ? removeSection: null}
                         />
                     ))}

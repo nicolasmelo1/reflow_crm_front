@@ -153,14 +153,21 @@ const Select = (props) => {
     const renderLabel = (label, index) => {
         if (typeof label === 'string') {
             return label
-        } else {
+        } else if (props.label) {
             const CustomLabelComponent = props.label
             return (<CustomLabelComponent key={index} {...label.props}/>)
+        } else {
+            const CustomLabelComponent = label
+            return (<CustomLabelComponent key={index} {...CustomLabelComponent.props}/>)
         }
     }
 
     useEffect(() => {
-        if (JSON.stringify(props.options) !== JSON.stringify(options)) {
+        try {
+            if (JSON.stringify(props.options) !== JSON.stringify(options)) {
+                setOptions(props.options)
+            }
+        } catch {
             setOptions(props.options)
         }
     }, [props.options])
@@ -175,8 +182,16 @@ const Select = (props) => {
     useEffect(() => {
         const selectedInitialValues = props.initialValues.map(initialValue=> {return{ ...initialValue, selected:false }})
         let filteredOptions = props.options.filter(option=> selectedInitialValues.find(selectedOption=> selectedOption.value === option.value) === undefined);
-        setSelectedOptions(selectedInitialValues)
-        setOptions(filteredOptions)
+        try {
+            if (JSON.stringify(selectedInitialValues) !== JSON.stringify(selectedOptions)){
+                setSelectedOptions(selectedInitialValues)
+                setOptions(filteredOptions)
+            }
+        } catch {
+            setSelectedOptions(selectedInitialValues)
+            setOptions(filteredOptions)
+        }
+
     }, [props.initialValues])
 
     return(
