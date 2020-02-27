@@ -59,7 +59,25 @@ const FormularyFieldEdit = (props) => {
         ): []
     }
 
+    const onChangeRequired = () => {
+        props.field.required = !props.field.required
+        props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
+    }
 
+    const onChangeIsUnique = () => {
+        props.field.is_unique = !props.field.is_unique
+        props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
+    }
+
+    const onChangeLabelIsHidden = () => {
+        props.field.label_is_hidden = !props.field.label_is_hidden
+        props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
+    }
+
+    const onChangeFieldIsHidden = () => {
+        props.field.field_is_hidden = !props.field.field_is_hidden
+        props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
+    }
 
     return (
         <div style={{borderTop: '2px solid #bfbfbf', padding: '5px'}}>
@@ -89,8 +107,25 @@ const FormularyFieldEdit = (props) => {
                         <Form.Control type="text" value={props.field.label_name} onChange={e=> {onChangeFieldName(e)}}/>
                     </div>
                     <div style={{margin: '10px 0'}}>
-                        <div style={{ backgroundColor:'#fff'}}>
-                            <input type="checkbox"/>Teste
+                        <div style={{ backgroundColor:'#fff',  padding: '10px 5px'}}>
+                            <label style={{ margin: '0' }}>
+                                <input type="checkbox" checked={props.field.required} onChange={e => {onChangeRequired()}}/>Campo obrigatório
+                            </label>
+                        </div>
+                        <div style={{ backgroundColor:'#fff', padding: '10px 5px', borderTop: '1px solid #bfbfbf'}}>
+                            <label style={{ margin: '0' }}>
+                                <input type="checkbox" checked={props.field.label_is_hidden} onChange={e => {onChangeLabelIsHidden()}}/>Titúlo não visível
+                            </label>
+                        </div>
+                        <div style={{ backgroundColor:'#fff', padding: '10px 5px', borderTop: '1px solid #bfbfbf'}}>
+                            <label style={{ margin: '0' }}>
+                                <input type="checkbox" checked={props.field.field_is_hidden} onChange={e => {onChangeFieldIsHidden()}}/>Campo não visível
+                            </label>
+                        </div>
+                        <div style={{ backgroundColor:'#fff', padding: '10px 5px', borderTop: '1px solid #bfbfbf'}}>
+                            <label style={{ margin: '0' }}>
+                                <input type="checkbox" checked={props.field.is_unique} onChange={e => {onChangeIsUnique()}}/>Os valores inseridos nesse campo são únicos
+                            </label>
                         </div>
                     </div>
                 </div>
