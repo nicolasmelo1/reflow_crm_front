@@ -79,6 +79,16 @@ const FormularyFieldEdit = (props) => {
         props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
     }
 
+
+    const formularyItemsForFieldTypes = () => {
+        const fieldType = props.types.data.field_type.filter(fieldType => fieldType.id === props.field.type)[0]
+        if (['option', 'multi-option'].includes(fieldType.name)) {
+
+        } else if (fieldType.name === 'number') {
+            
+        }
+    }
+
     return (
         <div style={{borderTop: '2px solid #bfbfbf', padding: '5px'}}>
             <div style={{height: '1em', margin: '5px'}}>
