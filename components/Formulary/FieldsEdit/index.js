@@ -1,8 +1,11 @@
 import React, { useState } from 'react'
-import Fields from './Fields'
+import Fields from 'components/Formulary/Fields'
 import { FormulariesEdit }  from 'styles/Formulary'
 import { Form } from 'react-bootstrap'
 import { types } from 'utils/constants'
+import Number from './Number'
+import Option from './Option'
+
 import Select from 'components/Utils/Select';
 
 const FieldOption = (props) => {
@@ -79,13 +82,29 @@ const FormularyFieldEdit = (props) => {
         props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
     }
 
-
     const formularyItemsForFieldTypes = () => {
         const fieldType = props.types.data.field_type.filter(fieldType => fieldType.id === props.field.type)[0]
-        if (['option', 'multi-option'].includes(fieldType.name)) {
 
-        } else if (fieldType.name === 'number') {
-            
+        if (['option', 'multi-option'].includes(fieldType.type)) {
+            return (
+            <Option
+            field={props.field}
+            onUpdateField={props.onUpdateField}
+            types={props.types}
+            sectionIndex={props.sectionIndex}
+            fieldIndex={props.fieldIndex}
+            />)
+        } else if (fieldType.type === 'number') {
+            return (
+            <Number
+            field={props.field}
+            onUpdateField={props.onUpdateField}
+            types={props.types}
+            sectionIndex={props.sectionIndex}
+            fieldIndex={props.fieldIndex}
+            />)
+        } else if (fieldType.type === 'date') {
+
         }
     }
 
@@ -138,6 +157,7 @@ const FormularyFieldEdit = (props) => {
                             </label>
                         </div>
                     </div>
+                    {formularyItemsForFieldTypes()}
                 </div>
             ): (
                 <Fields 

@@ -1,5 +1,5 @@
 import React from 'react'
-import FormularyFieldEdit from './FormularyFieldEdit'
+import FormularyFieldEdit from './FieldsEdit'
 
 const FormularyFieldsEdit = (props) => {
     return (

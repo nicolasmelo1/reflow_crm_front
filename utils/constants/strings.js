@@ -62,7 +62,10 @@ const strings = {
         fieldTypeMultiOption: 'Múltiplas Opções',
         fieldTypeId: 'Id',
         fieldTypeUser: 'Usuário',
-        fieldTypePeriod: 'Período'
+        fieldTypePeriod: 'Período',
+        numberFormatTypeNumber: 'Número',
+        numberFormatTypeCurrency: 'Monetário',
+        numberFormatTypePercentage: 'Porcentagem'
     }
 }
 

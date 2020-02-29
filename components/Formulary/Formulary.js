@@ -26,7 +26,7 @@ class Formulary extends React.Component {
         }
         
         // when user closes we reset the states on the formulary
-        if (this.state.isOpen) {
+        if (this.props.formulary.isOpen) {
             this.props.setFormularyId(null)
             if (this.state.auxOriginalInitial.filledData && this.state.auxOriginalInitial.buildData) {
                 this.props.onFullResetFormulary({}, this.state.auxOriginalInitial.buildData)

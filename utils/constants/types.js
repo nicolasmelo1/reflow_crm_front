@@ -22,6 +22,11 @@ const types = (lang, type, key) => {
             id: strings[lang]['fieldTypeId'],
             user: strings[lang]['fieldTypeUser'],
             period: strings[lang]['fieldTypePeriod']
+        },
+        number_configuration_number_format_type: {
+            number: strings[lang]['numberFormatTypeNumber'],
+            currency: strings[lang]['numberFormatTypeCurrency'],
+            percentage: strings[lang]['numberFormatTypePercentage'],
         }
     }[type][key]
 }
