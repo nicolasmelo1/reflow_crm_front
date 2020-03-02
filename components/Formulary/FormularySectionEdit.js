@@ -105,6 +105,7 @@ const FormularySectionEdit = (props) => {
                     types={props.types}
                     fields={props.section.form_fields}
                     onUpdateField={props.onUpdateField}
+                    formulariesOptions={props.formulariesOptions}
                     />
                 </FormulariesEdit.FieldContainer>
             )}

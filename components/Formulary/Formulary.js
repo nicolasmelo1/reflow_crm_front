@@ -133,6 +133,7 @@ class Formulary extends React.Component {
                                     types={this.props.types}
                                     setIsEditing={this.setIsEditing}
                                     data={this.props.formulary.update}
+                                    formulariesOptions={this.props.sidebar.initial}
                                     />
                                 </div>
                             ): (
@@ -163,4 +164,4 @@ class Formulary extends React.Component {
     }
 }
 
-export default connect(state => ({ formulary: state.home.formulary, types: state.login.types }), actions)(Formulary);
+export default connect(state => ({ formulary: state.home.formulary, sidebar: state.home.sidebar, types: state.login.types }), actions)(Formulary);

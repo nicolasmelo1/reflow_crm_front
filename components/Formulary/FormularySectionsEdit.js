@@ -39,7 +39,9 @@ const FormularySectionsEdit = (props) => {
                 sectionIndex={index}
                 section={section} 
                 types={props.types} 
-                fieldOptions={fieldOptions}/>
+                fieldOptions={fieldOptions}
+                formulariesOptions={props.formulariesOptions}
+                />
             ))}
         </div>
     )

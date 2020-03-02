@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
 import Fields from 'components/Formulary/Fields'
 import { FormulariesEdit }  from 'styles/Formulary'
-import { Form } from 'react-bootstrap'
 import { types } from 'utils/constants'
 import Number from './Number'
 import Option from './Option'
-
+import Connection from './Connection'
 import Select from 'components/Utils/Select';
 
 const FieldOption = (props) => {
@@ -87,24 +86,37 @@ const FormularyFieldEdit = (props) => {
 
         if (['option', 'multi-option'].includes(fieldType.type)) {
             return (
-            <Option
-            field={props.field}
-            onUpdateField={props.onUpdateField}
-            types={props.types}
-            sectionIndex={props.sectionIndex}
-            fieldIndex={props.fieldIndex}
-            />)
+                <Option
+                field={props.field}
+                onUpdateField={props.onUpdateField}
+                types={props.types}
+                sectionIndex={props.sectionIndex}
+                fieldIndex={props.fieldIndex}
+                />
+            )
         } else if (fieldType.type === 'number') {
             return (
-            <Number
-            field={props.field}
-            onUpdateField={props.onUpdateField}
-            types={props.types}
-            sectionIndex={props.sectionIndex}
-            fieldIndex={props.fieldIndex}
-            />)
+                <Number
+                field={props.field}
+                onUpdateField={props.onUpdateField}
+                types={props.types}
+                sectionIndex={props.sectionIndex}
+                fieldIndex={props.fieldIndex}
+                />
+            )
         } else if (fieldType.type === 'date') {
 
+        } else if (fieldType.type === 'form') {
+            return (
+                <Connection
+                field={props.field}
+                onUpdateField={props.onUpdateField}
+                types={props.types}
+                sectionIndex={props.sectionIndex}
+                fieldIndex={props.fieldIndex}
+                formulariesOptions={props.formulariesOptions}
+                />
+            )
         }
     }
 
@@ -133,7 +145,7 @@ const FormularyFieldEdit = (props) => {
                     </div>
                     <div style={{margin: '10px 0'}}>
                         <label style={{color:'#444', margin: '0'}}>Nome do campo</label>
-                        <Form.Control type="text" value={props.field.label_name} onChange={e=> {onChangeFieldName(e)}}/>
+                        <input type="text" value={props.field.label_name} onChange={e=> {onChangeFieldName(e)}}/>
                     </div>
                     <div style={{margin: '10px 0'}}>
                         <div style={{ backgroundColor:'#fff',  padding: '10px 5px'}}>

@@ -11,6 +11,7 @@ const FormularyFieldsEdit = (props) => {
                 types={props.types}
                 sectionIndex={props.sectionIndex}
                 onUpdateField={props.onUpdateField}
+                formulariesOptions={props.formulariesOptions}
                 fieldIndex={index}
                 />
             ))}
