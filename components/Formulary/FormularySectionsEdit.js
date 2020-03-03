@@ -19,7 +19,7 @@ const FormularySectionsEdit = (props) => {
         props.setIsEditing()
     }
     
-    const sections = (props.data.depends_on_form) ? props.data.depends_on_form : []
+    const sections = (props.data && props.data.depends_on_form) ? props.data.depends_on_form : []
     let fieldOptions = []
     sections.forEach(section => {
         section.form_fields.forEach(field => {

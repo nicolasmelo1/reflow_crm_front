@@ -5,7 +5,8 @@ import { types } from 'utils/constants'
 import Number from './Number'
 import Option from './Option'
 import Connection from './Connection'
-import Select from 'components/Utils/Select';
+import Datetime from './Datetime'
+import Select from 'components/Utils/Select'
 
 const FieldOption = (props) => {
     return (
@@ -105,7 +106,15 @@ const FormularyFieldEdit = (props) => {
                 />
             )
         } else if (fieldType.type === 'date') {
-
+            return (
+                <Datetime
+                field={props.field}
+                onUpdateField={props.onUpdateField}
+                types={props.types}
+                sectionIndex={props.sectionIndex}
+                fieldIndex={props.fieldIndex}
+                />
+            )
         } else if (fieldType.type === 'form') {
             return (
                 <Connection

@@ -119,6 +119,7 @@ const Select = (props) => {
         setSelectedOptions([...selectedOptions])
         props.onChange(selectedOptions.map(selectedOption=> selectedOption.value))
         updateOptions('', [...selectedOptions])
+        setIsOpen(false)
     }
 
     const onClickSelectedOption = (e, index) => {
