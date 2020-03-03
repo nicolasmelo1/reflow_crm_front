@@ -11,6 +11,13 @@ class Data extends React.Component {
 
     constructor(props) {
         super(props)
+        this.state = {
+            formularyId: null//'51003'
+        }
+    }
+
+    static async getInitialProps(context) {
+        return { query: context.query }
     }
 
     // TEMPORARY
@@ -20,10 +27,18 @@ class Data extends React.Component {
         Router.push(paths.login())
     }
 
-    render() {
+    setFormularyId = (newValue) => {
+        this.setState(() => {
+            return {
+                formularyId: newValue
+            }
+        })
+    }
+
+    render () {
         return (
             <Layout title={strings['pt-br']['managementPageTitle']} showSideBar={true}>
-                <Formulary />
+                <Formulary query={this.props.query} formularyId={this.state.formularyId} setFormularyId={this.setFormularyId}/>
                 <Button type="submit" onClick={e => this.handleLogout(e)}>Logout</Button>
                 <GestaoTab defaultActive='listing' />
 
