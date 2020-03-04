@@ -13,9 +13,10 @@ import FormularySectionEditSettingsFormTypeLabel from './FormularySectionEditSet
 import FormularySectionEditSettingsIsConditionalButtonContainer from './FormularySectionEditSettingsIsConditionalButtonContainer'
 import FormularySectionEditSettingsIsConditionalButton from './FormularySectionEditSettingsIsConditionalButton'
 import FormularySectionEditSettingIsConditionalFormularyContainer from './FormularySectionEditSettingIsConditionalFormularyContainer'
-
-
+import FormularyEditSelectorContainer from './FormularyEditSelectorContainer'
+import FormularySectionEditConditionalFormLabel from './FormularySectionEditConditionalFormLabel'
 export default {
+    SelectorContainer: FormularyEditSelectorContainer,
     Section: {
         TitleAndIconsContainer: FormularySectionEditTitleAndIconsContainer,
         Container: FormularySectionEditSectionContainer,
@@ -25,7 +26,8 @@ export default {
             FormTypeLabel: FormularySectionEditSettingsFormTypeLabel,
             ConditionalButtonContainer: FormularySectionEditSettingsIsConditionalButtonContainer,
             ConditionalButton: FormularySectionEditSettingsIsConditionalButton,
-            ConditionalFormularyContainer: FormularySectionEditSettingIsConditionalFormularyContainer
+            ConditionalFormularyContainer: FormularySectionEditSettingIsConditionalFormularyContainer,
+            ConditionalFormLabel: FormularySectionEditConditionalFormLabel,
         },
         TypeButton: FormularySectionEditSectionTypeButton,
     },

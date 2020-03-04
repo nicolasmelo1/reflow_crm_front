@@ -35,7 +35,7 @@ const onCreateFormularyData = (body, formName) => {
     return async (dispatch) => {
         const response = await agent.HOME.createFormularyData(body, formName)
         if (response.status === 200) {
-            dispatch({ type: SET_FORMULARY_DATA, payload: [] })
+            dispatch({ type: SET_FORMULARY_DATA, payload: {} })
         }
         return response
     }
@@ -45,7 +45,7 @@ const onUpdateFormularyData = (body, formName, formId) => {
     return async (dispatch) => {
         const response = await agent.HOME.updateFormularyData(body, formName, formId)
         if (response.status === 200) {
-            dispatch({ type: SET_FORMULARY_DATA, payload: [] })
+            dispatch({ type: SET_FORMULARY_DATA, payload: {} })
         }
         return response
     }
@@ -53,7 +53,7 @@ const onUpdateFormularyData = (body, formName, formId) => {
 
 const onChangeFormularyData = (formData) => {
     return (dispatch) => {
-        dispatch({ type: SET_FORMULARY_DATA, payload: formData})
+        dispatch({ type: SET_FORMULARY_DATA, payload: formData })
     }
 }
 

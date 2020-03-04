@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import Fields from 'components/Formulary/Fields'
 import { FormulariesEdit }  from 'styles/Formulary'
-import { types } from 'utils/constants'
+import { types, strings } from 'utils/constants'
 import Number from './Number'
 import Option from './Option'
 import Connection from './Connection'
 import Datetime from './Datetime'
 import Select from 'components/Utils/Select'
+
 
 const FieldOption = (props) => {
     return (
@@ -136,12 +137,11 @@ const FormularyFieldEdit = (props) => {
                 <FormulariesEdit.Icon.FieldIcon size="sm" type="form" icon="eye"/>
                 <FormulariesEdit.Icon.FieldIcon size="sm" type="form" icon="arrows-alt" />
                 <FormulariesEdit.Icon.FieldIcon size="sm" type="form" icon="pencil-alt" onClick={e=> {setIsEditing(!isEditing)}}/>
-                    
             </div>
             {isEditing ? (
                 <div style={{ width: '100%', backgroundColor: '#bfbfbf', padding: '5px 10px'}}>
                     <div style={{margin: '10px 0'}}>
-                        <label style={{color:'#444', margin: '0'}}>Tipo do campo</label>
+                        <label style={{color:'#444', margin: '0'}}>{strings['pt-br']['formularyEditFieldTypeSelectorLabel']}</label>
                         <div style={{ backgroundColor:'#fff'}}>
                             <Select 
                                 onFilter={onFilterFieldType}
@@ -153,28 +153,28 @@ const FormularyFieldEdit = (props) => {
                         </div>
                     </div>
                     <div style={{margin: '10px 0'}}>
-                        <label style={{color:'#444', margin: '0'}}>Nome do campo</label>
+                        <label style={{color:'#444', margin: '0'}}>{strings['pt-br']['formularyEditFieldNameInputLabel']}</label>
                         <input type="text" value={props.field.label_name} onChange={e=> {onChangeFieldName(e)}}/>
                     </div>
                     <div style={{margin: '10px 0'}}>
                         <div style={{ backgroundColor:'#fff',  padding: '10px 5px'}}>
                             <label style={{ margin: '0' }}>
-                                <input type="checkbox" checked={props.field.required} onChange={e => {onChangeRequired()}}/>Campo obrigatório
+                                <input type="checkbox" checked={props.field.required} onChange={e => {onChangeRequired()}}/>{strings['pt-br']['formularyEditFieldIsRequiredCheckboxLabel']}
                             </label>
                         </div>
                         <div style={{ backgroundColor:'#fff', padding: '10px 5px', borderTop: '1px solid #bfbfbf'}}>
                             <label style={{ margin: '0' }}>
-                                <input type="checkbox" checked={props.field.label_is_hidden} onChange={e => {onChangeLabelIsHidden()}}/>Titúlo não visível
+                                <input type="checkbox" checked={props.field.label_is_hidden} onChange={e => {onChangeLabelIsHidden()}}/>{strings['pt-br']['formularyEditFieldLabelIsVisibleCheckboxLabel']}
                             </label>
                         </div>
                         <div style={{ backgroundColor:'#fff', padding: '10px 5px', borderTop: '1px solid #bfbfbf'}}>
                             <label style={{ margin: '0' }}>
-                                <input type="checkbox" checked={props.field.field_is_hidden} onChange={e => {onChangeFieldIsHidden()}}/>Campo não visível
+                                <input type="checkbox" checked={props.field.field_is_hidden} onChange={e => {onChangeFieldIsHidden()}}/>{strings['pt-br']['formularyEditFieldIsVisibleCheckboxLabel']}
                             </label>
                         </div>
                         <div style={{ backgroundColor:'#fff', padding: '10px 5px', borderTop: '1px solid #bfbfbf'}}>
                             <label style={{ margin: '0' }}>
-                                <input type="checkbox" checked={props.field.is_unique} onChange={e => {onChangeIsUnique()}}/>Os valores inseridos nesse campo são únicos
+                                <input type="checkbox" checked={props.field.is_unique} onChange={e => {onChangeIsUnique()}}/>{strings['pt-br']['formularyEditFieldIsUniqueCheckboxLabel']}
                             </label>
                         </div>
                     </div>

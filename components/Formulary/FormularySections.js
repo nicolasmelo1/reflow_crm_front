@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Formularies } from 'styles/Formulary'
 import FormularySection from './FormularySection'
+import { strings } from 'utils/constants'
 
 /**
  * This component controls all sections and contains all sections data. It is one of the main components from the formulary.
@@ -141,7 +142,9 @@ const FormularySections = (props) => {
                 <Formularies.SectionContainer key={index} isConditional={section.conditional_value !== null}>
                     <Formularies.TitleLabel>{ section.label_name }</Formularies.TitleLabel>
                     {section.form_type==='multi-form' ? (
-                        <Formularies.MultiForm.AddButton onClick={e=>addSection(e, section)}>Adicionar</Formularies.MultiForm.AddButton>
+                        <Formularies.MultiForm.AddButton onClick={e=>addSection(e, section)}>
+                            {strings['pt-br']['formularyMultiFormAddButtonLabel']}
+                        </Formularies.MultiForm.AddButton>
                     ): ''} 
                     {sectionsData.filter(sectionData=> section.id.toString() === sectionData.form_id.toString()).map((sectionData, index) => (
                         <FormularySection 

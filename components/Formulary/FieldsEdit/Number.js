@@ -1,5 +1,5 @@
 import React from 'react';
-import { types } from 'utils/constants';
+import { types, strings } from 'utils/constants';
 import { Form } from 'react-bootstrap';
 import Select from 'components/Utils/Select';
 
@@ -18,7 +18,7 @@ const Number = (props) => {
     return (
         <div>
             <div style={{margin: '10px 0'}}>
-                <label style={{color:'#444', margin: '0'}}>Tipo do campo</label>
+                <label style={{color:'#444', margin: '0'}}>{strings['pt-br']['formularyEditFieldNumberTypeSelectorLabel']}</label>
                 <div style={{ backgroundColor:'#fff'}}>
                     <Select 
                         options={numberMaskTypes} 
@@ -28,7 +28,7 @@ const Number = (props) => {
                 </div>
             </div>
             <div style={{margin: '10px 0'}}>
-                <label style={{color:'#444', margin: '0'}}>Formula</label>
+                <label style={{color:'#444', margin: '0'}}>{strings['pt-br']['formularyEditFieldNumberFormulaLabel']}</label>
                 <Form.Control type="text"/>
             </div>
         </div>

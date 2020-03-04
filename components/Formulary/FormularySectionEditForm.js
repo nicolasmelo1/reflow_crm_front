@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Col, Row, Form } from 'react-bootstrap';
 import { FormulariesEdit }  from 'styles/Formulary';
-import { types } from 'utils/constants';
+import { types, strings } from 'utils/constants';
 import Select from 'components/Utils/Select';
 
 const FormularySectionEditForm = (props) => {
@@ -52,14 +52,14 @@ const FormularySectionEditForm = (props) => {
     return (
         <div>
             <FormulariesEdit.Section.Formulary.FormTypeLabel>
-                Qual o tipo da seção?
+                {strings['pt-br']['formularyEditSectionSelectionLabel']}
             </FormulariesEdit.Section.Formulary.FormTypeLabel>
             <FormulariesEdit.ButtonsContainer>
                 {props.types.data.form_type.map(formType=> (
                     <FormulariesEdit.Button key={formType.id} onClick={e=>{onSetFormType(formType.id)}} isOpen={props.section.type === formType.id} isConditional={props.isConditional}>
                         <p>{types('pt-br', 'form_type', getFixedFormType(formType.type))}</p>
                         <small>
-                            {getFixedFormType(formType.type)==='multi_form'? 'Os campos deste tipo de seção PODEM ser duplicados.' : 'Os campos deste tipo de seção NÃO PODEM ser duplicados.'}
+                            {getFixedFormType(formType.type)==='multi_form'? strings['pt-br']['formularyEditMultipleSectionDescription'] : strings['pt-br']['formularyEditSingleSectionDescription']}
                         </small>
                     </FormulariesEdit.Button>
                 ))}
@@ -67,15 +67,17 @@ const FormularySectionEditForm = (props) => {
             <Row>
                 <FormulariesEdit.Section.Formulary.ConditionalButtonContainer>
                     <FormulariesEdit.Section.Formulary.ConditionalButton>
-                        Seção é condicional?<input type="checkbox" checked={props.isConditional} onChange={e => {onChangeIsConditional(e)}}/>
+                        {strings['pt-br']['formularyEditIsConditionalButtonLabel']}<input type="checkbox" checked={props.isConditional} onChange={e => {onChangeIsConditional(e)}}/>
                     </FormulariesEdit.Section.Formulary.ConditionalButton>
                 </FormulariesEdit.Section.Formulary.ConditionalButtonContainer>
             </Row>
             {props.isConditional ? (
                 <Row>
                     <FormulariesEdit.Section.Formulary.ConditionalFormularyContainer>
-                        <div>Quando o campo</div>
-                        <div style={{border: 0, backgroundColor: 'white', textAlign: 'left'}} > 
+                        <FormulariesEdit.Section.Formulary.ConditionalFormLabel>
+                            {strings['pt-br']['formularyEditConditionalFieldSelectorLabel']}
+                        </FormulariesEdit.Section.Formulary.ConditionalFormLabel>
+                        <FormulariesEdit.SelectorContainer>
                             <Select 
                             options={conditionalFieldOptions} 
                             initialValues={initialConditionalFieldOption} 
@@ -84,9 +86,11 @@ const FormularySectionEditForm = (props) => {
                             optionBackgroundColor={'#f2f2f2'}
                             optionDividerColor={'#0dbf7e'} 
                             />
-                        </div>
-                        <div> for </div> 
-                        <div style={{border: 0, backgroundColor: 'white',  textAlign: 'left'}} > 
+                        </FormulariesEdit.SelectorContainer>
+                        <FormulariesEdit.Section.Formulary.ConditionalFormLabel>
+                            {strings['pt-br']['formularyEditConditionalConditionalTypeSelectorLabel']}
+                        </FormulariesEdit.Section.Formulary.ConditionalFormLabel> 
+                        <FormulariesEdit.SelectorContainer>
                             <Select 
                             options={conditionalTypesOptions} 
                             initialValues={initialConditionalType} 
@@ -95,8 +99,10 @@ const FormularySectionEditForm = (props) => {
                             optionBackgroundColor={'#f2f2f2'}
                             optionDividerColor={'#0dbf7e'} 
                             />
-                        </div>
-                        <div> valor </div> 
+                        </FormulariesEdit.SelectorContainer>
+                        <FormulariesEdit.Section.Formulary.ConditionalFormLabel>
+                            {strings['pt-br']['formularyEditConditionalValueInputLabel']}
+                        </FormulariesEdit.Section.Formulary.ConditionalFormLabel> 
                         <Form.Control 
                         type="text" 
                         value={(props.section.conditional_value) ? props.section.conditional_value : ''} 

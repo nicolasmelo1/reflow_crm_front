@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { Form } from 'react-bootstrap'
 import Select from 'components/Utils/Select'
 import agent from 'redux/agent'
+import { strings } from 'utils/constants'
 
 const Connection = (props) => {
-    const [selectedGroup, setSelectedGroup] = useState(props.field.form_field_as_option.form_depends_on_group_id)
-    const [selectedForm, setSelectedForm] = useState(props.field.form_field_as_option.form_depends_on_id)
+    const [selectedGroup, setSelectedGroup] = useState((props.field.form_field_as_option) ? props.field.form_field_as_option.form_depends_on_group_id : null)
+    const [selectedForm, setSelectedForm] = useState((props.field.form_field_as_option) ? props.field.form_field_as_option.form_depends_on_id : null)
     const [fields, setFields] = useState([])
 
     const onChangeGroup = (data) => {
@@ -17,9 +17,11 @@ const Connection = (props) => {
     }
 
     const onChangeField = (data) => {
-        props.field.form_field_as_option.id = data[0]
-        props.field.form_field_as_option.form_depends_on_id = selectedForm
-        props.field.form_field_as_option.form_depends_on_group_id = selectedGroup
+        props.field.form_field_as_option = {
+            id : data[0],
+            form_depends_on_id: selectedForm,
+            form_depends_on_group_id: selectedGroup
+        }
         props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
     }
 
@@ -27,7 +29,7 @@ const Connection = (props) => {
     const initialGroup = groupOptions.filter(groupOption => selectedGroup === groupOption.value)
     
     const fieldOptions = fields.map(fieldOption => { return {value: fieldOption.id, label: fieldOption.label_name} })
-    const initialField = fieldOptions.filter(fieldOption =>  props.field.form_field_as_option.id === fieldOption.value)
+    const initialField = fieldOptions.filter(fieldOption => (props.field.form_field_as_option) ? props.field.form_field_as_option.id === fieldOption.value : false)
 
     let formOptions = []
     let initialForm = []
@@ -53,14 +55,16 @@ const Connection = (props) => {
         let didCancel = false;
 
         async function fetchFieldOptions() {
-            const response = await agent.HOME.getFieldOptions(selectedForm)
-            if (!didCancel) {
-                setFields(response.data.data)
+            if (selectedForm) {
+                const response = await agent.HOME.getFieldOptions(selectedForm)
+                if (!didCancel && response.status === 200) {
+                    setFields(response.data.data)
+                }
             }
         }  
         
         fetchFieldOptions()
-    
+
         return () => { didCancel = true; };
     }, [selectedForm, selectedGroup])
 
@@ -68,7 +72,7 @@ const Connection = (props) => {
     return (
         <div>
             <div style={{margin: '10px 0'}}>
-                <label style={{color:'#444', margin: '0'}}>Qual o template da conexão?</label>
+                <label style={{color:'#444', margin: '0'}}>{strings['pt-br']['formularyEditFieldConnectionTemplateSelectorLabel']}</label>
                 <div style={{ backgroundColor:'#fff'}}>
                     <Select 
                     options={groupOptions} 
@@ -80,7 +84,7 @@ const Connection = (props) => {
             </div>
             {initialGroup.length !== 0 ? (
                 <div style={{margin: '10px 0'}}>
-                    <label style={{color:'#444', margin: '0'}}>Com qual formulário você deseja conectar?</label>
+                    <label style={{color:'#444', margin: '0'}}>{strings['pt-br']['formularyEditFieldConnectionFormularySelectorLabel']}</label>
                     <div style={{ backgroundColor:'#fff'}}>
                         <Select 
                         options={formOptions} 
@@ -92,7 +96,7 @@ const Connection = (props) => {
             ): ''}
             {initialForm.length !== 0 && initialGroup.length !== 0 ?  (
                 <div style={{margin: '10px 0'}}>
-                    <label style={{color:'#444', margin: '0'}}>Qual campo será usado como opção?</label>
+                    <label style={{color:'#444', margin: '0'}}>{strings['pt-br']['formularyEditFieldConnectionFieldSelectorLabel']}</label>
                     <div style={{ backgroundColor:'#fff'}}>
                         <Select 
                         options={fieldOptions} 
