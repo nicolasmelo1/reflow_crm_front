@@ -172,8 +172,8 @@ const LISTING = {
     getHeader: async (formName) => {
         return await requests.get(`${companyId}/data/api/listing/${formName}/`)
     },
-    getTotals: async (formName) => {
-        return await requests.get(`${companyId}/data/api/listing/${formName}/total/`)
+    getTotals: async (params, formName) => {
+        return await requests.get(`${companyId}/data/api/listing/${formName}/total/`, params)
     },
     updateSelectedFields: async (body, formName) => {
         return await requests.post(`${companyId}/data/api/listing/${formName}/selected/`, body)

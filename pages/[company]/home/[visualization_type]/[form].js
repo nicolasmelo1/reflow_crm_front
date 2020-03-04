@@ -1,6 +1,6 @@
 import React from 'react';
 import actions from 'redux/actions';
-import { Layout, Formulary, DataContainer } from 'components';
+import { Layout, Formulary, Listing } from 'components';
 import { connect } from 'react-redux';
 import { strings, paths } from 'utils/constants';
 import { Button } from 'react-bootstrap';
@@ -12,7 +12,9 @@ class Data extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            visualization: 'listing',
             formularyId: null//'51003'
+
         }
     }
 
@@ -41,8 +43,11 @@ class Data extends React.Component {
                 <Formulary query={this.props.query} formularyId={this.state.formularyId} setFormularyId={this.setFormularyId}/>
                 <Button type="submit" onClick={e => this.handleLogout(e)}>Logout</Button>
                 <GestaoTab defaultActive='listing' />
-
-                <DataContainer visualization='listing' />
+                {(this.state.visualization == 'listing') ? (
+                    <Listing query={this.props.query}/>
+                ) : (
+                    ''
+                )}
             </Layout>
         )
     }

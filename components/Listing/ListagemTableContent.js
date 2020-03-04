@@ -4,29 +4,26 @@ import { ListingEditButton, ListingDeleteButton, ListingEditButtonIcon, ListingD
 
 const ListagemTableContent = (props) => {
 
-    const header = props.headers.field_headers || [];
-
+    const headers = (props.headers && props.headers.field_headers) ? props.headers.field_headers: []
+    const contents = (props.contents) ? props.contents: []
+    
     return (
-
         <tbody>
-
-            {props.contents.map((content, index) => {
-
-                let row = header.filter(head => head.user_selected).map((head, index) => {
-                    const element = content.dynamic_form_value.filter(data => data.field_name == head.name)
-
-
-                    if (element.length == 0) {
-                        return <td key={index}></td>
-                    } else {
-                        return (<td key={index}>{element[0].value}</td>)
-
-                    }
-                });
-
+            {contents.map((content, index) => {
                 return (
                     <tr key={index}>
-                        {row}
+                        {headers.filter(head => head.user_selected).map((head, index) => {
+                            const element = content.dynamic_form_value.filter(data => data.field_name == head.name)
+                            if (element.length == 0) {
+                                return (
+                                    <td key={index}></td>
+                                )
+                            } else {
+                                return (
+                                    <td key={index}>{element[0].value}</td>
+                                )
+                            }
+                        })}
                         <td>
                             <ListingEditButton>
                                 <ListingEditButtonIcon icon="trash" />

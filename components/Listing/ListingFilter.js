@@ -3,8 +3,9 @@ import { ListingFilterButton, ListingFilterIcon } from 'styles/Listing';
 import { Dropdown, InputGroup, FormControl, Button, DropdownButton } from 'react-bootstrap';
 import ListingFilterInstance from './ListingFilterInstance'
 const ListingFilter = (props) => {
+    const [formInstanceNumber, setFormInstanceNumber] = useState([addNewValue()]);
 
-    const heading = props.headers.field_headers || [];
+    const heading = (props.headers && props.headers.field_headers) ? props.headers.field_headers: []
 
     function addNewValue() {
         return {
@@ -13,7 +14,6 @@ const ListingFilter = (props) => {
             label_name: ""
         }
     }
-    const [formInstanceNumber, setFormInstanceNumber] = useState([addNewValue()]);
 
     function addNewFilter(e) {
         e.preventDefault()
@@ -41,7 +41,6 @@ const ListingFilter = (props) => {
         props.onGetData(urlParams, 'negocios')
     }
 
-    console.log(formInstanceNumber)
     return (
         <Dropdown>
 

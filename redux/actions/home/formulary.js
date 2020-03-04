@@ -22,11 +22,11 @@ const onGetFormularyData = (formName, formId) => {
     }
 }
 
-
 const onFullResetFormulary = (formFilledData={}, formBuildData={}) => {
     return (dispatch) => {
         dispatch({ type: SET_FORMULARY_DATA, payload: formFilledData })
         dispatch({ type: GET_FORMULARY, payload: formBuildData })
+        dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: {} })
     }
 }
 

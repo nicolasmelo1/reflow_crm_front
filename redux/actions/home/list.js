@@ -4,7 +4,7 @@ import {
     GET_TOTALS
 } from 'redux/types';
 import agent from 'redux/agent'
-import { UPDATE_HEAD_SELECT } from '../../types';
+import { UPDATE_HEAD_SELECT } from 'redux/types';
 
 
 const onGetData = (params, formName) => {
@@ -18,15 +18,17 @@ const onGetData = (params, formName) => {
 const onGetHeader = (formName) => {
     return async (dispatch) => {
         let response = await agent.LISTING.getHeader(formName)
-
-        dispatch({ type: GET_HEADERS, payload: response.data });
+        if (response.status === 200) {
+            dispatch({ type: GET_HEADERS, payload: response.data });
+        }
     }
 }
-const onGetTotal = (formName) => {
+const onGetTotal = (params, formName) => {
     return async (dispatch) => {
-        let response = await agent.LISTING.getTotals(formName)
-
-        dispatch({ type: GET_TOTALS, payload: response.data })
+        let response = await agent.LISTING.getTotals(params, formName)
+        if (response.status === 200) {
+            dispatch({ type: GET_TOTALS, payload: response.data })
+        }
     }
 }
 

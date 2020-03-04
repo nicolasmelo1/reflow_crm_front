@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import ListingColSelectButton from 'styles/Listing';
 import { Button, Dropdown, FormControl } from 'react-bootstrap';
 
-
 const ListingColumnSelectButton = (props) => {
-    const header = props.headers.field_headers || [];
+    const headers = (props.headers && props.headers.field_headers) ? props.headers.field_headers: []
 
     const onToggleSelect = (e, index) => {
         e.preventDefault()
@@ -43,14 +42,13 @@ const ListingColumnSelectButton = (props) => {
 
 
     return (
-
         <Dropdown>
             <Dropdown.Toggle as={Button} id="dropdown-custom-components">
                 Selecionar colunas exibidas
             </Dropdown.Toggle>
 
             <Dropdown.Menu as={SelectMenu}>
-                {header.map(function (data, index) {
+                {headers.map(function (data, index) {
                     return (
                         <Dropdown.Item
                             as="button"
