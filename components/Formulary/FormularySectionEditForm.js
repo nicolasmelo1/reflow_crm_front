@@ -103,7 +103,7 @@ const FormularySectionEditForm = (props) => {
                         <FormulariesEdit.Section.Formulary.ConditionalFormLabel>
                             {strings['pt-br']['formularyEditConditionalValueInputLabel']}
                         </FormulariesEdit.Section.Formulary.ConditionalFormLabel> 
-                        <Form.Control 
+                        <FormulariesEdit.InputField
                         type="text" 
                         value={(props.section.conditional_value) ? props.section.conditional_value : ''} 
                         onChange={e => {onChangeConditionalValue(e)}}

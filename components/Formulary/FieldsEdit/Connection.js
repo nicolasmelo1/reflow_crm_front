@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Select from 'components/Utils/Select'
 import agent from 'redux/agent'
 import { strings } from 'utils/constants'
+import { FormulariesEdit }  from 'styles/Formulary'
 
 const Connection = (props) => {
     const [selectedGroup, setSelectedGroup] = useState((props.field.form_field_as_option) ? props.field.form_field_as_option.form_depends_on_group_id : null)
@@ -68,42 +69,47 @@ const Connection = (props) => {
         return () => { didCancel = true; };
     }, [selectedForm, selectedGroup])
 
-
     return (
         <div>
             <div style={{margin: '10px 0'}}>
-                <label style={{color:'#444', margin: '0'}}>{strings['pt-br']['formularyEditFieldConnectionTemplateSelectorLabel']}</label>
-                <div style={{ backgroundColor:'#fff'}}>
+                <FormulariesEdit.FieldFormLabel>
+                    {strings['pt-br']['formularyEditFieldConnectionTemplateSelectorLabel']}
+                </FormulariesEdit.FieldFormLabel>
+                <FormulariesEdit.SelectorContainer>
                     <Select 
                     options={groupOptions} 
                     initialValues={initialGroup} 
                     onChange={onChangeGroup} 
                     />
-                </div>
+                </FormulariesEdit.SelectorContainer>
                 
             </div>
             {initialGroup.length !== 0 ? (
                 <div style={{margin: '10px 0'}}>
-                    <label style={{color:'#444', margin: '0'}}>{strings['pt-br']['formularyEditFieldConnectionFormularySelectorLabel']}</label>
-                    <div style={{ backgroundColor:'#fff'}}>
+                    <FormulariesEdit.FieldFormLabel>
+                        {strings['pt-br']['formularyEditFieldConnectionFormularySelectorLabel']}
+                    </FormulariesEdit.FieldFormLabel>
+                    <FormulariesEdit.SelectorContainer>
                         <Select 
                         options={formOptions} 
                         initialValues={initialForm} 
                         onChange={onChangeForm} 
                         />
-                    </div>
+                    </FormulariesEdit.SelectorContainer>
                 </div>
             ): ''}
             {initialForm.length !== 0 && initialGroup.length !== 0 ?  (
                 <div style={{margin: '10px 0'}}>
-                    <label style={{color:'#444', margin: '0'}}>{strings['pt-br']['formularyEditFieldConnectionFieldSelectorLabel']}</label>
-                    <div style={{ backgroundColor:'#fff'}}>
+                    <FormulariesEdit.FieldFormLabel>
+                        {strings['pt-br']['formularyEditFieldConnectionFieldSelectorLabel']}
+                    </FormulariesEdit.FieldFormLabel>
+                    <FormulariesEdit.SelectorContainer>
                         <Select 
                         options={fieldOptions} 
                         initialValues={initialField} 
                         onChange={onChangeField} 
                         />
-                    </div>
+                    </FormulariesEdit.SelectorContainer>
                 </div>
             ): ''}
         </div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { strings } from 'utils/constants'
-import { Form } from 'react-bootstrap'
+import { FormulariesEdit } from 'styles/Formulary'
 
 const Option = (props) => {
     const [writingValue, setWritingValue] = useState('')
@@ -41,7 +41,7 @@ const Option = (props) => {
             <div style={{margin: '10px 0'}}>
                 <label style={{color:'#444', margin: '0'}}>{strings['pt-br']['formularyEditFieldOptionLabel']}</label>
                 {fieldOptions.map((fieldOption, index) => (
-                    <Form.Control ref={setRef} key={fieldOption.option} type="text" value={fieldOption.option} onChange={e=>{onChangeFieldOption(e, index)}}/>
+                    <FormulariesEdit.InputField ref={setRef} key={fieldOption.option} type="text" value={fieldOption.option} onChange={e=>{onChangeFieldOption(e, index)}}/>
                 ))}
             </div>
         </div>

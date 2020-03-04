@@ -141,8 +141,10 @@ const FormularyFieldEdit = (props) => {
             {isEditing ? (
                 <div style={{ width: '100%', backgroundColor: '#bfbfbf', padding: '5px 10px'}}>
                     <div style={{margin: '10px 0'}}>
-                        <label style={{color:'#444', margin: '0'}}>{strings['pt-br']['formularyEditFieldTypeSelectorLabel']}</label>
-                        <div style={{ backgroundColor:'#fff'}}>
+                        <FormulariesEdit.FieldFormLabel>
+                            {strings['pt-br']['formularyEditFieldTypeSelectorLabel']}
+                        </FormulariesEdit.FieldFormLabel>
+                        <FormulariesEdit.SelectorContainer>
                             <Select 
                                 onFilter={onFilterFieldType}
                                 label={FieldOption}
@@ -150,11 +152,17 @@ const FormularyFieldEdit = (props) => {
                                 initialValues={initialFieldType} 
                                 onChange={onChangeFieldType} 
                             />
-                        </div>
+                        </FormulariesEdit.SelectorContainer>
                     </div>
                     <div style={{margin: '10px 0'}}>
-                        <label style={{color:'#444', margin: '0'}}>{strings['pt-br']['formularyEditFieldNameInputLabel']}</label>
-                        <input type="text" value={props.field.label_name} onChange={e=> {onChangeFieldName(e)}}/>
+                        <FormulariesEdit.FieldFormLabel>
+                            {strings['pt-br']['formularyEditFieldNameInputLabel']}
+                        </FormulariesEdit.FieldFormLabel>
+                        <FormulariesEdit.InputField
+                        type="text" 
+                        value={props.field.label_name} 
+                        onChange={e=> {onChangeFieldName(e)}}
+                        />
                     </div>
                     <div style={{margin: '10px 0'}}>
                         <div style={{ backgroundColor:'#fff',  padding: '10px 5px'}}>

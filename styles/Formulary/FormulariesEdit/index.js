@@ -15,7 +15,11 @@ import FormularySectionEditSettingsIsConditionalButton from './FormularySectionE
 import FormularySectionEditSettingIsConditionalFormularyContainer from './FormularySectionEditSettingIsConditionalFormularyContainer'
 import FormularyEditSelectorContainer from './FormularyEditSelectorContainer'
 import FormularySectionEditConditionalFormLabel from './FormularySectionEditConditionalFormLabel'
+import FormularyEditInputField from './FormularyEditInputField'
+import FormularySectionEditFieldFormLabel from './FormularySectionEditFieldFormLabel'
+
 export default {
+    InputField: FormularyEditInputField,
     SelectorContainer: FormularyEditSelectorContainer,
     Section: {
         TitleAndIconsContainer: FormularySectionEditTitleAndIconsContainer,
@@ -40,6 +44,6 @@ export default {
     ToggleConditional: {
         Input: FormularySectionEditToggleConditionalInput
     },
-
+    FieldFormLabel: FormularySectionEditFieldFormLabel,
     FieldContainer: FormularySectionEditFieldsContainer,
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { types, strings } from 'utils/constants';
-import { Form } from 'react-bootstrap';
 import Select from 'components/Utils/Select';
+import { FormulariesEdit } from 'styles/Formulary'
 
 const Number = (props) => {
     const initialNumberMaskType = (props.field.number_configuration_number_format_type && props.types.data.field_number_format_type) ? props.types.data.field_number_format_type
@@ -18,18 +18,22 @@ const Number = (props) => {
     return (
         <div>
             <div style={{margin: '10px 0'}}>
-                <label style={{color:'#444', margin: '0'}}>{strings['pt-br']['formularyEditFieldNumberTypeSelectorLabel']}</label>
-                <div style={{ backgroundColor:'#fff'}}>
+                <FormulariesEdit.FieldFormLabel>
+                    {strings['pt-br']['formularyEditFieldNumberTypeSelectorLabel']}
+                </FormulariesEdit.FieldFormLabel>
+                <FormulariesEdit.SelectorContainer>
                     <Select 
                         options={numberMaskTypes} 
                         initialValues={initialNumberMaskType} 
                         onChange={onChangeFieldNumberMask} 
                     />
-                </div>
+                </FormulariesEdit.SelectorContainer>
             </div>
             <div style={{margin: '10px 0'}}>
-                <label style={{color:'#444', margin: '0'}}>{strings['pt-br']['formularyEditFieldNumberFormulaLabel']}</label>
-                <Form.Control type="text"/>
+                <FormulariesEdit.FieldFormLabel>
+                    {strings['pt-br']['formularyEditFieldNumberFormulaLabel']}
+                </FormulariesEdit.FieldFormLabel>
+                <FormulariesEdit.InputField type="text"/>
             </div>
         </div>
     )
