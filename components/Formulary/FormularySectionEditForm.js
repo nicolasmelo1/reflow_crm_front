@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Col, Row, Form } from 'react-bootstrap';
 import { FormulariesEdit }  from 'styles/Formulary';
 import { types, strings } from 'utils/constants';
 import Select from 'components/Utils/Select';
 
 const FormularySectionEditForm = (props) => {
+    const [conditionalFieldOptions, setConditionalFieldOptions] = useState([])
+    const [initialConditionalFieldOption, setInitialConditionalFieldOption] = useState([])
+    const [conditionalTypesOptions, setConditionalTypesOptions] = useState([])
+    const [initialConditionalType, setInitialConditionalType] = useState([])
+
+
     const onSetFormType = (formTypeId) => {
         props.section.type = formTypeId;
         props.onUpdateSection(props.sectionIndex, {...props.section});
@@ -41,13 +47,21 @@ const FormularySectionEditForm = (props) => {
         props.setIsConditional(!props.isConditional)
     } 
 
-    const conditionalFieldOptions = props.fieldOptions.map(fieldOption => { return { value: fieldOption.id, label: fieldOption.label_name } })
-    const initialConditionalFieldOption = props.fieldOptions.filter(fieldOption=> fieldOption.id === props.section.conditional_on_field).map(fieldOption=> { return { value: fieldOption.id, label: fieldOption.label_name } })
+    useEffect(() => {
+        setConditionalFieldOptions(props.fieldOptions.map(fieldOption => { return { value: fieldOption.id, label: fieldOption.label_name } }))
+    }, [props.fieldOptions])
 
-    const initialConditionalType = (props.section.conditional_type && props.types.data.conditional_type) ? props.types.data.conditional_type.filter(conditional=> conditional.id === props.section.conditional_type).map(conditional=> { return { value: conditional.id, label: types('pt-br', 'conditional_type', conditional.type) } }) : []
-    const conditionalTypesOptions = (props.types && props.types.data && props.types.data.conditional_type) ? 
-        props.types.data.conditional_type.map(conditional=> { return { value: conditional.id, label: types('pt-br', 'conditional_type', conditional.type) } }): []
+    useEffect(() => {
+        setInitialConditionalFieldOption(props.fieldOptions.filter(fieldOption=> fieldOption.id === props.section.conditional_on_field).map(fieldOption=> { return { value: fieldOption.id, label: fieldOption.label_name } }))
+    }, [props.fieldOptions, props.section.conditional_on_field])
 
+    useEffect(() => {
+        setConditionalTypesOptions(props.types.data.conditional_type.map(conditional=> { return { value: conditional.id, label: types('pt-br', 'conditional_type', conditional.type) } }))
+    }, [props.types.data.conditional_type])
+    
+    useEffect(() => {
+        setInitialConditionalType(props.types.data.conditional_type.filter(conditional=> conditional.id === props.section.conditional_type).map(conditional=> { return { value: conditional.id, label: types('pt-br', 'conditional_type', conditional.type) } }))
+    }, [props.section.conditional_type, props.types.data.conditional_type])
 
     return (
         <div>

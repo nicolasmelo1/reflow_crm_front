@@ -1,8 +1,9 @@
+import React from 'react'
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-export default styled(FontAwesomeIcon)`
-    color: '#444';
+export default styled(React.forwardRef(({isEditing, ...rest}, ref) => <FontAwesomeIcon {...rest} ref={ref}/>))`
+    color: ${props => props.isEditing ? '#0dbf7e' : '#444'};
     float: right;
     margin: 0 5px;
     cursor: pointer;

@@ -7,6 +7,10 @@ import { FormulariesEdit }  from 'styles/Formulary'
 const Connection = (props) => {
     const [selectedGroup, setSelectedGroup] = useState((props.field.form_field_as_option) ? props.field.form_field_as_option.form_depends_on_group_id : null)
     const [selectedForm, setSelectedForm] = useState((props.field.form_field_as_option) ? props.field.form_field_as_option.form_depends_on_id : null)
+    const [groupOptions, setGroupOptions] = useState([])
+    const [initialGroup, setInitialGroup] = useState([])
+    const [fieldOptions, setFieldOptions] = useState([])
+    const [initialField, setInitialField] = useState([])
     const [fields, setFields] = useState([])
 
     const onChangeGroup = (data) => {
@@ -25,13 +29,8 @@ const Connection = (props) => {
         }
         props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
     }
-
-    const groupOptions = props.formulariesOptions.map(groupOption => { return {value: groupOption.id, label: groupOption.name} })
-    const initialGroup = groupOptions.filter(groupOption => selectedGroup === groupOption.value)
     
-    const fieldOptions = fields.map(fieldOption => { return {value: fieldOption.id, label: fieldOption.label_name} })
-    const initialField = fieldOptions.filter(fieldOption => (props.field.form_field_as_option) ? props.field.form_field_as_option.id === fieldOption.value : false)
-
+    
     let formOptions = []
     let initialForm = []
 
@@ -69,6 +68,23 @@ const Connection = (props) => {
         return () => { didCancel = true; };
     }, [selectedForm, selectedGroup])
 
+   
+    useEffect(() => {
+        setGroupOptions(props.formulariesOptions.map(groupOption => { return {value: groupOption.id, label: groupOption.name} }))
+    }, [props.formulariesOptions])
+
+    useEffect(() => {
+        setInitialGroup(groupOptions.filter(groupOption => selectedGroup === groupOption.value))
+    }, [selectedGroup, groupOptions])
+
+    useEffect(() => {
+        setFieldOptions(fields.map(fieldOption => { return {value: fieldOption.id, label: fieldOption.label_name} }))
+    }, [fields])
+
+    useEffect(() => {
+        setInitialField(fieldOptions.filter(fieldOption => (props.field.form_field_as_option) ? props.field.form_field_as_option.id === fieldOption.value : false))
+    }, [props.field.form_field_as_option, fieldOptions])
+    
     return (
         <div>
             <FormulariesEdit.FieldFormFieldContainer>

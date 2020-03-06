@@ -19,8 +19,12 @@ import FormularyEditInputField from './FormularyEditInputField'
 import FormularySectionEditFieldFormLabel from './FormularySectionEditFieldFormLabel'
 import FormularySectionEditFieldFormCheckboxLabel from './FormularySectionEditFieldFormCheckboxLabel'
 import FormularySectionEditFieldFormFieldContainer from './FormularySectionEditFieldFormFieldContainer'
+import FormularySectionEditFieldAddNewButton from './FormularySectionEditFieldAddNewButton'
+import FormularySectionEditAddNewButton from './FormularySectionEditAddNewButton'
 
 export default {
+    AddNewSectionButton: FormularySectionEditAddNewButton,
+    AddNewFieldButton: FormularySectionEditFieldAddNewButton,
     InputField: FormularyEditInputField,
     SelectorContainer: FormularyEditSelectorContainer,
     Section: {

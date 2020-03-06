@@ -112,9 +112,9 @@ const Select = (props) => {
         e.preventDefault();
         e.stopPropagation();
         if (props.multiple || selectedOptions.length===0) {
-            selectedOptions.push({value: option.value, label: option.label, selected: false})
+            selectedOptions.push({value: option.value, label: option.label, selected: false, color: selectedItemColors[Math.floor(Math.random() * selectedItemColors.length)]})
         } else {
-            selectedOptions[0] = {value: option.value, label: option.label, selected: false}
+            selectedOptions[0] = {value: option.value, label: option.label, selected: false, color: selectedItemColors[Math.floor(Math.random() * selectedItemColors.length)]}
         }
         setSelectedOptions([...selectedOptions])
         props.onChange(selectedOptions.map(selectedOption=> selectedOption.value))
@@ -181,7 +181,7 @@ const Select = (props) => {
     }, [onSelectClick]);
     
     useEffect(() => {
-        const selectedInitialValues = props.initialValues.map(initialValue=> {return{ ...initialValue, selected:false }})
+        const selectedInitialValues = props.initialValues.map(initialValue=> {return{ ...initialValue, selected:false, color: selectedItemColors[Math.floor(Math.random() * selectedItemColors.length)] }})
         let filteredOptions = props.options.filter(option=> selectedInitialValues.find(selectedOption=> selectedOption.value === option.value) === undefined);
         try {
             if (JSON.stringify(selectedInitialValues) !== JSON.stringify(selectedOptions)){
@@ -201,7 +201,7 @@ const Select = (props) => {
                 {selectedOptions.map((selectedOption, index)=> (
                     <Utils.Select.SelectedOption 
                     key={selectedOption.value} 
-                    color={selectedItemColors[Math.floor(Math.random() * selectedItemColors.length)]} 
+                    color={selectedOption.color} 
                     selected={selectedOption.selected} 
                     onClick={e=>{onClickSelectedOption(e, index)}}
                     >

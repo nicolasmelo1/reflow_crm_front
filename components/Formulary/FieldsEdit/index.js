@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Fields from 'components/Formulary/Fields'
 import { FormulariesEdit }  from 'styles/Formulary'
 import { types, strings } from 'utils/constants'
@@ -20,21 +20,9 @@ const FieldOption = (props) => {
 
 const FormularyFieldEdit = (props) => {
     const [isEditing, setIsEditing] = useState(false)
+    const [fieldTypes, setFieldTypes] = useState([])
+    const [initialFieldType, setInitialFieldType] = useState([])
 
-    const initialFieldType = (props.field.type && props.types.data.field_type) ? props.types.data.field_type.filter(fieldType=> fieldType.id === props.field.type).map(fieldType=> { return { value: fieldType.id, label: types('pt-br', 'field_type', fieldType.type) } }) : []
-    const fieldTypes = (props.types && props.types.data && props.types.data.field_type) ? props.types.data.field_type.map(fieldType=> 
-        { 
-            return { 
-                value: fieldType.id, 
-                label: { 
-                    props: {
-                        name: types('pt-br', 'field_type', fieldType.type) 
-                    } 
-                }
-            }
-        }
-    ): []
-    
     const onMoveField = (e) => {
         let fieldContainer = e.currentTarget.closest('.field-container')
         let elementRect = e.currentTarget.getBoundingClientRect()
@@ -127,6 +115,9 @@ const FormularyFieldEdit = (props) => {
 
     const formularyItemsForFieldTypes = () => {
         const fieldType = props.types.data.field_type.filter(fieldType => fieldType.id === props.field.type)[0]
+        if (!fieldType) {
+            return ''
+        }
 
         if (['option', 'multi-option'].includes(fieldType.type)) {
             return (
@@ -172,6 +163,24 @@ const FormularyFieldEdit = (props) => {
         }
     }
 
+
+    useEffect(() => {
+        setFieldTypes(props.types.data.field_type.map(fieldType=> { 
+            return { 
+                value: fieldType.id, 
+                label: { 
+                    props: {
+                        name: types('pt-br', 'field_type', fieldType.type) 
+                    } 
+                }
+            }
+        }))
+    }, [props.types.data.field_type])
+
+    useEffect(() => {
+        setInitialFieldType(props.types.data.field_type.filter(fieldType=> fieldType.id === props.field.type).map(fieldType=> { return { value: fieldType.id, label: types('pt-br', 'field_type', fieldType.type) } }))
+    }, [props.types.data.field_type, props.field.type])
+
     return (
         <div className="field-container" style={{borderTop: '2px solid #bfbfbf', padding: '5px'}} onDragOver={e=>{onDragOver(e)}} onDrop={e=>{onDrop(e)}}>
             <div style={{height: '1em', margin: '5px'}}>
@@ -180,7 +189,7 @@ const FormularyFieldEdit = (props) => {
                 <div draggable="true" onDragStart={e => {onMoveField(e)}} onDrag={e => onDrag(e)} onDragEnd={e => {onDragEnd(e)}}>
                     <FormulariesEdit.Icon.FieldIcon size="sm" type="form" icon="arrows-alt"/>
                 </div>
-                <FormulariesEdit.Icon.FieldIcon size="sm" type="form" icon="pencil-alt" onClick={e=> {setIsEditing(!isEditing)}}/>
+                <FormulariesEdit.Icon.FieldIcon size="sm" type="form" icon="pencil-alt" onClick={e=> {setIsEditing(!isEditing)}} isEditing={isEditing}/>
             </div>
             {props.field.enabled ? (
                 <div>
@@ -235,12 +244,21 @@ const FormularyFieldEdit = (props) => {
                             {formularyItemsForFieldTypes()}
                         </div>
                     ): (
-                        <Fields 
-                        errors={{}}
-                        field={props.field}
-                        types={props.types}
-                        fieldFormValues={[]}
-                        />
+                        <div>
+                            {props.field.type ? (
+                                <Fields 
+                                errors={{}}
+                                field={props.field}
+                                types={props.types}
+                                fieldFormValues={[]}
+                                />
+                            ) : (
+                                <p>
+                                    Selecione um tipo de campo.
+                                </p>
+                            )}
+                       
+                        </div>
                     )}
                 </div>
             ) : (

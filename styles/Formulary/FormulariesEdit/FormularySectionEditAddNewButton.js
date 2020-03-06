@@ -2,8 +2,8 @@ import styled from 'styled-components'
 
 const StyledButtonContainer = styled.button`
     text-align: center;
-    background-image: linear-gradient(to right, #0e5741 , #0dbf7e);
-    border: 1px solid #fff;
+    border: 1px dashed #fff;
+    background-color: transparent;
     border-radius: 5px;
     padding: 5px;
     width: 100%
@@ -12,11 +12,11 @@ const StyledButtonContainer = styled.button`
 const StyledButtonText = styled.p`
     margin: 0;
     padding: 0;
-    color: #fff
+    color: #f2f2f2
 `
 
 const StyledPlusIcon = styled.svg`
-    fill: #fff
+    fill: #f2f2f2
 `
 
 const SidebarAddButton = (props) => {

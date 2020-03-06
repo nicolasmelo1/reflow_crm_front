@@ -11,11 +11,11 @@ const FormularySectionEdit = (props) => {
     const onChangeSectionName = (e) => {
         e.preventDefault()
         e.stopPropagation()
+        props.section.label_name = e.target.value
+        props.onUpdateSection(props.sectionIndex, {...props.section})
     }
 
     const onDisableSection = (e) => {
-        //e.preventDefault()
-        //e.stopPropagation()
         props.section.enabled = !props.section.enabled 
         props.onUpdateSection(props.sectionIndex, {...props.section})
     }
@@ -124,18 +124,23 @@ const FormularySectionEdit = (props) => {
                             />
                         </FormulariesEdit.Section.Formulary.Container>
                     ) : (
-                        <FormulariesEdit.FieldContainer>
-                            <FormularyFieldsEdit
-                            fieldIsMoving={props.fieldIsMoving}
-                            setFieldIsMoving={props.setFieldIsMoving}
-                            sectionIndex={props.sectionIndex}
-                            onMoveField={props.onMoveField}
-                            types={props.types}
-                            fields={props.section.form_fields}
-                            onUpdateField={props.onUpdateField}
-                            formulariesOptions={props.formulariesOptions}
-                            />
-                        </FormulariesEdit.FieldContainer>
+                        <div>
+                            {props.section.id ? (
+                                <FormulariesEdit.FieldContainer>
+                                    <FormularyFieldsEdit
+                                    fieldIsMoving={props.fieldIsMoving}
+                                    setFieldIsMoving={props.setFieldIsMoving}
+                                    sectionIndex={props.sectionIndex}
+                                    onMoveField={props.onMoveField}
+                                    types={props.types}
+                                    fields={props.section.form_fields}
+                                    onAddNewField={props.onAddNewField}
+                                    onUpdateField={props.onUpdateField}
+                                    formulariesOptions={props.formulariesOptions}
+                                    />
+                                </FormulariesEdit.FieldContainer>
+                            ) : ''}
+                        </div>
                     )}
                 </div>
             ) : ''}

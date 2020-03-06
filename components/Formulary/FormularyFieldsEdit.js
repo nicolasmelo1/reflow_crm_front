@@ -1,5 +1,6 @@
 import React from 'react'
 import FormularyFieldEdit from './FieldsEdit'
+import { FormulariesEdit }  from 'styles/Formulary'
 
 const FormularyFieldsEdit = (props) => {
     return (
@@ -18,6 +19,8 @@ const FormularyFieldsEdit = (props) => {
                 fieldIndex={index}
                 />
             ))}
+            <FormulariesEdit.AddNewFieldButton text="Adicionar novo campo" onClick={e=>{props.onAddNewField(props.sectionIndex)}}/>
+
         </div>
     )
 }
