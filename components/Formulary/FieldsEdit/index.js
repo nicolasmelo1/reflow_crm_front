@@ -34,7 +34,49 @@ const FormularyFieldEdit = (props) => {
             }
         }
     ): []
-        
+    
+    const onMoveField = (e) => {
+        let fieldContainer = e.currentTarget.closest('.field-container')
+        let elementRect = e.currentTarget.getBoundingClientRect()
+        e.dataTransfer.setDragImage(fieldContainer, elementRect.width-elementRect.left - ( elementRect.right - elementRect.width ), 20)
+        e.dataTransfer.setData('fieldSectionIndexToMove', JSON.stringify(props.sectionIndex))
+        e.dataTransfer.setData('fieldIndexToMove', JSON.stringify(props.fieldIndex))
+        props.setFieldIsMoving(true)
+    }
+
+    const onDrop = (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        let movedFieldSectionIndex = e.dataTransfer.getData('fieldSectionIndexToMove')
+        let movedFieldIndex = e.dataTransfer.getData('fieldIndexToMove')
+        if (movedFieldIndex !== '' && movedFieldSectionIndex !== '') {
+            movedFieldSectionIndex = JSON.parse(movedFieldSectionIndex)
+            movedFieldIndex = JSON.parse(movedFieldIndex)
+            props.onMoveField(movedFieldSectionIndex, movedFieldIndex, props.sectionIndex, props.fieldIndex)
+        }
+    }
+
+    const onDragEnd = (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        props.setFieldIsMoving(false)
+    }
+
+    const onDrag = (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+    }
+
+    const onDragOver = (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+    }
+
+    const onDisableField = (e) => {
+        props.field.enabled = !props.field.enabled
+        props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
+    }
+
     const onChangeFieldName = (e) => {
         e.preventDefault();
         props.field.label_name = e.target.value
@@ -131,70 +173,80 @@ const FormularyFieldEdit = (props) => {
     }
 
     return (
-        <div style={{borderTop: '2px solid #bfbfbf', padding: '5px'}}>
+        <div className="field-container" style={{borderTop: '2px solid #bfbfbf', padding: '5px'}} onDragOver={e=>{onDragOver(e)}} onDrop={e=>{onDrop(e)}}>
             <div style={{height: '1em', margin: '5px'}}>
                 <FormulariesEdit.Icon.FieldIcon size="sm" type="form" icon="trash"/>
-                <FormulariesEdit.Icon.FieldIcon size="sm" type="form" icon="eye"/>
-                <FormulariesEdit.Icon.FieldIcon size="sm" type="form" icon="arrows-alt" />
+                <FormulariesEdit.Icon.FieldIcon size="sm" type="form" icon="eye" onClick={e=> {onDisableField(e)}}/>
+                <div draggable="true" onDragStart={e => {onMoveField(e)}} onDrag={e => onDrag(e)} onDragEnd={e => {onDragEnd(e)}}>
+                    <FormulariesEdit.Icon.FieldIcon size="sm" type="form" icon="arrows-alt"/>
+                </div>
                 <FormulariesEdit.Icon.FieldIcon size="sm" type="form" icon="pencil-alt" onClick={e=> {setIsEditing(!isEditing)}}/>
             </div>
-            {isEditing ? (
-                <div style={{ width: '100%', backgroundColor: '#bfbfbf', padding: '5px 10px'}}>
-                    <div style={{margin: '10px 0'}}>
-                        <FormulariesEdit.FieldFormLabel>
-                            {strings['pt-br']['formularyEditFieldTypeSelectorLabel']}
-                        </FormulariesEdit.FieldFormLabel>
-                        <FormulariesEdit.SelectorContainer>
-                            <Select 
-                                onFilter={onFilterFieldType}
-                                label={FieldOption}
-                                options={fieldTypes} 
-                                initialValues={initialFieldType} 
-                                onChange={onChangeFieldType} 
-                            />
-                        </FormulariesEdit.SelectorContainer>
-                    </div>
-                    <div style={{margin: '10px 0'}}>
-                        <FormulariesEdit.FieldFormLabel>
-                            {strings['pt-br']['formularyEditFieldNameInputLabel']}
-                        </FormulariesEdit.FieldFormLabel>
-                        <FormulariesEdit.InputField
-                        type="text" 
-                        value={props.field.label_name} 
-                        onChange={e=> {onChangeFieldName(e)}}
+            {props.field.enabled ? (
+                <div>
+                    {isEditing ? (
+                        <div style={{ width: '100%', backgroundColor: '#bfbfbf', padding: '5px 10px'}}>
+                            <FormulariesEdit.FieldFormFieldContainer>
+                                <FormulariesEdit.FieldFormLabel>
+                                    {strings['pt-br']['formularyEditFieldTypeSelectorLabel']}
+                                </FormulariesEdit.FieldFormLabel>
+                                <FormulariesEdit.SelectorContainer>
+                                    <Select 
+                                        onFilter={onFilterFieldType}
+                                        label={FieldOption}
+                                        options={fieldTypes} 
+                                        initialValues={initialFieldType} 
+                                        onChange={onChangeFieldType} 
+                                    />
+                                </FormulariesEdit.SelectorContainer>
+                            </FormulariesEdit.FieldFormFieldContainer>
+                            <FormulariesEdit.FieldFormFieldContainer>
+                                <FormulariesEdit.FieldFormLabel>
+                                    {strings['pt-br']['formularyEditFieldNameInputLabel']}
+                                </FormulariesEdit.FieldFormLabel>
+                                <FormulariesEdit.InputField
+                                type="text" 
+                                value={props.field.label_name} 
+                                onChange={e=> {onChangeFieldName(e)}}
+                                />
+                            </FormulariesEdit.FieldFormFieldContainer>
+                            <FormulariesEdit.FieldFormFieldContainer>
+                                <div style={{ backgroundColor:'#fff',  padding: '10px 5px'}}>
+                                    <FormulariesEdit.FieldFormCheckboxLabel>
+                                        <input type="checkbox" checked={props.field.required} onChange={e => {onChangeRequired()}}/>&nbsp;{strings['pt-br']['formularyEditFieldIsRequiredCheckboxLabel']}
+                                    </FormulariesEdit.FieldFormCheckboxLabel>
+                                </div>
+                                <div style={{ backgroundColor:'#fff', padding: '10px 5px', borderTop: '1px solid #bfbfbf'}}>
+                                    <FormulariesEdit.FieldFormCheckboxLabel>
+                                        <input type="checkbox" checked={props.field.label_is_hidden} onChange={e => {onChangeLabelIsHidden()}}/>&nbsp;{strings['pt-br']['formularyEditFieldLabelIsVisibleCheckboxLabel']}
+                                    </FormulariesEdit.FieldFormCheckboxLabel>
+                                </div>
+                                <div style={{ backgroundColor:'#fff', padding: '10px 5px', borderTop: '1px solid #bfbfbf'}}>
+                                    <FormulariesEdit.FieldFormCheckboxLabel>
+                                        <input type="checkbox" checked={props.field.field_is_hidden} onChange={e => {onChangeFieldIsHidden()}}/>&nbsp;{strings['pt-br']['formularyEditFieldIsVisibleCheckboxLabel']}
+                                    </FormulariesEdit.FieldFormCheckboxLabel>
+                                </div>
+                                <div style={{ backgroundColor:'#fff', padding: '10px 5px', borderTop: '1px solid #bfbfbf'}}>
+                                    <FormulariesEdit.FieldFormCheckboxLabel>
+                                        <input type="checkbox" checked={props.field.is_unique} onChange={e => {onChangeIsUnique()}}/>&nbsp;{strings['pt-br']['formularyEditFieldIsUniqueCheckboxLabel']}
+                                    </FormulariesEdit.FieldFormCheckboxLabel>
+                                </div>
+                            </FormulariesEdit.FieldFormFieldContainer>
+                            {formularyItemsForFieldTypes()}
+                        </div>
+                    ): (
+                        <Fields 
+                        errors={{}}
+                        field={props.field}
+                        types={props.types}
+                        fieldFormValues={[]}
                         />
-                    </div>
-                    <div style={{margin: '10px 0'}}>
-                        <div style={{ backgroundColor:'#fff',  padding: '10px 5px'}}>
-                            <label style={{ margin: '0' }}>
-                                <input type="checkbox" checked={props.field.required} onChange={e => {onChangeRequired()}}/>{strings['pt-br']['formularyEditFieldIsRequiredCheckboxLabel']}
-                            </label>
-                        </div>
-                        <div style={{ backgroundColor:'#fff', padding: '10px 5px', borderTop: '1px solid #bfbfbf'}}>
-                            <label style={{ margin: '0' }}>
-                                <input type="checkbox" checked={props.field.label_is_hidden} onChange={e => {onChangeLabelIsHidden()}}/>{strings['pt-br']['formularyEditFieldLabelIsVisibleCheckboxLabel']}
-                            </label>
-                        </div>
-                        <div style={{ backgroundColor:'#fff', padding: '10px 5px', borderTop: '1px solid #bfbfbf'}}>
-                            <label style={{ margin: '0' }}>
-                                <input type="checkbox" checked={props.field.field_is_hidden} onChange={e => {onChangeFieldIsHidden()}}/>{strings['pt-br']['formularyEditFieldIsVisibleCheckboxLabel']}
-                            </label>
-                        </div>
-                        <div style={{ backgroundColor:'#fff', padding: '10px 5px', borderTop: '1px solid #bfbfbf'}}>
-                            <label style={{ margin: '0' }}>
-                                <input type="checkbox" checked={props.field.is_unique} onChange={e => {onChangeIsUnique()}}/>{strings['pt-br']['formularyEditFieldIsUniqueCheckboxLabel']}
-                            </label>
-                        </div>
-                    </div>
-                    {formularyItemsForFieldTypes()}
+                    )}
                 </div>
-            ): (
-                <Fields 
-                errors={{}}
-                field={props.field}
-                types={props.types}
-                fieldFormValues={[]}
-                />
+            ) : (
+                <p>
+                    O campo está desativado.
+                </p>
             )}
         </div>
     )

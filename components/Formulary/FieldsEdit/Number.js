@@ -17,7 +17,7 @@ const Number = (props) => {
 
     return (
         <div>
-            <div style={{margin: '10px 0'}}>
+            <FormulariesEdit.FieldFormFieldContainer>
                 <FormulariesEdit.FieldFormLabel>
                     {strings['pt-br']['formularyEditFieldNumberTypeSelectorLabel']}
                 </FormulariesEdit.FieldFormLabel>
@@ -28,13 +28,13 @@ const Number = (props) => {
                         onChange={onChangeFieldNumberMask} 
                     />
                 </FormulariesEdit.SelectorContainer>
-            </div>
-            <div style={{margin: '10px 0'}}>
+            </FormulariesEdit.FieldFormFieldContainer>
+            <FormulariesEdit.FieldFormFieldContainer>
                 <FormulariesEdit.FieldFormLabel>
                     {strings['pt-br']['formularyEditFieldNumberFormulaLabel']}
                 </FormulariesEdit.FieldFormLabel>
                 <FormulariesEdit.InputField type="text"/>
-            </div>
+            </FormulariesEdit.FieldFormFieldContainer>
         </div>
     )
 }

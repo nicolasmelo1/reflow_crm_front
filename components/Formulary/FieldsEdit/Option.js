@@ -37,14 +37,14 @@ const Option = (props) => {
     }
 
     return (
-        <div>
-            <div style={{margin: '10px 0'}}>
-                <label style={{color:'#444', margin: '0'}}>{strings['pt-br']['formularyEditFieldOptionLabel']}</label>
-                {fieldOptions.map((fieldOption, index) => (
-                    <FormulariesEdit.InputField ref={setRef} key={fieldOption.option} type="text" value={fieldOption.option} onChange={e=>{onChangeFieldOption(e, index)}}/>
-                ))}
-            </div>
-        </div>
+        <FormulariesEdit.FieldFormFieldContainer>
+            <FormulariesEdit.FieldFormLabel>
+                {strings['pt-br']['formularyEditFieldOptionLabel']}
+            </FormulariesEdit.FieldFormLabel>
+            {fieldOptions.map((fieldOption, index) => (
+                <FormulariesEdit.InputField ref={setRef} key={fieldOption.option} type="text" value={fieldOption.option} onChange={e=>{onChangeFieldOption(e, index)}}/>
+            ))}
+        </FormulariesEdit.FieldFormFieldContainer>
     )
 }
 

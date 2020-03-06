@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { strings } from  'utils/constants'
+import { FormulariesEdit }  from 'styles/Formulary'
 
 const Datetime = (props) => {
     const onChangeAutoUpdate = () => {
@@ -14,18 +15,18 @@ const Datetime = (props) => {
 
     return (
         <div>
-            <div style={{margin: '10px 0'}}>
+            <FormulariesEdit.FieldFormFieldContainer>
                 <div style={{ backgroundColor:'#fff',  padding: '10px 5px'}}>
-                    <label style={{ margin: '0' }}>
-                        <input type="checkbox" checked={props.field.date_configuration_auto_create} onChange={e => {onChangeAutoCreate()}}/>{strings['pt-br']['formularyEditFieldDatetimeAutoCreateCheckboxLabel']}
-                    </label>
+                    <FormulariesEdit.FieldFormCheckboxLabel>
+                        <input type="checkbox" checked={props.field.date_configuration_auto_create} onChange={e => {onChangeAutoCreate()}}/>&nbsp;{strings['pt-br']['formularyEditFieldDatetimeAutoCreateCheckboxLabel']}
+                    </FormulariesEdit.FieldFormCheckboxLabel>
                 </div>
                 <div style={{ backgroundColor:'#fff', padding: '10px 5px', borderTop: '1px solid #bfbfbf'}}>
-                    <label style={{ margin: '0' }}>
-                        <input type="checkbox" checked={props.field.date_configuration_auto_update} onChange={e => {onChangeAutoUpdate()}}/>{strings['pt-br']['formularyEditFieldDatetimeAutoUpdateCheckboxLabel']}
-                    </label>
+                    <FormulariesEdit.FieldFormCheckboxLabel>
+                        <input type="checkbox" checked={props.field.date_configuration_auto_update} onChange={e => {onChangeAutoUpdate()}}/>&nbsp;{strings['pt-br']['formularyEditFieldDatetimeAutoUpdateCheckboxLabel']}
+                    </FormulariesEdit.FieldFormCheckboxLabel>
                 </div>
-            </div>
+            </FormulariesEdit.FieldFormFieldContainer>
         </div>
     )
 }

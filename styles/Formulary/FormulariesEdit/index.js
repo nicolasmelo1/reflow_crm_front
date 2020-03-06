@@ -17,6 +17,8 @@ import FormularyEditSelectorContainer from './FormularyEditSelectorContainer'
 import FormularySectionEditConditionalFormLabel from './FormularySectionEditConditionalFormLabel'
 import FormularyEditInputField from './FormularyEditInputField'
 import FormularySectionEditFieldFormLabel from './FormularySectionEditFieldFormLabel'
+import FormularySectionEditFieldFormCheckboxLabel from './FormularySectionEditFieldFormCheckboxLabel'
+import FormularySectionEditFieldFormFieldContainer from './FormularySectionEditFieldFormFieldContainer'
 
 export default {
     InputField: FormularyEditInputField,
@@ -44,6 +46,8 @@ export default {
     ToggleConditional: {
         Input: FormularySectionEditToggleConditionalInput
     },
+    FieldFormFieldContainer: FormularySectionEditFieldFormFieldContainer,
+    FieldFormCheckboxLabel: FormularySectionEditFieldFormCheckboxLabel,
     FieldFormLabel: FormularySectionEditFieldFormLabel,
     FieldContainer: FormularySectionEditFieldsContainer,
 }

@@ -71,7 +71,7 @@ const Connection = (props) => {
 
     return (
         <div>
-            <div style={{margin: '10px 0'}}>
+            <FormulariesEdit.FieldFormFieldContainer>
                 <FormulariesEdit.FieldFormLabel>
                     {strings['pt-br']['formularyEditFieldConnectionTemplateSelectorLabel']}
                 </FormulariesEdit.FieldFormLabel>
@@ -81,11 +81,10 @@ const Connection = (props) => {
                     initialValues={initialGroup} 
                     onChange={onChangeGroup} 
                     />
-                </FormulariesEdit.SelectorContainer>
-                
-            </div>
+                </FormulariesEdit.SelectorContainer> 
+            </FormulariesEdit.FieldFormFieldContainer>
             {initialGroup.length !== 0 ? (
-                <div style={{margin: '10px 0'}}>
+                <FormulariesEdit.FieldFormFieldContainer>
                     <FormulariesEdit.FieldFormLabel>
                         {strings['pt-br']['formularyEditFieldConnectionFormularySelectorLabel']}
                     </FormulariesEdit.FieldFormLabel>
@@ -96,10 +95,10 @@ const Connection = (props) => {
                         onChange={onChangeForm} 
                         />
                     </FormulariesEdit.SelectorContainer>
-                </div>
+                </FormulariesEdit.FieldFormFieldContainer>
             ): ''}
             {initialForm.length !== 0 && initialGroup.length !== 0 ?  (
-                <div style={{margin: '10px 0'}}>
+                <FormulariesEdit.FieldFormFieldContainer>
                     <FormulariesEdit.FieldFormLabel>
                         {strings['pt-br']['formularyEditFieldConnectionFieldSelectorLabel']}
                     </FormulariesEdit.FieldFormLabel>
@@ -110,7 +109,7 @@ const Connection = (props) => {
                         onChange={onChangeField} 
                         />
                     </FormulariesEdit.SelectorContainer>
-                </div>
+                </FormulariesEdit.FieldFormFieldContainer>
             ): ''}
         </div>
     )
