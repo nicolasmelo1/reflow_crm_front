@@ -16,16 +16,9 @@ const Datetime = (props) => {
     return (
         <div>
             <FormulariesEdit.FieldFormFieldContainer>
-                <div style={{ backgroundColor:'#fff',  padding: '10px 5px'}}>
-                    <FormulariesEdit.FieldFormCheckboxLabel>
-                        <input type="checkbox" checked={props.field.date_configuration_auto_create} onChange={e => {onChangeAutoCreate()}}/>&nbsp;{strings['pt-br']['formularyEditFieldDatetimeAutoCreateCheckboxLabel']}
-                    </FormulariesEdit.FieldFormCheckboxLabel>
-                </div>
-                <div style={{ backgroundColor:'#fff', padding: '10px 5px', borderTop: '1px solid #bfbfbf'}}>
-                    <FormulariesEdit.FieldFormCheckboxLabel>
-                        <input type="checkbox" checked={props.field.date_configuration_auto_update} onChange={e => {onChangeAutoUpdate()}}/>&nbsp;{strings['pt-br']['formularyEditFieldDatetimeAutoUpdateCheckboxLabel']}
-                    </FormulariesEdit.FieldFormCheckboxLabel>
-                </div>
+                <FormulariesEdit.FieldFormCheckbox checked={props.field.date_configuration_auto_create} onChange={onChangeAutoCreate} text={strings['pt-br']['formularyEditFieldDatetimeAutoCreateCheckboxLabel']}/>
+                <FormulariesEdit.FieldFormCheckboxDivider/>
+                <FormulariesEdit.FieldFormCheckbox checked={props.field.date_configuration_auto_update} onChange={onChangeAutoUpdate} text={strings['pt-br']['formularyEditFieldDatetimeAutoUpdateCheckboxLabel']}/>
             </FormulariesEdit.FieldFormFieldContainer>
         </div>
     )

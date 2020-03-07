@@ -220,26 +220,13 @@ const FormularyFieldEdit = (props) => {
                                 />
                             </FormulariesEdit.FieldFormFieldContainer>
                             <FormulariesEdit.FieldFormFieldContainer>
-                                <div style={{ backgroundColor:'#fff',  padding: '10px 5px'}}>
-                                    <FormulariesEdit.FieldFormCheckboxLabel>
-                                        <input type="checkbox" checked={props.field.required} onChange={e => {onChangeRequired()}}/>&nbsp;{strings['pt-br']['formularyEditFieldIsRequiredCheckboxLabel']}
-                                    </FormulariesEdit.FieldFormCheckboxLabel>
-                                </div>
-                                <div style={{ backgroundColor:'#fff', padding: '10px 5px', borderTop: '1px solid #bfbfbf'}}>
-                                    <FormulariesEdit.FieldFormCheckboxLabel>
-                                        <input type="checkbox" checked={props.field.label_is_hidden} onChange={e => {onChangeLabelIsHidden()}}/>&nbsp;{strings['pt-br']['formularyEditFieldLabelIsVisibleCheckboxLabel']}
-                                    </FormulariesEdit.FieldFormCheckboxLabel>
-                                </div>
-                                <div style={{ backgroundColor:'#fff', padding: '10px 5px', borderTop: '1px solid #bfbfbf'}}>
-                                    <FormulariesEdit.FieldFormCheckboxLabel>
-                                        <input type="checkbox" checked={props.field.field_is_hidden} onChange={e => {onChangeFieldIsHidden()}}/>&nbsp;{strings['pt-br']['formularyEditFieldIsVisibleCheckboxLabel']}
-                                    </FormulariesEdit.FieldFormCheckboxLabel>
-                                </div>
-                                <div style={{ backgroundColor:'#fff', padding: '10px 5px', borderTop: '1px solid #bfbfbf'}}>
-                                    <FormulariesEdit.FieldFormCheckboxLabel>
-                                        <input type="checkbox" checked={props.field.is_unique} onChange={e => {onChangeIsUnique()}}/>&nbsp;{strings['pt-br']['formularyEditFieldIsUniqueCheckboxLabel']}
-                                    </FormulariesEdit.FieldFormCheckboxLabel>
-                                </div>
+                                <FormulariesEdit.FieldFormCheckbox checked={props.field.required} onChange={onChangeRequired} text={strings['pt-br']['formularyEditFieldIsRequiredCheckboxLabel']}/>
+                                <FormulariesEdit.FieldFormCheckboxDivider/>
+                                <FormulariesEdit.FieldFormCheckbox checked={props.field.label_is_hidden} onChange={onChangeLabelIsHidden} text={strings['pt-br']['formularyEditFieldLabelIsVisibleCheckboxLabel']}/>
+                                <FormulariesEdit.FieldFormCheckboxDivider/>
+                                <FormulariesEdit.FieldFormCheckbox checked={props.field.field_is_hidden} onChange={onChangeFieldIsHidden} text={strings['pt-br']['formularyEditFieldIsVisibleCheckboxLabel']}/>
+                                <FormulariesEdit.FieldFormCheckboxDivider/>
+                                <FormulariesEdit.FieldFormCheckbox checked={props.field.is_unique} onChange={onChangeIsUnique} text={strings['pt-br']['formularyEditFieldIsUniqueCheckboxLabel']}/>
                             </FormulariesEdit.FieldFormFieldContainer>
                             {formularyItemsForFieldTypes()}
                         </div>

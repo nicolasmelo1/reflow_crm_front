@@ -17,10 +17,11 @@ import FormularyEditSelectorContainer from './FormularyEditSelectorContainer'
 import FormularySectionEditConditionalFormLabel from './FormularySectionEditConditionalFormLabel'
 import FormularyEditInputField from './FormularyEditInputField'
 import FormularySectionEditFieldFormLabel from './FormularySectionEditFieldFormLabel'
-import FormularySectionEditFieldFormCheckboxLabel from './FormularySectionEditFieldFormCheckboxLabel'
 import FormularySectionEditFieldFormFieldContainer from './FormularySectionEditFieldFormFieldContainer'
 import FormularySectionEditFieldAddNewButton from './FormularySectionEditFieldAddNewButton'
 import FormularySectionEditAddNewButton from './FormularySectionEditAddNewButton'
+import FormularyEditInputCheckboxBox from './FormularyEditInputCheckboxBox'
+import FormularyEditInputCheckboxDivider from './FormularyEditInputCheckboxDivider'
 
 export default {
     AddNewSectionButton: FormularySectionEditAddNewButton,
@@ -51,7 +52,8 @@ export default {
         Input: FormularySectionEditToggleConditionalInput
     },
     FieldFormFieldContainer: FormularySectionEditFieldFormFieldContainer,
-    FieldFormCheckboxLabel: FormularySectionEditFieldFormCheckboxLabel,
+    FieldFormCheckbox: FormularyEditInputCheckboxBox,
+    FieldFormCheckboxDivider: FormularyEditInputCheckboxDivider,
     FieldFormLabel: FormularySectionEditFieldFormLabel,
     FieldContainer: FormularySectionEditFieldsContainer,
 }
