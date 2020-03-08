@@ -20,9 +20,10 @@ const FormularySectionEdit = (props) => {
         props.onUpdateSection(props.sectionIndex, {...props.section})
     }
 
-    const onRemoveSection = (e, section, index) => {
+    const onRemoveSection = (e) => {
         e.preventDefault()
         e.stopPropagation()
+        props.removeSection(props.sectionIndex)
     }
 
     const onMoveSection = (e) => {
@@ -95,7 +96,7 @@ const FormularySectionEdit = (props) => {
                         </div>
                         <small>{props.section.enabled ? 'Desativar': 'Ativar'}</small>
                     </FormulariesEdit.Button>
-                    <FormulariesEdit.Button isConditional={isConditional}>
+                    <FormulariesEdit.Button isConditional={isConditional} onClick={e=> {onRemoveSection(e)}}>
                         <div>
                             <FormulariesEdit.Icon.SectionIcon isConditional={isConditional} size="sm" type="form" icon="trash" />
                         </div>
@@ -133,6 +134,7 @@ const FormularySectionEdit = (props) => {
                                     sectionIndex={props.sectionIndex}
                                     onMoveField={props.onMoveField}
                                     types={props.types}
+                                    removeField={props.removeField}
                                     fields={props.section.form_fields}
                                     onAddNewField={props.onAddNewField}
                                     onUpdateField={props.onUpdateField}

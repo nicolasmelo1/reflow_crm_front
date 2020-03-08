@@ -32,6 +32,12 @@ const FormularyFieldEdit = (props) => {
         props.setFieldIsMoving(true)
     }
 
+    const onRemoveField = (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        props.removeField(props.sectionIndex, props.fieldIndex)
+    }
+
     const onDrop = (e) => {
         e.preventDefault()
         e.stopPropagation()
@@ -184,7 +190,7 @@ const FormularyFieldEdit = (props) => {
     return (
         <div className="field-container" style={{borderTop: '2px solid #bfbfbf', padding: '5px'}} onDragOver={e=>{onDragOver(e)}} onDrop={e=>{onDrop(e)}}>
             <div style={{height: '1em', margin: '5px'}}>
-                <FormulariesEdit.Icon.FieldIcon size="sm" type="form" icon="trash"/>
+                <FormulariesEdit.Icon.FieldIcon size="sm" type="form" icon="trash" onClick={e=> {onRemoveField(e)}}/>
                 <FormulariesEdit.Icon.FieldIcon size="sm" type="form" icon="eye" onClick={e=> {onDisableField(e)}}/>
                 <div draggable="true" onDragStart={e => {onMoveField(e)}} onDrag={e => onDrag(e)} onDragEnd={e => {onDragEnd(e)}}>
                     <FormulariesEdit.Icon.FieldIcon size="sm" type="form" icon="arrows-alt"/>
@@ -241,7 +247,7 @@ const FormularyFieldEdit = (props) => {
                                 />
                             ) : (
                                 <p>
-                                    Selecione um tipo de campo.
+                                    {strings['pt-br']['formularyEditFieldNoFieldTypeLabel']}
                                 </p>
                             )}
                        
@@ -250,7 +256,7 @@ const FormularyFieldEdit = (props) => {
                 </div>
             ) : (
                 <p>
-                    O campo está desativado.
+                    {strings['pt-br']['formularyEditFieldDisabledLabel']}
                 </p>
             )}
         </div>

@@ -54,6 +54,8 @@ class Formulary extends React.Component {
     setIsEditing = () => {
         if (!this.state.isEditing) {
             this.props.onGetFormularySettings(this.props.formulary.buildData.id)
+        } else {
+            this.buildFormulary(this.props.query.form, this.props.formularyId)
         }
         this.setState(state => {
             return {
@@ -127,7 +129,11 @@ class Formulary extends React.Component {
                             {(this.state.isEditing) ? (
                                 <div>
                                     <FormularySectionsEdit
+                                    onRemoveFormularySettingsSection={this.props.onRemoveFormularySettingsSection}
+                                    onUpdateFormularySettingsSection={this.props.onUpdateFormularySettingsSection}
+                                    onCreateFormularySettingsSection={this.props.onCreateFormularySettingsSection}
                                     onUpdateFormularySettings={this.props.onUpdateFormularySettings}
+                                    formId={this.props.formulary.buildData.id}
                                     types={this.props.types}
                                     setIsEditing={this.setIsEditing}
                                     data={this.props.formulary.update}

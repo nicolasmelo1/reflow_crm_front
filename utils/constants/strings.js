@@ -70,6 +70,8 @@ const strings = {
         formularyEditFieldConnectionTemplateSelectorLabel: 'Qual o template?',
         formularyEditFieldConnectionFormularySelectorLabel: 'Com qual formulário você deseja conectar?',
         formularyEditFieldConnectionFieldSelectorLabel: 'Qual campo será usado como opção?',
+        formularyEditFieldNoFieldTypeLabel: 'Selecione um tipo de campo',
+        formularyEditFieldDisabledLabel: 'O campo está desativado',
         formTypeSingle: 'Único',
         formTypeMultiple: 'Múltiplo',
         conditionalTypeEqual: 'Igual ao',

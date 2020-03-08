@@ -10,6 +10,7 @@ const FormularyFieldsEdit = (props) => {
                 key={index}
                 field={field}
                 types={props.types}
+                removeField={props.removeField}
                 fieldIsMoving={props.fieldIsMoving}
                 onMoveField={props.onMoveField}
                 setFieldIsMoving={props.setFieldIsMoving}

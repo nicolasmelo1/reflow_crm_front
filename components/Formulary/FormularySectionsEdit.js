@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import FormularySectionEdit from './FormularySectionEdit'
 import { FormulariesEdit }  from 'styles/Formulary'
 
 const FormularySectionsEdit = (props) => {
     const [isMoving, setIsMoving] = useState(false)
     const [fieldIsMoving, setFieldIsMoving] = useState(false)
-
+    const [fieldOptions, setFieldOptions] = useState([])
 
     const reorder = () => {
         props.data.depends_on_form = props.data.depends_on_form.map((section, index) => {
@@ -34,6 +34,9 @@ const FormularySectionsEdit = (props) => {
         props.data.depends_on_form = newArrayWithoutMoved
         reorder()
         props.onUpdateFormularySettings({...props.data})
+        if (props.data.depends_on_form[targetSectionIndex].id) {
+            props.onUpdateFormularySettingsSection(props.data.depends_on_form[targetSectionIndex], props.formId, props.data.depends_on_form[targetSectionIndex].id)
+        }
     }
 
     const onAddNewSection = () => {
@@ -47,7 +50,7 @@ const FormularySectionsEdit = (props) => {
             label_name: '',
             order: 0,
             enabled: true,
-            type: (props.types.data.form_type && props.types.data.form_type.filter(formType=> formType.type === 'form').lenght > 0) ? props.types.data.form_type.filter(formType=> formType.type === 'form')[0].id : 2,
+            type: (props.types.data.form_type && props.types.data.form_type.filter(formType=> formType.type === 'form').length > 0) ? props.types.data.form_type.filter(formType=> formType.type === 'form')[0].id : 1,
             group: null
         }
 
@@ -90,6 +93,22 @@ const FormularySectionsEdit = (props) => {
         props.onUpdateFormularySettings({...props.data})
     }
 
+    const removeSection = (sectionIndex) => {
+        const sectionId = {...props.data.depends_on_form[sectionIndex]}
+        props.data.depends_on_form.splice(sectionIndex, 1)
+        reorder()
+        props.onUpdateFormularySettings({...props.data})
+        if (sectionId.id) {
+            props.onRemoveFormularySettingsSection(props.formId, sectionId.id)
+        }
+    } 
+
+    const removeField = (sectionIndex, fieldIndex) => {
+        props.data.depends_on_form[sectionIndex].form_fields.splice(fieldIndex, 1)
+        reorder()
+        props.onUpdateFormularySettings({...props.data})
+    }
+
     const onUpdateField = (sectionIndex, fieldIndex, newFieldData) => {
         props.data.depends_on_form[sectionIndex].form_fields[fieldIndex] = newFieldData
         props.onUpdateFormularySettings({...props.data})
@@ -97,7 +116,12 @@ const FormularySectionsEdit = (props) => {
 
     const onUpdateSection = (sectionIndex, newSectionData) => {
         props.data.depends_on_form[sectionIndex] = newSectionData
-        props.onUpdateFormularySettings({...props.data})
+        if (newSectionData.id) {
+            props.onUpdateFormularySettingsSection(newSectionData, props.formId, newSectionData.id)
+            props.onUpdateFormularySettings({...props.data})
+        } else {
+            props.onCreateFormularySettingsSection(newSectionData, props.formId, sectionIndex)
+        }
     }
 
     const goBackToFormulary = (e) => {
@@ -106,26 +130,23 @@ const FormularySectionsEdit = (props) => {
         props.setIsEditing()
     }
     
-    const sections = (props.data && props.data.depends_on_form) ? props.data.depends_on_form : []
-    let fieldOptions = []
-    sections.forEach(section => {
-        section.form_fields.forEach(field => {
-            if (field && field.id) {
-                fieldOptions.push(field)
-            }
-        })
-    })
-
+    useEffect(() => {
+        const sectionsData = [...props.data.depends_on_form]
+        setFieldOptions([].concat.apply([], sectionsData.map(section => section.form_fields.filter(field => field && field.id))))
+    }, [props.data.depends_on_form])
+    
     return (
         <div>
             <button onClick={e=>{goBackToFormulary(e)}}>Voltar</button>
-            {sections.map((section, index)=> (
+            {props.data.depends_on_form.map((section, index)=> (
                 <FormularySectionEdit key={index} 
                 onUpdateSection={onUpdateSection} 
                 onUpdateField={onUpdateField}
                 sectionIndex={index}
                 section={section} 
                 fieldIsMoving={fieldIsMoving}
+                removeSection={removeSection}
+                removeField={removeField}
                 setFieldIsMoving={setFieldIsMoving}
                 isMoving={isMoving}
                 onMoveSection={onMoveSection}

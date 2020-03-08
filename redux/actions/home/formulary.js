@@ -41,6 +41,7 @@ const onCreateFormularyData = (body, formName) => {
     }
 }
 
+
 const onUpdateFormularyData = (body, formName, formId) => {
     return async (dispatch) => {
         const response = await agent.HOME.updateFormularyData(body, formName, formId)
@@ -70,6 +71,29 @@ const onUpdateFormularySettings = (formSettingsData) => {
     }
 }
 
+const onCreateFormularySettingsSection = (body, formId, sectionIndex) => {
+    return async (dispatch, getState) => {
+        let stateData = getState().home.formulary.update
+        const response = await agent.HOME.createFormularySettingsSection(body, formId)
+        if (response.status === 200){ 
+            stateData.depends_on_form[sectionIndex] = response.data.data
+            dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: stateData })
+        }
+    }
+}
+
+const onUpdateFormularySettingsSection = (body, formId, sectionId) => {
+    return (_) => {
+        agent.HOME.updateFormularySettingsSection(body, formId, sectionId)
+    }
+}
+
+const onRemoveFormularySettingsSection = (formId, sectionId) => {
+    return (_) => {
+        agent.HOME.removeFormularySettingsSection(formId, sectionId)
+    }
+}
+
 export default {
     onUpdateFormularySettings,
     onGetFormularySettings,
@@ -79,5 +103,8 @@ export default {
     onGetFormularyData,
     onFullResetFormulary,
     onCreateFormularyData,
-    onUpdateFormularyData
+    onUpdateFormularyData,
+    onCreateFormularySettingsSection,
+    onUpdateFormularySettingsSection,
+    onRemoveFormularySettingsSection
 }

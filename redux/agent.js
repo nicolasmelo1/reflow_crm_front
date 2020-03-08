@@ -160,8 +160,16 @@ const HOME = {
     },
     getFormularySettingsData: async (formId) => {
         return await requests.get(`${companyId}/settings/api/formulary/${formId}/sections/`)
-    }
-
+    },
+    createFormularySettingsSection: async (body, formId) => {
+        return await requests.post(`${companyId}/settings/api/formulary/${formId}/sections/`, body)
+    },
+    updateFormularySettingsSection: async (body, formId, sectionId) => {
+        return await requests.put(`${companyId}/settings/api/formulary/${formId}/sections/${sectionId}/`, body)
+    },
+    removeFormularySettingsSection: async (formId, sectionId) => {
+        return await requests.delete(`${companyId}/settings/api/formulary/${formId}/sections/${sectionId}/`)
+    },
 }
 
 

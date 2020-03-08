@@ -37,8 +37,8 @@ const FormularySectionEditForm = (props) => {
     }
     
     const onChangeIsConditional = (e) => {
-        if (!props.isConditional) {
-            props.section.condtional_on_field = null
+        if (props.isConditional) {
+            props.section.conditional_on_field = null
             props.section.conditional_type = null
             props.section.conditional_value = null
 
