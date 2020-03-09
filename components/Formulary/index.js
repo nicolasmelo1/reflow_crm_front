@@ -129,6 +129,9 @@ class Formulary extends React.Component {
                             {(this.state.isEditing) ? (
                                 <div>
                                     <FormularySectionsEdit
+                                    onRemoveFormularySettingsField={this.props.onRemoveFormularySettingsField}
+                                    onUpdateFormularySettingsField={this.props.onUpdateFormularySettingsField}
+                                    onCreateFormularySettingsField={this.props.onCreateFormularySettingsField}
                                     onRemoveFormularySettingsSection={this.props.onRemoveFormularySettingsSection}
                                     onUpdateFormularySettingsSection={this.props.onUpdateFormularySettingsSection}
                                     onCreateFormularySettingsSection={this.props.onCreateFormularySettingsSection}

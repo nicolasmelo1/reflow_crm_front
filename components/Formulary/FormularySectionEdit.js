@@ -4,6 +4,39 @@ import FormularyFieldsEdit from './FormularyFieldsEdit'
 import { FormulariesEdit }  from 'styles/Formulary'
 import FormularySectionEditForm from './FormularySectionEditForm'
 
+
+/**
+ * This component controls the edition state of a SINGLE Section only,
+ * it holds the formulary to change the section type and 
+ * section conditionals but also holds all of the fields of the section
+ * 
+ * @param {function} onUpdateSection - function helper created in the parent component to 
+ * update a single section in the data store
+ * @param {function} onUpdateField - function helper created in the parent component to 
+ * update a single field in the data store, this function is passed to the field directly
+ * @param {BigInteger} sectionIndex - the index of the section inside of the section array
+ * @param {Object} section - the SINGLE section data
+ * @param {Boolean} fieldIsMoving - boolean that defines if the field is being dragged or not
+ * @param {function} setFieldIsMoving - function to set true or false in the `fieldIsMoving` variable to say
+ * if the field is being dragged or not.
+ * @param {function} removeSection - function helper created in the parent component to remove a single section
+ * @param {function} removeField - function helper created in the parent component to remove a single field
+ * @param {Boolean} isMoving - boolean that defines if the section is being dragged or not
+ * @param {function} setIsMoving - function to set true or false in the `isMoving` variable to say
+ * if the section is being dragged or not.
+ * @param {function} onMoveSection - function helper created in the parent component to update 
+ * a single section when it has been dragged and dropped
+ * @param {function} onMoveField - function helper created in the parent component to update 
+ * a single field when it has been dragged and dropped
+ * @param {function} onAddNewField - function helper created in the parent component to add a new field in the 
+ * storage data
+ * @param {object} types - the types state, this types are usually the required data from this system to work. 
+ * Types defines all of the field types, form types, format of numbers and dates and many other stuff 
+ * @param {Array<Object>} fieldOptions - the fieldOptions are all of the fields the user can select when a user selects
+ * the `form` field type or when the user creates a conditional section
+ * @param {Array<Object>} formulariesOptions - the formulariesOptions are all of the formularies the user can select when a user selects
+ * the `form` field type or when the user creates a conditional section
+ */
 const FormularySectionEdit = (props) => {
     const [openedSection, setOpenedSection] = useState(false)
     const [isConditional, setIsConditional] = useState(false)

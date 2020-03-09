@@ -8,7 +8,11 @@ import Connection from './Connection'
 import Datetime from './Datetime'
 import Select from 'components/Utils/Select'
 
-
+/**
+ * We created this component because probably each selection item will be styled
+ * 
+ * @param {String} name - the name to show in the option 
+ */
 const FieldOption = (props) => {
     return (
         <div>
@@ -17,7 +21,25 @@ const FieldOption = (props) => {
     )
 }
 
-
+/**
+ * This component controls a unique and single field.
+ * 
+ * @param {Boolean} fieldIsMoving - boolean that defines if the field is being dragged or not
+ * @param {function} setFieldIsMoving - function to set true or false in the `fieldIsMoving` variable to say
+ * if the field is being dragged or not.
+ * @param {BigInteger} sectionIndex - the index of the section inside of the section array
+ * @param {function} onMoveField - function helper created in the parent component to update 
+ * a single field when it has been dragged and dropped
+ * @param {object} types - the types state, this types are usually the required data from this system to work. 
+ * Types defines all of the field types, form types, format of numbers and dates and many other stuff 
+ * @param {function} removeField - function helper created in the parent component to remove a single field
+ * @param {Object} field - the object of a single field
+ * @param {BigInteger} fieldIndex - the index of this single field in the fields array of the section
+ * @param {function} onUpdateField - function helper created in the parent component to 
+ * update a single field in the data store, this function is passed to the field directly
+ * @param {Array<Object>} formulariesOptions - the formulariesOptions are all of the formularies the user can select when a user selects
+ * the `form` field type or when the user creates a conditional section
+ */
 const FormularyFieldEdit = (props) => {
     const [isEditing, setIsEditing] = useState(false)
     const [fieldTypes, setFieldTypes] = useState([])

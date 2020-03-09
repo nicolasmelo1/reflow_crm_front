@@ -75,7 +75,7 @@ const onCreateFormularySettingsSection = (body, formId, sectionIndex) => {
     return async (dispatch, getState) => {
         let stateData = getState().home.formulary.update
         const response = await agent.HOME.createFormularySettingsSection(body, formId)
-        if (response.status === 200){ 
+        if (response.status === 200 && response.data.status === 'ok'){ 
             stateData.depends_on_form[sectionIndex] = response.data.data
             dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: stateData })
         }
@@ -94,6 +94,30 @@ const onRemoveFormularySettingsSection = (formId, sectionId) => {
     }
 }
 
+const onCreateFormularySettingsField = (body, formId, sectionIndex, fieldIndex) => {
+    return async (dispatch, getState) => {
+        let stateData = getState().home.formulary.update
+        const response = await agent.HOME.createFormularySettingsField(body, formId)
+        if (response.status === 200 && response.data.status === 'ok'){ 
+            stateData.depends_on_form[sectionIndex].form_fields[fieldIndex] = response.data.data
+            dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: stateData })
+        }
+    }
+}
+
+const onUpdateFormularySettingsField = (body, formId, fieldId) => {
+    return (_) => {
+        agent.HOME.updateFormularySettingsField(body, formId, fieldId)
+    }
+}
+
+const onRemoveFormularySettingsField = (formId, fieldId) => {
+    return (_) => {
+        agent.HOME.removeFormularySettingsField(formId, fieldId)
+    }
+}
+
+
 export default {
     onUpdateFormularySettings,
     onGetFormularySettings,
@@ -106,5 +130,8 @@ export default {
     onUpdateFormularyData,
     onCreateFormularySettingsSection,
     onUpdateFormularySettingsSection,
-    onRemoveFormularySettingsSection
+    onRemoveFormularySettingsSection,
+    onCreateFormularySettingsField,
+    onUpdateFormularySettingsField,
+    onRemoveFormularySettingsField
 }

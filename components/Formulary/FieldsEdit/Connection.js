@@ -62,9 +62,7 @@ const Connection = (props) => {
                 }
             }
         }  
-        
         fetchFieldOptions()
-
         return () => { didCancel = true; };
     }, [selectedForm, selectedGroup])
 

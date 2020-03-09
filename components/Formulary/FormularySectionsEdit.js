@@ -2,6 +2,29 @@ import React, { useState, useEffect } from 'react'
 import FormularySectionEdit from './FormularySectionEdit'
 import { FormulariesEdit }  from 'styles/Formulary'
 
+/**
+ * This component controls all of the sections, we keep most of the primary functions here, since that when we change
+ * something we actually change the hole structure of the data, the redux reducer actually keep the complete structure
+ * but most of the time we want to change parts of it, we could write many reducers but to keep it simple we prefer to keep
+ * the redux dumb, and change always the hole data. This is why we have most functions for sections and fields here.
+ * 
+ * @param {function} onRemoveFormularySettingsField - the function from the redux action to remove a field
+ * @param {function} onUpdateFormularySettingsField - the function from the redux action to update a field
+ * @param {function} onCreateFormularySettingsField - the function from the redux action to create a new field  
+ * @param {function} onRemoveFormularySettingsSection - the function from the redux action to remove a section
+ * @param {function} onUpdateFormularySettingsSection - the function from the redux action to update a section
+ * @param {function} onCreateFormularySettingsSection - the function from the redux action to create a new section                   
+ * @param {function} onUpdateFormularySettings - the function from redux action to change the store data, 
+ * we don't make any backend calls on this function, just change the state.        
+ * @param {BigInteger} formId - the ID of the current formulary we are editing.
+ * @param {Object} types - the types state, this types are usually the required data from this system to work. 
+ * Types defines all of the field types, form types, format of numbers and dates and many other stuff
+ * @param {function} setIsEditing - function defined in the main Formulary component so we can define if the form
+ * is in Editing mode or not.                             
+ * @param {Object} data - this is the main data that we use to update formularies.
+ * @param {Array<Object>} formulariesOptions - on field_type === `form` we usually need to connect a field with a 
+ * field from another formulary.
+ */
 const FormularySectionsEdit = (props) => {
     const [isMoving, setIsMoving] = useState(false)
     const [fieldIsMoving, setFieldIsMoving] = useState(false)
@@ -25,6 +48,9 @@ const FormularySectionsEdit = (props) => {
         newArrayWithoutMoved[targetSectionFieldIndex].form_fields.splice(targetFieldIndex, 0, movedElement)
         props.data.depends_on_form = newArrayWithoutMoved
         reorder()
+        if (props.data.depends_on_form[targetSectionFieldIndex].form_fields[targetFieldIndex].id) {
+            props.onUpdateFormularySettingsField(props.data.depends_on_form[targetSectionFieldIndex].form_fields[targetFieldIndex], props.formId, props.data.depends_on_form[targetSectionFieldIndex].form_fields[targetFieldIndex].id)
+        }
         props.onUpdateFormularySettings({...props.data})
     }
 
@@ -63,7 +89,11 @@ const FormularySectionsEdit = (props) => {
         const defaultFieldData = {
             id: null,
             field_option: [],
-            form_field_as_option : {},
+            form_field_as_option : {
+                id: null,
+                form_depends_on_id: null,
+                form_depends_on_group_id: null,
+            },
             name: '',
             form: null,
             number_configuration_mask: '9',
@@ -88,7 +118,7 @@ const FormularySectionsEdit = (props) => {
     
         let newFieldData = {...defaultFieldData}
         newFieldData.form = props.data.depends_on_form[sectionIndex].id
-        props.data.depends_on_form[sectionIndex].form_fields.push(defaultFieldData)
+        props.data.depends_on_form[sectionIndex].form_fields.push(newFieldData)
         reorder()
         props.onUpdateFormularySettings({...props.data})
     }
@@ -104,14 +134,23 @@ const FormularySectionsEdit = (props) => {
     } 
 
     const removeField = (sectionIndex, fieldIndex) => {
+        const fieldId = {...props.data.depends_on_form[sectionIndex].form_fields[fieldIndex]}
         props.data.depends_on_form[sectionIndex].form_fields.splice(fieldIndex, 1)
         reorder()
         props.onUpdateFormularySettings({...props.data})
+        if (fieldId.id) {
+            props.onRemoveFormularySettingsField(props.formId, fieldId.id)
+        }
     }
 
     const onUpdateField = (sectionIndex, fieldIndex, newFieldData) => {
         props.data.depends_on_form[sectionIndex].form_fields[fieldIndex] = newFieldData
-        props.onUpdateFormularySettings({...props.data})
+        if (newFieldData.id) {
+            props.onUpdateFormularySettingsField(newFieldData, props.formId, newFieldData.id)
+            props.onUpdateFormularySettings({...props.data})
+        } else {
+            props.onCreateFormularySettingsField(newFieldData, props.formId, sectionIndex, fieldIndex)
+        }
     }
 
     const onUpdateSection = (sectionIndex, newSectionData) => {

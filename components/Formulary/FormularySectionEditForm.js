@@ -4,6 +4,22 @@ import { FormulariesEdit }  from 'styles/Formulary';
 import { types, strings } from 'utils/constants';
 import Select from 'components/Utils/Select';
 
+/**
+ * This component controls the formulary for the section, the formulary of the section
+ * is used to set conditionals and set the section type that right now can be unique or multiple.
+ * 
+ * @param {object} types - the types state, this types are usually the required data from this system to work. 
+ * Types defines all of the field types, form types, format of numbers and dates and many other stuff
+ * @param {Boolean} isConditional - boolean defined in the parent component that sets it the section is 
+ * conditional or not.
+ * @param {function} setIsConditional - function defined on the parent component that changes the `isConditional` state
+ * @param {object} section - the SINGLE section data
+ * @param {Integer} sectionIndex - the index of the section inside of the section array
+ * @param {function} onUpdateSection - function helper created in the Formulary component to 
+ * update a single section in the data store
+ * @param {Array<Object>} fieldOptions - the fieldOptions are all of the fields the user can select when a user selects
+ * the `form` field type or when the user creates a conditional section
+ */
 const FormularySectionEditForm = (props) => {
     const [conditionalFieldOptions, setConditionalFieldOptions] = useState([])
     const [initialConditionalFieldOption, setInitialConditionalFieldOption] = useState([])

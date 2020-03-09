@@ -170,6 +170,15 @@ const HOME = {
     removeFormularySettingsSection: async (formId, sectionId) => {
         return await requests.delete(`${companyId}/settings/api/formulary/${formId}/sections/${sectionId}/`)
     },
+    createFormularySettingsField: async (body, formId) => {
+        return await requests.post(`${companyId}/settings/api/formulary/${formId}/fields/`, body)
+    },
+    updateFormularySettingsField: async (body, formId, fieldId) => {
+        return await requests.put(`${companyId}/settings/api/formulary/${formId}/fields/${fieldId}/`, body)
+    },
+    removeFormularySettingsField: async (formId, fieldId) => {
+        return await requests.delete(`${companyId}/settings/api/formulary/${formId}/fields/${fieldId}/`)
+    }
 }
 
 
