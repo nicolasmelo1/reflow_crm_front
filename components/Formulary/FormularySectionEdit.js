@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { Col, Row } from 'react-bootstrap'
 import FormularyFieldsEdit from './FormularyFieldsEdit'
-import { FormulariesEdit }  from 'styles/Formulary'
+import { FormulariesEdit } from 'styles/Formulary'
+import Overlay from 'styles/Overlay'
 import FormularySectionEditForm from './FormularySectionEditForm'
-
+import { strings } from 'utils/constants'
 
 /**
  * This component controls the edition state of a SINGLE Section only,
@@ -102,6 +103,26 @@ const FormularySectionEdit = (props) => {
             <FormulariesEdit.Section.TitleAndIconsContainer isConditional={isConditional} className="section-container" onDragOver={e => {onDragOver(e)}} onDrop={e => {onDrop(e)}}>
                 <Row>
                     <Col>
+                        <div style={{height: '1em', margin: '5px'}}>
+                            <Overlay text={strings['pt-br']['formularyEditFieldTrashIconPopover']}>
+                                <FormulariesEdit.Icon.SectionIcon size="sm" icon="trash" onClick={e=> {onRemoveSection(e)}} isConditional={isConditional}/>
+                            </Overlay>
+                            <Overlay text={strings['pt-br']['formularyEditFieldEyeIconPopover']}>
+                                <FormulariesEdit.Icon.SectionIcon size="sm" icon="eye" onClick={e=> {onDisableSection(e)}} isConditional={isConditional}/>
+                            </Overlay>
+                            <Overlay text={strings['pt-br']['formularyEditFieldMoveIconPopover']}>
+                                <div style={{ float:'right' }} draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveSection(e)}} onDragEnd={e=>{onDragEnd(e)}}>
+                                    <FormulariesEdit.Icon.SectionIcon size="sm" icon="arrows-alt" isConditional={isConditional}/>
+                                </div>
+                            </Overlay>
+                            <Overlay text={strings['pt-br']['formularyEditFieldIsNotEditingIconPopover']}>
+                                <FormulariesEdit.Icon.SectionIcon size="sm" icon="pencil-alt" onClick={e => {setOpenedSection(!openedSection)}} isEditing={openedSection} isConditional={isConditional}/>
+                            </Overlay>
+                        </div>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
                     {props.section.enabled ? (
                         <FormulariesEdit.Section.LabelInput
                         value={props.section.label_name} 
@@ -110,38 +131,12 @@ const FormularySectionEdit = (props) => {
                         />
                     ) : (
                         <h2>
-                            A seção está desativada
+                            {strings['pt-br']['formularyEditSectionDisabledLabel']}
                         </h2>
                     )}
                         
                     </Col>
                 </Row>
-                <FormulariesEdit.ButtonsContainer>
-                    <FormulariesEdit.Button onClick={e => {setOpenedSection(!openedSection)}} isOpen={openedSection} isConditional={isConditional}>
-                        <div>
-                            <FormulariesEdit.Icon.SectionIcon isConditional={isConditional} size="sm" type="form" icon="pencil-alt" isOpen={openedSection}/>
-                        </div>
-                        <small>{openedSection ? 'Editar Campos': 'Editar Seção'}</small>
-                    </FormulariesEdit.Button>
-                    <FormulariesEdit.Button isConditional={isConditional} onClick={e=> {onDisableSection(e)}}>
-                        <div>
-                            <FormulariesEdit.Icon.SectionIcon isConditional={isConditional} size="sm" type="form" icon="eye"/>
-                        </div>
-                        <small>{props.section.enabled ? 'Desativar': 'Ativar'}</small>
-                    </FormulariesEdit.Button>
-                    <FormulariesEdit.Button isConditional={isConditional} onClick={e=> {onRemoveSection(e)}}>
-                        <div>
-                            <FormulariesEdit.Icon.SectionIcon isConditional={isConditional} size="sm" type="form" icon="trash" />
-                        </div>
-                        <small>Apagar</small>
-                    </FormulariesEdit.Button>
-                    <FormulariesEdit.Button isConditional={isConditional} draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveSection(e)}} onDragEnd={e=>{onDragEnd(e)}}>
-                        <div>
-                            <FormulariesEdit.Icon.SectionIcon isConditional={isConditional} size="sm" type="form" icon="arrows-alt" />
-                        </div>
-                        <small>Mover</small>
-                    </FormulariesEdit.Button>
-                </FormulariesEdit.ButtonsContainer>
             </FormulariesEdit.Section.TitleAndIconsContainer>
             {props.section.enabled && !props.isMoving ? (
                 <div>
@@ -159,8 +154,8 @@ const FormularySectionEdit = (props) => {
                         </FormulariesEdit.Section.Formulary.Container>
                     ) : (
                         <div>
-                            {props.section.id ? (
-                                <FormulariesEdit.FieldContainer>
+                            {![null, -1].includes(props.section.id) ? (
+                                <FormulariesEdit.FieldsContainer>
                                     <FormularyFieldsEdit
                                     fieldIsMoving={props.fieldIsMoving}
                                     setFieldIsMoving={props.setFieldIsMoving}
@@ -173,7 +168,7 @@ const FormularySectionEdit = (props) => {
                                     onUpdateField={props.onUpdateField}
                                     formulariesOptions={props.formulariesOptions}
                                     />
-                                </FormulariesEdit.FieldContainer>
+                                </FormulariesEdit.FieldsContainer>
                             ) : ''}
                         </div>
                     )}

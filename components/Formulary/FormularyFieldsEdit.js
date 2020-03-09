@@ -1,6 +1,7 @@
 import React from 'react'
 import FormularyFieldEdit from './FieldsEdit'
 import { FormulariesEdit }  from 'styles/Formulary'
+import { strings } from 'utils/constants'
 
 /**
  * This component controls ALL of the fields data.
@@ -40,7 +41,7 @@ const FormularyFieldsEdit = (props) => {
                 fieldIndex={index}
                 />
             ))}
-            <FormulariesEdit.AddNewFieldButton text="Adicionar novo campo" onClick={e=>{props.onAddNewField(props.sectionIndex)}}/>
+            <FormulariesEdit.AddNewFieldButton text={strings['pt-br']['formularyEditAddNewFieldButtonLabel']} onClick={e=>{props.onAddNewField(props.sectionIndex)}}/>
 
         </div>
     )

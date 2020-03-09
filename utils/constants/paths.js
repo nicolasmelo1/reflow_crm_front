@@ -1,5 +1,3 @@
-import { faHome } from "@fortawesome/free-solid-svg-icons"
-
 const paths = {
     empty() {
         return '/'

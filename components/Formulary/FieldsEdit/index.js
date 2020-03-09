@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Fields from 'components/Formulary/Fields'
 import { FormulariesEdit }  from 'styles/Formulary'
+import Overlay from 'styles/Overlay'
 import { types, strings } from 'utils/constants'
 import Number from './Number'
 import Option from './Option'
@@ -210,19 +211,27 @@ const FormularyFieldEdit = (props) => {
     }, [props.types.data.field_type, props.field.type])
 
     return (
-        <div className="field-container" style={{borderTop: '2px solid #bfbfbf', padding: '5px'}} onDragOver={e=>{onDragOver(e)}} onDrop={e=>{onDrop(e)}}>
+        <FormulariesEdit.FieldContainer className="field-container" onDragOver={e=>{onDragOver(e)}} onDrop={e=>{onDrop(e)}}>
             <div style={{height: '1em', margin: '5px'}}>
-                <FormulariesEdit.Icon.FieldIcon size="sm" type="form" icon="trash" onClick={e=> {onRemoveField(e)}}/>
-                <FormulariesEdit.Icon.FieldIcon size="sm" type="form" icon="eye" onClick={e=> {onDisableField(e)}}/>
-                <div draggable="true" onDragStart={e => {onMoveField(e)}} onDrag={e => onDrag(e)} onDragEnd={e => {onDragEnd(e)}}>
-                    <FormulariesEdit.Icon.FieldIcon size="sm" type="form" icon="arrows-alt"/>
-                </div>
-                <FormulariesEdit.Icon.FieldIcon size="sm" type="form" icon="pencil-alt" onClick={e=> {setIsEditing(!isEditing)}} isEditing={isEditing}/>
+                <Overlay text={strings['pt-br']['formularyEditFieldTrashIconPopover']}>
+                    <FormulariesEdit.Icon.FieldIcon size="sm" icon="trash" onClick={e=> {onRemoveField(e)}}/>
+                </Overlay>
+                <Overlay text={strings['pt-br']['formularyEditFieldEyeIconPopover']}>
+                    <FormulariesEdit.Icon.FieldIcon size="sm" icon="eye" onClick={e=> {onDisableField(e)}}/>
+                </Overlay>
+                <Overlay text={strings['pt-br']['formularyEditFieldMoveIconPopover']}>
+                    <div style={{ float:'right' }} draggable="true" onDragStart={e => {onMoveField(e)}} onDrag={e => onDrag(e)} onDragEnd={e => {onDragEnd(e)}}>
+                        <FormulariesEdit.Icon.FieldIcon size="sm" icon="arrows-alt"/>
+                    </div>
+                </Overlay>
+                <Overlay text={(isEditing) ? strings['pt-br']['formularyEditFieldIsNotEditingIconPopover'] : strings['pt-br']['formularyEditFieldIsEditingIconPopover']}>
+                    <FormulariesEdit.Icon.FieldIcon size="sm" icon="pencil-alt" onClick={e=> {setIsEditing(!isEditing)}} isEditing={isEditing}/>
+                </Overlay>
             </div>
             {props.field.enabled ? (
                 <div>
                     {isEditing ? (
-                        <div style={{ width: '100%', backgroundColor: '#bfbfbf', padding: '5px 10px'}}>
+                        <FormulariesEdit.FieldFormularyContainer>
                             <FormulariesEdit.FieldFormFieldContainer>
                                 <FormulariesEdit.FieldFormLabel>
                                     {strings['pt-br']['formularyEditFieldTypeSelectorLabel']}
@@ -241,11 +250,7 @@ const FormularyFieldEdit = (props) => {
                                 <FormulariesEdit.FieldFormLabel>
                                     {strings['pt-br']['formularyEditFieldNameInputLabel']}
                                 </FormulariesEdit.FieldFormLabel>
-                                <FormulariesEdit.InputField
-                                type="text" 
-                                value={props.field.label_name} 
-                                onChange={e=> {onChangeFieldName(e)}}
-                                />
+                                <FormulariesEdit.InputField type="text" value={props.field.label_name} onChange={e=> {onChangeFieldName(e)}}/>
                             </FormulariesEdit.FieldFormFieldContainer>
                             <FormulariesEdit.FieldFormFieldContainer>
                                 <FormulariesEdit.FieldFormCheckbox checked={props.field.required} onChange={onChangeRequired} text={strings['pt-br']['formularyEditFieldIsRequiredCheckboxLabel']}/>
@@ -257,7 +262,7 @@ const FormularyFieldEdit = (props) => {
                                 <FormulariesEdit.FieldFormCheckbox checked={props.field.is_unique} onChange={onChangeIsUnique} text={strings['pt-br']['formularyEditFieldIsUniqueCheckboxLabel']}/>
                             </FormulariesEdit.FieldFormFieldContainer>
                             {formularyItemsForFieldTypes()}
-                        </div>
+                        </FormulariesEdit.FieldFormularyContainer>
                     ): (
                         <div>
                             {props.field.type ? (
@@ -281,7 +286,7 @@ const FormularyFieldEdit = (props) => {
                     {strings['pt-br']['formularyEditFieldDisabledLabel']}
                 </p>
             )}
-        </div>
+        </FormulariesEdit.FieldContainer>
     )
 }
 

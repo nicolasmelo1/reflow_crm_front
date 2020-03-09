@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import FormularySectionEdit from './FormularySectionEdit'
 import { FormulariesEdit }  from 'styles/Formulary'
+import { strings } from 'utils/constants'
 
 /**
  * This component controls all of the sections, we keep most of the primary functions here, since that when we change
@@ -197,7 +198,7 @@ const FormularySectionsEdit = (props) => {
                 formulariesOptions={props.formulariesOptions}
                 />
             ))}
-            <FormulariesEdit.AddNewSectionButton text="Adicionar nova seção" onClick={e=>{onAddNewSection()}} />
+            <FormulariesEdit.AddNewSectionButton text={strings['pt-br']['formularyEditAddNewSectionButtonLabel']} onClick={e=>{onAddNewSection()}} />
 
         </div>
     )
