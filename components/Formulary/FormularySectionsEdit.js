@@ -145,7 +145,7 @@ const FormularySectionsEdit = (props) => {
 
     const onUpdateField = (sectionIndex, fieldIndex, newFieldData) => {
         props.data.depends_on_form[sectionIndex].form_fields[fieldIndex] = newFieldData
-        if (newFieldData.id) {
+        if (![null, -1].includes(newFieldData.id)) {
             props.onUpdateFormularySettingsField(newFieldData, props.formId, newFieldData.id)
             props.onUpdateFormularySettings({...props.data})
         } else {
@@ -155,7 +155,7 @@ const FormularySectionsEdit = (props) => {
 
     const onUpdateSection = (sectionIndex, newSectionData) => {
         props.data.depends_on_form[sectionIndex] = newSectionData
-        if (newSectionData.id) {
+        if (![null, -1].includes(newSectionData.id)) {
             props.onUpdateFormularySettingsSection(newSectionData, props.formId, newSectionData.id)
             props.onUpdateFormularySettings({...props.data})
         } else {

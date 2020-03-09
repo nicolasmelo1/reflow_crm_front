@@ -71,14 +71,23 @@ const onUpdateFormularySettings = (formSettingsData) => {
     }
 }
 
+// We use this to lock the user for sending too many post requests, we wait for the function to finish to send again
 const onCreateFormularySettingsSection = (body, formId, sectionIndex) => {
     return async (dispatch, getState) => {
         let stateData = getState().home.formulary.update
-        const response = await agent.HOME.createFormularySettingsSection(body, formId)
-        if (response.status === 200 && response.data.status === 'ok'){ 
-            stateData.depends_on_form[sectionIndex] = response.data.data
+        if (body.id !== -1) {
+            agent.HOME.createFormularySettingsSection(body, formId).then(response=> {
+                stateData.depends_on_form[sectionIndex] = response.data.data
+                dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: stateData })
+            }).catch(_ => {
+                stateData.depends_on_form[sectionIndex].id = null
+                dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: stateData })
+            })
+        } 
+        if (body.id === null) {
+            stateData.depends_on_form[sectionIndex].id = -1
             dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: stateData })
-        }
+        } 
     }
 }
 
@@ -95,11 +104,19 @@ const onRemoveFormularySettingsSection = (formId, sectionId) => {
 }
 
 const onCreateFormularySettingsField = (body, formId, sectionIndex, fieldIndex) => {
-    return async (dispatch, getState) => {
+    return (dispatch, getState) => {
         let stateData = getState().home.formulary.update
-        const response = await agent.HOME.createFormularySettingsField(body, formId)
-        if (response.status === 200 && response.data.status === 'ok'){ 
-            stateData.depends_on_form[sectionIndex].form_fields[fieldIndex] = response.data.data
+        if (body.id !== -1) {
+            agent.HOME.createFormularySettingsField(body, formId).then(response=> {
+                stateData.depends_on_form[sectionIndex].form_fields[fieldIndex] = response.data.data
+                dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: stateData })
+            }).catch(_ => {
+                stateData.depends_on_form[sectionIndex].form_fields[fieldIndex].id = null
+                dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: stateData })
+            })
+        } 
+        if (body.id === null) {
+            stateData.depends_on_form[sectionIndex].form_fields[fieldIndex].id = -1
             dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: stateData })
         }
     }
