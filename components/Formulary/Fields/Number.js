@@ -3,6 +3,7 @@ import { Field } from 'styles/Formulary'
 
 
 const Number = (props) => {
+    const [numberFormat, setNumberFormat] = useState({})
     const [elementSelectionStart, setElementSelectionStart] = useState(0)
     let input = React.createRef()
 
@@ -59,7 +60,7 @@ const Number = (props) => {
     }
 
     const onChangeNumberValue = (e) => {
-        const formattedValue = numberMasker(e.target, props.field.number_configuration_number_format_type)
+        const formattedValue = numberMasker(e.target, numberFormat)
         const newValue = props.singleValueFieldsHelper((formattedValue===undefined) ? '': formattedValue)
         props.setValues(newValue)
     }
@@ -68,6 +69,16 @@ const Number = (props) => {
         input.current.selectionStart = elementSelectionStart
         input.current.selectionEnd = elementSelectionStart
     })
+    
+    useEffect(() => {
+        if (props.field.number_configuration_number_format_type !== null && props.types.data.field_number_format_type !== null) {
+            const format = props.types.data.field_number_format_type.filter(numberFormatType => numberFormatType.id === props.field.number_configuration_number_format_type)
+            if (format && format.length > 0) {
+                setNumberFormat(format[0])
+            }
+        }
+    }, [props.field.number_configuration_number_format_type, props.types.data.field_number_format_type])
+
 
     const fieldValue = (props.values.length === 0) ? '': props.values[0].value
 

@@ -100,7 +100,6 @@ const Fields = (props) => {
         return false
     }
 
-
     const formFieldLabelButtonText = () => {
         if (values.length === 0) {
             return strings['pt-br']['formularyFormFieldAddNewButtonLabel']

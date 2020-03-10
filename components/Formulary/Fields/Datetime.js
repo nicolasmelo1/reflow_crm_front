@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Field } from 'styles/Formulary'
 import DateTimePicker from 'components/Utils/DateTimePicker'
 import { strings } from 'utils/constants'
 import moment from 'moment'
 
 const Datetime = (props) => {
+    const [dateFormat, setDateFormat] = useState('')
     const inputRef = React.useRef(null)
 
     const monthReference = [
@@ -42,7 +43,7 @@ const Datetime = (props) => {
     }
     
     function stringToJsDateFormat(date) {
-        let format = props.field.date_configuration_date_format_type
+        let format = dateFormat
         for (var key in momentJSDateFormat) {
             if (momentJSDateFormat.hasOwnProperty(key)) {
                 format = format.replace(key, momentJSDateFormat[key])
@@ -53,7 +54,7 @@ const Datetime = (props) => {
     }
 
     function jsDateToStringFormat(date) {
-        let newValue = props.field.date_configuration_date_format_type
+        let newValue = dateFormat
         if (typeof newValue === 'string') {
             Object.keys(momentJSDateFormat).forEach(possibleFormat => {
                 switch(possibleFormat) {
@@ -99,12 +100,21 @@ const Datetime = (props) => {
         fieldValue = jsDateToStringFormat(today)
     }
 
+    useEffect(() => {
+        if (props.field.date_configuration_date_format_type !== null && props.types.data.field_date_format_type !== null) {
+            const format = props.types.data.field_date_format_type.filter(dateFormatType => dateFormatType.id === props.field.date_configuration_date_format_type)
+            if (format && format.length > 0) {
+                setDateFormat(format[0].format)
+            }
+        }
+    }, [props.field.date_configuration_date_format_type, props.types.data.field_date_format_type])
+
     return (
-        <>
+        <div>
             <Field.Text ref={inputRef} type="text" value={fieldValue} readOnly={true}/>
             {(props.field.date_configuration_auto_update || props.field.date_configuration_auto_create) ? '' : (
                 <DateTimePicker 
-                withoutHourPicker={typeof props.field.date_configuration_date_format_type === 'string' && (!(props.field.date_configuration_date_format_type.includes('%H') || props.field.date_configuration_date_format_type.includes('%M')))}
+                withoutHourPicker={typeof dateFormat === 'string' && (!(dateFormat.includes('%H') || dateFormat.includes('%M')))}
                 input={inputRef} 
                 onChange={onChange} 
                 initialDay={(fieldValue !== '') ? stringToJsDateFormat(fieldValue) : ''}
@@ -112,7 +122,7 @@ const Datetime = (props) => {
                 dayOfTheWeekReference={dayOfTheWeekReference}
                 />
             )}
-        </>
+        </div>
     )
 }
 

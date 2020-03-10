@@ -1,7 +1,7 @@
-import axios from 'axios';
-import { API, BEARER } from '../config';
-import Router from 'next/router';
+import axios from 'axios'
+import { API, BEARER } from '../config'
 import { paths } from 'utils/constants'
+import Router from 'next/router'
 
 const API_ROOT = API;
 
@@ -45,11 +45,11 @@ const refreshToken = async (response, callback, url, params, headers) => {
                 window.localStorage.setItem('token', response.data.access_token)
                 token = response.data.access_token
             }
+            return callback(url, params, headers)
         }
         if (['invalid_token', 'login_required'].includes(response.data.reason)) {
             Router.push(paths.login())
         }
-        return callback(url, params, headers)
     }
     return response
 }

@@ -17,12 +17,14 @@ const onDeauthenticate = () => {
 
 const getDataTypes = () => {
     return async (dispatch, getState) => {
-        const stateData = getState().login
-        let response = await agent.LOGIN.getDataTypes()
-        if (JSON.stringify(stateData.types) !== JSON.stringify(response.data.data)) {
-            dispatch({ type: DATA_TYPES, payload: response.data.data });
+        if (window.localStorage.getItem('refreshToken') !== '' && window.localStorage.getItem('token') !== '') {
+            const stateData = getState().login
+            let response = await agent.LOGIN.getDataTypes()
+            if (JSON.stringify(stateData.types) !== JSON.stringify(response.data.data)) {
+                dispatch({ type: DATA_TYPES, payload: response.data.data });
+            }
         }
-    };
+    }
 }
 
 export default {

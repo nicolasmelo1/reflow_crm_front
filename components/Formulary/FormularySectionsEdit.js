@@ -171,14 +171,16 @@ const FormularySectionsEdit = (props) => {
     }
     
     useEffect(() => {
-        const sectionsData = [...props.data.depends_on_form]
-        setFieldOptions([].concat.apply([], sectionsData.map(section => section.form_fields.filter(field => field && field.id))))
+        if (props.data.depends_on_form) {
+            const sectionsData = [...props.data.depends_on_form]
+            setFieldOptions([].concat.apply([], sectionsData.map(section => section.form_fields.filter(field => field && field.id))))
+        }
     }, [props.data.depends_on_form])
     
     return (
         <div>
             <button onClick={e=>{goBackToFormulary(e)}}>Voltar</button>
-            {props.data.depends_on_form.map((section, index)=> (
+            {props.data.depends_on_form ? props.data.depends_on_form.map((section, index)=> (
                 <FormularySectionEdit key={index} 
                 onUpdateSection={onUpdateSection} 
                 onUpdateField={onUpdateField}
@@ -197,7 +199,7 @@ const FormularySectionsEdit = (props) => {
                 fieldOptions={fieldOptions}
                 formulariesOptions={props.formulariesOptions}
                 />
-            ))}
+            )): ''}
             <FormulariesEdit.AddNewSectionButton text={strings['pt-br']['formularyEditAddNewSectionButtonLabel']} onClick={e=>{onAddNewSection()}} />
 
         </div>

@@ -4,7 +4,7 @@ import { Layout, Formulary, Listing } from 'components';
 import { connect } from 'react-redux';
 import { strings, paths } from 'utils/constants';
 import { Button } from 'react-bootstrap';
-import { Router, useRouter } from 'next/router'
+import Router from 'next/router'
 import GestaoTab from 'components/Gestao/GestaoTab'
 
 class Data extends React.Component {
