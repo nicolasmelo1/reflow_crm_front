@@ -10,7 +10,7 @@ const Option = (props) => {
         const newValue = props.singleValueFieldsHelper((newData.length === 0) ? '': newData[0])
         props.setValues(newValue)
     }
-
+    
     const fieldValue =  (props.values.length === 0) ? []: [{ value: props.values[0].value, label: props.values[0].value }]
 
     return (

@@ -2,12 +2,6 @@ import { GET_FORMULARY, SET_FORMULARY_DATA, SET_FORMULARY_OPEN, SET_FORMULARY_SE
 import agent from 'redux/agent'
 
 
-const onOpenOrCloseFormulary = (isOpen=false) => {
-    return (dispatch) => {
-        dispatch({type: SET_FORMULARY_OPEN, payload: isOpen})
-    }
-}
-
 const onGetBuildFormulary = (formName) => {
     return async (dispatch) => {
         let response = await agent.HOME.getBuildFormulary(formName)
@@ -138,7 +132,6 @@ const onRemoveFormularySettingsField = (formId, fieldId) => {
 export default {
     onUpdateFormularySettings,
     onGetFormularySettings,
-    onOpenOrCloseFormulary,
     onGetBuildFormulary,
     onChangeFormularyData,
     onGetFormularyData,

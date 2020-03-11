@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Form } from 'react-bootstrap'
+import React from 'react'
+import { Field } from 'styles/Formulary'
 
 const LongText = (props) => {
 
@@ -12,7 +12,7 @@ const LongText = (props) => {
     const fieldValue = (props.values.length === 0) ? '': props.values[0].value
 
     return (
-        <Form.Control as="textarea" value={fieldValue} onChange={e=> {onChange(e)}}/>
+        <Field.Text className="form-control" as="textarea" value={fieldValue} onChange={e=> {onChange(e)}}/>
     )
 }
 

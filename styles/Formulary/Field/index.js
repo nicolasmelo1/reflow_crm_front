@@ -10,6 +10,7 @@ import FieldContainer from './FieldContainer'
 import FieldErrorLabel from './FieldErrorLabel'
 import FieldFormLabelButton from './FieldFormLabelButton'
 import FieldSelect from './FieldSelect'
+import FieldLongText from './FieldLongText'
 
 export default {
     FieldTitle: {
@@ -20,6 +21,7 @@ export default {
     Container: FieldContainer,
     Text: FieldTextInput,
     Select: FieldSelect,
+    LongText: FieldLongText,
     Attachment: {
         Image: FieldAttachmentImage,
         Input: FieldAttachmentInput,

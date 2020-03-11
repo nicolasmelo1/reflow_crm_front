@@ -34,20 +34,19 @@ class Listing extends React.Component {
                     <ListingTotalCardGroup cards={this.props.list.totals} />
                 </Row>
                 <Row>
-                    <Col sm={{}}>
+                    <Col>
                         <ListingFilter onGetData={this.props.onGetData} headers={this.props.list.header} />
                     </Col>
                     <Col>
                         <ListingFilterButton size="sm" >Extrair</ListingFilterButton>
                     </Col>
-                    <Col sm={{ span: 5, offset: 4 }}>
+                    <Col>
                         <ListingColumnSelectButton headers={this.props.list.header} onUpdateSelected={this.props.onUpdateSelected} />
                     </Col>
                 </Row>
                 <Row>
-                    <Col sm={{ span: 11 }}>
-
-                        <ListagemTable heading={this.props.list.header} elements={this.props.list.data} />
+                    <Col>
+                        <ListagemTable heading={this.props.list.header} elements={this.props.list.data} setFormularyId={this.props.setFormularyId} />
                     </Col>
                 </Row>
             </>

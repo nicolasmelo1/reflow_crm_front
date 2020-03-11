@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 
 export default styled.div`
-    float: left;
     position: absolute;
     padding: 5px;
     background: #444;

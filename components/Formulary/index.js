@@ -26,7 +26,7 @@ class Formulary extends React.Component {
         }
         
         // when user closes we reset the states on the formulary
-        if (this.props.formulary.isOpen) {
+        if (this.props.formularyIsOpen) {
             this.props.setFormularyId(null)
             if (this.state.auxOriginalInitial.filledData && this.state.auxOriginalInitial.buildData) {
                 this.props.onFullResetFormulary({}, this.state.auxOriginalInitial.buildData)
@@ -36,7 +36,7 @@ class Formulary extends React.Component {
             this.setErrors({})
         }
         
-        this.props.onOpenOrCloseFormulary(!this.props.formulary.isOpen)
+        this.props.onOpenOrCloseFormulary(!this.props.formularyIsOpen)
     }
 
     setAuxOriginalInitial = () => {
@@ -114,18 +114,26 @@ class Formulary extends React.Component {
         this.buildFormulary(this.props.query.form, this.props.formularyId)
     }
 
-    
+    componentDidUpdate(oldProps) {
+        const newProps = this.props
+        if(oldProps.formularyId !== newProps.formularyId && newProps.formularyId) {
+            this.props.onGetFormularyData(this.props.query.form, newProps.formularyId)
+        }
+    }
+
     render() {
+        const sections = (this.props.formulary.buildData && this.props.formulary.buildData.depends_on_form) ? this.props.formulary.buildData.depends_on_form : []
+        const formName = (this.props.formulary.buildData && this.props.formulary.buildData.label_name) ? this.props.formulary.buildData.label_name : ''
         return (
             <Formularies.Container>
                 <Row>
                     <Col>
-                        <Formularies.Button onClick={e=>{this.setIsOpen(e)}}>{strings['pt-br']['formularyOpenButtonLabel']}</Formularies.Button>
+                        <Formularies.Button onClick={e=>{this.setIsOpen(e)}}>{(this.props.formularyIsOpen) ? 'Fechar ' + formName : strings['pt-br']['formularyOpenButtonLabel']}</Formularies.Button>
                     </Col>
                 </Row>
                 <Row>
                     <Col>
-                        <Formularies.ContentContainer isOpen={this.props.formulary.isOpen}>
+                        <Formularies.ContentContainer isOpen={this.props.formularyIsOpen}>
                             {(this.state.isEditing) ? (
                                 <div>
                                     <FormularySectionsEdit
@@ -146,11 +154,11 @@ class Formulary extends React.Component {
                             ): (
                                 <div>
                                     {(this.props.formulary.buildData && this.props.formulary.buildData.group_id && this.props.formulary.buildData.id) ? (
-                                        <button onClick={e=> {this.setIsEditing()}}>Editar campos</button>
+                                        <Formularies.EditButton onClick={this.setIsEditing} label={strings['pt-br']['formularyEditButtonLabel']} description={strings['pt-br']['formularyEditButtonDescription']}/>
                                     ) : ''}
                                     {(this.props.formulary.buildData && this.props.formulary.buildData.form_name !== this.props.query.form) ? (
-                                        <Formularies.Navigator onClick={e => {this.props.onFullResetFormulary(this.state.auxOriginalInitial.filledData, this.state.auxOriginalInitial.buildData)}}>&lt;&nbsp;Voltar</Formularies.Navigator>
-                                    ) : ''}
+                                        <Formularies.Navigator onClick={e => {this.props.onFullResetFormulary(this.state.auxOriginalInitial.filledData, this.state.auxOriginalInitial.buildData)}}>&lt;&nbsp;{(this.state.auxOriginalInitial.buildData) ? this.state.auxOriginalInitial.buildData.label_name : ''}</Formularies.Navigator>
+                                    ) : ''}                           
                                     <FormularySections 
                                     errors={this.state.errors}
                                     types={this.props.types}
@@ -158,9 +166,12 @@ class Formulary extends React.Component {
                                     loadData={this.loadData}
                                     data={this.props.formulary.filledData}
                                     setData={this.setData}
-                                    sections={(this.props.formulary.buildData && this.props.formulary.buildData.depends_on_form) ? this.props.formulary.buildData.depends_on_form : []}
+                                    sections={sections}
                                     />
-                                    <button onClick={e=> {this.onSubmit()}}>Salvar</button>
+                                    {sections.length > 0 ? (
+                                        <Formularies.SaveButton onClick={e=> {this.onSubmit()}}>{strings['pt-br']['formularySaveButtonLabel']}</Formularies.SaveButton>
+                                    ) : ''}
+                                    
                                 </div> 
                             )}
                         </Formularies.ContentContainer>

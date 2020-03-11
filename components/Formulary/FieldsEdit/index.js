@@ -148,7 +148,7 @@ const FormularyFieldEdit = (props) => {
             return ''
         }
 
-        if (['option', 'multi-option'].includes(fieldType.type)) {
+        if (['option', 'multi_option'].includes(fieldType.type)) {
             return (
                 <Option
                 field={props.field}

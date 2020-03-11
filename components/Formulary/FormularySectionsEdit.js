@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import FormularySectionEdit from './FormularySectionEdit'
-import { FormulariesEdit }  from 'styles/Formulary'
+import { FormulariesEdit, Formularies }  from 'styles/Formulary'
 import { strings } from 'utils/constants'
 
 /**
@@ -32,12 +32,12 @@ const FormularySectionsEdit = (props) => {
     const [fieldOptions, setFieldOptions] = useState([])
 
     const reorder = () => {
-        props.data.depends_on_form = props.data.depends_on_form.map((section, index) => {
-            section.form_fields = section.form_fields.map((field, index) => {
-                field.order = index+1
+        props.data.depends_on_form = props.data.depends_on_form.map((section, sectionIndex) => {
+            section.form_fields = section.form_fields.map((field, fieldIndex) => {
+                field.order = fieldIndex+1
                 return field
             })
-            section.order = index+1
+            section.order = sectionIndex+1
             return section
         })
     }
@@ -163,12 +163,6 @@ const FormularySectionsEdit = (props) => {
             props.onCreateFormularySettingsSection(newSectionData, props.formId, sectionIndex)
         }
     }
-
-    const goBackToFormulary = (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        props.setIsEditing()
-    }
     
     useEffect(() => {
         if (props.data.depends_on_form) {
@@ -179,7 +173,7 @@ const FormularySectionsEdit = (props) => {
     
     return (
         <div>
-            <button onClick={e=>{goBackToFormulary(e)}}>Voltar</button>
+            <Formularies.EditButton onClick={props.setIsEditing} label={strings['pt-br']['formularyFinishEditButtonLabel']} description={strings['pt-br']['formularyFinishEditButtonDescription']}/>
             {props.data.depends_on_form ? props.data.depends_on_form.map((section, index)=> (
                 <FormularySectionEdit key={index} 
                 onUpdateSection={onUpdateSection} 

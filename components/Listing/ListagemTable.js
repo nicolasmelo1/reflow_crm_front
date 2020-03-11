@@ -9,7 +9,7 @@ const ListagemTable = (props) => {
     return (
         <ListingTable bordered hover size="sm">
             <ListagemTableHead headers={props.heading} />
-            <ListagemTableContent contents={props.elements} headers={props.heading} />
+            <ListagemTableContent contents={props.elements} headers={props.heading} setFormularyId={props.setFormularyId} />
 
         </ListingTable>
     )

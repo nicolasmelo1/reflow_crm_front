@@ -14,13 +14,12 @@ import { errors, strings } from 'utils/constants'
 
 const Fields = (props) => {
     const [values, setValues] = useState([])
+    const typeId = (props.field.type.type) ? props.field.type.type : props.field.type
+
+    let typeName = (props.types.data) ? props.types.data.field_type.filter(fieldType => fieldType.id === typeId): []
+    typeName = (typeName.length !== 0) ? typeName[0].type : ''
 
     const getFieldType = () => {
-        const typeId = (props.field.type.type) ? props.field.type.type : props.field.type
-
-        let typeName = (props.types.data) ? props.types.data.field_type.filter(fieldType => fieldType.id === typeId): []
-        typeName = (typeName.length !== 0) ? typeName[0].type : ''
-
         switch (typeName) {
             case "id":
                 return Id
@@ -47,32 +46,44 @@ const Fields = (props) => {
 
     // Fields that accept multiple values usually have the same logic,
     // so we use this function to don't repeat code in each component
+    // the first if occurs if the user is editing the form, since these props are not passed when the user is editing
+    // and the user should be used to test the field, he can still test, the first else condition is used in those cases.
     const multipleValueFieldHelper = (values) => {
         const formValues = props.fieldFormValues
-        values.forEach(value => {
-            if (formValues.find(formValue => formValue.value === value && formValue.field_name === props.field.name) === undefined) {
-                props.addFieldFormValue(props.field.name, value)
-            } 
-        }) 
-        formValues.forEach(formValue => {
-            if (!values.includes(formValue.value)) {
-                props.removeFieldFormValue(props.field.name, formValue.value)
-            }
-        })
-        return props.getFieldFormValues(props.field.name)
+        if (props.addFieldFormValue && props.removeFieldFormValue && props.updateFieldFormValue && props.getFieldFormValues) {
+            values.forEach(value => {
+                if (formValues.find(formValue => formValue.value === value && formValue.field_name === props.field.name) === undefined) {
+                    props.addFieldFormValue(props.field.name, value)
+                } 
+            }) 
+            formValues.forEach(formValue => {
+                if (!values.includes(formValue.value)) {
+                    props.removeFieldFormValue(props.field.name, formValue.value)
+                }
+            })
+            return props.getFieldFormValues(props.field.name)
+        } else {
+            return values.map(value=> { return {field_name: props.field.name, value:value} })
+        }
     }
 
     // Fields that accept a single value usually have the same logic,
     // so we use this function to don't repeat code in components
+    // the first if occurs if the user is editing the form, since these props are not passed when the user is editing
+    // and the user should be used to test the field, he can still test, the first else condition is used in those cases.
     const singleValueFieldsHelper = (value) => {
-        if (props.fieldFormValues.length === 0) {
-            props.addFieldFormValue(props.field.name, value)
-        } else if (value === '') {
-            props.removeFieldFormValue(props.field.name, props.fieldFormValues[0].value)
+        if (props.addFieldFormValue && props.removeFieldFormValue && props.updateFieldFormValue && props.getFieldFormValues) {
+            if (props.fieldFormValues.length === 0) {
+                props.addFieldFormValue(props.field.name, value)
+            } else if (value === '') {
+                props.removeFieldFormValue(props.field.name, props.fieldFormValues[0].value)
+            } else {
+                props.updateFieldFormValue(props.field.name, props.fieldFormValues[0].value, value)
+            }
+            return props.getFieldFormValues(props.field.name)
         } else {
-            props.updateFieldFormValue(props.field.name, props.fieldFormValues[0].value, value)
+            return [{field_name: props.field.name, value:value}]
         }
-        return props.getFieldFormValues(props.field.name)
     }
 
     const renderFieldType = () => {
@@ -109,9 +120,11 @@ const Fields = (props) => {
     }
 
     useEffect(()=> {
-        setValues(props.fieldFormValues)
-        if (props.fieldFormValues.length === 0 && props.field.field_is_hidden) {
-            props.addFieldFormValue(props.field.name, '')
+        if (props.addFieldFormValue && props.fieldFormValues) {
+            setValues(props.fieldFormValues)
+            if (props.fieldFormValues.length === 0 && props.field.field_is_hidden) {
+                props.addFieldFormValue(props.field.name, '')
+            }
         }
     }, [props.fieldFormValues])
 
@@ -123,7 +136,7 @@ const Fields = (props) => {
                         <Field.FieldTitle.Label>
                             { props.field.label_name }
                             <Field.FieldTitle.Required>{(props.field.required) ? '*': ''}</Field.FieldTitle.Required>
-                            {(props.field.field_type === 'form') ? (
+                            {(typeName === 'form') ? (
                                 <Field.FieldTitle.FormButton 
                                 onClick={e => {props.onChangeFormulary(props.field.form_field_as_option.form_name, (values.length > 0) ? values[0].value: null)}}
                                 >

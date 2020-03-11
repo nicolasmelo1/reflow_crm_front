@@ -8,6 +8,7 @@ export default styled(({isOpen, ...rest}) => <div {...rest}/>)`
     overflow-y: auto; 
     float: right; 
     display: block;
+    position: relative;
     margin-right: 15px;
     padding: ${props=> props.isOpen ? '10px' : '0'};
     height: ${props=> props.isOpen ? '80vh' : '0'};

@@ -25,8 +25,8 @@ const ListagemTableContent = (props) => {
                             }
                         })}
                         <td>
-                            <ListingEditButton>
-                                <ListingEditButtonIcon icon="trash" />
+                            <ListingEditButton onClick={e=> {props.setFormularyId(content.id)}}>
+                                <ListingEditButtonIcon icon="trash"/>
                             </ListingEditButton>
                         </td>
                         <td>

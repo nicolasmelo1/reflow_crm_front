@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { strings, paths } from 'utils/constants';
 import { Button } from 'react-bootstrap';
 import Router from 'next/router'
-import GestaoTab from 'components/Gestao/GestaoTab'
 
 class Data extends React.Component {
 
@@ -13,8 +12,8 @@ class Data extends React.Component {
         super(props)
         this.state = {
             visualization: 'listing',
-            formularyId: null//'51003'
-
+            formularyId: null,//'51003'
+            formularyIsOpen: false,
         }
     }
 
@@ -29,10 +28,25 @@ class Data extends React.Component {
         Router.push(paths.login())
     }
 
-    setFormularyId = (newValue) => {
+    onOpenOrCloseFormulary = (isOpen) => {
         this.setState(() => {
             return {
-                formularyId: newValue
+                formularyIsOpen: isOpen
+            }
+        })
+    }
+
+    setFormularyId = (newValue) => {
+        this.setState(() => {
+            if (![undefined, null].includes(newValue)) {
+                return {
+                    formularyIsOpen: true,
+                    formularyId: newValue
+                }
+            } else {
+                return {
+                    formularyId: newValue
+                } 
             }
         })
     }
@@ -40,11 +54,17 @@ class Data extends React.Component {
     render () {
         return (
             <Layout title={strings['pt-br']['managementPageTitle']} showSideBar={true}>
-                <Formulary query={this.props.query} formularyId={this.state.formularyId} setFormularyId={this.setFormularyId}/>
+                <Formulary 
+                query={this.props.query} 
+                formularyId={this.state.formularyId} 
+                setFormularyId={this.setFormularyId} 
+                onOpenOrCloseFormulary={this.onOpenOrCloseFormulary}
+                formularyIsOpen={this.state.formularyIsOpen}
+
+                />
                 <Button type="submit" onClick={e => this.handleLogout(e)}>Logout</Button>
-                <GestaoTab defaultActive='listing' />
                 {(this.state.visualization == 'listing') ? (
-                    <Listing query={this.props.query}/>
+                    <Listing query={this.props.query} setFormularyId={this.setFormularyId}/>
                 ) : (
                     ''
                 )}

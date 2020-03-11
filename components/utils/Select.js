@@ -183,8 +183,9 @@ const Select = (props) => {
     useEffect(() => {
         const selectedInitialValues = props.initialValues.map(initialValue=> {return{ ...initialValue, selected:false, color: selectedItemColors[Math.floor(Math.random() * selectedItemColors.length)] }})
         let filteredOptions = props.options.filter(option=> selectedInitialValues.find(selectedOption=> selectedOption.value === option.value) === undefined);
+        
         try {
-            if (JSON.stringify(selectedInitialValues) !== JSON.stringify(selectedOptions)){
+            if (JSON.stringify(props.initialValues) !== JSON.stringify(selectedOptions.map(selectedOption => { return { value: selectedOption.value, label: selectedOption.label} }))) {
                 setSelectedOptions(selectedInitialValues)
                 setOptions(filteredOptions)
             }
