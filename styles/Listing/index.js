@@ -1,7 +1,7 @@
 import ListingFilterButton from './ListingFilterButton'
 import ListingColSelectButton from './ListingColSelectButton'
 import ListingFilterIcon from './ListingFilterIcon'
-import ListingTable from './ListingTable'
+import ListingTableContainer from './ListingTableContainer'
 import TblPopoverHead from './TblPopoverHead'
 import TblPopoverIcon from './TblPopoverIcon'
 import ListingEditButtonIcon from './ListingEditButtonIcon'
@@ -12,8 +12,15 @@ import ListingTotalLabel from './ListingTotalLabel'
 import ListingTotalCard from './ListingTotalCard'
 import ListingTotalCardBody from './ListingTotalCardBody'
 import ListingTotalCardTitle from './ListingTotalCardTitle'
+import ListingTableHeaderElement from './ListingTableHeaderElement'
+import ListingTableHeaderElementParagraph from './ListingTableHeaderElementParagraph'
+import ListingTableHeaderElementDragger from './ListingTableHeaderElementDragger'
+import ListingTableHeaderContainer from './ListingTableHeaderContainer'
 
-
+export { ListingTableHeaderContainer }
+export { ListingTableHeaderElementDragger }
+export { ListingTableHeaderElementParagraph }
+export { ListingTableHeaderElement }
 export { ListingTotalCard }
 export { ListingTotalCardBody }
 export { ListingTotalCardTitle }
@@ -24,7 +31,7 @@ export { ListingDeleteButton }
 export { ListingEditButton }
 export { TblPopoverHead }
 export { TblPopoverIcon }
-export { ListingTable }
+export { ListingTableContainer }
 export { ListingFilterIcon }
 export { ListingColSelectButton }
 export { ListingFilterButton }

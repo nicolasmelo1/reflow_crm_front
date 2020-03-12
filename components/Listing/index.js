@@ -2,7 +2,7 @@ import { Row, Col } from 'react-bootstrap'
 import React from 'react'
 import actions from 'redux/actions'
 import { connect } from 'react-redux'
-import ListagemTable from './ListagemTable'
+import ListingTable from './ListingTable'
 import ListingFilter from './ListingFilter'
 import ListingTotalCardGroup from './ListingTotalCardGroup'
 import ListingColumnSelectButton from './ListingColumnSelectButton'
@@ -12,17 +12,26 @@ class Listing extends React.Component {
     constructor(props) {
         super(props)
 
-        const params = {
-            from: '25/11/2019',
-            to: '03/03/2020',
-            page: 1
+        this.state = {
+            params: {
+                from: '25/11/2019',
+                to: '03/03/2020',
+                page: 1
+            }
         }
-        
-        this.props.onGetData(params, this.props.query.form)
+
+        this.props.onGetData(this.state.params, this.props.query.form)
         this.props.onGetHeader(this.props.query.form),
-        this.props.onGetTotal(params, this.props.query.form)
+        this.props.onGetTotal(this.state.params, this.props.query.form)
     }
 
+    setParms = (params) => {
+        this.setState(state => {
+            return {
+                params: params
+            }
+        })
+    }
 
     render() {
         return (
@@ -46,7 +55,7 @@ class Listing extends React.Component {
                 </Row>
                 <Row>
                     <Col>
-                        <ListagemTable heading={this.props.list.header} elements={this.props.list.data} setFormularyId={this.props.setFormularyId} />
+                        <ListingTable headers={this.props.list.header} elements={this.props.list.data} setFormularyId={this.props.setFormularyId} />
                     </Col>
                 </Row>
             </>

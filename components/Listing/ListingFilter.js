@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ListingFilterButton, ListingFilterIcon } from 'styles/Listing';
 import { Dropdown, InputGroup, FormControl, Button, DropdownButton } from 'react-bootstrap';
 import ListingFilterInstance from './ListingFilterInstance'
+
 const ListingFilter = (props) => {
     const [formInstanceNumber, setFormInstanceNumber] = useState([addNewValue()]);
 
