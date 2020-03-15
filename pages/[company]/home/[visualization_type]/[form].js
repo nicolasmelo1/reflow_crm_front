@@ -6,6 +6,10 @@ import { strings, paths } from 'utils/constants';
 import { Button } from 'react-bootstrap';
 import Router from 'next/router'
 
+
+/**
+ * 
+ */
 class Data extends React.Component {
 
     constructor(props) {

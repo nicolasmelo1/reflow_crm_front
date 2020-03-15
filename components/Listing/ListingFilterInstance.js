@@ -28,7 +28,7 @@ const ListingFilterInstance = (props) => {
                 variant="outline-secondary"
                 title={formButtonTitle}
             >
-                {props.heading.map(function (head, index) {
+                {props.headers.map(function (head, index) {
                     return (
                         <Dropdown.Item
                             as="button"

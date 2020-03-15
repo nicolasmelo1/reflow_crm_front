@@ -3,5 +3,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 export default styled(FontAwesomeIcon)`
     width: 15px;
-    color: white;
+    color: #0dbf7e;
+    cursor: pointer;
 `

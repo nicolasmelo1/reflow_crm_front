@@ -102,7 +102,8 @@ const FormularyFieldEdit = (props) => {
 
     const onChangeFieldType = (data) => {
         props.field.type = data[0]
-        props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
+        console.log(props.field)
+        props.onUpdateField(props.sectionIndex, props.fieldIndex, {...props.field})
     }
     
     const onFilterFieldType = (value) => {
@@ -265,7 +266,7 @@ const FormularyFieldEdit = (props) => {
                         </FormulariesEdit.FieldFormularyContainer>
                     ): (
                         <div>
-                            {props.field.type ? (
+                            {props.field ? (
                                 <Fields 
                                 errors={{}}
                                 field={props.field}

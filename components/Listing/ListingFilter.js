@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { ListingFilterButton, ListingFilterIcon } from 'styles/Listing';
-import { Dropdown, InputGroup, FormControl, Button, DropdownButton } from 'react-bootstrap';
+import { Dropdown, Button, DropdownButton } from 'react-bootstrap';
 import ListingFilterInstance from './ListingFilterInstance'
 
 const ListingFilter = (props) => {
+    const [dropdownShow, setDropdownShow] = useState(false)
     const [formInstanceNumber, setFormInstanceNumber] = useState([addNewValue()]);
-
-    const heading = (props.headers && props.headers.field_headers) ? props.headers.field_headers: []
+    const headers = (props.headers && props.headers.field_headers) ? props.headers.field_headers: []
 
     function addNewValue() {
         return {
@@ -16,55 +16,49 @@ const ListingFilter = (props) => {
         }
     }
 
+    const toggleDropdown = (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        console.log('teste')
+        setDropdownShow(!dropdownShow)
+    }
+
     function addNewFilter(e) {
         e.preventDefault()
         formInstanceNumber.push(addNewValue())
         setFormInstanceNumber([...formInstanceNumber])
-
     }
 
+    
     function sendFilterData(e) {
         e.preventDefault()
-        let urlParams = {
-            from: '25/11/2019',
-            to: '23/01/2020',
-            page: 1,
-            search_value: [],
-            search_exact: [],
-            search_field: []
-        }
-
-        formInstanceNumber.map(function (search, index) {
-            urlParams.search_exact.push(0);
-            urlParams.search_field.push(search.field_name);
-            urlParams.search_value.push(search.value);
-        })
-        props.onGetData(urlParams, 'negocios')
+        setDropdownShow(false)
     }
 
     return (
-        <Dropdown>
-
-            <Dropdown.Toggle as={ListingFilterButton} size="sm">
-                <ListingFilterIcon icon="filter" />Filtro
-            </Dropdown.Toggle>
-
-            <Dropdown.Menu style={{ width: "600px" }}>
-                {formInstanceNumber.map(function (form, index) {
-                    return <ListingFilterInstance
-                        heading={heading}
-                        ind={index}
+        <div style={{position:'relative'}}>
+            <ListingFilterButton onClick={e => {toggleDropdown(e)}} onBlur={e => {toggleDropdown(e)}}>
+                <ListingFilterIcon icon="filter"/>Filtrar
+            </ListingFilterButton>
+            {dropdownShow ? ( 
+                <div style={{ position: 'absolute', width: '600px', zIndex: 1, backgroundColor: 'white'}}>
+                    {formInstanceNumber.map((form, index) => (
+                        <ListingFilterInstance
                         key={index}
+                        headers={headers}
+                        index={index}
                         parameter={form}
                         filterState={formInstanceNumber}
-                        setFormInstanceNumber={setFormInstanceNumber} />
-                })}
+                        setFormInstanceNumber={setFormInstanceNumber} 
+                        />
+                    ))}
 
 
-                <Button onClick={e => (sendFilterData(e))}>Pesquisar</Button>
-                <Button onClick={e => (addNewFilter(e))}>Adicionar outro filtro</Button>
-            </Dropdown.Menu>
-        </Dropdown>
+                    <Button onClick={e => { sendFilterData(e) }}>Pesquisar</Button>
+                    <Button onClick={e => (addNewFilter(e))}>Adicionar outro filtro</Button>
+                </div>
+            ) : ''}
+        </div>
     )
 }
 

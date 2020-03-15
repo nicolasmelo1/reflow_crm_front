@@ -71,10 +71,11 @@ const onCreateFormularySettingsSection = (body, formId, sectionIndex) => {
         let stateData = getState().home.formulary.update
         if (body.id !== -1) {
             agent.HOME.createFormularySettingsSection(body, formId).then(response=> {
-                stateData.depends_on_form[sectionIndex] = response.data.data
-                dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: stateData })
-            }).catch(_ => {
-                stateData.depends_on_form[sectionIndex].id = null
+                if (response.status ===200){
+                    stateData.depends_on_form[sectionIndex] = response.data.data
+                } else {
+                    stateData.depends_on_form[sectionIndex].id = null
+                }
                 dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: stateData })
             })
         } 
@@ -102,10 +103,11 @@ const onCreateFormularySettingsField = (body, formId, sectionIndex, fieldIndex) 
         let stateData = getState().home.formulary.update
         if (body.id !== -1) {
             agent.HOME.createFormularySettingsField(body, formId).then(response=> {
-                stateData.depends_on_form[sectionIndex].form_fields[fieldIndex] = response.data.data
-                dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: stateData })
-            }).catch(_ => {
-                stateData.depends_on_form[sectionIndex].form_fields[fieldIndex].id = null
+                if(response.status === 200) {
+                    stateData.depends_on_form[sectionIndex].form_fields[fieldIndex] = response.data.data
+                } else {
+                    stateData.depends_on_form[sectionIndex].form_fields[fieldIndex].id = null
+                }
                 dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: stateData })
             })
         } 

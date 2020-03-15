@@ -16,7 +16,12 @@ class Listing extends React.Component {
             params: {
                 from: '25/11/2019',
                 to: '03/03/2020',
-                page: 1
+                page: 1,
+                sort_value: [],
+                sort_field: [],
+                search_value: [],
+                search_exact: [],
+                search_field: []
             }
         }
 
@@ -25,13 +30,62 @@ class Listing extends React.Component {
         this.props.onGetTotal(this.state.params, this.props.query.form)
     }
 
-    setParms = (params) => {
+    setParams = (params) => {
+        this.props.onGetData(params, this.props.query.form)
         this.setState(state => {
             return {
                 params: params
             }
         })
     }
+    
+    onSort = (fieldName, value) => {
+        const params = {...this.state.params}
+        if (!fieldName || !value) {
+            throw new SyntaxError("onSort() function should recieve a fieldName and a value")
+        } 
+        if (value && !['down', 'upper', 'none'].includes(value)) {
+            throw new SyntaxError("value parameter MUST be one of the both: `upper`, `down` or `none` ")
+        }
+        if (value === 'none') {
+            const indexToRemove = this.state.params.sort_field.findIndex(sortField=> sortField === fieldName)
+            params.sort_value.splice(indexToRemove, 1)
+            params.sort_field.splice(indexToRemove, 1)
+        } else {
+            const indexToUpdate = this.state.params.sort_field.findIndex(sortField=> sortField === fieldName)
+            if (indexToUpdate !== -1) {
+                params.sort_value[indexToUpdate] = value
+                params.sort_field[indexToUpdate] = fieldName
+            } else {
+                params.sort_value.push(value)
+                params.sort_field.push(fieldName)
+            }
+        }
+        this.setParams({...params})
+    }
+
+    onFilter = (fieldName, value) => {
+        const params = {...this.state.params}
+        if (!fieldName || !value) {
+            throw new SyntaxError("onFilter() function should recieve a fieldName and a value")
+        } 
+        if (value === '') {
+            const indexToRemove = this.state.params.sort_field.findIndex(sortField=> sortField === fieldName)
+            params.sort_value.splice(indexToRemove, 1)
+            params.sort_field.splice(indexToRemove, 1)
+        } else {
+            const indexToUpdate = this.state.params.sort_field.findIndex(sortField=> sortField === fieldName)
+            if (indexToUpdate !== -1) {
+                params.sort_value[indexToUpdate] = value
+                params.sort_field[indexToUpdate] = fieldName
+            } else {
+                params.sort_value.push(value)
+                params.sort_field.push(fieldName)
+            }
+        }
+        this.setParams({...params})
+    }
+
 
     render() {
         return (
@@ -44,7 +98,7 @@ class Listing extends React.Component {
                 </Row>
                 <Row>
                     <Col>
-                        <ListingFilter onGetData={this.props.onGetData} headers={this.props.list.header} />
+                        <ListingFilter headers={this.props.list.header} />
                     </Col>
                     <Col>
                         <ListingFilterButton size="sm" >Extrair</ListingFilterButton>
@@ -55,7 +109,12 @@ class Listing extends React.Component {
                 </Row>
                 <Row>
                     <Col>
-                        <ListingTable headers={this.props.list.header} elements={this.props.list.data} setFormularyId={this.props.setFormularyId} />
+                        <ListingTable 
+                        params={this.state.params} 
+                        onSort={this.onSort} 
+                        headers={this.props.list.header} 
+                        data={this.props.list.data} 
+                        setFormularyId={this.props.setFormularyId} />
                     </Col>
                 </Row>
             </>

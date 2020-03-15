@@ -9,11 +9,14 @@ import { Table } from 'react-bootstrap'
  * @param {*} props 
  */
 const ListingTable = (props) => {
+    const headers = (props.headers && props.headers.field_headers) ? props.headers.field_headers: []
+    const data = (props.data) ? props.data: []
+
     return (
         <ListingTableContainer>
             <Table>
-                <ListingTableHeader headers={props.headers}/>
-                <ListingTableContent contents={props.elements} headers={props.headers} setFormularyId={props.setFormularyId} />
+                <ListingTableHeader headers={headers} params={props.params} onSort={props.onSort}/>
+                <ListingTableContent headers={headers} data={data} setFormularyId={props.setFormularyId} />
             </Table>
         </ListingTableContainer>
     )
