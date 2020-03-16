@@ -1,5 +1,6 @@
 import react from 'react'
 import GestaoListing from 'components/Listing'
+import GestaoKanban from './Kanban/GestaoKanban'
 
 
 const DataContainer = (props) => {

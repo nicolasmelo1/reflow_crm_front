@@ -25,9 +25,9 @@ class Data extends React.Component {
             <Layout title={strings['pt-br']['managementPageTitle']} showSideBar={true}>
                 <Formulary />
                 <Button type="submit" onClick={e => this.handleLogout(e)}>Logout</Button>
-                <GestaoTab defaultActive='listing' />
+                <GestaoTab defaultActive='kanban' />
 
-                <DataContainer visualization='listing' />
+                <DataContainer visualization='kanban' />
             </Layout>
         )
     }

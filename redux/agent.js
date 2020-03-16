@@ -148,10 +148,23 @@ const LISTING = {
     }
 }
 
+const KANBAN = {
+    getDataKanban: async (params, formName) => {
+        return await requests.get(`${companyId}/data/api/${formName}/`, params)
+    },
+    getDimensionOrder: async (formName, fieldName) => {
+        return await requests.get(`${companyId}/data/api/kanban/${formName}/${fieldName}/`)
+    },
+    getCardFields: async (formName) => {
+        return await requests.get(`${companyId}/data/api/kanban/${formName}/card/`)
+    }
+}
+
 export default {
     setCompanyId: _companyId => { companyId = _companyId },
     setToken: (_token) => { token = _token; },
     LOGIN,
     HOME,
-    LISTING
+    LISTING,
+    KANBAN
 };
