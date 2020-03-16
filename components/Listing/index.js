@@ -39,6 +39,23 @@ class Listing extends React.Component {
         })
     }
     
+    onFilter = (searchInstances) => {
+        const params = {
+            ...this.state.params,
+            search_value: [],
+            search_exact: [],
+            search_field: []
+        }
+        searchInstances.forEach(searchInstance => {
+            if (searchInstance.value !== '' && searchInstance.field_name !== '') {
+                params.search_value.push(searchInstance.value)
+                params.search_field.push(searchInstance.field_name)
+                params.search_exact.push(0)
+            }
+        })
+        this.setParams({...params})
+    }
+
     onSort = (fieldName, value) => {
         const params = {...this.state.params}
         if (!fieldName || !value) {
@@ -47,28 +64,6 @@ class Listing extends React.Component {
         if (value && !['down', 'upper', 'none'].includes(value)) {
             throw new SyntaxError("value parameter MUST be one of the both: `upper`, `down` or `none` ")
         }
-        if (value === 'none') {
-            const indexToRemove = this.state.params.sort_field.findIndex(sortField=> sortField === fieldName)
-            params.sort_value.splice(indexToRemove, 1)
-            params.sort_field.splice(indexToRemove, 1)
-        } else {
-            const indexToUpdate = this.state.params.sort_field.findIndex(sortField=> sortField === fieldName)
-            if (indexToUpdate !== -1) {
-                params.sort_value[indexToUpdate] = value
-                params.sort_field[indexToUpdate] = fieldName
-            } else {
-                params.sort_value.push(value)
-                params.sort_field.push(fieldName)
-            }
-        }
-        this.setParams({...params})
-    }
-
-    onFilter = (fieldName, value) => {
-        const params = {...this.state.params}
-        if (!fieldName || !value) {
-            throw new SyntaxError("onFilter() function should recieve a fieldName and a value")
-        } 
         if (value === '') {
             const indexToRemove = this.state.params.sort_field.findIndex(sortField=> sortField === fieldName)
             params.sort_value.splice(indexToRemove, 1)
@@ -98,9 +93,11 @@ class Listing extends React.Component {
                 </Row>
                 <Row>
                     <Col>
-                        <ListingFilter headers={this.props.list.header} />
-                    </Col>
-                    <Col>
+                        <ListingFilter 
+                        headers={this.props.list.header}
+                        params={this.state.params} 
+                        onFilter={this.onFilter}
+                        />
                         <ListingFilterButton size="sm" >Extrair</ListingFilterButton>
                     </Col>
                     <Col>

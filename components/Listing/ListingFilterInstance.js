@@ -1,52 +1,66 @@
-import React, { useState } from 'react'
-import { InputGroup, Dropdown, DropdownButton, FormControl, Button } from 'react-bootstrap'
+import React, { useState, useEffect } from 'react'
+import { ListingFilterInputGroup, ListingFilterInputDropdownButton, ListingFilterInput, ListingFilterDeleteButton } from 'styles/Listing'
+import { Dropdown } from 'react-bootstrap'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { strings } from 'utils/constants'
 
 const ListingFilterInstance = (props) => {
-
-    const [formButtonTitle, setFormButtonTitle] = useState((props.parameter.label_name != "") ? props.parameter.label_name : "Filtrar por...");
-
-    const prependFilterEvent = function (event, head) {
-        event.stopPropagation();
-        setFormButtonTitle(head.label_name)
-        changeFilterState(head.name, head.label_name, props.parameter.value)
+    const [searchField, setSearchField] = useState('')
+    const [searchValue, setSearchValue] = useState('')
+    const [searchFieldTitle, setSearchFieldTitle] = useState('Filtrar por...')
+   
+    const onSelectField = (field) => {
+        const fieldName = field.name
+        setSearchField(fieldName)
+        setSearchFieldTitle(
+            props.headers.filter(field => field.name === fieldName).length > 0 ? 
+            props.headers.filter(field => field.name === fieldName)[0].label_name : strings['pt-br']['listingFilterFieldsDropdownButttonLabel']
+        )
+        props.onChangeFilter(props.index, fieldName, searchValue)
+    }
+    
+    const onChangeFilterValue = (value) => {
+        setSearchValue(value)
+        props.onChangeFilter(props.index, searchField, value)
     }
 
-    function changeFilterState(field_name, label_name, value) {
-        props.filterState[props.ind] = {
-            field_name: field_name,
-            label_name: label_name,
-            value: value
+    useEffect(() => {
+        if (props.filter.field_name !== searchField){
+            setSearchField(props.filter.field_name)
+            setSearchFieldTitle(
+                props.headers.filter(field => field.name === props.filter.field_name).length > 0 ? 
+                props.headers.filter(field => field.name === props.filter.field_name)[0].label_name : strings['pt-br']['listingFilterFieldsDropdownButttonLabel']
+            )
         }
-        props.setFormInstanceNumber([...props.filterState])
-
-    }
+    }, [props.filter.field_name])
+    
+    useEffect(() => {
+        if (props.filter.value !== searchValue){
+            setSearchValue(props.filter.value)
+        }
+    }, [props.filter.value])
 
     return (
-        <InputGroup>
-            <DropdownButton
-                as={InputGroup.Prepend}
-                variant="outline-secondary"
-                title={formButtonTitle}
-            >
-                {props.headers.map(function (head, index) {
-                    return (
-                        <Dropdown.Item
-                            as="button"
-                            onClick={e => (prependFilterEvent(e, head))}
-                            key={index}
-                        >
-                            {head.label_name}
+        <ListingFilterInputGroup>
+            <Dropdown>
+                <Dropdown.Toggle as={ListingFilterInputDropdownButton}>
+                    {searchFieldTitle}
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                    {props.headers.map((field, index) => (
+                        <Dropdown.Item as="button" key={index} onClick={e => (onSelectField(field))}>
+                            {field.label_name}
                         </Dropdown.Item>
-                    )
-                })}
-            </DropdownButton>
-            <FormControl
-                placeholder="Palavra-chave"
-                value={props.parameter.value}
-                onChange={e => changeFilterState(props.parameter.label_name, props.parameter.field_name, e.target.value)}
-            />
-            <Button as={InputGroup.Append}> X </Button>
-        </InputGroup>
+                    ))}
+                </Dropdown.Menu>
+            </Dropdown>
+            <ListingFilterInput placeholder={strings['pt-br']['listingFilterInputPlaceholder']} value={searchValue} onChange={e => onChangeFilterValue(e.target.value)}/>
+            {props.index !== 0 ? (
+                <ListingFilterDeleteButton onClick={e=> {props.removeFilter(props.index)}}>
+                    <FontAwesomeIcon icon="trash"/>
+                </ListingFilterDeleteButton>
+            ) : ''}
+        </ListingFilterInputGroup>
 
     )
 }
