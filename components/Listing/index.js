@@ -4,6 +4,7 @@ import actions from 'redux/actions'
 import { connect } from 'react-redux'
 import ListingTable from './ListingTable'
 import ListingFilter from './ListingFilter'
+import ListingExtract from './ListingExtract'
 import ListingTotalCardGroup from './ListingTotalCardGroup'
 import ListingColumnSelectButton from './ListingColumnSelectButton'
 import { ListingTotalLabel, ListingFilterButton } from 'styles/Listing'
@@ -98,7 +99,7 @@ class Listing extends React.Component {
                         params={this.state.params} 
                         onFilter={this.onFilter}
                         />
-                        <ListingFilterButton size="sm" >Extrair</ListingFilterButton>
+                        <ListingExtract/>
                     </Col>
                     <Col>
                         <ListingColumnSelectButton headers={this.props.list.header} onUpdateSelected={this.props.onUpdateSelected} />

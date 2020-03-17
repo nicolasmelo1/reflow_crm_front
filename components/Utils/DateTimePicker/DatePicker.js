@@ -95,17 +95,18 @@ const DatePickerCalendar = (props) => {
 /**
  * Main component of the calendar type visualization, import this and use this on DateTimePicker component.
  * We only export this in this file.
- * @param {function} updateMonthDetails - update month Details is the main function to update the month and year
+ * @param {function} updateMonthDetails - (optional: only if `withoutHeader` is True) - update month Details is the main function to update the month and year
  * details in the calendar, this function is defined on DateTimePicker component.
  * @param {function} updateDate - Main fuction to call to update the selected date.
  * @param {Integer} cols - number of cols
  * @param {Integer} rows - number of rows
- * @param {Array<String>} monthReference - The array containing the name of the month to display instead of the number
+ * @param {Array<String>} monthReference - (optional: only if `withoutHeader` is True) - The array containing the name of the month to display instead of the number
  * @param {Array<Date>} monthDates - An array contining all the dates to display
  * @param {Date} today - The current date
  * @param {Date} selectedDay - The current selected day by the user
  * @param {Integer} month - The current month number
- * @param {Integer} year - The current Year number
+ * @param {Integer} year - (optional: only if `withoutHeader` is True) - The current Year number
+ * @param {Boolean} withoutHeader - if TRUE doesn't show the header of the calendar
  * @param {Boolean} withoutHourPicker - if TRUE doesn't show the button to toggle to the hourpicker
  * @param {function} setHourPickerIsOpen - function to call to set the state of the hourPickerIsOpen
  * @param {Array<String>} dayOfTheWeekReference - The array containing the name of the day of the week to display instead of the number
@@ -121,13 +122,15 @@ const DatePicker = (props) => {
                     <FontAwesomeIcon icon="clock"/>
                 </Utils.Datepicker.HourpickerDatepickerToggle>
             )}
-            <DatePickerHeader
-            month={props.month}
-            year={props.year}
-            selectedDay={props.selectedDay}
-            monthReference={props.monthReference}
-            updateMonthDetails={props.updateMonthDetails}
-            />
+            {props.withoutHeader ? '' : (
+                <DatePickerHeader
+                month={props.month}
+                year={props.year}
+                selectedDay={props.selectedDay}
+                monthReference={props.monthReference}
+                updateMonthDetails={props.updateMonthDetails}
+                />
+            )}
             <DatePickerCalendar
             colGrid={colGrid}
             rowGrid={rowGrid}

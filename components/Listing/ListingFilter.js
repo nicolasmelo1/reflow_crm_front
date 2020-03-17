@@ -15,7 +15,7 @@ const ListingFilter = (props) => {
     const setIsOpen = data => {
         setIsOpenRef.current = data;
         _setIsOpen(data);
-    };
+    }
 
     function newEmptyFilter() {
         return {
