@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { Field } from 'styles/Formulary'
 import DateTimePicker from 'components/Utils/DateTimePicker'
 import { strings } from 'utils/constants'
-import moment from 'moment'
+import {
+    pythonFormatToMomentJSFormat, 
+    stringToJsDateFormat,
+    jsDateToStringFormat
+} from 'utils/dates'
 
 const Datetime = (props) => {
     const [dateFormat, setDateFormat] = useState('')
@@ -33,59 +37,9 @@ const Datetime = (props) => {
         strings['pt-br']['calendardayOfTheWeekReferenceSaturday']
     ]
 
-    const momentJSDateFormat = {
-        '%Y': 'YYYY',
-        '%m': 'MM',
-        '%d': 'DD',
-        '%H': 'H',
-        '%M': 'mm',
-        '%S': 'ss'
-    }
-    
-    function stringToJsDateFormat(date) {
-        let format = dateFormat
-        for (var key in momentJSDateFormat) {
-            if (momentJSDateFormat.hasOwnProperty(key)) {
-                format = format.replace(key, momentJSDateFormat[key])
-            }
-        }
-        date = moment(date, format);
-        return date.toDate()
-    }
-
-    function jsDateToStringFormat(date) {
-        let newValue = dateFormat
-        if (typeof newValue === 'string') {
-            Object.keys(momentJSDateFormat).forEach(possibleFormat => {
-                switch(possibleFormat) {
-                    case '%Y':
-                        newValue = newValue.replace(possibleFormat, date.getFullYear().toString())
-                        break;
-                    case '%m':
-                        newValue = newValue.replace(possibleFormat, (date.getMonth()+1 < 10 ) ? '0' + (date.getMonth()+1).toString(): (date.getMonth()+1).toString())
-                        break;
-                    case '%d':
-                        newValue = newValue.replace(possibleFormat, (date.getDate() < 10 ) ? '0' + date.getDate().toString(): date.getDate().toString())
-                        break;
-                    case '%H':
-                        newValue = newValue.replace(possibleFormat, (date.getHours() < 10 ) ? '0' + date.getHours().toString(): date.getHours().toString())
-                        break;
-                    case '%M':
-                        newValue = newValue.replace(possibleFormat, (date.getMinutes() < 10 ) ? '0' + date.getMinutes().toString(): date.getMinutes().toString())
-                        break;
-                    case '%S':
-                        newValue = newValue.replace(possibleFormat, (date.getSeconds() < 10 ) ? '0' + date.getSeconds().toString(): date.getSeconds().toString())
-                        break;
-                    default:
-                        newValue
-                }
-            })
-        }
-        return newValue
-    }
 
     const onChange = (dateValue) => {
-        const stringValue = jsDateToStringFormat(dateValue)
+        const stringValue = jsDateToStringFormat(dateValue, pythonFormatToMomentJSFormat(dateFormat))
         const newValue = props.singleValueFieldsHelper(stringValue)
         props.setValues(newValue)
     }
@@ -94,10 +48,10 @@ const Datetime = (props) => {
 
     if (props.field.date_configuration_auto_update) {
         const today = new Date()
-        fieldValue = jsDateToStringFormat(today)
+        fieldValue = jsDateToStringFormat(today, pythonFormatToMomentJSFormat(dateFormat))
     } else if (props.field.date_configuration_auto_create && props.values.length === 0) {
         const today = new Date()
-        fieldValue = jsDateToStringFormat(today)
+        fieldValue = jsDateToStringFormat(today, pythonFormatToMomentJSFormat(dateFormat))
     }
 
     useEffect(() => {
@@ -117,7 +71,7 @@ const Datetime = (props) => {
                 withoutHourPicker={typeof dateFormat === 'string' && (!(dateFormat.includes('%H') || dateFormat.includes('%M')))}
                 input={inputRef} 
                 onChange={onChange} 
-                initialDay={(fieldValue !== '') ? stringToJsDateFormat(fieldValue) : ''}
+                initialDay={(fieldValue !== '') ? stringToJsDateFormat(fieldValue, pythonFormatToMomentJSFormat(dateFormat)) : ''}
                 monthReference={monthReference} 
                 dayOfTheWeekReference={dayOfTheWeekReference}
                 />

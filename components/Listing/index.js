@@ -94,12 +94,8 @@ class Listing extends React.Component {
                 </Row>
                 <Row>
                     <Col>
-                        <ListingFilter 
-                        headers={this.props.list.header}
-                        params={this.state.params} 
-                        onFilter={this.onFilter}
-                        />
-                        <ListingExtract/>
+                        <ListingFilter headers={this.props.list.header} params={this.state.params} onFilter={this.onFilter}/>
+                        <ListingExtract params={this.state.params}/>
                     </Col>
                     <Col>
                         <ListingColumnSelectButton headers={this.props.list.header} onUpdateSelected={this.props.onUpdateSelected} />

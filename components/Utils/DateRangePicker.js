@@ -88,11 +88,14 @@ const DateRangePicker = (props) => {
             selectedDays[0] = date
             selectedDays[1] = ''
         } else {
+            if (props.closeWhenSelected) {
+                setIsOpen(false)
+            }
             selectedDays[1] = date
         }
         setSelectedDays([...selectedDays])
         if (props.onChange){
-            props.onChange(date)
+            props.onChange(selectedDays)
         }
     }
 
@@ -128,10 +131,12 @@ const DateRangePicker = (props) => {
     })
     
     useEffect(() => {
-        const dateToConsider = (props.initialDay && props.initialDay !== '') ? props.initialDay : today
-        //setStartSelectedDay(dateToConsider)
-        updateMonthDetails(dateToConsider.getFullYear(), dateToConsider.getMonth(), dateToConsider.getHours(), dateToConsider.getMinutes())
-    }, [props.initialDay])
+        if (![null, undefined].includes(props.initialDays)) {
+            const dateToConsider = (props.initialDays[0] && props.initialDays[0] !== '') ? props.initialDays[0] : today
+            setSelectedDays(props.initialDays)
+            updateMonthDetails(dateToConsider.getFullYear(), dateToConsider.getMonth(), dateToConsider.getHours(), dateToConsider.getMinutes())
+        }
+    }, [props.initialDays])
 
     return(
         <Utils.Daterangepicker.Holder ref={dateRangePickerContainerRef}>

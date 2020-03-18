@@ -80,14 +80,14 @@ const ListingFilter = (props) => {
         return () => {
             document.removeEventListener("mousedown", onToggleFilterOnClickOutside);
         };
-    }, [onToggleFilterOnClickOutside]);
+    }, [onToggleFilterOnClickOutside])
 
     return (
         <div style={{position:'relative', display: 'inline-block'}} ref={dropdownRef}>
             <ListingFilterButton onClick={e => {onToggleFilter(e)}}>
                 <ListingFilterIcon icon="filter"/>&nbsp;{strings['pt-br']['listingFilterButtonLabel']}
             </ListingFilterButton>
-            {isOpen ? ( 
+            {isOpen ? (
                 <ListingFilterContainer>
                     {searchInstances.map((filter, index) => (
                         <ListingFilterInstance
