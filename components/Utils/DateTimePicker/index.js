@@ -70,8 +70,8 @@ const DateTimePicker = (props) => {
         let monthArray = []
 
         for (let index=0; index<dateGridLength; index++) {
-            const dayOfTheWeek = index - monthDayOfTheWeekStart; 
-            const date = new Date(year, month, dayOfTheWeek+1, hour, minute)
+            const dayOfTheMonth = index - monthDayOfTheWeekStart; 
+            const date = new Date(year, month, dayOfTheMonth+1, hour, minute)
             monthArray.push(date)
         }
         return monthArray
@@ -148,11 +148,12 @@ const DateTimePicker = (props) => {
                     : 
                     (<DatePicker 
                     dayOfTheWeekReference={dayOfTheWeekReference}
+                    isDarkBackground={true}
                     setHourPickerIsOpen={setHourPickerIsOpen}
                     updateMonthDetails={updateMonthDetails}
                     withoutHourPicker={withoutHourPicker}
                     monthReference={monthReference}
-                    selectedDay={selectedDay}
+                    selectedDays={[selectedDay]}
                     monthDates={monthDates}
                     updateDate={updateDate}
                     today={today}

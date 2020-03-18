@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import DatePicker from './DateTimePicker/DatePicker'
 import Utils from 'styles/Utils'
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 
 const DateRangePicker = (props) => {
@@ -21,12 +21,9 @@ const DateRangePicker = (props) => {
     const [firstMonthDates, setFirstMonthDates] = useState(getMonthDetails(firstYear, firstMonth, today.getHours(), today.getMinutes()))
     const [secondMonthDates, setSecondMonthDates] = useState(getMonthDetails(secondYear, secondMonth, today.getHours(), today.getMinutes()))
     const [translate3D, setTranslate3D] = useState(0)
-    const [endSelectedDay, setEndSelectedDay] = useState(today)
-    const [startSelectedDay, setStartSelectedDay] = useState(today)
+    const [selectedDays, setSelectedDays] = useState(['', ''])
     const [hourPickerIsOpen, setHourPickerIsOpen] = useState(false)
-    
-    console.log(secondMonth>11 ? today.getFullYear() +1 : today.getFullYear())
-    console.log(secondYear)
+
     const dateRangePickerContainerRef = React.useRef(null)
     const dateRangePickerRef = React.useRef(null);
 
@@ -60,20 +57,22 @@ const DateRangePicker = (props) => {
         let firstYear = year
         let secondMonth = month+1
         let secondYear = year
+        
         if (firstMonth<0) {
             firstYear = firstYear - 1
             firstMonth = 11
         } else if (firstMonth>11){
             firstYear = firstYear + 1
-            firstMonth = 0
+            firstMonth = firstMonth - 12
         }
         if (secondMonth<0) {
             secondYear = secondYear - 1
             secondMonth = 11
         } else if (secondMonth>11){
             secondYear = secondYear + 1
-            secondMonth = 0
+            secondMonth = secondMonth - 12
         }
+
         const firstMonthDetails = getMonthDetails(firstYear, firstMonth, hour, minute)
         const secondMonthDetails = getMonthDetails(secondYear, secondMonth, hour, minute)
         setFirstMonth(firstMonth)
@@ -85,9 +84,16 @@ const DateRangePicker = (props) => {
     }
 
     const updateDate = (date) => {
-        updateMonthDetails(date.getFullYear(), date.getMonth(), date.getHours(), date.getMinutes())
-        setStartSelectedDay(date)
-        props.onChange(date)
+        if (selectedDays[0] === '' || date < selectedDays[0] || selectedDays[1] !== '') {
+            selectedDays[0] = date
+            selectedDays[1] = ''
+        } else {
+            selectedDays[1] = date
+        }
+        setSelectedDays([...selectedDays])
+        if (props.onChange){
+            props.onChange(date)
+        }
     }
 
     const onInputClick = (e) => {
@@ -102,7 +108,6 @@ const DateRangePicker = (props) => {
 
     const topOrDown = (e) => {
         e.preventDefault()
-        console.log(dateRangePickerRef.current)
         if(dateRangePickerRef.current){
             const rect = dateRangePickerContainerRef.current.getBoundingClientRect();
             if (rect.top+dateRangePickerRef.current.offsetHeight>window.innerHeight){
@@ -124,30 +129,39 @@ const DateRangePicker = (props) => {
     
     useEffect(() => {
         const dateToConsider = (props.initialDay && props.initialDay !== '') ? props.initialDay : today
-        setStartSelectedDay(dateToConsider)
+        //setStartSelectedDay(dateToConsider)
         updateMonthDetails(dateToConsider.getFullYear(), dateToConsider.getMonth(), dateToConsider.getHours(), dateToConsider.getMinutes())
     }, [props.initialDay])
 
     return(
-        <div style={{position:'relative', width: '100%'}}ref={dateRangePickerContainerRef}>
+        <Utils.Daterangepicker.Holder ref={dateRangePickerContainerRef}>
             {isOpen ? (
-                <div style={{position:'absolute', backgroundColor:'#444', minWidth:'80%', padding: '10px'}} ref={dateRangePickerRef}>
-                    <div style={{margin: '5px', display:'inline-block'}}>
-                        <table style={{width: '100%' , color:'#f2f2f2', margin: '5px 0'}}>
+                <Utils.Daterangepicker.Container ref={dateRangePickerRef}>
+                    <Utils.Daterangepicker.DatePickerContainer>
+                        <Utils.Daterangepicker.Header>
                             <thead>
                                 <tr>
-                                    <th style={{ color: '#f2f2f2', textAlign:'center' }} >{"<"}</th>
-                                    <th colSpan={"5"} style={{ color:'#f2f2f2', textAlign:'center' }}>{monthReference[firstMonth] + " " + firstYear}</th>
-                                    <th></th>
+                                    <Utils.Daterangepicker.HeaderElement>
+                                        <Utils.Daterangepicker.HeaderButton onClick={e=> {
+                                            updateMonthDetails(firstYear, firstMonth-1, selectedDays[0] !== '' ? selectedDays[0].getHours() : today.getHours(), selectedDays[0] !== '' ? selectedDays[0].getMinutes() : today.getMinutes())
+                                        }}>
+                                            <FontAwesomeIcon icon="chevron-left"/>
+                                        </Utils.Daterangepicker.HeaderButton>
+                                    </Utils.Daterangepicker.HeaderElement>
+                                    <Utils.Daterangepicker.HeaderElement colSpan={"5"}>
+                                        {monthReference[firstMonth] + " " + firstYear}
+                                    </Utils.Daterangepicker.HeaderElement>
+                                    <Utils.Daterangepicker.HeaderElement/>
                                 </tr>
                             </thead>
-                        </table>
+                        </Utils.Daterangepicker.Header>
                         <DatePicker 
                         dayOfTheWeekReference={dayOfTheWeekReference}
                         setHourPickerIsOpen={setHourPickerIsOpen}
+                        containerRef={dateRangePickerContainerRef}
                         withoutHourPicker={true}
                         withoutHeader={true}
-                        selectedDay={startSelectedDay}
+                        selectedDays={selectedDays}
                         monthDates={firstMonthDates}
                         updateDate={updateDate}
                         today={today}
@@ -155,23 +169,32 @@ const DateRangePicker = (props) => {
                         rows={rows}
                         cols={cols}
                         />
-                    </div>
-                    <div style={{margin: '5px',  display:'inline-block'}}>
-                        <table style={{width: '100%' , color:'#f2f2f2', margin: '5px 0'}}>
+                    </Utils.Daterangepicker.DatePickerContainer>
+                    <Utils.Daterangepicker.DatePickerContainer>
+                        <Utils.Daterangepicker.Header>
                             <thead>
                                 <tr>
-                                    <th></th>
-                                    <th colSpan={"5"} style={{ color: '#f2f2f2', textAlign:'center' }}>{monthReference[secondMonth] + " " + secondYear}</th>
-                                    <th style={{ color: '#f2f2f2', textAlign:'center' }}>{">"}</th>
+                                    <Utils.Daterangepicker.HeaderElement/>
+                                    <Utils.Daterangepicker.HeaderElement colSpan={"5"}>
+                                        {monthReference[secondMonth] + " " + secondYear}
+                                    </Utils.Daterangepicker.HeaderElement>
+                                    <Utils.Daterangepicker.HeaderElement>
+                                        <Utils.Daterangepicker.HeaderButton onClick={e=> {
+                                            updateMonthDetails(firstYear, firstMonth+1, selectedDays[1] !== '' ? selectedDays[1].getHours() : today.getHours(), selectedDays[1] !== '' ? selectedDays[1].getMinutes() : today.getMinutes())
+                                        }}>
+                                            <FontAwesomeIcon icon="chevron-right"/>
+                                        </Utils.Daterangepicker.HeaderButton>
+                                    </Utils.Daterangepicker.HeaderElement>
                                 </tr>
                             </thead>
-                        </table>
+                        </Utils.Daterangepicker.Header>
                         <DatePicker 
                         dayOfTheWeekReference={dayOfTheWeekReference}
                         setHourPickerIsOpen={setHourPickerIsOpen}
+                        containerRef={dateRangePickerContainerRef}
                         withoutHourPicker={true}
                         withoutHeader={true}
-                        selectedDay={startSelectedDay}
+                        selectedDays={selectedDays}
                         monthDates={secondMonthDates}
                         updateDate={updateDate}
                         today={today}
@@ -179,10 +202,10 @@ const DateRangePicker = (props) => {
                         rows={rows}
                         cols={cols}
                         />
-                    </div>
-                </div>
+                    </Utils.Daterangepicker.DatePickerContainer>
+                </Utils.Daterangepicker.Container>
             ): ''}
-        </div>
+        </Utils.Daterangepicker.Holder>
     )
 }
 

@@ -5,7 +5,13 @@ import { strings } from 'utils/constants'
 
 
 const ListingExtract = (props) => {
+    const [value, setValue] = useState('')
+    const [updateDates, setUpdateDates] = useState({
+        startDate: '',
+        endDate: ''
+    })
     const [isOpen, _setIsOpen] = useState(false)
+
     const dropdownRef = React.useRef()
     const inputRef = React.useRef()
     // Check Components/Utils/Select for reference and explanation
@@ -14,7 +20,7 @@ const ListingExtract = (props) => {
         setIsOpenRef.current = data;
         _setIsOpen(data);
     }
-
+    
     const onToggleExtract = (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -44,7 +50,7 @@ const ListingExtract = (props) => {
                 <ListingFilterContainer>
                     <div>
                         <h2>Data de atualização</h2>
-                        <input ref={inputRef} type="text"/>
+                        <input ref={inputRef} type="text" value={value}/>
                         <DateRangePicker input={inputRef}/>
                         <button>
                             .csv
