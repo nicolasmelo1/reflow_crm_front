@@ -7,5 +7,5 @@ export default styled.div`
     z-index: 10;
     background-color: #444;
     border-radius: 5px; 
-    padding: 10px
+    padding: 10px;
 `
