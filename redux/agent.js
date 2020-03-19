@@ -183,6 +183,13 @@ const HOME = {
 
 
 const LISTING = {
+    getHasExportedData: async (isToDownload) => {
+        const params = (isToDownload) ? {download: 'download'} : {}
+        return await requests.get(`${companyId}/data/api/extract/`, params)
+    },
+    exportData: async (params, formName) => {
+        return await requests.post(`${companyId}/data/api/extract/${formName}/`, params)
+    },
     getData: async (params, formName) => {
         return await requests.get(`${companyId}/data/api/data/${formName}/`, params)
     },

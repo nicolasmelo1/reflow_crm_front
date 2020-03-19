@@ -95,7 +95,12 @@ class Listing extends React.Component {
                 <Row>
                     <Col>
                         <ListingFilter headers={this.props.list.header} params={this.state.params} onFilter={this.onFilter}/>
-                        <ListingExtract params={this.state.params}/>
+                        <ListingExtract 
+                        params={this.state.params} 
+                        onExportData={this.props.onExportData} 
+                        onGetExportedData={this.props.onGetExportedData} 
+                        formName={this.props.query.form}
+                        />
                     </Col>
                     <Col>
                         <ListingColumnSelectButton headers={this.props.list.header} onUpdateSelected={this.props.onUpdateSelected} />

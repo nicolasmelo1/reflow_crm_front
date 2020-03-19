@@ -15,6 +15,23 @@ const onGetData = (params, formName) => {
     }
 }
 
+const onGetExportedData = () => {
+    return async (_) => {
+        let response = await agent.LISTING.getHasExportedData() 
+        if (response.data.status === 'ok') {
+            response = await agent.LISTING.getHasExportedData(true)
+            return response
+        }
+        return response
+    }
+}
+
+const onExportData = (params, formName) => {
+    return async (_) => {
+        return await agent.LISTING.exportData(params, formName) 
+    }
+}
+
 const onGetHeader = (formName) => {
     return async (dispatch) => {
         let response = await agent.LISTING.getHeader(formName)
@@ -50,6 +67,8 @@ const onUpdateSelected = (index, formName) => {
 
 export default {
     onGetData,
+    onExportData,
+    onGetExportedData,
     onGetHeader,
     onGetTotal,
     onUpdateSelected

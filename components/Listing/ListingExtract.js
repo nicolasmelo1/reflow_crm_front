@@ -3,13 +3,14 @@ import { ListingFilterButton, ListingExtractContainer, ListingExtractUpdateDateT
 import DateRangePicker from 'components/Utils/DateRangePicker'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { strings } from 'utils/constants'
+import sleep from 'utils/sleep'
 import { stringToJsDateFormat, jsDateToStringFormat } from 'utils/dates'
 import moment from 'moment'
 
 const ListingExtract = (props) => {
     const dateFormat = 'DD/MM/YYYY'
 
-    const start = moment().subtract(59, 'days').toDate();
+    const start = moment().subtract(5, 'days').toDate();
     const end = moment().toDate();    
     const [updateDates, setUpdateDates] = useState({
         startDate: jsDateToStringFormat(start, dateFormat),
@@ -35,7 +36,23 @@ const ListingExtract = (props) => {
             to: updateDates.endDate,
             format: format
         }
-        console.log(data)
+        props.onExportData(data, props.formName).then(async response => {   
+            if (response.data.status === 'ok') {
+                let response = await props.onGetExportedData()
+                while (response.data.status === 'empty') {
+                    await sleep(1000);
+                    response = await props.onGetExportedData()
+                    console.log(response)
+                }
+                const fileName = response.headers['content-disposition'].replace(/"/g, '').split(`filename=`)[1]
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', fileName); //or any other extension
+                document.body.appendChild(link);
+                link.click();
+            }
+        })
     }
 
     const onChangeUpdateDate = (dates) => {
