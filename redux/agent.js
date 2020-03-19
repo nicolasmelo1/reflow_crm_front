@@ -184,8 +184,11 @@ const HOME = {
 
 const LISTING = {
     getHasExportedData: async (isToDownload) => {
-        const params = (isToDownload) ? {download: 'download'} : {}
-        return await requests.get(`${companyId}/data/api/extract/`, params)
+        const path = `${companyId}/data/api/extract/`
+        if (isToDownload) {
+            window.open(`${API_ROOT}${path}?download=download&token=${token}`)
+        }
+        return await requests.get(path)
     },
     exportData: async (params, formName) => {
         return await requests.post(`${companyId}/data/api/extract/${formName}/`, params)

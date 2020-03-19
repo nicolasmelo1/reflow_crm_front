@@ -54,7 +54,7 @@ const onUpdateSelected = (index, formName) => {
         let stateData = getState().home.list.header.field_headers
         stateData[index].user_selected = !stateData[index].user_selected
         const fields = {
-            fields: stateData.filter(head => head.user_selected).map((head, index) => {
+            fields: stateData.filter(head => head.user_selected).map(head => {
                 return head.name
             })
         }

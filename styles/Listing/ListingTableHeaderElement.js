@@ -5,7 +5,7 @@ export default styled.div`
     border: 1px solid #bfbfbf;
     height: ${props=> props.isTableButton ? '': '100%'};
     background-color: #444;
-    text-align: left;
+    text-align: ${props=> props.isTableButton ? 'center': 'left'};
     position: relative;
     user-select: none;
 `

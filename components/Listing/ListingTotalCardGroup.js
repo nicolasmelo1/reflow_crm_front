@@ -8,7 +8,7 @@ const ListingTotalCardGroup = (props) => {
     const totalCards = (props.cards) ? props.cards : []
 
     return (
-        <div>
+        <div style={{display: 'inline-block'}}>
             {totalCards.map(function (card, index) {
                 return (
                     <ListingTotalCard key={index}>
@@ -19,18 +19,23 @@ const ListingTotalCardGroup = (props) => {
                             </ListingTotalCardTitle>
                         </Card.Title>
                         <ListingTotalCardBody>
-                            {card.total.map(function (each, index) {
-                                return (
-                                    <div key={index}>
-                                        <p>
-                                            {each.option}:
-                                        </p>
-                                        <p>
-                                            {each.value}
-                                        </p>
-                                    </div>
-                                )
-                            })}
+                            <table key={index}>
+                                <tbody>
+                                    {card.total.map(function (each, index) {
+                                        return (
+                                            <tr key={index}>
+                                                <td style={{margin: '0', fontSize: '12px'}}>
+                                                    {each.option}
+                                                </td>
+                                                <td style={{margin: '0', fontSize: '12px', fontWeight: 'bold'}}>
+                                                    {each.value}
+                                                </td>
+                                            </tr>
+                                        )
+                                    })}
+
+                                </tbody>
+                            </table>
                         </ListingTotalCardBody>
                     </ListingTotalCard>
                 )

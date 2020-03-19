@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { Card } from 'react-bootstrap'
 
-export default styled.div`
+export default styled.p`
     display: flex;
     justify-content: space-between;
     margin-top: 12px;

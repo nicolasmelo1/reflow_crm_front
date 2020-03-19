@@ -10,7 +10,7 @@ import moment from 'moment'
 const ListingExtract = (props) => {
     const dateFormat = 'DD/MM/YYYY'
 
-    const start = moment().subtract(5, 'days').toDate();
+    const start = moment().subtract(59, 'days').toDate();
     const end = moment().toDate();    
     const [updateDates, setUpdateDates] = useState({
         startDate: jsDateToStringFormat(start, dateFormat),
@@ -39,18 +39,12 @@ const ListingExtract = (props) => {
         props.onExportData(data, props.formName).then(async response => {   
             if (response.data.status === 'ok') {
                 let response = await props.onGetExportedData()
-                while (response.data.status === 'empty') {
-                    await sleep(1000);
+                let counter = 0
+                while (response.data.status === 'empty' || counter !== 100) {
+                    await sleep(2000);
                     response = await props.onGetExportedData()
-                    console.log(response)
+                    counter++
                 }
-                const fileName = response.headers['content-disposition'].replace(/"/g, '').split(`filename=`)[1]
-                const url = window.URL.createObjectURL(new Blob([response.data]));
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', fileName); //or any other extension
-                document.body.appendChild(link);
-                link.click();
             }
         })
     }

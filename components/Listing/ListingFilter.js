@@ -25,7 +25,14 @@ const ListingFilter = (props) => {
     }
 
     const removeFilter = (index) => {
-        searchInstances.splice(index, 1)
+        if (index === 0) {
+            searchInstances.splice(index, 1, newEmptyFilter())
+            if (searchInstances.length === 1) {
+                props.onFilter(searchInstances)
+            }
+        } else {
+            searchInstances.splice(index, 1)
+        }
         setSearchInstances([...searchInstances])
     }
 

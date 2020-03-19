@@ -55,7 +55,7 @@ const ListingFilterInstance = (props) => {
                 </Dropdown.Menu>
             </Dropdown>
             <ListingFilterInput placeholder={strings['pt-br']['listingFilterInputPlaceholder']} value={searchValue} onChange={e => onChangeFilterValue(e.target.value)}/>
-            {props.index !== 0 ? (
+            {props.index !== 0 || searchValue !== '' || searchField !== '' ? (
                 <ListingFilterDeleteButton onClick={e=> {props.removeFilter(props.index)}}>
                     <FontAwesomeIcon icon="trash"/>
                 </ListingFilterDeleteButton>

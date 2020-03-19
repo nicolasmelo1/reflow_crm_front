@@ -6,8 +6,8 @@ import ListingTable from './ListingTable'
 import ListingFilter from './ListingFilter'
 import ListingExtract from './ListingExtract'
 import ListingTotalCardGroup from './ListingTotalCardGroup'
-import ListingColumnSelectButton from './ListingColumnSelectButton'
-import { ListingTotalLabel, ListingFilterButton } from 'styles/Listing'
+import ListingColumnSelect from './ListingColumnSelect'
+import { ListingTotalLabel } from 'styles/Listing'
 
 class Listing extends React.Component {
     constructor(props) {
@@ -85,16 +85,20 @@ class Listing extends React.Component {
 
     render() {
         return (
-            <>
+            <div>
                 <Row>
-                    <ListingTotalLabel>Totais</ListingTotalLabel>
-                </Row>
-                <Row>
-                    <ListingTotalCardGroup cards={this.props.list.totals} />
+                    <Col>
+                        <ListingTotalLabel>Totais</ListingTotalLabel>
+                        <ListingTotalCardGroup cards={this.props.list.totals} />
+                    </Col>
                 </Row>
                 <Row>
                     <Col>
-                        <ListingFilter headers={this.props.list.header} params={this.state.params} onFilter={this.onFilter}/>
+                        <ListingFilter 
+                        headers={this.props.list.header} 
+                        params={this.state.params} 
+                        onFilter={this.onFilter}
+                        />
                         <ListingExtract 
                         params={this.state.params} 
                         onExportData={this.props.onExportData} 
@@ -103,7 +107,11 @@ class Listing extends React.Component {
                         />
                     </Col>
                     <Col>
-                        <ListingColumnSelectButton headers={this.props.list.header} onUpdateSelected={this.props.onUpdateSelected} />
+                        <ListingColumnSelect
+                        headers={this.props.list.header} 
+                        onUpdateSelected={this.props.onUpdateSelected}
+                        formName={this.props.query.form}
+                        />
                     </Col>
                 </Row>
                 <Row>
@@ -116,7 +124,7 @@ class Listing extends React.Component {
                         setFormularyId={this.props.setFormularyId} />
                     </Col>
                 </Row>
-            </>
+            </div>
         )
     }
 }
