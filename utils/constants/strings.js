@@ -94,8 +94,13 @@ const strings = {
         listingExtractUpdateDateLabel: 'Data de atualização',
         listingExtractCSVButtonLabel: '.csv',
         listingExtractXLSXButtonLabel: '.xlsx',
-
-
+        listingColumnSelectButtonLabel: 'Selecionar colunas exibidas',
+        listingTotalTitleLabel:'Totais',
+        listingTotalFormTitleLabel:'Construir card de totais',
+        listingTotalFormFieldSelectLabel: 'Campo',
+        listingTotalFormNumberFormatSelectLabel: 'Formatação',
+        listingTotalFormCancelButtonLabel: 'Cancelar',
+        listingTotalFormSaveButtonLabel: 'Salvar',
         formTypeSingle: 'Único',
         formTypeMultiple: 'Múltiplo',
         conditionalTypeEqual: 'Igual ao',

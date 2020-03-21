@@ -8,9 +8,12 @@ import ListingTotals from './ListingTotals'
 import ListingTotalsForm from './ListingTotalsForm'
 import ListingColumnSelect from './ListingColumnSelect'
 import { ListingTotalLabel, ListingTotalAddNewButton } from 'styles/Listing'
+import { strings } from 'utils/constants'
 import { Row, Col } from 'react-bootstrap'
 
-
+/**
+ * This component render the most of the listing logic, like the table, the totals, filters and extract
+ */
 class Listing extends React.Component {
     constructor(props) {
         super(props)
@@ -102,7 +105,7 @@ class Listing extends React.Component {
                 <Row>
                     <Col>
                         <ListingTotalLabel>
-                            Totais
+                            {strings['pt-br']['listingTotalTitleLabel']}
                             {this.state.isOpenedTotalsForm ? '' : (
                                 <ListingTotalAddNewButton onClick={e => {this.setIsOpenedTotalsForm(true)}}/>
                             )}

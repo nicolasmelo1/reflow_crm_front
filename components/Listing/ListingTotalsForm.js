@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Select from 'components/Utils/Select'
-import { types } from 'utils/constants'
+import { types, strings } from 'utils/constants'
 import { ListingTotalFormTitle, ListingTotalFormSelectContainer, ListingTotalFormLabel, ListingTotalFormContainer, ListingTotalFormSaveButton, ListingTotalFormCancelButton } from 'styles/Listing'
 
 const ListingTotalsForm = (props) => {
@@ -45,8 +45,8 @@ const ListingTotalsForm = (props) => {
 
     return (
         <ListingTotalFormContainer>
-            <ListingTotalFormTitle>Construir Card de totais</ListingTotalFormTitle>
-            <ListingTotalFormLabel>Campo</ListingTotalFormLabel>
+            <ListingTotalFormTitle>{strings['pt-br']['listingTotalFormTitleLabel']}</ListingTotalFormTitle>
+            <ListingTotalFormLabel>{strings['pt-br']['listingTotalFormFieldSelectLabel']}</ListingTotalFormLabel>
             <ListingTotalFormSelectContainer>
                 <Select 
                 options={fieldOptions} 
@@ -54,7 +54,7 @@ const ListingTotalsForm = (props) => {
                 initialValues={selectedField}
                 /> 
             </ListingTotalFormSelectContainer>
-            <ListingTotalFormLabel>Formatação</ListingTotalFormLabel>
+            <ListingTotalFormLabel>{strings['pt-br']['listingTotalFormFieldSelectLabel']}</ListingTotalFormLabel>
             <ListingTotalFormSelectContainer>
                 <Select 
                 options={numberFormatOptions} 
@@ -63,8 +63,8 @@ const ListingTotalsForm = (props) => {
                 /> 
             </ListingTotalFormSelectContainer>
             <div>
-                <ListingTotalFormCancelButton onClick={e=> {props.setIsOpenedTotalsForm(false)}}>Cancelar</ListingTotalFormCancelButton>
-                <ListingTotalFormSaveButton onClick={e=> {onSubmit()}}>Salvar</ListingTotalFormSaveButton>
+                <ListingTotalFormCancelButton onClick={e=> {props.setIsOpenedTotalsForm(false)}}>{strings['pt-br']['listingTotalFormCancelButtonLabel']}</ListingTotalFormCancelButton>
+                <ListingTotalFormSaveButton onClick={e=> {onSubmit()}}>{strings['pt-br']['listingTotalFormSaveButtonLabel']}</ListingTotalFormSaveButton>
             </div>
         </ListingTotalFormContainer>
     )

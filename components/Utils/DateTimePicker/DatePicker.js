@@ -55,7 +55,7 @@ const DatePickerHeader = (props) => {
  * @param {Date} today - The current date
  * @param {reactRef} containerRef - (optional) - You use this if you are building a dateRangePicker, because we need to change the colors of 
  * all of the `td` tags in a container
- * @param {Array<Date>} selectedDays - The current selected day by the user
+ * @param {Array<Date>} selectedDays - The current selected days by the user
  * @param {Boolean} isDarkBackground - If the background is dark change the colors accordingly
  * @param {Integer} month - The current month number
  * @param {Array<String>} dayOfTheWeekReference - The array containing the name of the day of the week to display instead of the number

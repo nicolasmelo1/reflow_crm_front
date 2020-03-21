@@ -27,6 +27,7 @@ import Utils from 'styles/Utils'
  * please use 3 characters maximum on each String 
  * @param {Array<String>} monthReference - __(optional)__ - If you want to override the default month names reference to 
  * display for the user
+ * @param {Boolean} closeWhenSelected - __(optional)__ - This closes the component after the user has selected a date.
  * @param {Date} initialDay - The initial Date selected, don't forget to send a Date type value
  * @param {function} onChange - The function to be called when the user changes the date
  * @param {React.Ref} input - The React reference to the input, we use this to open the Datetimepicker when the user clicks
@@ -95,6 +96,9 @@ const DateTimePicker = (props) => {
         updateMonthDetails(date.getFullYear(), date.getMonth(), date.getHours(), date.getMinutes())
         setSelectedDay(date)
         props.onChange(date)
+        if (props.closeWhenSelected) {
+            setIsOpen(false)
+        }
     }
 
     const onInputClick = (e) => {

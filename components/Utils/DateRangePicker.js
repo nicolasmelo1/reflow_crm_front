@@ -3,6 +3,28 @@ import DatePicker from './DateTimePicker/DatePicker'
 import Utils from 'styles/Utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
+/**
+ * This component is actually an extension of the DatePicker component, look at Datepicker 
+ * component at components/Utils/DateTimePicker first and all of it's childs, 
+ * after understanding how it work then comeback to this component.
+ * 
+ * This renders 2 calendars components 
+ * you can find the components at components/Utils/DateTimePicker/DatePicker
+ * 
+ * @param {Array<String>} dayOfTheWeekReference - __(optional)__ - If you want to override the default day of the week values, 
+ * please use 3 characters maximum on each String 
+ * @param {Array<String>} monthReference - __(optional)__ - If you want to override the default month names reference to 
+ * display for the user 
+ * @param {Boolean} closeWhenSelected - __(optional)__ - This closes the component after the user has selected a date. Defaults
+ * to false.
+ * @param {Boolean} withTranslate - __(optional)__ - This checks if the user has scrolled the page and renders the
+ * component on top or on bottom of the input, defaults to false.
+ * @param {React.Ref} input - The React reference to the input, we use this to open the DateRandePicker when the user clicks
+ * @param {Array<Date>} initialDays - An array with two dates, the first is the startDate, the second is the endDate, make sure 
+ * the first date is lower than the second one.
+ * @param {function} onChange - The function to be called when the user changes the date, this is only fired when the user selects
+ * the second date, after the first selection it doesn't fire.
+ * */
 
 const DateRangePicker = (props) => {
     const rows = 6
@@ -11,7 +33,7 @@ const DateRangePicker = (props) => {
     const today = new Date()
     const dayOfTheWeekReference = props.dayOfTheWeekReference || ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
     const monthReference = props.monthReference || ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
-    const withoutHourPicker = props.withoutHourPicker || false 
+    const withTranslate = props.withTranslate || false
 
     const [isOpen, _setIsOpen] = useState(false)
     const [firstMonth, setFirstMonth] = useState(today.getMonth())
@@ -22,7 +44,6 @@ const DateRangePicker = (props) => {
     const [secondMonthDates, setSecondMonthDates] = useState(getMonthDetails(secondYear, secondMonth, today.getHours(), today.getMinutes()))
     const [translate3D, setTranslate3D] = useState(0)
     const [selectedDays, setSelectedDays] = useState(['', ''])
-    const [hourPickerIsOpen, setHourPickerIsOpen] = useState(false)
 
     const dateRangePickerContainerRef = React.useRef(null)
     const dateRangePickerRef = React.useRef(null);
@@ -111,7 +132,7 @@ const DateRangePicker = (props) => {
 
     const topOrDown = (e) => {
         e.preventDefault()
-        if(dateRangePickerRef.current){
+        if (dateRangePickerRef.current && withTranslate){
             const rect = dateRangePickerContainerRef.current.getBoundingClientRect();
             if (rect.top+dateRangePickerRef.current.offsetHeight>window.innerHeight){
                 setTranslate3D(-dateRangePickerRef.current.offsetHeight-props.input.current.offsetHeight)
@@ -141,7 +162,7 @@ const DateRangePicker = (props) => {
     return(
         <Utils.Daterangepicker.Holder ref={dateRangePickerContainerRef}>
             {isOpen ? (
-                <Utils.Daterangepicker.Container ref={dateRangePickerRef}>
+                <Utils.Daterangepicker.Container translate={translate3D} ref={dateRangePickerRef}>
                     <Utils.Daterangepicker.DatePickerContainer>
                         <Utils.Daterangepicker.Header>
                             <thead>

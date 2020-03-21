@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { ListingColumnSelectButton, ListingColumnSelectItemsContainer, ListingColumnSelectItems, ListingColumnSelectContainer } from 'styles/Listing';
-import { Button, Dropdown, FormControl } from 'react-bootstrap';
+import React from 'react'
+import { ListingColumnSelectButton, ListingColumnSelectItemsContainer, ListingColumnSelectItems, ListingColumnSelectContainer } from 'styles/Listing'
+import { Dropdown } from 'react-bootstrap'
+import { strings } from 'utils/constants'
+
 
 const ListingColumnSelect = (props) => {
     const headers = (props.headers && props.headers.field_headers) ? props.headers.field_headers: []
@@ -20,7 +22,7 @@ const ListingColumnSelect = (props) => {
     return (
         <ListingColumnSelectContainer>
             <Dropdown.Toggle as={ListingColumnSelectButton}>
-                Selecionar colunas exibidas
+                {strings['pt-br']['listingColumnSelectButtonLabel']}
             </Dropdown.Toggle>
 
             <ListingColumnSelectItemsContainer>
