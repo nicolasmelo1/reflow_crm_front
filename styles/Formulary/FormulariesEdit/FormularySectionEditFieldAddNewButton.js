@@ -19,7 +19,7 @@ const StyledPlusIcon = styled.svg`
     fill: #fff
 `
 
-const SidebarAddButton = (props) => {
+const FormularySectionEditFieldAddNewButton = (props) => {
     return (
         <StyledButtonContainer onClick={props.onClick}>
             <StyledButtonText>{props.text}</StyledButtonText>
@@ -33,4 +33,4 @@ const SidebarAddButton = (props) => {
     )
 }
 
-export default SidebarAddButton
+export default FormularySectionEditFieldAddNewButton

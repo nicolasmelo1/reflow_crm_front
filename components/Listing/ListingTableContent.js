@@ -1,15 +1,15 @@
 import React from 'react'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
-import { ListingEditButtonIcon, ListingDeleteButtonIcon, ListingTableContentElement } from 'styles/Listing'
+import { ListingEditButtonIcon, ListingDeleteButtonIcon, ListingTableContentElement, ListingTableContentPopoverElement } from 'styles/Listing'
 
 const PopoverWithContent = React.forwardRef((props, ref) => {
     return (
         <Popover ref={ref} {...props}>
             <Popover.Content>
                 {props.elements ? props.elements.map((element, index) => (
-                    <p key={index} style={{ borderBottom: '1px solid #bfbfbf', padding: '0', margin: '5px'}}>
+                    <ListingTableContentPopoverElement key={index} hasBorderBottom={index < props.elements.length-1}>
                         {element.value}
-                    </p>
+                    </ListingTableContentPopoverElement>
                 )): ''}
             </Popover.Content>
         </Popover>
@@ -33,9 +33,7 @@ const TableContentElement = (props) => {
     )
 }
 
-
 const ListingTableContent = (props) => {
-    
     return (
         <tbody>
             {props.data.map((data, index) => {

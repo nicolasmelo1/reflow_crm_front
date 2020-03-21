@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Col, Row, Form } from 'react-bootstrap';
+import { Row } from 'react-bootstrap';
 import { FormulariesEdit }  from 'styles/Formulary';
 import { types, strings } from 'utils/constants';
 import Select from 'components/Utils/Select';

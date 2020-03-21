@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ListingFilterButton, ListingFilterIcon, ListingFilterBottomButton, ListingFilterSearchButton, ListingFilterContainer } from 'styles/Listing';
+import { ListingFilterAndExtractButton, ListingFilterIcon, ListingFilterBottomButton, ListingFilterSearchButton, ListingFilterContainer } from 'styles/Listing';
 import ListingFilterInstance from './ListingFilterInstance'
 import { strings } from 'utils/constants'
 
@@ -91,9 +91,9 @@ const ListingFilter = (props) => {
 
     return (
         <div style={{position:'relative', display: 'inline-block'}} ref={dropdownRef}>
-            <ListingFilterButton onClick={e => {onToggleFilter(e)}}>
+            <ListingFilterAndExtractButton onClick={e => {onToggleFilter(e)}}>
                 <ListingFilterIcon icon="filter"/>&nbsp;{strings['pt-br']['listingFilterButtonLabel']}
-            </ListingFilterButton>
+            </ListingFilterAndExtractButton>
             {isOpen ? (
                 <ListingFilterContainer>
                     {searchInstances.map((filter, index) => (

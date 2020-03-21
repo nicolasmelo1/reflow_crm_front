@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ListingFilterButton, ListingExtractContainer, ListingExtractUpdateDateTitle, ListingExtractUpdateDateInput, ListingExtractButtons, ListingExtractUpdateDateContainer} from 'styles/Listing'
+import { ListingFilterAndExtractButton, ListingExtractContainer, ListingExtractUpdateDateTitle, ListingExtractUpdateDateInput, ListingExtractButtons, ListingExtractUpdateDateContainer} from 'styles/Listing'
 import DateRangePicker from 'components/Utils/DateRangePicker'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { strings } from 'utils/constants'
@@ -85,13 +85,13 @@ const ListingExtract = (props) => {
 
     return (
         <div style={{position:'relative', display: 'inline-block'}} ref={dropdownRef}>
-            <ListingFilterButton onClick={e => {onToggleExtract(e)}}>
-                Extrair
-            </ListingFilterButton>
+            <ListingFilterAndExtractButton onClick={e => {onToggleExtract(e)}}>
+                {strings['pt-br']['listingExtractButtonLabel']}
+            </ListingFilterAndExtractButton>
             {isOpen ? ( 
                 <ListingExtractContainer>
                     <div>
-                        <ListingExtractUpdateDateTitle>Data de atualização</ListingExtractUpdateDateTitle>
+                        <ListingExtractUpdateDateTitle>{strings['pt-br']['listingExtractUpdateDateLabel']}</ListingExtractUpdateDateTitle>
                         <ListingExtractUpdateDateContainer ref={inputRef}>
                             <ListingExtractUpdateDateInput type="text" value={value} readOnly={true}/><FontAwesomeIcon icon="chevron-down"/>
                         </ListingExtractUpdateDateContainer>
@@ -101,10 +101,10 @@ const ListingExtract = (props) => {
                         initialDays={initialDays}
                         />
                         <ListingExtractButtons onClick={e=> {onExtract('csv')}}>
-                            <FontAwesomeIcon icon="arrow-down"/>.csv
+                            <FontAwesomeIcon icon="arrow-down"/>{strings['pt-br']['listingExtractCSVButtonLabel']}
                         </ListingExtractButtons>
                         <ListingExtractButtons onClick={e=> {onExtract('xlsx')}}>
-                            <FontAwesomeIcon icon="arrow-down"/>.xlsx
+                            <FontAwesomeIcon icon="arrow-down"/>{strings['pt-br']['listingExtractXLSXButtonLabel']}
                         </ListingExtractButtons>
                     </div>
                 </ListingExtractContainer>

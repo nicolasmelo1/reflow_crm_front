@@ -1,19 +1,22 @@
-import { Row, Col } from 'react-bootstrap'
 import React from 'react'
 import actions from 'redux/actions'
 import { connect } from 'react-redux'
 import ListingTable from './ListingTable'
 import ListingFilter from './ListingFilter'
 import ListingExtract from './ListingExtract'
-import ListingTotalCardGroup from './ListingTotalCardGroup'
+import ListingTotals from './ListingTotals'
+import ListingTotalsForm from './ListingTotalsForm'
 import ListingColumnSelect from './ListingColumnSelect'
-import { ListingTotalLabel } from 'styles/Listing'
+import { ListingTotalLabel, ListingTotalAddNewButton } from 'styles/Listing'
+import { Row, Col } from 'react-bootstrap'
+
 
 class Listing extends React.Component {
     constructor(props) {
         super(props)
 
         this.state = {
+            isOpenedTotalsForm: false,
             params: {
                 from: '25/11/2019',
                 to: '03/03/2020',
@@ -28,13 +31,23 @@ class Listing extends React.Component {
 
         this.props.onGetData(this.state.params, this.props.query.form)
         this.props.onGetHeader(this.props.query.form),
-        this.props.onGetTotal(this.state.params, this.props.query.form)
+        this.props.onGetTotals(this.state.params, this.props.query.form)
+    }
+
+    setIsOpenedTotalsForm = (isOpenedTotalsForm) => {
+        this.setState(state => {
+            return {
+                ...state,
+                isOpenedTotalsForm: isOpenedTotalsForm
+            }
+        })
     }
 
     setParams = (params) => {
         this.props.onGetData(params, this.props.query.form)
         this.setState(state => {
             return {
+                ...state,
                 params: params
             }
         })
@@ -54,6 +67,7 @@ class Listing extends React.Component {
                 params.search_exact.push(0)
             }
         })
+        this.props.onGetTotals(this.state.params, this.props.query.form)
         this.setParams({...params})
     }
 
@@ -82,14 +96,35 @@ class Listing extends React.Component {
         this.setParams({...params})
     }
 
-
     render() {
         return (
             <div>
                 <Row>
                     <Col>
-                        <ListingTotalLabel>Totais</ListingTotalLabel>
-                        <ListingTotalCardGroup cards={this.props.list.totals} />
+                        <ListingTotalLabel>
+                            Totais
+                            {this.state.isOpenedTotalsForm ? '' : (
+                                <ListingTotalAddNewButton onClick={e => {this.setIsOpenedTotalsForm(true)}}/>
+                            )}
+                        </ListingTotalLabel>
+                        {this.state.isOpenedTotalsForm ? (
+                            <ListingTotalsForm
+                            formName={this.props.query.form} 
+                            params={this.state.params}
+                            headers={this.props.list.header} 
+                            onGetTotals={this.props.onGetTotals}
+                            onCreateTotal={this.props.onCreateTotal}
+                            setIsOpenedTotalsForm={this.setIsOpenedTotalsForm}
+                            types={this.props.types}
+                            />
+                        ): (
+                            <ListingTotals 
+                            onRemoveTotal={this.props.onRemoveTotal}
+                            onUpdateTotals={this.props.onUpdateTotals}
+                            totals={this.props.list.totals} 
+                            formName={this.props.query.form} 
+                            />
+                        )}
                     </Col>
                 </Row>
                 <Row>
@@ -109,6 +144,7 @@ class Listing extends React.Component {
                     <Col>
                         <ListingColumnSelect
                         headers={this.props.list.header} 
+                        onUpdateHeader={this.props.onUpdateHeader}
                         onUpdateSelected={this.props.onUpdateSelected}
                         formName={this.props.query.form}
                         />
@@ -121,7 +157,8 @@ class Listing extends React.Component {
                         onSort={this.onSort} 
                         headers={this.props.list.header} 
                         data={this.props.list.data} 
-                        setFormularyId={this.props.setFormularyId} />
+                        setFormularyId={this.props.setFormularyId}
+                        />
                     </Col>
                 </Row>
             </div>
@@ -129,4 +166,4 @@ class Listing extends React.Component {
     }
 }
 
-export default connect(state => ({ list: state.home.list }), actions)(Listing)
+export default connect(state => ({ list: state.home.list, types: state.login.types }), actions)(Listing)

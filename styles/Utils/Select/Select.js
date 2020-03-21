@@ -7,5 +7,10 @@ export default styled(React.forwardRef(({isOpen, ...rest}, ref) => <div {...rest
     font-size: 1rem;
     font-weight: 400;
     line-height: 1.5;
-    outline: none !important
+    outline: none !important;
+
+    &:after{
+        content: "";
+        clear: both;
+    }
 `

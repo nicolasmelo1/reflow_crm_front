@@ -17,24 +17,24 @@ const DatePickerHeader = (props) => {
     return (
         <div>
             <Utils.Datepicker.YearContainer>
-                <Utils.Datepicker.YearContainerItems onClick={e=>props.updateMonthDetails(props.year-1, props.month, props.selectedDay.getHours(), props.selectedDay.getMinutes())}>
+                <Utils.Datepicker.YearContainerItems onClick={e=>props.updateMonthDetails(props.year-1, props.month, props.selectedDays[0].getHours(), props.selectedDays[0].getMinutes())}>
                     <FontAwesomeIcon icon='chevron-left'/>
                 </Utils.Datepicker.YearContainerItems>
                 <Utils.Datepicker.YearContainerItems>
                     {props.year}
                 </Utils.Datepicker.YearContainerItems>
-                <Utils.Datepicker.YearContainerItems onClick={e=>props.updateMonthDetails(props.year+1, props.month, props.selectedDay.getHours(), props.selectedDay.getMinutes())}>
+                <Utils.Datepicker.YearContainerItems onClick={e=>props.updateMonthDetails(props.year+1, props.month, props.selectedDays[0].getHours(), props.selectedDays[0].getMinutes())}>
                     <FontAwesomeIcon icon='chevron-right'/>
                 </Utils.Datepicker.YearContainerItems>
             </Utils.Datepicker.YearContainer>
             <Utils.Datepicker.MonthContainer>
-                <Utils.Datepicker.MonthContainerItems onClick={e=>props.updateMonthDetails(props.year, props.month-1, props.selectedDay.getHours(), props.selectedDay.getMinutes())}>
+                <Utils.Datepicker.MonthContainerItems onClick={e=>props.updateMonthDetails(props.year, props.month-1, props.selectedDays[0].getHours(), props.selectedDays[0].getMinutes())}>
                     <FontAwesomeIcon icon='chevron-left'/>
                 </Utils.Datepicker.MonthContainerItems>
                 <Utils.Datepicker.MonthContainerItems>
                     {props.monthReference[props.month]}
                 </Utils.Datepicker.MonthContainerItems>
-                <Utils.Datepicker.MonthContainerItems onClick={e=>props.updateMonthDetails(props.year, props.month+1, props.selectedDay.getHours(), props.selectedDay.getMinutes())}>
+                <Utils.Datepicker.MonthContainerItems onClick={e=>props.updateMonthDetails(props.year, props.month+1, props.selectedDays[0].getHours(), props.selectedDays[0].getMinutes())}>
                     <FontAwesomeIcon icon='chevron-right'/>
                 </Utils.Datepicker.MonthContainerItems>
             </Utils.Datepicker.MonthContainer>
@@ -184,7 +184,7 @@ const DatePicker = (props) => {
                 <DatePickerHeader
                 month={props.month}
                 year={props.year}
-                selectedDay={props.selectedDay}
+                selectedDays={props.selectedDays}
                 monthReference={props.monthReference}
                 updateMonthDetails={props.updateMonthDetails}
                 />

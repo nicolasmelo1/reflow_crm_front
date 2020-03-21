@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 
-export default styled.p`
-    font-size: 30px;
+export default styled.h2`
+    margin: 0;
+    color: #444
 `

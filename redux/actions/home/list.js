@@ -1,10 +1,9 @@
 import {
     GET_DATA,
-    GET_HEADERS,
-    GET_TOTALS
+    SET_HEADERS,
+    SET_TOTALS
 } from 'redux/types';
 import agent from 'redux/agent'
-import { UPDATE_HEAD_SELECT } from 'redux/types';
 
 
 const onGetData = (params, formName) => {
@@ -36,40 +35,59 @@ const onGetHeader = (formName) => {
     return async (dispatch) => {
         let response = await agent.LISTING.getHeader(formName)
         if (response.status === 200) {
-            dispatch({ type: GET_HEADERS, payload: response.data });
+            dispatch({ type: SET_HEADERS, payload: response.data.data });
         }
     }
 }
-const onGetTotal = (params, formName) => {
+
+const onUpdateHeader = (header) => {
+    return (dispatch) => {
+        dispatch({type: SET_HEADERS, payload: header})
+    }
+}
+
+const onGetTotals = (params, formName) => {
     return async (dispatch) => {
         let response = await agent.LISTING.getTotals(params, formName)
         if (response.status === 200) {
-            dispatch({ type: GET_TOTALS, payload: response.data })
+            dispatch({ type: SET_TOTALS, payload: response.data.totals })
         }
     }
 }
 
-const onUpdateSelected = (index, formName) => {
-    return async (dispatch, getState) => {
-        let stateData = getState().home.list.header.field_headers
-        stateData[index].user_selected = !stateData[index].user_selected
-        const fields = {
-            fields: stateData.filter(head => head.user_selected).map(head => {
-                return head.name
-            })
-        }
-
-        agent.LISTING.updateSelectedFields(fields, formName)
-        dispatch({ type: UPDATE_HEAD_SELECT, payload: stateData })
+const onUpdateTotals = (totalsData) => {
+    return async (dispatch) => {
+        dispatch({type: SET_TOTALS, payload: totalsData})
     }
 }
 
+const onCreateTotal = (body, formName) => {
+    return async (_) => {
+        agent.LISTING.createTotal(body, formName)
+    }
+}
+
+const onRemoveTotal = (formName, totalId) => {
+    return (_) => {
+        agent.LISTING.removeTotal(formName, totalId)
+    }
+}
+
+const onUpdateSelected = (body, formName) => {
+    return async (_) => {
+        agent.LISTING.updateSelectedFields(body, formName)
+    }
+}
 
 export default {
     onGetData,
     onExportData,
     onGetExportedData,
     onGetHeader,
-    onGetTotal,
+    onUpdateHeader,
+    onGetTotals,
+    onUpdateTotals,
+    onRemoveTotal,
+    onCreateTotal,
     onUpdateSelected
 };

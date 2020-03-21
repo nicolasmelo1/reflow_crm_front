@@ -90,6 +90,12 @@ const strings = {
         listingFilterInputPlaceholder: 'Palavra-chave',
         listingFilterSearchButtonLabel: 'Pesquisar',
         listingFilterAddNewFilterButtonLabel: 'Adicionar outro filtro',
+        listingExtractButtonLabel: 'Extrair',
+        listingExtractUpdateDateLabel: 'Data de atualização',
+        listingExtractCSVButtonLabel: '.csv',
+        listingExtractXLSXButtonLabel: '.xlsx',
+
+
         formTypeSingle: 'Único',
         formTypeMultiple: 'Múltiplo',
         conditionalTypeEqual: 'Igual ao',

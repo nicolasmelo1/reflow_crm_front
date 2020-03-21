@@ -21,8 +21,11 @@ const Option = (props) => {
 
     return (
         <Utils.Select.OptionsListContainer>
-            {filteredOptions.map((option, index)=>(
+            {filteredOptions.map((option, index)=> {
+                console.log(index < filteredOptions.length-1)
+                return (
                 <Utils.Select.OptionItem 
+                hasBorder={index < filteredOptions.length-1}
                 key={option.value} 
                 optionDividerColor={props.optionDividerColor}
                 optionOnHoverColor={props.optionOnHoverColor}
@@ -31,7 +34,8 @@ const Option = (props) => {
                 >
                     {props.renderLabel(option.label, index)}
                 </Utils.Select.OptionItem> 
-            ))}
+                )
+        })}
         </Utils.Select.OptionsListContainer>
     )
 }
@@ -218,7 +222,7 @@ const Select = (props) => {
                 onKeyUp={e=>onRemoveSelectedOption(e)}
                 />
             </Utils.Select.SelectedOptionsContainer>
-            <div style={{position: 'relative'}}>
+            <Utils.Select.OptionsHolder>
                 {(isOpen) ? (
                     <Utils.Select.OptionsContainer 
                     optionBackgroundColor={props.optionBackgroundColor}
@@ -235,7 +239,7 @@ const Select = (props) => {
                         />
                     </Utils.Select.OptionsContainer>
                 ): ''}
-            </div>
+            </Utils.Select.OptionsHolder>
         </Utils.Select.Select>
     )
 }

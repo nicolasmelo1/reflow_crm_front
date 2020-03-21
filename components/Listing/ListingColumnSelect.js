@@ -7,7 +7,14 @@ const ListingColumnSelect = (props) => {
 
     const onToggleSelect = (e, index) => {
         e.preventDefault()
-        props.onUpdateSelected(index, props.formName)
+        props.headers.field_headers[index].user_selected = !props.headers.field_headers[index].user_selected
+        const body = {
+            fields: props.headers.field_headers.filter(head => head.user_selected).map(head => {
+                return head.name
+            })
+        }
+        props.onUpdateHeader(props.headers)
+        props.onUpdateSelected(body, props.formName)
     }
 
     return (

@@ -1,10 +1,9 @@
 import {
     GET_DATA,
-    GET_HEADERS,
-    GET_TOTALS,
+    SET_HEADERS,
+    SET_TOTALS,
     UPDATE_HEAD_SELECT
 } from 'redux/types'
-import { UPDATE_FILTERS } from '../../types';
 
 let initialState = {
     data: [],
@@ -25,16 +24,16 @@ export default (state = initialState, action) => {
                 data: action.payload.data
 
             }
-        case GET_HEADERS:
+        case SET_HEADERS:
             return {
                 ...state,
-                header: action.payload.data
+                header: action.payload
             }
-        case GET_TOTALS:
+        case SET_TOTALS:
             return {
                 ...state,
-                totals: action.payload.totals
-            }
+                totals: action.payload
+            }            
         case UPDATE_HEAD_SELECT:
             return {
                 ...state,
