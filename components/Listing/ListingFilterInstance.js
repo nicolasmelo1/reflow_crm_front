@@ -4,6 +4,11 @@ import { Dropdown } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { strings } from 'utils/constants'
 
+/**
+ * Holds the data of a single filter, we can have multiple filters, but this holds just one filter
+ * instance.
+ * @param {*} props 
+ */
 const ListingFilterInstance = (props) => {
     const [searchField, setSearchField] = useState('')
     const [searchValue, setSearchValue] = useState('')

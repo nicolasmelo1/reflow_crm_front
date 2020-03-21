@@ -3,7 +3,20 @@ import { ListingFilterAndExtractButton, ListingFilterIcon, ListingFilterBottomBu
 import ListingFilterInstance from './ListingFilterInstance'
 import { strings } from 'utils/constants'
 
-
+/**
+ * This component controls all of the filters, when filtering the user can add or remove how many filters he wants
+ * because most of the time he is filtering on two or more different columns.
+ * 
+ * So this function holds all of the filters logic, the button, and the container with the buttons to make the search
+ * and to add more filters.
+ * 
+ * @param {Object} headers - object containing primarly all of the fields in the header. we use this array
+ * to construct all of the field options he can select or unselect to filter.
+ * @param {Object} params - the parameters of the listing, parameters define the filter, the sort, the date range
+ * and many other stuff. With this we can create the filters based on the params.
+ * @param {Function} onFilter - function responsible for effectively adding all of the filters to the params object 
+ * and for calling the function to get the new filtered data.
+ */
 const ListingFilter = (props) => {
     const [isOpen, _setIsOpen] = useState(false)
     const [searchInstances, setSearchInstances] = useState([]);

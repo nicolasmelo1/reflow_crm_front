@@ -12,7 +12,11 @@ import { strings } from 'utils/constants'
 import { Row, Col } from 'react-bootstrap'
 
 /**
- * This component render the most of the listing logic, like the table, the totals, filters and extract
+ * This component render all of the listing logic, like the table, the totals, filters and extract
+ * 
+ * @param {Function} setFormularyId - the function to define the id of the form to render.
+ * @param {Object} query - The object containing all of the parameters of the current url, you may find it
+ * with the Router object in next.js
  */
 class Listing extends React.Component {
     constructor(props) {

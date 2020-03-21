@@ -1,3 +1,8 @@
+
+/**
+ * I think it's kinda obvious but this object holds all of the strings in the system, this way it becomes
+ * easier for us to internationalize.
+ */
 const strings = {
     'pt-br': {
         indexPageTitle: 'Reflow',

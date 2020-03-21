@@ -7,6 +7,25 @@ import sleep from 'utils/sleep'
 import { stringToJsDateFormat, jsDateToStringFormat } from 'utils/dates'
 import moment from 'moment'
 
+/**
+ * This component renders the extract button and it's small formulary
+ * All of the logic for extracting the data to a file is handled by this component.
+ * It's important to notice it is not responsible anymore when the user changes the page he is in.
+ * 
+ * By default we need to limit the data the user can extract, so we need to define a maximum and a minimum update
+ * date of the formulary, so any formulary that has been updated between this dates will be extracted, by default
+ * when the user renders this component we give him a range of 60 days starting on the current date.
+ * 
+ * ATENTION: Be aware of the dateFormat, we are using right now 'DD/MM/YYYY' but we want in the near future for 
+ * the user to be able to select a default date format for his system.
+ * @param {String} formName - the name of the formulary the user is in, we can get this from the url parameters
+ * @param {Object} params - the parameters of the listing, parameters define the filter, the sort, the date range
+ * and many other stuff. This way we can extract the exact same data that is being displayed to the user.
+ * @param {Function} onExportData - a function to call the backend and require a file to be produced, this is an async function
+ * so we make the request without getting any response
+ * @param {Function} onGetExportedData - after making a request we expect this function to redirect us to the url to download 
+ * the generated file after the file is ready.
+ */
 const ListingExtract = (props) => {
     const dateFormat = 'DD/MM/YYYY'
 

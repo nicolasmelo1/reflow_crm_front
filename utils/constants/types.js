@@ -1,5 +1,16 @@
 import strings from './strings'
 
+/** 
+ * Our system has some types, Types are particular kind of data in our system that is critical to
+ * for it to work, since most of them must be displayed for the user to select we need to be able to
+ * translate it to a certain language.
+ * 
+ * @param {String} lang - the language to translate to
+ * @param {String} type - must follow the types object from the backend, 
+ * you can check all of the types on the response of `/types/` path
+ * @param {String} key - the types usually have a slug, or a simple name
+ * you can use it to find the translation for it.
+ */
 const types = (lang, type, key) => {
     return {
         form_type: {
