@@ -90,6 +90,8 @@ const strings = {
         formularyEditFieldMoveIconPopover: 'Mover',
         formularyEditFieldIsEditingIconPopover: 'Editar',
         formularyEditFieldIsNotEditingIconPopover: 'Visualizar',
+        listingHeaderEditLabel: 'Editar',
+        listingHeaderDeleteLabel: 'Deletar',
         listingFilterButtonLabel: 'Filtrar',
         listingFilterFieldsDropdownButttonLabel: 'Filtrar por...',
         listingFilterInputPlaceholder: 'Palavra-chave',

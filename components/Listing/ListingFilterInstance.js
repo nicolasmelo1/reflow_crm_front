@@ -7,7 +7,17 @@ import { strings } from 'utils/constants'
 /**
  * Holds the data of a single filter, we can have multiple filters, but this holds just one filter
  * instance.
- * @param {*} props 
+ * 
+ * @param {Object} headers - object containing primarly all of the fields in the header. we use this array
+ * to construct all of the field options he can select or unselect to filter.
+ * @param {BigInteger} index - the index of the filter instance. Since we can have multiple filter intances
+ * we need the index to know which of them were changed
+ * @param {Function} onChangeFilter - function to change the filter instance data we change the hole filter instances
+ * always, that's why the function must come from its parent. We change on the parent, so we can send the filter
+ * data to the listing component
+ * @param {Function} removeFilter - same as `onChangeFilter` we remove the filterInstance on the parent component.
+ * @param {Object} filter - A object containing all of the data regarding the filter instance, so the Field we want
+ * to filter on, and the value to filter.
  */
 const ListingFilterInstance = (props) => {
     const [searchField, setSearchField] = useState('')

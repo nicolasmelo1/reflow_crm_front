@@ -10,6 +10,14 @@ import {
     ListingTotalCardTotalLabel 
 } from 'styles/Listing'
 
+/**
+ * Since we render the totals the same way on the card and on the popover
+ * we created this handy component, so you don't have to repeat code.
+ * 
+ * @param {Array<Object>} totals - The totals are an array, for fields that are number
+ * we retrieve just one total element, but for fields that are not number, we count each 
+ * occurence.
+ */
 const Totals = (props) => {
     return (
         <div>
@@ -37,6 +45,15 @@ const PopoverWithTotals = React.forwardRef((props, ref) => {
     )
 })
 
+/**
+ * This component holds all of the total cards data and logic.
+ * We just need this to render the totals card.
+ * 
+ * @param {Array<Object>} totals - The totals are an array, for fields that are number
+ * we retrieve just one total element, but for fields that are not number, we count each 
+ * occurence.
+ * @param {String} formName - the name of the formulary the user is in, we can get this from the url parameters.
+ */
 const ListingTotals = (props) => {
     const totals = (props.totals) ? props.totals : []
 

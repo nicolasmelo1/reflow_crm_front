@@ -18,7 +18,7 @@ import moment from 'moment'
  * 
  * ATENTION: Be aware of the dateFormat, we are using right now 'DD/MM/YYYY' but we want in the near future for 
  * the user to be able to select a default date format for his system.
- * @param {String} formName - the name of the formulary the user is in, we can get this from the url parameters
+ * @param {String} formName - the name of the formulary the user is in, we can get this from the url parameters.
  * @param {Object} params - the parameters of the listing, parameters define the filter, the sort, the date range
  * and many other stuff. This way we can extract the exact same data that is being displayed to the user.
  * @param {Function} onExportData - a function to call the backend and require a file to be produced, this is an async function

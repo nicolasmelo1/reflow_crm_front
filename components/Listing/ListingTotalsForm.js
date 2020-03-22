@@ -3,6 +3,23 @@ import Select from 'components/Utils/Select'
 import { types, strings } from 'utils/constants'
 import { ListingTotalFormTitle, ListingTotalFormSelectContainer, ListingTotalFormLabel, ListingTotalFormContainer, ListingTotalFormSaveButton, ListingTotalFormCancelButton } from 'styles/Listing'
 
+
+/**
+ * To create a new card of totals of a field the user first needs to fill a little formulary selecting the
+ * field and the number format.
+ * 
+ * @param {String} formName - the name of the formulary the user is in, we can get this from the url parameters.
+ * @param {Object} params - the parameters of the listing, parameters define the filter, the sort, the date range
+ * and many other stuff. We use this to get the totals again when the user creates a new total.
+ * @param {Object} headers - object containing primarly all of the fields in the header. This is used to build the 
+ * selection of the fields.
+ * @param {Object} types - the types state, this types are usually the required data from this system to work. 
+ * Types defines all of the field types, form types, format of numbers and dates and many other stuff
+ * @param {Function} setIsOpenedTotalsForm - set `isOpenedTotalsForm` state in the parent component, this variable
+ * is used to close or open this component.
+ * @param {Function} onGetTotals - make a request to the backend to retrieve the totals data.
+ * @param {Function} onCreateTotal - make a request to the backend to post and create a new total.
+ */
 const ListingTotalsForm = (props) => {
     const [selectedNumberFormat, setSelectedNumberFormat] = useState([])
     const [selectedField, setSelectedField] = useState([])

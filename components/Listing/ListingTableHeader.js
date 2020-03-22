@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { string } from 'utils/constants'
 import { 
     ListingTableHeaderContainer, 
     ListingTableHeaderElement, 
@@ -7,7 +8,15 @@ import {
     ListingTableHeaderElementIconContainer
 } from 'styles/Listing'
 
-
+/**
+ * Renders the header of the table and most of the table header logic.
+ * 
+ * @param {Function} onSort - the function to sort the data, this function changes the `params`object
+ * this function also updates the `data` array, since it makes a call to the backend to retrieve the sorted data. 
+ * @param {Object} params - the parameters of the listing, parameters define the filter, the sort, the date range
+ * and many other stuff. With this we can know the sorted field.
+ * @param {Object} headers - object containing primarly all of the fields in the header.
+ */
 const ListingTableHead = (props) => {
     const [resizeData, setResizeData] = useState({
         pageX: null, 
@@ -93,7 +102,7 @@ const ListingTableHead = (props) => {
                 <ListingTableHeaderContainer>
                     <ListingTableHeaderElement isTableButton={true}>
                         <ListingTableHeaderElementParagraph>
-                            {"Editar"}
+                            {string['pt-br']['listingHeaderEditLabel']}
                         </ListingTableHeaderElementParagraph>
                         <ListingTableHeaderElementIconContainer isTableButton={true}/>
                     </ListingTableHeaderElement>
@@ -101,14 +110,12 @@ const ListingTableHead = (props) => {
                 <ListingTableHeaderContainer>
                     <ListingTableHeaderElement isTableButton={true}>
                         <ListingTableHeaderElementParagraph>
-                            {"Deletar"}
+                            {string['pt-br']['listingHeaderDeleteLabel']}
                         </ListingTableHeaderElementParagraph>
                         <ListingTableHeaderElementIconContainer isTableButton={true}/>
                     </ListingTableHeaderElement>
                 </ListingTableHeaderContainer>
-
             </tr>
-
         </thead>
     )
 }
