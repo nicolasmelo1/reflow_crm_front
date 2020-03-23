@@ -9,11 +9,11 @@ export default styled.div`
     padding: 10px;
     box-shadow: 0 4px 20px 0 black;
 
-    @media(max-width: 440px) {
-        width: 90vw;
+    @media(max-width: 640px) {
+        width: 91vw;
     };
 
-    @media(min-width: 440px) {
+    @media(min-width: 640px) {
         width: 80vw;
     }
 `

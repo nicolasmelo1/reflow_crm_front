@@ -7,7 +7,7 @@ import ListingExtract from './ListingExtract'
 import ListingTotals from './ListingTotals'
 import ListingTotalsForm from './ListingTotalsForm'
 import ListingColumnSelect from './ListingColumnSelect'
-import { ListingTotalLabel, ListingTotalAddNewButton } from 'styles/Listing'
+import { ListingTotalLabel, ListingTotalAddNewButton, ListingButtonsContainer } from 'styles/Listing'
 import { strings } from 'utils/constants'
 import { Row, Col } from 'react-bootstrap'
 
@@ -50,14 +50,15 @@ class Listing extends React.Component {
         })
     }
 
-    setParams = (params) => {
-        this.props.onGetData(params, this.props.query.form)
+    setParams = async (params) => {
+        const response = await this.props.onGetData(params, this.props.query.form)
         this.setState(state => {
             return {
                 ...state,
                 params: params
             }
         })
+        return response
     }
     
     onFilter = (searchInstances) => {
@@ -134,8 +135,8 @@ class Listing extends React.Component {
                         )}
                     </Col>
                 </Row>
-                <Row>
-                    <Col>
+                <Row style={{margin: '5px -15px'}}>
+                    <ListingButtonsContainer>
                         <ListingFilter 
                         headers={this.props.list.header} 
                         params={this.state.params} 
@@ -148,21 +149,22 @@ class Listing extends React.Component {
                         onGetExportedData={this.props.onGetExportedData} 
                         formName={this.props.query.form}
                         />
-                    </Col>
-                    <Col>
+                    </ListingButtonsContainer>
+                    <ListingButtonsContainer>
                         <ListingColumnSelect
                         headers={this.props.list.header} 
                         onUpdateHeader={this.props.onUpdateHeader}
                         onUpdateSelected={this.props.onUpdateSelected}
                         formName={this.props.query.form}
                         />
-                    </Col>
+                    </ListingButtonsContainer>
                 </Row>
                 <Row>
                     <Col>
                         <ListingTable 
                         params={this.state.params} 
                         onSort={this.onSort} 
+                        setParams={this.setParams}
                         headers={this.props.list.header} 
                         data={this.props.list.data} 
                         setFormularyId={this.props.setFormularyId}

@@ -9,4 +9,5 @@ export default styled(Card.Body)`
     white-space: nowrap;
     overflow: hidden;
     cursor: pointer;
+    max-height: 80px;
 `

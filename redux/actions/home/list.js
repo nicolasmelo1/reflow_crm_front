@@ -7,10 +7,20 @@ import agent from 'redux/agent'
 
 
 const onGetData = (params, formName) => {
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
+        let stateData = getState().home.list.data
+        let payload = []
         let response = await agent.LISTING.getData(params, formName)
 
-        dispatch({ type: GET_DATA, payload: response.data });
+        if (params.page === 1) {
+            payload = response.data.data
+        } else {
+            payload = stateData.concat(response.data.data)
+        }
+
+        dispatch({ type: GET_DATA, payload: payload });
+
+        return response
     }
 }
 

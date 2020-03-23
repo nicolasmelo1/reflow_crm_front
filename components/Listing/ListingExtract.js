@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ListingFilterAndExtractButton, ListingExtractContainer, ListingExtractUpdateDateTitle, ListingExtractUpdateDateInput, ListingExtractButtons, ListingExtractUpdateDateContainer} from 'styles/Listing'
+import { ListingFilterAndExtractContainer, ListingFilterAndExtractButton, ListingExtractContainer, ListingExtractUpdateDateTitle, ListingExtractUpdateDateInput, ListingExtractButtons, ListingExtractUpdateDateContainer} from 'styles/Listing'
 import DateRangePicker from 'components/Utils/DateRangePicker'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { strings } from 'utils/constants'
@@ -103,7 +103,7 @@ const ListingExtract = (props) => {
     ]
 
     return (
-        <div style={{position:'relative', display: 'inline-block'}} ref={dropdownRef}>
+        <ListingFilterAndExtractContainer hasLeftMargin={true} ref={dropdownRef}>
             <ListingFilterAndExtractButton onClick={e => {onToggleExtract(e)}}>
                 {strings['pt-br']['listingExtractButtonLabel']}
             </ListingFilterAndExtractButton>
@@ -128,7 +128,7 @@ const ListingExtract = (props) => {
                     </div>
                 </ListingExtractContainer>
             ) : ''}
-        </div>
+        </ListingFilterAndExtractContainer>
     )
 }
 

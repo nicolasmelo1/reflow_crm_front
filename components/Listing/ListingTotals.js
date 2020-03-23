@@ -66,7 +66,7 @@ const ListingTotals = (props) => {
     }
 
     return (
-        <div>
+        <div style={{ overflowX: 'auto', whiteSpace: 'nowrap'}}>
             {totals.map((card, index) => (
                 <ListingTotalCardContainer key={index}>
                     <ListingTotalCardTitle>
@@ -75,7 +75,15 @@ const ListingTotals = (props) => {
                             <ListingTotalCardTitleIcon icon="trash" onClick={e=> {onRemove(card.id, index)}}/>
                         </ListingTotalCardTitleLabel>
                     </ListingTotalCardTitle>
-                    <OverlayTrigger trigger="click" placement="bottom" rootClose={true} delay={{ show: 250, hide: 100 }} overlay={<PopoverWithTotals elements={card.total}/>}>
+                    <OverlayTrigger trigger="click" placement="bottom" rootClose={true} delay={{ show: 250, hide: 100 }} overlay={<PopoverWithTotals elements={card.total}/>}
+                    popperConfig={{
+                        modifiers: {
+                            preventOverflow: {
+                                boundariesElement: 'offsetParent'
+                            }
+                        }
+                    }} 
+                    >
                         <ListingTotalCardContent>
                             <Totals totals={card.total}/>
                         </ListingTotalCardContent>

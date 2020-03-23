@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ListingFilterAndExtractButton, ListingFilterIcon, ListingFilterAddNewFilterButton, ListingFilterSearchButton, ListingFilterContainer } from 'styles/Listing';
+import { ListingFilterAndExtractContainer, ListingFilterAndExtractButton, ListingFilterIcon, ListingFilterAddNewFilterButton, ListingFilterSearchButton, ListingFilterContainer } from 'styles/Listing';
 import ListingFilterInstance from './ListingFilterInstance'
 import { strings } from 'utils/constants'
 
@@ -103,7 +103,7 @@ const ListingFilter = (props) => {
     }, [onToggleFilterOnClickOutside])
 
     return (
-        <div style={{position:'relative', display: 'inline-block'}} ref={dropdownRef}>
+        <ListingFilterAndExtractContainer ref={dropdownRef}>
             <ListingFilterAndExtractButton onClick={e => {onToggleFilter(e)}}>
                 <ListingFilterIcon icon="filter"/>&nbsp;{strings['pt-br']['listingFilterButtonLabel']}
             </ListingFilterAndExtractButton>
@@ -124,7 +124,7 @@ const ListingFilter = (props) => {
                     <ListingFilterAddNewFilterButton onClick={e => {addNewFilter(e)}}>{strings['pt-br']['listingFilterAddNewFilterButtonLabel']}</ListingFilterAddNewFilterButton>
                 </ListingFilterContainer>
             ) : ''}
-        </div>
+        </ListingFilterAndExtractContainer>
     )
 }
 

@@ -10,15 +10,7 @@ export default styled.div`
     box-shadow: 0 4px 20px 0 black;
     min-width: 237px;
 
-    @media(max-width: 400px) {
+    @media(max-width: 640px) {
        right:0;
-    }
-    
-    @media(max-width: 311px) {
-        left:0;
-    }
-
-    @media(max-width: 690px) {
-        width: auto;
     }
 `

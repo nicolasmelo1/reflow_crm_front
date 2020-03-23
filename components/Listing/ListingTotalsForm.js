@@ -45,7 +45,7 @@ const ListingTotalsForm = (props) => {
     }
 
     useEffect(() => {
-        if (props.headers.fields) {
+        if (props.headers.field_headers) {
             setFieldOptions(props.headers.field_headers.map(field=> ({value: field.id, label: field.label_name})))
         }
     }, [props.headers.field_headers])
@@ -60,6 +60,7 @@ const ListingTotalsForm = (props) => {
         }
     }, [props.types.data.field_number_format_type])
 
+    console.log(fieldOptions)
     return (
         <ListingTotalFormContainer>
             <ListingTotalFormTitle>{strings['pt-br']['listingTotalFormTitleLabel']}</ListingTotalFormTitle>
