@@ -52,6 +52,7 @@ const ListingTable = (props) => {
             }
         }
     }
+
     useEffect(() => {
         window.addEventListener('scroll', onScroll)
         return () => {
