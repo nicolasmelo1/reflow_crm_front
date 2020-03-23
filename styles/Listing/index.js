@@ -5,7 +5,7 @@ import ListingColumnSelectItems from './ListingColumnSelectItems'
 import ListingFilterContainer from './ListingFilterContainer'
 import ListingFilterInputDropdownButton from './ListingFilterInputDropdownButton'
 import ListingFilterAndExtractButton from './ListingFilterAndExtractButton'
-import ListingFilterBottomButton from './ListingFilterBottomButton'
+import ListingFilterAddNewFilterButton from './ListingFilterAddNewFilterButton'
 import ListingFilterSearchButton from './ListingFilterSearchButton'
 import ListingFilterInputGroup from './ListingFilterInputGroup'
 import ListingFilterDeleteButton from './ListingFilterDeleteButton'
@@ -53,7 +53,7 @@ export { ListingFilterSearchButton }
 export { ListingFilterInput }
 export { ListingFilterInputDropdownButton }
 export { ListingFilterInputGroup }
-export { ListingFilterBottomButton }
+export { ListingFilterAddNewFilterButton }
 export { ListingFilterAndExtractButton }
 export { ListingFilterIcon }
 export { ListingTableContentElement }

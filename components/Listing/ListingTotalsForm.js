@@ -46,9 +46,9 @@ const ListingTotalsForm = (props) => {
 
     useEffect(() => {
         if (props.headers.fields) {
-            setFieldOptions(props.headers.fields.map(field=> ({value: field.id, label: field.label_name})))
+            setFieldOptions(props.headers.field_headers.map(field=> ({value: field.id, label: field.label_name})))
         }
-    }, [props.headers.fields])
+    }, [props.headers.field_headers])
 
     useEffect(() => {
         if (props.types.data.field_number_format_type) {

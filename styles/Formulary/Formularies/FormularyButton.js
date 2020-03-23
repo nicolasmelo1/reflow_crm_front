@@ -11,11 +11,14 @@ export default styled(Button)`
     float: right; 
     display: block; 
     font-size: 20px; 
-    margin-right: 15px;
     &:hover {
         background-color:#444; 
     }
     &:active {
         background-color:#444 !important; 
+    }
+
+    @media(min-width: 420px) {
+        margin-right: 15px;
     }
 `

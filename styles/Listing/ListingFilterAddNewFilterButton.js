@@ -4,7 +4,7 @@ import { Button } from 'react-bootstrap'
 export default styled(Button)`
     background-color: transparent;
     border: 1px solid #fff;
-    margin: 0 5px 0 0;
+    margin: 5px 5px 0 0;
     color: #fff;
     &:hover {
         background-color: transparent;

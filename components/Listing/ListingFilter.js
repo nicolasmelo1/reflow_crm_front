@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ListingFilterAndExtractButton, ListingFilterIcon, ListingFilterBottomButton, ListingFilterSearchButton, ListingFilterContainer } from 'styles/Listing';
+import { ListingFilterAndExtractButton, ListingFilterIcon, ListingFilterAddNewFilterButton, ListingFilterSearchButton, ListingFilterContainer } from 'styles/Listing';
 import ListingFilterInstance from './ListingFilterInstance'
 import { strings } from 'utils/constants'
 
@@ -116,11 +116,12 @@ const ListingFilter = (props) => {
                         filter={filter}
                         onChangeFilter={onChangeFilter}
                         removeFilter={removeFilter}
+                        types={props.types}
                         headers={headers}
                         />
                     ))}
                     <ListingFilterSearchButton onClick={e => {sendFilterData(e)}}>{strings['pt-br']['listingFilterSearchButtonLabel']}</ListingFilterSearchButton>
-                    <ListingFilterBottomButton onClick={e => {addNewFilter(e)}}>{strings['pt-br']['listingFilterAddNewFilterButtonLabel']}</ListingFilterBottomButton>
+                    <ListingFilterAddNewFilterButton onClick={e => {addNewFilter(e)}}>{strings['pt-br']['listingFilterAddNewFilterButtonLabel']}</ListingFilterAddNewFilterButton>
                 </ListingFilterContainer>
             ) : ''}
         </div>

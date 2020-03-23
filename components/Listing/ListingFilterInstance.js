@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { ListingFilterInputGroup, ListingFilterInputDropdownButton, ListingFilterInput, ListingFilterDeleteButton } from 'styles/Listing'
-import { Dropdown } from 'react-bootstrap'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import DateRangePicker from 'components/Utils/DateRangePicker'
+import { stringToJsDateFormat, jsDateToStringFormat } from 'utils/dates'
 import { strings } from 'utils/constants'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Dropdown } from 'react-bootstrap'
 
 /**
  * Holds the data of a single filter, we can have multiple filters, but this holds just one filter
@@ -20,35 +22,46 @@ import { strings } from 'utils/constants'
  * to filter on, and the value to filter.
  */
 const ListingFilterInstance = (props) => {
+    const dateFormat = 'DD/MM/YYYY'
+
+    const [searchFieldType, setSearchFieldType] = useState(null)
     const [searchField, setSearchField] = useState('')
     const [searchValue, setSearchValue] = useState('')
-    const [searchFieldTitle, setSearchFieldTitle] = useState('Filtrar por...')
-   
+    const [searchFieldTitle, setSearchFieldTitle] = useState(strings['pt-br']['listingFilterFieldsDropdownButttonLabel'])
+
+    const inputRef = React.useRef()
+
+    const onChangeFieldName = (fieldName) => {
+        const currentField = props.headers.filter(field => field.name === fieldName).length > 0 ? props.headers.filter(field => field.name === fieldName)[0] : null
+        const currentFieldType = currentField && props.types.data.field_type.filter(fieldType => fieldType.id === currentField.type).length > 0 ? props.types.data.field_type.filter(fieldType => fieldType.id === currentField.type)[0].type : null
+        setSearchField(fieldName)
+        setSearchFieldTitle(currentField ? currentField.label_name : strings['pt-br']['listingFilterFieldsDropdownButttonLabel'])
+        if (searchFieldType !== 'date' && currentFieldType === 'date') {
+            setSearchValue('')
+        }
+        setSearchFieldType(currentFieldType)
+    }
+
     const onSelectField = (field) => {
         const fieldName = field.name
-        setSearchField(fieldName)
-        setSearchFieldTitle(
-            props.headers.filter(field => field.name === fieldName).length > 0 ? 
-            props.headers.filter(field => field.name === fieldName)[0].label_name : strings['pt-br']['listingFilterFieldsDropdownButttonLabel']
-        )
-        props.onChangeFilter(props.index, fieldName, searchValue)
+        onChangeFieldName(fieldName)
     }
     
     const onChangeFilterValue = (value) => {
+        if (searchFieldType === 'date') {
+            value = `${jsDateToStringFormat(value[0], dateFormat)} - ${jsDateToStringFormat(value[1], dateFormat)}`
+        }
+
         setSearchValue(value)
         props.onChangeFilter(props.index, searchField, value)
     }
 
     useEffect(() => {
         if (props.filter.field_name !== searchField){
-            setSearchField(props.filter.field_name)
-            setSearchFieldTitle(
-                props.headers.filter(field => field.name === props.filter.field_name).length > 0 ? 
-                props.headers.filter(field => field.name === props.filter.field_name)[0].label_name : strings['pt-br']['listingFilterFieldsDropdownButttonLabel']
-            )
+            onChangeFieldName(props.filter.field_name)
         }
     }, [props.filter.field_name])
-    
+
     useEffect(() => {
         if (props.filter.value !== searchValue){
             setSearchValue(props.filter.value)
@@ -57,6 +70,11 @@ const ListingFilterInstance = (props) => {
 
     return (
         <ListingFilterInputGroup>
+            {props.index !== 0 || searchValue !== '' || searchField !== '' ? (
+                <ListingFilterDeleteButton onClick={e=> {props.removeFilter(props.index)}}>
+                    <FontAwesomeIcon icon="trash"/>
+                </ListingFilterDeleteButton>
+            ) : ''}
             <Dropdown>
                 <Dropdown.Toggle as={ListingFilterInputDropdownButton}>
                     {searchFieldTitle}
@@ -69,14 +87,15 @@ const ListingFilterInstance = (props) => {
                     ))}
                 </Dropdown.Menu>
             </Dropdown>
-            <ListingFilterInput placeholder={strings['pt-br']['listingFilterInputPlaceholder']} value={searchValue} onChange={e => onChangeFilterValue(e.target.value)}/>
-            {props.index !== 0 || searchValue !== '' || searchField !== '' ? (
-                <ListingFilterDeleteButton onClick={e=> {props.removeFilter(props.index)}}>
-                    <FontAwesomeIcon icon="trash"/>
-                </ListingFilterDeleteButton>
+            <ListingFilterInput ref={inputRef} placeholder={strings['pt-br']['listingFilterInputPlaceholder']} value={searchValue} onChange={e => onChangeFilterValue(e.target.value)}/>
+            {searchFieldType === 'date' ? (
+                <DateRangePicker input={inputRef} 
+                closeWhenSelected={true}
+                onChange={onChangeFilterValue} 
+                initialDays={![null, undefined, ''].includes(searchValue) ? [stringToJsDateFormat(searchValue.split(' - ')[0], dateFormat), stringToJsDateFormat(searchValue.split(' - ')[1], dateFormat)] : ['', '']}
+                />
             ) : ''}
         </ListingFilterInputGroup>
-
     )
 }
 

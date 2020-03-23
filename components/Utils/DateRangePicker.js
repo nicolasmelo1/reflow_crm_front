@@ -115,7 +115,7 @@ const DateRangePicker = (props) => {
             selectedDays[1] = date
         }
         setSelectedDays([...selectedDays])
-        if (props.onChange){
+        if (selectedDays[0] !== '' && selectedDays[1] !== '' && props.onChange){
             props.onChange(selectedDays)
         }
     }
@@ -183,7 +183,7 @@ const DateRangePicker = (props) => {
                         </Utils.Daterangepicker.Header>
                         <DatePicker 
                         dayOfTheWeekReference={dayOfTheWeekReference}
-                        setHourPickerIsOpen={setHourPickerIsOpen}
+                        setHourPickerIsOpen={false}
                         containerRef={dateRangePickerContainerRef}
                         withoutHourPicker={true}
                         withoutHeader={true}
@@ -216,7 +216,7 @@ const DateRangePicker = (props) => {
                         </Utils.Daterangepicker.Header>
                         <DatePicker 
                         dayOfTheWeekReference={dayOfTheWeekReference}
-                        setHourPickerIsOpen={setHourPickerIsOpen}
+                        setHourPickerIsOpen={false}
                         containerRef={dateRangePickerContainerRef}
                         withoutHourPicker={true}
                         withoutHeader={true}

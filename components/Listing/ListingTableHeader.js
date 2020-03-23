@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { string } from 'utils/constants'
+import { strings } from 'utils/constants'
 import { 
     ListingTableHeaderContainer, 
     ListingTableHeaderElement, 
@@ -102,7 +102,7 @@ const ListingTableHead = (props) => {
                 <ListingTableHeaderContainer>
                     <ListingTableHeaderElement isTableButton={true}>
                         <ListingTableHeaderElementParagraph>
-                            {string['pt-br']['listingHeaderEditLabel']}
+                            {strings['pt-br']['listingHeaderEditLabel']}
                         </ListingTableHeaderElementParagraph>
                         <ListingTableHeaderElementIconContainer isTableButton={true}/>
                     </ListingTableHeaderElement>
@@ -110,7 +110,7 @@ const ListingTableHead = (props) => {
                 <ListingTableHeaderContainer>
                     <ListingTableHeaderElement isTableButton={true}>
                         <ListingTableHeaderElementParagraph>
-                            {string['pt-br']['listingHeaderDeleteLabel']}
+                            {strings['pt-br']['listingHeaderDeleteLabel']}
                         </ListingTableHeaderElementParagraph>
                         <ListingTableHeaderElementIconContainer isTableButton={true}/>
                     </ListingTableHeaderElement>

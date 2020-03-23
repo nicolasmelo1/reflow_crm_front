@@ -3,7 +3,7 @@ import { Button } from 'react-bootstrap'
 
 export default styled(Button)`
     background-color: #fff;
-    margin: 0 5px 0 0;
+    margin: 5px 5px 0 0;
     border: 0;
     color: #444;
     &:hover {
