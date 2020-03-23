@@ -1,7 +1,7 @@
-import axios from 'axios';
-import { API, BEARER } from '../config';
-import Router from 'next/router';
+import axios from 'axios'
+import { API, BEARER } from '../config'
 import { paths } from 'utils/constants'
+import Router from 'next/router'
 
 const API_ROOT = API;
 
@@ -13,7 +13,7 @@ let companyId = ''
  * 
  * @param token - the token, usually the token variable that we set in Layout component
  */
-let setHeader = (token) => { 
+let setHeader = (token) => {
     return {
         'Authorization': `${BEARER} ${token}`
     }
@@ -32,11 +32,11 @@ let setHeader = (token) => {
  * @param headers - the headers parameter from the function
  */
 const refreshToken = async (response, callback, url, params, headers) => {
-    if (response !== undefined && response.data && response.data.reason) {
+    if (response && response.data && response.data.reason && ['invalid_token', 'login_required', 'expired_token'].includes(response.data.reason)) {
         if (response.data.reason === 'expired_token') {
             response = await requests.get('login/refresh_token/', {}, setHeader(window.localStorage.getItem('refreshToken')))
             // checks if the response was an error and handles it next
-            if (response.status!==200){
+            if (response.status !== 200) {
                 window.localStorage.setItem('refreshToken', '')
                 window.localStorage.setItem('token', '')
                 token = ''
@@ -45,11 +45,11 @@ const refreshToken = async (response, callback, url, params, headers) => {
                 window.localStorage.setItem('token', response.data.access_token)
                 token = response.data.access_token
             }
+            return callback(url, params, headers)
         }
-        if (['invalid_token', 'login_required'].includes(response.data.reason)){
+        if (['invalid_token', 'login_required'].includes(response.data.reason)) {
             Router.push(paths.login())
         }
-        return callback(url, params, headers)
     }
     return response
 }
@@ -62,50 +62,58 @@ const refreshToken = async (response, callback, url, params, headers) => {
  * > requests.post('login/', body)
  */
 const requests = {
-    delete: async (url, params={}, headers={}) => {
+    delete: async (url, params = {}, headers = {}) => {
         try {
             return await axios.delete(`${API_ROOT}${url}`, {
                 params: params,
                 headers: Object.assign(setHeader(token), headers)
             })
         }
-        catch(exception){
+        catch (exception) {
             return await refreshToken(exception.response, requests.delete, url, params, headers)
         }
     },
-    get: async (url, params={}, headers={}) => {
+    get: async (url, params = {}, headers = {}) => {
         try {
             return await axios.get(`${API_ROOT}${url}`, {
                 params: params,
                 headers: Object.assign(setHeader(token), headers)
             })
         }
-        catch(exception){
+        catch (exception) {
             return await refreshToken(exception.response, requests.get, url, params, headers)
         }
     },
-    put: async (url, body, headers={}) => {
+    put: async (url, body, headers = {}) => {
         try {
             return await axios.put(`${API_ROOT}${url}`, body, { headers: Object.assign(setHeader(token), headers) })
         }
-        catch(exception){
+        catch (exception) {
             return await refreshToken(exception.response, requests.put, url, body, headers)
         }
     },
-    post: async (url, body, headers={}) => {
+    post: async (url, body, headers = {}) => {
         try {
             return await axios.post(`${API_ROOT}${url}`, body, { headers: Object.assign(setHeader(token), headers) })
         }
-        catch(exception){
+        catch (exception) {
             return await refreshToken(exception.response, requests.post, url, body, headers)
         }
     }
 };
 
+const formEncodeData = (appendToKey, body) => {
+    let formData = new FormData();
+    formData.append(appendToKey, JSON.stringify(body));
+    return formData
+}
 
 const LOGIN = {
     makeLogin: async (body) => {
         return await requests.post('login/', body)
+    },
+    getDataTypes: async () => {
+        return await requests.get('types/')
     }
 }
 
@@ -117,24 +125,98 @@ const HOME = {
     getUpdateForms: async () => {
         return await requests.get(`${companyId}/settings/api/formulary`)
     },
+    getFieldOptions: async (formId) => {
+        return await requests.get(`${companyId}/settings/api/formulary/${formId}/field_options/`)
+    },
     updateGroup: async (body, id) => {
-        return await requests.put(`${companyId}/settings/api/formulary/${id}/`, body)
+        return await requests.put(`${companyId}/settings/api/formulary/groups/${id}/`, body)
     },
-    createForm: async (body, groupId) => {
-        return await requests.post(`${companyId}/settings/api/formulary/${groupId}/`, body)
+    createForm: async (body) => {
+        return await requests.post(`${companyId}/settings/api/formulary/forms/`, body)
     },
-    updateForm: async (body, groupId, id) => {
-        return await requests.put(`${companyId}/settings/api/formulary/${groupId}/${id}/`, body)
+    updateForm: async (body, id) => {
+        return await requests.put(`${companyId}/settings/api/formulary/forms/${id}/`, body)
     },
-    removeForm: async (groupId, id)=> {
+    removeForm: async (id)=> {
+        return await requests.delete(`${companyId}/settings/api/formulary/forms/${id}/`)
+    },
+    getBuildFormulary: async (formName) => {
+        return await requests.get(`${companyId}/formulary/api/${formName}/`)
+    },
+    createFormularyData: async (body, formName) => {
+        return await requests.post(`${companyId}/formulary/api/${formName}/`, formEncodeData('data', body), {'Content-Type': 'multipart/form-data'})
+    },
+    getFormularyData: async (formName, formId) => {
+        return await requests.get(`${companyId}/formulary/api/${formName}/${formId}/`)
+    },
+    updateFormularyData: async (body, formName, formId) => {
+        return await requests.post(`${companyId}/formulary/api/${formName}/${formId}/`, formEncodeData('data', body), {'Content-Type': 'multipart/form-data'})
+    },
+    getFormularyFormFieldOptions: async (formName, fieldId) => {
+        return await requests.get(`${companyId}/formulary/api/${formName}/${fieldId}/form/options/`)
+    },
+    removeForm: async (groupId, id) => {
         return await requests.delete(`${companyId}/settings/api/formulary/${groupId}/${id}/`)
+    },
+    getFormularySettingsData: async (formId) => {
+        return await requests.get(`${companyId}/settings/api/formulary/${formId}/sections/`)
+    },
+    createFormularySettingsSection: async (body, formId) => {
+        return await requests.post(`${companyId}/settings/api/formulary/${formId}/sections/`, body)
+    },
+    updateFormularySettingsSection: async (body, formId, sectionId) => {
+        return await requests.put(`${companyId}/settings/api/formulary/${formId}/sections/${sectionId}/`, body)
+    },
+    removeFormularySettingsSection: async (formId, sectionId) => {
+        return await requests.delete(`${companyId}/settings/api/formulary/${formId}/sections/${sectionId}/`)
+    },
+    createFormularySettingsField: async (body, formId) => {
+        return await requests.post(`${companyId}/settings/api/formulary/${formId}/fields/`, body)
+    },
+    updateFormularySettingsField: async (body, formId, fieldId) => {
+        return await requests.put(`${companyId}/settings/api/formulary/${formId}/fields/${fieldId}/`, body)
+    },
+    removeFormularySettingsField: async (formId, fieldId) => {
+        return await requests.delete(`${companyId}/settings/api/formulary/${formId}/fields/${fieldId}/`)
     }
-    
+}
+
+
+const LISTING = {
+    getHasExportedData: async (isToDownload) => {
+        const path = `${companyId}/data/api/extract/`
+        if (isToDownload) {
+            window.open(`${API_ROOT}${path}?download=download&token=${token}`)
+        }
+        return await requests.get(path)
+    },
+    exportData: async (params, formName) => {
+        return await requests.post(`${companyId}/data/api/extract/${formName}/`, params)
+    },
+    getData: async (params, formName) => {
+        return await requests.get(`${companyId}/data/api/data/${formName}/`, params)
+    },
+    getHeader: async (formName) => {
+        return await requests.get(`${companyId}/data/api/listing/${formName}/`)
+    },
+    getTotals: async (params, formName) => {
+        return await requests.get(`${companyId}/data/api/listing/${formName}/total/`, params)
+    },
+    createTotal: async (body, formName) => {
+        return await requests.post(`${companyId}/data/api/listing/${formName}/total/`, body)
+    },
+    removeTotal: async (formName, totalId) => {
+        return await requests.delete(`${companyId}/data/api/listing/${formName}/total/${totalId}`)
+    },
+    updateSelectedFields: async (body, formName) => {
+        return await requests.post(`${companyId}/data/api/listing/${formName}/selected/`, body)
+    }
 }
 
 export default {
-    setCompanyId: _companyId => { companyId = _companyId},
-    setToken: (_token) => { token = _token; },
+    setCompanyId: _companyId => { companyId = _companyId },
+    setToken: (_token) => { token = _token },
     LOGIN,
-    HOME
-}
+    HOME,
+    LISTING
+};
