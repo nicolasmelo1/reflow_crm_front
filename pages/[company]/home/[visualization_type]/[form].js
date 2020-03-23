@@ -1,16 +1,28 @@
 import React from 'react';
 import actions from 'redux/actions';
-import { Layout, Formulary, DataContainer } from 'components';
+import { Layout, Formulary, Listing } from 'components';
 import { connect } from 'react-redux';
 import { strings, paths } from 'utils/constants';
 import { Button } from 'react-bootstrap';
-import { Router, useRouter } from 'next/router'
-import GestaoTab from 'components/Gestao/GestaoTab'
+import Router from 'next/router'
 
+
+/**
+ * 
+ */
 class Data extends React.Component {
 
     constructor(props) {
         super(props)
+        this.state = {
+            visualization: 'listing',
+            formularyId: null,//'51003'
+            formularyIsOpen: false,
+        }
+    }
+
+    static async getInitialProps(context) {
+        return { query: context.query }
     }
 
     // TEMPORARY
@@ -20,14 +32,46 @@ class Data extends React.Component {
         Router.push(paths.login())
     }
 
-    render() {
+    onOpenOrCloseFormulary = (isOpen) => {
+        this.setState(() => {
+            return {
+                formularyIsOpen: isOpen
+            }
+        })
+    }
+
+    setFormularyId = (newValue) => {
+        this.setState(() => {
+            if (![undefined, null].includes(newValue)) {
+                return {
+                    formularyIsOpen: true,
+                    formularyId: newValue
+                }
+            } else {
+                return {
+                    formularyId: newValue
+                } 
+            }
+        })
+    }
+
+    render () {
         return (
             <Layout title={strings['pt-br']['managementPageTitle']} showSideBar={true}>
-                <Formulary />
-                <Button type="submit" onClick={e => this.handleLogout(e)}>Logout</Button>
-                <GestaoTab defaultActive='kanban' />
+                <Formulary 
+                query={this.props.query} 
+                formularyId={this.state.formularyId} 
+                setFormularyId={this.setFormularyId} 
+                onOpenOrCloseFormulary={this.onOpenOrCloseFormulary}
+                formularyIsOpen={this.state.formularyIsOpen}
 
-                <DataContainer visualization='kanban' />
+                />
+                <Button type="submit" onClick={e => this.handleLogout(e)}>Logout</Button>
+                {(this.state.visualization == 'listing') ? (
+                    <Listing query={this.props.query} setFormularyId={this.setFormularyId}/>
+                ) : (
+                    ''
+                )}
             </Layout>
         )
     }

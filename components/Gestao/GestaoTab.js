@@ -27,9 +27,7 @@ const GestaoTab = (props) => {
                         <Nav.Item>
                             <Link href="#" /* as={`/gestao/listagem/${id}`} */ passHref>
                                 <GestaoTabLink eventKey="listing">
-                                    
-                                        Listagem
-                                    
+                                    Listagem
                                 </GestaoTabLink>
                             </Link>
                         </Nav.Item>

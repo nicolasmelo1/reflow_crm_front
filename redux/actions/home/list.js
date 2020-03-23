@@ -1,54 +1,103 @@
 import {
     GET_DATA,
-    GET_HEADERS,
-    GET_TOTALS
+    SET_HEADERS,
+    SET_TOTALS
 } from 'redux/types';
 import agent from 'redux/agent'
-import { UPDATE_HEAD_SELECT } from '../../types';
 
 
 const onGetData = (params, formName) => {
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
+        let stateData = getState().home.list.data
+        let payload = []
         let response = await agent.LISTING.getData(params, formName)
 
-        dispatch({ type: GET_DATA, payload: response.data });
+        if (params.page === 1) {
+            payload = response.data.data
+        } else {
+            payload = stateData.concat(response.data.data)
+        }
+
+        dispatch({ type: GET_DATA, payload: payload });
+
+        return response
+    }
+}
+
+const onGetExportedData = () => {
+    return async (_) => {
+        let response = await agent.LISTING.getHasExportedData() 
+        if (response.data.status === 'ok') {
+            response = await agent.LISTING.getHasExportedData(true)
+            return response
+        }
+        return response
+    }
+}
+
+const onExportData = (params, formName) => {
+    return async (_) => {
+        return await agent.LISTING.exportData(params, formName) 
     }
 }
 
 const onGetHeader = (formName) => {
     return async (dispatch) => {
         let response = await agent.LISTING.getHeader(formName)
-
-        dispatch({ type: GET_HEADERS, payload: response.data });
-    }
-}
-const onGetTotal = (formName) => {
-    return async (dispatch) => {
-        let response = await agent.LISTING.getTotals(formName)
-
-        dispatch({ type: GET_TOTALS, payload: response.data })
-    }
-}
-
-const onUpdateSelected = (index, formName) => {
-    return async (dispatch, getState) => {
-        let stateData = getState().home.list.header.field_headers
-        stateData[index].user_selected = !stateData[index].user_selected
-        const fields = {
-            fields: stateData.filter(head => head.user_selected).map((head, index) => {
-                return head.name
-            })
+        if (response.status === 200) {
+            dispatch({ type: SET_HEADERS, payload: response.data.data });
         }
-
-        agent.LISTING.updateSelectedFields(fields, formName)
-        dispatch({ type: UPDATE_HEAD_SELECT, payload: stateData })
     }
 }
 
+const onUpdateHeader = (header) => {
+    return (dispatch) => {
+        dispatch({type: SET_HEADERS, payload: header})
+    }
+}
+
+const onGetTotals = (params, formName) => {
+    return async (dispatch) => {
+        let response = await agent.LISTING.getTotals(params, formName)
+        if (response.status === 200) {
+            dispatch({ type: SET_TOTALS, payload: response.data.totals })
+        }
+    }
+}
+
+const onUpdateTotals = (totalsData) => {
+    return async (dispatch) => {
+        dispatch({type: SET_TOTALS, payload: totalsData})
+    }
+}
+
+const onCreateTotal = (body, formName) => {
+    return async (_) => {
+        agent.LISTING.createTotal(body, formName)
+    }
+}
+
+const onRemoveTotal = (formName, totalId) => {
+    return (_) => {
+        agent.LISTING.removeTotal(formName, totalId)
+    }
+}
+
+const onUpdateSelected = (body, formName) => {
+    return async (_) => {
+        agent.LISTING.updateSelectedFields(body, formName)
+    }
+}
 
 export default {
     onGetData,
+    onExportData,
+    onGetExportedData,
     onGetHeader,
-    onGetTotal,
+    onUpdateHeader,
+    onGetTotals,
+    onUpdateTotals,
+    onRemoveTotal,
+    onCreateTotal,
     onUpdateSelected
 };

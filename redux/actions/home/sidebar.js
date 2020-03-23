@@ -53,10 +53,10 @@ const onCreateOrUpdateForm = (body, groupIndex, index) => {
         let stateData = getState().home.sidebar.update
 
         if (body.id === null){
-            let response = await agent.HOME.createForm(body, body.group)
+            let response = await agent.HOME.createForm(body)
             body = response.data.data
         } else {
-            agent.HOME.updateForm(body, body.group, body.id)
+            agent.HOME.updateForm(body, body.id)
         }
 
         stateData[groupIndex].form_group[index] = body
@@ -102,7 +102,7 @@ const onReorderForm = (movedForm, movedIndex, groupMovedIndex, targetForm, targe
             stateData[groupIndex].form_group.map((form, index) => {
                 form.order = index
                 if ([movedForm.id, targetForm.id].includes(form.id)) {
-                    agent.HOME.updateForm(form, originalGroupId, form.id)
+                    agent.HOME.updateForm(form, form.id)
                 }
             })
         })
