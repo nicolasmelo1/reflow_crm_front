@@ -9,7 +9,7 @@ import agent from 'redux/agent'
 const onGetDataKanban = (params, formName) => {
     return async (dispatch) => {
         let response = await agent.KANBAN.getDataKanban(params, formName)
-        dispatch({ type: GET_DATA_KANBAN, payload: response.data });
+        dispatch({ type: GET_DATA_KANBAN, payload: response.data.data });
     }
 }
 
@@ -23,7 +23,7 @@ const onGetDimensionOrder = (formName) => {
 const onGetCardFields = (formName) => {
     return async (dispatch) => {
         let response = await agent.KANBAN.getCardFields(formName)
-        dispatch({ type: GET_CARD_FIELDS, payload: response.data });
+        dispatch({ type: GET_CARD_FIELDS, payload: response.data.cards });
     }
 }
 

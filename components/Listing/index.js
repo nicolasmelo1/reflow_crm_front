@@ -76,6 +76,7 @@ class Listing extends React.Component {
             }
         })
         this.props.onGetTotals(this.state.params, this.props.query.form)
+        this.props.setSearch(params.search_field, params.search_value, params.search_exact)
         this.setParams({...params})
     }
 

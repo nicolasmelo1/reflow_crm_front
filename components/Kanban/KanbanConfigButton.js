@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Dropdown, InputGroup, FormControl, Button, DropdownButton, FormGroup, Form } from 'react-bootstrap';
+import { Button, FormGroup, Form, Collapse } from 'react-bootstrap';
 const KanbanConfigButton = (props) => {
 
     const [field, setField] = useState("")
