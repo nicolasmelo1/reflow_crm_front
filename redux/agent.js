@@ -217,14 +217,14 @@ const KANBAN = {
     getRenderData: async (formName) => {
         return await requests.get(`${companyId}/data/api/kanban/${formName}/`)
     },
-    getData: async (params, formName) => {
-        return await requests.get(`${companyId}/data/api/${formName}/`, params)
-    },
-    getDimensionOrder: async (formName, fieldName) => {
-        return await requests.get(`${companyId}/data/api/kanban/${formName}/${fieldName}/`)
-    },
     getCards: async (formName) => {
         return await requests.get(`${companyId}/data/api/kanban/${formName}/card/`)
+    },
+    createCard: async (body,formName) => {
+        return await requests.post(`${companyId}/data/api/kanban/${formName}/card/`, body)
+    },
+    updateCard: async (body, formName, kanbanCardId) => {
+        return await requests.put(`${companyId}/data/api/kanban/${formName}/card/${kanbanCardId}/`, body)
     }
 }
 

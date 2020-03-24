@@ -29,9 +29,9 @@ class Formulary extends React.Component {
         if (this.props.formularyIsOpen) {
             this.props.setFormularyId(null)
             if (this.state.auxOriginalInitial.filledData && this.state.auxOriginalInitial.buildData) {
-                this.props.onFullResetFormulary({}, this.state.auxOriginalInitial.buildData)
+                this.props.onFullResetFormularyState({}, this.state.auxOriginalInitial.buildData)
             } else {
-                this.props.onChangeFormularyData({})
+                this.props.onChangeFormularyDataState({})
             }
             this.setErrors({})
         }
@@ -66,7 +66,7 @@ class Formulary extends React.Component {
     }
 
     setData = (sectionsData) => {
-        this.props.onChangeFormularyData({
+        this.props.onChangeFormularyDataState({
             depends_on_dynamic_form: sectionsData
         })
     }
@@ -106,7 +106,7 @@ class Formulary extends React.Component {
 
     onChangeFormulary = (formName, formId=null) => {
         this.setAuxOriginalInitial()
-        this.props.onFullResetFormulary()
+        this.props.onFullResetFormularyState()
         this.buildFormulary(formName, formId)
     }
 
@@ -143,7 +143,7 @@ class Formulary extends React.Component {
                                     onRemoveFormularySettingsSection={this.props.onRemoveFormularySettingsSection}
                                     onUpdateFormularySettingsSection={this.props.onUpdateFormularySettingsSection}
                                     onCreateFormularySettingsSection={this.props.onCreateFormularySettingsSection}
-                                    onUpdateFormularySettings={this.props.onUpdateFormularySettings}
+                                    onChangeFormularySettingsState={this.props.onChangeFormularySettingsState}
                                     formId={this.props.formulary.buildData.id}
                                     types={this.props.types}
                                     setIsEditing={this.setIsEditing}
@@ -157,7 +157,7 @@ class Formulary extends React.Component {
                                         <Formularies.EditButton onClick={this.setIsEditing} label={strings['pt-br']['formularyEditButtonLabel']} description={strings['pt-br']['formularyEditButtonDescription']}/>
                                     ) : ''}
                                     {(this.props.formulary.buildData && this.props.formulary.buildData.form_name !== this.props.query.form) ? (
-                                        <Formularies.Navigator onClick={e => {this.props.onFullResetFormulary(this.state.auxOriginalInitial.filledData, this.state.auxOriginalInitial.buildData)}}>&lt;&nbsp;{(this.state.auxOriginalInitial.buildData) ? this.state.auxOriginalInitial.buildData.label_name : ''}</Formularies.Navigator>
+                                        <Formularies.Navigator onClick={e => {this.props.onFullResetFormularyState(this.state.auxOriginalInitial.filledData, this.state.auxOriginalInitial.buildData)}}>&lt;&nbsp;{(this.state.auxOriginalInitial.buildData) ? this.state.auxOriginalInitial.buildData.label_name : ''}</Formularies.Navigator>
                                     ) : ''}                           
                                     <FormularySections 
                                     errors={this.state.errors}

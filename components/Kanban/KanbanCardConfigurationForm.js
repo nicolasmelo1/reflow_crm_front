@@ -45,7 +45,7 @@ const KanbanCardConfigurationForm = (props) => {
                 />
             ))}
             <button onClick={e=> {props.onCloseCardForm()}}>Cancelar</button>
-            <button>Salvar</button>
+            <button onClick={e=> {props.onSaveCardForm(cardData)}}>Salvar</button>
         </div>
     )
 }

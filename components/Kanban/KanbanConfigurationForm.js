@@ -14,6 +14,24 @@ const KanbanConfigurationForm = (props) => {
         setSelectedDimension(dimensionOptions.filter(dimensionOption=> dimensionOption.value === data[0]))
     }
 
+    const onSaveCardForm = (data) => {
+        data.kanban_card_fields = data.kanban_card_fields
+            .filter(cardField=> cardField.length > 0)
+            .map(cardField=> ({id: cardField[0].value, label: cardField[0].label}))
+        if (data.id && data.id !== -1) {
+            const cardIndex = props.cards.findIndex(card => card.id === data.id)
+            if (cardIndex !== -1) {
+                props.cards[cardIndex] = data
+                props.onCreateOrUpdateCard(data, props.formName, cardIndex)
+            }
+        } else {
+            props.cards.push(data)
+            props.onCreateOrUpdateCard(data, props.formName, props.cards.length-1)
+        }
+        props.onChangeCardsState([...props.cards])
+        onCloseCardForm()
+    }
+
     const onCloseCardForm = () => {
         setCardFormIsOpen(!cardFormIsOpen)
         setCardToEdit(null)
@@ -49,6 +67,7 @@ const KanbanConfigurationForm = (props) => {
             <h2>Cards<KanbanCardAddNewButton onClick={e=> {onOpenCardForm()}}/></h2>
             {cardFormIsOpen ? (
                 <KanbanCardConfigurationForm
+                onSaveCardForm={onSaveCardForm}
                 onCloseCardForm={onCloseCardForm}
                 cardToEdit={cardToEdit}
                 fields={props.fields}

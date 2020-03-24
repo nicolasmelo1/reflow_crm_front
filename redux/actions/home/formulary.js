@@ -16,7 +16,7 @@ const onGetFormularyData = (formName, formId) => {
     }
 }
 
-const onFullResetFormulary = (formFilledData={}, formBuildData={}) => {
+const onFullResetFormularyState = (formFilledData={}, formBuildData={}) => {
     return (dispatch) => {
         dispatch({ type: SET_FORMULARY_DATA, payload: formFilledData })
         dispatch({ type: GET_FORMULARY, payload: formBuildData })
@@ -24,6 +24,17 @@ const onFullResetFormulary = (formFilledData={}, formBuildData={}) => {
     }
 }
 
+const onChangeFormularyDataState = (formData) => {
+    return (dispatch) => {
+        dispatch({ type: SET_FORMULARY_DATA, payload: formData })
+    }
+}
+
+const onChangeFormularySettingsState = (formSettingsData) => {
+    return (dispatch) => {
+        dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: formSettingsData })
+    }
+}
 
 const onCreateFormularyData = (body, formName) => {
     return async (dispatch) => {
@@ -46,22 +57,10 @@ const onUpdateFormularyData = (body, formName, formId) => {
     }
 }
 
-const onChangeFormularyData = (formData) => {
-    return (dispatch) => {
-        dispatch({ type: SET_FORMULARY_DATA, payload: formData })
-    }
-}
-
 const onGetFormularySettings = (formularyId) => {
     return async (dispatch) => {
         const response = await agent.HOME.getFormularySettingsData(formularyId)
         dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: response.data.data })
-    }
-}
-
-const onUpdateFormularySettings = (formSettingsData) => {
-    return (dispatch) => {
-        dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: formSettingsData })
     }
 }
 
@@ -132,12 +131,12 @@ const onRemoveFormularySettingsField = (formId, fieldId) => {
 
 
 export default {
-    onUpdateFormularySettings,
+    onChangeFormularySettingsState,
+    onChangeFormularyDataState,
+    onFullResetFormularyState,
     onGetFormularySettings,
     onGetBuildFormulary,
-    onChangeFormularyData,
     onGetFormularyData,
-    onFullResetFormulary,
     onCreateFormularyData,
     onUpdateFormularyData,
     onCreateFormularySettingsSection,

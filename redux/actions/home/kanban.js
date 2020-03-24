@@ -2,7 +2,7 @@ import {
     GET_DATA_KANBAN,
     GET_DIMENSION_ORDER,
     SET_KANBAN_INITIAL,
-    GET_CARDS
+    SET_CARDS
 } from 'redux/types';
 import agent from 'redux/agent'
 
@@ -13,30 +13,31 @@ const onRenderKanban = (formName) => {
     }
 }
 
-const onGetDataKanban = (params, formName) => {
-    return async (dispatch) => {
-        let response = await agent.KANBAN.getData(params, formName)
-        dispatch({ type: GET_DATA_KANBAN, payload: response.data.data });
-    }
-}
-
-const onGetDimensionOrder = (formName) => {
-    return async (dispatch) => {
-        let response = await agent.KANBAN.getDimensionOrder(formName)
-
-        dispatch({ type: GET_DIMENSION_ORDER, payload: response.data });
-    }
-}
 const onGetCards = (formName) => {
     return async (dispatch) => {
         let response = await agent.KANBAN.getCards(formName)
-        dispatch({ type: GET_CARDS, payload: response.data.data });
+        dispatch({ type: SET_CARDS, payload: response.data.data })
+    }
+}
+
+const onCreateOrUpdateCard = (body, formName, cardIndex) => {
+    return async (dispatch, getState) => {
+        let stateData = getState().home.kanban.cards
+        let response = (body.id) ? await agent.KANBAN.updateCard(body, formName, body.id) : await agent.KANBAN.createCard(body, formName)
+        stateData[cardIndex] = response.data.data
+        dispatch({ type: SET_CARDS, payload: stateData})
+    }
+}
+
+const onChangeCardsState = (cards) => {
+    return (dispatch) => {
+        dispatch({ type: SET_CARDS, payload: cards})
     }
 }
 
 export default {
     onRenderKanban,
-    onGetDataKanban,
-    onGetDimensionOrder,
-    onGetCards
+    onGetCards,
+    onChangeCardsState,
+    onCreateOrUpdateCard
 };

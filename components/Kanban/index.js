@@ -33,6 +33,9 @@ class Kanban extends React.Component {
                     <Col>
                         {this.state.configurationIsOpen ? (
                             <KanbanConfigurationForm 
+                            formName={this.props.query.form}
+                            onCreateOrUpdateCard={this.props.onCreateOrUpdateCard}
+                            onChangeCardsState={this.props.onChangeCardsState}
                             fields={this.props.kanban.initial.fields}
                             dimensionFields={this.props.kanban.initial.dimension_fields}
                             defaultKanbanCardId={this.props.kanban.initial.default_kanban_card_id}
