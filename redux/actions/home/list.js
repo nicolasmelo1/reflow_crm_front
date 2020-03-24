@@ -41,9 +41,9 @@ const onExportData = (params, formName) => {
     }
 }
 
-const onGetHeader = (formName) => {
+const onRenderListing = (formName) => {
     return async (dispatch) => {
-        let response = await agent.LISTING.getHeader(formName)
+        let response = await agent.LISTING.getRenderData(formName)
         if (response.status === 200) {
             dispatch({ type: SET_HEADERS, payload: response.data.data });
         }
@@ -93,7 +93,7 @@ export default {
     onGetData,
     onExportData,
     onGetExportedData,
-    onGetHeader,
+    onRenderListing,
     onUpdateHeader,
     onGetTotals,
     onUpdateTotals,

@@ -1,18 +1,30 @@
 import {
+    SET_KANBAN_INITIAL,
     GET_DATA_KANBAN,
     GET_DIMENSION_ORDER,
-    GET_CARD_FIELDS
+    GET_CARDS
 } from 'redux/types';
 
 let initialState = {
+    initial: {
+        default_kanban_card_id: null,
+        default_dimension_field_id: null,
+        dimension_fields: [],
+        fields: []
+    },
     data: [],
     dimension_order: [],
-    card_fields: [],
+    cards: [],
 
 }
 
 export default (state = initialState, action) => {
     switch (action.type) {
+        case SET_KANBAN_INITIAL:
+            return {
+                ...state,
+                initial: action.payload
+            }
         case GET_DATA_KANBAN:
             return {
                 ...state,
@@ -24,10 +36,10 @@ export default (state = initialState, action) => {
                 ...state,
                 dimension_order: action.payload
             }
-        case GET_CARD_FIELDS:
+        case GET_CARDS:
             return {
                 ...state,
-                card_fields: action.payload
+                cards: action.payload
             }
         default:
             return state;

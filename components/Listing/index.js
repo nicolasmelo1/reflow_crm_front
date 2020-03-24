@@ -35,9 +35,8 @@ class Listing extends React.Component {
                 search_field: []
             }
         }
-
+        this.props.onRenderListing(this.props.query.form)
         this.props.onGetData(this.state.params, this.props.query.form)
-        this.props.onGetHeader(this.props.query.form),
         this.props.onGetTotals(this.state.params, this.props.query.form)
     }
 

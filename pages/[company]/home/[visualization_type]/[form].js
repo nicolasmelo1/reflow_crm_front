@@ -1,7 +1,7 @@
 import React from 'react';
 import actions from 'redux/actions';
 import { Layout, Formulary, Listing, Kanban } from 'components';
-import { GestaoTabNav, GestaoTabLink } from 'styles/Gestao'
+import { DataTypeHeaderAnchor } from 'styles/Data'
 import { connect } from 'react-redux';
 import { strings, paths } from 'utils/constants';
 import { Button, Row, Col, Nav, Tab } from 'react-bootstrap';
@@ -102,25 +102,16 @@ class Data extends React.Component {
     render () {
         return (
             <Layout title={strings['pt-br']['managementPageTitle']} showSideBar={true}>
-                <Tab.Container>
-                    <Row>
-                        <Col sm={{ span: 3, offset: 9 }}>
-                            <GestaoTabNav className="mr-auto">
-                                <Nav.Item>
-                                    <GestaoTabLink eventKey="kanban" onClick={e=> {this.setVisualization('kanban')}}>
-                                        Kanban    
-                                    </GestaoTabLink>
-                                </Nav.Item>
-                                <Nav.Item>
-                                    <GestaoTabLink eventKey="listing" onClick={e=> {this.setVisualization('listing')}}>
-                                        Listagem
-                                    </GestaoTabLink>
-                                </Nav.Item>
-                            </GestaoTabNav>
-                        </Col>
-                    </Row>
-                </Tab.Container>
-
+                <Row>
+                    <Col>
+                        <DataTypeHeaderAnchor onClick={e=> {this.setVisualization('kanban')}} isSelected={this.state.visualization === 'kanban'}>
+                            Kanban    
+                        </DataTypeHeaderAnchor>
+                        <DataTypeHeaderAnchor onClick={e=> {this.setVisualization('listing')}} isSelected={this.state.visualization === 'listing'}>
+                            Listagem
+                        </DataTypeHeaderAnchor>  
+                    </Col>
+                </Row>
                 <Formulary 
                 query={this.props.query} 
                 formularyId={this.state.formularyId} 
@@ -128,7 +119,6 @@ class Data extends React.Component {
                 onOpenOrCloseFormulary={this.onOpenOrCloseFormulary}
                 formularyIsOpen={this.state.formularyIsOpen}
                 />
-                <Button type="submit" onClick={e => this.handleLogout(e)}>Logout</Button>
                 {this.renderVisualization()}
             </Layout>
         )

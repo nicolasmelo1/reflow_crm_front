@@ -183,6 +183,9 @@ const HOME = {
 
 
 const LISTING = {
+    getRenderData: async (formName) => {
+        return await requests.get(`${companyId}/data/api/listing/${formName}/`)
+    },
     getHasExportedData: async (isToDownload) => {
         const path = `${companyId}/data/api/extract/`
         if (isToDownload) {
@@ -195,9 +198,6 @@ const LISTING = {
     },
     getData: async (params, formName) => {
         return await requests.get(`${companyId}/data/api/data/${formName}/`, params)
-    },
-    getHeader: async (formName) => {
-        return await requests.get(`${companyId}/data/api/listing/${formName}/`)
     },
     getTotals: async (params, formName) => {
         return await requests.get(`${companyId}/data/api/listing/${formName}/total/`, params)
@@ -214,13 +214,16 @@ const LISTING = {
 }
 
 const KANBAN = {
-    getDataKanban: async (params, formName) => {
+    getRenderData: async (formName) => {
+        return await requests.get(`${companyId}/data/api/kanban/${formName}/`)
+    },
+    getData: async (params, formName) => {
         return await requests.get(`${companyId}/data/api/${formName}/`, params)
     },
     getDimensionOrder: async (formName, fieldName) => {
         return await requests.get(`${companyId}/data/api/kanban/${formName}/${fieldName}/`)
     },
-    getCardFields: async (formName) => {
+    getCards: async (formName) => {
         return await requests.get(`${companyId}/data/api/kanban/${formName}/card/`)
     }
 }

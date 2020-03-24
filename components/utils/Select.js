@@ -21,9 +21,7 @@ const Option = (props) => {
 
     return (
         <Utils.Select.OptionsListContainer>
-            {filteredOptions.map((option, index)=> {
-                console.log(index < filteredOptions.length-1)
-                return (
+            {filteredOptions.map((option, index)=> (
                 <Utils.Select.OptionItem 
                 hasBorder={index < filteredOptions.length-1}
                 key={option.value} 
@@ -34,8 +32,7 @@ const Option = (props) => {
                 >
                     {props.renderLabel(option.label, index)}
                 </Utils.Select.OptionItem> 
-                )
-        })}
+            ))}
         </Utils.Select.OptionsListContainer>
     )
 }
