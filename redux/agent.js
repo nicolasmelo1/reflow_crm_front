@@ -23,7 +23,6 @@ let setHeader = (token) => {
  * Function that fires when a exception is catched in the requests object functions.
  * This is only for retrieving a new token while firing a request. This way, the token is refreshed 
  * behind the scenes and doesn't affect the request at all.
- * This goes with the following order:
  * 
  * @param response - the response of the axios exception
  * @param callback - the function to fire with the new token after it has been refreshed. Callbacks are any `requests` functions like: 'get', 'del', etc.
@@ -225,6 +224,12 @@ const KANBAN = {
     },
     updateCard: async (body, formName, kanbanCardId) => {
         return await requests.put(`${companyId}/data/api/kanban/${formName}/card/${kanbanCardId}/`, body)
+    },
+    updateDefaults: async (body, formName) => {
+        return await requests.put(`${companyId}/data/api/kanban/${formName}/defaults/`, body)
+    },
+    getDimensionOrders: async (formName, dimensionId) => {
+        return await requests.get(`${companyId}/data/api/kanban/${formName}/dimension/${dimensionId}/`)
     }
 }
 

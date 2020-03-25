@@ -1,3 +1,4 @@
+import React from 'react'
 import styled from 'styled-components'
 
 export default styled(React.forwardRef(({isOpen, ...rest}, ref) => <div {...rest} ref={ref}/>))`

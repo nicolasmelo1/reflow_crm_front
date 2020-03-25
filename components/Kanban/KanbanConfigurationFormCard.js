@@ -1,18 +1,34 @@
 import React from 'react'
+import { 
+    KanbanConfigurationFormCardsContainer, 
+    KanbanConfigurationFormCardContainer, 
+    KanbanCardContents, 
+    KanbanConfigurationFormCardButton,
+    KanbanConfigurationFormCardRemoveIcon,
+    KanbanConfigurationFormCardEditIcon
+} from 'styles/Kanban'
 
 const KanbanConfigurationFormCard = (props) => {
     return (
-        <div>
+        <KanbanConfigurationFormCardsContainer>
             {props.cards.map((card, index) => (
-                <div key={index} onClick={e=> {props.onOpenCardForm(card)}}style={{boxShadow: '0 3px 6px #444', borderRadius:'5px', padding:'10px', display:'inline-block'}}>
+                <KanbanConfigurationFormCardContainer key={index} isSelected={parseInt(card.id) === props.defaultKanbanCardId} onClick={e=> {props.onSelectDefaultCard(card.id)}}>
                     {card.kanban_card_fields.map((field, fieldIndex) => (
-                        <p key={fieldIndex} style={{ margin:'0', color: fieldIndex===0 ? '#0dbf7e': '#444', fontWeight: fieldIndex===0 ? 'bold': 'normal'}}>
+                        <KanbanCardContents key={fieldIndex} isTitle={fieldIndex===0}>
                             {field.label}
-                        </p>
+                        </KanbanCardContents>
                     ))}
-                </div>
+                    <div>
+                        <KanbanConfigurationFormCardButton onClick={e=> {props.onOpenCardForm(card)}}>
+                            <KanbanConfigurationFormCardEditIcon isSelected={parseInt(card.id) === props.defaultKanbanCardId} icon="pencil-alt"/>
+                        </KanbanConfigurationFormCardButton>
+                        <KanbanConfigurationFormCardButton>
+                            <KanbanConfigurationFormCardRemoveIcon icon="trash"/>
+                        </KanbanConfigurationFormCardButton>
+                    </div>
+                </KanbanConfigurationFormCardContainer>
             ))}
-        </div>
+        </KanbanConfigurationFormCardsContainer>
     )
 }
 

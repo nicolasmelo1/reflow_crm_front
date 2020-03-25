@@ -1,7 +1,7 @@
 import {
     SET_KANBAN_INITIAL,
     GET_DATA_KANBAN,
-    GET_DIMENSION_ORDER,
+    SET_DIMENSION_ORDER,
     SET_CARDS
 } from 'redux/types';
 
@@ -36,7 +36,7 @@ export default (state = initialState, action) => {
                 data: action.payload
 
             }
-        case GET_DIMENSION_ORDER:
+        case SET_DIMENSION_ORDER:
             return {
                 ...state,
                 dimension_order: action.payload
