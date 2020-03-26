@@ -1,18 +1,21 @@
 import React, {useEffect} from 'react'
+import KanbanDimension from './KanbanDimension'
 
 const KanbanTable = (props) => {
+    const cardFields = (props.card) ? props.card.kanban_card_fields: []
+
     return (
-        <table>
-            <tbody>
-                <tr>
-                    {props.dimensionOrders.map(dimensionOrder=> (
-                        <td style={{ height: '200px', backgroundColor: 'red', padding:'10px'}}>
-                            <p>{dimensionOrder.options}</p>
-                        </td>
-                    ))}
-                </tr>
-            </tbody>
-        </table>
+        <div style={{overflowX: 'auto'}}>
+            <table>
+                <tbody>
+                    <KanbanDimension
+                    dimensionOrders={props.dimensionOrders}
+                    cardFields={cardFields}
+                    data={props.data}
+                    />
+                </tbody>
+            </table>
+        </div>
     )
 }
 

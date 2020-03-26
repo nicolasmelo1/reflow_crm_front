@@ -6,7 +6,7 @@ import {
 import agent from 'redux/agent'
 
 
-const onGetData = (params, formName) => {
+const onGetListingData = (params, formName) => {
     return async (dispatch, getState) => {
         let stateData = getState().home.list.data
         let payload = []
@@ -90,7 +90,7 @@ const onUpdateSelected = (body, formName) => {
 }
 
 export default {
-    onGetData,
+    onGetListingData,
     onExportData,
     onGetExportedData,
     onRenderListing,

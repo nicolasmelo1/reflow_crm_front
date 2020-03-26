@@ -230,6 +230,9 @@ const KANBAN = {
     },
     getDimensionOrders: async (formName, dimensionId) => {
         return await requests.get(`${companyId}/data/api/kanban/${formName}/dimension/${dimensionId}/`)
+    },
+    getData: async (params, formName) => {
+        return await requests.get(`${companyId}/data/api/data/${formName}/`, params)
     }
 }
 

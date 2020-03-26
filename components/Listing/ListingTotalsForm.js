@@ -60,7 +60,6 @@ const ListingTotalsForm = (props) => {
         }
     }, [props.types.data.field_number_format_type])
 
-    console.log(fieldOptions)
     return (
         <ListingTotalFormContainer>
             <ListingTotalFormTitle>{strings['pt-br']['listingTotalFormTitleLabel']}</ListingTotalFormTitle>

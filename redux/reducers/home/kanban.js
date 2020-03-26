@@ -1,6 +1,6 @@
 import {
     SET_KANBAN_INITIAL,
-    GET_DATA_KANBAN,
+    SET_DATA_KANBAN,
     SET_DIMENSION_ORDER,
     SET_CARDS
 } from 'redux/types';
@@ -30,7 +30,7 @@ export default (state = initialState, action) => {
                 ...state,
                 cards: action.payload
             }
-        case GET_DATA_KANBAN:
+        case SET_DATA_KANBAN:
             return {
                 ...state,
                 data: action.payload

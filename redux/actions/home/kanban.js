@@ -1,6 +1,5 @@
 import {
-    GET_DATA_KANBAN,
-    GET_DIMENSION_ORDER,
+    SET_DATA_KANBAN,
     SET_DIMENSION_ORDER,
     SET_KANBAN_INITIAL,
     SET_CARDS
@@ -57,9 +56,38 @@ const onGetDimensionOrders = (formName, dimensionId) => {
     }
 }
 
+const onGetKanbanData = (params, formName) => {
+    return async (dispatch, getState) => {
+        const initial = getState().home.kanban.initial
+        const dimesionOrders = getState().home.kanban.dimension_order
+        const cards = getState().home.kanban.cards
+        let payload = []
+
+        if (initial.default_kanban_card_id && initial.default_dimension_field_id) {
+            const cardFieldIds = cards.filter(card => card.id === initial.default_kanban_card_id)[0].kanban_card_fields.map(field=> field.id)
+            const dimension = initial.fields.filter(field=> field.id === initial.default_dimension_field_id)
+            
+            for (let i=0; i<dimesionOrders.length; i++) {
+                const parameters = {
+                    ...params,
+                    page: 1,
+                    search_value: params.search_value.concat(dimesionOrders[i].options),
+                    search_exact: params.search_exact.concat(1),
+                    search_field: params.search_field.concat(dimension[0].name),
+                    fields: cardFieldIds,
+                }
+                let response = await agent.KANBAN.getData(parameters, formName)
+                payload.push([dimesionOrders[i].options, response.data.data])
+            }
+            dispatch({ type: SET_DATA_KANBAN, payload: payload})
+        }
+    }
+}
+
 export default {
     onRenderKanban,
     onGetCards,
+    onGetKanbanData,
     onChangeCardsState,
     onChangeDefaultState,
     onCreateOrUpdateCard,

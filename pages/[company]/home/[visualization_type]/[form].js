@@ -91,11 +91,11 @@ class Data extends React.Component {
     renderVisualization = () => {
         switch(this.state.visualization){
             case 'listing': 
-                return <Listing query={this.props.query} setFormularyId={this.setFormularyId} setSearch={this.setSearch}/>
+                return <Listing query={this.props.query} setFormularyId={this.setFormularyId} setSearch={this.setSearch} search={this.state.search}/>
             case 'kanban':
-                return <Kanban query={this.props.query} setFormularyId={this.setFormularyId} setSearch={this.setSearch}/>
+                return <Kanban query={this.props.query} setFormularyId={this.setFormularyId} setSearch={this.setSearch} search={this.state.search}/>
             default:
-                return <Listing query={this.props.query} setFormularyId={this.setFormularyId} setSearch={this.setSearch}/>
+                return <Listing query={this.props.query} setFormularyId={this.setFormularyId} setSearch={this.setSearch} search={this.state.search}/>
         }
     }
 

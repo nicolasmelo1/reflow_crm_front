@@ -7,7 +7,7 @@ export default styled(Button)`
     border-radius: 10px 10px 0 0;
     text-align: center; 
     background-color:#0dbf7e; 
-    padding: 20px 40px; 
+    padding: 10px 40px; 
     float: right; 
     display: block; 
     font-size: 20px; 

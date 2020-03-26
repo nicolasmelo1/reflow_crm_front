@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { ListingFilterInputGroup, ListingFilterInputDropdownButton, ListingFilterInput, ListingFilterDeleteButton } from 'styles/Listing'
+import { FilterInputGroup, FilterInputDropdownButton, FilterInput, FilterDeleteButton } from 'styles/Filter'
 import DateRangePicker from 'components/Utils/DateRangePicker'
 import { stringToJsDateFormat, jsDateToStringFormat } from 'utils/dates'
 import { strings } from 'utils/constants'
@@ -21,7 +21,7 @@ import { Dropdown } from 'react-bootstrap'
  * @param {Object} filter - A object containing all of the data regarding the filter instance, so the Field we want
  * to filter on, and the value to filter.
  */
-const ListingFilterInstance = (props) => {
+const FilterInstance = (props) => {
     const dateFormat = 'DD/MM/YYYY'
 
     const [searchFieldType, setSearchFieldType] = useState(null)
@@ -32,10 +32,10 @@ const ListingFilterInstance = (props) => {
     const inputRef = React.useRef()
 
     const onChangeFieldName = (fieldName) => {
-        const currentField = props.headers.filter(field => field.name === fieldName).length > 0 ? props.headers.filter(field => field.name === fieldName)[0] : null
+        const currentField = props.fields.filter(field => field.name === fieldName).length > 0 ? props.fields.filter(field => field.name === fieldName)[0] : null
         const currentFieldType = currentField && props.types.data.field_type.filter(fieldType => fieldType.id === currentField.type).length > 0 ? props.types.data.field_type.filter(fieldType => fieldType.id === currentField.type)[0].type : null
         setSearchField(fieldName)
-        setSearchFieldTitle(currentField ? currentField.label_name : strings['pt-br']['listingFilterFieldsDropdownButttonLabel'])
+        setSearchFieldTitle(currentField ? currentField.label : strings['pt-br']['listingFilterFieldsDropdownButttonLabel'])
         if (searchFieldType !== 'date' && currentFieldType === 'date') {
             setSearchValue('')
         }
@@ -69,25 +69,25 @@ const ListingFilterInstance = (props) => {
     }, [props.filter.value])
 
     return (
-        <ListingFilterInputGroup>
+        <FilterInputGroup>
             {props.index !== 0 || searchValue !== '' || searchField !== '' ? (
-                <ListingFilterDeleteButton onClick={e=> {props.removeFilter(props.index)}}>
+                <FilterDeleteButton onClick={e=> {props.removeFilter(props.index)}}>
                     <FontAwesomeIcon icon="trash"/>
-                </ListingFilterDeleteButton>
+                </FilterDeleteButton>
             ) : ''}
             <Dropdown>
-                <Dropdown.Toggle as={ListingFilterInputDropdownButton}>
+                <Dropdown.Toggle as={FilterInputDropdownButton}>
                     {searchFieldTitle}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                    {props.headers.map((field, index) => (
+                    {props.fields.map((field, index) => (
                         <Dropdown.Item as="button" key={index} onClick={e => (onSelectField(field))}>
-                            {field.label_name}
+                            {field.label}
                         </Dropdown.Item>
                     ))}
                 </Dropdown.Menu>
             </Dropdown>
-            <ListingFilterInput ref={inputRef} placeholder={strings['pt-br']['listingFilterInputPlaceholder']} value={searchValue} onChange={e => onChangeFilterValue(e.target.value)}/>
+            <FilterInput ref={inputRef} placeholder={strings['pt-br']['listingFilterInputPlaceholder']} value={searchValue} onChange={e => onChangeFilterValue(e.target.value)}/>
             {searchFieldType === 'date' ? (
                 <DateRangePicker input={inputRef} 
                 closeWhenSelected={true}
@@ -95,8 +95,8 @@ const ListingFilterInstance = (props) => {
                 initialDays={![null, undefined, ''].includes(searchValue) ? [stringToJsDateFormat(searchValue.split(' - ')[0], dateFormat), stringToJsDateFormat(searchValue.split(' - ')[1], dateFormat)] : ['', '']}
                 />
             ) : ''}
-        </ListingFilterInputGroup>
+        </FilterInputGroup>
     )
 }
 
-export default ListingFilterInstance;
+export default FilterInstance;

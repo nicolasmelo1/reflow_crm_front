@@ -2,12 +2,12 @@ import React from 'react'
 import actions from 'redux/actions'
 import { connect } from 'react-redux'
 import ListingTable from './ListingTable'
-import ListingFilter from './ListingFilter'
 import ListingExtract from './ListingExtract'
 import ListingTotals from './ListingTotals'
 import ListingTotalsForm from './ListingTotalsForm'
 import ListingColumnSelect from './ListingColumnSelect'
-import { ListingTotalLabel, ListingTotalAddNewButton, ListingButtonsContainer } from 'styles/Listing'
+import Filter from 'components/Filter'
+import { ListingFilterAndExtractContainer, ListingFilterContainer, ListingFilterIcon, ListingFilterAndExtractButton, ListingTotalLabel, ListingTotalAddNewButton, ListingButtonsContainer } from 'styles/Listing'
 import { strings } from 'utils/constants'
 import { Row, Col } from 'react-bootstrap'
 
@@ -21,7 +21,7 @@ import { Row, Col } from 'react-bootstrap'
 class Listing extends React.Component {
     constructor(props) {
         super(props)
-
+        
         this.state = {
             isOpenedTotalsForm: false,
             params: {
@@ -30,13 +30,13 @@ class Listing extends React.Component {
                 page: 1,
                 sort_value: [],
                 sort_field: [],
-                search_value: [],
-                search_exact: [],
-                search_field: []
+                search_value: this.props.search.value,
+                search_exact: this.props.search.exact,
+                search_field: this.props.search.field
             }
         }
         this.props.onRenderListing(this.props.query.form)
-        this.props.onGetData(this.state.params, this.props.query.form)
+        this.props.onGetListingData(this.state.params, this.props.query.form)
         this.props.onGetTotals(this.state.params, this.props.query.form)
     }
 
@@ -50,7 +50,7 @@ class Listing extends React.Component {
     }
 
     setParams = async (params) => {
-        const response = await this.props.onGetData(params, this.props.query.form)
+        const response = await this.props.onGetListingData(params, this.props.query.form)
         this.setState(state => {
             return {
                 ...state,
@@ -137,12 +137,23 @@ class Listing extends React.Component {
                 </Row>
                 <Row style={{margin: '5px -15px'}}>
                     <ListingButtonsContainer>
-                        <ListingFilter 
+                        <Filter
+                        fields={(this.props.list.header && this.props.list.header.field_headers) ? 
+                                this.props.list.header.field_headers.map(field=> ({name: field.name, label: field.label_name})) : []} 
+                        params={this.state.params} 
+                        onFilter={this.onFilter}
+                        types={this.props.types}
+                        container={ListingFilterAndExtractContainer}
+                        filterButton={ListingFilterAndExtractButton}
+                        filterContainer={ListingFilterContainer}
+                        filterButtonIcon={<ListingFilterIcon icon="filter"/>}
+                        />
+                        {/*<ListingFilter 
                         headers={this.props.list.header} 
                         params={this.state.params} 
                         onFilter={this.onFilter}
                         types={this.props.types}
-                        />
+                        />*/}
                         <ListingExtract 
                         params={this.state.params} 
                         onExportData={this.props.onExportData} 
