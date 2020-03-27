@@ -114,16 +114,16 @@ class Kanban extends React.Component {
                                     Configurações obrigatórias
                                 </KanbanConfigurationButton>
                                 {this.state.configurationIsOpen ? '' : (
-                                     <Filter
-                                     fields={(this.props.kanban.initial.fields) ? this.props.kanban.initial.fields.map(field=> ({ name: field.name, label: field.label_name })) : []}
-                                     params={this.state.params} 
-                                     onFilter={this.onFilter}
-                                     types={this.props.types}
-                                     container={KanbanFilterHolder}
-                                     filterButton={KanbanFilterButton}
-                                     filterContainer={KanbanFilterContainer}
-                                     filterButtonIcon={<KanbanFilterIcon icon="filter"/>}
-                                     />
+                                    <Filter
+                                    fields={(this.props.kanban.initial.fields) ? this.props.kanban.initial.fields.map(field=> ({ name: field.name, label: field.label_name })) : []}
+                                    params={this.state.params} 
+                                    onFilter={this.onFilter}
+                                    types={this.props.types}
+                                    container={KanbanFilterHolder}
+                                    filterButton={KanbanFilterButton}
+                                    filterContainer={KanbanFilterContainer}
+                                    filterButtonIcon={<KanbanFilterIcon icon="filter"/>}
+                                    />
                                 )}
                             </Col>
                         </Row>
@@ -131,8 +131,8 @@ class Kanban extends React.Component {
                             <Col>
                                 {this.state.configurationIsOpen ? (
                                     <KanbanConfigurationForm 
-                                    onChangeDefaultState={this.props.onChangeDefaultState}
                                     formName={this.props.query.form}
+                                    onChangeDefaultState={this.props.onChangeDefaultState}
                                     onCreateOrUpdateCard={this.props.onCreateOrUpdateCard}
                                     onChangeCardsState={this.props.onChangeCardsState}
                                     fields={this.props.kanban.initial.fields}
@@ -143,11 +143,12 @@ class Kanban extends React.Component {
                                     />
                                 ): (
                                     <KanbanTable
+                                    formName={this.props.query.form}
                                     dimensionOrders={this.props.kanban.dimension_order}
-                                    defaultKanbanCardId={this.props.kanban.initial.default_kanban_card_id}
                                     defaultDimensionId={this.props.kanban.initial.default_dimension_field_id}
                                     card={(selectedCard.length > 0) ? selectedCard[0] : null}
                                     data={this.props.kanban.data}
+                                    onChangeDimensionOrdersState={this.props.onChangeDimensionOrdersState}
                                     />
                                 )}
                             </Col>

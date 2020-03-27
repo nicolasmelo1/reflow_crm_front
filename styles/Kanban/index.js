@@ -4,6 +4,7 @@ import KanbanCardsContainer from './KanbanCardsContainer'
 import KanbanCardContents from './KanbanCardContents'
 import KanbanCardContainer from './KanbanCardContainer'
 import KanbanDimensionTitleLabel from './KanbanDimensionTitleLabel'
+import KanbanDimensionMoveIcon from './KanbanDimensionMoveIcon'
 import KanbanConfigurationButton from './KanbanConfigurationButton'
 import KanbanConfigurationFormCardContainer from './KanbanConfigurationFormCardContainer'
 import KanbanConfigurationFormCardButton from './KanbanConfigurationFormCardButton'
@@ -26,6 +27,7 @@ export { KanbanConfigurationFormCardsContainer }
 export { KanbanConfigurationFormCardButton }
 export { KanbanConfigurationFormCardContainer }
 export { KanbanDimensionTitleLabel }
+export { KanbanDimensionMoveIcon }
 export { KanbanCardsContainer }
 export { KanbanCardContents }
 export { KanbanCardContainer }

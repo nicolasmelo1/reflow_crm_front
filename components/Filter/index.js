@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { FilterAddNewFilterButton, FilterSearchButton } from 'styles/Filter';
 import FilterInstance from './FilterInstance'
 import { strings } from 'utils/constants'
-import styled from 'styled-components'
 
 /**
  * This component controls all of the filters, when filtering the user can add or remove how many filters he wants
@@ -16,7 +15,7 @@ import styled from 'styled-components'
  * The object on the filter must follow the structure: 
  * `{
  *      name: 'foo',
- *      label_name: 'bar'
+ *      label: 'bar'
  * }`
  * @param {Object} params - the parameters of the listing, parameters define the filter, the sort, the date range
  * and many other stuff. With this we can create the filters based on the params.
@@ -24,6 +23,13 @@ import styled from 'styled-components'
  * and for calling the function to get the new filtered data.
  * @param {Object} types - the types state, this types are usually the required data from this system to work. 
  * Types defines all of the field types, form types, format of numbers and dates and many other stuff
+ * @param {React.Component} container - (optional) - defaults to a simple div, this is the holder of the button and the dropdown
+ * element.
+ * @param {React.Component} filterButton - (optional) - defaults to a simple button, if you want to style the Button, you can
+ * style within this component
+ * @param {React.Component} filterContainer - (optional) - defaults to a simple div, this container is for the contents of the filter
+ * sometimes you want to display it on the right, insstead on the left of the button.
+ * @param {React.JSX} filterButtonIcon - (optional) - The icon to display on the left side of the button label.
  */
 const Filter = (props) => {
     const [isOpen, _setIsOpen] = useState(false)

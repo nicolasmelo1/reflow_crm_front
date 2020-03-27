@@ -9,6 +9,9 @@ const KanbanTable = (props) => {
             <table>
                 <tbody>
                     <KanbanDimension
+                    formName={props.formName}
+                    defaultDimensionId={props.defaultDimensionId}
+                    onChangeDimensionOrdersState={props.onChangeDimensionOrdersState}
                     dimensionOrders={props.dimensionOrders}
                     cardFields={cardFields}
                     data={props.data}

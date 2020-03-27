@@ -56,6 +56,13 @@ const onGetDimensionOrders = (formName, dimensionId) => {
     }
 }
 
+const onChangeDimensionOrdersState = (dimensionOrders, dimensionId, formName) => {
+    return (dispatch) => {
+        agent.KANBAN.updateDimensionOrders(dimensionOrders, dimensionId, formName)
+        dispatch({ type: SET_DIMENSION_ORDER, payload: dimensionOrders })
+    }
+}
+
 const onGetKanbanData = (params, formName) => {
     return async (dispatch, getState) => {
         const initial = getState().home.kanban.initial
@@ -91,5 +98,6 @@ export default {
     onChangeCardsState,
     onChangeDefaultState,
     onCreateOrUpdateCard,
-    onGetDimensionOrders
+    onGetDimensionOrders,
+    onChangeDimensionOrdersState
 };
