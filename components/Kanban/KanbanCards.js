@@ -31,7 +31,7 @@ const KanbanCards = (props) => {
     return (
         <KanbanCardsContainer>
             {props.data.map((card, index) => (
-                <KanbanCardContainer key={index}>
+                <KanbanCardContainer key={index} onClick={e=> {props.setFormularyId(card.id)}}>
                     <div draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveCard(e, index)}} onDragEnd={e=>{onDragEnd(e)}} >
                         <KanbanCardMoveIcon icon="arrows-alt"/>
                     </div>

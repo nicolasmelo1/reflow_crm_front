@@ -85,7 +85,10 @@ class Data extends React.Component {
 
     openFormularyId = (value) => {
         this.setFormularyId(value)
-        this.onOpenOrCloseFormulary(true)
+
+        setTimeout(() => {
+            this.onOpenOrCloseFormulary(true)
+        }, 300)
     }
 
     setSearch = (searchField, searchValue, searchExact) => {
@@ -142,6 +145,7 @@ class Data extends React.Component {
         }
     }
 
+
     render () {
         return (
             <Layout title={strings['pt-br']['managementPageTitle']} showSideBar={true}>
@@ -171,4 +175,4 @@ class Data extends React.Component {
     }
 }
 
-export default connect(state => ({ home: state.home }), actions)(Data)
+export default connect(state => ({ }), actions)(Data)

@@ -100,6 +100,7 @@ const KanbanDimension = (props) => {
                         </div>
                     </KanbanDimensionTitleLabel>
                     <KanbanCards
+                    setFormularyId={props.setFormularyId}
                     dimension={dimensionOrder.options}
                     cleanDimensionColors={cleanDimensionColors}
                     cardFields={props.cardFields}

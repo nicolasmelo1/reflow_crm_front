@@ -104,6 +104,13 @@ class Listing extends React.Component {
         this.setParams({...params})
     }
 
+    componentDidUpdate = (prevProps) => {
+        if (this.props.formularyHasBeenUpdated !== prevProps.formularyHasBeenUpdated) {
+            this.props.onGetListingData(this.state.params, this.props.query.form)
+            this.props.onGetTotals(this.state.params, this.props.query.form)    
+        }
+    }
+
     render() {
         return (
             <div>

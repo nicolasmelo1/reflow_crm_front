@@ -48,6 +48,7 @@ class Kanban extends React.Component {
      * 
      * 1. The dimension order has changed
      * 2. The selected kanban card has changed
+     * 3. A formulary has been updated
      */
     isToUpdateData = (prevProps) => {
         return (

@@ -24,7 +24,6 @@ class Formulary extends React.Component {
         if (e) {
             e.preventDefault();
         }
-        
         // when user closes we reset the states on the formulary
         if (this.props.formularyIsOpen) {
             this.props.setFormularyId(null)
@@ -121,7 +120,6 @@ class Formulary extends React.Component {
     componentDidUpdate(oldProps) {
         const newProps = this.props
         if(oldProps.formularyId !== newProps.formularyId && newProps.formularyId) {
-            console.log(newProps.formularyDefaultData)
             this.props.onGetFormularyData(this.props.query.form, newProps.formularyId, newProps.formularyDefaultData)
         }
     }
