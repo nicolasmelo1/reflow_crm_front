@@ -129,8 +129,9 @@ const FormularySections = (props) => {
 
         if (props.sections.length > 0 && (JSON.stringify(props.data.depends_on_dynamic_form) !== JSON.stringify(sectionsData) || !formDataLoadedIsFromFormBuilded)) {
             if (props.data.depends_on_dynamic_form && formDataLoadedIsFromFormBuilded) {
-                setSectionsData(props.data.depends_on_dynamic_form)
+                onChangeSectionData(props.data.depends_on_dynamic_form, conditionals)
             } else {
+                console.log('teste2')
                 buildInitialData(conditionals)
             }
         }

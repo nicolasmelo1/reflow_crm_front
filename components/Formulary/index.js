@@ -28,6 +28,7 @@ class Formulary extends React.Component {
         // when user closes we reset the states on the formulary
         if (this.props.formularyIsOpen) {
             this.props.setFormularyId(null)
+            this.props.setFormularyDefaultData([])
             if (this.state.auxOriginalInitial.filledData && this.state.auxOriginalInitial.buildData) {
                 this.props.onFullResetFormularyState({}, this.state.auxOriginalInitial.buildData)
             } else {
@@ -92,6 +93,9 @@ class Formulary extends React.Component {
             response.then(response=> {
                 if (response.status !== 200) {
                     this.setErrors(response.data.error)
+                } else {
+                    this.props.setFormularyHasBeenUpdated()
+                    this.setIsOpen()
                 }
             })
         }
@@ -117,7 +121,8 @@ class Formulary extends React.Component {
     componentDidUpdate(oldProps) {
         const newProps = this.props
         if(oldProps.formularyId !== newProps.formularyId && newProps.formularyId) {
-            this.props.onGetFormularyData(this.props.query.form, newProps.formularyId)
+            console.log(newProps.formularyDefaultData)
+            this.props.onGetFormularyData(this.props.query.form, newProps.formularyId, newProps.formularyDefaultData)
         }
     }
 

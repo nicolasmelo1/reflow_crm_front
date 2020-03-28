@@ -9,10 +9,24 @@ const onGetBuildFormulary = (formName) => {
     }
 }
 
-const onGetFormularyData = (formName, formId) => {
+const onGetFormularyData = (formName, formId, defaults=[]) => {
     return async (dispatch) => {
         let response = await agent.HOME.getFormularyData(formName, formId)
-        dispatch({ type: SET_FORMULARY_DATA, payload: response.data.data})
+        if (response.status === 200){
+            let data = response.data.data
+            defaults.forEach(defaultData => {
+                const formValueId = defaultData.form_value_id
+                const sectionFormValuesIds = data.depends_on_dynamic_form.map(data=> data.dynamic_form_value.map(formValue => formValue.id))
+                const sectionIndex = sectionFormValuesIds.findIndex(section=> section.includes(formValueId.toString()))
+                if (sectionIndex !== -1) {
+                    const formValueIndex = sectionFormValuesIds[sectionIndex].findIndex(formValue => formValue === formValueId.toString())
+                    if (formValueIndex !== -1) {
+                        data.depends_on_dynamic_form[sectionIndex].dynamic_form_value[formValueIndex].value = defaultData.new_value
+                    }    
+                }
+            })
+            dispatch({ type: SET_FORMULARY_DATA, payload: response.data.data})
+        }
     }
 }
 

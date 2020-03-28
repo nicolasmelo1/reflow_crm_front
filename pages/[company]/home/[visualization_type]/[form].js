@@ -19,6 +19,8 @@ class Data extends React.Component {
             visualization: this.props.query.visualization_type,
             formularyId: null,//'51003'
             formularyIsOpen: false,
+            formularyDefaultData: [],
+            formularyHasBeenUpdated: false,
             search: {
                 value: [],
                 exact: [],
@@ -47,12 +49,29 @@ class Data extends React.Component {
         })
     }
 
+    setFormularyDefaultData = (defaults) => {
+        this.setState(state => {
+            return {
+                ...state,
+                formularyDefaultData: defaults
+            }
+        })
+    }
+
+    setFormularyHasBeenUpdated = () => {
+        this.setState(state => {
+            return {
+                ...state,
+                formularyHasBeenUpdated: !this.state.formularyHasBeenUpdated
+            }
+        })
+    }
+
     setFormularyId = (newValue) => {
         this.setState(state => {
             if (![undefined, null].includes(newValue)) {
                 return {
                     ...state,
-                    formularyIsOpen: true,
                     formularyId: newValue
                 }
             } else {
@@ -62,6 +81,11 @@ class Data extends React.Component {
                 } 
             }
         })
+    }
+
+    openFormularyId = (value) => {
+        this.setFormularyId(value)
+        this.onOpenOrCloseFormulary(true)
     }
 
     setSearch = (searchField, searchValue, searchExact) => {
@@ -91,11 +115,30 @@ class Data extends React.Component {
     renderVisualization = () => {
         switch(this.state.visualization){
             case 'listing': 
-                return <Listing query={this.props.query} setFormularyId={this.setFormularyId} setSearch={this.setSearch} search={this.state.search}/>
+                return <Listing 
+                        query={this.props.query} 
+                        setFormularyId={this.openFormularyId} 
+                        setSearch={this.setSearch} 
+                        formularyHasBeenUpdated={this.state.formularyHasBeenUpdated}
+                        search={this.state.search}
+                        />
             case 'kanban':
-                return <Kanban query={this.props.query} setFormularyId={this.setFormularyId} setSearch={this.setSearch} search={this.state.search}/>
+                return <Kanban 
+                        query={this.props.query} 
+                        setFormularyId={this.openFormularyId}
+                        setFormularyDefaultData={this.setFormularyDefaultData}
+                        formularyHasBeenUpdated={this.state.formularyHasBeenUpdated}
+                        setSearch={this.setSearch} 
+                        search={this.state.search}
+                        />
             default:
-                return <Listing query={this.props.query} setFormularyId={this.setFormularyId} setSearch={this.setSearch} search={this.state.search}/>
+                return <Listing 
+                        query={this.props.query} 
+                        setFormularyId={this.openFormularyId} 
+                        setSearch={this.setSearch} 
+                        formularyHasBeenUpdated={this.state.formularyHasBeenUpdated}
+                        search={this.state.search}
+                        />
         }
     }
 
@@ -116,6 +159,9 @@ class Data extends React.Component {
                 query={this.props.query} 
                 formularyId={this.state.formularyId} 
                 setFormularyId={this.setFormularyId} 
+                setFormularyHasBeenUpdated={this.setFormularyHasBeenUpdated}
+                setFormularyDefaultData={this.setFormularyDefaultData}
+                formularyDefaultData={this.state.formularyDefaultData}
                 onOpenOrCloseFormulary={this.onOpenOrCloseFormulary}
                 formularyIsOpen={this.state.formularyIsOpen}
                 />

@@ -55,7 +55,8 @@ class Kanban extends React.Component {
             this.props.kanban.dimension_order.length > 0 && 
             (
                 JSON.stringify(prevProps.kanban.dimension_order) !== JSON.stringify(this.props.kanban.dimension_order) ||
-                prevProps.kanban.initial.default_kanban_card_id !== this.props.kanban.initial.default_kanban_card_id
+                prevProps.kanban.initial.default_kanban_card_id !== this.props.kanban.initial.default_kanban_card_id ||
+                prevProps.formularyHasBeenUpdated !== this.props.formularyHasBeenUpdated
             )
         )
     }
@@ -148,6 +149,9 @@ class Kanban extends React.Component {
                                     defaultDimensionId={this.props.kanban.initial.default_dimension_field_id}
                                     card={(selectedCard.length > 0) ? selectedCard[0] : null}
                                     data={this.props.kanban.data}
+                                    onChangeKanbanData={this.props.onChangeKanbanData}
+                                    setFormularyDefaultData={this.props.setFormularyDefaultData}
+                                    setFormularyId={this.props.setFormularyId}
                                     onChangeDimensionOrdersState={this.props.onChangeDimensionOrdersState}
                                     />
                                 )}

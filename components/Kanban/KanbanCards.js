@@ -5,16 +5,16 @@ import {
     KanbanCardContents,
     KanbanCardMoveIcon
 } from 'styles/Kanban'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const KanbanCards = (props) => {
-    const onMoveCard = (e) => {
-        let cardContainer = e.currentTarget.parentNode
-        let cardRect = cardContainer.getBoundingClientRect()
-        let elementRect = e.currentTarget.getBoundingClientRect()
+    const onMoveCard = (e, cardIndex) => {
+        e.dataTransfer.clearData(['movedDimensionIndex', 'movedCardIndexInDimension', 'movedCardDimension'])
 
+        const cardContainer = e.currentTarget.parentNode
+        const cardRect = cardContainer.getBoundingClientRect()
         e.dataTransfer.setDragImage(cardContainer, cardRect.width - 5, 20)
-       //e.dataTransfer.setData('movedDimensionIndex', index)
+        e.dataTransfer.setData('movedCardIndexInDimension', cardIndex)
+        e.dataTransfer.setData('movedCardDimension', props.dimension)
     }
 
     const onDrag = (e) => {
@@ -25,33 +25,14 @@ const KanbanCards = (props) => {
     const onDragEnd = (e) => {
         e.preventDefault()
         e.stopPropagation()
-        console.log('teste2')
         props.cleanDimensionColors(e, false)
     }
 
-    const onDragOver = (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        props.cleanDimensionColors(e)
-    }
-
-    const onDrop = (e, targetDimensionIndex) => {
-        e.preventDefault()
-        e.stopPropagation()
-        
-        props.cleanDimensionColors(e, false)
-        /*let movedDimensionIndex = parseInt(e.dataTransfer.getData('movedDimensionIndex'))
-        const aux = props.dimensionOrders[movedDimensionIndex]
-        props.dimensionOrders[movedDimensionIndex] =  props.dimensionOrders[targetDimensionIndex];
-        props.dimensionOrders[targetDimensionIndex] = aux;
-
-        props.onChangeDimensionOrdersState([...props.dimensionOrders], props.formName, props.defaultDimensionId)*/
-    }
     return (
-        <KanbanCardsContainer onDrop={e => {onDrop(e)}}>
+        <KanbanCardsContainer>
             {props.data.map((card, index) => (
                 <KanbanCardContainer key={index}>
-                    <div draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveCard(e)}} onDragEnd={e=>{onDragEnd(e)}} >
+                    <div draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveCard(e, index)}} onDragEnd={e=>{onDragEnd(e)}} >
                         <KanbanCardMoveIcon icon="arrows-alt"/>
                     </div>
                     {props.cardFields.map((cardField, cardFieldIndex) => (

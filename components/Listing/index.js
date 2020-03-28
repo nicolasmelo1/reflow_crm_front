@@ -148,12 +148,6 @@ class Listing extends React.Component {
                         filterContainer={ListingFilterContainer}
                         filterButtonIcon={<ListingFilterIcon icon="filter"/>}
                         />
-                        {/*<ListingFilter 
-                        headers={this.props.list.header} 
-                        params={this.state.params} 
-                        onFilter={this.onFilter}
-                        types={this.props.types}
-                        />*/}
                         <ListingExtract 
                         params={this.state.params} 
                         onExportData={this.props.onExportData} 

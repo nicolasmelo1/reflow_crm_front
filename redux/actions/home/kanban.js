@@ -71,8 +71,9 @@ const onGetKanbanData = (params, formName) => {
         let payload = []
 
         if (initial.default_kanban_card_id && initial.default_dimension_field_id) {
-            const cardFieldIds = cards.filter(card => card.id === initial.default_kanban_card_id)[0].kanban_card_fields.map(field=> field.id)
             const dimension = initial.fields.filter(field=> field.id === initial.default_dimension_field_id)
+            const cardFieldIds = cards.filter(card => card.id === initial.default_kanban_card_id)[0].kanban_card_fields.map(field=> field.id).concat(dimension[0].id)
+
             
             for (let i=0; i<dimesionOrders.length; i++) {
                 const parameters = {
@@ -91,10 +92,23 @@ const onGetKanbanData = (params, formName) => {
     }
 }
 
+
+const onChangeKanbanData = (body, formName, data) => {
+    return async (dispatch) => {
+        const response = await agent.KANBAN.updateCardDimension(body, formName)
+        if (response.status === 200){
+            dispatch({ type: SET_DATA_KANBAN, payload: data})
+        } else {
+            return response
+        }
+    }
+}
+
 export default {
     onRenderKanban,
     onGetCards,
     onGetKanbanData,
+    onChangeKanbanData,
     onChangeCardsState,
     onChangeDefaultState,
     onCreateOrUpdateCard,
