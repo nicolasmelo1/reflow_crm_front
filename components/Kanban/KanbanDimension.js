@@ -16,6 +16,16 @@ const KanbanDimension = (props) => {
         e.dataTransfer.setData('movedDimensionIndex', index)
     }
 
+    const cleanDimensionColors = (e, isMoving=true) => {
+        const dimensions = Array.prototype.slice.call(e.currentTarget.closest('tr').querySelectorAll('td'));
+        dimensions.map(dimension => {
+            dimension.style.backgroundColor = 'transparent';
+        });
+        if (isMoving) {
+            e.currentTarget.style.backgroundColor = '#f2f2f2'
+        }
+    }
+
     const onDrag = (e) => {
         e.preventDefault()
         e.stopPropagation()
@@ -24,16 +34,19 @@ const KanbanDimension = (props) => {
     const onDragEnd = (e) => {
         e.preventDefault()
         e.stopPropagation()
+        cleanDimensionColors(e, false)
     }
 
     const onDragOver = (e) => {
         e.preventDefault()
         e.stopPropagation()
+        cleanDimensionColors(e)
     }
 
     const onDrop = (e, targetDimensionIndex) => {
         e.preventDefault()
         e.stopPropagation()
+        cleanDimensionColors(e, false)
         let movedDimensionIndex = parseInt(e.dataTransfer.getData('movedDimensionIndex'))
         const aux = props.dimensionOrders[movedDimensionIndex]
         props.dimensionOrders[movedDimensionIndex] =  props.dimensionOrders[targetDimensionIndex];
@@ -53,6 +66,8 @@ const KanbanDimension = (props) => {
                         </div>
                     </KanbanDimensionTitleLabel>
                     <KanbanCards
+                    dimensionIndex={index}
+                    cleanDimensionColors={cleanDimensionColors}
                     cardFields={props.cardFields}
                     data={filterData(dimensionOrder.options) ? filterData(dimensionOrder.options)[1]: []}
                     />
