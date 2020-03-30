@@ -1,12 +1,30 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import actions from 'redux/actions'
+import { strings } from 'utils/constants'
 import KanbanConfigurationForm from './KanbanConfigurationForm'
 import KanbanTable from './KanbanTable'
 import Filter from 'components/Filter'
 import { KanbanFilterIcon, KanbanFilterHolder, KanbanFilterContainer, KanbanFilterButton, KanbanConfigurationButton } from 'styles/Kanban'
 import { Row, Col } from 'react-bootstrap'
 
+
+/**
+ * This controls everything from the Kanban component, this component holds the Kanban table (with it's dimension and cards),
+ * the kanban configuration form and also the filter, that is shared with other visualization types.
+ * 
+ * @param {Function} setFormularyId - the function to define the id of the form to render.
+ * @param {Object} query - The object containing all of the parameters of the current url, you may find it
+ * with the Router object in next.js
+ * @param {Function} setFormularyDefaultData - the function to define a default data when the user changes 
+ * the kanban card to a status with required field data. When the formulary data is loaded we change with this 
+ * default data.
+ * @param {Boolean} formularyHasBeenUpdated - this boolean is explained in the data page. This Boolean works like 
+ * a signal, the value is not important.
+ * @param {Function} setSearch - this function is to set search data, the search data is shared between visualization
+ * types, that's why we use this.
+ * @param {Object} search - object that is used to share between search data between search data.
+ */
 class Kanban extends React.Component {
     constructor(props) {
         super(props)
@@ -106,14 +124,14 @@ class Kanban extends React.Component {
             <div>
                 {this.props.kanban.initial.dimension_fields.length === 0 ? (
                     <p>
-                        Não é possivel visualizar os dados desse formulário em formato de kanban.
+                        {strings['pt-br']['kanbanCannotBuildMessage']}
                     </p>
                 ) : (
                     <div>
                         <Row>
                             <Col>
                                 <KanbanConfigurationButton onClick={e=> {this.setConfigurationIsOpen(!this.state.configurationIsOpen)}}>
-                                    Configurações obrigatórias
+                                    {this.state.configurationIsOpen ? strings['pt-br']['kanbanObligatorySettingIsOpenButtonLabel'] :  strings['pt-br']['kanbanObligatorySettingIsClosedButtonLabel']}
                                 </KanbanConfigurationButton>
                                 {this.state.configurationIsOpen ? '' : (
                                     <Filter

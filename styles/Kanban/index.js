@@ -6,7 +6,11 @@ import KanbanCardContainer from './KanbanCardContainer'
 import KanbanCardMoveIcon from './KanbanCardMoveIcon'
 import KanbanDimensionTitleLabel from './KanbanDimensionTitleLabel'
 import KanbanDimensionMoveIcon from './KanbanDimensionMoveIcon'
+import KanbanCardConfigurationFormCancelButton from './KanbanCardConfigurationFormCancelButton'
+import KanbanCardConfigurationFormSaveButton from './KanbanCardConfigurationFormSaveButton'
 import KanbanConfigurationButton from './KanbanConfigurationButton'
+import KanbanConfigurationFormContainer from './KanbanConfigurationFormContainer'
+import KanbanConfigurationFormTitle from './KanbanConfigurationFormTitle'
 import KanbanConfigurationFormCardContainer from './KanbanConfigurationFormCardContainer'
 import KanbanConfigurationFormCardButton from './KanbanConfigurationFormCardButton'
 import KanbanConfigurationFormCardsContainer from './KanbanConfigurationFormCardsContainer'
@@ -21,7 +25,11 @@ export { KanbanFilterIcon }
 export { KanbanFilterHolder }
 export { KanbanFilterContainer }
 export { KanbanFilterButton }
+export { KanbanCardConfigurationFormCancelButton }
+export { KanbanCardConfigurationFormSaveButton }
 export { KanbanConfigurationButton }
+export { KanbanConfigurationFormContainer }
+export { KanbanConfigurationFormTitle }
 export { KanbanConfigurationFormCardEditIcon }
 export { KanbanConfigurationFormCardRemoveIcon }
 export { KanbanConfigurationFormCardsContainer }

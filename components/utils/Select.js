@@ -15,6 +15,7 @@ import Utils from 'styles/Utils'
  * @param {String} optionOnHoverColor - (optional) - default to #444
  * @param {String} optionOnHoverBackgroundColor - (optional) - default to #bfbfbf
  * @param {Boolean} multiple - Explained in Select component
+ * @param {String} placeholder - Text to show in the placeholder of the input when no option is selected.
  */
 const Option = (props) => {
     const filteredOptions = props.options.filter(option=> props.selectedOptions.find(selectedOption=> selectedOption.value === option.value) === undefined);
@@ -213,6 +214,7 @@ const Select = (props) => {
                 <Utils.Select.Input 
                 ref={inputRef} 
                 type="text" 
+                placeholder={selectedOptions.length === 0 ? props.placeholder: ''}
                 value={searchValue} 
                 searchValueColor={props.searchValueColor}
                 onChange={e => {updateOptions(e.target.value, [...selectedOptions])}} 

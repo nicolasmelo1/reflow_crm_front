@@ -27,7 +27,7 @@ const FilterInstance = (props) => {
     const [searchFieldType, setSearchFieldType] = useState(null)
     const [searchField, setSearchField] = useState('')
     const [searchValue, setSearchValue] = useState('')
-    const [searchFieldTitle, setSearchFieldTitle] = useState(strings['pt-br']['listingFilterFieldsDropdownButttonLabel'])
+    const [searchFieldTitle, setSearchFieldTitle] = useState(strings['pt-br']['filterFieldsDropdownButttonLabel'])
 
     const inputRef = React.useRef()
 
@@ -35,7 +35,7 @@ const FilterInstance = (props) => {
         const currentField = props.fields.filter(field => field.name === fieldName).length > 0 ? props.fields.filter(field => field.name === fieldName)[0] : null
         const currentFieldType = currentField && props.types.data.field_type.filter(fieldType => fieldType.id === currentField.type).length > 0 ? props.types.data.field_type.filter(fieldType => fieldType.id === currentField.type)[0].type : null
         setSearchField(fieldName)
-        setSearchFieldTitle(currentField ? currentField.label : strings['pt-br']['listingFilterFieldsDropdownButttonLabel'])
+        setSearchFieldTitle(currentField ? currentField.label : strings['pt-br']['filterFieldsDropdownButttonLabel'])
         if (searchFieldType !== 'date' && currentFieldType === 'date') {
             setSearchValue('')
         }
@@ -87,7 +87,7 @@ const FilterInstance = (props) => {
                     ))}
                 </Dropdown.Menu>
             </Dropdown>
-            <FilterInput ref={inputRef} placeholder={strings['pt-br']['listingFilterInputPlaceholder']} value={searchValue} onChange={e => onChangeFilterValue(e.target.value)}/>
+            <FilterInput ref={inputRef} placeholder={strings['pt-br']['filterInputPlaceholder']} value={searchValue} onChange={e => onChangeFilterValue(e.target.value)}/>
             {searchFieldType === 'date' ? (
                 <DateRangePicker input={inputRef} 
                 closeWhenSelected={true}

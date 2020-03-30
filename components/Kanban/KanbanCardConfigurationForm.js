@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import KanbanCardConfigurationFormSelect from './KanbanCardConfigurationFormSelect'
+import { KanbanCardConfigurationFormCancelButton, KanbanCardConfigurationFormSaveButton } from 'styles/Kanban'
+import { strings } from 'utils/constants'
+
 
 const KanbanCardConfigurationForm = (props) => {
     const [fieldOptions,  setFieldOptions] = useState([])
@@ -44,8 +47,12 @@ const KanbanCardConfigurationForm = (props) => {
                 selectedField={field}
                 />
             ))}
-            <button onClick={e=> {props.onCloseCardForm()}}>Cancelar</button>
-            <button onClick={e=> {props.onSaveCardForm(cardData)}}>Salvar</button>
+            <KanbanCardConfigurationFormSaveButton onClick={e=> {props.onSaveCardForm(cardData)}}>
+                {strings['pt-br']['kanbanCardConfigurationFormSaveButtonLabel']}
+            </KanbanCardConfigurationFormSaveButton>
+            <KanbanCardConfigurationFormCancelButton onClick={e=> {props.onCloseCardForm()}}>
+                {strings['pt-br']['kanbanCardConfigurationFormCancelButtonLabel']}
+            </KanbanCardConfigurationFormCancelButton>
         </div>
     )
 }

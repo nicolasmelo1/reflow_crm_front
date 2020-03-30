@@ -2,6 +2,27 @@ import React from 'react'
 import KanbanCards from './KanbanCards'
 import { KanbanDimensionTitleLabel, KanbanDimensionMoveIcon } from 'styles/Kanban'
 
+
+/**
+ * This is a component that controls all of the dimensions in the kanban. This controls the drop and dragover in 
+ * the dimesion for the dimension drag and drop and also the card drag and drop
+ * 
+ * @param {String} formName - the form name of the current formulary
+ * @param {Array<Object>} dimensionOrders - The dimension orders loaded on the redux state, this dimension order
+ * holds only the order of each dimension.
+ * @param {Interger} defaultDimensionId - The id of the selected dimension.
+ * @param {Object} cardFields - the fields on the selected card.
+ * @param {Array<Object>} data - this is a array with all of the data, this data is used to populate the kanban 
+ * cards.
+ * @param {Function} onChangeKanbanData - this function is an action used to change the card status,
+ * between dimension columns.
+ * @param {Function} setFormularyDefaultData - the function to define a default data when the user changes 
+ * the kanban card to a status with required field data. When the formulary data is loaded we change with this 
+ * default data.
+ * @param {Function} setFormularyId - the function to define the id of the form to render.
+ * @param {Function} onChangeDimensionOrdersState - this function is an redux action used to change the dimension
+ * order in the redux store.
+ */
 const KanbanDimension = (props) => {
     const filterDimensionIndex = (dimension) => {
         return props.data.findIndex(element=> element[0] === dimension)
@@ -21,7 +42,13 @@ const KanbanDimension = (props) => {
         e.dataTransfer.setDragImage(dimensionContainer, dimensionRect.width - elementRect.width, 20)
         e.dataTransfer.setData('movedDimensionIndex', index)
     }
-
+    /**
+     * Change the background color when the dimension and the cards are moving.
+     * 
+     * @param {*} e - is the event object
+     * @param {*} isMoving - defaults to true - a boolean that says if the card or the
+     * dimension is being moved or if it has ended.
+     */
     const cleanDimensionColors = (e, isMoving=true) => {
         const dimensions = Array.prototype.slice.call(e.currentTarget.closest('tr').querySelectorAll('td'));
         dimensions.map(dimension => {
@@ -53,7 +80,8 @@ const KanbanDimension = (props) => {
         e.preventDefault()
         e.stopPropagation()
         cleanDimensionColors(e, false)
-       
+
+        // this controls the drop when the dimension is being moved.
         if (![null, undefined, '', 'undefined'].includes(e.dataTransfer.getData('movedDimensionIndex'))) {
             let movedDimensionIndex = parseInt(e.dataTransfer.getData('movedDimensionIndex'))
             const aux = props.dimensionOrders[movedDimensionIndex]
@@ -62,6 +90,7 @@ const KanbanDimension = (props) => {
             
             props.onChangeDimensionOrdersState([...props.dimensionOrders], props.formName, props.defaultDimensionId)
         
+        // this constrols the drop when the card is being moved.
         } else if (![null, undefined, '', 'undefined'].includes(e.dataTransfer.getData('movedCardIndexInDimension')) && ![null, undefined, '', 'undefined'].includes(e.dataTransfer.getData('movedCardDimension'))) {
             const movedCardIndexInDimension = parseInt(e.dataTransfer.getData('movedCardIndexInDimension'))
             const movedDimensionIndexInData = filterDimensionIndex(e.dataTransfer.getData('movedCardDimension'))
@@ -78,7 +107,6 @@ const KanbanDimension = (props) => {
                     new_value: props.dimensionOrders[targetDimensionIndex].options,
                     form_value_id: fieldValueId
                 }
-                //props.onUpdateKanbanData()
                 props.onChangeKanbanData(newData, props.formName, [...props.data]).then(response=> {
                     if (response && response.data.error && response.data.error.reason.includes('required_field')) {
                         props.setFormularyDefaultData([newData])

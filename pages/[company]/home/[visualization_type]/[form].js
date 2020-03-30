@@ -15,6 +15,10 @@ class Data extends React.Component {
 
     constructor(props) {
         super(props)
+
+        // the `formularyHasBeenUpdated` variable works like a signal. It doesn't matter if it's true or false
+        // what it metters for us is if it has changed it's value. If the value has changed it means the formulary
+        // has been updated
         this.state = {
             visualization: this.props.query.visualization_type,
             formularyId: null,//'51003'

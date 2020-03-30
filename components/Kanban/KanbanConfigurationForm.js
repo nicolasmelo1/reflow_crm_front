@@ -2,8 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { Select } from 'components/Utils'
 import KanbanCardConfigurationForm from './KanbanCardConfigurationForm'
 import KanbanConfigurationFormCard from './KanbanConfigurationFormCard'
-import { KanbanConfigurationFormSelectContainer, KanbanCardAddNewButton } from 'styles/Kanban'
+import { KanbanConfigurationFormSelectContainer, KanbanCardAddNewButton, KanbanConfigurationFormContainer, KanbanConfigurationFormTitle} from 'styles/Kanban'
+import { strings } from 'utils/constants'
 
+/**
+ * This component controls the formulary to set the kanban dimension and cards.
+ * 
+ * @param {*} props 
+ */
 const KanbanConfigurationForm = (props) => {
     const [defaults, setDefaults] = useState({
         default_kanban_card_id: props.defaultKanbanCardId,
@@ -68,16 +74,22 @@ const KanbanConfigurationForm = (props) => {
     }, [props.dimensionFields])
 
     return (
-        <div style={{border: '1px solid #444', borderRadius: '5px', padding: '10px'}}>
-            <h2>Dimensão</h2>
+        <KanbanConfigurationFormContainer>
+            <KanbanConfigurationFormTitle>
+                {strings['pt-br']['kanbanConfigurationFormDimensionTitleLabel']}
+            </KanbanConfigurationFormTitle>
             <KanbanConfigurationFormSelectContainer>
                 <Select 
                 options={dimensionOptions} 
-                onChange={onChangeDefaultDimension} 
+                onChange={onChangeDefaultDimension}
+                placeholder={strings['pt-br']['kanbanConfigurationFormDimensionSelectPlaceholder']}
                 initialValues={dimensionOptions.filter(dimensionOption=> dimensionOption.value === props.defaultDimensionId)}
                 /> 
             </KanbanConfigurationFormSelectContainer>
-            <h2>Cards<KanbanCardAddNewButton onClick={e=> {onOpenCardForm()}}/></h2>
+            <KanbanConfigurationFormTitle>
+                {cardFormIsOpen ? strings['pt-br']['kanbanConfigurationFormCardsIsOpenTitleLabel'] : strings['pt-br']['kanbanConfigurationFormCardsIsClosedTitleLabel'] }
+                {cardFormIsOpen ? '' : (<KanbanCardAddNewButton onClick={e=> {onOpenCardForm()}}/>)}
+            </KanbanConfigurationFormTitle>
             {cardFormIsOpen ? (
                 <KanbanCardConfigurationForm
                 onSaveCardForm={onSaveCardForm}
@@ -93,7 +105,7 @@ const KanbanConfigurationForm = (props) => {
                 cards={props.cards}
                 />
             )}
-        </div>
+        </KanbanConfigurationFormContainer>
     )
 }
 

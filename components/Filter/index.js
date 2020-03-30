@@ -125,11 +125,11 @@ const Filter = (props) => {
             <FilterButton onClick={e => {onToggleFilter(e)}}>
                 {props.filterButtonIcon ? (
                     <span>
-                        {props.filterButtonIcon}&nbsp;{strings['pt-br']['listingFilterButtonLabel']}
+                        {props.filterButtonIcon}&nbsp;{strings['pt-br']['filterButtonLabel']}
                     </span>
                 ) : (
                     <span>
-                        {strings['pt-br']['listingFilterButtonLabel']}
+                        {strings['pt-br']['filterButtonLabel']}
                     </span>)
                 }
             </FilterButton>
@@ -146,8 +146,8 @@ const Filter = (props) => {
                         fields={fields}
                         />
                     ))}
-                    <FilterSearchButton onClick={e => {sendFilterData(e)}}>{strings['pt-br']['listingFilterSearchButtonLabel']}</FilterSearchButton>
-                    <FilterAddNewFilterButton onClick={e => {addNewFilter(e)}}>{strings['pt-br']['listingFilterAddNewFilterButtonLabel']}</FilterAddNewFilterButton>
+                    <FilterSearchButton onClick={e => {sendFilterData(e)}}>{strings['pt-br']['filterSearchButtonLabel']}</FilterSearchButton>
+                    <FilterAddNewFilterButton onClick={e => {addNewFilter(e)}}>{strings['pt-br']['filterAddNewFilterButtonLabel']}</FilterAddNewFilterButton>
                 </FilterContainerComponent>
             ) : ''}
         </ContainerComponent>
