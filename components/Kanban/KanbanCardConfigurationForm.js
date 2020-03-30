@@ -4,6 +4,17 @@ import { KanbanCardConfigurationFormCancelButton, KanbanCardConfigurationFormSav
 import { strings } from 'utils/constants'
 
 
+/**
+ * This component holds the formulary of the kanban card creation, we have 2 formularies in the kanban creation
+ * The first one is for selecting the dimension and selecting the default card, the other one is for creating the
+ * kanban card.
+ * 
+ * @param {Function} onSaveCardForm - Function to be fired when the user saves the kanban card fields.
+ * @param {Function} onCloseCardForm - Function to be fired when the user cancels and exit the kanban 
+ * card creation.
+ * @param {Object} cardToEdit - The card to edit.
+ * @param {Array<Objects>} fields - The array containing all of the fields the user can select to create the kanban card.
+ */
 const KanbanCardConfigurationForm = (props) => {
     const [fieldOptions,  setFieldOptions] = useState([])
     const [cardData, setCardData] = useState({
