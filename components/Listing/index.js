@@ -26,7 +26,7 @@ class Listing extends React.Component {
             isOpenedTotalsForm: false,
             params: {
                 from: '25/11/2019',
-                to: '03/03/2020',
+                to: '04/04/2020',
                 page: 1,
                 sort_value: [],
                 sort_field: [],
@@ -114,7 +114,7 @@ class Listing extends React.Component {
     render() {
         return (
             <div>
-                <Row>
+                {/*<Row>
                     <Col>
                         <ListingTotalLabel>
                             {strings['pt-br']['listingTotalTitleLabel']}
@@ -141,7 +141,7 @@ class Listing extends React.Component {
                             />
                         )}
                     </Col>
-                </Row>
+                </Row>*/}
                 <Row style={{margin: '5px -15px'}}>
                     <ListingButtonsContainer>
                         <Filter

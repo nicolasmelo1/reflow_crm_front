@@ -32,8 +32,9 @@ class Kanban extends React.Component {
         this.state = {
             configurationIsOpen: false,
             params: {
+                page: 1,
                 from: '25/11/2019',
-                to: '03/03/2020',
+                to: '04/04/2020',
                 search_value: this.props.search.value,
                 search_exact: this.props.search.exact,
                 search_field: this.props.search.field
@@ -164,10 +165,12 @@ class Kanban extends React.Component {
                                 ): (
                                     <KanbanTable
                                     formName={this.props.query.form}
+                                    params={this.state.params}
                                     dimensionOrders={this.props.kanban.dimension_order}
                                     defaultDimensionId={this.props.kanban.initial.default_dimension_field_id}
                                     card={(selectedCard.length > 0) ? selectedCard[0] : null}
                                     data={this.props.kanban.data}
+                                    onGetKanbanData={this.props.onGetKanbanData}
                                     onChangeKanbanData={this.props.onChangeKanbanData}
                                     setFormularyDefaultData={this.props.setFormularyDefaultData}
                                     setFormularyId={this.props.setFormularyId}

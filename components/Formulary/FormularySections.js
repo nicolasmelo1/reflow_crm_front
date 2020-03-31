@@ -131,7 +131,6 @@ const FormularySections = (props) => {
             if (props.data.depends_on_dynamic_form && formDataLoadedIsFromFormBuilded) {
                 onChangeSectionData(props.data.depends_on_dynamic_form, conditionals)
             } else {
-                console.log('teste2')
                 buildInitialData(conditionals)
             }
         }

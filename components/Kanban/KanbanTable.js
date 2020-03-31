@@ -33,6 +33,8 @@ const KanbanTable = (props) => {
                     defaultDimensionId={props.defaultDimensionId}
                     onChangeDimensionOrdersState={props.onChangeDimensionOrdersState}
                     onChangeKanbanData={props.onChangeKanbanData}
+                    params={props.params}
+                    onGetKanbanData={props.onGetKanbanData}
                     setFormularyId={props.setFormularyId}
                     setFormularyDefaultData={props.setFormularyDefaultData}
                     dimensionOrders={props.dimensionOrders}

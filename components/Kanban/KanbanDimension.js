@@ -25,11 +25,11 @@ import { KanbanDimensionTitleLabel, KanbanDimensionMoveIcon } from 'styles/Kanba
  */
 const KanbanDimension = (props) => {
     const filterDimensionIndex = (dimension) => {
-        return props.data.findIndex(element=> element[0] === dimension)
+        return props.data.findIndex(element=> element.dimension === dimension)
     }
 
     const filterData = (dimension) => {
-        return props.data.filter(element=> element[0] === dimension)[0]
+        return props.data.filter(element=> element.dimension === dimension)[0]
     }
 
     const onMoveDimension = (e, index) => {
@@ -97,11 +97,11 @@ const KanbanDimension = (props) => {
             const targetDimensionIndexInData = filterDimensionIndex(props.dimensionOrders[targetDimensionIndex].options)
             
             if (movedDimensionIndexInData !== -1 && targetDimensionIndexInData !== -1) {
-                const cardData = {...props.data[movedDimensionIndexInData][1][movedCardIndexInDimension]}
+                const cardData = {...props.data[movedDimensionIndexInData].data[movedCardIndexInDimension]}
                 const fieldValueId = cardData.dynamic_form_value.filter(value=> value.field_id === props.defaultDimensionId)[0].id
 
-                props.data[movedDimensionIndexInData][1].splice(movedCardIndexInDimension, 1)
-                props.data[targetDimensionIndexInData][1].splice(0, 0, cardData)
+                props.data[movedDimensionIndexInData].data.splice(movedCardIndexInDimension, 1)
+                props.data[targetDimensionIndexInData].data.splice(0, 0, cardData)
                 
                 const newData = {
                     new_value: props.dimensionOrders[targetDimensionIndex].options,
@@ -131,8 +131,13 @@ const KanbanDimension = (props) => {
                     setFormularyId={props.setFormularyId}
                     dimension={dimensionOrder.options}
                     cleanDimensionColors={cleanDimensionColors}
+                    formName={props.formName}
+                    onGetKanbanData={props.onGetKanbanData}
+                    onChangeKanbanData={props.onChangeKanbanData}
+                    params={props.params}
                     cardFields={props.cardFields}
-                    data={filterData(dimensionOrder.options) ? filterData(dimensionOrder.options)[1]: []}
+                    data={filterData(dimensionOrder.options) ? filterData(dimensionOrder.options).data: []}
+                    pagination={filterData(dimensionOrder.options) ? filterData(dimensionOrder.options).pagination: []}
                     />
                 </td>
             ))}

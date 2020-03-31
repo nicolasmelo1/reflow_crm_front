@@ -6,6 +6,7 @@ import KanbanCardContainer from './KanbanCardContainer'
 import KanbanCardMoveIcon from './KanbanCardMoveIcon'
 import KanbanDimensionTitleLabel from './KanbanDimensionTitleLabel'
 import KanbanDimensionMoveIcon from './KanbanDimensionMoveIcon'
+import KanbanLoadMoreDataButton from './KanbanLoadMoreDataButton'
 import KanbanCardConfigurationFormCancelButton from './KanbanCardConfigurationFormCancelButton'
 import KanbanCardConfigurationFormSaveButton from './KanbanCardConfigurationFormSaveButton'
 import KanbanConfigurationButton from './KanbanConfigurationButton'
@@ -37,6 +38,7 @@ export { KanbanConfigurationFormCardButton }
 export { KanbanConfigurationFormCardContainer }
 export { KanbanDimensionTitleLabel }
 export { KanbanDimensionMoveIcon }
+export { KanbanLoadMoreDataButton }
 export { KanbanCardMoveIcon }
 export { KanbanCardsContainer }
 export { KanbanCardContents }

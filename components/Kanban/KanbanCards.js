@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { 
     KanbanCardsContainer,
     KanbanCardContainer, 
     KanbanCardContents,
-    KanbanCardMoveIcon
+    KanbanCardMoveIcon,
+    KanbanLoadMoreDataButton
 } from 'styles/Kanban'
+import { Spinner } from 'react-bootstrap'
 
 
 /**
@@ -21,6 +23,12 @@ import {
  * cards. This is filtered from the parent component to filter only the data of this dimension.
  */
 const KanbanCards = (props) => {
+    const [isOverflown, setIsOverflown] = useState(false)
+    const [hasFiredRequestForNewPage, setHasFiredRequestForNewPage] = useState(false)
+ 
+    const kanbanCardContainerRef = React.useRef()
+
+
     const onMoveCard = (e, cardIndex) => {
         e.dataTransfer.clearData(['movedDimensionIndex', 'movedCardIndexInDimension', 'movedCardDimension'])
 
@@ -42,8 +50,44 @@ const KanbanCards = (props) => {
         props.cleanDimensionColors(e, false)
     }
 
+    const getMoreData = () => {
+        props.params.page = props.pagination.current + 1
+        setHasFiredRequestForNewPage(true)
+        props.onGetKanbanData(props.params, props.formName, props.dimension).then(_=> {
+            setHasFiredRequestForNewPage(false)
+        })
+    }
+
+    const onScroll = (e) => {
+        if (props.pagination.current < props.pagination.total && kanbanCardContainerRef.current.scrollTop === (kanbanCardContainerRef.current.scrollHeight - kanbanCardContainerRef.current.offsetHeight)) {
+            getMoreData()
+        }
+    }
+
+    const onClickToGetMoreData = () => {
+        getMoreData()
+    }
+
+    useEffect(() => {
+        kanbanCardContainerRef.current.addEventListener('scroll', onScroll)
+        return () => {
+            kanbanCardContainerRef.current.removeEventListener('scroll', onScroll)
+        }
+    })
+
+    useEffect(() => {
+        // if the page is to big for the pagination and the scroll is not active we add a 'load more' button in the bottom of the kanban dimension column
+        if (props.pagination.current < props.pagination.total) {
+            if (kanbanCardContainerRef.current.scrollHeight > kanbanCardContainerRef.current.clientHeight) {
+                setIsOverflown(true)
+            } else {
+                setIsOverflown(false)
+            }
+        }
+    }, [props.data])
+
     return (
-        <KanbanCardsContainer>
+        <KanbanCardsContainer ref={kanbanCardContainerRef}>
             {props.data.map((card, index) => (
                 <KanbanCardContainer key={index} onClick={e=> {props.setFormularyId(card.id)}}>
                     <div draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveCard(e, index)}} onDragEnd={e=>{onDragEnd(e)}} >
@@ -60,6 +104,12 @@ const KanbanCards = (props) => {
                     ))}
                 </KanbanCardContainer>
             ))}
+            {props.pagination.current < props.pagination.total && !isOverflown ? (
+                <KanbanLoadMoreDataButton onClick={e=> {onClickToGetMoreData()}}>Carregar mais</KanbanLoadMoreDataButton>
+            ): ''}
+            <div style={{margin: 'auto'}}>
+                {hasFiredRequestForNewPage ? (<Spinner animation="border" />) : ''}
+            </div>
         </KanbanCardsContainer>
     )
 }

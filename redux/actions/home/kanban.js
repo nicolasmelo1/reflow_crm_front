@@ -63,32 +63,61 @@ const onChangeDimensionOrdersState = (dimensionOrders, dimensionId, formName) =>
     }
 }
 
-const onGetKanbanData = (params, formName) => {
+// if columnName is set get the data for a single column
+const onGetKanbanData = (params, formName, columnName = null) => {
     return async (dispatch, getState) => {
         const initial = getState().home.kanban.initial
-        const dimesionOrders = getState().home.kanban.dimension_order
+        const dimensionOrders = getState().home.kanban.dimension_order
         const cards = getState().home.kanban.cards
+        const data = getState().home.kanban.data
+
         let payload = []
 
         if (initial.default_kanban_card_id && initial.default_dimension_field_id) {
             const dimension = initial.fields.filter(field=> field.id === initial.default_dimension_field_id)
             const cardFieldIds = cards.filter(card => card.id === initial.default_kanban_card_id)[0].kanban_card_fields.map(field=> field.id).concat(dimension[0].id)
-
-            
-            for (let i=0; i<dimesionOrders.length; i++) {
+            const defaultParameters = {
+                ...params,
+                search_exact: params.search_exact.concat(1),
+                search_field: params.search_field.concat(dimension[0].name),
+                fields: cardFieldIds,
+            }
+            if (!columnName) {
+                for (let i=0; i<dimensionOrders.length; i++) {
+                    const parameters = {
+                        ...defaultParameters,
+                        search_value: params.search_value.concat(dimensionOrders[i].options),
+                    }
+                    let response = await agent.KANBAN.getData(parameters, formName)
+                    payload.push({
+                        dimension: dimensionOrders[i].options, 
+                        pagination: response.data.pagination,
+                        data: response.data.data
+                    })
+                }
+            } else {
                 const parameters = {
-                    ...params,
-                    page: 1,
-                    search_value: params.search_value.concat(dimesionOrders[i].options),
-                    search_exact: params.search_exact.concat(1),
-                    search_field: params.search_field.concat(dimension[0].name),
-                    fields: cardFieldIds,
+                    ...defaultParameters,
+                    search_value: params.search_value.concat(columnName),
                 }
                 let response = await agent.KANBAN.getData(parameters, formName)
-                payload.push([dimesionOrders[i].options, response.data.data])
+                const dimensionIndexInData = data.findIndex(dimensionData => dimensionData.dimension === columnName)
+                if (dimensionIndexInData !== -1) {
+                    data[dimensionIndexInData].pagination = response.data.pagination
+                    data[dimensionIndexInData].data = data[dimensionIndexInData].data.concat(response.data.data)
+                    payload = [...data]
+                } else {
+                    payload.push({
+                        dimension: columnName, 
+                        pagination: response.data.pagination,
+                        data: response.data.data
+                    })
+                }
+                
             }
             dispatch({ type: SET_DATA_KANBAN, payload: payload})
         }
+        return payload
     }
 }
 
