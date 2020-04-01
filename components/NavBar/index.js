@@ -43,7 +43,7 @@ const Navbar = (props) => {
     return (
         <NavbarMain expand="lg">
             <NavbarBrand href="#">
-                <img src="/images/logo_reflow_navbar.png" width="249" height="72" />
+                <img src="/logo_reflow_navbar.png" width="249" height="72" />
             </NavbarBrand>
             <NavbarToggle aria-controls="basic-navbar-nav" />
             <NavbarCollapse id="basic-navbar-nav">
