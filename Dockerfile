@@ -1,16 +1,16 @@
 FROM node:13
 
 # Setting working directory. All the path will be relative to WORKDIR
-WORKDIR /usr/src/app
+WORKDIR /code
 
 # Installing dependencies
-COPY package*.json ./
+ADD requirements.txt /code/
 RUN npm install
 
 # Copying source files
-COPY . .
+COPY . /code/
 
 # Building app
 # Running the app
-CMD [ "npm", "run", "dev" ]
 EXPOSE 3000
+CMD ["sh", "deploy.sh"]
