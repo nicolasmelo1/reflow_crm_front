@@ -117,21 +117,23 @@ class Kanban extends React.Component {
             this.props.onRenderKanban(this.props.query.form)
             this.props.onGetCards(this.props.query.form)
         }
-        if (this.props.query.form === prevProps.query.form && (prevProps.kanban.initial.default_dimension_field_id !== this.props.kanban.initial.default_dimension_field_id ||
-            prevProps.kanban.initial.default_kanban_card_id !== this.props.kanban.initial.default_kanban_card_id)) {
-            this.getDimensionOrders()
-        }
-        if (this.isToUpdateData(prevProps)) {
-            this.props.onGetKanbanData(this.state.params, this.props.query.form)
+        if (this.props.kanban.initial) {
+            if (this.props.query.form === prevProps.query.form && (prevProps.kanban.initial.default_dimension_field_id !== this.props.kanban.initial.default_dimension_field_id ||
+                prevProps.kanban.initial.default_kanban_card_id !== this.props.kanban.initial.default_kanban_card_id)) {
+                this.getDimensionOrders()
+            }
+            if (this.isToUpdateData(prevProps)) {
+                this.props.onGetKanbanData(this.state.params, this.props.query.form)
+            }
         }
     }
 
     render() {
-        const selectedCard = this.props.kanban.cards.filter(card => card.id === this.props.kanban.initial.default_kanban_card_id)
+        const selectedCard = (this.props.kanban.initial && this.props.kanban.cards) ? this.props.kanban.cards.filter(card => card.id === this.props.kanban.initial.default_kanban_card_id) : []
 
         return (
             <div>
-                {this.props.kanban.initial.dimension_fields.length === 0 ? (
+                {!this.props.kanban.initial || this.props.kanban.initial.dimension_fields.length === 0 ? (
                     <p>
                         {strings['pt-br']['kanbanCannotBuildMessage']}
                     </p>
