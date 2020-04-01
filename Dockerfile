@@ -4,7 +4,7 @@ FROM node:13
 WORKDIR /code
 
 # Installing dependencies
-ADD requirements.txt /code/
+ADD package.json /code/
 RUN npm install
 
 # Copying source files
