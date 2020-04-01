@@ -5,6 +5,7 @@ WORKDIR /code
 
 # Installing dependencies
 ADD package.json /code/
+ADD .babelrc /code/
 RUN npm install
 
 # Copying source files
