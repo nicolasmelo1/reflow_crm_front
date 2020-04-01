@@ -31,10 +31,12 @@ const Form = (props) => {
         let didCancel = false;
 
         async function fetchFormOptions() {
-            const response = await agent.HOME.getFormularyFormFieldOptions(router.query.form, props.field.id);
-            if (!didCancel) {
-                setOptions(response.data.data.map(option => { return {value: option.form_id, label: option.value} }))
-            }
+            try {
+                const response = await agent.HOME.getFormularyFormFieldOptions(router.query.form, props.field.id);
+                if (!didCancel) {
+                    setOptions(response.data.data.map(option => { return {value: option.form_id, label: option.value} }))
+                }
+            } catch {}
         }  
 
         if (options.length === 0) {

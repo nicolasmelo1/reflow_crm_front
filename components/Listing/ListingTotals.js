@@ -65,6 +65,7 @@ const ListingTotals = (props) => {
         props.onUpdateTotals([...props.totals])
     }
 
+    // overlaytrigger popperConfig explanation: https://stackoverflow.com/questions/54915720/react-bootstrap-overlaytrigger-is-not-positioned-correctly-while-container-has-o
     return (
         <div style={{ overflowX: 'auto', whiteSpace: 'nowrap'}}>
             {totals.map((card, index) => (

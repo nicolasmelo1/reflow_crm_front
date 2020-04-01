@@ -56,10 +56,12 @@ const Connection = (props) => {
 
         async function fetchFieldOptions() {
             if (selectedForm) {
-                const response = await agent.HOME.getFieldOptions(selectedForm)
-                if (!didCancel && response.status === 200) {
-                    setFields(response.data.data)
-                }
+                try {
+                    const response = await agent.HOME.getFieldOptions(selectedForm)
+                    if (!didCancel && response.status === 200) {
+                        setFields(response.data.data)
+                    }
+                } catch {}
             }
         }  
         fetchFieldOptions()

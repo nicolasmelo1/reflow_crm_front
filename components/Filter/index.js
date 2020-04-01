@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ListingFilterAndExtractContainer, ListingFilterAndExtractButton, ListingFilterIcon, ListingFilterAddNewFilterButton, ListingFilterSearchButton, ListingFilterContainer } from 'styles/Listing';
-import ListingFilterInstance from './ListingFilterInstance'
+import { FilterAddNewFilterButton, FilterSearchButton } from 'styles/Filter';
+import FilterInstance from './FilterInstance'
 import { strings } from 'utils/constants'
 
 /**
@@ -10,18 +10,32 @@ import { strings } from 'utils/constants'
  * So this function holds all of the filters logic, the button, and the container with the buttons to make the search
  * and to add more filters.
  * 
- * @param {Object} headers - object containing primarly all of the fields in the header. we use this array
- * to construct all of the field options he can select or unselect to filter.
+ * @param {Array<Object>} fields - object containing primarly all of the fields the user can filter. we use this array
+ * to construct all of the field options he can select or unselect to filter. 
+ * The object on the filter must follow the structure: 
+ * `{
+ *      name: 'foo',
+ *      label: 'bar'
+ * }`
  * @param {Object} params - the parameters of the listing, parameters define the filter, the sort, the date range
  * and many other stuff. With this we can create the filters based on the params.
  * @param {Function} onFilter - function responsible for effectively adding all of the filters to the params object 
  * and for calling the function to get the new filtered data.
+ * @param {Object} types - the types state, this types are usually the required data from this system to work. 
+ * Types defines all of the field types, form types, format of numbers and dates and many other stuff
+ * @param {React.Component} container - (optional) - defaults to a simple div, this is the holder of the button and the dropdown
+ * element.
+ * @param {React.Component} filterButton - (optional) - defaults to a simple button, if you want to style the Button, you can
+ * style within this component
+ * @param {React.Component} filterContainer - (optional) - defaults to a simple div, this container is for the contents of the filter
+ * sometimes you want to display it on the right, insstead on the left of the button.
+ * @param {React.JSX} filterButtonIcon - (optional) - The icon to display on the left side of the button label.
  */
-const ListingFilter = (props) => {
+const Filter = (props) => {
     const [isOpen, _setIsOpen] = useState(false)
     const [searchInstances, setSearchInstances] = useState([]);
     const dropdownRef = React.useRef()
-    const headers = (props.headers && props.headers.field_headers) ? props.headers.field_headers: []
+    const fields = (props.fields) ? props.fields: []
 
     // Check Components/Utils/Select for reference and explanation
     const setIsOpenRef = React.useRef(isOpen);
@@ -102,30 +116,42 @@ const ListingFilter = (props) => {
         };
     }, [onToggleFilterOnClickOutside])
 
+    const ContainerComponent = props.container ? props.container : `div`
+    const FilterContainerComponent = props.filterContainer ? props.filterContainer: `div`
+    const FilterButton = props.filterButton ? props.filterButton : `button`
+
     return (
-        <ListingFilterAndExtractContainer ref={dropdownRef}>
-            <ListingFilterAndExtractButton onClick={e => {onToggleFilter(e)}}>
-                <ListingFilterIcon icon="filter"/>&nbsp;{strings['pt-br']['listingFilterButtonLabel']}
-            </ListingFilterAndExtractButton>
+        <ContainerComponent ref={dropdownRef}>
+            <FilterButton onClick={e => {onToggleFilter(e)}}>
+                {props.filterButtonIcon ? (
+                    <span>
+                        {props.filterButtonIcon}&nbsp;{strings['pt-br']['filterButtonLabel']}
+                    </span>
+                ) : (
+                    <span>
+                        {strings['pt-br']['filterButtonLabel']}
+                    </span>)
+                }
+            </FilterButton>
             {isOpen ? (
-                <ListingFilterContainer>
+                <FilterContainerComponent>
                     {searchInstances.map((filter, index) => (
-                        <ListingFilterInstance
+                        <FilterInstance
                         key={index}
                         index={index}
                         filter={filter}
                         onChangeFilter={onChangeFilter}
                         removeFilter={removeFilter}
                         types={props.types}
-                        headers={headers}
+                        fields={fields}
                         />
                     ))}
-                    <ListingFilterSearchButton onClick={e => {sendFilterData(e)}}>{strings['pt-br']['listingFilterSearchButtonLabel']}</ListingFilterSearchButton>
-                    <ListingFilterAddNewFilterButton onClick={e => {addNewFilter(e)}}>{strings['pt-br']['listingFilterAddNewFilterButtonLabel']}</ListingFilterAddNewFilterButton>
-                </ListingFilterContainer>
+                    <FilterSearchButton onClick={e => {sendFilterData(e)}}>{strings['pt-br']['filterSearchButtonLabel']}</FilterSearchButton>
+                    <FilterAddNewFilterButton onClick={e => {addNewFilter(e)}}>{strings['pt-br']['filterAddNewFilterButtonLabel']}</FilterAddNewFilterButton>
+                </FilterContainerComponent>
             ) : ''}
-        </ListingFilterAndExtractContainer>
+        </ContainerComponent>
     )
 }
 
-export default ListingFilter;
+export default Filter;

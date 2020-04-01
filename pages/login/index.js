@@ -17,7 +17,7 @@ class Login extends React.Component {
         };
     }
 
-    async handleLogin(e){ 
+    async handleLogin(e) { 
         e.preventDefault();
         this.state.email = (this.state.email == '') ? document.querySelector('.email').value : this.state.email
         this.state.password = (this.state.password == '') ? document.querySelector('.password').value : this.state.password
@@ -26,9 +26,10 @@ class Login extends React.Component {
             ReactDOM.render(<Notify variant="danger" message={errors('pt-br', 'incorrect_pass_or_user')}/>, document.querySelector('.notifications-container'));
             this.props.cleanErrors()
         } else {
-            Router.push(paths.home(this.props.login.companyId, 'kanban', this.props.login.primaryForm))
+            Router.push(paths.home(this.props.login.companyId, this.props.login.primaryForm))
         }
     }
+
     render() {
         return (
             <Layout title={strings['pt-br']['loginPageTitle']} hideNavBar={true}>

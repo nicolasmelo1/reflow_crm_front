@@ -15,7 +15,7 @@ import { strings } from 'utils/constants'
  * @param {function} onRemoveFormularySettingsSection - the function from the redux action to remove a section
  * @param {function} onUpdateFormularySettingsSection - the function from the redux action to update a section
  * @param {function} onCreateFormularySettingsSection - the function from the redux action to create a new section                   
- * @param {function} onUpdateFormularySettings - the function from redux action to change the store data, 
+ * @param {function} onChangeFormularySettingsState - the function from redux action to change the store data, 
  * we don't make any backend calls on this function, just change the state.        
  * @param {BigInteger} formId - the ID of the current formulary we are editing.
  * @param {Object} types - the types state, this types are usually the required data from this system to work. 
@@ -52,7 +52,7 @@ const FormularySectionsEdit = (props) => {
         if (props.data.depends_on_form[targetSectionFieldIndex].form_fields[targetFieldIndex].id) {
             props.onUpdateFormularySettingsField(props.data.depends_on_form[targetSectionFieldIndex].form_fields[targetFieldIndex], props.formId, props.data.depends_on_form[targetSectionFieldIndex].form_fields[targetFieldIndex].id)
         }
-        props.onUpdateFormularySettings({...props.data})
+        props.onChangeFormularySettingsState({...props.data})
     }
 
     const onMoveSection = (movedSectionIndex, targetSectionIndex) => {
@@ -60,7 +60,7 @@ const FormularySectionsEdit = (props) => {
         newArrayWithoutMoved.splice(targetSectionIndex, 0, props.data.depends_on_form[movedSectionIndex])
         props.data.depends_on_form = newArrayWithoutMoved
         reorder()
-        props.onUpdateFormularySettings({...props.data})
+        props.onChangeFormularySettingsState({...props.data})
         if (props.data.depends_on_form[targetSectionIndex].id) {
             props.onUpdateFormularySettingsSection(props.data.depends_on_form[targetSectionIndex], props.formId, props.data.depends_on_form[targetSectionIndex].id)
         }
@@ -83,7 +83,7 @@ const FormularySectionsEdit = (props) => {
 
         props.data.depends_on_form.push(defaultSectionData)
         reorder()
-        props.onUpdateFormularySettings({...props.data})
+        props.onChangeFormularySettingsState({...props.data})
     }
 
     const onAddNewField = (sectionIndex) => {
@@ -121,14 +121,14 @@ const FormularySectionsEdit = (props) => {
         newFieldData.form = props.data.depends_on_form[sectionIndex].id
         props.data.depends_on_form[sectionIndex].form_fields.push(newFieldData)
         reorder()
-        props.onUpdateFormularySettings({...props.data})
+        props.onChangeFormularySettingsState({...props.data})
     }
 
     const removeSection = (sectionIndex) => {
         const sectionId = {...props.data.depends_on_form[sectionIndex]}
         props.data.depends_on_form.splice(sectionIndex, 1)
         reorder()
-        props.onUpdateFormularySettings({...props.data})
+        props.onChangeFormularySettingsState({...props.data})
         if (sectionId.id) {
             props.onRemoveFormularySettingsSection(props.formId, sectionId.id)
         }
@@ -138,7 +138,7 @@ const FormularySectionsEdit = (props) => {
         const fieldId = {...props.data.depends_on_form[sectionIndex].form_fields[fieldIndex]}
         props.data.depends_on_form[sectionIndex].form_fields.splice(fieldIndex, 1)
         reorder()
-        props.onUpdateFormularySettings({...props.data})
+        props.onChangeFormularySettingsState({...props.data})
         if (fieldId.id) {
             props.onRemoveFormularySettingsField(props.formId, fieldId.id)
         }
@@ -148,7 +148,7 @@ const FormularySectionsEdit = (props) => {
         props.data.depends_on_form[sectionIndex].form_fields[fieldIndex] = newFieldData
         if (![null, -1].includes(newFieldData.id)) {
             props.onUpdateFormularySettingsField(newFieldData, props.formId, newFieldData.id)
-            props.onUpdateFormularySettings({...props.data})
+            props.onChangeFormularySettingsState({...props.data})
         } else {
             props.onCreateFormularySettingsField(newFieldData, props.formId, sectionIndex, fieldIndex)
         }
@@ -158,7 +158,7 @@ const FormularySectionsEdit = (props) => {
         props.data.depends_on_form[sectionIndex] = newSectionData
         if (![null, -1].includes(newSectionData.id)) {
             props.onUpdateFormularySettingsSection(newSectionData, props.formId, newSectionData.id)
-            props.onUpdateFormularySettings({...props.data})
+            props.onChangeFormularySettingsState({...props.data})
         } else {
             props.onCreateFormularySettingsSection(newSectionData, props.formId, sectionIndex)
         }

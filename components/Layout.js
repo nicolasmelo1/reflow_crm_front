@@ -1,7 +1,6 @@
 import Header from './Header'
 import { connect } from 'react-redux';
 import actions from '../redux/actions';
-import { faArrowDown, faPlusSquare, faEnvelope, faCalendarAlt, faSquareRootAlt, faPhone, faAlignLeft, faPencilAlt, faLink, faCheckSquare, faClipboardList, faParagraph, faFilePdf, faRulerHorizontal, faClock, faTrash, faCircle, faTasks, faChartBar, faCog, faBell, faArrowsAlt, faEdit, faCloudUploadAlt, faBars, faPen, faFilter, faSortAmountDown, faEye, faChevronLeft, faChevronRight, faChevronUp, faChevronDown, faFileUpload} from '@fortawesome/free-solid-svg-icons'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import React from 'react'
 import Body from 'styles/Body'
@@ -11,8 +10,43 @@ import { paths } from 'utils/constants'
 import agent from 'redux/agent'
 import Navbar from './Navbar'
 import ContentContainer from 'styles/ContentContainer'
+import { 
+    faArrowDown, 
+    faPlusSquare, 
+    faEnvelope, 
+    faCalendarAlt, 
+    faSquareRootAlt, 
+    faPhone, 
+    faAlignLeft, 
+    faPencilAlt, 
+    faLink, 
+    faCheckSquare, 
+    faClipboardList, 
+    faParagraph,
+    faRulerHorizontal, 
+    faClock, 
+    faTrash, 
+    faCircle, 
+    faTasks, 
+    faChartBar, 
+    faCog, 
+    faBell, 
+    faArrowsAlt, 
+    faEdit, 
+    faBars,
+    faPen, 
+    faFilter, 
+    faSortAmountDown, 
+    faEye, 
+    faChevronLeft, 
+    faChevronRight, 
+    faChevronUp, 
+    faChevronDown, 
+    faFileUpload
+} from '@fortawesome/free-solid-svg-icons'
 
-library.add(faPlusSquare, faEnvelope, faCalendarAlt, faSquareRootAlt, faPhone, faAlignLeft, faLink, faCheckSquare, faClipboardList, faParagraph, faFilePdf, faRulerHorizontal, faClock, faTrash, faBell, faChartBar, faCircle, faCog, faTasks, faArrowsAlt, faEdit, faCloudUploadAlt, faBars, faPen, faFilter, faSortAmountDown, faEye, faArrowsAlt, faChevronLeft, faChevronRight, faChevronUp, faChevronDown, faFileUpload, faPencilAlt, faArrowDown)
+
+library.add(faPlusSquare, faEnvelope, faCalendarAlt, faSquareRootAlt, faPhone, faAlignLeft, faLink, faCheckSquare, faClipboardList, faParagraph, faRulerHorizontal, faClock, faTrash, faBell, faChartBar, faCircle, faCog, faTasks, faArrowsAlt, faEdit, faBars, faPen, faFilter, faSortAmountDown, faEye, faArrowsAlt, faChevronLeft, faChevronRight, faChevronUp, faChevronDown, faFileUpload, faPencilAlt, faArrowDown)
 
 /*** 
  * This is the main component of the page, we use this custom layout component so pages can override from this.
@@ -50,7 +84,7 @@ class Layout extends React.Component {
                 <Header title={this.props.title}></Header>
                 <div className="notifications-container"></div>
                 <div id="main-container">
-                    {this.props.hideNavBar ? '' : <Navbar />}
+                    {this.props.hideNavBar ? '' : <Navbar onDeauthenticate={this.props.onDeauthenticate} />}
                     {this.props.showSideBar ? <Sidebar sidebarIsOpen={this.state.sidebarIsOpen} setSidebarIsOpen={this.setSidebarIsOpen} /> : ''}
                     <ContentContainer sidebarIsOpen={this.state.sidebarIsOpen}>
                         {this.props.children}

@@ -1,4 +1,3 @@
-import { push as Menu } from 'react-burger-menu'
 import React from 'react'
 import styled from 'styled-components'
 

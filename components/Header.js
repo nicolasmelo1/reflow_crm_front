@@ -13,7 +13,9 @@ const Header = (props) => (
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css" />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"/>
+        <link rel="stylesheet" href="/bootstrap/css/bootstrap-grid.min.css"/>
+        <link rel="stylesheet" href="/bootstrap/css/bootstrap-reboot.min.css"/>
+        <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css"/>
     </Head>
 )
 

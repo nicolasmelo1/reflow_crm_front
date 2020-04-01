@@ -8,8 +8,10 @@ import agent from 'redux/agent'
 
 const onGetForms = () => {
     return async (dispatch) => {
-        let response = await agent.HOME.getForms()
-        dispatch({type: (response.status === 200) ? GET_FORMS : ERROR, payload: response.data});
+        try {
+            let response = await agent.HOME.getForms()
+            dispatch({type: GET_FORMS, payload: response.data});
+        } catch {}
     };
 };
 

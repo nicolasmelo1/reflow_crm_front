@@ -23,7 +23,6 @@ let setHeader = (token) => {
  * Function that fires when a exception is catched in the requests object functions.
  * This is only for retrieving a new token while firing a request. This way, the token is refreshed 
  * behind the scenes and doesn't affect the request at all.
- * This goes with the following order:
  * 
  * @param response - the response of the axios exception
  * @param callback - the function to fire with the new token after it has been refreshed. Callbacks are any `requests` functions like: 'get', 'del', etc.
@@ -102,9 +101,12 @@ const requests = {
     }
 };
 
-const formEncodeData = (appendToKey, body) => {
+const formEncodeData = (appendToKey, body, files = []) => {
     let formData = new FormData();
     formData.append(appendToKey, JSON.stringify(body));
+    files.forEach(file=> {
+        formData.append(file.name, file.file)
+    })
     return formData
 }
 
@@ -143,14 +145,17 @@ const HOME = {
     getBuildFormulary: async (formName) => {
         return await requests.get(`${companyId}/formulary/api/${formName}/`)
     },
-    createFormularyData: async (body, formName) => {
-        return await requests.post(`${companyId}/formulary/api/${formName}/`, formEncodeData('data', body), {'Content-Type': 'multipart/form-data'})
+    createFormularyData: async (body, files, formName) => {
+        return await requests.post(`${companyId}/formulary/api/${formName}/`, formEncodeData('data', body, files), {'Content-Type': 'multipart/form-data'})
     },
     getFormularyData: async (formName, formId) => {
         return await requests.get(`${companyId}/formulary/api/${formName}/${formId}/`)
     },
-    updateFormularyData: async (body, formName, formId) => {
-        return await requests.post(`${companyId}/formulary/api/${formName}/${formId}/`, formEncodeData('data', body), {'Content-Type': 'multipart/form-data'})
+    updateFormularyData: async (body, files, formName, formId) => {
+        return await requests.post(`${companyId}/formulary/api/${formName}/${formId}/`, formEncodeData('data', body, files), {'Content-Type': 'multipart/form-data'})
+    },
+    getAttachmentFile: (formName, formularyId, fieldId, fileName) => {
+        return `${API_ROOT}${companyId}/formulary/${formName}/${formularyId}/${fieldId}/${fileName}/?token=${token}`
     },
     getFormularyFormFieldOptions: async (formName, fieldId) => {
         return await requests.get(`${companyId}/formulary/api/${formName}/${fieldId}/form/options/`)
@@ -183,6 +188,9 @@ const HOME = {
 
 
 const LISTING = {
+    getRenderData: async (formName) => {
+        return await requests.get(`${companyId}/data/api/listing/${formName}/`)
+    },
     getHasExportedData: async (isToDownload) => {
         const path = `${companyId}/data/api/extract/`
         if (isToDownload) {
@@ -195,9 +203,6 @@ const LISTING = {
     },
     getData: async (params, formName) => {
         return await requests.get(`${companyId}/data/api/data/${formName}/`, params)
-    },
-    getHeader: async (formName) => {
-        return await requests.get(`${companyId}/data/api/listing/${formName}/`)
     },
     getTotals: async (params, formName) => {
         return await requests.get(`${companyId}/data/api/listing/${formName}/total/`, params)
@@ -213,10 +218,41 @@ const LISTING = {
     }
 }
 
+const KANBAN = {
+    getRenderData: async (formName) => {
+        return await requests.get(`${companyId}/data/api/kanban/${formName}/`)
+    },
+    getCards: async (formName) => {
+        return await requests.get(`${companyId}/data/api/kanban/${formName}/card/`)
+    },
+    createCard: async (body,formName) => {
+        return await requests.post(`${companyId}/data/api/kanban/${formName}/card/`, body)
+    },
+    updateCard: async (body, formName, kanbanCardId) => {
+        return await requests.put(`${companyId}/data/api/kanban/${formName}/card/${kanbanCardId}/`, body)
+    },
+    updateDefaults: async (body, formName) => {
+        return await requests.put(`${companyId}/data/api/kanban/${formName}/defaults/`, body)
+    },
+    getDimensionOrders: async (formName, dimensionId) => {
+        return await requests.get(`${companyId}/data/api/kanban/${formName}/dimension/${dimensionId}/`)
+    },
+    updateDimensionOrders: async (body, formName, dimensionId) => {
+        return await requests.put(`${companyId}/data/api/kanban/${formName}/dimension/${dimensionId}/`, body)
+    },
+    getData: async (params, formName) => {
+        return await requests.get(`${companyId}/data/api/data/${formName}/`, params)
+    },
+    updateCardDimension: async(body, formName) => {
+        return await requests.put(`${companyId}/data/api/kanban/${formName}/change/`, body)
+    }
+}
+
 export default {
     setCompanyId: _companyId => { companyId = _companyId },
     setToken: (_token) => { token = _token },
     LOGIN,
     HOME,
-    LISTING
+    LISTING,
+    KANBAN
 };

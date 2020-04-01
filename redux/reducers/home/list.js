@@ -6,7 +6,13 @@ import {
 } from 'redux/types'
 
 let initialState = {
-    data: [],
+    data: {
+        pagination: {
+            current: 0,
+            total: 0
+        },
+        data: []
+    },
     header: {
         field_headers: [],
     },

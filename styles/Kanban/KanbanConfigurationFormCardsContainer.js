@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 
 export default styled.div`
-    display: inline-block;
+    overflow-x: auto;
+    white-space: nowrap
 `

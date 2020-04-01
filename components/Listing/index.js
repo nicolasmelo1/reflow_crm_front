@@ -2,12 +2,12 @@ import React from 'react'
 import actions from 'redux/actions'
 import { connect } from 'react-redux'
 import ListingTable from './ListingTable'
-import ListingFilter from './ListingFilter'
 import ListingExtract from './ListingExtract'
 import ListingTotals from './ListingTotals'
 import ListingTotalsForm from './ListingTotalsForm'
 import ListingColumnSelect from './ListingColumnSelect'
-import { ListingTotalLabel, ListingTotalAddNewButton, ListingButtonsContainer } from 'styles/Listing'
+import Filter from 'components/Filter'
+import { ListingFilterAndExtractContainer, ListingFilterContainer, ListingFilterIcon, ListingFilterAndExtractButton, ListingTotalLabel, ListingTotalAddNewButton, ListingButtonsContainer } from 'styles/Listing'
 import { strings } from 'utils/constants'
 import { Row, Col } from 'react-bootstrap'
 
@@ -21,24 +21,20 @@ import { Row, Col } from 'react-bootstrap'
 class Listing extends React.Component {
     constructor(props) {
         super(props)
-
+        
         this.state = {
             isOpenedTotalsForm: false,
             params: {
                 from: '25/11/2019',
-                to: '03/03/2020',
+                to: '04/04/2020',
                 page: 1,
                 sort_value: [],
                 sort_field: [],
-                search_value: [],
-                search_exact: [],
-                search_field: []
+                search_value: this.props.search.value,
+                search_exact: this.props.search.exact,
+                search_field: this.props.search.field
             }
         }
-
-        this.props.onGetData(this.state.params, this.props.query.form)
-        this.props.onGetHeader(this.props.query.form),
-        this.props.onGetTotals(this.state.params, this.props.query.form)
     }
 
     setIsOpenedTotalsForm = (isOpenedTotalsForm) => {
@@ -51,7 +47,7 @@ class Listing extends React.Component {
     }
 
     setParams = async (params) => {
-        const response = await this.props.onGetData(params, this.props.query.form)
+        const response = await this.props.onGetListingData(params, this.props.query.form)
         this.setState(state => {
             return {
                 ...state,
@@ -76,6 +72,7 @@ class Listing extends React.Component {
             }
         })
         this.props.onGetTotals(this.state.params, this.props.query.form)
+        this.props.setSearch(params.search_field, params.search_value, params.search_exact)
         this.setParams({...params})
     }
 
@@ -104,10 +101,28 @@ class Listing extends React.Component {
         this.setParams({...params})
     }
 
+    componentDidMount = () => {
+        this.props.onRenderListing(this.props.query.form)
+        this.props.onGetListingData(this.state.params, this.props.query.form)
+        this.props.onGetTotals(this.state.params, this.props.query.form)
+    }
+
+    componentDidUpdate = (prevProps) => {
+        if (prevProps.query.form !== this.props.query.form) {
+            this.props.onRenderListing(this.props.query.form)
+            this.props.onGetListingData(this.state.params, this.props.query.form)
+            this.props.onGetTotals(this.state.params, this.props.query.form)
+        }
+        if (this.props.formularyHasBeenUpdated !== prevProps.formularyHasBeenUpdated) {
+            this.props.onGetListingData(this.state.params, this.props.query.form)
+            this.props.onGetTotals(this.state.params, this.props.query.form)    
+        }
+    }
+
     render() {
         return (
             <div>
-                <Row>
+                {/*<Row>
                     <Col>
                         <ListingTotalLabel>
                             {strings['pt-br']['listingTotalTitleLabel']}
@@ -134,14 +149,19 @@ class Listing extends React.Component {
                             />
                         )}
                     </Col>
-                </Row>
+                </Row>*/}
                 <Row style={{margin: '5px -15px'}}>
                     <ListingButtonsContainer>
-                        <ListingFilter 
-                        headers={this.props.list.header} 
+                        <Filter
+                        fields={(this.props.list.header && this.props.list.header.field_headers) ? 
+                                this.props.list.header.field_headers.map(field=> ({name: field.name, label: field.label_name})) : []} 
                         params={this.state.params} 
                         onFilter={this.onFilter}
                         types={this.props.types}
+                        container={ListingFilterAndExtractContainer}
+                        filterButton={ListingFilterAndExtractButton}
+                        filterContainer={ListingFilterContainer}
+                        filterButtonIcon={<ListingFilterIcon icon="filter"/>}
                         />
                         <ListingExtract 
                         params={this.state.params} 
@@ -166,7 +186,8 @@ class Listing extends React.Component {
                         onSort={this.onSort} 
                         setParams={this.setParams}
                         headers={this.props.list.header} 
-                        data={this.props.list.data} 
+                        data={this.props.list.data.data}
+                        pagination={this.props.list.data.pagination} 
                         setFormularyId={this.props.setFormularyId}
                         />
                     </Col>

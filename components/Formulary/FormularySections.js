@@ -74,6 +74,9 @@ const FormularySections = (props) => {
         return newSectionsData
     }
 
+    const updateFiles = (files) => {
+        props.onChangeFormularyFilesState(files)
+    }
 
     const addSection = (e, section) => {
         e.preventDefault()
@@ -129,7 +132,7 @@ const FormularySections = (props) => {
 
         if (props.sections.length > 0 && (JSON.stringify(props.data.depends_on_dynamic_form) !== JSON.stringify(sectionsData) || !formDataLoadedIsFromFormBuilded)) {
             if (props.data.depends_on_dynamic_form && formDataLoadedIsFromFormBuilded) {
-                setSectionsData(props.data.depends_on_dynamic_form)
+                onChangeSectionData(props.data.depends_on_dynamic_form, conditionals)
             } else {
                 buildInitialData(conditionals)
             }
@@ -152,7 +155,9 @@ const FormularySections = (props) => {
                         onChangeFormulary={props.onChangeFormulary}
                         key={(sectionsData.id) ? sectionData.id: index} 
                         sectionData={sectionData} 
+                        files={props.files}
                         updateSection={updateSection}
+                        updateFiles={updateFiles}
                         sectionDataIndex={index} 
                         section={section} 
                         fields={section.form_fields}

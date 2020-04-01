@@ -19,7 +19,9 @@ class SidebarForm extends React.Component {
                         <SidebarFormItem key={index}>
                             <Row>
                                 <Col>
-                                    <Link href={paths.home(this.props.login.companyId, 'kanban', element.form_name)}><SidebarLink>{element.label_name}</SidebarLink></Link>
+                                    <Link href={paths.home(this.props.login.companyId, element.form_name, true)} as={paths.home(this.props.login.companyId, element.form_name)}>
+                                        <SidebarLink>{element.label_name}</SidebarLink>
+                                    </Link>
                                 </Col>
                             </Row>
                         </SidebarFormItem>

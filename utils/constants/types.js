@@ -38,6 +38,10 @@ const types = (lang, type, key) => {
             number: strings[lang]['numberFormatTypeNumber'],
             currency: strings[lang]['numberFormatTypeCurrency'],
             percentage: strings[lang]['numberFormatTypePercentage'],
+        },
+        data_type: {
+            kanban: strings[lang]['dataTypeKanban'],
+            listing: strings[lang]['dataTypeListing']
         }
     }[type][key]
 }

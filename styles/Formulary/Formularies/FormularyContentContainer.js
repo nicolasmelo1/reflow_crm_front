@@ -10,7 +10,7 @@ export default styled(({isOpen, ...rest}) => <div {...rest}/>)`
     position: relative;
     padding: ${props=> props.isOpen ? '10px' : '0'};
     height: ${props=> props.isOpen ? '80vh' : '0'};
-    transition: height 0.7s ease-in-out, padding 0.7s ease-in-out;
+    transition: height 0.3s ease-in-out, padding 0.3s ease-in-out;
 
     @media(min-width: 420px) {
         margin-right: 15px;

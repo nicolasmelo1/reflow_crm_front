@@ -16,6 +16,7 @@ class Formulary extends React.Component {
         this.state = {
             isEditing: false,
             errors: {},
+            files: {},
             auxOriginalInitial: {}
         }
     }
@@ -24,18 +25,19 @@ class Formulary extends React.Component {
         if (e) {
             e.preventDefault();
         }
-        
         // when user closes we reset the states on the formulary
         if (this.props.formularyIsOpen) {
             this.props.setFormularyId(null)
-            if (this.state.auxOriginalInitial.filledData && this.state.auxOriginalInitial.buildData) {
-                this.props.onFullResetFormulary({}, this.state.auxOriginalInitial.buildData)
+            this.props.setFormularyDefaultData([])
+            if (this.state.auxOriginalInitial.filled && this.state.auxOriginalInitial.buildData) {
+                this.props.onFullResetFormularyState({}, [], this.state.auxOriginalInitial.buildData)
             } else {
-                this.props.onChangeFormularyData({})
+                this.props.onChangeFormularyDataState({})
+                this.props.onChangeFormularyFilesState([])
             }
             this.setErrors({})
         }
-        
+       
         this.props.onOpenOrCloseFormulary(!this.props.formularyIsOpen)
     }
 
@@ -45,7 +47,7 @@ class Formulary extends React.Component {
                 ...state,
                 auxOriginalInitial: {
                     buildData: {...this.props.formulary.buildData},
-                    filledData: {...this.props.formulary.filledData}
+                    filled: {...this.props.formulary.filled}
                 } 
             }
         })
@@ -66,7 +68,7 @@ class Formulary extends React.Component {
     }
 
     setData = (sectionsData) => {
-        this.props.onChangeFormularyData({
+        this.props.onChangeFormularyDataState({
             depends_on_dynamic_form: sectionsData
         })
     }
@@ -83,15 +85,18 @@ class Formulary extends React.Component {
     onSubmit = () => {
         let response = null
         if (this.props.formularyId) {
-            response = this.props.onUpdateFormularyData(this.props.formulary.filledData, this.props.query.form, this.props.formularyId)
+            response = this.props.onUpdateFormularyData(this.props.formulary.filled.data, this.props.formulary.filled.files, this.props.query.form, this.props.formularyId)
         } else {
-            response = this.props.onCreateFormularyData(this.props.formulary.filledData, this.props.query.form)
+            response = this.props.onCreateFormularyData(this.props.formulary.filled.data, this.props.formulary.filled.files,this.props.query.form)
         }
         
         if (response) {
             response.then(response=> {
                 if (response.status !== 200) {
                     this.setErrors(response.data.error)
+                } else {
+                    this.props.setFormularyHasBeenUpdated()
+                    this.setIsOpen()
                 }
             })
         }
@@ -106,7 +111,7 @@ class Formulary extends React.Component {
 
     onChangeFormulary = (formName, formId=null) => {
         this.setAuxOriginalInitial()
-        this.props.onFullResetFormulary()
+        this.props.onFullResetFormularyState()
         this.buildFormulary(formName, formId)
     }
 
@@ -117,7 +122,10 @@ class Formulary extends React.Component {
     componentDidUpdate(oldProps) {
         const newProps = this.props
         if(oldProps.formularyId !== newProps.formularyId && newProps.formularyId) {
-            this.props.onGetFormularyData(this.props.query.form, newProps.formularyId)
+            this.props.onGetFormularyData(this.props.query.form, newProps.formularyId, newProps.formularyDefaultData)
+        }
+        if (oldProps.query.form !== newProps.query.form) {
+            this.buildFormulary(this.props.query.form, this.props.formularyId)
         }
     }
 
@@ -143,7 +151,7 @@ class Formulary extends React.Component {
                                     onRemoveFormularySettingsSection={this.props.onRemoveFormularySettingsSection}
                                     onUpdateFormularySettingsSection={this.props.onUpdateFormularySettingsSection}
                                     onCreateFormularySettingsSection={this.props.onCreateFormularySettingsSection}
-                                    onUpdateFormularySettings={this.props.onUpdateFormularySettings}
+                                    onChangeFormularySettingsState={this.props.onChangeFormularySettingsState}
                                     formId={this.props.formulary.buildData.id}
                                     types={this.props.types}
                                     setIsEditing={this.setIsEditing}
@@ -157,14 +165,20 @@ class Formulary extends React.Component {
                                         <Formularies.EditButton onClick={this.setIsEditing} label={strings['pt-br']['formularyEditButtonLabel']} description={strings['pt-br']['formularyEditButtonDescription']}/>
                                     ) : ''}
                                     {(this.props.formulary.buildData && this.props.formulary.buildData.form_name !== this.props.query.form) ? (
-                                        <Formularies.Navigator onClick={e => {this.props.onFullResetFormulary(this.state.auxOriginalInitial.filledData, this.state.auxOriginalInitial.buildData)}}>&lt;&nbsp;{(this.state.auxOriginalInitial.buildData) ? this.state.auxOriginalInitial.buildData.label_name : ''}</Formularies.Navigator>
+                                        <Formularies.Navigator 
+                                        onClick={e => {this.props.onFullResetFormularyState(this.state.auxOriginalInitial.filled.data, this.state.auxOriginalInitial.filled.files, this.state.auxOriginalInitial.buildData)}}
+                                        >
+                                            &lt;&nbsp;{(this.state.auxOriginalInitial.buildData) ? this.state.auxOriginalInitial.buildData.label_name : ''}
+                                        </Formularies.Navigator>
                                     ) : ''}                           
                                     <FormularySections 
                                     errors={this.state.errors}
                                     types={this.props.types}
                                     onChangeFormulary={this.onChangeFormulary}
                                     loadData={this.loadData}
-                                    data={this.props.formulary.filledData}
+                                    data={this.props.formulary.filled.data}
+                                    files={this.props.formulary.filled.files}
+                                    onChangeFormularyFilesState={this.props.onChangeFormularyFilesState}
                                     setData={this.setData}
                                     sections={sections}
                                     />

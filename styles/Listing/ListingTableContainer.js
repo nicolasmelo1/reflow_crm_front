@@ -2,8 +2,14 @@ import styled from 'styled-components'
 
 export default styled.div`
     text-align: center;
-    overflow-x: scroll;
-    overflow-y: hidden;
-    position: sticky;
-    top: -1px;
+    overflow-x: auto;
+    overflow-y: auto;
+    position: relative;
+
+    @media(max-width: 640px) {
+        max-height: calc(100vh - 315px)
+    }
+    @media(min-width: 640px) {
+        max-height: calc(100vh - 275px)
+    }
 `

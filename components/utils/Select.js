@@ -15,15 +15,14 @@ import Utils from 'styles/Utils'
  * @param {String} optionOnHoverColor - (optional) - default to #444
  * @param {String} optionOnHoverBackgroundColor - (optional) - default to #bfbfbf
  * @param {Boolean} multiple - Explained in Select component
+ * @param {String} placeholder - Text to show in the placeholder of the input when no option is selected.
  */
 const Option = (props) => {
     const filteredOptions = props.options.filter(option=> props.selectedOptions.find(selectedOption=> selectedOption.value === option.value) === undefined);
 
     return (
         <Utils.Select.OptionsListContainer>
-            {filteredOptions.map((option, index)=> {
-                console.log(index < filteredOptions.length-1)
-                return (
+            {filteredOptions.map((option, index)=> (
                 <Utils.Select.OptionItem 
                 hasBorder={index < filteredOptions.length-1}
                 key={option.value} 
@@ -34,8 +33,7 @@ const Option = (props) => {
                 >
                     {props.renderLabel(option.label, index)}
                 </Utils.Select.OptionItem> 
-                )
-        })}
+            ))}
         </Utils.Select.OptionsListContainer>
     )
 }
@@ -216,6 +214,7 @@ const Select = (props) => {
                 <Utils.Select.Input 
                 ref={inputRef} 
                 type="text" 
+                placeholder={selectedOptions.length === 0 ? props.placeholder: ''}
                 value={searchValue} 
                 searchValueColor={props.searchValueColor}
                 onChange={e => {updateOptions(e.target.value, [...selectedOptions])}} 

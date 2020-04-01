@@ -1,10 +1,20 @@
 import NavbarLink from './NavbarLink'
-import NavBarDropdown from './NavbarDropdown'
-import { strings } from 'utils/constants'
+import NavbarDropdown from './NavbarDropdown'
+import { strings, paths } from 'utils/constants'
 import { NavbarBrand, NavbarList, NavbarMain, NavbarCollapse, NavbarToggle } from 'styles/Navbar'
+import Router from 'next/router'
 
 
 const Navbar = (props) => {
+
+    const handleLogout = (e) => {
+        e.preventDefault()
+        console.log('testes')
+        props.onDeauthenticate()
+        Router.push(paths.login())
+    }
+
+
     const configDropdown = [
         {
             label: strings['pt-br']['headerRefferalLabel'],
@@ -24,7 +34,8 @@ const Navbar = (props) => {
         },
         {
             label: strings['pt-br']['headerLogoutLabel'],
-            href: '#'
+            href: '#',
+            onClick: handleLogout
         }
 
     ]
@@ -41,7 +52,7 @@ const Navbar = (props) => {
                     <NavbarLink link='#' icon='chart-bar' label={strings['pt-br']['headerDashboardLabel']}/>
                     <NavbarLink link='#' icon='bell' label={strings['pt-br']['headerNotificationLabel']}/>
                     <NavbarLink link='#' icon='circle' label={strings['pt-br']['headerHelpLabel']}/>
-                    <NavBarDropdown icon='cog' label={strings['pt-br']['headerSettingsLabel']} items={configDropdown}/>
+                    <NavbarDropdown icon='cog' label={strings['pt-br']['headerSettingsLabel']} items={configDropdown}/>
                 </NavbarList>
             </NavbarCollapse>
         </NavbarMain>

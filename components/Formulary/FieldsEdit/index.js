@@ -102,7 +102,6 @@ const FormularyFieldEdit = (props) => {
 
     const onChangeFieldType = (data) => {
         props.field.type = data[0]
-        console.log(props.field)
         props.onUpdateField(props.sectionIndex, props.fieldIndex, {...props.field})
     }
     

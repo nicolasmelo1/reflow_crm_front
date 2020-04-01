@@ -1,4 +1,4 @@
-import { AUTHENTICATE, DATA_TYPES } from '../types';
+import { AUTHENTICATE, DATA_TYPES, SET_USER } from 'redux/types';
 
 const initialState = {
     companyId: null,
@@ -17,7 +17,13 @@ export default (state = initialState, action) => {
             return { 
                 ...state,
                 companyId: action.payload.company_id, 
-                primaryForm: action.payload.form_name
+                primaryForm: action.payload.form_name,
+                user: action.payload.user
+            }
+        case SET_USER: 
+            return { 
+                ...state,
+                user: action.payload
             }
         case DATA_TYPES:
             return { 
