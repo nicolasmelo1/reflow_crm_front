@@ -35,9 +35,6 @@ class Listing extends React.Component {
                 search_field: this.props.search.field
             }
         }
-        this.props.onRenderListing(this.props.query.form)
-        this.props.onGetListingData(this.state.params, this.props.query.form)
-        this.props.onGetTotals(this.state.params, this.props.query.form)
     }
 
     setIsOpenedTotalsForm = (isOpenedTotalsForm) => {
@@ -104,8 +101,19 @@ class Listing extends React.Component {
         this.setParams({...params})
     }
 
+    componentDidMount = () => {
+        this.props.onRenderListing(this.props.query.form)
+        this.props.onGetListingData(this.state.params, this.props.query.form)
+        this.props.onGetTotals(this.state.params, this.props.query.form)
+    }
+
     componentDidUpdate = (prevProps) => {
-        if (this.props.formularyHasBeenUpdated !== prevProps.formularyHasBeenUpdated || prevProps.query.form !== this.props.query.form) {
+        if (prevProps.query.form !== this.props.query.form) {
+            this.props.onRenderListing(this.props.query.form)
+            this.props.onGetListingData(this.state.params, this.props.query.form)
+            this.props.onGetTotals(this.state.params, this.props.query.form)
+        }
+        if (this.props.formularyHasBeenUpdated !== prevProps.formularyHasBeenUpdated) {
             this.props.onGetListingData(this.state.params, this.props.query.form)
             this.props.onGetTotals(this.state.params, this.props.query.form)    
         }

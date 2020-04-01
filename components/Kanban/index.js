@@ -40,9 +40,6 @@ class Kanban extends React.Component {
                 search_field: this.props.search.field
             }
         }
-        this.props.onRenderKanban(this.props.query.form)
-        this.props.onGetCards(this.props.query.form)
-        this.props.onGetKanbanData(this.state.params, this.props.query.form)
     }
 
     getDimensionOrders = () =>{
@@ -73,6 +70,7 @@ class Kanban extends React.Component {
         return (
             this.props.kanban.cards.length > 0 && 
             this.props.kanban.dimension_order.length > 0 && 
+            this.props.query.form === prevProps.query.form &&
             (
                 JSON.stringify(prevProps.kanban.dimension_order) !== JSON.stringify(this.props.kanban.dimension_order) ||
                 prevProps.kanban.initial.default_kanban_card_id !== this.props.kanban.initial.default_kanban_card_id ||
@@ -108,26 +106,29 @@ class Kanban extends React.Component {
         })
     }
 
+    componentDidMount() {
+        this.props.onRenderKanban(this.props.query.form)
+        this.props.onGetCards(this.props.query.form)
+        this.props.onGetKanbanData(this.state.params, this.props.query.form)
+    }
+
     componentDidUpdate(prevProps) {
-        if (prevProps.kanban.initial.default_dimension_field_id !== this.props.kanban.initial.default_dimension_field_id ||
-            prevProps.kanban.initial.default_kanban_card_id !== this.props.kanban.initial.default_kanban_card_id) {
+        if (prevProps.query.form !== this.props.query.form) { 
+            this.props.onRenderKanban(this.props.query.form)
+            this.props.onGetCards(this.props.query.form)
+        }
+        if (this.props.query.form === prevProps.query.form && (prevProps.kanban.initial.default_dimension_field_id !== this.props.kanban.initial.default_dimension_field_id ||
+            prevProps.kanban.initial.default_kanban_card_id !== this.props.kanban.initial.default_kanban_card_id)) {
             this.getDimensionOrders()
         }
         if (this.isToUpdateData(prevProps)) {
             this.props.onGetKanbanData(this.state.params, this.props.query.form)
         }
-        /*if (prevProps.query.form !== this.props.query.form) { 
-            this.props.onRenderKanban(this.props.query.form)
-            this.props.onGetDimensionOrders(this.props.query.form, this.props.kanban.initial.default_dimension_field_id)
-            this.props.onGetCards(this.props.query.form)
-            //this.props.onGetKanbanData(this.state.params, this.props.query.form)
-        }*/
-
     }
 
     render() {
         const selectedCard = this.props.kanban.cards.filter(card => card.id === this.props.kanban.initial.default_kanban_card_id)
-        console.log(this.props.kanban.initial.default_dimension_field_id)
+
         return (
             <div>
                 {this.props.kanban.initial.dimension_fields.length === 0 ? (
