@@ -3,8 +3,8 @@ import actions from 'redux/actions';
 import { Layout, Formulary, Listing, Kanban } from 'components';
 import { DataTypeHeaderAnchor } from 'styles/Data'
 import { connect } from 'react-redux';
-import { strings, paths } from 'utils/constants';
-import { Button, Row, Col, Nav, Tab } from 'react-bootstrap';
+import { strings, types, paths } from 'utils/constants';
+import { Button, Row, Col } from 'react-bootstrap';
 import Router from 'next/router'
 
 
@@ -20,7 +20,6 @@ class Data extends React.Component {
         // what it metters for us is if it has changed it's value. If the value has changed it means the formulary
         // has been updated
         this.state = {
-            visualization: this.props.query.visualization_type,
             formularyId: null,//'51003'
             formularyIsOpen: false,
             formularyDefaultData: [],
@@ -35,13 +34,6 @@ class Data extends React.Component {
 
     static async getInitialProps(context) {
         return { query: context.query }
-    }
-
-    // TEMPORARY
-    handleLogout(e) {
-        e.preventDefault();
-        this.props.onDeauthenticate()
-        Router.push(paths.login())
     }
 
     onOpenOrCloseFormulary = (isOpen) => {
@@ -108,19 +100,19 @@ class Data extends React.Component {
         })
     }
 
-    setVisualization = (visualization) => {
-        const route = paths.home(this.props.query.company, visualization, this.props.query.form)
-        Router.push('/[company]/home/[visualization_type]/[form]', route, {shallow: true})
-        this.setState(state => {
-            return {
-                ...state,
-                visualization: visualization
-            }
-        })
+    getDataType = (dataTypeId) => {
+        return this.props.login.types.default.data_type.filter(dataType => dataType.id === dataTypeId)
+    }
+    
+
+    setVisualization = (dataTypeId) => {
+        this.props.login.user.data_type = dataTypeId
+        this.props.onUpdateUser({...this.props.login.user})
     }
 
     renderVisualization = () => {
-        switch(this.state.visualization){
+        const dataType = this.props.login.user && this.getDataType(this.props.login.user.data_type).length > 0 ? this.getDataType(this.props.login.user.data_type)[0].name : 'listing'
+        switch(dataType){
             case 'listing': 
                 return <Listing 
                         query={this.props.query} 
@@ -155,12 +147,11 @@ class Data extends React.Component {
             <Layout title={strings['pt-br']['managementPageTitle']} showSideBar={true}>
                 <Row>
                     <Col>
-                        <DataTypeHeaderAnchor onClick={e=> {this.setVisualization('kanban')}} isSelected={this.state.visualization === 'kanban'}>
-                            Kanban    
-                        </DataTypeHeaderAnchor>
-                        <DataTypeHeaderAnchor onClick={e=> {this.setVisualization('listing')}} isSelected={this.state.visualization === 'listing'}>
-                            Listagem
-                        </DataTypeHeaderAnchor>  
+                        {this.props.login.types.default ? this.props.login.types.default.data_type.map(dataType => (
+                            <DataTypeHeaderAnchor key={dataType.id} onClick={e=> {this.setVisualization(dataType.id)}} isSelected={this.props.login.user.data_type === dataType.id}>
+                                {types('pt-br','data_type', dataType.name)}    
+                            </DataTypeHeaderAnchor> 
+                        )) : ''}
                     </Col>
                 </Row>
                 <Formulary 
@@ -179,4 +170,4 @@ class Data extends React.Component {
     }
 }
 
-export default connect(state => ({ }), actions)(Data)
+export default connect(state => ({ login: state.login }), actions)(Data)

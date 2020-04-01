@@ -1,8 +1,11 @@
-import { GET_FORMULARY, SET_FORMULARY_DATA, SET_FORMULARY_OPEN, SET_FORMULARY_SETTINGS_DATA } from 'redux/types';
+import { GET_FORMULARY, SET_FORMULARY_DATA, SET_FORMULARY_FILES, SET_FORMULARY_SETTINGS_DATA } from 'redux/types';
 
 let initialState = {
     buildData: {},
-    filledData: {},
+    filled: {
+        data: {},
+        files: []
+    },
     update: {}
 }
 
@@ -16,7 +19,18 @@ export default (state=initialState, action) => {
         case SET_FORMULARY_DATA:
             return {
                 ...state,
-                filledData: (action.payload) ? action.payload : initialState.filledData
+                filled: {
+                    ...state.filled,
+                    data: (action.payload) ? action.payload : initialState.filled.data
+                }
+            }
+        case SET_FORMULARY_FILES:
+            return {
+                ...state,
+                filled: {
+                    ...state.filled,
+                    files: (action.payload) ? action.payload : initialState.filled.files
+                }
             }
         case SET_FORMULARY_SETTINGS_DATA:
             return {

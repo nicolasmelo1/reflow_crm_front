@@ -46,6 +46,7 @@ const strings = {
         headerBillingLabel: 'Pagamento',
         headerNotificationLabel: 'Notificações',
         headerHelpLabel: 'Ajuda',
+        headerLogoutLabel: 'Logout',
         formularySaveButtonLabel: 'Salvar',
         formularyEditButtonLabel: 'Editar campos',
         formularyEditButtonDescription: 'Clique aqui para editar o formulário',
@@ -56,7 +57,7 @@ const strings = {
         formularyFieldAttachmentDefaultLabel: 'Clique ou arraste arquivos aqui',
         formularyRequiredFieldError: 'Este campo é obrigatório',
         formularyInvalidFileError: 'O tipo de arquivo não é suportado, aceitamos apenas .doc, .docx, .jpeg, .jpg, .pdf, .png, .wav, .xls, .xlsx, .zip',
-        formularyUniqueFieldError: 'Os valores deste campo são unicos e tente inserir outro valor',
+        formularyUniqueFieldError: 'Os valores deste campo são unicos, tente inserir outro valor',
         formularyFormFieldAddNewButtonLabel: 'Adicionar novo',
         formularyFormFieldEditButtonLabel: 'Editar',
         formularyEditSectionSelectionLabel: 'Qual o tipo de seção?',
@@ -136,7 +137,9 @@ const strings = {
         fieldTypePeriod: 'Período',
         numberFormatTypeNumber: 'Número',
         numberFormatTypeCurrency: 'Monetário',
-        numberFormatTypePercentage: 'Porcentagem'
+        numberFormatTypePercentage: 'Porcentagem',
+        dataTypeKanban: 'Kanban',
+        dataTypeListing: 'Listagem'
     }
 }
 

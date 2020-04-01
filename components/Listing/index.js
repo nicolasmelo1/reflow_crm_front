@@ -105,7 +105,7 @@ class Listing extends React.Component {
     }
 
     componentDidUpdate = (prevProps) => {
-        if (this.props.formularyHasBeenUpdated !== prevProps.formularyHasBeenUpdated) {
+        if (this.props.formularyHasBeenUpdated !== prevProps.formularyHasBeenUpdated || prevProps.query.form !== this.props.query.form) {
             this.props.onGetListingData(this.state.params, this.props.query.form)
             this.props.onGetTotals(this.state.params, this.props.query.form)    
         }
@@ -178,7 +178,8 @@ class Listing extends React.Component {
                         onSort={this.onSort} 
                         setParams={this.setParams}
                         headers={this.props.list.header} 
-                        data={this.props.list.data} 
+                        data={this.props.list.data.data}
+                        pagination={this.props.list.data.pagination} 
                         setFormularyId={this.props.setFormularyId}
                         />
                     </Col>

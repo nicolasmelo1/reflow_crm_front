@@ -8,9 +8,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
  * This Components controls each section individually
  */
 const FormularySection = (props) => {
-    // files UPLOADED only
-    const [sectionFiles, setSectionFiles] = useState([])
-
     // used by each field, to not become a tedius and repetitive job doing this on each field, we only pass the function
     const getFieldFormValues = (field_name) => {
         return props.sectionData.dynamic_form_value.filter(sectionFormValue=> sectionFormValue.field_name === field_name)
@@ -37,18 +34,18 @@ const FormularySection = (props) => {
         props.updateSection(props.sectionData, props.section.id, props.sectionDataIndex)
     }
 
-    const addFieldFile = (field_name, file) => {
-        sectionFiles.push({
-            'file': file,
-            'field_name': field_name
+    const addFieldFile = (fieldName, file) => {
+        props.files.push({
+            file: file,
+            name: fieldName
         })
-        setSectionFiles([...sectionFiles])
+        props.updateFiles([...props.files])
     }
 
-    const removeFieldFile = (field_name, file_name) => {
-        const indexToRemove = sectionFiles.findIndex(sectionFile => sectionFile.field_name === field_name && sectionFile.name === file_name)
-        sectionFiles.splice(indexToRemove, 1)
-        setSectionFiles([...sectionFiles])
+    const removeFieldFile = (fieldName, fileName) => {
+        const indexToRemove = props.files.findIndex(sectionFile => sectionFile.name === fieldName && sectionFile.file.name === fileName)
+        props.files.splice(indexToRemove, 1)
+        props.updateFiles([...props.files])
     }
 
     return (
@@ -67,6 +64,7 @@ const FormularySection = (props) => {
                     <Fields 
                     errors={props.errors}
                     onChangeFormulary={props.onChangeFormulary}
+                    sectionId={props.sectionData.id}
                     field={element}
                     fieldFormValues={getFieldFormValues(element.name)} 
                     getFieldFormValues={getFieldFormValues}

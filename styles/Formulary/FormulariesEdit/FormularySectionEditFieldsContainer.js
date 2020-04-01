@@ -6,5 +6,4 @@ export default styled.div`
     border-radius: 0 0 10px 10px;
     transition: height 0.3s ease-in-out;
     width: 100%;
-    overflow: hidden
 `

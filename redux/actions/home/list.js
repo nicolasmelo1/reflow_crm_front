@@ -9,18 +9,23 @@ import agent from 'redux/agent'
 const onGetListingData = (params, formName) => {
     return async (dispatch, getState) => {
         let stateData = getState().home.list.data
-        let payload = []
-        let response = await agent.LISTING.getData(params, formName)
-
-        if (params.page === 1) {
-            payload = response.data.data
-        } else {
-            payload = stateData.concat(response.data.data)
+        let payload = {
+            pagination: stateData.pagination,
+            data: stateData.data
         }
 
-        dispatch({ type: GET_DATA, payload: payload });
+        try {
+            let response = await agent.LISTING.getData(params, formName)
+            payload.pagination = response.data.pagination
+            if (params.page === 1) {
+                payload.data = response.data.data
+            } else {
+                payload.data = payload.data.concat(response.data.data)
+            }
+            dispatch({ type: GET_DATA, payload: payload });
+            return response
 
-        return response
+        } catch {}
     }
 }
 
@@ -43,10 +48,12 @@ const onExportData = (params, formName) => {
 
 const onRenderListing = (formName) => {
     return async (dispatch) => {
-        let response = await agent.LISTING.getRenderData(formName)
-        if (response.status === 200) {
-            dispatch({ type: SET_HEADERS, payload: response.data.data });
-        }
+        try {
+            let response = await agent.LISTING.getRenderData(formName)
+            if (response.status === 200) {
+                dispatch({ type: SET_HEADERS, payload: response.data.data });
+            }
+        } catch {}
     }
 }
 
@@ -58,10 +65,12 @@ const onUpdateHeader = (header) => {
 
 const onGetTotals = (params, formName) => {
     return async (dispatch) => {
-        let response = await agent.LISTING.getTotals(params, formName)
-        if (response.status === 200) {
-            dispatch({ type: SET_TOTALS, payload: response.data.totals })
-        }
+        try {
+            let response = await agent.LISTING.getTotals(params, formName)
+            if (response.status === 200) {
+                dispatch({ type: SET_TOTALS, payload: response.data.totals })
+            }
+        } catch {}
     }
 }
 

@@ -56,7 +56,7 @@ const ListingExtract = (props) => {
             format: format
         }
         props.onExportData(data, props.formName).then(async response => {   
-            if (response.data.status === 'ok') {
+            if (response && response.data.status === 'ok') {
                 let response = await props.onGetExportedData()
                 let counter = 0
                 while (response.data.status === 'empty' || counter !== 100) {

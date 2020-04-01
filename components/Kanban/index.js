@@ -76,7 +76,7 @@ class Kanban extends React.Component {
             (
                 JSON.stringify(prevProps.kanban.dimension_order) !== JSON.stringify(this.props.kanban.dimension_order) ||
                 prevProps.kanban.initial.default_kanban_card_id !== this.props.kanban.initial.default_kanban_card_id ||
-                prevProps.formularyHasBeenUpdated !== this.props.formularyHasBeenUpdated
+                prevProps.formularyHasBeenUpdated !== this.props.formularyHasBeenUpdated 
             )
         )
     }
@@ -116,11 +116,18 @@ class Kanban extends React.Component {
         if (this.isToUpdateData(prevProps)) {
             this.props.onGetKanbanData(this.state.params, this.props.query.form)
         }
+        /*if (prevProps.query.form !== this.props.query.form) { 
+            this.props.onRenderKanban(this.props.query.form)
+            this.props.onGetDimensionOrders(this.props.query.form, this.props.kanban.initial.default_dimension_field_id)
+            this.props.onGetCards(this.props.query.form)
+            //this.props.onGetKanbanData(this.state.params, this.props.query.form)
+        }*/
 
     }
 
     render() {
         const selectedCard = this.props.kanban.cards.filter(card => card.id === this.props.kanban.initial.default_kanban_card_id)
+        console.log(this.props.kanban.initial.default_dimension_field_id)
         return (
             <div>
                 {this.props.kanban.initial.dimension_fields.length === 0 ? (

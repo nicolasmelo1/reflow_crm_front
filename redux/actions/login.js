@@ -1,4 +1,4 @@
-import { DEAUTHENTICATE, AUTHENTICATE, ERROR, DATA_TYPES } from '../types';
+import { DEAUTHENTICATE, AUTHENTICATE, ERROR, DATA_TYPES, SET_USER } from 'redux/types';
 import agent from '../agent'
 
 // gets token from the api and stores it in the redux store and in cookie
@@ -15,19 +15,28 @@ const onDeauthenticate = () => {
     }
 }
 
+const onUpdateUser = (user) => {
+    return (dispatch) => {
+        console.log(user)
+        dispatch({ type: SET_USER, payload: user})
+    }
+}
+
 const getDataTypes = () => {
     return async (dispatch, getState) => {
-        if (window.localStorage.getItem('refreshToken') !== '' && window.localStorage.getItem('token') !== '') {
-            const stateData = getState().login
+        //if (window.localStorage.getItem('refreshToken') !== '' && window.localStorage.getItem('token') !== '') {
+        const stateData = getState().login
+        try { 
             let response = await agent.LOGIN.getDataTypes()
             if (JSON.stringify(stateData.types) !== JSON.stringify(response.data.data)) {
                 dispatch({ type: DATA_TYPES, payload: response.data.data });
             }
-        }
+        } catch {}
     }
 }
 
 export default {
+    onUpdateUser,
     onAuthenticate,
     onDeauthenticate,
     getDataTypes

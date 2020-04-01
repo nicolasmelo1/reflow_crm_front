@@ -24,8 +24,14 @@ import { Spinner } from 'react-bootstrap'
  */
 const KanbanCards = (props) => {
     const [isOverflown, setIsOverflown] = useState(false)
-    const [hasFiredRequestForNewPage, setHasFiredRequestForNewPage] = useState(false)
- 
+    const [hasFiredRequestForNewPage, _setHasFiredRequestForNewPage] = useState(false)
+
+    // Check Components/Utils/Select for reference and explanation
+    const hasFiredRequestForNewPageRef = React.useRef(hasFiredRequestForNewPage);
+    const setHasFiredRequestForNewPage = data => {
+        hasFiredRequestForNewPageRef.current = data;
+        _setHasFiredRequestForNewPage(data);
+    }
     const kanbanCardContainerRef = React.useRef()
 
 
@@ -59,7 +65,7 @@ const KanbanCards = (props) => {
     }
 
     const onScroll = (e) => {
-        if (props.pagination.current < props.pagination.total && kanbanCardContainerRef.current.scrollTop === (kanbanCardContainerRef.current.scrollHeight - kanbanCardContainerRef.current.offsetHeight)) {
+        if (!hasFiredRequestForNewPageRef.current && props.pagination.current < props.pagination.total && kanbanCardContainerRef.current.scrollTop >= (kanbanCardContainerRef.current.scrollHeight - kanbanCardContainerRef.current.offsetHeight)) {
             getMoreData()
         }
     }
@@ -107,7 +113,7 @@ const KanbanCards = (props) => {
             {props.pagination.current < props.pagination.total && !isOverflown ? (
                 <KanbanLoadMoreDataButton onClick={e=> {onClickToGetMoreData()}}>Carregar mais</KanbanLoadMoreDataButton>
             ): ''}
-            <div style={{margin: 'auto'}}>
+            <div style={{margin: 'auto', textAlign:'center', width: '100%'}}>
                 {hasFiredRequestForNewPage ? (<Spinner animation="border" />) : ''}
             </div>
         </KanbanCardsContainer>

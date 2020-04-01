@@ -4,6 +4,7 @@ import FieldAttachmentInput from './FieldAttachmentInput'
 import FieldAttachmentContainer from './FieldAttachmentContainer'
 import FieldAttachmentText from './FieldAttachmentText'
 import FieldAttachmentLabel from './FieldAttachmentLabel'
+import FieldAttachmentButton from './FieldAttachmentButton'
 import FieldLabel from './FieldLabel'
 import FieldRequiredLabel from './FieldRequiredLabel'
 import FieldContainer from './FieldContainer'
@@ -23,6 +24,7 @@ export default {
     Select: FieldSelect,
     LongText: FieldLongText,
     Attachment: {
+        Button: FieldAttachmentButton,
         Image: FieldAttachmentImage,
         Input: FieldAttachmentInput,
         Label: FieldAttachmentLabel,

@@ -3,6 +3,7 @@ import { NavbarLinkIcon, NavbarLinkLabel} from 'styles/Navbar'
 
 
 const NavbarDropdown = (props) => {
+    console.log(props.items)
     return (
         <NavDropdown 
         title={
@@ -11,11 +12,13 @@ const NavbarDropdown = (props) => {
                 <NavbarLinkLabel>{props.label}</NavbarLinkLabel>
             </span>
         }>
-            {props.items.map((item, index)=> (
-                <NavDropdown.Item as="button" key={index} href={item.href} onClick={e => { (item.onClick) ? item.onClick(e): null }}>
-                    {item.label}
-                </NavDropdown.Item>
-            ))}
+            {props.items.map((item, index)=> {
+                return (
+                    <NavDropdown.Item as="button" key={index} href={item.href} onClick={e => { (item.onClick) ? item.onClick(e): null }}>
+                        {item.label}
+                    </NavDropdown.Item>
+                )
+            })}
         </NavDropdown>
     )
 }

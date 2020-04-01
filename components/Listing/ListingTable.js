@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import ListingTableContent from './ListingTableContent'
 import ListingTableHeader from './ListingTableHeader'
-import { ListingTableContainer } from 'styles/Listing'
+import { ListingTableContainer, ListingTableLoaderContainer, ListingTableLoaderWrapper } from 'styles/Listing'
 import { Table, Spinner } from 'react-bootstrap'
 
 /**
@@ -17,17 +17,10 @@ import { Table, Spinner } from 'react-bootstrap'
  * @param {Array<Object>} data - The data to display on the table.
  */
 const ListingTable = (props) => {
-    const [lastResponseWasEmpty, _setLastResponseWasEmpty] = useState(false)
     const [hasFiredRequestForNewPage, _setHasFiredRequestForNewPage] = useState(false)
     const headers = (props.headers && props.headers.field_headers) ? props.headers.field_headers: []
+    const tableRef = React.useRef()
     const data = (props.data) ? props.data: []
-    const PAGINATION_LENGTH = 25
-
-    const lastResponseWasEmptyRef = React.useRef()
-    const setLastResponseWasEmpty = data => {
-        lastResponseWasEmptyRef.current = data;
-        _setLastResponseWasEmpty(data);
-    }
 
     // Check Components/Utils/Select for reference and explanation
     const hasFiredRequestForNewPageRef = React.useRef(hasFiredRequestForNewPage);
@@ -36,37 +29,40 @@ const ListingTable = (props) => {
         _setHasFiredRequestForNewPage(data);
     }
 
-    const onScroll = (e) => {
-        if (!hasFiredRequestForNewPageRef.current && (window.innerHeight + window.pageYOffset) >= document.body.offsetHeight)  {
-            if (props.params.page * PAGINATION_LENGTH === props.data.length) {
-                setHasFiredRequestForNewPage(true) 
-                props.params.page = (!lastResponseWasEmptyRef.current) ? props.params.page+1 : props.params.page
-                props.setParams(props.params).then(response=> {
-                    if (response.status === 200) {
-                        if (response.data.data.length===0) {
-                            setLastResponseWasEmpty(true)
-                        }
-                        setHasFiredRequestForNewPage(false) 
+    const onScroll = (e) => {  
+        if (!hasFiredRequestForNewPageRef.current && props.pagination.current < props.pagination.total && tableRef.current.scrollTop >= (tableRef.current.scrollHeight - tableRef.current.offsetHeight))  {
+            setHasFiredRequestForNewPage(true) 
+            props.params.page = props.pagination.current + 1
+            props.setParams(props.params).then(response=> {
+                if (response.status === 200) {
+                    if (response.data.data.length===0) {
+                        setLastResponseWasEmpty(true)
                     }
-                })
-            }
+                    setHasFiredRequestForNewPage(false) 
+                }
+            })
         }
     }
 
     useEffect(() => {
-        window.addEventListener('scroll', onScroll)
+        tableRef.current.addEventListener('scroll', onScroll)
         return () => {
-            window.removeEventListener('scroll', onScroll)
+            tableRef.current.removeEventListener('scroll', onScroll)
         }
     })
 
     return (
-        <ListingTableContainer>
+        <ListingTableContainer ref={tableRef}>
             <Table>
                 <ListingTableHeader headers={headers} params={props.params} onSort={props.onSort}/>
-                <ListingTableContent headers={headers} data={data} setFormularyId={props.setFormularyId} />
+                <ListingTableContent headers={headers} pagination={props.pagination} data={data} setFormularyId={props.setFormularyId} />
             </Table>
-            {hasFiredRequestForNewPage ? (<Spinner animation="border" />) :''}
+            
+            {hasFiredRequestForNewPage ? (
+                <ListingTableLoaderContainer>
+                    <Spinner animation="border" />
+                </ListingTableLoaderContainer>
+            ): ''}
         </ListingTableContainer>
     )
 }

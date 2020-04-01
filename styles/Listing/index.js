@@ -7,6 +7,7 @@ import ListingFilterAndExtractContainer from './ListingFilterAndExtractContainer
 import ListingFilterAndExtractButton from './ListingFilterAndExtractButton'
 import ListingFilterIcon from './ListingFilterIcon'
 import ListingTableContainer from './ListingTableContainer'
+import ListingTableLoaderContainer from './ListingTableLoaderContainer'
 import ListingEditButtonIcon from './ListingEditButtonIcon'
 import ListingDeleteButtonIcon from './ListingDeleteButtonIcon'
 import ListingTotalLabel from './ListingTotalLabel'
@@ -55,6 +56,7 @@ export { ListingTableHeaderContainer }
 export { ListingTableHeaderElementDragger }
 export { ListingTableHeaderElementParagraph }
 export { ListingTableHeaderElement }
+export { ListingTableLoaderContainer }
 export { ListingTotalCardContainer }
 export { ListingTotalCardContent }
 export { ListingTotalCardTitle }

@@ -101,9 +101,12 @@ const requests = {
     }
 };
 
-const formEncodeData = (appendToKey, body) => {
+const formEncodeData = (appendToKey, body, files = []) => {
     let formData = new FormData();
     formData.append(appendToKey, JSON.stringify(body));
+    files.forEach(file=> {
+        formData.append(file.name, file.file)
+    })
     return formData
 }
 
@@ -142,14 +145,17 @@ const HOME = {
     getBuildFormulary: async (formName) => {
         return await requests.get(`${companyId}/formulary/api/${formName}/`)
     },
-    createFormularyData: async (body, formName) => {
-        return await requests.post(`${companyId}/formulary/api/${formName}/`, formEncodeData('data', body), {'Content-Type': 'multipart/form-data'})
+    createFormularyData: async (body, files, formName) => {
+        return await requests.post(`${companyId}/formulary/api/${formName}/`, formEncodeData('data', body, files), {'Content-Type': 'multipart/form-data'})
     },
     getFormularyData: async (formName, formId) => {
         return await requests.get(`${companyId}/formulary/api/${formName}/${formId}/`)
     },
-    updateFormularyData: async (body, formName, formId) => {
-        return await requests.post(`${companyId}/formulary/api/${formName}/${formId}/`, formEncodeData('data', body), {'Content-Type': 'multipart/form-data'})
+    updateFormularyData: async (body, files, formName, formId) => {
+        return await requests.post(`${companyId}/formulary/api/${formName}/${formId}/`, formEncodeData('data', body, files), {'Content-Type': 'multipart/form-data'})
+    },
+    getAttachmentFile: (formName, formularyId, fieldId, fileName) => {
+        return `${API_ROOT}${companyId}/formulary/${formName}/${formularyId}/${fieldId}/${fileName}/?token=${token}`
     },
     getFormularyFormFieldOptions: async (formName, fieldId) => {
         return await requests.get(`${companyId}/formulary/api/${formName}/${fieldId}/form/options/`)

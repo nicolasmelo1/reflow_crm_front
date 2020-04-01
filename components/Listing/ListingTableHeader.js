@@ -77,7 +77,7 @@ const ListingTableHead = (props) => {
     
     return (
         <thead>
-            <tr>
+            <tr style={{position: 'sticky', top: '0'}}>
                 {props.headers.map(function (data, index) {
                     if (data.user_selected) {
                         return (
