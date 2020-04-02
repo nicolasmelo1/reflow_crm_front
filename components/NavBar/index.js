@@ -9,7 +9,6 @@ const Navbar = (props) => {
 
     const handleLogout = (e) => {
         e.preventDefault()
-        console.log('testes')
         props.onDeauthenticate()
         Router.push(paths.login())
     }
