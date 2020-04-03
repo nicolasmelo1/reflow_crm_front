@@ -1,7 +1,7 @@
 import React from 'react'
 import Header from './Header'
 import Sidebar from './Sidebar'
-import Navbar from './Navbar'
+//import Navbar from './Navbar'
 import { connect } from 'react-redux';
 import actions from 'redux/actions';
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -85,7 +85,7 @@ class Layout extends React.Component {
                 <Header title={this.props.title}></Header>
                 <div className="notifications-container"></div>
                 <div id="main-container">
-                    {this.props.hideNavBar ? '' : <Navbar onDeauthenticate={this.props.onDeauthenticate} />}
+                    {/*this.props.hideNavBar ? '' : <Navbar onDeauthenticate={this.props.onDeauthenticate} />*/}
                     {this.props.showSideBar ? <Sidebar sidebarIsOpen={this.state.sidebarIsOpen} setSidebarIsOpen={this.setSidebarIsOpen} /> : ''}
                     <ContentContainer sidebarIsOpen={this.state.sidebarIsOpen}>
                         {this.props.children}
