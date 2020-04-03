@@ -110,6 +110,11 @@ class Data extends React.Component {
         this.props.onUpdateUser({...this.props.login.user})
     }
 
+    componentDidUpdate(prevProps) { 
+        console.log(prevProps.query.form)
+        console.log(this.props.query.form)
+    }
+
     renderVisualization = () => {
         const dataType = this.props.login.user && this.getDataType(this.props.login.user.data_type).length > 0 ? this.getDataType(this.props.login.user.data_type)[0].name : 'listing'
         switch(dataType){

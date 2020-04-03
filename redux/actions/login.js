@@ -17,7 +17,6 @@ const onDeauthenticate = () => {
 
 const onUpdateUser = (user) => {
     return (dispatch) => {
-        console.log(user)
         dispatch({ type: SET_USER, payload: user})
     }
 }
