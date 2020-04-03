@@ -1,5 +1,5 @@
-import NavbarLink from './NavbarLink'
-import NavbarDropdown from './NavbarDropdown'
+import NavBarLink from './NavBarLink'
+import NavBarDropdown from './NavBarDropdown'
 import { strings, paths } from 'utils/constants'
 import { NavbarBrand, NavbarList, NavbarMain, NavbarCollapse, NavbarToggle } from 'styles/Navbar'
 import Router from 'next/router'
@@ -47,11 +47,11 @@ const NavBar = (props) => {
             <NavbarToggle aria-controls="basic-navbar-nav" />
             <NavbarCollapse id="basic-navbar-nav">
                 <NavbarList className="ml-auto" activeKey="1">
-                    <NavbarLink link='#' icon='tasks' label={strings['pt-br']['headerGestaoLabel']}/>
-                    <NavbarLink link='#' icon='chart-bar' label={strings['pt-br']['headerDashboardLabel']}/>
-                    <NavbarLink link='#' icon='bell' label={strings['pt-br']['headerNotificationLabel']}/>
-                    <NavbarLink link='#' icon='circle' label={strings['pt-br']['headerHelpLabel']}/>
-                    <NavbarDropdown icon='cog' label={strings['pt-br']['headerSettingsLabel']} items={configDropdown}/>
+                    <NavBarLink link='#' icon='tasks' label={strings['pt-br']['headerGestaoLabel']}/>
+                    <NavBarLink link='#' icon='chart-bar' label={strings['pt-br']['headerDashboardLabel']}/>
+                    <NavBarLink link='#' icon='bell' label={strings['pt-br']['headerNotificationLabel']}/>
+                    <NavBarLink link='#' icon='circle' label={strings['pt-br']['headerHelpLabel']}/>
+                    <NavBarDropdown icon='cog' label={strings['pt-br']['headerSettingsLabel']} items={configDropdown}/>
                 </NavbarList>
             </NavbarCollapse>
         </NavbarMain>

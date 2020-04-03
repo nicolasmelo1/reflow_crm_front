@@ -2,7 +2,7 @@ import { NavDropdown } from 'react-bootstrap'
 import { NavbarLinkIcon, NavbarLinkLabel} from 'styles/Navbar'
 
 
-const NavbarDropdown = (props) => {
+const NavBarDropdown = (props) => {
     return (
         <NavDropdown 
         title={
@@ -22,4 +22,4 @@ const NavbarDropdown = (props) => {
     )
 }
 
-export default NavbarDropdown
+export default NavBarDropdown
