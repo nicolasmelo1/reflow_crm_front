@@ -63,9 +63,11 @@ const onGetDimensionOrders = (formName, dimensionId) => {
     }
 }
 
-const onChangeDimensionOrdersState = (dimensionOrders, dimensionId, formName) => {
+const onChangeDimensionOrdersState = (dimensionOrders, dimensionId=null, formName=null) => {
     return (dispatch) => {
-        agent.KANBAN.updateDimensionOrders(dimensionOrders, dimensionId, formName)
+        if (dimensionId && formName) {
+            agent.KANBAN.updateDimensionOrders(dimensionOrders, dimensionId, formName)
+        }
         dispatch({ type: SET_DIMENSION_ORDER, payload: dimensionOrders })
     }
 }

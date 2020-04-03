@@ -42,14 +42,13 @@ class Kanban extends React.Component {
         }
     }
 
-    getDimensionOrders = () =>{
-        if (this.props.kanban.initial.default_dimension_field_id && this.props.kanban.initial.default_kanban_card_id) {
-            this.props.onGetDimensionOrders(this.props.query.form, this.props.kanban.initial.default_dimension_field_id)
-        }
-    }
 
     setParams = async (params) => {
-        const response = await this.props.onGetKanbanData(params ,this.props.query.form)
+        let response = null
+        if (this.props.kanban.initial.default_dimension_field_id && this.props.kanban.initial.default_kanban_card_id) {
+            response = await this.props.onGetKanbanData(params ,this.props.query.form)
+        }
+
         this.setState(state => {
             return {
                 ...state,
@@ -109,22 +108,13 @@ class Kanban extends React.Component {
     componentDidMount() {
         this.props.onRenderKanban(this.props.query.form)
         this.props.onGetCards(this.props.query.form)
-        this.props.onGetKanbanData(this.state.params, this.props.query.form)
     }
 
     componentDidUpdate(prevProps) {
         if (prevProps.query.form !== this.props.query.form) { 
+            this.props.onChangeDimensionOrdersState([])
             this.props.onRenderKanban(this.props.query.form)
             this.props.onGetCards(this.props.query.form)
-        }
-        if (this.props.kanban.initial) {
-            if (this.props.query.form === prevProps.query.form && (prevProps.kanban.initial.default_dimension_field_id !== this.props.kanban.initial.default_dimension_field_id ||
-                prevProps.kanban.initial.default_kanban_card_id !== this.props.kanban.initial.default_kanban_card_id)) {
-                this.getDimensionOrders()
-            }
-            if (this.isToUpdateData(prevProps)) {
-                this.props.onGetKanbanData(this.state.params, this.props.query.form)
-            }
         }
     }
 
@@ -178,6 +168,8 @@ class Kanban extends React.Component {
                                     params={this.state.params}
                                     dimensionOrders={this.props.kanban.dimension_order}
                                     defaultDimensionId={this.props.kanban.initial.default_dimension_field_id}
+                                    defaultKanbanCardId={this.props.kanban.initial.default_kanban_card_id}
+                                    onGetDimensionOrders={this.props.onGetDimensionOrders}
                                     card={(selectedCard.length > 0) ? selectedCard[0] : null}
                                     data={this.props.kanban.data}
                                     onGetKanbanData={this.props.onGetKanbanData}

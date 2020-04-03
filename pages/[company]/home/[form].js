@@ -5,7 +5,7 @@ import { DataTypeHeaderAnchor } from 'styles/Data'
 import { connect } from 'react-redux';
 import { strings, types, paths } from 'utils/constants';
 import { Button, Row, Col } from 'react-bootstrap';
-import Router from 'next/router'
+import { withRouter } from 'next/router'
 
 
 /**
@@ -110,11 +110,6 @@ class Data extends React.Component {
         this.props.onUpdateUser({...this.props.login.user})
     }
 
-    componentDidUpdate(prevProps) { 
-        console.log(prevProps.query.form)
-        console.log(this.props.query.form)
-    }
-
     renderVisualization = () => {
         const dataType = this.props.login.user && this.getDataType(this.props.login.user.data_type).length > 0 ? this.getDataType(this.props.login.user.data_type)[0].name : 'listing'
         switch(dataType){
@@ -175,4 +170,4 @@ class Data extends React.Component {
     }
 }
 
-export default connect(state => ({ login: state.login }), actions)(Data)
+export default connect(state => ({ login: state.login }), actions)(withRouter(Data))

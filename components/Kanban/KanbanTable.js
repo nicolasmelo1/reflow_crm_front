@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import KanbanDimension from './KanbanDimension'
 
 /**
@@ -23,6 +23,18 @@ import KanbanDimension from './KanbanDimension'
  */
 const KanbanTable = (props) => {
     const cardFields = (props.card) ? props.card.kanban_card_fields: []
+
+    useEffect(() => {
+        if (props.defaultKanbanCardId && props.defaultDimensionId) {
+            props.onGetDimensionOrders(props.formName, props.defaultDimensionId)
+        }
+    }, [props.defaultDimensionId, props.defaultDimensionId])
+
+    useEffect(() => {
+        if (props.defaultKanbanCardId && props.defaultDimensionId) {
+            props.onGetKanbanData(props.params, props.formName)
+        }
+    }, [props.dimensionOrders])
 
     return (
         <div style={{overflowX: 'auto'}}>
