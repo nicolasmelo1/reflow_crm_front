@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { API, BEARER } from '../config'
+import { API, BEARER } from 'config'
 import { paths } from 'utils/constants'
 import Router from 'next/router'
 

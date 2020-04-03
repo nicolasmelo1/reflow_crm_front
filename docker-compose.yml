@@ -5,6 +5,7 @@ services:
     command: npm run dev
     environment:
       - CONFIG=development
+      - API_HOST=https://reflow-server-to-front-staging.xpdufpbcds.us-east-1.elasticbeanstalk.com/
     volumes:
       - .:/code
     ports:

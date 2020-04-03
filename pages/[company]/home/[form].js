@@ -101,7 +101,7 @@ class Data extends React.Component {
     }
 
     getDataType = (dataTypeId) => {
-        return this.props.login.types.default.data_type.filter(dataType => dataType.id === dataTypeId)
+        return  this.props.login.types ? this.props.login.types.default.data_type.filter(dataType => dataType.id === dataTypeId) : 'listing'
     }
     
 
@@ -147,7 +147,7 @@ class Data extends React.Component {
             <Layout title={strings['pt-br']['managementPageTitle']} showSideBar={true}>
                 <Row>
                     <Col>
-                        {this.props.login.types.default ? this.props.login.types.default.data_type.map(dataType => (
+                        {this.props.login.types && this.props.login.types.default ? this.props.login.types.default.data_type.map(dataType => (
                             <DataTypeHeaderAnchor key={dataType.id} onClick={e=> {this.setVisualization(dataType.id)}} isSelected={this.props.login.user.data_type === dataType.id}>
                                 {types('pt-br','data_type', dataType.name)}    
                             </DataTypeHeaderAnchor> 
