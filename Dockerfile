@@ -2,11 +2,10 @@ FROM node:13
 
 WORKDIR /code
 
-ADD package.json /code/
-ADD .babelrc /code/
-RUN npm install
+ENV PATH /code/node_modules/.bin:$PATH
 
 COPY . /code/
 
-EXPOSE 3000
-CMD ["sh", "deploy.sh"]
+RUN npm install
+
+CMD [ "npm", "run", "dev" ]

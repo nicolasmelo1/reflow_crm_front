@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { Nav } from 'react-bootstrap'
 import { NavbarLinkIcon, NavbarLinkLabel } from 'styles/Navbar'
 
-const NavBarLink = (props) => {
+const NavbarLink = (props) => {
     return (
         <Link href={props.link} passHref>
             <Nav.Link eventKey={1}>
@@ -14,4 +14,4 @@ const NavBarLink = (props) => {
     )
 };
 
-export default NavBarLink;
+export default NavbarLink;
