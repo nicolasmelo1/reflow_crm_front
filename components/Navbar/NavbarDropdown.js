@@ -3,7 +3,6 @@ import { NavbarLinkIcon, NavbarLinkLabel} from 'styles/Navbar'
 
 
 const NavbarDropdown = (props) => {
-    console.log(props.items)
     return (
         <NavDropdown 
         title={
