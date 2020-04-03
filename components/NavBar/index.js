@@ -5,7 +5,7 @@ import { NavbarBrand, NavbarList, NavbarMain, NavbarCollapse, NavbarToggle } fro
 import Router from 'next/router'
 
 
-const Navbar = (props) => {
+const NavBar = (props) => {
 
     const handleLogout = (e) => {
         e.preventDefault()
@@ -58,4 +58,4 @@ const Navbar = (props) => {
     )
 };
 
-export default Navbar
+export default NavBar

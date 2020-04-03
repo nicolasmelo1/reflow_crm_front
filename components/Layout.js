@@ -1,6 +1,6 @@
 import Header from './Header'
 import Sidebar from './Sidebar'
-import Navbar from './Navbar'
+import NavBar from './NavBar'
 import { connect } from 'react-redux';
 import actions from 'redux/actions';
 import { library } from '@fortawesome/fontawesome-svg-core'
