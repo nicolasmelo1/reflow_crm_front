@@ -1,7 +1,7 @@
-import React from "react";
-import Link from 'next/link';
+import React from 'react'
+import Link from 'next/link'
 import { Nav } from 'react-bootstrap'
-import { NavbarLinkIcon, NavbarLinkLabel, NavbarLinkSpan } from 'styles/Navbar';
+import { NavbarLinkIcon, NavbarLinkLabel } from 'styles/Navbar'
 
 const NavBarLink = (props) => {
     return (

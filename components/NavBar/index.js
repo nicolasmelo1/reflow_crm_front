@@ -1,3 +1,4 @@
+import React from 'react'
 import NavBarLink from './NavBarLink'
 import NavBarDropdown from './NavBarDropdown'
 import { strings, paths } from 'utils/constants'
