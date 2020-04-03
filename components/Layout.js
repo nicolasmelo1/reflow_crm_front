@@ -1,14 +1,15 @@
 import Header from './Header'
+import Sidebar from './Sidebar'
+import Navbar from './Navbar'
 import { connect } from 'react-redux';
-import actions from '../redux/actions';
+import actions from 'redux/actions';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import React from 'react'
 import Body from 'styles/Body'
 import Router from 'next/router';
-import Sidebar from './Sidebar'
 import { paths } from 'utils/constants'
 import agent from 'redux/agent'
-import Navbar from './Navbar'
+
 import ContentContainer from 'styles/ContentContainer'
 import { 
     faArrowDown, 
