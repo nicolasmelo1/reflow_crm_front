@@ -1,4 +1,5 @@
 import NavbarBrand from './NavbarBrand'
+import NavbarLogo from './NavbarLogo'
 import NavbarCollapse from './NavbarCollapse'
 import NavbarDropdown from './NavbarDropdown'
 import NavbarDropdownToggle from './NavbarDropdownToggle'
@@ -13,6 +14,7 @@ import NavbarMain from './NavbarMain'
 export { NavbarMain }
 export { NavbarList }
 export { NavbarBrand }
+export { NavbarLogo }
 export { NavbarCollapse }
 export { NavbarDropdown }
 export { NavbarDropdownToggle }

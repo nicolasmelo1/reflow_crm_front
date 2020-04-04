@@ -80,7 +80,11 @@ const FormularySections = (props) => {
 
     const addSection = (e, section) => {
         e.preventDefault()
-        sectionsData.push(addNewSectionsData(section.id))
+        if (section.form_type === 'multi-form') {
+            sectionsData.splice(0,0, addNewSectionsData(section.id))
+        } else {
+            sectionsData.push(addNewSectionsData(section.id))
+        }
         setSectionsData([...sectionsData])
     }
 

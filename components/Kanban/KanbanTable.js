@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import KanbanDimension from './KanbanDimension'
 
 /**
@@ -23,12 +23,23 @@ import KanbanDimension from './KanbanDimension'
  */
 const KanbanTable = (props) => {
     const cardFields = (props.card) ? props.card.kanban_card_fields: []
+    const [hasFiredDimensionOrders, _setHasFiredDimensionOrders] = useState(false)
+
+    // we just fire to get the dimension orders once
+    const hasFiredDimensionOrdersRef = React.useRef(hasFiredDimensionOrders)
+    const setHasFiredDimensionOrders = (data) => {
+        hasFiredDimensionOrdersRef.current = data
+        _setHasFiredDimensionOrders(data)
+    }
 
     useEffect(() => {
-        if (props.defaultKanbanCardId && props.defaultDimensionId) {
-            props.onGetDimensionOrders(props.formName, props.defaultDimensionId)
+        if (!hasFiredDimensionOrdersRef.current && props.defaultKanbanCardId && props.defaultDimensionId) {
+            setHasFiredDimensionOrders(true)
+            props.onGetDimensionOrders(props.formName, props.defaultDimensionId).then(_ => {
+                setHasFiredDimensionOrders(false)
+            })
         }
-    }, [props.defaultDimensionId, props.defaultDimensionId])
+    }, [props.defaultDimensionId, props.defaultKanbanCardId])
 
     useEffect(() => {
         if (props.defaultKanbanCardId && props.defaultDimensionId) {
@@ -37,8 +48,8 @@ const KanbanTable = (props) => {
     }, [props.dimensionOrders])
 
     return (
-        <div style={{overflowX: 'auto'}}>
-            <table>
+        <div style={{overflowX: 'auto', transform: 'rotateX(180deg)'}}>
+            <table style={{ transform: 'rotateX(180deg)'}}>
                 <tbody>
                     <KanbanDimension
                     formName={props.formName}

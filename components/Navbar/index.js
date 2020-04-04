@@ -2,7 +2,7 @@ import React from 'react'
 import NavbarLink from './NavbarLink'
 import NavbarDropdown from './NavbarDropdown'
 import { strings, paths } from 'utils/constants'
-import { NavbarBrand, NavbarList, NavbarMain, NavbarCollapse, NavbarToggle } from 'styles/Navbar'
+import { NavbarLogo, NavbarBrand, NavbarList, NavbarMain, NavbarCollapse, NavbarToggle } from 'styles/Navbar'
 import Router from 'next/router'
 
 
@@ -43,7 +43,7 @@ const Navbar = (props) => {
     return (
         <NavbarMain expand="lg">
             <NavbarBrand href="#">
-                <img src="/logo_reflow_navbar.png" width="249" height="72" />
+                <NavbarLogo src="/logo_reflow_navbar.png" width="249" height="72" />
             </NavbarBrand>
             <NavbarToggle aria-controls="basic-navbar-nav" />
             <NavbarCollapse id="basic-navbar-nav">

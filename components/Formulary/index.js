@@ -26,7 +26,7 @@ class Formulary extends React.Component {
             e.preventDefault();
         }
         // when user closes we reset the states on the formulary
-        if (this.props.formularyIsOpen) {
+        if (this.props.formulary.isOpen) {
             this.props.setFormularyId(null)
             this.props.setFormularyDefaultData([])
             if (this.state.auxOriginalInitial.filled && this.state.auxOriginalInitial.buildData) {
@@ -38,7 +38,7 @@ class Formulary extends React.Component {
             this.setErrors({})
         }
        
-        this.props.onOpenOrCloseFormulary(!this.props.formularyIsOpen)
+        this.props.onOpenOrCloseFormulary(!this.props.formulary.isOpen)
     }
 
     setAuxOriginalInitial = () => {
@@ -136,12 +136,12 @@ class Formulary extends React.Component {
             <Formularies.Container>
                 <Row>
                     <Col>
-                        <Formularies.Button onClick={e=>{this.setIsOpen(e)}}>{(this.props.formularyIsOpen) ? 'Fechar ' + formName : strings['pt-br']['formularyOpenButtonLabel']}</Formularies.Button>
+                        <Formularies.Button onClick={e=>{this.setIsOpen(e)}}>{(this.props.formulary.isOpen) ? 'Fechar ' + formName : strings['pt-br']['formularyOpenButtonLabel']}</Formularies.Button>
                     </Col>
                 </Row>
                 <Row>
                     <Col>
-                        <Formularies.ContentContainer isOpen={this.props.formularyIsOpen}>
+                        <Formularies.ContentContainer isOpen={this.props.formulary.isOpen}>
                             {(this.state.isEditing) ? (
                                 <div>
                                     <FormularySectionsEdit

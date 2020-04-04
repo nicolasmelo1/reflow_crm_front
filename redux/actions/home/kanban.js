@@ -59,6 +59,7 @@ const onGetDimensionOrders = (formName, dimensionId) => {
         try {
             const response = await agent.KANBAN.getDimensionOrders(formName, dimensionId)
             dispatch({ type: SET_DIMENSION_ORDER, payload: response.data.data })
+            return response
         } catch {}
     }
 }

@@ -21,7 +21,6 @@ class Data extends React.Component {
         // has been updated
         this.state = {
             formularyId: null,//'51003'
-            formularyIsOpen: false,
             formularyDefaultData: [],
             formularyHasBeenUpdated: false,
             search: {
@@ -37,12 +36,7 @@ class Data extends React.Component {
     }
 
     onOpenOrCloseFormulary = (isOpen) => {
-        this.setState(state => {
-            return {
-                ...state,
-                formularyIsOpen: isOpen
-            }
-        })
+        this.props.onOpenFormulary(isOpen)
     }
 
     setFormularyDefaultData = (defaults) => {
@@ -162,7 +156,6 @@ class Data extends React.Component {
                 setFormularyDefaultData={this.setFormularyDefaultData}
                 formularyDefaultData={this.state.formularyDefaultData}
                 onOpenOrCloseFormulary={this.onOpenOrCloseFormulary}
-                formularyIsOpen={this.state.formularyIsOpen}
                 />
                 {this.renderVisualization()}
             </Layout>
