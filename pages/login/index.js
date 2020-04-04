@@ -21,13 +21,13 @@ class Login extends React.Component {
         e.preventDefault();
         this.state.email = (this.state.email == '') ? document.querySelector('.email').value : this.state.email
         this.state.password = (this.state.password == '') ? document.querySelector('.password').value : this.state.password
-        await this.props.onAuthenticate(this.state)
-        if (Object.keys(this.props.errors).length) {
-            ReactDOM.render(<Notify variant="danger" message={errors('pt-br', 'incorrect_pass_or_user')}/>, document.querySelector('.notifications-container'));
-            this.props.cleanErrors()
-        } else {
-            Router.push(paths.home(this.props.login.companyId, this.props.login.primaryForm))
-        }
+        this.props.onAuthenticate(this.state).then(response => {
+            if (response.status !== 200) {
+                ReactDOM.render(<Notify variant="danger" message={errors('pt-br', 'incorrect_pass_or_user')}/>, document.querySelector('.notifications-container'));
+            } else {
+                Router.push(paths.home(this.props.login.companyId, this.props.login.primaryForm))
+            }
+        })
     }
 
     render() {

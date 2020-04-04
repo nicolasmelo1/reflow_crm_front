@@ -5,7 +5,10 @@ import agent from '../agent'
 const onAuthenticate = (body) => {
     return async (dispatch) => {
         let response = await agent.LOGIN.makeLogin(body)
-        dispatch({ type: (response.status === 200) ? AUTHENTICATE : ERROR, payload: response.data });
+        if (response.status === 200) {
+            dispatch({ type: AUTHENTICATE, payload: response.data });
+        }
+        return response
     };
 };
 
