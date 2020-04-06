@@ -15,6 +15,6 @@ export default styled.div`
         max-height: calc(100vh - 327px)
     }
     @media(min-width: 640px) {
-        max-height: calc(100vh - 247px)
+        max-height: calc(100vh - 254px)
     }
 `

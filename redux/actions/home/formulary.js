@@ -19,11 +19,11 @@ const onGetBuildFormulary = (formName) => {
 }
 
 const onGetFormularyData = (formName, formId, defaults=[]) => {
-    return async (dispatch, getState) => {
+    return (dispatch, getState) => {
         try {
             agent.HOME.getFormularyData(formName, formId).then(response => {
                 const formularyIsOpen = getState().home.formulary.isOpen
-                if (formularyIsOpen && response.status === 200){
+                if (!formularyIsOpen && response.status === 200){
                     let data = response.data.data
                     defaults.forEach(defaultData => {
                         const formValueId = defaultData.form_value_id
@@ -36,6 +36,7 @@ const onGetFormularyData = (formName, formId, defaults=[]) => {
                             }    
                         }
                     })
+                    console.log(response.data.data)
                     dispatch({ type: SET_FORMULARY_DATA, payload: response.data.data})
                 }
             })

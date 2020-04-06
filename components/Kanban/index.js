@@ -148,7 +148,7 @@ class Kanban extends React.Component {
                                 )}
                             </Col>
                         </Row>
-                        <Row style={{ margin: '10px -15px' }}>
+                        <Row style={{ margin: '10px -15px 0 -15px' }}>
                             <Col>
                                 {this.state.configurationIsOpen ? (
                                     <KanbanConfigurationForm 
