@@ -38,7 +38,7 @@ const KanbanCards = (props) => {
     const onMoveCard = (e, cardIndex) => {
         e.dataTransfer.clearData(['movedDimensionIndex', 'movedCardIndexInDimension', 'movedCardDimension'])
 
-        const cardContainer = e.currentTarget.parentNode
+        const cardContainer = e.currentTarget.closest('.kanban-card')
         const cardRect = cardContainer.getBoundingClientRect()
         e.dataTransfer.setDragImage(cardContainer, cardRect.width - 5, 20)
         e.dataTransfer.setData('movedCardIndexInDimension', cardIndex)
@@ -83,7 +83,7 @@ const KanbanCards = (props) => {
 
     useEffect(() => {
         // if the page is to big for the pagination and the scroll is not active we add a 'load more' button in the bottom of the kanban dimension column
-        if (props.pagination.current < props.pagination.total) {
+        if (props.pagination && props.pagination.current < props.pagination.total) {
             if (kanbanCardContainerRef.current.scrollHeight > kanbanCardContainerRef.current.clientHeight) {
                 setIsOverflown(true)
             } else {
@@ -92,25 +92,37 @@ const KanbanCards = (props) => {
         }
     }, [props.data])
 
+    const data = (props.data) ? props.data : []
     return (
         <KanbanCardsContainer ref={kanbanCardContainerRef}>
-            {props.data.map((card, index) => (
-                <KanbanCardContainer key={index} onClick={e=> {props.setFormularyId(card.id)}}>
-                    <div draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveCard(e, index)}} onDragEnd={e=>{onDragEnd(e)}} >
-                        <KanbanCardMoveIcon icon="arrows-alt"/>
+            {data.map((card, index) => (
+                <KanbanCardContainer className='kanban-card' key={index} onClick={e=> {props.setFormularyId(card.id)}}>
+                    <div>
+                        {props.cardIdsInLoadingState.includes(card.id) ? (
+                            <div>
+                                <Spinner animation="border" />
+                            </div>
+                        ) : (
+                            <div>
+                                <div draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveCard(e, index)}} onDragEnd={e=>{onDragEnd(e)}} >
+                                    <KanbanCardMoveIcon icon="arrows-alt"/>
+                                </div>
+                                {props.cardFields.map((cardField, cardFieldIndex) => (
+                                    <div key={cardFieldIndex}>
+                                        {card.dynamic_form_value.filter(value=> value.field_id === cardField.id).map((field, fieldIndex) => (
+                                            <KanbanCardContents key={fieldIndex} isTitle={cardFieldIndex===0}>
+                                                {field.value}
+                                            </KanbanCardContents>
+                                        ))} 
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
-                    {props.cardFields.map((cardField, cardFieldIndex) => (
-                        <div key={cardFieldIndex}>
-                            {card.dynamic_form_value.filter(value=> value.field_id === cardField.id).map((field, fieldIndex) => (
-                                <KanbanCardContents key={fieldIndex} isTitle={cardFieldIndex===0}>
-                                    {field.value}
-                                </KanbanCardContents>
-                            ))} 
-                        </div>
-                    ))}
+                    
                 </KanbanCardContainer>
             ))}
-            {props.pagination.current < props.pagination.total && !isOverflown ? (
+            {props.pagination && props.pagination.current < props.pagination.total && !isOverflown ? (
                 <KanbanLoadMoreDataButton onClick={e=> {onClickToGetMoreData()}}>Carregar mais</KanbanLoadMoreDataButton>
             ): ''}
             <div style={{margin: 'auto', textAlign:'center', width: '100%'}}>

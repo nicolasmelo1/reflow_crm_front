@@ -5,6 +5,7 @@ import { FormulariesEdit } from 'styles/Formulary'
 import Overlay from 'styles/Overlay'
 import FormularySectionEditForm from './FormularySectionEditForm'
 import { strings } from 'utils/constants'
+import { useSelector } from 'react-redux'
 
 /**
  * This component controls the edition state of a SINGLE Section only,
@@ -39,6 +40,7 @@ import { strings } from 'utils/constants'
  * the `form` field type or when the user creates a conditional section
  */
 const FormularySectionEdit = (props) => {
+    const formulariesOptions = useSelector(state => state.home.sidebar.initial)
     const [openedSection, setOpenedSection] = useState(false)
     const [isConditional, setIsConditional] = useState(false)
 
@@ -166,7 +168,7 @@ const FormularySectionEdit = (props) => {
                                     fields={props.section.form_fields}
                                     onAddNewField={props.onAddNewField}
                                     onUpdateField={props.onUpdateField}
-                                    formulariesOptions={props.formulariesOptions}
+                                    formulariesOptions={formulariesOptions}
                                     />
                                 </FormulariesEdit.FieldsContainer>
                             ) : ''}

@@ -24,7 +24,9 @@ const FormularySections = (props) => {
     const onChangeSectionData = (sectionsData, conditionals=conditionalSections) => {
         const newSectionsData = toggleConditionals(sectionsData, conditionals)
         setSectionsData([...newSectionsData])
-        props.setData(newSectionsData)
+        if (JSON.stringify(props.data.depends_on_dynamic_form) !== JSON.stringify(sectionsData)) {
+            props.setData(newSectionsData)
+        }
     }
 
     const toggleConditionals = (sectionsData, conditionals) => {
@@ -100,10 +102,10 @@ const FormularySections = (props) => {
 
     const removeSection = (sectionId, sectionDataIndex) => {
         let changedData = sectionsData.filter(sectionData=> sectionId.toString() === sectionData.form_id.toString())
-        const unchangedData = sectionsData.filter(sectionData=> sectionId.toString() !== sectionData.form_id.toString())
+        const unChangedData = sectionsData.filter(sectionData=> sectionId.toString() !== sectionData.form_id.toString())
 
         changedData.splice(sectionDataIndex, 1)
-        changedData = changedData.concat(unchangedData)
+        changedData = changedData.concat(unChangedData)
 
         onChangeSectionData(changedData)
     }
@@ -134,7 +136,7 @@ const FormularySections = (props) => {
         const sectionDataIds = (props.data.depends_on_dynamic_form) ? props.data.depends_on_dynamic_form.map(sectionData=> sectionData.form_id.toString()) : []
         // this checks if the sections on the data is the same of the build.
         const formDataLoadedIsFromFormBuilded = sectionDataIds.every(sectionDataId=> sectionIds.includes(sectionDataId))
-        
+
         if (props.sections.length > 0 && (JSON.stringify(props.data.depends_on_dynamic_form) !== JSON.stringify(sectionsData) || !formDataLoadedIsFromFormBuilded)) {            
             if (props.data.depends_on_dynamic_form && props.data.depends_on_dynamic_form.length > 0 && formDataLoadedIsFromFormBuilded) {
                 onChangeSectionData(props.data.depends_on_dynamic_form, conditionals)

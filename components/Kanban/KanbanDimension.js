@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import KanbanCards from './KanbanCards'
 import { KanbanDimensionTitleLabel, KanbanDimensionMoveIcon } from 'styles/Kanban'
 
@@ -24,6 +24,8 @@ import { KanbanDimensionTitleLabel, KanbanDimensionMoveIcon } from 'styles/Kanba
  * order in the redux store.
  */
 const KanbanDimension = (props) => {
+    const [cardIdsInLoadingState, setCardIdsInLoadingState] = useState([])
+
     const filterDimensionIndex = (dimension) => {
         return props.data.findIndex(element=> element.dimension === dimension)
     }
@@ -98,21 +100,28 @@ const KanbanDimension = (props) => {
             
             if (movedDimensionIndexInData !== -1 && targetDimensionIndexInData !== -1) {
                 const cardData = {...props.data[movedDimensionIndexInData].data[movedCardIndexInDimension]}
-                const fieldValueId = cardData.dynamic_form_value.filter(value=> value.field_id === props.defaultDimensionId)[0].id
+                const fieldValue = cardData.dynamic_form_value.filter(value=> value.field_id === props.defaultDimensionId)
+                if (fieldValue.length > 0) {
+                    const fieldValueId = fieldValue[0].id
 
-                props.data[movedDimensionIndexInData].data.splice(movedCardIndexInDimension, 1)
-                props.data[targetDimensionIndexInData].data.splice(0, 0, cardData)
-                
-                const newData = {
-                    new_value: props.dimensionOrders[targetDimensionIndex].options,
-                    form_value_id: fieldValueId
-                }
-                props.onChangeKanbanData(newData, props.formName, [...props.data]).then(response=> {
-                    if (response && response.data.error && response.data.error.reason.includes('required_field')) {
-                        props.setFormularyDefaultData([newData])
-                        props.setFormularyId(cardData.id)
+                    props.data[movedDimensionIndexInData].data.splice(movedCardIndexInDimension, 1)
+                    props.data[targetDimensionIndexInData].data.splice(0, 0, cardData)
+                    
+                    const newData = {
+                        new_value: props.dimensionOrders[targetDimensionIndex].options,
+                        form_value_id: fieldValueId
                     }
-                })
+
+                    setCardIdsInLoadingState([cardData.id])
+
+                    props.onChangeKanbanData(newData, props.formName, [...props.data]).then(response=> {
+                        if (response && response.data.error && response.data.error.reason.includes('required_field')) {
+                            props.setFormularyDefaultData([newData])
+                            props.setFormularyId(cardData.id)
+                        }
+                        setCardIdsInLoadingState([])
+                    })
+                }
             }
         }
     }
@@ -134,6 +143,7 @@ const KanbanDimension = (props) => {
                     formName={props.formName}
                     onGetKanbanData={props.onGetKanbanData}
                     onChangeKanbanData={props.onChangeKanbanData}
+                    cardIdsInLoadingState={cardIdsInLoadingState}
                     params={props.params}
                     cardFields={props.cardFields}
                     data={filterData(dimensionOrder.options) ? filterData(dimensionOrder.options).data: []}

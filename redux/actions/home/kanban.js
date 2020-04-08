@@ -140,6 +140,7 @@ const onChangeKanbanData = (body, formName, data) => {
             const response = await agent.KANBAN.updateCardDimension(body, formName)
             if (response.status === 200){
                 dispatch({ type: SET_DATA_KANBAN, payload: data})
+                return response
             } else {
                 return response
             }

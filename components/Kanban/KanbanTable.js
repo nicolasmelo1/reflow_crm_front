@@ -49,23 +49,25 @@ const KanbanTable = (props) => {
 
     return (
         <div style={{overflowX: 'auto', transform: 'rotateX(180deg)'}}>
-            <table style={{ transform: 'rotateX(180deg)'}}>
-                <tbody>
-                    <KanbanDimension
-                    formName={props.formName}
-                    defaultDimensionId={props.defaultDimensionId}
-                    onChangeDimensionOrdersState={props.onChangeDimensionOrdersState}
-                    onChangeKanbanData={props.onChangeKanbanData}
-                    params={props.params}
-                    onGetKanbanData={props.onGetKanbanData}
-                    setFormularyId={props.setFormularyId}
-                    setFormularyDefaultData={props.setFormularyDefaultData}
-                    dimensionOrders={props.dimensionOrders}
-                    cardFields={cardFields}
-                    data={props.data}
-                    />
-                </tbody>
-            </table>
+            {props.defaultKanbanCardId && props.defaultDimensionId ? (
+                <table style={{ transform: 'rotateX(180deg)'}}>
+                    <tbody>
+                        <KanbanDimension
+                        formName={props.formName}
+                        defaultDimensionId={props.defaultDimensionId}
+                        onChangeDimensionOrdersState={props.onChangeDimensionOrdersState}
+                        onChangeKanbanData={props.onChangeKanbanData}
+                        params={props.params}
+                        onGetKanbanData={props.onGetKanbanData}
+                        setFormularyId={props.setFormularyId}
+                        setFormularyDefaultData={props.setFormularyDefaultData}
+                        dimensionOrders={props.dimensionOrders}
+                        cardFields={cardFields}
+                        data={props.data}
+                        />
+                    </tbody>
+                </table>
+            ) : ''}
         </div>
     )
 }

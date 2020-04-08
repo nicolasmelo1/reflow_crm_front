@@ -13,7 +13,8 @@ const onGetBuildFormulary = (formName) => {
     return async (dispatch) => {
         try {
             let response = await agent.HOME.getBuildFormulary(formName)
-            dispatch({type: GET_FORMULARY, payload: response.data.data});
+            dispatch({type: GET_FORMULARY, payload: response.data.data})
+            return response
         } catch {}
     }
 }
@@ -22,8 +23,8 @@ const onGetFormularyData = (formName, formId, defaults=[]) => {
     return (dispatch, getState) => {
         try {
             agent.HOME.getFormularyData(formName, formId).then(response => {
-                const formularyIsOpen = getState().home.formulary.isOpen
-                if (!formularyIsOpen && response.status === 200){
+                //const formularyIsOpen = getState().home.formulary.isOpen
+                if (response.status === 200){
                     let data = response.data.data
                     defaults.forEach(defaultData => {
                         const formValueId = defaultData.form_value_id
@@ -36,8 +37,7 @@ const onGetFormularyData = (formName, formId, defaults=[]) => {
                             }    
                         }
                     })
-                    console.log(response.data.data)
-                    dispatch({ type: SET_FORMULARY_DATA, payload: response.data.data})
+                    dispatch({ type: SET_FORMULARY_DATA, payload: data})
                 }
             })
         } catch {}
@@ -110,6 +110,7 @@ const onGetFormularySettings = (formularyId) => {
         try {
             const response = await agent.HOME.getFormularySettingsData(formularyId)
             dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: response.data.data })
+            return response
         } catch {}
     }
 }
