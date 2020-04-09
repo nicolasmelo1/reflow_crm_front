@@ -148,13 +148,12 @@ class Formulary extends React.Component {
             this.buildFormulary(this.props.query.form, null)
         } else {
             if(oldProps.formularyId !== newProps.formularyId && newProps.formularyId) {
-                console.log(newProps.formularyId)
                 this.setMarkToUpdate(true)
             }
             if (this.state.markToUpdate) {
-                if (!this.props.formulary.isOpen && newProps.formularyId) {
+                if (this.props.formulary.isOpen && newProps.formularyId) {
                     setTimeout(() => this.props.onGetFormularyData(this.props.query.form, newProps.formularyId, newProps.formularyDefaultData), 500)
-                } else if (this.props.formulary.isOpen) {
+                } else if (!this.props.formulary.isOpen) {
                     if (this.state.auxOriginalInitial.filled && this.state.auxOriginalInitial.buildData) {
                         this.props.onFullResetFormularyState({}, [], this.state.auxOriginalInitial.buildData)
                     } else {

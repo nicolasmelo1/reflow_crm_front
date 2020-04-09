@@ -35,10 +35,6 @@ class Data extends React.Component {
         return { query: context.query }
     }
 
-    onOpenOrCloseFormulary = (isOpen) => {
-        this.props.onOpenFormulary(isOpen)
-    }
-
     setFormularyDefaultData = (defaults) => {
         this.setState(state => {
             return {
@@ -67,18 +63,16 @@ class Data extends React.Component {
             } else {
                 return {
                     ...state,
-                    formularyId: newValue
+                    formularyId: null
                 } 
             }
         })
     }
 
     openFormularyId = (value) => {
-        this.setFormularyId(value)
-
-        setTimeout(() => {
-            this.onOpenOrCloseFormulary(true)
-        }, 300)
+        this.props.onOpenFormulary(true).then(_=> {
+            this.setFormularyId(value)
+        })
     }
 
     setSearch = (searchField, searchValue, searchExact) => {
@@ -164,7 +158,7 @@ class Data extends React.Component {
                 setFormularyHasBeenUpdated={this.setFormularyHasBeenUpdated}
                 setFormularyDefaultData={this.setFormularyDefaultData}
                 formularyDefaultData={this.state.formularyDefaultData}
-                onOpenOrCloseFormulary={this.onOpenOrCloseFormulary}
+                onOpenOrCloseFormulary={this.props.onOpenFormulary}
                 />
                 {this.renderVisualization()}
             </Layout>

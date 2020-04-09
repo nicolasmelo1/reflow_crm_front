@@ -83,38 +83,42 @@ const KanbanDimension = (props) => {
         e.stopPropagation()
         cleanDimensionColors(e, false)
 
+        // we need JSON.parse with JSON.stringfy this to make a deep copy of the array, because we are encountering a 
+        // problem with array inside arrays read this for more info: https://medium.com/@gamshan001/javascript-deep-copy-for-array-and-object-97e3d4bc401a
+        const data = JSON.parse(JSON.stringify(props.data))
+        const dimensionOrders = Array.from(props.dimensionOrders)
+
         // this controls the drop when the dimension is being moved.
         if (![null, undefined, '', 'undefined'].includes(e.dataTransfer.getData('movedDimensionIndex'))) {
             let movedDimensionIndex = parseInt(e.dataTransfer.getData('movedDimensionIndex'))
-            const aux = props.dimensionOrders[movedDimensionIndex]
-            props.dimensionOrders[movedDimensionIndex] =  props.dimensionOrders[targetDimensionIndex];
-            props.dimensionOrders[targetDimensionIndex] = aux;
+            const aux = dimensionOrders[movedDimensionIndex]
+            dimensionOrders[movedDimensionIndex] =  dimensionOrders[targetDimensionIndex];
+            dimensionOrders[targetDimensionIndex] = aux;
             
-            props.onChangeDimensionOrdersState([...props.dimensionOrders], props.formName, props.defaultDimensionId)
+            props.onChangeDimensionOrdersState(dimensionOrders, props.formName, props.defaultDimensionId)
         
         // this constrols the drop when the card is being moved.
         } else if (![null, undefined, '', 'undefined'].includes(e.dataTransfer.getData('movedCardIndexInDimension')) && ![null, undefined, '', 'undefined'].includes(e.dataTransfer.getData('movedCardDimension'))) {
             const movedCardIndexInDimension = parseInt(e.dataTransfer.getData('movedCardIndexInDimension'))
             const movedDimensionIndexInData = filterDimensionIndex(e.dataTransfer.getData('movedCardDimension'))
-            const targetDimensionIndexInData = filterDimensionIndex(props.dimensionOrders[targetDimensionIndex].options)
+            const targetDimensionIndexInData = filterDimensionIndex(dimensionOrders[targetDimensionIndex].options)
             
             if (movedDimensionIndexInData !== -1 && targetDimensionIndexInData !== -1) {
-                const cardData = {...props.data[movedDimensionIndexInData].data[movedCardIndexInDimension]}
+                const cardData = {...data[movedDimensionIndexInData].data[movedCardIndexInDimension]}
                 const fieldValue = cardData.dynamic_form_value.filter(value=> value.field_id === props.defaultDimensionId)
+                setCardIdsInLoadingState([cardData.id])
+
                 if (fieldValue.length > 0) {
                     const fieldValueId = fieldValue[0].id
-
-                    props.data[movedDimensionIndexInData].data.splice(movedCardIndexInDimension, 1)
-                    props.data[targetDimensionIndexInData].data.splice(0, 0, cardData)
-                    
+                    data[movedDimensionIndexInData].data.splice(movedCardIndexInDimension, 1)
+                    data[targetDimensionIndexInData].data.splice(0, 0, cardData)
                     const newData = {
                         new_value: props.dimensionOrders[targetDimensionIndex].options,
                         form_value_id: fieldValueId
                     }
-
+                    
                     setCardIdsInLoadingState([cardData.id])
-
-                    props.onChangeKanbanData(newData, props.formName, [...props.data]).then(response=> {
+                    props.onChangeKanbanData(newData, props.formName, data).then(response=> {
                         if (response && response.data.error && response.data.error.reason.includes('required_field')) {
                             props.setFormularyDefaultData([newData])
                             props.setFormularyId(cardData.id)
@@ -139,6 +143,7 @@ const KanbanDimension = (props) => {
                     <KanbanCards
                     setFormularyId={props.setFormularyId}
                     dimension={dimensionOrder.options}
+                    cancelToken={props.cancelToken}
                     cleanDimensionColors={cleanDimensionColors}
                     formName={props.formName}
                     onGetKanbanData={props.onGetKanbanData}

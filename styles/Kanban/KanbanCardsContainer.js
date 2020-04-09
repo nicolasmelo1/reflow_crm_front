@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 export default styled.div`
-    width: 200px;
+    width: 280px;
     overflow-y: ${props => props.forceScroll ? 'scroll': 'auto'};
 
     &:after {

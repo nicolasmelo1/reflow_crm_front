@@ -23,9 +23,11 @@ import { Spinner } from 'react-bootstrap'
  * cards. This is filtered from the parent component to filter only the data of this dimension.
  */
 const KanbanCards = (props) => {
+    const dataSource = React.useRef(props.cancelToken.source())
     const [isOverflown, setIsOverflown] = useState(false)
     const [hasFiredRequestForNewPage, _setHasFiredRequestForNewPage] = useState(false)
-
+    const paginationRef = React.useRef(props.pagination)
+    const paramsRef = React.useRef(props.params)
     // Check Components/Utils/Select for reference and explanation
     const hasFiredRequestForNewPageRef = React.useRef(hasFiredRequestForNewPage);
     const setHasFiredRequestForNewPage = data => {
@@ -57,15 +59,18 @@ const KanbanCards = (props) => {
     }
 
     const getMoreData = () => {
-        props.params.page = props.pagination.current + 1
+        const params = JSON.parse(JSON.stringify(paramsRef.current))
+        const pagination = JSON.parse(JSON.stringify(paginationRef.current))
+
+        params.page = pagination.current + 1
         setHasFiredRequestForNewPage(true)
-        props.onGetKanbanData(props.params, props.formName, props.dimension).then(_=> {
+        props.onGetKanbanData(dataSource.current, params, props.formName, props.dimension).then(_=> {
             setHasFiredRequestForNewPage(false)
         })
     }
 
     const onScroll = (e) => {
-        if (!hasFiredRequestForNewPageRef.current && props.pagination.current < props.pagination.total && kanbanCardContainerRef.current.scrollTop >= (kanbanCardContainerRef.current.scrollHeight - kanbanCardContainerRef.current.offsetHeight)) {
+        if (!hasFiredRequestForNewPageRef.current && paginationRef.current.current < paginationRef.current.total && kanbanCardContainerRef.current.scrollTop >= (kanbanCardContainerRef.current.scrollHeight - kanbanCardContainerRef.current.offsetHeight)) {
             getMoreData()
         }
     }
@@ -75,15 +80,24 @@ const KanbanCards = (props) => {
     }
 
     useEffect(() => {
+        paginationRef.current = props.pagination
+        paramsRef.current = props.params
+    }, [props.params, props.pagination])
+
+    useEffect(() => {
         kanbanCardContainerRef.current.addEventListener('scroll', onScroll)
+        dataSource.current = props.cancelToken.source()
         return () => {
             kanbanCardContainerRef.current.removeEventListener('scroll', onScroll)
+            if(dataSource.current) {
+                dataSource.current.cancel()
+            }
         }
-    })
+    }, [])
 
     useEffect(() => {
         // if the page is to big for the pagination and the scroll is not active we add a 'load more' button in the bottom of the kanban dimension column
-        if (props.pagination && props.pagination.current < props.pagination.total) {
+        if (props.pagination && paginationRef.current.current < paginationRef.current.total) {
             if (kanbanCardContainerRef.current.scrollHeight > kanbanCardContainerRef.current.clientHeight) {
                 setIsOverflown(true)
             } else {

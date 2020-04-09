@@ -6,7 +6,7 @@ import {
 import agent from 'redux/agent'
 
 
-const onGetListingData = (params, formName) => {
+const onGetListingData = (source, params, formName) => {
     return async (dispatch, getState) => {
         let stateData = getState().home.list.data
         let payload = {
@@ -15,7 +15,7 @@ const onGetListingData = (params, formName) => {
         }
 
         try {
-            let response = await agent.LISTING.getData(params, formName)
+            let response = await agent.LISTING.getData(source, params, formName)
             payload.pagination = response.data.pagination
             if (params.page === 1) {
                 payload.data = response.data.data
@@ -46,10 +46,10 @@ const onExportData = (params, formName) => {
     }
 }
 
-const onRenderListing = (formName) => {
+const onRenderListing = (source, formName) => {
     return async (dispatch) => {
         try {
-            let response = await agent.LISTING.getRenderData(formName)
+            let response = await agent.LISTING.getRenderData(source, formName)
             if (response.status === 200) {
                 dispatch({ type: SET_HEADERS, payload: response.data.data });
             }

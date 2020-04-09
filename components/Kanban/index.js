@@ -7,7 +7,7 @@ import KanbanTable from './KanbanTable'
 import Filter from 'components/Filter'
 import { KanbanFilterIcon, KanbanFilterHolder, KanbanFilterContainer, KanbanFilterButton, KanbanConfigurationButton } from 'styles/Kanban'
 import { Row, Col } from 'react-bootstrap'
-
+import axios from 'axios'
 
 /**
  * This controls everything from the Kanban component, this component holds the Kanban table (with it's dimension and cards),
@@ -28,13 +28,12 @@ import { Row, Col } from 'react-bootstrap'
 class Kanban extends React.Component {
     constructor(props) {
         super(props)
-
+        this.CancelToken = axios.CancelToken
+        this.source = null
         this.state = {
             configurationIsOpen: false,
             params: {
                 page: 1,
-                from: '25/11/2019',
-                to: '04/04/2020',
                 search_value: this.props.search.value,
                 search_exact: this.props.search.exact,
                 search_field: this.props.search.field
@@ -46,7 +45,8 @@ class Kanban extends React.Component {
     setParams = async (params) => {
         let response = null
         if (this.props.kanban.initial.default_dimension_field_id && this.props.kanban.initial.default_kanban_card_id) {
-            response = await this.props.onGetKanbanData(params ,this.props.query.form)
+            this.source = this.CancelToken.source()
+            response = await this.props.onGetKanbanData(this.source, params ,this.props.query.form)
         }
 
         this.setState(state => {
@@ -56,26 +56,6 @@ class Kanban extends React.Component {
             }
         })
         return response
-    }
-
-    /**
-     * We only get the data when:
-     * 
-     * 1. The dimension order has changed
-     * 2. The selected kanban card has changed
-     * 3. A formulary has been updated
-     */
-    isToUpdateData = (prevProps) => {
-        return (
-            this.props.kanban.cards.length > 0 && 
-            this.props.kanban.dimension_order.length > 0 && 
-            this.props.query.form === prevProps.query.form &&
-            (
-                JSON.stringify(prevProps.kanban.dimension_order) !== JSON.stringify(this.props.kanban.dimension_order) ||
-                prevProps.kanban.initial.default_kanban_card_id !== this.props.kanban.initial.default_kanban_card_id ||
-                prevProps.formularyHasBeenUpdated !== this.props.formularyHasBeenUpdated 
-            )
-        )
     }
 
     onFilter = (searchInstances) => {
@@ -105,19 +85,35 @@ class Kanban extends React.Component {
         })
     }
 
+    canUpdateKanbanData = (oldProps) => {
+        return this.props.formularyHasBeenUpdated !== oldProps.formularyHasBeenUpdated && this.props.kanban.initial && this.props.kanban.initial.default_kanban_card_id && this.props.kanban.initial.default_dimension_field_id
+    }
+    
     componentDidMount() {
-        this.props.onRenderKanban(this.props.query.form)
-        this.props.onGetCards(this.props.query.form)
+        this.source = this.CancelToken.source()
+        this.props.onRenderKanban(this.source, this.props.query.form)
+        this.props.onGetCards(this.source, this.props.query.form)
     }
 
     componentDidUpdate(prevProps) {
         if (prevProps.query.form !== this.props.query.form) { 
+            this.source = this.CancelToken.source()
             this.props.onChangeDimensionOrdersState([])
-            this.props.onRenderKanban(this.props.query.form)
-            this.props.onGetCards(this.props.query.form)
+            this.props.onRenderKanban(this.source, this.props.query.form)
+            this.props.onGetCards(this.source, this.props.query.form)
+        }
+        if (this.canUpdateKanbanData(prevProps)) {
+            this.source = this.CancelToken.source()
+            this.props.onGetKanbanData(this.source, this.state.params, this.props.query.form)
         }
     }
 
+    componentWillUnmount() {
+        if (this.source) {
+            this.source.cancel()
+        }
+    }
+    
     render() {
         const selectedCard = (this.props.kanban.initial && this.props.kanban.cards) ? this.props.kanban.cards.filter(card => card.id === this.props.kanban.initial.default_kanban_card_id) : []
 
@@ -165,6 +161,7 @@ class Kanban extends React.Component {
                                 ): (
                                     <KanbanTable
                                     formName={this.props.query.form}
+                                    cancelToken={this.CancelToken}
                                     params={this.state.params}
                                     dimensionOrders={this.props.kanban.dimension_order}
                                     defaultDimensionId={this.props.kanban.initial.default_dimension_field_id}

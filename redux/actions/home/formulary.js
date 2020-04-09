@@ -3,9 +3,9 @@ import agent from 'redux/agent'
 
 
 const onOpenFormulary = (isOpen) => {
-    return (dispatch) => {
-        dispatch({type: OPEN_FORMULARY, payload: isOpen });
-
+    return async (dispatch) => {
+        dispatch({type: OPEN_FORMULARY, payload: isOpen })
+        return true
     }
 }
 

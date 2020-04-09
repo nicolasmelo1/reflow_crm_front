@@ -10,6 +10,7 @@ import Filter from 'components/Filter'
 import { ListingFilterAndExtractContainer, ListingFilterContainer, ListingFilterIcon, ListingFilterAndExtractButton, ListingTotalLabel, ListingTotalAddNewButton, ListingButtonsContainer } from 'styles/Listing'
 import { strings } from 'utils/constants'
 import { Row, Col } from 'react-bootstrap'
+import axios from 'axios'
 
 /**
  * This component render all of the listing logic, like the table, the totals, filters and extract
@@ -21,12 +22,12 @@ import { Row, Col } from 'react-bootstrap'
 class Listing extends React.Component {
     constructor(props) {
         super(props)
-        
+        this.CancelToken = axios.CancelToken
+        this.dataSource = null
+        this.renderSource = null
         this.state = {
             isOpenedTotalsForm: false,
             params: {
-                from: '25/11/2019',
-                to: '04/04/2020',
                 page: 1,
                 sort_value: [],
                 sort_field: [],
@@ -46,15 +47,15 @@ class Listing extends React.Component {
         })
     }
 
-    setParams = async (params) => {
-        const response = await this.props.onGetListingData(params, this.props.query.form)
+    setParams = (params) => {
+        this.dataSource = this.CancelToken.source();
         this.setState(state => {
             return {
                 ...state,
                 params: params
             }
         })
-        return response
+        return this.props.onGetListingData(this.dataSource, params, this.props.query.form)
     }
     
     onFilter = (searchInstances) => {
@@ -84,7 +85,7 @@ class Listing extends React.Component {
         if (value && !['down', 'upper', 'none'].includes(value)) {
             throw new SyntaxError("value parameter MUST be one of the both: `upper`, `down` or `none` ")
         }
-        if (value === '') {
+        if (value === '' || value === 'none') {
             const indexToRemove = this.state.params.sort_field.findIndex(sortField=> sortField === fieldName)
             params.sort_value.splice(indexToRemove, 1)
             params.sort_field.splice(indexToRemove, 1)
@@ -102,23 +103,35 @@ class Listing extends React.Component {
     }
 
     componentDidMount = () => {
-        this.props.onRenderListing(this.props.query.form)
-        this.props.onGetListingData(this.state.params, this.props.query.form)
-        this.props.onGetTotals(this.state.params, this.props.query.form)
+        this.renderSource = this.CancelToken.source();
+        this.dataSource = this.CancelToken.source();
+        this.props.onRenderListing(this.renderSource, this.props.query.form)
+        this.props.onGetListingData(this.dataSource, this.state.params, this.props.query.form)
+        //this.props.onGetTotals(this.state.params, this.props.query.form)
     }
 
     componentDidUpdate = (prevProps) => {
+        this.renderSource = this.CancelToken.source();
+        this.dataSource = this.CancelToken.source();
         if (prevProps.query.form !== this.props.query.form) {
-            this.props.onRenderListing(this.props.query.form)
-            this.props.onGetListingData(this.state.params, this.props.query.form)
-            this.props.onGetTotals(this.state.params, this.props.query.form)
+            this.props.onRenderListing(this.renderSource, this.props.query.form)
+            this.props.onGetListingData(this.dataSource, this.state.params, this.props.query.form)
+            //this.props.onGetTotals(this.state.params, this.props.query.form)
         }
         if (this.props.formularyHasBeenUpdated !== prevProps.formularyHasBeenUpdated) {
-            this.props.onGetListingData(this.state.params, this.props.query.form)
-            this.props.onGetTotals(this.state.params, this.props.query.form)    
+            this.props.onGetListingData(this.dataSource, this.state.params, this.props.query.form)
+            //this.props.onGetTotals(this.state.params, this.props.query.form)    
         }
     }
 
+    componentWillUnmount = () => {
+        if (this.renderSource) {
+            this.renderSource.cancel()
+        }
+        if (this.dataSource) {
+            this.dataSource.cancel()
+        }
+    }
     render() {
         return (
             <div>

@@ -72,15 +72,22 @@ const requests = {
             return await refreshToken(exception.response, requests.delete, url, params, headers)
         }
     },
-    get: async (url, params = {}, headers = {}) => {
+    get: async (url, params = {}, headers = {}, source=null) => {
+        if (!source) {
+            const CancelToken = axios.CancelToken
+            source = new CancelToken(function (_) {})
+        }
         try {
             return await axios.get(`${API_ROOT}${url}`, {
                 params: params,
-                headers: Object.assign(setHeader(token), headers)
+                headers: Object.assign(setHeader(token), headers),
+                cancelToken: source.token
             })
         }
         catch (exception) {
-            return await refreshToken(exception.response, requests.get, url, params, headers)
+            if (!axios.isCancel(exception)) {
+                return await refreshToken(exception.response, requests.get, url, params, headers)
+            }
         }
     },
     put: async (url, body, headers = {}) => {
@@ -188,8 +195,8 @@ const HOME = {
 
 
 const LISTING = {
-    getRenderData: async (formName) => {
-        return await requests.get(`${companyId}/data/api/listing/${formName}/`)
+    getRenderData: async (source, formName) => {
+        return await requests.get(`${companyId}/data/api/listing/${formName}/`, {}, {}, source)
     },
     getHasExportedData: async (isToDownload) => {
         const path = `${companyId}/data/api/extract/`
@@ -201,8 +208,8 @@ const LISTING = {
     exportData: async (params, formName) => {
         return await requests.post(`${companyId}/data/api/extract/${formName}/`, params)
     },
-    getData: async (params, formName) => {
-        return await requests.get(`${companyId}/data/api/data/${formName}/`, params)
+    getData: async (source, params, formName) => {
+        return await requests.get(`${companyId}/data/api/data/${formName}/`, params, {}, source)
     },
     getTotals: async (params, formName) => {
         return await requests.get(`${companyId}/data/api/listing/${formName}/total/`, params)
@@ -219,11 +226,11 @@ const LISTING = {
 }
 
 const KANBAN = {
-    getRenderData: async (formName) => {
-        return await requests.get(`${companyId}/data/api/kanban/${formName}/`)
+    getRenderData: async (source, formName) => {
+        return await requests.get(`${companyId}/data/api/kanban/${formName}/`, {}, {}, source)
     },
-    getCards: async (formName) => {
-        return await requests.get(`${companyId}/data/api/kanban/${formName}/card/`)
+    getCards: async (source, formName) => {
+        return await requests.get(`${companyId}/data/api/kanban/${formName}/card/`, {}, {}, source)
     },
     createCard: async (body,formName) => {
         return await requests.post(`${companyId}/data/api/kanban/${formName}/card/`, body)
@@ -234,14 +241,14 @@ const KANBAN = {
     updateDefaults: async (body, formName) => {
         return await requests.put(`${companyId}/data/api/kanban/${formName}/defaults/`, body)
     },
-    getDimensionOrders: async (formName, dimensionId) => {
-        return await requests.get(`${companyId}/data/api/kanban/${formName}/dimension/${dimensionId}/`)
+    getDimensionOrders: async (source, formName, dimensionId) => {
+        return await requests.get(`${companyId}/data/api/kanban/${formName}/dimension/${dimensionId}/`, {}, {}, source)
     },
     updateDimensionOrders: async (body, formName, dimensionId) => {
         return await requests.put(`${companyId}/data/api/kanban/${formName}/dimension/${dimensionId}/`, body)
     },
-    getData: async (params, formName) => {
-        return await requests.get(`${companyId}/data/api/data/${formName}/`, params)
+    getData: async (source, params, formName) => {
+        return await requests.get(`${companyId}/data/api/data/${formName}/`, params, {}, source)
     },
     updateCardDimension: async(body, formName) => {
         return await requests.put(`${companyId}/data/api/kanban/${formName}/change/`, body)

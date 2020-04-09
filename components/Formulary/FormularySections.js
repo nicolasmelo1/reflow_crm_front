@@ -16,7 +16,7 @@ const FormularySections = (props) => {
     const addNewSectionsData = (sectionId) => {
         return {
             id: null,
-            form_id: sectionId,
+            form_id: sectionId.toString(),
             dynamic_form_value: []
         }
     }
@@ -110,12 +110,26 @@ const FormularySections = (props) => {
         onChangeSectionData(changedData)
     }
 
+    function getNewSectionData() {
+        return props.sections
+            .filter(section => !(!['', null].includes(section.conditional_value) || section.form_type==='multi-form'))
+            .map(section=> addNewSectionsData(section.id))
+    }
+
+    function onLoadData(sectionsData, conditionals) {
+        const newSectionsData = getNewSectionData()
+        const sectionsDataIds = sectionsData.map(sectionData=> sectionData.form_id)
+        
+        newSectionsData.forEach(sectionData => {
+            if (!sectionsDataIds.includes(sectionData.form_id)) {
+                sectionsData.push(sectionData)
+            }
+        })
+        onChangeSectionData(sectionsData, conditionals)
+    }
 
     function buildInitialData(conditionals) {
-
-        const newSectionsData = props.sections
-                .filter(section => !(!['', null].includes(section.conditional_value) || section.form_type==='multi-form'))
-                .map(section=> addNewSectionsData(section.id))
+        const newSectionsData = getNewSectionData()
         onChangeSectionData(newSectionsData, conditionals)
     }
     /**
@@ -138,8 +152,8 @@ const FormularySections = (props) => {
         const formDataLoadedIsFromFormBuilded = sectionDataIds.every(sectionDataId=> sectionIds.includes(sectionDataId))
 
         if (props.sections.length > 0 && (JSON.stringify(props.data.depends_on_dynamic_form) !== JSON.stringify(sectionsData) || !formDataLoadedIsFromFormBuilded)) {            
-            if (props.data.depends_on_dynamic_form && props.data.depends_on_dynamic_form.length > 0 && formDataLoadedIsFromFormBuilded) {
-                onChangeSectionData(props.data.depends_on_dynamic_form, conditionals)
+            if (props.data.depends_on_dynamic_form && formDataLoadedIsFromFormBuilded) {
+                onLoadData(props.data.depends_on_dynamic_form, conditionals)
             } else {
                 buildInitialData(conditionals)
             }

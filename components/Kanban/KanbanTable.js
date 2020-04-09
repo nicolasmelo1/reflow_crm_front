@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import KanbanDimension from './KanbanDimension'
-
+import axios from 'axios'
 /**
  * This is a simple component that is used to control the dimensions.
  * 
@@ -22,6 +22,8 @@ import KanbanDimension from './KanbanDimension'
  * order in the redux store.
  */
 const KanbanTable = (props) => {
+    const oldDimensionOrdersRef = React.useRef()
+    const dataSource = React.useRef(props.cancelToken.source())
     const cardFields = (props.card) ? props.card.kanban_card_fields: []
     const [hasFiredDimensionOrders, _setHasFiredDimensionOrders] = useState(false)
 
@@ -33,19 +35,41 @@ const KanbanTable = (props) => {
     }
 
     useEffect(() => {
+        dataSource.current = props.cancelToken.source()
+        return () => {
+            if(dataSource.current) {
+                dataSource.current.cancel()
+            }
+        }
+    }, [])
+
+    useEffect(() => {
         if (!hasFiredDimensionOrdersRef.current && props.defaultKanbanCardId && props.defaultDimensionId) {
             setHasFiredDimensionOrders(true)
-            props.onGetDimensionOrders(props.formName, props.defaultDimensionId).then(_ => {
+            props.onGetDimensionOrders(dataSource.current, props.formName, props.defaultDimensionId).then(_ => {
                 setHasFiredDimensionOrders(false)
             })
         }
     }, [props.defaultDimensionId, props.defaultKanbanCardId])
 
     useEffect(() => {
-        if (props.defaultKanbanCardId && props.defaultDimensionId) {
-            props.onGetKanbanData(props.params, props.formName)
+        // this is to make less requests to the backend, we use the sort for when we change the kanban dimension orders, and the oldProps and newProps
+        // is to prevent rerender o rehydratation
+        const oldDimensionOrders = oldDimensionOrdersRef.current ? oldDimensionOrdersRef.current.map(dimensionOrder => dimensionOrder.options) : []
+        const newDimensionOrders = props.dimensionOrders ? props.dimensionOrders.map(dimensionOrder => dimensionOrder.options) : []
+        newDimensionOrders.sort()
+        oldDimensionOrders.sort()
+        if (props.defaultKanbanCardId && props.defaultDimensionId && JSON.stringify(oldDimensionOrders) !== JSON.stringify(newDimensionOrders)) {
+            console.log(oldDimensionOrders)
+            console.log(newDimensionOrders)
+            props.onGetKanbanData(dataSource.current, props.params, props.formName)
         }
     }, [props.dimensionOrders])
+
+    useEffect(() => {
+        oldDimensionOrdersRef.current = props.dimensionOrders
+    })
+
 
     return (
         <div style={{overflowX: 'auto', transform: 'rotateX(180deg)'}}>
@@ -54,6 +78,7 @@ const KanbanTable = (props) => {
                     <tbody>
                         <KanbanDimension
                         formName={props.formName}
+                        cancelToken={props.cancelToken}
                         defaultDimensionId={props.defaultDimensionId}
                         onChangeDimensionOrdersState={props.onChangeDimensionOrdersState}
                         onChangeKanbanData={props.onChangeKanbanData}

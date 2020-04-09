@@ -6,20 +6,19 @@ import {
 } from 'redux/types';
 import agent from 'redux/agent'
 
-const onRenderKanban = (formName) => {
+const onRenderKanban = (source, formName) => {
     return async (dispatch) => {
         try {
-            let response = await agent.KANBAN.getRenderData(formName)
-            
+            let response = await agent.KANBAN.getRenderData(source, formName)
             dispatch({ type: SET_KANBAN_INITIAL, payload: response.data.data})
         } catch {}
     }
 }
 
-const onGetCards = (formName) => {
+const onGetCards = (source, formName) => {
     return async (dispatch) => {
         try {
-            let response = await agent.KANBAN.getCards(formName)
+            let response = await agent.KANBAN.getCards(source, formName)
             dispatch({ type: SET_CARDS, payload: response.data.data })
         } catch {}
     }
@@ -42,22 +41,24 @@ const onChangeCardsState = (cards) => {
     }
 }
 
-const onChangeDefaultState = (defaults, formName) => {
+const onChangeDefaultState = (defaults, formName=null) => {
     return (dispatch, getState) => {
         let stateData = getState().home.kanban.initial
         const data = {
             ...stateData,
             ...defaults
         }
-        agent.KANBAN.updateDefaults(defaults, formName)
+        if (formName) {
+            agent.KANBAN.updateDefaults(defaults, formName)
+        }
         dispatch({ type: SET_KANBAN_INITIAL, payload: data })
     }
 }
 
-const onGetDimensionOrders = (formName, dimensionId) => {
+const onGetDimensionOrders = (source, formName, dimensionId) => {
     return async (dispatch) => {
         try {
-            const response = await agent.KANBAN.getDimensionOrders(formName, dimensionId)
+            const response = await agent.KANBAN.getDimensionOrders(source, formName, dimensionId)
             dispatch({ type: SET_DIMENSION_ORDER, payload: response.data.data })
             return response
         } catch {}
@@ -74,7 +75,7 @@ const onChangeDimensionOrdersState = (dimensionOrders, dimensionId=null, formNam
 }
 
 // if columnName is set get the data for a single column
-const onGetKanbanData = (params, formName, columnName = null) => {
+const onGetKanbanData = (source, params, formName, columnName = null) => {
     return async (dispatch, getState) => {
         const initial = getState().home.kanban.initial
         const dimensionOrders = getState().home.kanban.dimension_order
@@ -99,7 +100,7 @@ const onGetKanbanData = (params, formName, columnName = null) => {
                             ...defaultParameters,
                             search_value: params.search_value.concat(dimensionOrders[i].options),
                         }
-                        let response = await agent.KANBAN.getData(parameters, formName)
+                        let response = await agent.KANBAN.getData(source, parameters, formName)
                         payload.push({
                             dimension: dimensionOrders[i].options, 
                             pagination: response.data.pagination,
@@ -111,7 +112,7 @@ const onGetKanbanData = (params, formName, columnName = null) => {
                         ...defaultParameters,
                         search_value: params.search_value.concat(columnName),
                     }
-                    let response = await agent.KANBAN.getData(parameters, formName)
+                    let response = await agent.KANBAN.getData(source, parameters, formName)
                     const dimensionIndexInData = data.findIndex(dimensionData => dimensionData.dimension === columnName)
                     if (dimensionIndexInData !== -1) {
                         data[dimensionIndexInData].pagination = response.data.pagination

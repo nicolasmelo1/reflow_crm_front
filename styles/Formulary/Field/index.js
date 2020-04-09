@@ -12,6 +12,8 @@ import FieldErrorLabel from './FieldErrorLabel'
 import FieldFormLabelButton from './FieldFormLabelButton'
 import FieldSelect from './FieldSelect'
 import FieldLongText from './FieldLongText'
+import FieldIdDescription from './FieldIdDescription'
+import FieldIdValue from './FieldIdValue'
 
 export default {
     FieldTitle: {
@@ -23,6 +25,10 @@ export default {
     Text: FieldTextInput,
     Select: FieldSelect,
     LongText: FieldLongText,
+    Id: {
+        Description: FieldIdDescription,
+        Value: FieldIdValue
+    },
     Attachment: {
         Button: FieldAttachmentButton,
         Image: FieldAttachmentImage,
