@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 export default styled.div`
     text-align: center;
-    overflow-x: auto;
+    overflow-x: hidden;
     overflow-y: auto;
     position: relative;
     

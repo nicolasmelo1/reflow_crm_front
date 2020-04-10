@@ -20,6 +20,8 @@ const ListingTable = (props) => {
     const [hasFiredRequestForNewPage, _setHasFiredRequestForNewPage] = useState(false)
     const headers = (props.headers && props.headers.field_headers) ? props.headers.field_headers: []
     const tableRef = React.useRef()
+    const scrollWrapperRef = React.useRef()
+    const scrollRef = React.useRef()
     const data = (props.data) ? props.data: []
 
     // Check Components/Utils/Select for reference and explanation
@@ -29,7 +31,16 @@ const ListingTable = (props) => {
         _setHasFiredRequestForNewPage(data);
     }
 
+    const defineScrollWidth = (e) => {
+        scrollRef.current.style.width = tableRef.current.scrollWidth + 'px'
+    }
+
+    const onScrollerScroll = (e) => {
+        tableRef.current.scrollLeft = scrollWrapperRef.current.scrollLeft
+    }
+
     const onScroll = (e) => {  
+        scrollWrapperRef.current.scrollLeft = tableRef.current.scrollLeft
         if (!hasFiredRequestForNewPageRef.current && props.pagination.current < props.pagination.total && tableRef.current.scrollTop >= (tableRef.current.scrollHeight - tableRef.current.offsetHeight))  {
             setHasFiredRequestForNewPage(true) 
             props.params.page = props.pagination.current + 1
@@ -45,25 +56,35 @@ const ListingTable = (props) => {
     }
 
     useEffect(() => {
+        defineScrollWidth()
+        window.addEventListener('resize', defineScrollWidth)
+        scrollWrapperRef.current.addEventListener('scroll', onScrollerScroll)
         tableRef.current.addEventListener('scroll', onScroll)
         return () => {
+            window.removeEventListener('resize', defineScrollWidth)
+            scrollWrapperRef.current.removeEventListener('scroll', onScrollerScroll)
             tableRef.current.removeEventListener('scroll', onScroll)
         }
     })
 
     return (
-        <ListingTableContainer ref={tableRef}>
-            <Table>
-                <ListingTableHeader headers={headers} params={props.params} onSort={props.onSort}/>
-                <ListingTableContent headers={headers} pagination={props.pagination} data={data} setFormularyId={props.setFormularyId} onRemoveData={props.onRemoveData}/>
-            </Table>
-            
-            {hasFiredRequestForNewPage ? (
-                <ListingTableLoaderContainer>
-                    <Spinner animation="border" />
-                </ListingTableLoaderContainer>
-            ): ''}
-        </ListingTableContainer>
+        <div>
+            <div style={{ width: '100%', overflowY: 'hidden', overflowX: 'scroll', height:'20px' }} ref={scrollWrapperRef}>
+                <div style={{ height:'20px'}} ref={scrollRef}></div>
+            </div>
+            <ListingTableContainer ref={tableRef} >
+                <Table>
+                    <ListingTableHeader headers={headers} params={props.params} onSort={props.onSort}/>
+                    <ListingTableContent headers={headers} pagination={props.pagination} data={data} setFormularyId={props.setFormularyId} onRemoveData={props.onRemoveData}/>
+                </Table>
+                
+                {hasFiredRequestForNewPage ? (
+                    <ListingTableLoaderContainer>
+                        <Spinner animation="border" />
+                    </ListingTableLoaderContainer>
+                ): ''}
+            </ListingTableContainer>
+        </div>
     )
 }
 

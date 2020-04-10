@@ -146,13 +146,8 @@ const FormularySections = (props) => {
             setConditionalSections(conditionals)
         }
 
-        const sectionIds = props.sections.map(section => section.id.toString())
-        const sectionDataIds = (props.data.depends_on_dynamic_form) ? props.data.depends_on_dynamic_form.map(sectionData=> sectionData.form_id.toString()) : []
-        // this checks if the sections on the data is the same of the build.
-        const formDataLoadedIsFromFormBuilded = sectionDataIds.every(sectionDataId=> sectionIds.includes(sectionDataId))
-
-        if (props.sections.length > 0 && (JSON.stringify(props.data.depends_on_dynamic_form) !== JSON.stringify(sectionsData) || !formDataLoadedIsFromFormBuilded)) {            
-            if (props.data.depends_on_dynamic_form && formDataLoadedIsFromFormBuilded) {
+        if (props.sections.length > 0 && JSON.stringify(props.data.depends_on_dynamic_form) !== JSON.stringify(sectionsData)) {            
+            if (props.data.depends_on_dynamic_form) {
                 onLoadData(props.data.depends_on_dynamic_form, conditionals)
             } else {
                 buildInitialData(conditionals)

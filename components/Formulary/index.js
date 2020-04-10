@@ -21,8 +21,6 @@ class Formulary extends React.Component {
             markToUpdate: false,
             isEditing: false,
             errors: {},
-            files: {},
-            isSubmitting: false,
             isLoading: false,
             isLoadingEditing: false,
             isSubmitting: false,
@@ -69,7 +67,7 @@ class Formulary extends React.Component {
                 ...state,
                 auxOriginalInitial: {
                     buildData: {...this.props.formulary.buildData},
-                    filled: {...this.props.formulary.filled}
+                    filled: {...this.props.formulary.filled},
                 } 
             }
         })
@@ -91,9 +89,11 @@ class Formulary extends React.Component {
     }
 
     setData = (sectionsData) => {
-        this.props.onChangeFormularyDataState({
+        let data = {
             depends_on_dynamic_form: sectionsData
-        })
+        }
+        if (this.props.formulary.filled.data.id) data.id = this.props.formulary.filled.data.id
+        this.props.onChangeFormularyDataState(data)
     }
 
     setErrors = (errors) => {
@@ -108,20 +108,21 @@ class Formulary extends React.Component {
     onSubmit = () => {
         this.setIsSubmitting(true)
         let response = null
-        if (this.props.formularyId) {
-            response = this.props.onUpdateFormularyData(this.props.formulary.filled.data, this.props.formulary.filled.files, this.props.query.form, this.props.formularyId)
+        if (this.props.formulary.filled.data.id) {
+            response = this.props.onUpdateFormularyData(this.props.formulary.filled.data, this.props.formulary.filled.files, this.props.formulary.buildData.form_name, this.props.formulary.filled.data.id)
         } else {
-            response = this.props.onCreateFormularyData(this.props.formulary.filled.data, this.props.formulary.filled.files,this.props.query.form)
+            response = this.props.onCreateFormularyData(this.props.formulary.filled.data, this.props.formulary.filled.files,this.props.formulary.buildData.form_name)
         }
         
         if (response) {
             response.then(response=> {
+                this.setIsSubmitting(false)
                 if (response.status !== 200) {
                     this.setErrors(response.data.error)
-                    this.setIsSubmitting(false)
+                } else if (this.state.auxOriginalInitial.filled && this.state.auxOriginalInitial.buildData) {
+                    this.props.onFullResetFormularyState(this.state.auxOriginalInitial.filled.data, this.state.auxOriginalInitial.filled.files, this.state.auxOriginalInitial.buildData)
                 } else {
                     this.props.setFormularyHasBeenUpdated()
-                    this.setIsSubmitting(false)
                     this.setIsOpen()
                 }
             })
@@ -150,6 +151,10 @@ class Formulary extends React.Component {
         }
     }
 
+
+    /**
+     * When the user clicks "add new" or "edit" on the connection field, a form is builded inside of the formulary
+     */
     onChangeFormulary = (formName, formId=null) => {
         this.setAuxOriginalInitial()
         this.props.onFullResetFormularyState()
@@ -168,22 +173,21 @@ class Formulary extends React.Component {
     }
 
     componentDidUpdate = (oldProps) => {
-        const newProps = this.props
         // We use the markToUpdate to update the formulary before the formulary has been open or has been closed
         // we use this for a more smooth ui animation
-        if (oldProps.query.form !== newProps.query.form) {
+        if (oldProps.query.form !== this.props.query.form) {
             if (this.source) {
                 this.source.cancel()
             }
             this.buildFormulary(this.props.query.form, null)
         } else {
-            if(oldProps.formularyId !== newProps.formularyId && newProps.formularyId) {
+            if(oldProps.formularyId !== this.props.formularyId && this.props.formularyId) {
                 this.setMarkToUpdate(true)
             }
             if (this.state.markToUpdate) {
-                if (this.props.formulary.isOpen && newProps.formularyId) {
+                if (this.props.formulary.isOpen && this.props.formularyId) {
                     this.source = this.CancelToken.source()
-                    setTimeout(() => this.props.onGetFormularyData(this.source, this.props.query.form, newProps.formularyId, newProps.formularyDefaultData), 500)
+                    setTimeout(() => this.props.onGetFormularyData(this.source, this.props.query.form, this.props.formularyId, this.props.formularyDefaultData), 500)
                 } else if (!this.props.formulary.isOpen) {
                     if (this.state.auxOriginalInitial.filled && this.state.auxOriginalInitial.buildData) {
                         this.props.onFullResetFormularyState({}, [], this.state.auxOriginalInitial.buildData)
@@ -201,7 +205,7 @@ class Formulary extends React.Component {
                 }
                 this.setMarkToUpdate(false)
             }
-            if (this.state.isEditing && oldProps.formulary.buildData.id !== newProps.formulary.buildData.id) {
+            if (this.state.isEditing && oldProps.formulary.buildData.id !== this.props.formulary.buildData.id) {
                 this.source = this.CancelToken.source()
                 this.props.onGetFormularySettings(this.source, this.props.formulary.buildData.id)
             }
