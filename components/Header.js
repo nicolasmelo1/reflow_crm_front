@@ -12,6 +12,7 @@ const Header = (props) => (
         <title>{ props.title }</title>
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        <script type="text/javascript" src="/dragdroptouch/js/dragdroptouch.js"></script>
         <link rel="stylesheet" href="/bulma/css/bulma.min.css" />
         <link rel="stylesheet" href="/bootstrap/css/bootstrap-grid.min.css"/>
         <link rel="stylesheet" href="/bootstrap/css/bootstrap-reboot.min.css"/>
