@@ -1,12 +1,9 @@
 FROM node:13
 
 WORKDIR /code
-
-ENV PATH /code/node_modules/.bin:$PATH
-
-COPY . /code/
-
+ADD package.json /code/
 RUN npm install
 
+COPY . /code/
 EXPOSE 3000
 CMD [ "npm", "run", "dev" ]
