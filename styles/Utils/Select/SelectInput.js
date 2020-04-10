@@ -9,5 +9,9 @@ export default styled(React.forwardRef(({searchValueColor, ...rest}, ref) => <in
     line-height: normal;
     padding: .156rem 0;
     margin: .406rem .75rem;
-    width: 50%
+    width: 50%;
+
+    &:focus {
+        outline: none;
+    }
 `

@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 export default styled.td`
-    ${props=> props.isTableButton ? 'text-align: center;': ''}
+    text-align: ${props=> props.isTableButton ? 'center': ' left'} !important;
     ${props=> props.isTableButton ? '': 'cursor: pointer;'}
     max-height: 20px;
     overflow: hidden;

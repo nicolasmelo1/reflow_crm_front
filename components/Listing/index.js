@@ -23,8 +23,7 @@ class Listing extends React.Component {
     constructor(props) {
         super(props)
         this.CancelToken = axios.CancelToken
-        this.dataSource = null
-        this.renderSource = null
+        this.source = null
         this.state = {
             isOpenedTotalsForm: false,
             params: {
@@ -48,14 +47,14 @@ class Listing extends React.Component {
     }
 
     setParams = (params) => {
-        this.dataSource = this.CancelToken.source();
+        this.source = this.CancelToken.source();
         this.setState(state => {
             return {
                 ...state,
                 params: params
             }
         })
-        return this.props.onGetListingData(this.dataSource, params, this.props.query.form)
+        return this.props.onGetListingData(this.source, params, this.props.query.form)
     }
     
     onFilter = (searchInstances) => {
@@ -103,33 +102,33 @@ class Listing extends React.Component {
     }
 
     componentDidMount = () => {
-        this.renderSource = this.CancelToken.source();
-        this.dataSource = this.CancelToken.source();
-        this.props.onRenderListing(this.renderSource, this.props.query.form)
-        this.props.onGetListingData(this.dataSource, this.state.params, this.props.query.form)
+        this.source = this.CancelToken.source()
+
+        this.props.onRenderListing(this.source, this.props.query.form)
+        this.props.onGetListingData(this.source, this.state.params, this.props.query.form)
         //this.props.onGetTotals(this.state.params, this.props.query.form)
     }
 
     componentDidUpdate = (prevProps) => {
-        this.renderSource = this.CancelToken.source();
-        this.dataSource = this.CancelToken.source();
         if (prevProps.query.form !== this.props.query.form) {
-            this.props.onRenderListing(this.renderSource, this.props.query.form)
-            this.props.onGetListingData(this.dataSource, this.state.params, this.props.query.form)
+            if (this.source) {
+                this.source.cancel()
+            }
+            this.source = this.CancelToken.source()
+            this.props.onRenderListing(this.source, this.props.query.form)
+            this.props.onGetListingData(this.source, this.state.params, this.props.query.form)
             //this.props.onGetTotals(this.state.params, this.props.query.form)
         }
         if (this.props.formularyHasBeenUpdated !== prevProps.formularyHasBeenUpdated) {
-            this.props.onGetListingData(this.dataSource, this.state.params, this.props.query.form)
+            this.source = this.CancelToken.source()
+            this.props.onGetListingData(this.source, this.state.params, this.props.query.form)
             //this.props.onGetTotals(this.state.params, this.props.query.form)    
         }
     }
 
     componentWillUnmount = () => {
-        if (this.renderSource) {
-            this.renderSource.cancel()
-        }
-        if (this.dataSource) {
-            this.dataSource.cancel()
+        if (this.source ) {
+            this.source.cancel()
         }
     }
     render() {
@@ -196,6 +195,7 @@ class Listing extends React.Component {
                     <Col>
                         <ListingTable 
                         params={this.state.params} 
+                        onRemoveData={this.props.onRemoveData}
                         onSort={this.onSort} 
                         setParams={this.setParams}
                         headers={this.props.list.header} 

@@ -6,6 +6,7 @@ import {
     KanbanCardMoveIcon,
     KanbanLoadMoreDataButton
 } from 'styles/Kanban'
+import { strings } from 'utils/constants'
 import { Spinner } from 'react-bootstrap'
 
 
@@ -137,7 +138,7 @@ const KanbanCards = (props) => {
                 </KanbanCardContainer>
             ))}
             {props.pagination && props.pagination.current < props.pagination.total && !isOverflown ? (
-                <KanbanLoadMoreDataButton onClick={e=> {onClickToGetMoreData()}}>Carregar mais</KanbanLoadMoreDataButton>
+                <KanbanLoadMoreDataButton onClick={e=> {onClickToGetMoreData()}}>{strings['pt-br']['kanbanLoadMoreButtonLabel']}</KanbanLoadMoreDataButton>
             ): ''}
             <div style={{margin: 'auto', textAlign:'center', width: '100%'}}>
                 {hasFiredRequestForNewPage ? (<Spinner animation="border" />) : ''}

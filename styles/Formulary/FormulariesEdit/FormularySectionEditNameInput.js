@@ -8,4 +8,8 @@ export default styled.input`
     font-weight: bold;
     font-size: 2rem;
     background-color: transparent;
+    
+    &:focus {
+        outline: none;
+    }
 `

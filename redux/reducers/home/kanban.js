@@ -7,6 +7,7 @@ import {
 
 let initialState = {
     initial: {
+        formName: null,
         default_kanban_card_id: null,
         default_dimension_field_id: null,
         dimension_fields: [],

@@ -13,7 +13,7 @@ const getBorderAndBackgroundColor = (isDarkBackground) => {
 }
 
 export default styled.td`
-    text-align: center;
+    text-align: center !important;
     padding: 5px 2px;
     font-size: 14px;
     color: ${props=> props.isCurrentMonth ? '#0dbf7e' : '#bfbfbf'};

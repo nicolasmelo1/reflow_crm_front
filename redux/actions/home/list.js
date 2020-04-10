@@ -22,7 +22,7 @@ const onGetListingData = (source, params, formName) => {
             } else {
                 payload.data = payload.data.concat(response.data.data)
             }
-            dispatch({ type: GET_DATA, payload: payload });
+            dispatch({ type: GET_DATA, payload: payload })
             return response
 
         } catch {}
@@ -37,6 +37,18 @@ const onGetExportedData = () => {
             return response
         }
         return response
+    }
+}
+
+const onRemoveData = (data, formName, formId) => {
+    return (dispatch, getState) => {
+        const state = getState().home.list.data
+        const payload = {
+            ...state,
+            data: data
+        }
+        agent.LISTING.removeData(formName, formId)
+        dispatch({ type: GET_DATA, payload: payload })
     }
 }
 
@@ -99,6 +111,7 @@ const onUpdateSelected = (body, formName) => {
 }
 
 export default {
+    onRemoveData,
     onGetListingData,
     onExportData,
     onGetExportedData,

@@ -115,6 +115,7 @@ const strings = {
         kanbanConfigurationFormDimensionSelectPlaceholder: 'Selecione uma dimensão',
         kanbanConfigurationFormCardFieldSelectPlaceholderTitle: 'Selecione um titúlo',
         kanbanConfigurationFormCardFieldSelectPlaceholderField: 'Selecine um campo',
+        kanbanLoadMoreButtonLabel: 'Carregar Mais',
         filterButtonLabel: 'Filtrar',
         filterFieldsDropdownButttonLabel: 'Filtrar por...',
         filterInputPlaceholder: 'Palavra-chave',

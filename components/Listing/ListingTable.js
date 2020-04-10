@@ -55,7 +55,7 @@ const ListingTable = (props) => {
         <ListingTableContainer ref={tableRef}>
             <Table>
                 <ListingTableHeader headers={headers} params={props.params} onSort={props.onSort}/>
-                <ListingTableContent headers={headers} pagination={props.pagination} data={data} setFormularyId={props.setFormularyId} />
+                <ListingTableContent headers={headers} pagination={props.pagination} data={data} setFormularyId={props.setFormularyId} onRemoveData={props.onRemoveData}/>
             </Table>
             
             {hasFiredRequestForNewPage ? (

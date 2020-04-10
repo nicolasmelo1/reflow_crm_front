@@ -115,6 +115,7 @@ const KanbanConfigurationForm = (props) => {
                 />
             ) : (
                 <KanbanConfigurationFormCard
+                onRemoveCard={props.onRemoveCard}
                 onSelectDefaultCard={onSelectDefaultCard}
                 defaultKanbanCardId={props.defaultKanbanCardId}
                 onOpenCardForm={onOpenCardForm}

@@ -7,7 +7,7 @@ export default styled.div`
     margin: 0;
 
     @media(min-width: 640px) {
-        width: 126px;
+        width: 200px;
         margin: 0;
     }
     @media(max-width: 640px) {

@@ -1,11 +1,12 @@
 import React from 'react'
 import { Formularies } from 'styles/Formulary'
-import { Row, Col } from 'react-bootstrap'
+import { Row, Col, Spinner } from 'react-bootstrap'
 import FormularySections from './FormularySections'
 import FormularySectionsEdit from './FormularySectionsEdit'
 import actions from 'redux/actions'
 import { connect } from 'react-redux'
 import { strings } from 'utils/constants'
+import axios from 'axios'
 
 /**
  * You might want to read the README to understand how this and all of it's components work.
@@ -13,13 +14,18 @@ import { strings } from 'utils/constants'
 class Formulary extends React.Component {
     constructor(props) {
         super(props)
+        this.CancelToken = axios.CancelToken
+        this.source = null
+
         this.state = {
             markToUpdate: false,
             isEditing: false,
             errors: {},
             files: {},
+            isSubmitting: false,
             isLoading: false,
             isLoadingEditing: false,
+            isSubmitting: false,
             auxOriginalInitial: {}
         }
     }
@@ -29,6 +35,15 @@ class Formulary extends React.Component {
             return {
                 ...state,
                 markToUpdate: data
+            }
+        })
+    }
+
+    setIsSubmitting = (data) => {
+        this.setState(state => {
+            return {
+                ...state,
+                isSubmitting: data
             }
         })
     }
@@ -44,8 +59,8 @@ class Formulary extends React.Component {
 
     setIsOpen = () => {
         // when user closes we reset the states on the formulary
-        this.setMarkToUpdate(true)
         this.props.onOpenOrCloseFormulary(!this.props.formulary.isOpen)
+        this.setMarkToUpdate(true)
     }
 
     setAuxOriginalInitial = () => {
@@ -62,7 +77,8 @@ class Formulary extends React.Component {
 
     setIsEditing = () => {
         if (!this.state.isEditing) {
-            this.props.onGetFormularySettings(this.props.formulary.buildData.id)
+            this.source = this.CancelToken.source()
+            this.props.onGetFormularySettings(this.source, this.props.formulary.buildData.id)
         } else {
             this.buildFormulary(this.props.query.form, this.props.formularyId)
         }
@@ -90,6 +106,7 @@ class Formulary extends React.Component {
     }
 
     onSubmit = () => {
+        this.setIsSubmitting(true)
         let response = null
         if (this.props.formularyId) {
             response = this.props.onUpdateFormularyData(this.props.formulary.filled.data, this.props.formulary.filled.files, this.props.query.form, this.props.formularyId)
@@ -101,8 +118,10 @@ class Formulary extends React.Component {
             response.then(response=> {
                 if (response.status !== 200) {
                     this.setErrors(response.data.error)
+                    this.setIsSubmitting(false)
                 } else {
                     this.props.setFormularyHasBeenUpdated()
+                    this.setIsSubmitting(false)
                     this.setIsOpen()
                 }
             })
@@ -111,11 +130,12 @@ class Formulary extends React.Component {
 
     buildFormulary = (formName, formId=null) => {
         this.setIsLoading(true)
-        this.props.onGetBuildFormulary(formName).then(_ => {
+        this.source = this.CancelToken.source()
+        this.props.onGetBuildFormulary(this.source, formName).then(_ => {
             this.setIsLoading(false)
         })
         if (formId) {
-            this.props.onGetFormularyData(formName, formId)
+            this.props.onGetFormularyData(this.source, formName, formId)
         } 
     }
 
@@ -140,11 +160,21 @@ class Formulary extends React.Component {
         this.buildFormulary(this.props.query.form, this.props.formularyId)
     }
 
-    componentDidUpdate(oldProps) {
+
+    componentWillUnmount = () => {
+        if (this.source) {
+            this.source.cancel()
+        }
+    }
+
+    componentDidUpdate = (oldProps) => {
         const newProps = this.props
         // We use the markToUpdate to update the formulary before the formulary has been open or has been closed
         // we use this for a more smooth ui animation
         if (oldProps.query.form !== newProps.query.form) {
+            if (this.source) {
+                this.source.cancel()
+            }
             this.buildFormulary(this.props.query.form, null)
         } else {
             if(oldProps.formularyId !== newProps.formularyId && newProps.formularyId) {
@@ -152,7 +182,8 @@ class Formulary extends React.Component {
             }
             if (this.state.markToUpdate) {
                 if (this.props.formulary.isOpen && newProps.formularyId) {
-                    setTimeout(() => this.props.onGetFormularyData(this.props.query.form, newProps.formularyId, newProps.formularyDefaultData), 500)
+                    this.source = this.CancelToken.source()
+                    setTimeout(() => this.props.onGetFormularyData(this.source, this.props.query.form, newProps.formularyId, newProps.formularyDefaultData), 500)
                 } else if (!this.props.formulary.isOpen) {
                     if (this.state.auxOriginalInitial.filled && this.state.auxOriginalInitial.buildData) {
                         this.props.onFullResetFormularyState({}, [], this.state.auxOriginalInitial.buildData)
@@ -163,11 +194,16 @@ class Formulary extends React.Component {
                         this.props.onChangeFormularyFilesState([])
                     }
                     this.setErrors({})
+                    this.setIsSubmitting(false)
+                    if (this.source) {
+                        this.source.cancel()
+                    }
                 }
                 this.setMarkToUpdate(false)
             }
             if (this.state.isEditing && oldProps.formulary.buildData.id !== newProps.formulary.buildData.id) {
-                this.props.onGetFormularySettings(this.props.formulary.buildData.id)
+                this.source = this.CancelToken.source()
+                this.props.onGetFormularySettings(this.source, this.props.formulary.buildData.id)
             }
         }
     }
@@ -227,7 +263,9 @@ class Formulary extends React.Component {
                                             sections={sections}
                                             />
                                             {sections.length > 0 ? (
-                                                <Formularies.SaveButton onClick={e=> {this.onSubmit()}}>{strings['pt-br']['formularySaveButtonLabel']}</Formularies.SaveButton>
+                                                <Formularies.SaveButton disabled={this.state.isSubmitting} onClick={e=> {this.onSubmit()}}>
+                                                    {this.state.isSubmitting ? (<Spinner animation="border" />) : strings['pt-br']['formularySaveButtonLabel']}
+                                                </Formularies.SaveButton>
                                             ) : ''}
                                             
                                         </div> 

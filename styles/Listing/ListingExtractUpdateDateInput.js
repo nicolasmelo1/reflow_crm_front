@@ -5,5 +5,9 @@ export default styled.input`
     background-color: transparent;
     border: 0;
     display: inline-block;
-    cursor: pointer
+    cursor: pointer;
+
+    &:focus {
+        outline: none;
+    }
 `

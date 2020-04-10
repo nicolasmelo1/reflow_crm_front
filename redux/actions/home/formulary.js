@@ -9,22 +9,22 @@ const onOpenFormulary = (isOpen) => {
     }
 }
 
-const onGetBuildFormulary = (formName) => {
+const onGetBuildFormulary = (source, formName) => {
     return async (dispatch) => {
         try {
-            let response = await agent.HOME.getBuildFormulary(formName)
+            let response = await agent.FORMULARY.getBuildFormulary(source, formName)
             dispatch({type: GET_FORMULARY, payload: response.data.data})
             return response
         } catch {}
     }
 }
 
-const onGetFormularyData = (formName, formId, defaults=[]) => {
-    return (dispatch, getState) => {
+const onGetFormularyData = (source, formName, formId, defaults=[]) => {
+    return (dispatch) => {
         try {
-            agent.HOME.getFormularyData(formName, formId).then(response => {
+            agent.FORMULARY.getFormularyData(source, formName, formId).then(response => {
                 //const formularyIsOpen = getState().home.formulary.isOpen
-                if (response.status === 200){
+                if (response && response.status === 200){
                     let data = response.data.data
                     defaults.forEach(defaultData => {
                         const formValueId = defaultData.form_value_id
@@ -68,7 +68,7 @@ const onChangeFormularyFilesState = (files) => {
 const onCreateFormularyData = (body, files, formName) => {
     return async (dispatch) => {
         try {
-            const response = await agent.HOME.createFormularyData(body, files, formName)
+            const response = await agent.FORMULARY.createFormularyData(body, files, formName)
             if (response.status === 200) {
                 dispatch({ type: SET_FORMULARY_DATA, payload: {} })
                 dispatch({ type: SET_FORMULARY_FILES, payload: [] })
@@ -82,7 +82,7 @@ const onCreateFormularyData = (body, files, formName) => {
 const onUpdateFormularyData = (body, files, formName, formId) => {
     return async (dispatch) => {
         try {
-            const response = await agent.HOME.updateFormularyData(body, files, formName, formId)
+            const response = await agent.FORMULARY.updateFormularyData(body, files, formName, formId)
             if (response.status === 200) {
                 dispatch({ type: SET_FORMULARY_DATA, payload: {} })
                 dispatch({ type: SET_FORMULARY_FILES, payload: [] })
@@ -105,10 +105,10 @@ const onChangeFormularySettingsState = (formSettingsData) => {
     }
 }
 
-const onGetFormularySettings = (formularyId) => {
+const onGetFormularySettings = (source, formularyId) => {
     return async (dispatch) => {
         try {
-            const response = await agent.HOME.getFormularySettingsData(formularyId)
+            const response = await agent.FORMULARY.getFormularySettingsData(source, formularyId)
             dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: response.data.data })
             return response
         } catch {}
@@ -120,7 +120,7 @@ const onCreateFormularySettingsSection = (body, formId, sectionIndex) => {
     return async (dispatch, getState) => {
         let stateData = getState().home.formulary.update
         if (body.id !== -1) {
-            agent.HOME.createFormularySettingsSection(body, formId).then(response=> {
+            agent.FORMULARY.createFormularySettingsSection(body, formId).then(response=> {
                 if (response) {
                     if (response.status ===200){
                         stateData.depends_on_form[sectionIndex] = response.data.data
@@ -140,13 +140,13 @@ const onCreateFormularySettingsSection = (body, formId, sectionIndex) => {
 
 const onUpdateFormularySettingsSection = (body, formId, sectionId) => {
     return (_) => {
-        agent.HOME.updateFormularySettingsSection(body, formId, sectionId)
+        agent.FORMULARY.updateFormularySettingsSection(body, formId, sectionId)
     }
 }
 
 const onRemoveFormularySettingsSection = (formId, sectionId) => {
     return (_) => {
-        agent.HOME.removeFormularySettingsSection(formId, sectionId)
+        agent.FORMULARY.removeFormularySettingsSection(formId, sectionId)
     }
 }
 
@@ -154,7 +154,7 @@ const onCreateFormularySettingsField = (body, formId, sectionIndex, fieldIndex) 
     return (dispatch, getState) => {
         let stateData = getState().home.formulary.update
         if (body.id !== -1) {
-            agent.HOME.createFormularySettingsField(body, formId).then(response=> {
+            agent.FORMULARY.createFormularySettingsField(body, formId).then(response=> {
                 if(response.status === 200) {
                     stateData.depends_on_form[sectionIndex].form_fields[fieldIndex] = response.data.data
                 } else {
@@ -172,13 +172,13 @@ const onCreateFormularySettingsField = (body, formId, sectionIndex, fieldIndex) 
 
 const onUpdateFormularySettingsField = (body, formId, fieldId) => {
     return (_) => {
-        agent.HOME.updateFormularySettingsField(body, formId, fieldId)
+        agent.FORMULARY.updateFormularySettingsField(body, formId, fieldId)
     }
 }
 
 const onRemoveFormularySettingsField = (formId, fieldId) => {
     return (_) => {
-        agent.HOME.removeFormularySettingsField(formId, fieldId)
+        agent.FORMULARY.removeFormularySettingsField(formId, fieldId)
     }
 }
 

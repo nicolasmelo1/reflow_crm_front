@@ -3,6 +3,7 @@ import Select from 'components/Utils/Select'
 import agent from 'redux/agent'
 import { useRouter } from 'next/router'
 import { Field } from 'styles/Formulary'
+import axios from 'axios'
 
 const Form = (props) => {
     const [options, setOptions] = useState([])
@@ -29,10 +30,12 @@ const Form = (props) => {
     */
     useEffect(() => {
         let didCancel = false;
+        const cancelToken = axios.CancelToken
+        const source = cancelToken.source()
 
-        async function fetchFormOptions() {
+        async function fetchFormOptions(source) {
             try {
-                const response = await agent.HOME.getFormularyFormFieldOptions(router.query.form, props.field.id);
+                const response = await agent.FORMULARY.getFormularyFormFieldOptions(source, router.query.form, props.field.id);
                 if (!didCancel) {
                     setOptions(response.data.data.map(option => { return {value: option.form_id, label: option.value} }))
                 }
@@ -40,9 +43,12 @@ const Form = (props) => {
         }  
 
         if (options.length === 0) {
-            fetchFormOptions()
+            fetchFormOptions(source)
         }
-        return () => { didCancel = true; };
+        return () => {
+            didCancel = true
+            source.cancel()
+        };
     },[])
 
 

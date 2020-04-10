@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import KanbanDimension from './KanbanDimension'
-import axios from 'axios'
+
 /**
  * This is a simple component that is used to control the dimensions.
  * 
@@ -23,6 +23,7 @@ import axios from 'axios'
  */
 const KanbanTable = (props) => {
     const oldDimensionOrdersRef = React.useRef()
+    const oldFormNameRef = React.useRef()
     const dataSource = React.useRef(props.cancelToken.source())
     const cardFields = (props.card) ? props.card.kanban_card_fields: []
     const [hasFiredDimensionOrders, _setHasFiredDimensionOrders] = useState(false)
@@ -59,15 +60,14 @@ const KanbanTable = (props) => {
         const newDimensionOrders = props.dimensionOrders ? props.dimensionOrders.map(dimensionOrder => dimensionOrder.options) : []
         newDimensionOrders.sort()
         oldDimensionOrders.sort()
-        if (props.defaultKanbanCardId && props.defaultDimensionId && JSON.stringify(oldDimensionOrders) !== JSON.stringify(newDimensionOrders)) {
-            console.log(oldDimensionOrders)
-            console.log(newDimensionOrders)
+        if (props.defaultKanbanCardId && props.defaultDimensionId && props.defaultFormName === props.formName && JSON.stringify(oldDimensionOrders) !== JSON.stringify(newDimensionOrders)) {
             props.onGetKanbanData(dataSource.current, props.params, props.formName)
         }
     }, [props.dimensionOrders])
 
     useEffect(() => {
         oldDimensionOrdersRef.current = props.dimensionOrders
+        oldFormNameRef.current = props.formName
     })
 
 

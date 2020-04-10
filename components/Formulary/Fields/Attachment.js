@@ -11,7 +11,7 @@ const AttachmentItem = (props) => {
 
     const onClick = () => {
         if (![null, undefined, ''].includes(props.value.id)){
-            window.open(agent.HOME.getAttachmentFile(router.query.form, props.sectionId, props.field.id, props.value.value))
+            window.open(agent.FORMULARY.getAttachmentFile(router.query.form, props.sectionId, props.field.id, props.value.value))
         }
     }
     const splittedFullName = (props.value) ? props.value.value.split('.') : []

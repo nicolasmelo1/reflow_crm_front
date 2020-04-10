@@ -1,6 +1,7 @@
 import React from 'react'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
 import { ListingEditButtonIcon, ListingDeleteButtonIcon, ListingTableContentElement, ListingTableContentPopoverElement } from 'styles/Listing'
+import { useRouter } from 'next/router'
 
 const PopoverWithContent = React.forwardRef((props, ref) => {
     return (
@@ -60,6 +61,12 @@ const TableContentElement = (props) => {
  * @param {Array<Object>} data - The data to display on the table.
  */
 const ListingTableContent = (props) => {
+    const router = useRouter()
+    const removeForm = (formId) => {
+        const data = JSON.parse(JSON.stringify(props.data.filter(form=> form.id !== formId)))
+        props.onRemoveData(data, router.query.form, formId)
+    }
+
     return (
         <tbody>
             {props.data.map((data, index) => (
@@ -74,7 +81,7 @@ const ListingTableContent = (props) => {
                         <ListingEditButtonIcon icon="pencil-alt" onClick={e=> {props.setFormularyId(data.id)}}/>
                     </ListingTableContentElement>
                     <ListingTableContentElement isTableButton={true}>
-                        <ListingDeleteButtonIcon icon="trash" />
+                        <ListingDeleteButtonIcon icon="trash" onClick={e=> {removeForm(data.id)}}/>
                     </ListingTableContentElement>
                 </tr>
             ))}

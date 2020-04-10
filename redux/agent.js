@@ -73,6 +73,8 @@ const requests = {
         }
     },
     get: async (url, params = {}, headers = {}, source=null) => {
+        // sources are available only in get requests, use them wiselly. With them you can cancel the request on the unmount of a component 
+        // or when you change some data in your component. It's a really powerful tool to increase perfomance and mitigate possible bugs.
         if (!source) {
             const CancelToken = axios.CancelToken
             source = new CancelToken(function (_) {})
@@ -127,51 +129,27 @@ const LOGIN = {
 }
 
 
-const HOME = {
-    getForms: async () => {
-        return await requests.get(`${companyId}/data/api/forms/`)
-    },
-    getUpdateForms: async () => {
-        return await requests.get(`${companyId}/settings/api/formulary`)
-    },
-    getFieldOptions: async (formId) => {
-        return await requests.get(`${companyId}/settings/api/formulary/${formId}/field_options/`)
-    },
-    updateGroup: async (body, id) => {
-        return await requests.put(`${companyId}/settings/api/formulary/groups/${id}/`, body)
-    },
-    createForm: async (body) => {
-        return await requests.post(`${companyId}/settings/api/formulary/forms/`, body)
-    },
-    updateForm: async (body, id) => {
-        return await requests.put(`${companyId}/settings/api/formulary/forms/${id}/`, body)
-    },
-    removeForm: async (id)=> {
-        return await requests.delete(`${companyId}/settings/api/formulary/forms/${id}/`)
-    },
-    getBuildFormulary: async (formName) => {
-        return await requests.get(`${companyId}/formulary/api/${formName}/`)
+const FORMULARY = {
+    getBuildFormulary: async (source, formName) => {
+        return await requests.get(`${companyId}/formulary/api/${formName}/`, {}, {}, source)
     },
     createFormularyData: async (body, files, formName) => {
         return await requests.post(`${companyId}/formulary/api/${formName}/`, formEncodeData('data', body, files), {'Content-Type': 'multipart/form-data'})
     },
-    getFormularyData: async (formName, formId) => {
-        return await requests.get(`${companyId}/formulary/api/${formName}/${formId}/`)
+    getFormularyData: async (source, formName, formId) => {
+        return await requests.get(`${companyId}/formulary/api/${formName}/${formId}/`, {}, {}, source)
     },
     updateFormularyData: async (body, files, formName, formId) => {
         return await requests.post(`${companyId}/formulary/api/${formName}/${formId}/`, formEncodeData('data', body, files), {'Content-Type': 'multipart/form-data'})
     },
+    getFormularyFormFieldOptions: async (source, formName, fieldId) => {
+        return await requests.get(`${companyId}/formulary/api/${formName}/${fieldId}/form/options/`, {}, {}, source)
+    },
     getAttachmentFile: (formName, formularyId, fieldId, fileName) => {
         return `${API_ROOT}${companyId}/formulary/${formName}/${formularyId}/${fieldId}/${fileName}/?token=${token}`
     },
-    getFormularyFormFieldOptions: async (formName, fieldId) => {
-        return await requests.get(`${companyId}/formulary/api/${formName}/${fieldId}/form/options/`)
-    },
-    removeForm: async (groupId, id) => {
-        return await requests.delete(`${companyId}/settings/api/formulary/${groupId}/${id}/`)
-    },
-    getFormularySettingsData: async (formId) => {
-        return await requests.get(`${companyId}/settings/api/formulary/${formId}/sections/`)
+    getFormularySettingsData: async (source, formId) => {
+        return await requests.get(`${companyId}/settings/api/formulary/${formId}/sections/`, {}, {}, source)
     },
     createFormularySettingsSection: async (body, formId) => {
         return await requests.post(`${companyId}/settings/api/formulary/${formId}/sections/`, body)
@@ -194,6 +172,31 @@ const HOME = {
 }
 
 
+const HOME = {
+    getForms: async () => {
+        return await requests.get(`${companyId}/data/api/forms/`)
+    },
+    getUpdateForms: async () => {
+        return await requests.get(`${companyId}/settings/api/formulary`)
+    },
+    getFieldOptions: async (formId) => {
+        return await requests.get(`${companyId}/settings/api/formulary/${formId}/field_options/`)
+    },
+    updateGroup: async (body, id) => {
+        return await requests.put(`${companyId}/settings/api/formulary/groups/${id}/`, body)
+    },
+    createForm: async (body) => {
+        return await requests.post(`${companyId}/settings/api/formulary/forms/`, body)
+    },
+    updateForm: async (body, id) => {
+        return await requests.put(`${companyId}/settings/api/formulary/forms/${id}/`, body)
+    },
+    removeForm: async (groupId, id) => {
+        return await requests.delete(`${companyId}/settings/api/formulary/${groupId}/${id}/`)
+    }
+}
+
+
 const LISTING = {
     getRenderData: async (source, formName) => {
         return await requests.get(`${companyId}/data/api/listing/${formName}/`, {}, {}, source)
@@ -207,6 +210,9 @@ const LISTING = {
     },
     exportData: async (params, formName) => {
         return await requests.post(`${companyId}/data/api/extract/${formName}/`, params)
+    },
+    removeData: async (formName, formId) => {
+        return await requests.delete(`${companyId}/formulary/api/${formName}/${formId}/`)
     },
     getData: async (source, params, formName) => {
         return await requests.get(`${companyId}/data/api/data/${formName}/`, params, {}, source)
@@ -238,6 +244,9 @@ const KANBAN = {
     updateCard: async (body, formName, kanbanCardId) => {
         return await requests.put(`${companyId}/data/api/kanban/${formName}/card/${kanbanCardId}/`, body)
     },
+    removeCard: async(formName, kanbanCardId) => {
+        return await requests.delete(`${companyId}/data/api/kanban/${formName}/card/${kanbanCardId}/`)
+    },
     updateDefaults: async (body, formName) => {
         return await requests.put(`${companyId}/data/api/kanban/${formName}/defaults/`, body)
     },
@@ -261,5 +270,6 @@ export default {
     LOGIN,
     HOME,
     LISTING,
-    KANBAN
+    KANBAN,
+    FORMULARY
 };

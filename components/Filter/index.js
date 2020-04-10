@@ -94,6 +94,14 @@ const Filter = (props) => {
         }
     }
 
+    const pluralOrSingularButtonLabel = (instancesLength) => {
+        if (instancesLength === 1) {
+            return '1 filtro ativo'
+        } else {
+            return instancesLength.toString() + ' filtros ativos'
+        }
+    }
+
     useEffect(() => {
         const search = []
         for (let i=0; i<props.params.search_value.length; i++) {
@@ -119,17 +127,17 @@ const Filter = (props) => {
     const ContainerComponent = props.container ? props.container : `div`
     const FilterContainerComponent = props.filterContainer ? props.filterContainer: `div`
     const FilterButton = props.filterButton ? props.filterButton : `button`
-
+    const fiterButtonLabel = props.params.search_value.length === 0 ? strings['pt-br']['filterButtonLabel'] : pluralOrSingularButtonLabel(props.params.search_value.length)
     return (
         <ContainerComponent ref={dropdownRef}>
             <FilterButton onClick={e => {onToggleFilter(e)}}>
                 {props.filterButtonIcon ? (
                     <span>
-                        {props.filterButtonIcon}&nbsp;{strings['pt-br']['filterButtonLabel']}
+                        {props.filterButtonIcon}&nbsp;{fiterButtonLabel}
                     </span>
                 ) : (
                     <span>
-                        {strings['pt-br']['filterButtonLabel']}
+                        {fiterButtonLabel}
                     </span>)
                 }
             </FilterButton>
