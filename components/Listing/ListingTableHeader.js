@@ -42,6 +42,7 @@ const ListingTableHead = (props) => {
             const differenceX = e.pageX - resizeData.pageX;
             resizeData.currentColumn.style.minWidth = (resizeData.currentColumnWidth + differenceX)+'px';
             resizeData.currentColumn.style.width = (resizeData.currentColumnWidth + differenceX)+'px';
+            props.defineScrollWidth()
         }
     } 
 

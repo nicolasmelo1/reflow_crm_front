@@ -3,7 +3,7 @@ import ListingTableContent from './ListingTableContent'
 import ListingTableHeader from './ListingTableHeader'
 import { ListingTableContainer, ListingTableLoaderContainer, ListingTableLoaderWrapper } from 'styles/Listing'
 import { Table, Spinner } from 'react-bootstrap'
-
+import mobilecheck from 'utils/mobilecheck'
 /**
  * This component holds most of the logic from the table component, with it`s headers and content.
  * 
@@ -17,6 +17,7 @@ import { Table, Spinner } from 'react-bootstrap'
  * @param {Array<Object>} data - The data to display on the table.
  */
 const ListingTable = (props) => {
+    const isMobile = mobilecheck()
     const [hasFiredRequestForNewPage, _setHasFiredRequestForNewPage] = useState(false)
     const headers = (props.headers && props.headers.field_headers) ? props.headers.field_headers: []
     const tableRef = React.useRef()
@@ -32,15 +33,15 @@ const ListingTable = (props) => {
     }
 
     const defineScrollWidth = (e) => {
-        scrollRef.current.style.width = tableRef.current.scrollWidth + 'px'
+        if (scrollRef.current) scrollRef.current.style.width = tableRef.current.scrollWidth + 20 + 'px'
     }
 
     const onScrollerScroll = (e) => {
-        tableRef.current.scrollLeft = scrollWrapperRef.current.scrollLeft
+        if (scrollWrapperRef.current) tableRef.current.scrollLeft = scrollWrapperRef.current.scrollLeft
     }
 
     const onScroll = (e) => {  
-        scrollWrapperRef.current.scrollLeft = tableRef.current.scrollLeft
+        if (scrollWrapperRef.current) scrollWrapperRef.current.scrollLeft = tableRef.current.scrollLeft
         if (!hasFiredRequestForNewPageRef.current && props.pagination.current < props.pagination.total && tableRef.current.scrollTop >= (tableRef.current.scrollHeight - tableRef.current.offsetHeight))  {
             setHasFiredRequestForNewPage(true) 
             props.params.page = props.pagination.current + 1
@@ -58,23 +59,29 @@ const ListingTable = (props) => {
     useEffect(() => {
         defineScrollWidth()
         window.addEventListener('resize', defineScrollWidth)
-        scrollWrapperRef.current.addEventListener('scroll', onScrollerScroll)
-        tableRef.current.addEventListener('scroll', onScroll)
+        if (scrollWrapperRef.current && tableRef.current) {
+            scrollWrapperRef.current.addEventListener('scroll', onScrollerScroll)
+            tableRef.current.addEventListener('scroll', onScroll)
+        }
         return () => {
             window.removeEventListener('resize', defineScrollWidth)
-            scrollWrapperRef.current.removeEventListener('scroll', onScrollerScroll)
-            tableRef.current.removeEventListener('scroll', onScroll)
+            if (scrollWrapperRef.current && tableRef.current) {
+                scrollWrapperRef.current.removeEventListener('scroll', onScrollerScroll)
+                tableRef.current.removeEventListener('scroll', onScroll)
+            }
         }
     })
 
     return (
         <div>
-            <div style={{ width: '100%', overflowY: 'hidden', overflowX: 'scroll', height:'20px' }} ref={scrollWrapperRef}>
-                <div style={{ height:'20px'}} ref={scrollRef}></div>
-            </div>
-            <ListingTableContainer ref={tableRef} >
+            {!isMobile ? (
+                <div style={{ width: '100%', overflowY: 'hidden', overflowX: 'scroll', height:'20px' }} ref={scrollWrapperRef}>
+                    <div style={{ height:'20px'}} ref={scrollRef}></div>
+                </div>
+            ): ''}
+            <ListingTableContainer ref={tableRef}>
                 <Table>
-                    <ListingTableHeader headers={headers} params={props.params} onSort={props.onSort}/>
+                    <ListingTableHeader headers={headers} params={props.params} onSort={props.onSort} defineScrollWidth={defineScrollWidth}/>
                     <ListingTableContent headers={headers} pagination={props.pagination} data={data} setFormularyId={props.setFormularyId} onRemoveData={props.onRemoveData}/>
                 </Table>
                 
