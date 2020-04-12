@@ -119,7 +119,7 @@ class Formulary extends React.Component {
                 this.setIsSubmitting(false)
                 if (response.status !== 200) {
                     this.setErrors(response.data.error)
-                } else if (this.state.auxOriginalInitial.filled && this.state.auxOriginalInitial.buildData) {
+                } else if (this.props.formulary.buildData.form_name !== this.props.query.form) {
                     this.props.onFullResetFormularyState(this.state.auxOriginalInitial.filled.data, this.state.auxOriginalInitial.filled.files, this.state.auxOriginalInitial.buildData)
                 } else {
                     this.props.setFormularyHasBeenUpdated()
@@ -142,7 +142,7 @@ class Formulary extends React.Component {
 
     getFormularyButtonTitle = () => {
         if (this.props.formulary.isOpen && this.state.isLoading){
-            return 'Carregando...'
+            return strings['pt-br']['formularyLoadingButtonLabel']
         } else if (this.props.formulary.isOpen) {
             const formName = (this.props.formulary.buildData && this.props.formulary.buildData.label_name) ? this.props.formulary.buildData.label_name : ''
             return 'Fechar ' + formName 

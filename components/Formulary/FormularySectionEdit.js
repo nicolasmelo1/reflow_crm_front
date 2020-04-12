@@ -127,7 +127,8 @@ const FormularySectionEdit = (props) => {
                     <Col>
                     {props.section.enabled ? (
                         <FormulariesEdit.Section.LabelInput
-                        value={props.section.label_name} 
+                        value={props.section.label_name}
+                        placeholder={strings['pt-br']['formularyEditSectionPlaceholderLabel']} 
                         onChange={e=> {onChangeSectionName(e)}} 
                         isConditional={isConditional}
                         />

@@ -166,7 +166,7 @@ class Listing extends React.Component {
                     <ListingButtonsContainer>
                         <Filter
                         fields={(this.props.list.header && this.props.list.header.field_headers) ? 
-                                this.props.list.header.field_headers.map(field=> ({name: field.name, label: field.label_name})) : []} 
+                                this.props.list.header.field_headers.map(field=> ({name: field.name, label: field.label_name, type: field.type})) : []} 
                         params={this.state.params} 
                         onFilter={this.onFilter}
                         types={this.props.types}

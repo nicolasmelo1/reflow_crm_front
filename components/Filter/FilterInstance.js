@@ -33,7 +33,9 @@ const FilterInstance = (props) => {
 
     const onChangeFieldName = (fieldName) => {
         const currentField = props.fields.filter(field => field.name === fieldName).length > 0 ? props.fields.filter(field => field.name === fieldName)[0] : null
+        console.log(props.fields)
         const currentFieldType = currentField && props.types.data.field_type.filter(fieldType => fieldType.id === currentField.type).length > 0 ? props.types.data.field_type.filter(fieldType => fieldType.id === currentField.type)[0].type : null
+        console.log(currentFieldType)
         setSearchField(fieldName)
         setSearchFieldTitle(currentField ? currentField.label : strings['pt-br']['filterFieldsDropdownButttonLabel'])
         if (searchFieldType !== 'date' && currentFieldType === 'date') {

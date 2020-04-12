@@ -14,6 +14,7 @@ import { strings } from 'utils/constants'
  * to construct all of the field options he can select or unselect to filter. 
  * The object on the filter must follow the structure: 
  * `{
+ *      type: 'date',
  *      name: 'foo',
  *      label: 'bar'
  * }`
