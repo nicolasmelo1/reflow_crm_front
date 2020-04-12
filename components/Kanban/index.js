@@ -135,7 +135,7 @@ class Kanban extends React.Component {
                                         </KanbanConfigurationButton>
                                         {this.state.configurationIsOpen ? '' : (
                                             <Filter
-                                            fields={(this.props.kanban.initial.fields) ? this.props.kanban.initial.fields.map(field=> ({ name: field.name, label: field.label_name })) : []}
+                                            fields={(this.props.kanban.initial.fields) ? this.props.kanban.initial.fields.map(field=> ({ name: field.name, label: field.label_name, type: field.type })) : []}
                                             params={this.state.params} 
                                             onFilter={this.onFilter}
                                             types={this.props.types}
