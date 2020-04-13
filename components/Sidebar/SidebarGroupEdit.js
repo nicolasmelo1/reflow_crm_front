@@ -6,22 +6,40 @@ import { strings } from 'utils/constants'
 const SidebarGroupEdit = (props) => {
     const [isDragging,  setIsDragging] = useState(false)
 
-    const onChangeGroupName = (e, group, index) => {
-        e.preventDefault()
-        group.name = e.target.value
-        props.onCreateOrUpdateGroup(group, index)
-    }
-    const onDisableGroup = (e, group, index) => {
-        e.preventDefault()
-        group.enabled = !group.enabled
-        props.onCreateOrUpdateGroup(group, index)
+    const reorder = (groups) => {
+        return groups.map((group, groupIndex) => {
+            group.form_group = group.form_group.map((form, formIndex) => {
+                form.order = formIndex+1
+                return form
+            })
+            group.order = groupIndex+1
+            return group
+        })
     }
 
-    const onMoveGroup = (e, group, index) => {
-        let groupContainer = e.currentTarget.closest('.group-container')
-        let elementRect = e.currentTarget.getBoundingClientRect()
-        e.dataTransfer.setDragImage(groupContainer, elementRect.width-elementRect.left - ( elementRect.right - elementRect.width ), 20)
-        e.dataTransfer.setData('groupToMove', JSON.stringify(group))
+    const onChangeGroupName = (e, index) => {
+        e.preventDefault()
+        props.groups[index].name = e.target.value
+        const data = JSON.parse(JSON.stringify(props.groups[index]))
+        const groups = JSON.parse(JSON.stringify(props.groups))
+        props.onUpdateGroup(data)
+        props.onChangeGroupState(groups)
+    }
+
+    const onDisableGroup = (e, index) => {
+        e.preventDefault()
+        props.groups[index].enabled = !props.groups[index].enabled
+        const data = JSON.parse(JSON.stringify(props.groups[index]))
+        const groups = JSON.parse(JSON.stringify(props.groups))
+        props.onUpdateGroup(data)
+        props.onChangeGroupState(groups)
+    }
+
+    const onMoveGroup = (e, index) => {
+        const groupContainer = e.currentTarget.closest('.group-container')
+        const elementRect = e.currentTarget.getBoundingClientRect()
+
+        e.dataTransfer.setDragImage(groupContainer, elementRect.width - 5, 20)
         e.dataTransfer.setData('groupToMoveIndex', index)
         setIsDragging(true)
     }
@@ -42,43 +60,48 @@ const SidebarGroupEdit = (props) => {
         setIsDragging(false)
     }
     
-    const onDrop = (e, group, index) => {
+    const onDrop = (e, targetGroupIndex) => {
         e.preventDefault()
         e.stopPropagation()
-        let movedGroup = JSON.parse(e.dataTransfer.getData('groupToMove'))
         let movedGroupIndex = parseInt(e.dataTransfer.getData('groupToMoveIndex'))
-
-        props.onReorderGroup(movedGroup, movedGroupIndex, group, index)
+        let newArrayWithoutMoved = props.groups.filter((_, index) => index !== movedGroupIndex)
+        newArrayWithoutMoved.splice(targetGroupIndex, 0, props.groups[movedGroupIndex])
+        const groups = reorder(newArrayWithoutMoved)
+        const movedGroup = groups[targetGroupIndex]
+        props.onUpdateGroup(movedGroup)
+        props.onChangeGroupState(groups)
     }
 
 
     return (
         <div>
-            { props.elements.map((element, index) => (
+            { props.groups.map((group, index) => (
                 <SidebarAccordion key={index}>
-                    <SidebarCard onDragOver={e=> {onDragOver(e)}} onDrop={e=> {onDrop(e, element, index)}}>
+                    <SidebarCard onDragOver={e=> {onDragOver(e)}} onDrop={e=> {onDrop(e, index)}}>
                         <SidebarCardHeader className="group-container">
                             <SidebarIconsContainer>
-                                <SidebarIcons icon="eye" onClick={e=>{onDisableGroup(e, element, index)}}/>
+                                <SidebarIcons icon="eye" onClick={e=>{onDisableGroup(e, index)}}/>
                                 <SidebarIcons icon="trash"/>
-                                <div draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveGroup(e, element, index)}} onDragEnd={e=>{onDragEnd(e)}}  >
+                                <div draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveGroup(e, index)}} onDragEnd={e=>{onDragEnd(e)}}  >
                                     <SidebarIcons icon="arrows-alt" />
                                 </div>
                             </SidebarIconsContainer> 
-                            { (element.enabled) ? 
-                                (<SidebarGroupInput value={element.name} onChange={e=>{onChangeGroupName(e, element, index)}}/>) :
+                            { (group.enabled) ? 
+                                (<SidebarGroupInput value={group.name} onChange={e=>{onChangeGroupName(e, index)}}/>) :
                                 (<SidebarDisabledGroupLabel eventKey="0">{strings['pt-br']['disabledGroupLabel']}</SidebarDisabledGroupLabel>)
                             }                           
                         </SidebarCardHeader>
                         { (isDragging) ?  '' : (
                             <SidebarFormEdit 
                             onCreateOrUpdateForm={props.onCreateOrUpdateForm} 
-                            forms={element.form_group} 
+                            onChangeGroupState={props.onChangeGroupState}
+                            onCreateFormulary={props.onCreateFormulary}
+                            onUpdateFormulary={props.onUpdateFormulary}
+                            onRemoveFormulary={props.onRemoveFormulary}
+                            forms={group.form_group} 
                             groupIndex={index} 
-                            group={element}
-                            onReorderForm={props.onReorderForm}
+                            groups={props.groups}
                             onAddNewForm={props.onAddNewForm}
-                            onRemoveForm={props.onRemoveForm}
                             />
                         )}
                     </SidebarCard>

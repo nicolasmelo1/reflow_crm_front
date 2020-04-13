@@ -62,17 +62,17 @@ const ListingTable = (props) => {
     }
 
     useEffect(() => {
-        defineScrollWidth()
-        window.addEventListener('resize', defineScrollWidth)
+        tableRef.current.addEventListener('scroll', onScroll)
         if (scrollWrapperRef.current && tableRef.current) {
+            defineScrollWidth()
             scrollWrapperRef.current.addEventListener('scroll', onScrollerScroll)
-            tableRef.current.addEventListener('scroll', onScroll)
+            window.addEventListener('resize', defineScrollWidth)
         }
         return () => {
-            window.removeEventListener('resize', defineScrollWidth)
+            tableRef.current.removeEventListener('scroll', onScroll)
             if (scrollWrapperRef.current && tableRef.current) {
                 scrollWrapperRef.current.removeEventListener('scroll', onScrollerScroll)
-                tableRef.current.removeEventListener('scroll', onScroll)
+                window.removeEventListener('resize', defineScrollWidth)
             }
         }
     })

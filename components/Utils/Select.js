@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Utils from 'styles/Utils'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 /**
  * This __MUST NOT__ be called from outside the file, this is only used to build the select options
@@ -201,7 +202,8 @@ const Select = (props) => {
 
     return(
         <Utils.Select.Select isOpen={isOpen} ref={selectRef} onClick={e=>{inputRef.current.focus()}}>
-            <Utils.Select.SelectedOptionsContainer>
+            <Utils.Select.SelectedOptionsContainer isOpen={isOpen}>
+                {(isOpen) ? (<Utils.Select.GoBackArrow icon="arrow-left" onClick={e=> {setIsOpen(false)}}/>) : ''}
                 {selectedOptions.map((selectedOption, index)=> (
                     <Utils.Select.SelectedOption 
                     key={selectedOption.value} 

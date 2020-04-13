@@ -11,9 +11,16 @@ export default styled(({sidebarIsOpen, ...rest}) => <nav {...rest}/>)`
     padding: 0 0 2rem 0;
     position: absolute;
     top: 0;
-    z-index: 10;
     transition: width 0.3s ease-in-out;
     box-shadow: 0 4px 20px 0 #444444;
+
+    @media(max-width: 420px) {
+        z-index: 4;
+    }
+
+    @media(min-width: 420px) {
+        z-index: 10;
+    }
 
     @media(min-width: 320px) {
         width: ${({ sidebarIsOpen }) => sidebarIsOpen ? '310px' : '0'};

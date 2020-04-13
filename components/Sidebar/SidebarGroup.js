@@ -1,8 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Accordion } from 'react-bootstrap'
 import SidebarForm from './SidebarForm'
 import { SidebarAccordionToggle, SidebarCardHeader, SidebarAccordion, SidebarCard } from 'styles/Sidebar'
-import SidebarGroupEdit from './SidebarGroupEdit'
 
 const SidebarGroup = (props) => {
     return (

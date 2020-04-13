@@ -188,11 +188,11 @@ const HOME = {
     createForm: async (body) => {
         return await requests.post(`${companyId}/settings/api/formulary/forms/`, body)
     },
-    updateForm: async (body, id) => {
-        return await requests.put(`${companyId}/settings/api/formulary/forms/${id}/`, body)
+    updateForm: async (body, formularyId) => {
+        return await requests.put(`${companyId}/settings/api/formulary/forms/${formularyId}/`, body)
     },
-    removeForm: async (groupId, id) => {
-        return await requests.delete(`${companyId}/settings/api/formulary/${groupId}/${id}/`)
+    removeForm: async (formularyId) => {
+        return await requests.delete(`${companyId}/settings/api/formulary/forms/${formularyId}/`)
     }
 }
 

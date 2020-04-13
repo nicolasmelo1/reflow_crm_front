@@ -22,67 +22,57 @@ const onGetUpdateForms = () => {
     }
 }
 
-const onCreateOrUpdateGroup = (body, index) => {
-    return async (dispatch, getState) => {
-        let stateData = getState().home.sidebar.update
+const onChangeGroupState = (groupsData) => {
+    return (dispatch) => {
+        dispatch({ type: UPDATE_GROUPS, payload: groupsData })
+    }
+}
+
+const onUpdateGroup = (body) => {
+    return async (_) => {
         agent.HOME.updateGroup(body, body.id)
-        stateData[index] = body
-        dispatch({ type: UPDATE_GROUPS, payload: stateData })
     }
 } 
 
-const onReorderGroup = (movedGroup, movedIndex, targetGroup, targetIndex) => {
-    return async (dispatch, getState) => {
+
+/*********
+ *       *
+ * FORMS *
+ *       *
+ *********/
+const onCreateFormulary = (body, groupIndex, formIndex) => {
+    return (dispatch, getState) => {
         let stateData = getState().home.sidebar.update
-
-        stateData[targetIndex] = movedGroup
-        stateData[movedIndex] = targetGroup
-        
-        //recount order
-        stateData.map((group, index) => {
-            group.order = index
-            if ([movedGroup.id, targetGroup.id].includes(group.id)) {
-                agent.HOME.updateGroup(group, group.id)
-            }
-        });
-
-        dispatch({ type: UPDATE_GROUPS, payload: stateData })
-    }
-}
-
-const onCreateOrUpdateForm = (body, groupIndex, index) => {
-    return async (dispatch, getState) => {
-        let stateData = getState().home.sidebar.update
-
-        if (body.id === null){
-            let response = await agent.HOME.createForm(body)
-            body = response.data.data
-        } else {
-            agent.HOME.updateForm(body, body.id)
+        if (body.id !== -1) {
+            agent.HOME.createForm(body).then(response=> {
+                if(response.status === 200) {
+                    stateData[groupIndex].form_group[formIndex] = response.data.data
+                } else {
+                    stateData[groupIndex].form_group[formIndex].id = null
+                }
+                dispatch({ type: UPDATE_GROUPS, payload: stateData })
+            })
+        } 
+        if (body.id === null) {
+            stateData[groupIndex].form_group[formIndex].id = -1
+            dispatch({ type: UPDATE_GROUPS, payload: stateData })
         }
-
-        stateData[groupIndex].form_group[index] = body
-
-
-        dispatch({ type: UPDATE_GROUPS, payload: stateData })
     }
 }
 
-const onRemoveForm = (body, groupIndex, index) => {
-    return async (dispatch, getState) => {
-        let stateData = getState().home.sidebar.update
-
-        if (body.id !== null){ 
-            agent.HOME.removeForm(body.group, body.id)
-        }
-
-        stateData[groupIndex].form_group.splice(index, 1)
-
-        dispatch({ type: UPDATE_GROUPS, payload: stateData })
+const onUpdateFormulary = (body, formId) => {
+    return (_) => {
+        agent.HOME.updateForm(body, formId)
     }
 }
 
+const onRemoveFormulary = (formId) => {
+    return (_) => {
+        agent.HOME.removeForm(formId)
+    }
+}
 
+/*
 const onReorderForm = (movedForm, movedIndex, groupMovedIndex, targetForm, targetIndex, groupTargetIndex) => {
     return async (dispatch, getState) => {
         let stateData = getState().home.sidebar.update
@@ -111,7 +101,7 @@ const onReorderForm = (movedForm, movedIndex, groupMovedIndex, targetForm, targe
 
         dispatch({ type: UPDATE_GROUPS, payload: stateData })        
     }
-}
+}*/
 
 
 const onAddNewForm = (body, groupIndex) => {
@@ -132,10 +122,10 @@ const onAddNewForm = (body, groupIndex) => {
 export default {
     onGetForms,
     onGetUpdateForms,
-    onCreateOrUpdateGroup,
-    onReorderGroup,
-    onCreateOrUpdateForm,
-    onRemoveForm,
-    onReorderForm,
+    onChangeGroupState,
+    onUpdateGroup,
+    onCreateFormulary,
+    onUpdateFormulary,
+    onRemoveFormulary,
     onAddNewForm
 };

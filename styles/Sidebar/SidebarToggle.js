@@ -12,9 +12,16 @@ export default styled(({sidebarIsOpen, ...rest}) => <button {...rest}/>)`
     background: #444;
     border-radius: 0 20px 20px 0;
     border: none;
-    z-index: 10;
     cursor: pointer;
     color: #0dbf7e;
+
+    @media(max-width: 420px) {
+        z-index: 4;
+    }
+
+    @media(min-width: 420px) {
+        z-index: 10;
+    }
 
     @media(min-width: 320px) {
         left: ${({ sidebarIsOpen }) => sidebarIsOpen ? 'calc(310px + 15px)' : '15px'};

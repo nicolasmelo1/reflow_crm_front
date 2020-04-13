@@ -12,5 +12,13 @@ export default styled(React.forwardRef(({isOpen, ...rest}, ref) => <div {...rest
     &:after{
         content: "";
         clear: both;
+    };
+
+    @media(max-width: 420px) {
+        z-index: 6;
+        ${props => props.isOpen ? 'position: fixed;': ''}
+        top: 0;
+        left:0;
+        width: 100%
     }
 `

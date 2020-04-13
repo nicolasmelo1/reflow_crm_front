@@ -6,9 +6,11 @@ import SelectSelectedOptionsContainer from './SelectSelectedOptionsContainer'
 import SelectSelectedOption from './SelectSelectedOption'
 import SelectOptionsListContainer from './SelectOptionsListContainer'
 import SelectOptionItem from './SelectOptionItem'
+import SelectGoBackArrow from './SelectGoBackArrow'
 
 export default {
     Select: Select,
+    GoBackArrow: SelectGoBackArrow,
     OptionsHolder: SelectOptionsHolder,
     OptionsContainer: SelectOptionsContainer,
     OptionItem: SelectOptionItem,

@@ -46,13 +46,14 @@ class Sidebar extends React.Component {
                         { (this.state.isEditing) ? '': <SidebarAddNewTemplateButton>{strings['pt-br']['sidebarAddNewTemplateButtonLabel']}</SidebarAddNewTemplateButton>}
                         { (this.state.isEditing) ? (
                             <SidebarGroupEdit 
-                            elements={this.props.sidebar.update}
-                            onCreateOrUpdateGroup={this.props.onCreateOrUpdateGroup}
-                            onReorderGroup={this.props.onReorderGroup}
+                            groups={this.props.sidebar.update}
+                            onUpdateGroup={this.props.onUpdateGroup}
+                            onChangeGroupState={this.props.onChangeGroupState}
                             onCreateOrUpdateForm={this.props.onCreateOrUpdateForm}
-                            onReorderForm={this.props.onReorderForm}
+                            onCreateFormulary={this.props.onCreateFormulary}
+                            onUpdateFormulary={this.props.onUpdateFormulary}
                             onAddNewForm={this.props.onAddNewForm}
-                            onRemoveForm={this.props.onRemoveForm}
+                            onRemoveFormulary={this.props.onRemoveFormulary}
                             />
                         ): (
                             <SidebarGroup elements={this.props.sidebar.initial}/>
