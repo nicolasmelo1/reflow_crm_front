@@ -31,9 +31,9 @@ class Data extends React.Component {
         }
     }
 
-    static async getInitialProps(context) {
+    /*static async getInitialProps(context) {
         return { query: context.query }
-    }
+    }*/
 
     setFormularyDefaultData = (defaults) => {
         this.setState(state => {
@@ -103,7 +103,7 @@ class Data extends React.Component {
         switch(dataType){
             case 'listing': 
                 return <Listing 
-                        query={this.props.query} 
+                        router={this.props.router.query} 
                         setFormularyId={this.openFormularyId} 
                         setSearch={this.setSearch} 
                         formularyHasBeenUpdated={this.state.formularyHasBeenUpdated}
@@ -111,7 +111,7 @@ class Data extends React.Component {
                         />
             case 'kanban':
                 return <Kanban 
-                        query={this.props.query} 
+                        router={this.props.router.query} 
                         setFormularyId={this.openFormularyId}
                         setFormularyDefaultData={this.setFormularyDefaultData}
                         formularyHasBeenUpdated={this.state.formularyHasBeenUpdated}
@@ -120,7 +120,7 @@ class Data extends React.Component {
                         />
             default:
                 return <Listing 
-                        query={this.props.query} 
+                        router={this.props.router.query} 
                         setFormularyId={this.openFormularyId} 
                         setSearch={this.setSearch} 
                         formularyHasBeenUpdated={this.state.formularyHasBeenUpdated}
@@ -130,7 +130,7 @@ class Data extends React.Component {
     }
 
     componentDidUpdate = (oldProps) => {
-        if (oldProps.query.form !== this.props.query.form) {
+        if (oldProps.router.query.form !== this.props.router.query.form) {
             this.setFormularyId(null)
         }
     }
@@ -152,7 +152,7 @@ class Data extends React.Component {
                     </Col>
                 </Row>
                 <Formulary 
-                query={this.props.query} 
+                router={this.props.router.query} 
                 formularyId={this.state.formularyId} 
                 setFormularyId={this.setFormularyId} 
                 setFormularyHasBeenUpdated={this.setFormularyHasBeenUpdated}

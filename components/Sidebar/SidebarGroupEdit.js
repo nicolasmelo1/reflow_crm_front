@@ -1,10 +1,23 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
+import Router, { useRouter } from 'next/router'
 import SidebarFormEdit from './SidebarFormEdit'
 import { SidebarDisabledGroupLabel, SidebarGroupInput, SidebarIconsContainer, SidebarIcons, SidebarCardHeader, SidebarAccordion, SidebarCard } from 'styles/Sidebar'
-import { strings } from 'utils/constants'
+import { paths, strings } from 'utils/constants'
 
 const SidebarGroupEdit = (props) => {
     const [isDragging,  setIsDragging] = useState(false)
+    const router = useRouter()
+
+    const checkIfCurrentHasBeenDeleted = (groups) => {
+        const formNames =  [].concat.apply([], groups.map(group => group.form_group.map(form => form.form_name)))
+        const formName = (formNames.length > 0) ? formNames[0] : null
+        if (!formNames.includes(router.query.form)) {
+            Router.push(paths.home(props.companyId, formName, true), paths.home(props.companyId, formName), { shallow: true })
+
+        }
+
+    }
+
 
     const reorder = (groups) => {
         return groups.map((group, groupIndex) => {
@@ -60,6 +73,7 @@ const SidebarGroupEdit = (props) => {
         setIsDragging(false)
     }
     
+    // almost equal as the onMoveSection() function in FormularySectionsEdit component in the Formulary folder
     const onDrop = (e, targetGroupIndex) => {
         e.preventDefault()
         e.stopPropagation()
@@ -98,6 +112,8 @@ const SidebarGroupEdit = (props) => {
                             onCreateFormulary={props.onCreateFormulary}
                             onUpdateFormulary={props.onUpdateFormulary}
                             onRemoveFormulary={props.onRemoveFormulary}
+                            reorder={reorder}
+                            checkIfCurrentHasBeenDeleted={checkIfCurrentHasBeenDeleted}
                             forms={group.form_group} 
                             groupIndex={index} 
                             groups={props.groups}

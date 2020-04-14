@@ -42,6 +42,7 @@ const FormularySectionsEdit = (props) => {
         })
     }
 
+    // almost equal as the onDrop() function in SidebarFormEdit component in the Sidebar folder
     const onMoveField = (movedSectionFieldIndex, movedFieldIndex, targetSectionFieldIndex, targetFieldIndex) => {
         const movedElement = {...props.data.depends_on_form[movedSectionFieldIndex].form_fields[movedFieldIndex]}
         let newArrayWithoutMoved = [...props.data.depends_on_form]
@@ -55,6 +56,7 @@ const FormularySectionsEdit = (props) => {
         props.onChangeFormularySettingsState({...props.data})
     }
 
+     // almost equal as the onDrop() function in SidebarGroupEdit component in the Sidebar folder
     const onMoveSection = (movedSectionIndex, targetSectionIndex) => {
         let newArrayWithoutMoved = props.data.depends_on_form.filter((_, index) => index !== movedSectionIndex)
         newArrayWithoutMoved.splice(targetSectionIndex, 0, props.data.depends_on_form[movedSectionIndex])

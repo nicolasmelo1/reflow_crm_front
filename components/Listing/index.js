@@ -54,7 +54,7 @@ class Listing extends React.Component {
                 params: params
             }
         })
-        return this.props.onGetListingData(this.source, params, this.props.query.form)
+        return this.props.onGetListingData(this.source, params, this.props.router.form)
     }
     
     onFilter = (searchInstances) => {
@@ -71,7 +71,7 @@ class Listing extends React.Component {
                 params.search_exact.push(0)
             }
         })
-        this.props.onGetTotals(this.state.params, this.props.query.form)
+        this.props.onGetTotals(this.state.params, this.props.router.form)
         this.props.setSearch(params.search_field, params.search_value, params.search_exact)
         this.setParams({...params})
     }
@@ -104,25 +104,25 @@ class Listing extends React.Component {
     componentDidMount = () => {
         this.source = this.CancelToken.source()
 
-        this.props.onRenderListing(this.source, this.props.query.form)
-        this.props.onGetListingData(this.source, this.state.params, this.props.query.form)
-        //this.props.onGetTotals(this.state.params, this.props.query.form)
+        this.props.onRenderListing(this.source, this.props.router.form)
+        this.props.onGetListingData(this.source, this.state.params, this.props.router.form)
+        //this.props.onGetTotals(this.state.params, this.props.router.form)
     }
 
     componentDidUpdate = (prevProps) => {
-        if (prevProps.query.form !== this.props.query.form) {
+        if (prevProps.router.form !== this.props.router.form) {
             if (this.source) {
                 this.source.cancel()
             }
             this.source = this.CancelToken.source()
-            this.props.onRenderListing(this.source, this.props.query.form)
-            this.props.onGetListingData(this.source, this.state.params, this.props.query.form)
-            //this.props.onGetTotals(this.state.params, this.props.query.form)
+            this.props.onRenderListing(this.source, this.props.router.form)
+            this.props.onGetListingData(this.source, this.state.params, this.props.router.form)
+            //this.props.onGetTotals(this.state.params, this.props.router.form)
         }
         if (this.props.formularyHasBeenUpdated !== prevProps.formularyHasBeenUpdated) {
             this.source = this.CancelToken.source()
-            this.props.onGetListingData(this.source, this.state.params, this.props.query.form)
-            //this.props.onGetTotals(this.state.params, this.props.query.form)    
+            this.props.onGetListingData(this.source, this.state.params, this.props.router.form)
+            //this.props.onGetTotals(this.state.params, this.props.router.form)    
         }
     }
 
@@ -144,7 +144,7 @@ class Listing extends React.Component {
                         </ListingTotalLabel>
                         {this.state.isOpenedTotalsForm ? (
                             <ListingTotalsForm
-                            formName={this.props.query.form} 
+                            formName={this.props.router.form} 
                             params={this.state.params}
                             headers={this.props.list.header} 
                             onGetTotals={this.props.onGetTotals}
@@ -157,7 +157,7 @@ class Listing extends React.Component {
                             onRemoveTotal={this.props.onRemoveTotal}
                             onUpdateTotals={this.props.onUpdateTotals}
                             totals={this.props.list.totals} 
-                            formName={this.props.query.form} 
+                            formName={this.props.router.form} 
                             />
                         )}
                     </Col>
@@ -179,7 +179,7 @@ class Listing extends React.Component {
                         params={this.state.params} 
                         onExportData={this.props.onExportData} 
                         onGetExportedData={this.props.onGetExportedData} 
-                        formName={this.props.query.form}
+                        formName={this.props.router.form}
                         />
                     </ListingButtonsContainer>
                     <ListingButtonsContainer>
@@ -187,7 +187,7 @@ class Listing extends React.Component {
                         headers={this.props.list.header} 
                         onUpdateHeader={this.props.onUpdateHeader}
                         onUpdateSelected={this.props.onUpdateSelected}
-                        formName={this.props.query.form}
+                        formName={this.props.router.form}
                         />
                     </ListingButtonsContainer>
                 </Row>

@@ -46,6 +46,7 @@ class Sidebar extends React.Component {
                         { (this.state.isEditing) ? '': <SidebarAddNewTemplateButton>{strings['pt-br']['sidebarAddNewTemplateButtonLabel']}</SidebarAddNewTemplateButton>}
                         { (this.state.isEditing) ? (
                             <SidebarGroupEdit 
+                            companyId={this.props.login.companyId}
                             groups={this.props.sidebar.update}
                             onUpdateGroup={this.props.onUpdateGroup}
                             onChangeGroupState={this.props.onChangeGroupState}
@@ -65,4 +66,4 @@ class Sidebar extends React.Component {
     }
 }
 
-export default connect(state => ({ sidebar: state.home.sidebar }), actions)(Sidebar);
+export default connect(state => ({ sidebar: state.home.sidebar, login: state.login }), actions)(Sidebar);

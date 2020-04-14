@@ -78,7 +78,7 @@ class Formulary extends React.Component {
             this.source = this.CancelToken.source()
             this.props.onGetFormularySettings(this.source, this.props.formulary.buildData.id)
         } else {
-            this.buildFormulary(this.props.query.form, this.props.formularyId)
+            this.buildFormulary(this.props.router.form, this.props.formularyId)
         }
         this.setState(state => {
             return {
@@ -119,7 +119,7 @@ class Formulary extends React.Component {
                 this.setIsSubmitting(false)
                 if (response.status !== 200) {
                     this.setErrors(response.data.error)
-                } else if (this.props.formulary.buildData.form_name !== this.props.query.form) {
+                } else if (this.props.formulary.buildData.form_name !== this.props.router.form) {
                     this.props.onFullResetFormularyState(this.state.auxOriginalInitial.filled.data, this.state.auxOriginalInitial.filled.files, this.state.auxOriginalInitial.buildData)
                 } else {
                     this.props.setFormularyHasBeenUpdated()
@@ -141,7 +141,7 @@ class Formulary extends React.Component {
     }
 
     getFormularyButtonTitle = () => {
-        if (this.props.formulary.isOpen && this.state.isLoading){
+        if (this.state.isLoading){
             return strings['pt-br']['formularyLoadingButtonLabel']
         } else if (this.props.formulary.isOpen) {
             const formName = (this.props.formulary.buildData && this.props.formulary.buildData.label_name) ? this.props.formulary.buildData.label_name : ''
@@ -162,7 +162,7 @@ class Formulary extends React.Component {
     }
 
     componentDidMount = () => {
-        this.buildFormulary(this.props.query.form, this.props.formularyId)
+        this.buildFormulary(this.props.router.form, this.props.formularyId)
     }
 
 
@@ -175,11 +175,11 @@ class Formulary extends React.Component {
     componentDidUpdate = (oldProps) => {
         // We use the markToUpdate to update the formulary before the formulary has been open or has been closed
         // we use this for a more smooth ui animation
-        if (oldProps.query.form !== this.props.query.form) {
+        if (oldProps.router.form !== this.props.router.form) {
             if (this.source) {
                 this.source.cancel()
             }
-            this.buildFormulary(this.props.query.form, null)
+            this.buildFormulary(this.props.router.form, null)
         } else {
             if(oldProps.formularyId !== this.props.formularyId && this.props.formularyId) {
                 this.setMarkToUpdate(true)
@@ -187,7 +187,7 @@ class Formulary extends React.Component {
             if (this.state.markToUpdate) {
                 if (this.props.formulary.isOpen && this.props.formularyId) {
                     this.source = this.CancelToken.source()
-                    setTimeout(() => this.props.onGetFormularyData(this.source, this.props.query.form, this.props.formularyId, this.props.formularyDefaultData), 500)
+                    setTimeout(() => this.props.onGetFormularyData(this.source, this.props.router.form, this.props.formularyId, this.props.formularyDefaultData), 500)
                 } else if (!this.props.formulary.isOpen) {
                     if (this.state.auxOriginalInitial.filled && this.state.auxOriginalInitial.buildData) {
                         this.props.onFullResetFormularyState({}, [], this.state.auxOriginalInitial.buildData)
@@ -243,7 +243,7 @@ class Formulary extends React.Component {
                                     {(this.props.formulary.buildData && this.props.formulary.buildData.group_id && this.props.formulary.buildData.id) ? (
                                         <Formularies.EditButton onClick={this.setIsEditing} label={strings['pt-br']['formularyEditButtonLabel']} description={strings['pt-br']['formularyEditButtonDescription']}/>
                                     ) : ''}
-                                    {(this.props.formulary.buildData && this.props.formulary.buildData.form_name !== this.props.query.form) ? (
+                                    {(this.props.formulary.buildData && this.props.formulary.buildData.form_name !== this.props.router.form) ? (
                                         <Formularies.Navigator 
                                         onClick={e => {this.props.onFullResetFormularyState(this.state.auxOriginalInitial.filled.data, this.state.auxOriginalInitial.filled.files, this.state.auxOriginalInitial.buildData)}}
                                         >

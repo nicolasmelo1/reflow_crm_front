@@ -1,7 +1,7 @@
 import { OPEN_FORMULARY, GET_FORMULARY, SET_FORMULARY_DATA, SET_FORMULARY_FILES, SET_FORMULARY_SETTINGS_DATA } from 'redux/types';
 
 let initialState = {
-    isOpen: true,
+    isOpen: false,
     buildData: {},
     filled: {
         data: {},

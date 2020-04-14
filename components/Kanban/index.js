@@ -45,7 +45,7 @@ class Kanban extends React.Component {
     setParams = async (params) => {
         if (this.props.kanban.initial.default_dimension_field_id && this.props.kanban.initial.default_kanban_card_id) {
             this.source = this.CancelToken.source()
-            this.props.onGetKanbanData(this.source, params ,this.props.query.form)
+            this.props.onGetKanbanData(this.source, params ,this.props.router.form)
         }
 
         this.setState(state => {
@@ -89,23 +89,23 @@ class Kanban extends React.Component {
     
     componentDidMount() {
         this.source = this.CancelToken.source()
-        this.props.onRenderKanban(this.source, this.props.query.form)
-        this.props.onGetCards(this.source, this.props.query.form)
+        this.props.onRenderKanban(this.source, this.props.router.form)
+        this.props.onGetCards(this.source, this.props.router.form)
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.query.form !== this.props.query.form) { 
+        if (prevProps.router.form !== this.props.router.form) { 
             if (this.source) {
                 this.source.cancel()
             }
             this.source = this.CancelToken.source()
             this.props.onChangeDimensionOrdersState([])
-            this.props.onRenderKanban(this.source, this.props.query.form)
-            this.props.onGetCards(this.source, this.props.query.form)
+            this.props.onRenderKanban(this.source, this.props.router.form)
+            this.props.onGetCards(this.source, this.props.router.form)
         }
         if (this.canUpdateKanbanData(prevProps)) {
             this.source = this.CancelToken.source()
-            this.props.onGetKanbanData(this.source, this.state.params, this.props.query.form)
+            this.props.onGetKanbanData(this.source, this.state.params, this.props.router.form)
         }
     }
 
@@ -120,7 +120,7 @@ class Kanban extends React.Component {
 
         return (
             <div>
-                {this.props.kanban.initial.formName !== this.props.query.form ? '' : (
+                {this.props.kanban.initial.formName !== this.props.router.form ? '' : (
                     <div>
                         {!this.props.kanban.initial || this.props.kanban.initial.dimension_fields.length === 0 ? (
                             <p>
@@ -151,7 +151,7 @@ class Kanban extends React.Component {
                                     <Col>
                                         {this.state.configurationIsOpen ? (
                                             <KanbanConfigurationForm 
-                                            formName={this.props.query.form}
+                                            formName={this.props.router.form}
                                             onRemoveCard={this.props.onRemoveCard}
                                             onChangeDefaultState={this.props.onChangeDefaultState}
                                             onCreateOrUpdateCard={this.props.onCreateOrUpdateCard}
@@ -164,7 +164,7 @@ class Kanban extends React.Component {
                                             />
                                         ): (
                                             <KanbanTable
-                                            formName={this.props.query.form}
+                                            formName={this.props.router.form}
                                             cancelToken={this.CancelToken}
                                             params={this.state.params}
                                             dimensionOrders={this.props.kanban.dimension_order}

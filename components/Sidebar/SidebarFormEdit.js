@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { strings } from 'utils/constants'
 import { SidebarCardBody, SidebarAddButton, SidebarFormItem, SidebarFormInput, SidebarIconsContainer, SidebarIcons, SidebarDisabledFormLabel } from 'styles/Sidebar'
 
 
 const SidebarFormEdit = (props) => {
-
     const onAddNewForm = (e) => {
         e.preventDefault()
         const groups = JSON.parse(JSON.stringify(props.groups))
@@ -45,12 +44,14 @@ const SidebarFormEdit = (props) => {
     const onRemoveForm = (e, index) => {
         e.preventDefault()
         const groups = JSON.parse(JSON.stringify(props.groups))
-        if (groups[props.groupIndex].form_group[index].id) {
-            props.onRemoveFormulary(groups[props.groupIndex].form_group[index].id)
+        const formToRemove = groups[props.groupIndex].form_group[index]
+        if (formToRemove.id) {
+            props.onRemoveFormulary(formToRemove.id)
         }
         
         groups[props.groupIndex].form_group.splice(index, 1)
-        props.onChangeGroupState(groups)        
+        props.onChangeGroupState(groups)
+        props.checkIfCurrentHasBeenDeleted(groups)      
     }
 
     const onMoveForm = (e, index) => {
@@ -76,13 +77,23 @@ const SidebarFormEdit = (props) => {
         e.stopPropagation()
     }
 
-    const onDrop = (e, form, index) => {
+    // almost equal as the onMoveField() function in FormularySectionsEdit component in the Formulary folder
+    const onDrop = (e, index) => {
         e.preventDefault()
         e.stopPropagation()
         let movedFormIndex = parseInt(e.dataTransfer.getData('formToMoveIndex'))
         let movedFormGroupIndex = parseInt(e.dataTransfer.getData('formToMoveGroupIndex'))
 
-        props.onReorderForm(movedForm, movedFormIndex, movedFormGroupIndex, form, index, props.groupIndex)
+        const movedElement = {...props.groups[movedFormGroupIndex].form_group[movedFormIndex]}
+        let newArrayWithoutMoved = [...props.groups]
+        newArrayWithoutMoved[movedFormGroupIndex].form_group = [...props.groups[movedFormGroupIndex].form_group.filter((_, index) => index !== movedFormIndex)]
+        newArrayWithoutMoved[props.groupIndex].form_group.splice(index, 0, movedElement)
+        const groups = props.reorder(newArrayWithoutMoved)
+        const newFormData = groups[props.groupIndex].form_group[index]
+        if (newFormData.id) {
+            props.onUpdateFormulary(newFormData, newFormData.id)
+        }
+        props.onChangeGroupState(groups)        
     }
 
 
@@ -91,11 +102,11 @@ const SidebarFormEdit = (props) => {
             <SidebarAddButton text={strings['pt-br']['addNewFormButtonLabel']} onClick={e => { onAddNewForm(e) }} />
             {props.forms.map((form, index) => {
                 return (
-                    <SidebarFormItem key={index} className="form-container" onDragOver={e => { onDragOver(e) }} onDrop={e => { onDrop(e, form, index) }}>
+                    <SidebarFormItem key={index} className="form-container" onDragOver={e => { onDragOver(e) }} onDrop={e => { onDrop(e, index) }}>
                         <SidebarIconsContainer>
                             <SidebarIcons size="sm" type="form" icon="eye" onClick={e=>{onDisableForm(e, index)}}/>
                             <SidebarIcons size="sm" type="form" icon="trash" onClick={e=>{onRemoveForm(e, index)}}/>
-                            <div draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveForm(e, form, index)}} onDragEnd={e=>{onDragEnd(e)}}  >
+                            <div draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveForm(e, index)}} onDragEnd={e=>{onDragEnd(e)}}  >
                                 <SidebarIcons size="sm" type="form" icon="arrows-alt" />
                             </div>
                         </SidebarIconsContainer>
