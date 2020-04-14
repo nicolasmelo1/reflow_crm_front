@@ -4,6 +4,7 @@ import ListingTableHeader from './ListingTableHeader'
 import { ListingTableContainer, ListingTableLoaderContainer, ListingTableLoaderWrapper } from 'styles/Listing'
 import { Table, Spinner } from 'react-bootstrap'
 import mobilecheck from 'utils/mobilecheck'
+
 /**
  * This component holds most of the logic from the table component, with it`s headers and content.
  * 
