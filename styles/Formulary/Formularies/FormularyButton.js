@@ -1,8 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Button } from 'react-bootstrap'
 
-export default styled(React.forwardRef(({isOpen, ...rest}, ref) => <Button {...rest} ref={ref}/>))`
+export default styled(React.forwardRef(({isOpen, ...rest}, ref) => <button {...rest} ref={ref}/>))`
     color: white; 
     border: 0; 
     border-radius: 10px 10px 0 0;
@@ -14,6 +13,7 @@ export default styled(React.forwardRef(({isOpen, ...rest}, ref) => <Button {...r
     white-space: nowrap;
     right: 0;
     font-size: 20px; 
+    top: -50px;
 
     ${props => props.isOpen ? 'box-shadow: -5px 5px 20px #444;' : ''}
 
@@ -26,11 +26,9 @@ export default styled(React.forwardRef(({isOpen, ...rest}, ref) => <Button {...r
 
     @media(max-width: 420px) {
         width: 100%;
-        top: ${props => props.isOpen ? '-50px' : '-75px'};
     }
 
     @media(min-width: 420px) {
         margin-right: 15px;
-        top: -50px;
     }
 `

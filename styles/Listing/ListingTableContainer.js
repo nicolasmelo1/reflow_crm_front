@@ -7,7 +7,7 @@ export default styled.div`
     position: relative;
     
     @media(max-width: 640px) {
-        max-height: calc(100vh - 285px)
+        max-height: calc(100vh - 355px)
     }
     @media(min-width: 640px) {
         max-height: calc(100vh - 245px)

@@ -24,9 +24,9 @@ export default styled(({sidebarIsOpen, ...rest}) => <button {...rest}/>)`
     }
 
     @media(min-width: 320px) {
-        left: ${({ sidebarIsOpen }) => sidebarIsOpen ? 'calc(310px + 15px)' : '15px'};
+        left: ${({ sidebarIsOpen }) => sidebarIsOpen ? '310px' : '0'};
     }
     @media(max-width: 320px) {
-        left: ${({ sidebarIsOpen }) => sidebarIsOpen ? 'calc(270px + 15px)' : '15px'};
+        left: ${({ sidebarIsOpen }) => sidebarIsOpen ? '270px' : '0'};
     }
 `

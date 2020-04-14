@@ -47,14 +47,14 @@ const Number = (props) => {
             valueWithDecimal[0] = valueWithDecimal[0].replace(regexInitWithThousandSeparator, '')
         }
         oldValue = valueWithDecimal.join(decimalSeparator)
-        newValue = prefix + negative + oldValue + suffix;
+        newValue = prefix + negative + oldValue + suffix
     
-        let moveBlinkTo = newValue.length - suffix.length;
+        let moveBlinkTo = newValue.length - suffix.length
 
         if (selectionStart >= moveBlinkTo || selectionStart === 1) {
-            setElementSelectionStart(moveBlinkTo);
+            setElementSelectionStart(moveBlinkTo)
         } else {
-            setElementSelectionStart((thousandSeparator !== '') ? selectionStart-1: selectionStart);
+            setElementSelectionStart((thousandSeparator !== '') ? selectionStart-1: selectionStart)
         }
         return newValue
     }
@@ -66,8 +66,10 @@ const Number = (props) => {
     }
 
     useEffect (() => {
-        input.current.selectionStart = elementSelectionStart
-        input.current.selectionEnd = elementSelectionStart
+        if (document.activeElement === input.current) {
+            input.current.selectionStart = elementSelectionStart
+            input.current.selectionEnd = elementSelectionStart
+        }
     })
     
     useEffect(() => {
@@ -81,7 +83,6 @@ const Number = (props) => {
 
 
     const fieldValue = (props.values.length === 0) ? '': props.values[0].value
-
     return (
         <Field.Text type="text" value={fieldValue} ref={input} onChange={e => {onChangeNumberValue(e)}}/>
     )
