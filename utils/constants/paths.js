@@ -5,8 +5,8 @@ const paths = {
     login() {
         return '/login'
     },
-    home(companyId, form, slugged=false) {
-        return slugged ? `/[company]/home/[form]` : `/${companyId}/home/${form}`
+    home(form, slugged=false) {
+        return slugged ? `/home/[form]` : `/home/${form}`
     }
 }
 

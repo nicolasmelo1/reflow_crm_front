@@ -25,7 +25,7 @@ class Login extends React.Component {
             if (response.status !== 200) {
                 ReactDOM.render(<Notify variant="danger" message={errors('pt-br', 'incorrect_pass_or_user')}/>, document.querySelector('.notifications-container'));
             } else {
-                Router.push(paths.home(this.props.login.companyId, this.props.login.primaryForm))
+                Router.push(paths.home(this.props.login.primaryForm))
             }
         })
     }

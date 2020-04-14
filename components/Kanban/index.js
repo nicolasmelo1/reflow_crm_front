@@ -122,7 +122,7 @@ class Kanban extends React.Component {
             <div>
                 {this.props.kanban.initial.formName !== this.props.router.form ? '' : (
                     <div>
-                        {!this.props.kanban.initial || this.props.kanban.initial.dimension_fields.length === 0 ? (
+                        {!this.props.kanban.initial || !this.props.kanban.initial.dimension_fields || this.props.kanban.initial.dimension_fields.length === 0 ? (
                             <p>
                                 {strings['pt-br']['kanbanCannotBuildMessage']}
                             </p>

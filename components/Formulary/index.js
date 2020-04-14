@@ -153,7 +153,8 @@ class Formulary extends React.Component {
 
 
     /**
-     * When the user clicks "add new" or "edit" on the connection field, a form is builded inside of the formulary
+     * When the user clicks "add new" or "edit" on the connection field, a new form is loaded in this component without losing 
+     * the data of the previous form component loaded
      */
     onChangeFormulary = (formName, formId=null) => {
         this.setAuxOriginalInitial()
@@ -216,7 +217,7 @@ class Formulary extends React.Component {
         const sections = (this.props.formulary.buildData && this.props.formulary.buildData.depends_on_form) ? this.props.formulary.buildData.depends_on_form : []
         return (
             <Formularies.Container>
-                <Formularies.Button onClick={e=>{this.setIsOpen()}} isOpen={this.props.formulary.isOpen}>
+                <Formularies.Button onClick={e=>{this.setIsOpen()}} isOpen={this.props.formulary.isOpen} disabled={this.state.isLoading}>
                     {this.getFormularyButtonTitle()}
                 </Formularies.Button>
                 <Formularies.ContentContainer isOpen={this.props.formulary.isOpen}>

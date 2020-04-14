@@ -1,10 +1,10 @@
 import React from 'react';
 import actions from 'redux/actions';
-import { Layout, Formulary, Listing, Kanban } from 'components';
+import { Layout, Formulary, Listing, Kanban, Error404 } from 'components';
 import { DataTypeHeaderAnchor } from 'styles/Data'
 import { connect } from 'react-redux';
-import { strings, types, paths } from 'utils/constants';
-import { Button, Row, Col } from 'react-bootstrap';
+import { strings, types } from 'utils/constants';
+import { Row, Col } from 'react-bootstrap';
 import { withRouter } from 'next/router'
 
 
@@ -18,9 +18,10 @@ class Data extends React.Component {
 
         // the `formularyHasBeenUpdated` variable works like a signal. It doesn't matter if it's true or false
         // what it metters for us is if it has changed it's value. If the value has changed it means the formulary
-        // has been updated
+        // has been updated, we use this to get new data on listing, kanban or whataver visualization the user is in.
         this.state = {
-            formularyId: null,//'51003'
+            fullPageFormulary: false, 
+            formularyId: null,
             formularyDefaultData: [],
             formularyHasBeenUpdated: false,
             search: {
@@ -136,34 +137,42 @@ class Data extends React.Component {
     }
 
     render () {
+        const formNames =  [].concat.apply([],this.props.sidebar.map(group => group.form_group.map(form => form.form_name)))
+
         return (
             <Layout title={strings['pt-br']['managementPageTitle']} showSideBar={true}>
-                <Row>
-                    <Col>
-                        {this.props.login.types && this.props.login.types.default && this.props.login.types.default.data_type ? this.props.login.types.default.data_type.map(dataType => (
-                            <DataTypeHeaderAnchor 
-                            key={dataType.id}
-                            onClick={e=> {this.setVisualization(dataType.id)}} 
-                            isSelected={this.props.login.user && this.props.login.user.data_type ? this.props.login.user.data_type === dataType.id: false}
-                            >
-                                {types('pt-br','data_type', dataType.name)}    
-                            </DataTypeHeaderAnchor> 
-                        )) : ''}
-                    </Col>
-                </Row>
-                <Formulary 
-                router={this.props.router.query} 
-                formularyId={this.state.formularyId} 
-                setFormularyId={this.setFormularyId} 
-                setFormularyHasBeenUpdated={this.setFormularyHasBeenUpdated}
-                setFormularyDefaultData={this.setFormularyDefaultData}
-                formularyDefaultData={this.state.formularyDefaultData}
-                onOpenOrCloseFormulary={this.props.onOpenFormulary}
-                />
-                {this.renderVisualization()}
+                {!formNames.includes(this.props.router.query.form) ? (
+                    <Error404/>
+                ) : (
+                    <div>
+                        <Row>
+                            <Col>
+                                {this.props.login.types && this.props.login.types.default && this.props.login.types.default.data_type ? this.props.login.types.default.data_type.map(dataType => (
+                                    <DataTypeHeaderAnchor 
+                                    key={dataType.id}
+                                    onClick={e=> {this.setVisualization(dataType.id)}} 
+                                    isSelected={this.props.login.user && this.props.login.user.data_type ? this.props.login.user.data_type === dataType.id: false}
+                                    >
+                                        {types('pt-br','data_type', dataType.name)}    
+                                    </DataTypeHeaderAnchor> 
+                                )) : ''}
+                            </Col>
+                        </Row>
+                        <Formulary 
+                        router={this.props.router.query} 
+                        formularyId={this.state.formularyId} 
+                        setFormularyId={this.setFormularyId} 
+                        setFormularyHasBeenUpdated={this.setFormularyHasBeenUpdated}
+                        setFormularyDefaultData={this.setFormularyDefaultData}
+                        formularyDefaultData={this.state.formularyDefaultData}
+                        onOpenOrCloseFormulary={this.props.onOpenFormulary}
+                        />
+                        {this.renderVisualization()}
+                    </div>
+                )}
             </Layout>
         )
     }
 }
 
-export default connect(state => ({ login: state.login }), actions)(withRouter(Data))
+export default connect(state => ({ login: state.login, sidebar: state.home.sidebar.initial }), actions)(withRouter(Data))

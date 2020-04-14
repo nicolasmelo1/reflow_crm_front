@@ -18,7 +18,7 @@ class Index extends React.Component {
     }
     componentDidMount() {
         if (this.checkIfLogged()) {
-            Router.push(paths.home(this.props.login.companyId, this.props.login.primaryForm))
+            Router.push(paths.home(this.props.login.primaryForm))
         }
     }
     render (){
