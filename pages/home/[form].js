@@ -137,11 +137,13 @@ class Data extends React.Component {
     }
 
     render () {
-        const formNames =  [].concat.apply([],this.props.sidebar.map(group => group.form_group.map(form => form.form_name)))
-
+        const formNames =  [].concat.apply([],this.props.sidebar.map(group => group.form_group.map(form => ({ name: form.form_name, label: form.label_name }))))
+        const currentForm = formNames.filter(form=> form.name === this.props.router.query.form)
+        console.log(currentForm)
+        const title = (currentForm.length > 0) ? strings['pt-br']['managementPageTitle'].replace('{}', currentForm[0].label) : 'Não conseguimos encontrar a página / Reflow'
         return (
-            <Layout title={strings['pt-br']['managementPageTitle']} showSideBar={true}>
-                {!formNames.includes(this.props.router.query.form) ? (
+            <Layout title={title} showSideBar={true}>
+                {!formNames.map(form=> form.name).includes(this.props.router.query.form) ? (
                     <Error404/>
                 ) : (
                     <div>

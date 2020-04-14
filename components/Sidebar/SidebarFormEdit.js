@@ -37,7 +37,7 @@ const SidebarFormEdit = (props) => {
 
     const onDisableForm = (e, index) => {
         e.preventDefault()
-        props.groups[props.groupIndex].form_group[index].enabled = !groups[props.groupIndex].form_group[index].enabled
+        props.groups[props.groupIndex].form_group[index].enabled = !props.groups[props.groupIndex].form_group[index].enabled
         onChangeForm(index, props.groups[props.groupIndex].form_group[index])
     }
 

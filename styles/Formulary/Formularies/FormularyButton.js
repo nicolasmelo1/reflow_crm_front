@@ -12,9 +12,9 @@ export default styled(React.forwardRef(({isOpen, ...rest}, ref) => <Button {...r
     position: absolute;
     text-overflow: ellipsis;
     white-space: nowrap;
-    top: -50px;
     right: 0;
     font-size: 20px; 
+
     ${props => props.isOpen ? 'box-shadow: -5px 5px 20px #444;' : ''}
 
     &:hover {
@@ -26,9 +26,11 @@ export default styled(React.forwardRef(({isOpen, ...rest}, ref) => <Button {...r
 
     @media(max-width: 420px) {
         width: 100%;
+        top: ${props => props.isOpen ? '-50px' : '-75px'};
     }
 
     @media(min-width: 420px) {
         margin-right: 15px;
+        top: -50px;
     }
 `
