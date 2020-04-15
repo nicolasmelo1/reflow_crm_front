@@ -1,17 +1,16 @@
 {
-  "name": "reflow_crm_front",
+  "name": "reflow_front_nextjs_redux",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "postinstall": "npm install --prefix web",
-    "install:web": "npm install --prefix web",
-    "merge": "node merge.js",
-    "web:dev": "npm run dev --prefix web",
-    "web:build": "npm run build --prefix web",
-    "web:start": "npm run start --prefix web"
-
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
     "@babel/core": "^7.8.3",
     "@babel/preset-react": "^7.8.3",
@@ -32,11 +31,5 @@
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0",
     "styled-components": "^5.0.0"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/nicolasmelo1/reflow_crm_front/issues"
-  },
-  "homepage": "https://github.com/nicolasmelo1/reflow_crm_front#readme"
+  }
 }

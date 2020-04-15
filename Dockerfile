@@ -2,8 +2,9 @@ FROM node:13
 
 WORKDIR /code
 ADD package.json /code/
-RUN npm install
+ADD web/package.json /code/web/
+RUN npm run merge web && npm run install:web
 
 COPY . /code/
 EXPOSE 3000
-CMD [ "npm", "run", "dev" ]
+CMD ["sh", "deploy.sh"]
