@@ -1,3 +1,3 @@
 #!/bin/sh
 
-npm run web-dev
+npm run web:dev
