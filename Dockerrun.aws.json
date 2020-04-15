@@ -6,5 +6,5 @@
     }
   ],
   "Volumes": [],
-  "Logging": "/code/logs"
+  "Logging": "/code/web/logs"
 }
