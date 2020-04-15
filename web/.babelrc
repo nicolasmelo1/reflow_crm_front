@@ -1,0 +1,19 @@
+{
+    "presets": ["next/babel"],
+    "plugins": [
+        [
+            "module-resolver", {
+                "root": [".."],
+                "alias": {
+                    "@shared": "../shared"
+                }
+            }
+        ], [
+            "styled-components", { 
+                "ssr": true, 
+                "displayName": true, 
+                "preprocess": false 
+            } 
+        ]
+    ]
+}
