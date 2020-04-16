@@ -4,7 +4,7 @@ WORKDIR /code
 ADD package.json /code/
 ADD merge.js /code/
 ADD web/package.json /code/web/
-RUN npm run merge web && npm run install:web
+RUN npm run install:web
 
 COPY shared /code/shared
 COPY web /code/web
