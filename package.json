@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "postinstall": "npm install --prefix web",
     "install:web": "node merge.js web && npm install --prefix web",
     "install:mobile": "node merge.js mobile && npm install --prefix mobile",
     "merge": "node merge.js",
