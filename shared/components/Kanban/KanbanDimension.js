@@ -74,7 +74,7 @@ const KanbanDimension = (props) => {
 
     const onDragOver = (e) => {
         e.preventDefault()
-        e.stopPropagation()
+        //e.stopPropagation()
         cleanDimensionColors(e)
     }
 
@@ -98,12 +98,14 @@ const KanbanDimension = (props) => {
             props.onChangeDimensionOrdersState(dimensionOrders, props.formName, props.defaultDimensionId)
         
         // this constrols the drop when the card is being moved.
-        } else if (![null, undefined, '', 'undefined'].includes(e.dataTransfer.getData('movedCardIndexInDimension')) && ![null, undefined, '', 'undefined'].includes(e.dataTransfer.getData('movedCardDimension'))) {
+        } else if (![null, undefined, '', 'undefined'].includes(e.dataTransfer.getData('movedCardIndexInDimension')) && 
+                   ![null, undefined, '', 'undefined'].includes(e.dataTransfer.getData('movedCardDimension'))) {
+
             const movedCardIndexInDimension = parseInt(e.dataTransfer.getData('movedCardIndexInDimension'))
             const movedDimensionIndexInData = filterDimensionIndex(e.dataTransfer.getData('movedCardDimension'))
             const targetDimensionIndexInData = filterDimensionIndex(dimensionOrders[targetDimensionIndex].options)
-            
-            if (movedDimensionIndexInData !== -1 && targetDimensionIndexInData !== -1) {
+
+            if (movedDimensionIndexInData !== -1 && targetDimensionIndexInData !== -1 && movedDimensionIndexInData !== targetDimensionIndexInData) {
                 const cardData = {...data[movedDimensionIndexInData].data[movedCardIndexInDimension]}
                 const fieldValue = cardData.dynamic_form_value.filter(value=> value.field_id === props.defaultDimensionId)
                 setCardIdsInLoadingState([cardData.id])

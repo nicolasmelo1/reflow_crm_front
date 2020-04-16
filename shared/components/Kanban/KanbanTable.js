@@ -24,6 +24,7 @@ import KanbanDimension from './KanbanDimension'
 const KanbanTable = (props) => {
     const oldDimensionOrdersRef = React.useRef()
     const oldFormNameRef = React.useRef()
+    const kanbanHolderRef = React.useRef()
     const dataSource = React.useRef(props.cancelToken.source())
     const cardFields = (props.card) ? props.card.kanban_card_fields: []
     const [hasFiredDimensionOrders, _setHasFiredDimensionOrders] = useState(false)
@@ -33,6 +34,20 @@ const KanbanTable = (props) => {
     const setHasFiredDimensionOrders = (data) => {
         hasFiredDimensionOrdersRef.current = data
         _setHasFiredDimensionOrders(data)
+    }
+
+    const onDragOverTable = (e) => {
+        e.preventDefault()
+        const totalWidth = kanbanHolderRef.current.offsetWidth / 4
+        const widthToMoveLeft = totalWidth * 2;
+        const widthToMoveRight = kanbanHolderRef.current.offsetWidth - totalWidth;
+        
+        if (e.clientX < widthToMoveLeft) {
+            kanbanHolderRef.current.scrollLeft -= 5;
+        } 
+        if (e.clientX > widthToMoveRight) {
+            kanbanHolderRef.current.scrollLeft += 5;
+        }
     }
 
     useEffect(() => {
@@ -53,6 +68,7 @@ const KanbanTable = (props) => {
         }
     }, [props.defaultDimensionId, props.defaultKanbanCardId])
 
+
     useEffect(() => {
         // this is to make less requests to the backend, we use the sort for when we change the kanban dimension orders, and the oldProps and newProps
         // is to prevent rerender o rehydratation
@@ -65,14 +81,14 @@ const KanbanTable = (props) => {
         }
     }, [props.dimensionOrders])
 
+
     useEffect(() => {
         oldDimensionOrdersRef.current = props.dimensionOrders
         oldFormNameRef.current = props.formName
     })
 
-
     return (
-        <div style={{overflowX: 'auto', transform: 'rotateX(180deg)'}}>
+        <div style={{overflowX: 'auto', transform: 'rotateX(180deg)'}} ref={kanbanHolderRef} onDragOver={e=> {onDragOverTable(e)}}>
             {props.defaultKanbanCardId && props.defaultDimensionId ? (
                 <table style={{ transform: 'rotateX(180deg)'}}>
                     <tbody>

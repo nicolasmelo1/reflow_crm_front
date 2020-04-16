@@ -6,7 +6,6 @@ export default styled(({sidebarIsOpen, ...rest}) => <button {...rest}/>)`
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    width: 50px;
     font-weight: bold;
     height: 2rem;
     background: #444;
