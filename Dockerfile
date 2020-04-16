@@ -6,7 +6,6 @@ ADD merge.js /code/
 ADD web/package.json /code/web/
 RUN npm run install:web
 
-COPY shared /code/shared
-COPY web /code/web
+COPY . /code
 EXPOSE 3000
 CMD ["sh", "deploy.sh"]
