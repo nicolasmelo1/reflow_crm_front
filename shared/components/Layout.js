@@ -11,6 +11,7 @@ import agent from '../redux/agent'
 import ContentContainer from '../styles/ContentContainer'
 import Body from '../styles/Body'
 
+
 import { 
     faArrowDown, 
     faPlusSquare, 
@@ -80,6 +81,8 @@ class Layout extends React.Component {
     }
 
     render() {
+        console.log(process.env.APP)
+
         return (
             <Body>
                 {this.props.hideNavBar ? '' : ''}

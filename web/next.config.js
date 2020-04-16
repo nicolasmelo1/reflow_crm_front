@@ -2,13 +2,15 @@ const path = require('path')
 
 module.exports = {
     env: {
-        API_HOST: process.env.API_HOST
+        API_HOST: process.env.API_HOST,
+        APP: 'web'
     },
     webpack: (config, { defaultLoaders }) => {
         config.resolve = {
             ...config.resolve,
             alias: {
-                ...config.resolve.alias
+                ...config.resolve.alias,
+                "react-native": path.join(__dirname, 'node_modules', 'react-native-web')
             },
             modules: [
                 ...config.resolve.modules,
