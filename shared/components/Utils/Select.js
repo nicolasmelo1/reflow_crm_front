@@ -30,7 +30,11 @@ const Option = (props) => {
                 optionDividerColor={props.optionDividerColor}
                 optionOnHoverColor={props.optionOnHoverColor}
                 optionOnHoverBackgroundColor={props.optionOnHoverBackgroundColor}
-                onClick={e=>{ props.onSelectOption(e, option) }}
+                onClick={e=>{ 
+                    e.preventDefault()
+                    e.stopPropagation()
+                    props.onSelectOption(e, option) 
+                }}
                 >
                     {props.renderLabel(option.label, index)}
                 </Utils.Select.OptionItem> 
@@ -203,13 +207,20 @@ const Select = (props) => {
     return(
         <Utils.Select.Select isOpen={isOpen} ref={selectRef} onClick={e=>{inputRef.current.focus()}}>
             <Utils.Select.SelectedOptionsContainer isOpen={isOpen}>
-                {(isOpen) ? (<Utils.Select.GoBackArrow icon="arrow-left" onClick={e=> {setIsOpen(false)}}/>) : ''}
+                {(isOpen) ? (<Utils.Select.GoBackArrow icon="arrow-left" onClick={e=> {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    setIsOpen(false)
+                }}/>) : ''}
                 {selectedOptions.map((selectedOption, index)=> (
                     <Utils.Select.SelectedOption 
                     key={selectedOption.value} 
                     color={selectedOption.color} 
                     selected={selectedOption.selected} 
-                    onClick={e=>{onClickSelectedOption(e, index)}}
+                    onClick={e=>{
+                        e.preventDefault()
+                        e.stopPropagation()
+                        onClickSelectedOption(e, index)}}
                     >
                         {renderLabel(selectedOption.label, index)}
                     </Utils.Select.SelectedOption>
@@ -221,6 +232,10 @@ const Select = (props) => {
                 value={searchValue} 
                 searchValueColor={props.searchValueColor}
                 onChange={e => {updateOptions(e.target.value, [...selectedOptions])}} 
+                onClick={e=> {
+                    e.preventDefault()
+                    e.stopPropagation()
+                }}
                 onKeyUp={e=>onRemoveSelectedOption(e)}
                 />
             </Utils.Select.SelectedOptionsContainer>
