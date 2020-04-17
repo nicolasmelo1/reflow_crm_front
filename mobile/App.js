@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { persistStore } from 'redux-persist'
 import { PersistGate } from 'redux-persist/integration/react'
 import { initStore } from '@shared/redux/store';
-import { Text, View } from 'react-native'
+import  Layout from '@shared/components/Layout'
 
 
 const App = (props) => {
@@ -13,9 +13,7 @@ const App = (props) => {
     return (
         <Provider store={store}>
             <PersistGate persistor={persistStore(store)}>
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}}>
-                    <Text>teste</Text>
-                </View>
+                <Layout/>
             </PersistGate>
         </Provider>
     )

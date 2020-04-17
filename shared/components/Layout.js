@@ -10,7 +10,7 @@ import { paths } from '../utils/constants'
 import agent from '../redux/agent'
 import ContentContainer from '../styles/ContentContainer'
 import Body from '../styles/Body'
-
+import { Text, View } from 'react-native'
 
 import { 
     faArrowDown, 
@@ -61,15 +61,17 @@ library.add(faPlusSquare, faEnvelope, faCalendarAlt, faSquareRootAlt, faPhone, f
 class Layout extends React.Component {
     constructor(props) {
         super(props)
-        agent.setToken(window.localStorage.getItem('token'))
-        agent.setCompanyId(this.props.login.companyId)
-        if (!window.localStorage.getItem('token') || window.localStorage.getItem('token') === '') {
-            Router.push(paths.login())
+        if (process.env.APP === 'web') {
+            agent.setToken(window.localStorage.getItem('token'))
+            agent.setCompanyId(this.props.login.companyId)
+            if (!window.localStorage.getItem('token') || window.localStorage.getItem('token') === '') {
+                Router.push(paths.login())
+            }
+            this.state = {
+                sidebarIsOpen: false
+            }
+            this.props.getDataTypes()
         }
-        this.state = {
-            sidebarIsOpen: false
-        }
-        this.props.getDataTypes()
     }
 
     setSidebarIsOpen = () => {
@@ -81,20 +83,28 @@ class Layout extends React.Component {
     }
 
     render() {
-        return (
-            <Body>
-                {this.props.hideNavBar ? '' : ''}
-                <Header title={this.props.title}></Header>
-                <div className="notifications-container"></div>
-                <div id="main-container">
-                    {this.props.hideNavBar ? '' : <Navbar onDeauthenticate={this.props.onDeauthenticate} />}
-                    {this.props.showSideBar ? <Sidebar sidebarIsOpen={this.state.sidebarIsOpen} setSidebarIsOpen={this.setSidebarIsOpen} /> : ''}
-                    <ContentContainer sidebarIsOpen={this.state.sidebarIsOpen}>
-                        {this.props.children}
-                    </ContentContainer>
-                </div>
-            </Body>
-        )
+        if (process.env.APP === 'web') {
+            return (
+                <Body>
+                    {this.props.hideNavBar ? '' : ''}
+                    <Header title={this.props.title}></Header>
+                    <div className="notifications-container"></div>
+                    <div id="main-container">
+                        {this.props.hideNavBar ? '' : <Navbar onDeauthenticate={this.props.onDeauthenticate} />}
+                        {this.props.showSideBar ? <Sidebar sidebarIsOpen={this.state.sidebarIsOpen} setSidebarIsOpen={this.setSidebarIsOpen} /> : ''}
+                        <ContentContainer sidebarIsOpen={this.state.sidebarIsOpen}>
+                            {this.props.children}
+                        </ContentContainer>
+                    </div>
+                </Body>
+            )
+        } else {
+            return (
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}}>
+                    <Text>teste</Text>
+                </View>
+            )
+        }
     }
 }
 
