@@ -53,7 +53,7 @@ const SidebarGroupEdit = (props) => {
         const elementRect = e.currentTarget.getBoundingClientRect()
 
         e.dataTransfer.setDragImage(groupContainer, elementRect.width - 5, 20)
-        e.dataTransfer.setData('groupToMoveIndex', index)
+        e.dataTransfer.setData('groupToMoveIndex', index.toString())
         setIsDragging(true)
     }
 

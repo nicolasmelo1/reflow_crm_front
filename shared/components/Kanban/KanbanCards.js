@@ -40,13 +40,14 @@ const KanbanCards = (props) => {
 
     const onMoveCard = (e, cardIndex) => {
         e.stopPropagation()
+
         e.dataTransfer.clearData(['movedDimensionIndex', 'movedCardIndexInDimension', 'movedCardDimension'])
 
         const cardContainer = e.currentTarget.closest('.kanban-card')
         const cardRect = cardContainer.getBoundingClientRect()
         e.dataTransfer.setDragImage(cardContainer, cardRect.width - 5, 20)
-        e.dataTransfer.setData('movedCardIndexInDimension', cardIndex)
-        e.dataTransfer.setData('movedCardDimension', props.dimension)
+        e.dataTransfer.setData('movedCardIndexInDimension', cardIndex.toString())
+        e.dataTransfer.setData('movedCardDimension', props.dimension.toString())
     }
 
     const onDrag = (e) => {

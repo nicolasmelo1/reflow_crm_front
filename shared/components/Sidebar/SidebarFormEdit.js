@@ -58,8 +58,8 @@ const SidebarFormEdit = (props) => {
         let formContainer = e.currentTarget.closest('.form-container')
         let elementRect = e.currentTarget.getBoundingClientRect()
         e.dataTransfer.setDragImage(formContainer, elementRect.width - elementRect.left - (elementRect.right - elementRect.width), 20)
-        e.dataTransfer.setData('formToMoveIndex', index)
-        e.dataTransfer.setData('formToMoveGroupIndex', props.groupIndex)
+        e.dataTransfer.setData('formToMoveIndex', index.toString())
+        e.dataTransfer.setData('formToMoveGroupIndex', props.groupIndex.toString())
     }
 
     const onDrag = (e) => {

@@ -42,7 +42,7 @@ const KanbanDimension = (props) => {
         let elementRect = e.currentTarget.getBoundingClientRect()
 
         e.dataTransfer.setDragImage(dimensionContainer, dimensionRect.width - elementRect.width, 20)
-        e.dataTransfer.setData('movedDimensionIndex', index)
+        e.dataTransfer.setData('movedDimensionIndex', index.toString())
     }
     /**
      * Change the background color when the dimension and the cards are moving.
@@ -104,7 +104,7 @@ const KanbanDimension = (props) => {
             const movedCardIndexInDimension = parseInt(e.dataTransfer.getData('movedCardIndexInDimension'))
             const movedDimensionIndexInData = filterDimensionIndex(e.dataTransfer.getData('movedCardDimension'))
             const targetDimensionIndexInData = filterDimensionIndex(dimensionOrders[targetDimensionIndex].options)
-
+            
             if (movedDimensionIndexInData !== -1 && targetDimensionIndexInData !== -1 && movedDimensionIndexInData !== targetDimensionIndexInData) {
                 const cardData = {...data[movedDimensionIndexInData].data[movedCardIndexInDimension]}
                 const fieldValue = cardData.dynamic_form_value.filter(value=> value.field_id === props.defaultDimensionId)
