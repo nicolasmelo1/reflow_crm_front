@@ -16,13 +16,14 @@ class Data extends React.Component {
     constructor(props) {
         super(props)
 
-        // the `formularyHasBeenUpdated` variable works like a signal. It doesn't matter if it's true or false
+        // the `formularyHasBeenUpdated` and `formularySettingsHasBeenUpdated` variable works like a signal. It doesn't matter if it's true or false
         // what it metters for us is if it has changed it's value. If the value has changed it means the formulary
         // has been updated, we use this to get new data on listing, kanban or whataver visualization the user is in.
         this.state = {
             fullPageFormulary: false, 
             formularyId: null,
             formularyDefaultData: [],
+            formularySettingsHasBeenUpdated: false,
             formularyHasBeenUpdated: false,
             search: {
                 value: [],
@@ -41,6 +42,15 @@ class Data extends React.Component {
             return {
                 ...state,
                 formularyDefaultData: defaults
+            }
+        })
+    }
+
+    setFormularySettingsHasBeenUpdated = () => {
+        this.setState(state => {
+            return {
+                ...state,
+                formularySettingsHasBeenUpdated: !this.state.formularySettingsHasBeenUpdated
             }
         })
     }
@@ -107,6 +117,7 @@ class Data extends React.Component {
                         router={this.props.router.query} 
                         setFormularyId={this.openFormularyId} 
                         setSearch={this.setSearch} 
+                        formularySettingsHasBeenUpdated={this.state.formularySettingsHasBeenUpdated}
                         formularyHasBeenUpdated={this.state.formularyHasBeenUpdated}
                         search={this.state.search}
                         />
@@ -115,6 +126,7 @@ class Data extends React.Component {
                         router={this.props.router.query} 
                         setFormularyId={this.openFormularyId}
                         setFormularyDefaultData={this.setFormularyDefaultData}
+                        formularySettingsHasBeenUpdated={this.state.formularySettingsHasBeenUpdated}
                         formularyHasBeenUpdated={this.state.formularyHasBeenUpdated}
                         setSearch={this.setSearch} 
                         search={this.state.search}
@@ -124,6 +136,7 @@ class Data extends React.Component {
                         router={this.props.router.query} 
                         setFormularyId={this.openFormularyId} 
                         setSearch={this.setSearch} 
+                        formularySettingsHasBeenUpdated={this.state.formularySettingsHasBeenUpdated}
                         formularyHasBeenUpdated={this.state.formularyHasBeenUpdated}
                         search={this.state.search}
                         />
@@ -163,6 +176,7 @@ class Data extends React.Component {
                         router={this.props.router.query} 
                         formularyId={this.state.formularyId} 
                         setFormularyId={this.setFormularyId} 
+                        setFormularySettingsHasBeenUpdated={this.setFormularySettingsHasBeenUpdated}
                         setFormularyHasBeenUpdated={this.setFormularyHasBeenUpdated}
                         setFormularyDefaultData={this.setFormularyDefaultData}
                         formularyDefaultData={this.state.formularyDefaultData}

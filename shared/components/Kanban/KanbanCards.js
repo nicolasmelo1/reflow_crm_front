@@ -39,6 +39,7 @@ const KanbanCards = (props) => {
 
 
     const onMoveCard = (e, cardIndex) => {
+        e.stopPropagation()
         e.dataTransfer.clearData(['movedDimensionIndex', 'movedCardIndexInDimension', 'movedCardDimension'])
 
         const cardContainer = e.currentTarget.closest('.kanban-card')
@@ -111,7 +112,10 @@ const KanbanCards = (props) => {
     return (
         <KanbanCardsContainer ref={kanbanCardContainerRef}>
             {data.map((card, index) => (
-                <KanbanCardContainer className='kanban-card' key={index} onClick={e=> {props.setFormularyId(card.id)}}>
+                <KanbanCardContainer className='kanban-card' key={index} onClick={e=> {
+                    e.preventDefault()
+                    props.setFormularyId(card.id)
+                }}>
                     <div>
                         {props.cardIdsInLoadingState.includes(card.id) ? (
                             <div>

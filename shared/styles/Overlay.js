@@ -7,13 +7,16 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap'
  */
 const Overlay = (props) => {
     return (
-        <OverlayTrigger trigger="hover" placement="bottom" delay={{ show: 250, hide: 250 }} overlay={<Tooltip>{props.text}</Tooltip>}  
+        <OverlayTrigger trigger={['hover', 'focus']} placement="bottom" delay={{ show: 250, hide: 250 }} overlay={<Tooltip>{props.text}</Tooltip>}  
         popperConfig={{
-            modifiers: {
-                preventOverflow: {
-                    boundariesElement: 'offsetParent'
+            modifiers: [
+                {
+                    name: 'preventOverflow',
+                    options: {
+                        boundary: 'offsetParent' // false by default
+                    }
                 }
-            }
+            ]
         }}>
             {props.children}
         </OverlayTrigger>

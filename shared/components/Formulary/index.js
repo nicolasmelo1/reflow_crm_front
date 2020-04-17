@@ -79,6 +79,7 @@ class Formulary extends React.Component {
             this.source = this.CancelToken.source()
             this.props.onGetFormularySettings(this.source, this.props.formulary.buildData.id)
         } else {
+            this.props.setFormularySettingsHasBeenUpdated()
             this.buildFormulary(this.props.router.form, this.props.formularyId)
         }
         this.setState(state => {

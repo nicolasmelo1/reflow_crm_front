@@ -90,19 +90,22 @@ const FormularyFieldEdit = (props) => {
     }
 
     const onDisableField = (e) => {
-        props.field.enabled = !props.field.enabled
-        props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
+        let fieldData = {...props.field}
+        fieldData.enabled = !fieldData.enabled
+        props.onUpdateField(props.sectionIndex, props.fieldIndex, fieldData)
     }
 
     const onChangeFieldName = (e) => {
         e.preventDefault();
-        props.field.label_name = e.target.value
-        props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
+        let fieldData = {...props.field}
+        fieldData.label_name = e.target.value
+        props.onUpdateField(props.sectionIndex, props.fieldIndex, fieldData)
     }
 
     const onChangeFieldType = (data) => {
-        props.field.type = data[0]
-        props.onUpdateField(props.sectionIndex, props.fieldIndex, {...props.field})
+        let fieldData = {...props.field}
+        fieldData.type = data[0]
+        props.onUpdateField(props.sectionIndex, props.fieldIndex, {...fieldData})
     }
     
     const onFilterFieldType = (value) => {
@@ -230,56 +233,56 @@ const FormularyFieldEdit = (props) => {
             </div>
             {props.field.enabled ? (
                 <div>
+                    {props.field ? (
+                        <Fields 
+                        errors={{}}
+                        field={props.field}
+                        types={props.types}
+                        fieldFormValues={[]}
+                        />
+                    ) : (
+                        <p>
+                            {strings['pt-br']['formularyEditFieldNoFieldTypeLabel']}
+                        </p>
+                    )}
                     {isEditing ? (
                         <FormulariesEdit.FieldFormularyContainer>
-                            <FormulariesEdit.FieldFormFieldContainer>
-                                <FormulariesEdit.FieldFormLabel>
-                                    {strings['pt-br']['formularyEditFieldTypeSelectorLabel']}
-                                </FormulariesEdit.FieldFormLabel>
-                                <FormulariesEdit.SelectorContainer>
-                                    <Select 
-                                        onFilter={onFilterFieldType}
-                                        label={FieldOption}
-                                        options={fieldTypes} 
-                                        initialValues={initialFieldType} 
-                                        onChange={onChangeFieldType} 
-                                    />
-                                </FormulariesEdit.SelectorContainer>
-                            </FormulariesEdit.FieldFormFieldContainer>
                             <FormulariesEdit.FieldFormFieldContainer>
                                 <FormulariesEdit.FieldFormLabel>
                                     {strings['pt-br']['formularyEditFieldNameInputLabel']}
                                 </FormulariesEdit.FieldFormLabel>
                                 <FormulariesEdit.InputField type="text" value={props.field.label_name} onChange={e=> {onChangeFieldName(e)}}/>
                             </FormulariesEdit.FieldFormFieldContainer>
-                            <FormulariesEdit.FieldFormFieldContainer>
-                                <FormulariesEdit.FieldFormCheckbox checked={props.field.required} onChange={onChangeRequired} text={strings['pt-br']['formularyEditFieldIsRequiredCheckboxLabel']}/>
-                                <FormulariesEdit.FieldFormCheckboxDivider/>
-                                <FormulariesEdit.FieldFormCheckbox checked={props.field.label_is_hidden} onChange={onChangeLabelIsHidden} text={strings['pt-br']['formularyEditFieldLabelIsVisibleCheckboxLabel']}/>
-                                <FormulariesEdit.FieldFormCheckboxDivider/>
-                                <FormulariesEdit.FieldFormCheckbox checked={props.field.field_is_hidden} onChange={onChangeFieldIsHidden} text={strings['pt-br']['formularyEditFieldIsVisibleCheckboxLabel']}/>
-                                <FormulariesEdit.FieldFormCheckboxDivider/>
-                                <FormulariesEdit.FieldFormCheckbox checked={props.field.is_unique} onChange={onChangeIsUnique} text={strings['pt-br']['formularyEditFieldIsUniqueCheckboxLabel']}/>
-                            </FormulariesEdit.FieldFormFieldContainer>
-                            {formularyItemsForFieldTypes()}
+                            {props.field.label_name ? (
+                                <div>
+                                    <FormulariesEdit.FieldFormFieldContainer>
+                                        <FormulariesEdit.FieldFormLabel>
+                                            {strings['pt-br']['formularyEditFieldTypeSelectorLabel']}
+                                        </FormulariesEdit.FieldFormLabel>
+                                        <FormulariesEdit.SelectorContainer>
+                                            <Select 
+                                                onFilter={onFilterFieldType}
+                                                label={FieldOption}
+                                                options={fieldTypes} 
+                                                initialValues={initialFieldType} 
+                                                onChange={onChangeFieldType} 
+                                            />
+                                        </FormulariesEdit.SelectorContainer>
+                                    </FormulariesEdit.FieldFormFieldContainer>
+                                    <FormulariesEdit.FieldFormFieldContainer>
+                                        <FormulariesEdit.FieldFormCheckbox checked={props.field.required} onChange={onChangeRequired} text={strings['pt-br']['formularyEditFieldIsRequiredCheckboxLabel']}/>
+                                        <FormulariesEdit.FieldFormCheckboxDivider/>
+                                        <FormulariesEdit.FieldFormCheckbox checked={props.field.label_is_hidden} onChange={onChangeLabelIsHidden} text={strings['pt-br']['formularyEditFieldLabelIsVisibleCheckboxLabel']}/>
+                                        <FormulariesEdit.FieldFormCheckboxDivider/>
+                                        <FormulariesEdit.FieldFormCheckbox checked={props.field.field_is_hidden} onChange={onChangeFieldIsHidden} text={strings['pt-br']['formularyEditFieldIsVisibleCheckboxLabel']}/>
+                                        <FormulariesEdit.FieldFormCheckboxDivider/>
+                                        <FormulariesEdit.FieldFormCheckbox checked={props.field.is_unique} onChange={onChangeIsUnique} text={strings['pt-br']['formularyEditFieldIsUniqueCheckboxLabel']}/>
+                                    </FormulariesEdit.FieldFormFieldContainer>
+                                    {formularyItemsForFieldTypes()}
+                                </div>
+                            ) : ''}
                         </FormulariesEdit.FieldFormularyContainer>
-                    ): (
-                        <div>
-                            {props.field ? (
-                                <Fields 
-                                errors={{}}
-                                field={props.field}
-                                types={props.types}
-                                fieldFormValues={[]}
-                                />
-                            ) : (
-                                <p>
-                                    {strings['pt-br']['formularyEditFieldNoFieldTypeLabel']}
-                                </p>
-                            )}
-                       
-                        </div>
-                    )}
+                    ): ''}
                 </div>
             ) : (
                 <p>

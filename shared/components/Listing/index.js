@@ -119,6 +119,10 @@ class Listing extends React.Component {
             this.props.onGetListingData(this.source, this.state.params, this.props.router.form)
             //this.props.onGetTotals(this.state.params, this.props.router.form)
         }
+        if ( this.props.formularySettingsHasBeenUpdated !== prevProps.formularySettingsHasBeenUpdated) {
+            this.source = this.CancelToken.source()
+            this.props.onRenderListing(this.source, this.props.router.form)
+        }
         if (this.props.formularyHasBeenUpdated !== prevProps.formularyHasBeenUpdated) {
             this.source = this.CancelToken.source()
             this.props.onGetListingData(this.source, this.state.params, this.props.router.form)
@@ -132,6 +136,7 @@ class Listing extends React.Component {
         }
     }
     render() {
+
         return (
             <div>
                 {/*<Row>

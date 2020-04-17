@@ -104,6 +104,9 @@ class Kanban extends React.Component {
             this.props.onRenderKanban(this.source, this.props.router.form)
             this.props.onGetCards(this.source, this.props.router.form)
         }
+        if (this.props.formularySettingsHasBeenUpdated !== prevProps.formularySettingsHasBeenUpdated) {
+            this.props.onRenderKanban(this.source, this.props.router.form)
+        }
         if (this.canUpdateKanbanData(prevProps)) {
             this.source = this.CancelToken.source()
             this.props.onGetKanbanData(this.source, this.state.params, this.props.router.form)
@@ -166,6 +169,7 @@ class Kanban extends React.Component {
                                         ): (
                                             <KanbanTable
                                             formName={this.props.router.form}
+                                            formularySettingsHasBeenUpdated={this.props.formularySettingsHasBeenUpdated}
                                             cancelToken={this.CancelToken}
                                             params={this.state.params}
                                             dimensionOrders={this.props.kanban.dimension_order}

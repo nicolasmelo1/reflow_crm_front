@@ -1,6 +1,9 @@
 import { OPEN_FORMULARY, GET_FORMULARY, SET_FORMULARY_DATA, SET_FORMULARY_FILES, SET_FORMULARY_SETTINGS_DATA } from '../../types';
 import agent from '../../agent'
+import delay from '../../../utils/delay'
 
+
+const makeDelay = delay(1000)
 
 const onOpenFormulary = (isOpen) => {
     return async (dispatch) => {
@@ -105,6 +108,7 @@ const onChangeFormularySettingsState = (formSettingsData) => {
     }
 }
 
+
 const onGetFormularySettings = (source, formularyId) => {
     return async (dispatch) => {
         try {
@@ -119,22 +123,22 @@ const onGetFormularySettings = (source, formularyId) => {
 const onCreateFormularySettingsSection = (body, formId, sectionIndex) => {
     return async (dispatch, getState) => {
         let stateData = getState().home.formulary.update
-        if (body.id !== -1) {
-            agent.FORMULARY.createFormularySettingsSection(body, formId).then(response=> {
-                if (response) {
-                    if (response.status ===200){
+        if (body.id === null) {
+            makeDelay(() => { 
+                stateData.depends_on_form[sectionIndex].id = -1
+                agent.FORMULARY.createFormularySettingsSection(body, formId).then(response=> {
+                    if (response && response.status === 200){
                         stateData.depends_on_form[sectionIndex] = response.data.data
                     } else {
                         stateData.depends_on_form[sectionIndex].id = null
                     }
                     dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: stateData })
-                }
+            
+                })
+                dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: stateData })
             })
-        } 
-        if (body.id === null) {
-            stateData.depends_on_form[sectionIndex].id = -1
             dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: stateData })
-        } 
+        }
     }
 }
 
@@ -153,18 +157,19 @@ const onRemoveFormularySettingsSection = (formId, sectionId) => {
 const onCreateFormularySettingsField = (body, formId, sectionIndex, fieldIndex) => {
     return (dispatch, getState) => {
         let stateData = getState().home.formulary.update
-        if (body.id !== -1) {
-            agent.FORMULARY.createFormularySettingsField(body, formId).then(response=> {
-                if(response.status === 200) {
-                    stateData.depends_on_form[sectionIndex].form_fields[fieldIndex] = response.data.data
-                } else {
-                    stateData.depends_on_form[sectionIndex].form_fields[fieldIndex].id = null
-                }
+        if (body.id === null) {
+            makeDelay(() => { 
+                stateData.depends_on_form[sectionIndex].form_fields[fieldIndex].id = -1
+                agent.FORMULARY.createFormularySettingsField(body, formId).then(response=> {
+                    if(response.status === 200) {
+                        stateData.depends_on_form[sectionIndex].form_fields[fieldIndex] = response.data.data
+                    } else {
+                        stateData.depends_on_form[sectionIndex].form_fields[fieldIndex].id = null
+                    }
+                    dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: stateData })
+                })
                 dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: stateData })
             })
-        } 
-        if (body.id === null) {
-            stateData.depends_on_form[sectionIndex].form_fields[fieldIndex].id = -1
             dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: stateData })
         }
     }
