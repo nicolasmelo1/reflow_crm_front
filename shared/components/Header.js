@@ -11,7 +11,7 @@ const Header = (props) => (
     <Head>
         <title>{ props.title }</title>
         <meta charSet="utf-8" />
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"/>
         <script type="text/javascript" src="/dragdroptouch/js/dragdroptouch.js"></script>
         <link rel="stylesheet" href="/bulma/css/bulma.min.css" />
         <link rel="stylesheet" href="/bootstrap/css/bootstrap-grid.min.css"/>

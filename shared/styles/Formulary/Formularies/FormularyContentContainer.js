@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-export default styled(({isOpen, ...rest}) => <div {...rest}/>)`
+export default styled(({isOpen, height,...rest}) => <div {...rest}/>)`
     box-shadow: -5px 5px 20px #444;
     background-color: #444; 
     overflow-y: auto; 
@@ -11,7 +11,8 @@ export default styled(({isOpen, ...rest}) => <div {...rest}/>)`
     transition: height 0.3s ease-in-out, padding 0.3s ease-in-out;
 
     @media(max-width: 420px) {
-        height: ${props=> props.isOpen ? `calc(${window.innerHeight}px - 50px)` : '0'};
+        min-height: ${props=> props.isOpen ? `calc(var(--app-height) - 50px)` : '0'};
+        height: ${props=> props.isOpen ? `calc(var(--app-height) - 50px)` : '0'};
     }
 
     @media(min-width: 420px) {

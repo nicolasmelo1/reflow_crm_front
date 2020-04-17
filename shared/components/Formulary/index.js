@@ -17,7 +17,7 @@ class Formulary extends React.Component {
         super(props)
         this.CancelToken = axios.CancelToken
         this.source = null
-
+        this.height = document.body.clientHeight
         this.state = {
             markToUpdate: false,
             isEditing: false,

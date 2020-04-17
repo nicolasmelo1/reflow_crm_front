@@ -8,6 +8,12 @@ import { initStore } from '@shared/redux/store';
 
 
 class MyApp extends App {
+    appHeight = () => document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`)
+
+    componentDidMount() {
+        window.addEventListener('resize', this.appHeight)
+        this.appHeight()
+    }
     render() {
         const { Component, pageProps, store } = this.props
         return (
