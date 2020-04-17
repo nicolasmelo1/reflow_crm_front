@@ -98,7 +98,7 @@ const Select = (props) => {
             if (props.onFilter) {
                 filteredOptions = props.onFilter(value)
             } else {
-                filteredOptions = filteredOptions.filter(option=> option.label.includes(value))
+                filteredOptions = filteredOptions.filter(option=> option.label.toLowerCase().includes(value.toLowerCase()))
             }
         }
         //

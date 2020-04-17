@@ -96,6 +96,7 @@ const Attachment = (props) => {
             newInputProps.push(createInputProps(value))
         })
         setInputsProps(newInputProps)
+        valuesRef.current = props.values
     }, [props.values])
 
     return (
