@@ -13,7 +13,7 @@ const App = (props) => {
     return (
         <Provider store={store}>
             <PersistGate persistor={persistStore(store)}>
-                <Layout/>
+                <Layout showSideBar={true}/>
             </PersistGate>
         </Provider>
     )

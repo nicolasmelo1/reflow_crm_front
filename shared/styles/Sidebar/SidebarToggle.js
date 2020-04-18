@@ -1,6 +1,9 @@
+import React from 'react'
 import styled from 'styled-components'
+import { Button } from 'react-native'
 
-export default styled(({sidebarIsOpen, ...rest}) => <button {...rest}/>)`
+export default process.env['APP'] === 'web' ? 
+styled(({sidebarIsOpen, ...rest}) => <button {...rest}/>)`
     position: absolute;
     transition: left 0.3s ease-in-out;
     display: flex;
@@ -28,4 +31,11 @@ export default styled(({sidebarIsOpen, ...rest}) => <button {...rest}/>)`
     @media(max-width: 320px) {
         left: ${({ sidebarIsOpen }) => sidebarIsOpen ? '270px' : '0'};
     }
+`
+:
+styled(({sidebarIsOpen, ...rest}) => <Button color="#0dbf7e" {...rest}/>)`
+    font-weight: bold;
+    margin-left: 90px;
+    height: 20px;
+    left: 20px;
 `

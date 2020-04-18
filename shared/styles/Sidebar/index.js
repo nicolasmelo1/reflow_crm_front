@@ -1,4 +1,6 @@
 import SidebarMenu from './SidebarMenu'
+import SidebarContainer from './SidebarContainer'
+import SidebarToggleContainer from './SidebarToggleContainer'
 import SidebarAccordionToggle from './SidebarAccordionToggle'
 import SidebarAccordion from './SidebarAccordion'
 import SidebarCardHeader from './SidebarCardHeader'
@@ -16,7 +18,13 @@ import SidebarAddButton from  './SidebarAddButton'
 import SidebarToggle from './SidebarToggle'
 import SidebarEditTemplateButton from './SidebarEditTemplateButton'
 import SidebarAddNewTemplateButton from  './SidebarAddNewTemplateButton'
+import SidebarTopButtonsContainer from './SidebarTopButtonsContainer'
+import SidebarGroupsContainer from './SidebarGroupsContainer'
 
+export { SidebarGroupsContainer }
+export { SidebarTopButtonsContainer }
+export { SidebarToggleContainer }
+export { SidebarContainer }
 export { SidebarAddNewTemplateButton }
 export { SidebarEditTemplateButton }
 export { SidebarToggle }

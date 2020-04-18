@@ -9,6 +9,8 @@
                     "@shared": "../shared"
                 }
             }
+        ], [
+            "babel-plugin-transform-inline-environment-variables"
         ]
     ]
 }

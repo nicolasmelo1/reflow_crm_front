@@ -1,14 +1,14 @@
 import React from 'react'
 import Header from './Header'
 import Sidebar from './Sidebar'
-import Navbar from './Navbar'
+//import Navbar from './Navbar'// not implemented in RN
 import { connect } from 'react-redux';
 import actions from '../redux/actions';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import Router from 'next/router';
 import { paths } from '../utils/constants'
 import agent from '../redux/agent'
-import ContentContainer from '../styles/ContentContainer'
+//import ContentContainer from '../styles/ContentContainer' // not everything implemented in RN
 import Body from '../styles/Body'
 import { Text, View } from 'react-native'
 
@@ -61,15 +61,16 @@ library.add(faPlusSquare, faEnvelope, faCalendarAlt, faSquareRootAlt, faPhone, f
 class Layout extends React.Component {
     constructor(props) {
         super(props)
+        this.state = {
+            sidebarIsOpen: false
+        }
         if (process.env.APP === 'web') {
             agent.setToken(window.localStorage.getItem('token'))
             agent.setCompanyId(this.props.login.companyId)
             if (!window.localStorage.getItem('token') || window.localStorage.getItem('token') === '') {
                 Router.push(paths.login())
             }
-            this.state = {
-                sidebarIsOpen: false
-            }
+
             this.props.getDataTypes()
         }
     }
@@ -83,7 +84,7 @@ class Layout extends React.Component {
     }
 
     render() {
-        if (process.env.APP === 'web') {
+        if (process.env['APP'] === 'web') {
             return (
                 <Body>
                     {this.props.hideNavBar ? '' : ''}
@@ -100,9 +101,13 @@ class Layout extends React.Component {
             )
         } else {
             return (
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}}>
-                    <Text>teste</Text>
-                </View>
+                <Body>
+                    {this.props.showSideBar ? 
+                        <Sidebar sidebarIsOpen={this.state.sidebarIsOpen} setSidebarIsOpen={this.setSidebarIsOpen}>
+                            <Text>teste</Text>
+                        </Sidebar>
+                    : null}
+                </Body>
             )
         }
     }
