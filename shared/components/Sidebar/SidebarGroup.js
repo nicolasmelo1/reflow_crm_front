@@ -1,12 +1,13 @@
 import React from 'react'
 import { Accordion } from 'react-bootstrap'
-import SidebarGroupsContainer from '../../styles/Sidebar/SidebarGroupsContainer'
+//import SidebarGroupsContainer from '../../styles/Sidebar/SidebarGroupsContainer'
 import { Text } from 'react-native'
-//import SidebarForm from './SidebarForm'
-//import { SidebarAccordionToggle, SidebarCardHeader, SidebarAccordion, SidebarCard } from '../../styles/Sidebar'
+import SidebarForm from './SidebarForm'
+import { SidebarAccordionToggle, SidebarCardHeader, SidebarAccordion, SidebarCard } from '../../styles/Sidebar'
 
 const SidebarGroup = (props) => {
-    if (process.env['APP'] === 'web') {
+
+    const renderWeb = () => {
         return (
             <div>
                 { props.elements.map((element, index) => (
@@ -25,7 +26,9 @@ const SidebarGroup = (props) => {
                 ))}
             </div>
         )
-    } else {
+    }
+
+    const renderMobile = () => {
         return (
             <SidebarGroupsContainer>
                 { props.elements.map((element, index) => (
@@ -33,6 +36,12 @@ const SidebarGroup = (props) => {
                 ))}
             </SidebarGroupsContainer>
         )
+    }
+
+    if (process.env['APP'] === 'web') {
+        return renderWeb()
+    } else {
+        return renderMobile()
     }
 }
 

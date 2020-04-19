@@ -1,14 +1,15 @@
 import React from 'react'
 import Header from './Header'
 import Sidebar from './Sidebar'
-//import Navbar from './Navbar'// not implemented in RN
+import Navbar from './Navbar' // not implemented in RN
+import Notify from './Notify' // not implemented in RN
 import { connect } from 'react-redux';
 import actions from '../redux/actions';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import Router from 'next/router';
 import { paths } from '../utils/constants'
 import agent from '../redux/agent'
-//import ContentContainer from '../styles/ContentContainer' // not everything implemented in RN
+import ContentContainer from '../styles/ContentContainer' // not everything implemented in RN
 import Body from '../styles/Body'
 import { Text, View } from 'react-native'
 
@@ -62,7 +63,7 @@ class Layout extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            sidebarIsOpen: false
+            sidebarIsOpen: false,
         }
         if (process.env.APP === 'web') {
             agent.setToken(window.localStorage.getItem('token'))
@@ -83,32 +84,41 @@ class Layout extends React.Component {
         })
     }
 
+    renderWeb() {
+        return (
+            <Body>
+                <Header title={this.props.title}></Header>
+                <Notify/> 
+                <div id="main-container">
+                    {this.props.hideNavBar ? '' : <Navbar onDeauthenticate={this.props.onDeauthenticate} />}
+                    {this.props.showSideBar ? <Sidebar sidebarIsOpen={this.state.sidebarIsOpen} setSidebarIsOpen={this.setSidebarIsOpen} /> : ''}
+                    <ContentContainer sidebarIsOpen={this.state.sidebarIsOpen}>
+                        {this.props.children}
+                    </ContentContainer>
+                </div>
+            </Body>
+        )
+    }
+
+
+    renderMobile() {
+        return (
+            <Body>
+                {this.props.showSideBar ? 
+                    <Sidebar sidebarIsOpen={this.state.sidebarIsOpen} setSidebarIsOpen={this.setSidebarIsOpen}>
+                        <Text>teste</Text>
+                    </Sidebar>
+                : null}
+            </Body>
+        )
+    }
+
+
     render() {
         if (process.env['APP'] === 'web') {
-            return (
-                <Body>
-                    {this.props.hideNavBar ? '' : ''}
-                    <Header title={this.props.title}></Header>
-                    <div className="notifications-container"></div>
-                    <div id="main-container">
-                        {this.props.hideNavBar ? '' : <Navbar onDeauthenticate={this.props.onDeauthenticate} />}
-                        {this.props.showSideBar ? <Sidebar sidebarIsOpen={this.state.sidebarIsOpen} setSidebarIsOpen={this.setSidebarIsOpen} /> : ''}
-                        <ContentContainer sidebarIsOpen={this.state.sidebarIsOpen}>
-                            {this.props.children}
-                        </ContentContainer>
-                    </div>
-                </Body>
-            )
+            return this.renderWeb()
         } else {
-            return (
-                <Body>
-                    {this.props.showSideBar ? 
-                        <Sidebar sidebarIsOpen={this.state.sidebarIsOpen} setSidebarIsOpen={this.setSidebarIsOpen}>
-                            <Text>teste</Text>
-                        </Sidebar>
-                    : null}
-                </Body>
-            )
+            return this.renderMobile()
         }
     }
 }
