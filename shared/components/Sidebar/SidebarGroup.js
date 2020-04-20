@@ -1,9 +1,9 @@
 import React from 'react'
 import { Accordion } from 'react-bootstrap'
-//import SidebarGroupsContainer from '../../styles/Sidebar/SidebarGroupsContainer'
+import SidebarGroupsContainer from '../../styles/Sidebar/SidebarGroupsContainer'
 import { Text } from 'react-native'
-import SidebarForm from './SidebarForm'
-import { SidebarAccordionToggle, SidebarCardHeader, SidebarAccordion, SidebarCard } from '../../styles/Sidebar'
+//import SidebarForm from './SidebarForm'
+//import { SidebarAccordionToggle, SidebarCardHeader, SidebarAccordion, SidebarCard } from '../../styles/Sidebar'
 
 const SidebarGroup = (props) => {
 
@@ -29,6 +29,7 @@ const SidebarGroup = (props) => {
     }
 
     const renderMobile = () => {
+        console.log(props.elements)
         return (
             <SidebarGroupsContainer>
                 { props.elements.map((element, index) => (

@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { API, BEARER } from '../config'
-import { paths } from '../utils/constants'
-import Router from 'next/router'
+import { AsyncStorage } from 'react-native'
 
 const API_ROOT = API;
 
@@ -47,7 +46,9 @@ const refreshToken = async (response, callback, url, params, headers) => {
             return callback(url, params, headers)
         }
         if (['invalid_token', 'login_required'].includes(response.data.reason)) {
-            Router.push(paths.login())
+            window.localStorage.setItem('refreshToken', '')
+            window.localStorage.setItem('token', '')
+            token = ''
         }
     }
     return response

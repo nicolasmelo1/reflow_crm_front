@@ -10,6 +10,7 @@ const onGetForms = () => {
     return async (dispatch) => {
         try {
             let response = await agent.HOME.getForms()
+            console.log(response)
             dispatch({type: GET_FORMS, payload: response.data});
         } catch {}
     };

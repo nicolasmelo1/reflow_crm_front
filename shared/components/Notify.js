@@ -2,7 +2,7 @@ import React from 'react'
 import StyledAlert from '../styles/Alert'
 import actions from '../redux/actions'
 import { connect } from 'react-redux'
-import { processColor } from 'react-native'
+import { Text, View } from 'react-native'
 
 
 /*** 
@@ -36,8 +36,20 @@ class Notify extends React.Component {
 
     renderMobile() {
         return (
-            <View>
-
+            <View styled={{
+                flex: 1,
+                flexDirection: 'row', 
+                flexWrap: 'nowrap', 
+                justifyContent: 'flex-start',
+                alignItems: 'flex-start'
+            }}>
+                {this.props.notify.notification.map((notification, index) => (
+                    <StyledAlert key={index} variant={notification.variant}>
+                        <Text>
+                            {notification.message}
+                        </Text>
+                    </StyledAlert>
+                ))}
             </View>
         )
     }
@@ -45,6 +57,8 @@ class Notify extends React.Component {
     render () {
         if (process.env['APP'] === 'web') {
             return this.renderWeb()
+        } else {
+            return this.renderMobile()
         }
     }
 }

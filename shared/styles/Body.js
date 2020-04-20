@@ -1,15 +1,13 @@
 import styled from 'styled-components'
-import { View } from 'react-native'
+import { SafeAreaView } from 'react-native'
 
 
 const Body = (process.env['APP'] === 'web') ? styled.div`
     height: 100%
-` : styled(View)`
-    color: blue;
-    background-color: pink;
+` : styled(SafeAreaView)`
     height: 100%;
-    top: 80px;
-    flex-direction: row;
+    top: 0;
+    flex-direction: column;
 `
 
 export default Body

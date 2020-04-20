@@ -1,17 +1,17 @@
 import React from 'react'
 import Header from './Header'
 import Sidebar from './Sidebar'
-import Navbar from './Navbar' // not implemented in RN
-import Notify from './Notify' // not implemented in RN
+//import Navbar from './Navbar' // not implemented in RN
+import Notify from './Notify'
 import { connect } from 'react-redux';
 import actions from '../redux/actions';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import Router from 'next/router';
 import { paths } from '../utils/constants'
 import agent from '../redux/agent'
-import ContentContainer from '../styles/ContentContainer' // not everything implemented in RN
+import ContentContainer from '../styles/ContentContainer'
 import Body from '../styles/Body'
-import { Text, View } from 'react-native'
+import { AsyncStorage } from 'react-native'
 
 import { 
     faArrowDown, 
@@ -65,15 +65,23 @@ class Layout extends React.Component {
         this.state = {
             sidebarIsOpen: false,
         }
-        if (process.env.APP === 'web') {
-            agent.setToken(window.localStorage.getItem('token'))
-            agent.setCompanyId(this.props.login.companyId)
-            if (!window.localStorage.getItem('token') || window.localStorage.getItem('token') === '') {
-                Router.push(paths.login())
-            }
+        this.setToken()
+    }
 
-            this.props.getDataTypes()
+    async setToken() {
+        const token = process.env['APP'] === 'web' ? window.localStorage.getItem('token') : await AsyncStorage.getItem('token')
+        console.log(token)
+        agent.setToken(token)
+        agent.setCompanyId(this.props.login.companyId)
+        if (!token || token === '') {
+            if (process.env['APP'] === 'web') {
+                Router.push(paths.login())
+            } else {
+                this.props.setRouter('login')
+            }
         }
+        
+        this.props.getDataTypes()
     }
 
     setSidebarIsOpen = () => {
@@ -104,11 +112,12 @@ class Layout extends React.Component {
     renderMobile() {
         return (
             <Body>
-                {this.props.showSideBar ? 
-                    <Sidebar sidebarIsOpen={this.state.sidebarIsOpen} setSidebarIsOpen={this.setSidebarIsOpen}>
-                        <Text>teste</Text>
-                    </Sidebar>
-                : null}
+                <Notify/> 
+                <ContentContainer>
+                    {this.props.showSideBar ? 
+                        <Sidebar sidebarIsOpen={this.state.sidebarIsOpen} setSidebarIsOpen={this.setSidebarIsOpen} children={this.props.children}/>
+                    : this.props.children}
+                </ContentContainer>
             </Body>
         )
     }
