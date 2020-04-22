@@ -1,4 +1,4 @@
-import { DEAUTHENTICATE, AUTHENTICATE, ERROR, DATA_TYPES, SET_USER } from '../types';
+import { DEAUTHENTICATE, AUTHENTICATE, SET_PRIMARY_FORM, DATA_TYPES, SET_USER } from '../types';
 import { AsyncStorage } from 'react-native'
 import agent from '../agent'
 
@@ -7,12 +7,12 @@ const onAuthenticate = (body) => {
     return async (dispatch) => {
         let response = await agent.LOGIN.makeLogin(body)
         if (response.status === 200) {
-            if (typeof window !== 'undefined' && process.env['APP'] === 'web') {
+            if (process.env['APP'] === 'web') {
                 window.localStorage.setItem('token', response.data.access_token)
                 window.localStorage.setItem('refreshToken', response.data.refresh_token)
             } else {
-                AsyncStorage.setItem('token', response.data.access_token)
-                AsyncStorage.setItem('refreshToken', response.data.refresh_token)
+                await AsyncStorage.setItem('token', response.data.access_token)
+                await AsyncStorage.setItem('refreshToken', response.data.refresh_token)
             }
             dispatch({ type: AUTHENTICATE, payload: response.data });
         }
@@ -32,6 +32,12 @@ const onUpdateUser = (user) => {
     }
 }
 
+const onUpdatePrimaryForm = (formName) => {
+    return (dispatch) => {
+        dispatch({ type: SET_PRIMARY_FORM, payload: formName})
+    }
+}
+
 const getDataTypes = () => {
     return async (dispatch, getState) => {
         //if (window.localStorage.getItem('refreshToken') !== '' && window.localStorage.getItem('token') !== '') {
@@ -47,6 +53,7 @@ const getDataTypes = () => {
 
 export default {
     onUpdateUser,
+    onUpdatePrimaryForm,
     onAuthenticate,
     onDeauthenticate,
     getDataTypes

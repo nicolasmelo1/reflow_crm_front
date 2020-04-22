@@ -1,16 +1,16 @@
 import { Row, Col } from 'react-bootstrap'
 import { View } from 'react-native'
 import React from 'react'
-import SidebarContainer from '../../styles/Sidebar/SidebarContainer'
-import SidebarToggle from '../../styles/Sidebar/SidebarToggle'
-import SidebarMenu from '../../styles/Sidebar/SidebarMenu'
-import SidebarToggleContainer from '../../styles/Sidebar/SidebarToggleContainer'
-import SidebarEditTemplateButton from '../../styles/Sidebar/SidebarEditTemplateButton'
-import SidebarAddNewTemplateButton from '../../styles/Sidebar/SidebarAddNewTemplateButton'
-import SidebarTopButtonsContainer from '../../styles/Sidebar/SidebarTopButtonsContainer'
-//import { SidebarMenu, SidebarToggle, SidebarEditTemplateButton, SidebarAddNewTemplateButton } from '../../styles/Sidebar' // not implemented in RN
+//import SidebarMenu from '../../styles/Sidebar/SidebarMenu'
+//import SidebarToggle from '../../styles/Sidebar/SidebarToggle'
+//import SidebarToggleContainer from '../../styles/Sidebar/SidebarToggleContainer'
+//import SidebarContainer from '../../styles/Sidebar/SidebarContainer'
+//import SidebarTopButtonsContainer from '../../styles/Sidebar/SidebarTopButtonsContainer'
+//import SidebarEditTemplateButton from '../../styles/Sidebar/SidebarEditTemplateButton'
+//import SidebarAddNewTemplateButton from '../../styles/Sidebar/SidebarAddNewTemplateButton'
+import { SidebarMenu, SidebarToggle, SidebarToggleContainer, SidebarContainer, SidebarTopButtonsContainer, SidebarEditTemplateButton, SidebarAddNewTemplateButton } from '../../styles/Sidebar' // not implemented in RN
 import SidebarGroup from './SidebarGroup'
-//import SidebarGroupEdit from './SidebarGroupEdit'// not implemented in RN
+import SidebarGroupEdit from './SidebarGroupEdit'// not implemented in RN
 import actions from '../../redux/actions'
 import { connect } from 'react-redux';
 import { strings } from '../../utils/constants'
@@ -24,9 +24,12 @@ class Sidebar extends React.Component {
         this.state = {
             isEditing: false
         }
-        this.props.onGetForms()
     }
     
+    componentDidMount() {
+        this.props.onGetForms()
+    }
+
     enterEditMode = (e) => {
         e.preventDefault()
         this.setState(state => {
@@ -53,7 +56,7 @@ class Sidebar extends React.Component {
                         { (this.state.isEditing) ? '': <SidebarAddNewTemplateButton>{strings['pt-br']['sidebarAddNewTemplateButtonLabel']}</SidebarAddNewTemplateButton>}
                         { (this.state.isEditing) ? (
                             <SidebarGroupEdit 
-                            companyId={this.props.login.companyId}
+                            companyId={this.props.companyId}
                             groups={this.props.sidebar.update}
                             onUpdateGroup={this.props.onUpdateGroup}
                             onChangeGroupState={this.props.onChangeGroupState}
@@ -74,9 +77,8 @@ class Sidebar extends React.Component {
 
     
     renderMobile() {
-        console.log(this.props.sidebar)
         return (
-            <SidebarContainer >
+            <SidebarContainer>
                 {this.props.sidebarIsOpen ? (
                     <SidebarMenu>
                         <View style={{ height: 40 }}>
@@ -110,4 +112,4 @@ class Sidebar extends React.Component {
     }
 }
 
-export default connect(state => ({ sidebar: state.home.sidebar, login: state.login }), actions)(Sidebar);
+export default connect(state => ({ sidebar: state.home.sidebar, companyId: state.login.companyId }), actions)(Sidebar);

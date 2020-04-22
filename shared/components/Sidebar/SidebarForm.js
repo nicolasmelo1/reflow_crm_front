@@ -8,30 +8,26 @@ import actions from '../../redux/actions'
 
 
 
-class SidebarForm extends React.Component {
-    constructor(props) {
-        super(props)
-    }
-    
-    render () {
-        return (
-            <SidebarCardBody>
-                { this.props.forms.map((element, index)=> {
-                    return (
-                        <SidebarFormItem key={index}>
-                            <Row>
-                                <Col>
-                                    <Link href={paths.home(element.form_name, true)} as={paths.home(element.form_name)}>
-                                        <SidebarLink>{element.label_name}</SidebarLink>
-                                    </Link>
-                                </Col>
-                            </Row>
-                        </SidebarFormItem>
-                    )
-                })}
-            </SidebarCardBody>
-        )
-    }
+const SidebarForm = (props) => {
+
+    return (
+        <SidebarCardBody>
+            { props.forms.map((form, index)=> {
+                return (
+                    <SidebarFormItem key={index}>
+                        <Row>
+                            <Col>
+                                <Link href={paths.home(form.form_name, true)} as={paths.home(form.form_name)}>
+                                    <SidebarLink>{form.label_name}</SidebarLink>
+                                </Link>
+                            </Col>
+                        </Row>
+                    </SidebarFormItem>
+                )
+            })}
+        </SidebarCardBody>
+    )
+
 }
 
-export default connect(state=> ({ home: state.home, login: state.login }), actions)(SidebarForm);
+export default SidebarForm;

@@ -2,15 +2,15 @@ import React from 'react'
 import { Accordion } from 'react-bootstrap'
 import SidebarGroupsContainer from '../../styles/Sidebar/SidebarGroupsContainer'
 import { Text } from 'react-native'
-//import SidebarForm from './SidebarForm'
-//import { SidebarAccordionToggle, SidebarCardHeader, SidebarAccordion, SidebarCard } from '../../styles/Sidebar'
+import SidebarForm from './SidebarForm' // not implemented in RN
+import { SidebarAccordionToggle, SidebarCardHeader, SidebarAccordion, SidebarCard } from '../../styles/Sidebar' // not implemented in RN
 
 const SidebarGroup = (props) => {
 
     const renderWeb = () => {
         return (
             <div>
-                { props.elements.map((element, index) => (
+                {(props.elements) ? props.elements.map((element, index) => (
                     <SidebarAccordion key={index}>
                         <SidebarCard>
                             <SidebarCardHeader>
@@ -23,13 +23,12 @@ const SidebarGroup = (props) => {
                             </Accordion.Collapse>
                         </SidebarCard>
                     </SidebarAccordion>
-                ))}
+                )): ''}
             </div>
         )
     }
 
     const renderMobile = () => {
-        console.log(props.elements)
         return (
             <SidebarGroupsContainer>
                 { props.elements.map((element, index) => (

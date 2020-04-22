@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { Form, Button } from 'react-bootstrap'
 import { LoginInput, LoginButton, LoginButtonText } from '../../styles/Login'
 import actions from '../../redux/actions'
+import agent from '../../redux/agent'
 import { strings, errors, paths } from '../../utils/constants'
 
 class Login extends React.Component {
@@ -17,8 +18,8 @@ class Login extends React.Component {
                 variant: '',
                 message: '',
             },
-            email: '',
-            password: ''
+            email: 'reflow@reflow.com.br',
+            password: 'Mudar123'
         }
     }
 
@@ -29,8 +30,13 @@ class Login extends React.Component {
             if (response.status !== 200) {
                 this.props.onAddNotification(errors('pt-br', 'incorrect_pass_or_user'), 'error')
             } else {
+
+                // we set it here because of react, Next.js always constructs the Layout component, so it always pass on the constructor part, React Native on the other hand don't.
+                agent.setCompanyId(this.props.login.companyId)
+                agent.setToken(response.data.access_token)
+
                 if (process.env['APP'] === 'web'){
-                    Router.push(paths.home(this.props.login.primaryForm))
+                    Router.push(paths.home(this.props.login.primaryForm, true), paths.home(this.props.login.primaryForm), { shallow: true })
                 } else {
                     this.props.setRouter('data')
                 }
@@ -52,7 +58,10 @@ class Login extends React.Component {
                         <Form.Label>{strings['pt-br']['passLoginLabel']}</Form.Label>
                         <Form.Control required ref={this.passwordRef} type='password' value={this.state.password} onChange={e => this.setState({ password: e.target.value })} />
                     </Form.Group>
-                    <Button type="submit" onClick={e => this.handleLogin()}>{strings['pt-br']['submitButtonLabel']}</Button>
+                    <Button type="submit" onClick={e => {
+                        e.preventDefault(); 
+                        this.handleLogin()
+                    }}>{strings['pt-br']['submitButtonLabel']}</Button>
                 </Form>
             </div>
         )

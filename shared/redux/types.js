@@ -1,6 +1,7 @@
 export const AUTHENTICATE = 'AUTHENTICATE'
 export const UPDATE_BETWEEN_TABS = 'UPDATE_BETWEEN_TABS'
 export const SET_USER = 'SET_USER'
+export const SET_PRIMARY_FORM = 'SET_PRIMARY_FORM'
 export const DATA_TYPES = 'DATA_TYPES'
 export const DEAUTHENTICATE = 'DEAUTHENTICATE'
 export const ERROR = 'ERROR'

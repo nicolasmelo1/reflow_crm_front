@@ -1,5 +1,7 @@
 const path = require('path')
 
+// some configurations are for monorepo to work, you might want to read this:
+// https://medium.com/@agungsurya/create-a-monorepo-of-react-native-and-nextjs-8b93df280343
 module.exports = {
     env: {
         API_HOST: process.env.API_HOST,
@@ -10,6 +12,7 @@ module.exports = {
             ...config.resolve,
             alias: {
                 ...config.resolve.alias,
+                '@react-native-community/async-storage': 'react-native-web/dist/exports/AsyncStorage/index.js',
                 "react-native": path.join(__dirname, 'node_modules', 'react-native-web')
             },
             modules: [

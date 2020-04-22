@@ -100,17 +100,17 @@ class Data extends React.Component {
     }
 
     getDataType = (dataTypeId) => {
-        return  this.props.login.types ? this.props.login.types.default.data_type.filter(dataType => dataType.id === dataTypeId) : 'listing'
+        return  this.props.types ? this.props.types.default.data_type.filter(dataType => dataType.id === dataTypeId) : 'listing'
     }
     
 
     setVisualization = (dataTypeId) => {
-        this.props.login.user.data_type = dataTypeId
-        this.props.onUpdateUser({...this.props.login.user})
+        this.props.user.data_type = dataTypeId
+        this.props.onUpdateUser({...this.props.user})
     }
 
     renderVisualization = () => {
-        const dataType = this.props.login.user && this.getDataType(this.props.login.user.data_type).length > 0 ? this.getDataType(this.props.login.user.data_type)[0].name : 'listing'
+        const dataType = this.props.user && this.getDataType(this.props.user.data_type).length > 0 ? this.getDataType(this.props.user.data_type)[0].name : 'listing'
         switch(dataType){
             case 'listing': 
                 return <Listing 
@@ -146,11 +146,12 @@ class Data extends React.Component {
     componentDidUpdate = (oldProps) => {
         if (oldProps.router.query.form !== this.props.router.query.form) {
             this.setFormularyId(null)
+            this.props.onUpdatePrimaryForm(this.props.router.query.form)
         }
     }
 
     render () {
-        const formNames =  [].concat.apply([],this.props.sidebar.map(group => group.form_group.map(form => ({ name: form.form_name, label: form.label_name }))))
+        const formNames =  this.props.sidebar ? [].concat.apply([],this.props.sidebar.map(group => group.form_group.map(form => ({ name: form.form_name, label: form.label_name })))) : []
         const currentForm = formNames.filter(form=> form.name === this.props.router.query.form)
         const title = (currentForm.length > 0) ? strings['pt-br']['managementPageTitle'].replace('{}', currentForm[0].label) : 'Não conseguimos encontrar a página / Reflow'
         return (
@@ -161,11 +162,11 @@ class Data extends React.Component {
                     <div>
                         <Row>
                             <Col>
-                                {this.props.login.types && this.props.login.types.default && this.props.login.types.default.data_type ? this.props.login.types.default.data_type.map(dataType => (
+                                {this.props.types && this.props.types.default && this.props.types.default.data_type ? this.props.types.default.data_type.map(dataType => (
                                     <DataTypeHeaderAnchor 
                                     key={dataType.id}
                                     onClick={e=> {this.setVisualization(dataType.id)}} 
-                                    isSelected={this.props.login.user && this.props.login.user.data_type ? this.props.login.user.data_type === dataType.id: false}
+                                    isSelected={this.props.user && this.props.user.data_type ? this.props.user.data_type === dataType.id: false}
                                     >
                                         {types('pt-br','data_type', dataType.name)}    
                                     </DataTypeHeaderAnchor> 
@@ -190,4 +191,4 @@ class Data extends React.Component {
     }
 }
 
-export default connect(state => ({ login: state.login, sidebar: state.home.sidebar.initial }), actions)(withRouter(Data))
+export default connect(state => ({ user: state.login.user, company: state.login.company, types: state.login.types, sidebar: state.home.sidebar.initial }), actions)(withRouter(Data))

@@ -1,4 +1,4 @@
-import { AUTHENTICATE, DATA_TYPES, SET_USER } from '../types';
+import { AUTHENTICATE, DATA_TYPES, SET_USER, SET_PRIMARY_FORM } from '../types';
 
 const initialState = {
     companyId: null,
@@ -21,6 +21,11 @@ export default (state = initialState, action) => {
             return { 
                 ...state,
                 user: action.payload
+            }
+        case SET_PRIMARY_FORM:
+            return {
+                ...state,
+                primaryForm: action.payload
             }
         case DATA_TYPES:
             return { 

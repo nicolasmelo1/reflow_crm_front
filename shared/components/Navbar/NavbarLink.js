@@ -5,7 +5,7 @@ import { NavbarLinkIcon, NavbarLinkLabel } from '../../styles/Navbar'
 
 const NavbarLink = (props) => {
     return (
-        <Link href={props.link} passHref>
+        <Link href={props.slug ? props.slug : props.link} as={props.link} passHref>
             <Nav.Link eventKey={1}>
                 <NavbarLinkIcon icon={props.icon} />
                 <NavbarLinkLabel>{props.label}</NavbarLinkLabel>

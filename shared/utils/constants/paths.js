@@ -7,6 +7,9 @@ const paths = {
     },
     home(form, slugged=false) {
         return slugged ? `/home/[form]` : `/home/${form}`
+    },
+    notifications() {
+        return '/notifications'
     }
 }
 

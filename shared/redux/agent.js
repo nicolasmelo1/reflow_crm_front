@@ -1,23 +1,27 @@
 import axios from 'axios'
 import { API, BEARER } from '../config'
-import { AsyncStorage } from 'react-native'
+import { AsyncStorage }from 'react-native'
 
 const API_ROOT = API;
 
-let token = ''
-let companyId = ''
+let companyId = null
+let token = null
 
 /***
  * Function that sets the token in the header, called inside of the `requests` object functions
  * 
  * @param token - the token, usually the token variable that we set in Layout component
  */
-let setHeader = (token) => {
+const setHeader = (token) => {
     return {
         'Authorization': `${BEARER} ${token}`
     }
 }
 
+const getToken = async () => {
+    const token = process.env['APP'] === 'web' ? window.localStorage.getItem('token') : await AsyncStorage.getItem('token')
+    return token
+}
 /***
  * Function that fires when a exception is catched in the requests object functions.
  * This is only for retrieving a new token while firing a request. This way, the token is refreshed 
@@ -32,23 +36,38 @@ let setHeader = (token) => {
 const refreshToken = async (response, callback, url, params, headers) => {
     if (response && response.data && response.data.reason && ['invalid_token', 'login_required', 'expired_token'].includes(response.data.reason)) {
         if (response.data.reason === 'expired_token') {
-            response = await requests.get('login/refresh_token/', {}, setHeader(window.localStorage.getItem('refreshToken')))
+            const refreshToken = process.env['APP'] === 'web' ?  window.localStorage.getItem('refreshToken') : await AsyncStorage.getItem('refreshToken')
+            response = await requests.get('login/refresh_token/', {}, setHeader(refreshToken))
             // checks if the response was an error and handles it next
             if (response.status !== 200) {
-                window.localStorage.setItem('refreshToken', '')
-                window.localStorage.setItem('token', '')
-                token = ''
+                if (process.env['APP'] === 'web') {
+                    window.localStorage.setItem('refreshToken', '')
+                    window.localStorage.setItem('token', '')
+                } else {
+                    await AsyncStorage.setItem('refreshToken', '')
+                    await AsyncStorage.setItem('token', '')
+                }
+                token = null
             } else {
-                window.localStorage.setItem('refreshToken', response.data.refresh_token)
-                window.localStorage.setItem('token', response.data.access_token)
-                token = response.data.access_token
+                if (process.env['APP'] === 'web') {
+                    window.localStorage.setItem('refreshToken', response.data.refresh_token)
+                    window.localStorage.setItem('token', response.data.access_token)
+                } else {
+                    await AsyncStorage.setItem('refreshToken', response.data.refresh_token)
+                    await AsyncStorage.setItem('token', response.data.access_token)
+                }
             }
             return callback(url, params, headers)
         }
         if (['invalid_token', 'login_required'].includes(response.data.reason)) {
-            window.localStorage.setItem('refreshToken', '')
-            window.localStorage.setItem('token', '')
-            token = ''
+            if (process.env['APP'] === 'web') {
+                window.localStorage.setItem('refreshToken', '')
+                window.localStorage.setItem('token', '')
+            } else {
+                await AsyncStorage.setItem('refreshToken', '')
+                await AsyncStorage.setItem('token', '')
+            }
+            token = null
         }
     }
     return response
@@ -62,11 +81,11 @@ const refreshToken = async (response, callback, url, params, headers) => {
  * > requests.post('login/', body)
  */
 const requests = {
-    delete: async (url, params = {}, headers = {}) => {
+    delete: async (url, params = {}, headers = {}) => {   
         try {
             return await axios.delete(`${API_ROOT}${url}`, {
                 params: params,
-                headers: Object.assign(setHeader(token), headers)
+                headers: Object.assign(setHeader(await getToken()), headers)
             })
         }
         catch (exception) {
@@ -83,7 +102,7 @@ const requests = {
         try {
             return await axios.get(`${API_ROOT}${url}`, {
                 params: params,
-                headers: Object.assign(setHeader(token), headers),
+                headers: Object.assign(setHeader(await getToken()), headers),
                 cancelToken: source.token
             })
         }
@@ -95,7 +114,9 @@ const requests = {
     },
     put: async (url, body, headers = {}) => {
         try {
-            return await axios.put(`${API_ROOT}${url}`, body, { headers: Object.assign(setHeader(token), headers) })
+            return await axios.put(`${API_ROOT}${url}`, body, { 
+                headers: Object.assign(setHeader(await getToken()), headers) 
+            })
         }
         catch (exception) {
             return await refreshToken(exception.response, requests.put, url, body, headers)
@@ -103,13 +124,15 @@ const requests = {
     },
     post: async (url, body, headers = {}) => {
         try {
-            return await axios.post(`${API_ROOT}${url}`, body, { headers: Object.assign(setHeader(token), headers) })
+            return await axios.post(`${API_ROOT}${url}`, body, { 
+                headers: Object.assign(setHeader(await getToken()), headers) 
+            })
         }
         catch (exception) {
             return await refreshToken(exception.response, requests.post, url, body, headers)
         }
     }
-};
+}
 
 const formEncodeData = (appendToKey, body, files = []) => {
     let formData = new FormData();
@@ -178,7 +201,7 @@ const HOME = {
         return await requests.get(`${companyId}/data/api/forms/`)
     },
     getUpdateForms: async () => {
-        return await requests.get(`${companyId}/settings/api/formulary`)
+        return await requests.get(`${companyId}/settings/api/formulary/`)
     },
     getFieldOptions: async (formId) => {
         return await requests.get(`${companyId}/settings/api/formulary/${formId}/field_options/`)
@@ -267,7 +290,7 @@ const KANBAN = {
 
 export default {
     setCompanyId: _companyId => { companyId = _companyId },
-    setToken: (_token) => { token = _token },
+    setToken: _token => { token = _token },
     LOGIN,
     HOME,
     LISTING,

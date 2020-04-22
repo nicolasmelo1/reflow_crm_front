@@ -10,8 +10,9 @@ const onGetForms = () => {
     return async (dispatch) => {
         try {
             let response = await agent.HOME.getForms()
-            console.log(response)
-            dispatch({type: GET_FORMS, payload: response.data});
+            if (response && response.status === 200) {
+                dispatch({type: GET_FORMS, payload: response.data})
+            }
         } catch {}
     };
 };
@@ -19,7 +20,9 @@ const onGetForms = () => {
 const onGetUpdateForms = () => {
     return async (dispatch) => {
         let response = await agent.HOME.getUpdateForms()
-        dispatch({ type: UPDATE_GROUPS, payload: response.data.data })
+        if (response && response.status === 200) {
+            dispatch({ type: UPDATE_GROUPS, payload: response.data.data })
+        }
     }
 }
 

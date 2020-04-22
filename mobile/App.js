@@ -4,9 +4,13 @@ import { Provider } from 'react-redux';
 import { persistStore } from 'redux-persist'
 import { PersistGate } from 'redux-persist/integration/react'
 import { initStore } from '@shared/redux/store'
+import { NavigationContainer } from '@react-navigation/native'
+import  { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import Data from './pages/data'
+import Navbar from '@shared/components/Navbar'
 import Layout from '@shared/components/Layout'
 import Login from '@shared/components/Login'
-import { Text, AsyncStorage } from 'react-native'
+import { AsyncStorage, Text } from 'react-native'
 
 
 const App = (props) => {
@@ -14,7 +18,7 @@ const App = (props) => {
     const store = initStore()
 
     const [router, setRouter] = useState('login')
-
+    
     const getComponent = () => {
         if (router === 'login') {
             return (
@@ -22,14 +26,11 @@ const App = (props) => {
                     <Login setRouter={setRouter}/>
                 </Layout>
             )
-        } else if (router === 'data') {
-            return (
-                <Layout showSideBar={true} setRouter={setRouter}>
-                    <Text>Teste</Text>
-                </Layout>
-            )
         } else {
-            return null
+            const Tab = createBottomTabNavigator()
+            return (
+                <Navbar Tab={Tab} HomeComponent={Data}/>
+            )
         }
     }
 
@@ -44,7 +45,9 @@ const App = (props) => {
     return (
         <Provider store={store}>
             <PersistGate persistor={persistStore(store)}>
-                {getComponent()}
+                <NavigationContainer>
+                    {getComponent()}
+                </NavigationContainer>
             </PersistGate>
         </Provider>
     )

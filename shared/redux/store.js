@@ -6,7 +6,7 @@ import { persistReducer } from 'redux-persist'
 //import { AsyncStorage } from 'react-native'
 
 let storage = null
-if (process.env.APP === 'web') {
+if (process.env['APP'] === 'web' || typeof document !== 'undefined') {
     storage = require('redux-persist/lib/storage').default
 } else {
     storage = require('react-native').AsyncStorage
