@@ -48,12 +48,14 @@ class Formulary extends React.Component {
     }
 
     setIsLoading = (data) => {
-        this.setState(state => {
-            return {
-                ...state,
-                isLoading: data
-            }
-        })
+        if (this._ismounted) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    isLoading: data
+                }
+            })
+        }
     } 
 
     setIsOpen = () => {
@@ -63,15 +65,17 @@ class Formulary extends React.Component {
     }
 
     setAuxOriginalInitial = () => {
-        this.setState(state => {
-            return {
-                ...state,
-                auxOriginalInitial: {
-                    buildData: {...this.props.formulary.buildData},
-                    filled: {...this.props.formulary.filled},
-                } 
-            }
-        })
+        if (this._ismounted) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    auxOriginalInitial: {
+                        buildData: {...this.props.formulary.buildData},
+                        filled: {...this.props.formulary.filled},
+                    } 
+                }
+            })
+        }
     }
 
     setIsEditing = () => {
@@ -158,18 +162,20 @@ class Formulary extends React.Component {
      * When the user clicks "add new" or "edit" on the connection field, a new form is loaded in this component without losing 
      * the data of the previous form component loaded
      */
-    onChangeFormulary = (formName, formId=null) => {
+    onChangeFormulary = (formName, formId=null) => { 
         this.setAuxOriginalInitial()
         this.props.onFullResetFormularyState()
         this.buildFormulary(formName, formId)
     }
 
     componentDidMount = () => {
+        this._ismounted = true
         this.buildFormulary(this.props.router.form, this.props.formularyId)
     }
 
 
     componentWillUnmount = () => {
+        this._ismounted = false
         if (this.source) {
             this.source.cancel()
         }

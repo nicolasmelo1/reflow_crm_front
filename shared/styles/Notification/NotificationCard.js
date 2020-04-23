@@ -1,0 +1,15 @@
+import React from 'react'
+import styled from 'styled-components'
+import { View } from 'react-native'
+
+export default process.env['APP'] === 'web' ? 
+styled.div`
+    border: 1px solid #444;
+    border-radius: 5px;
+    margin-bottom: 10px; 
+    padding: 5px;
+    cursor: pointer;
+    background-color: ${props => props.hasRead ? 'transparent': '#f2f2f2'}
+`
+:
+styled(View)``

@@ -1,15 +1,11 @@
 import React from 'react'
 import { Row, Col } from 'react-bootstrap'
 import Link from 'next/link';
-import { connect } from 'react-redux'
 import { SidebarCardBody, SidebarFormItem, SidebarLink } from '../../styles/Sidebar'
 import { paths } from '../../utils/constants'
-import actions from '../../redux/actions'
-
 
 
 const SidebarForm = (props) => {
-
     return (
         <SidebarCardBody>
             { props.forms.map((form, index)=> {
@@ -27,7 +23,6 @@ const SidebarForm = (props) => {
             })}
         </SidebarCardBody>
     )
-
 }
 
 export default SidebarForm;

@@ -255,6 +255,13 @@ const LISTING = {
     }
 }
 
+const NOTIFICATION = {
+    getNotification: async (source, params) => {
+        return await requests.get(`${companyId}/notification/api/`, params, {}, source)
+    }
+}
+
+
 const KANBAN = {
     getRenderData: async (source, formName) => {
         return await requests.get(`${companyId}/data/api/kanban/${formName}/`, {}, {}, source)
@@ -293,6 +300,7 @@ export default {
     setToken: _token => { token = _token },
     LOGIN,
     HOME,
+    NOTIFICATION,
     LISTING,
     KANBAN,
     FORMULARY

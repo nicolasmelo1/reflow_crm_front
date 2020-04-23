@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Row, Col } from 'react-bootstrap';
-import { withRouter } from 'next/router'
+import Router, { withRouter } from 'next/router'
 import actions from '@shared/redux/actions';
 import { Layout, Formulary, Listing, Kanban, Error404 } from '@shared/components';
 import { DataTypeHeaderAnchor } from '@shared/styles/Data'
-import { strings, types } from '@shared/utils/constants';
+import { strings, types, paths } from '@shared/utils/constants';
 
 
 /**
@@ -102,7 +102,7 @@ class Data extends React.Component {
     getDataType = (dataTypeId) => {
         return  this.props.types ? this.props.types.default.data_type.filter(dataType => dataType.id === dataTypeId) : 'listing'
     }
-    
+
 
     setVisualization = (dataTypeId) => {
         this.props.user.data_type = dataTypeId
@@ -140,6 +140,15 @@ class Data extends React.Component {
                         formularyHasBeenUpdated={this.state.formularyHasBeenUpdated}
                         search={this.state.search}
                         />
+        }
+    }
+
+    componentDidMount = () => {
+        this.props.onUpdatePrimaryForm(this.props.router.query.form)
+        if (this.props.router.query.formId) {
+            // we take out the formId parameter of the url because it can cause some behaviour not wanted to the user to happen to the user if it is defined
+            Router.push(paths.home(this.props.router.query.form, true), paths.home(this.props.router.query.form), {shallow: true})            
+            this.openFormularyId(this.props.router.query.formId)
         }
     }
 

@@ -3,6 +3,7 @@ import { AUTHENTICATE, DATA_TYPES, SET_USER, SET_PRIMARY_FORM } from '../types';
 const initialState = {
     companyId: null,
     primaryForm: null,
+    dateFormat: 'DD/MM/YYYY HH:mm:ss',
     user: null,
     company: null,
     types: {},

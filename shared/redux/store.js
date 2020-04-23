@@ -2,8 +2,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import reducer from './reducers';
 import { persistReducer } from 'redux-persist'
-//import storage from 'redux-persist/lib/storage'
-//import { AsyncStorage } from 'react-native'
+import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 
 let storage = null
 if (process.env['APP'] === 'web' || typeof document !== 'undefined') {
@@ -21,6 +20,7 @@ export const initStore = (initialState = {}) => {
 
     const persistedReducer = persistReducer({
         key: 'primary',
+        stateReconciler: autoMergeLevel2,
         storage: storage,
         whitelist: ['login']
     }, reducer)

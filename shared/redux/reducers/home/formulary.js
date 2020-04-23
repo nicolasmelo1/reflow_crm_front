@@ -23,15 +23,6 @@ export default (state = initialState, action) => {
                 ...state,
                 buildData: action.payload
             }
-        case 'SET_FORMULARY_FIELD_SETTINGS_DATA':
-            state.update.depends_on_form[action.payload.sectionIndex].form_fields[action.payload.fieldIndex] = action.payload.body
-            return {
-                ...state,
-                update: {
-                    ...state.update,
-                    depends_on_form: state.update.depends_on_form
-                }
-            }
         case SET_FORMULARY_DATA:
             return {
                 ...state,

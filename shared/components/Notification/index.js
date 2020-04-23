@@ -1,42 +1,51 @@
 import React from 'react'
-import { NotificationText } from '../../styles/Notification'
+import actions from '../../redux/actions'
+import { connect } from 'react-redux'
+import axios from 'axios'
+import NotificationRecieved from './NotificationRecieved'
+
 
 class Notification extends React.Component {
     constructor(props) {
         super(props)
+        this.CancelToken = axios.CancelToken
+        this.source = null
     }
 
-    isVariable = (text) => {
-        return text.charAt(0) === '{' && text.charAt(text.length-1) === '}' 
+    componentDidMount = () => {
+        this.source = this.CancelToken.source()
+        this.props.onGetNotifications(this.source, {})
     }
 
-    render() {
+    componentWillUnmount = () => {
+        this.source.cancel()
+    }
+
+    renderWeb = () => {
         return (
             <div>
-                <h2>Suas notificações</h2>
-                {this.props.notifications.map((notification, index)=> {
-                    const notificationText = notification.notification
-                    const splittedNotificationSentences = notificationText.split(/{(.*?)}(?!})/g)
-                    return (
-                        <p key={index}>
-                            {splittedNotificationSentences.map((notificationSentence, notificationSentenceIndex) => {
-                            const isVariable = this.isVariable(notificationSentence)
-                            if (isVariable) {
-                                notificationSentence = notificationSentence.replace(/^{/, '')
-                                notificationSentence = notificationSentence.replace(/}$/, '')
-                            }
-                            return (
-                                <NotificationText isVariable={isVariable} key={notificationSentenceIndex}>
-                                    {notificationSentence}
-                                </NotificationText>
-                            )
-                            })}
-                        </p>    
-                    )    
-                })}
+                <NotificationRecieved
+                onGetNotifications={this.props.onGetNotifications}
+                cancelToken={this.CancelToken}
+                pagination={this.props.notificationsPagination}
+                notifications={this.props.notifications}
+                dateFormat={this.props.dateFormat}
+                />
             </div>
         )
     }
+
+    renderMobile = () => {
+        return ( null )
+    }
+
+    render() {
+        return process.env['APP'] === 'web' ? this.renderWeb() : this.renderMobile()
+    }
 }
 
-export default Notification
+export default connect(state => ({ 
+    notifications: state.notification.notification.data.data, 
+    notificationsPagination: state.notification.notification.data.pagination, 
+    dateFormat: state.login.dateFormat 
+}), actions)(Notification)
