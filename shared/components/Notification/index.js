@@ -3,7 +3,7 @@ import actions from '../../redux/actions'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import NotificationRecieved from './NotificationRecieved'
-
+import { View } from 'react-native'
 
 class Notification extends React.Component {
     constructor(props) {
@@ -36,7 +36,18 @@ class Notification extends React.Component {
     }
 
     renderMobile = () => {
-        return ( null )
+        return ( 
+            <View>
+                <NotificationRecieved
+                navigation={this.props.navigation}
+                onGetNotifications={this.props.onGetNotifications}
+                cancelToken={this.CancelToken}
+                pagination={this.props.notificationsPagination}
+                notifications={this.props.notifications}
+                dateFormat={this.props.dateFormat}
+                />
+            </View>
+        )
     }
 
     render() {

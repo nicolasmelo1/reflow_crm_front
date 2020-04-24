@@ -1,7 +1,9 @@
+import React from 'react'
 import styled from 'styled-components'
 import { Form } from 'react-bootstrap'
 
-export default styled(Form.Control)`
+export default process.env['APP'] === 'web' ?
+styled(Form.Control)`
     background-color: transparent;
     border: 0px solid black;
     transition: all !important;
@@ -16,3 +18,5 @@ export default styled(Form.Control)`
         outline: 0;
       }
 `
+:
+null

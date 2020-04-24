@@ -9,4 +9,9 @@ styled.span`
     font-weight: ${props => props.isVariable ? 'bold' : 'normal'};
 `
 :
-styled(Text)``
+styled(Text)`
+    margin: 0;
+    padding: 5px;
+    color: ${props => props.isVariable ? '#0dbf7e' : '#444'};
+    font-weight: ${props => props.isVariable ? 'bold' : 'normal'};
+`

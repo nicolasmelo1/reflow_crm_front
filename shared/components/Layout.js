@@ -137,7 +137,7 @@ class Layout extends React.Component {
                 {this.state.tokenLoaded ? (
                     <Body>
                         <Notify/> 
-                        <View style={{ height: '100%' }}>
+                        <View style={{ height: '100%'}}>
                             {this.props.showSideBar ?
                                 <Sidebar sidebarIsOpen={this.state.sidebarIsOpen} setSidebarIsOpen={this.setSidebarIsOpen} children={this.props.children}/>
                             : this.props.children}

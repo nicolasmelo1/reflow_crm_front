@@ -1,6 +1,10 @@
+import React from 'react'
 import styled from 'styled-components'
+import { TouchableOpacity, Text } from 'react-native'
 
-const StyledButtonContainer = styled.button`
+
+const StyledButtonContainer = process.env['APP'] === 'web' ? 
+styled.button`
     text-align: center;
     background-image: linear-gradient(to right, #0e5741 , #0dbf7e);
     border: 1px solid #fff;
@@ -8,20 +12,28 @@ const StyledButtonContainer = styled.button`
     padding: 5px;
     width: 100%
 `
+:
+styled(TouchableOpacity)``
 
-const StyledButtonText = styled.p`
+const StyledButtonText = process.env['APP'] === 'web' ? 
+styled.p`
     margin: 0;
     padding: 0;
     color: #fff
 `
+:
+styled(Text)``
 
-const StyledPlusIcon = styled.svg`
+const StyledPlusIcon = process.env['APP'] === 'web' ? 
+styled.svg`
     fill: #fff
 `
+:
+null
 
 const SidebarAddButton = (props) => {
     return (
-        <StyledButtonContainer onClick={props.onClick}>
+        <StyledButtonContainer onClick={props.onClick} onPress={props.onClick}>
             <StyledButtonText>{props.text}</StyledButtonText>
             <div>
                 <StyledPlusIcon width="15" height="15" viewBox="0 0 52 52">

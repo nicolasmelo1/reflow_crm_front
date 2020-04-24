@@ -3,7 +3,8 @@ import { NotificationText, NotificationDate, NotificationContainer, Notification
 import moment from 'moment'
 import { paths } from '../../utils/constants'
 import Router from 'next/router'
-
+import { View , Text } from 'react-native'
+import { navigation } from '@react-navigation/native'
 
 const NotificationRecieved = (props) => {
     const [hasFiredRequestForNewPage, _setHasFiredRequestForNewPage] = useState(false)
@@ -21,25 +22,34 @@ const NotificationRecieved = (props) => {
     }
 
     const onClickNotification = (formName, formId) => {
-        Router.push({
-            pathname: paths.home(formName, true),
-            query: {
-                formId: formId
-            }
-        }, {
-            pathname: paths.home(formName),
-            query: {
-                formId: formId
-            }
-        }, {shallow: true})
+        console.log('teste')
+        // TODO: navigate
+        if (process.env['APP'] === 'web') {
+            Router.push({
+                pathname: paths.home(formName, true),
+                query: {
+                    formId: formId
+                }
+            }, {
+                pathname: paths.home(formName),
+                query: {
+                    formId: formId
+                }
+            }, {shallow: true})
+        } else{
+            props.navigation.navigate('Home')
+        }
     }
 
     const isVariable = (text) => {
         return text.charAt(0) === '{' && text.charAt(text.length-1) === '}' 
     }
 
-    const onScroll = () => {
-        if (!hasFiredRequestForNewPageRef.current && paginationRef.current.current < paginationRef.current.total && notificationContainerRef.current.scrollTop >= (notificationContainerRef.current.scrollHeight - notificationContainerRef.current.offsetHeight))  {
+    const onScroll = (e) => {
+        const hasReachedBottom = process.env['APP'] === 'web' ? 
+            (notificationContainerRef.current.scrollTop >= (notificationContainerRef.current.scrollHeight - notificationContainerRef.current.offsetHeight)) : 
+            e.nativeEvent.layoutMeasurement.height + e.nativeEvent.contentOffset.y >= e.nativeEvent.contentSize.height
+        if (!hasFiredRequestForNewPageRef.current && paginationRef.current.current < paginationRef.current.total && hasReachedBottom)  {
             setHasFiredRequestForNewPage(true) 
             const page = paginationRef.current.current + 1
             props.onGetNotifications(sourceRef, { page: page }).then(response => {
@@ -52,9 +62,13 @@ const NotificationRecieved = (props) => {
 
     useEffect(() => {
         sourceRef.current = props.cancelToken.source()
-        notificationContainerRef.current.addEventListener('scroll', onScroll)
+        if (notificationContainerRef.current) { 
+            notificationContainerRef.current.addEventListener('scroll', onScroll)
+        }
         return () => {
-            notificationContainerRef.current.removeEventListener('scroll', onScroll)
+            if (notificationContainerRef.current) { 
+                notificationContainerRef.current.removeEventListener('scroll', onScroll)
+            }
             if(sourceRef.current) {
                 sourceRef.current.cancel()
             }
@@ -67,9 +81,43 @@ const NotificationRecieved = (props) => {
 
 
     const renderMobile = () => {
-        <View>
-
-        </View>
+        return(
+            <View>
+                <NotificationTitle>Suas notificações</NotificationTitle>
+                <NotificationContainer onScroll={e=> {onScroll(e)}} scrollEventThrottle={16}>
+                    {props.notifications.map((notification, index)=> {
+                        const notificationText = notification.notification
+                        const splittedNotificationSentences = notificationText.split(/{(.*?)}(?!})/g)
+                        const date = moment(notification.created_at).format(props.dateFormat)
+                        return (
+                            <NotificationCard key={index} hasRead={notification.has_read} onPress={e=> {onClickNotification(notification.form_name, notification.form)}}>
+                                <NotificationDate>
+                                    {date}
+                                </NotificationDate>
+                                <Text style={{ margin: 0 }}>
+                                    {splittedNotificationSentences.map((notificationSentence, notificationSentenceIndex) => {
+                                    const notificationIsVariable = isVariable(notificationSentence)
+                                    if (notificationIsVariable) {
+                                        notificationSentence = notificationSentence.replace(/^{/, '')
+                                        notificationSentence = notificationSentence.replace(/}$/, '')
+                                    }
+                                    if (notificationSentence !== '') {
+                                        return (
+                                            <NotificationText isVariable={notificationIsVariable} key={notificationSentenceIndex}>
+                                                {notificationSentence}
+                                            </NotificationText>
+                                        )
+                                    } else {
+                                        return ''
+                                    }
+                                    })}
+                                </Text>
+                            </NotificationCard>
+                        )    
+                    })}
+                </NotificationContainer>
+            </View>
+        )
     }
 
     const renderWeb = () => {

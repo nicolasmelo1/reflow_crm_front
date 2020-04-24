@@ -7,6 +7,7 @@ import { initStore } from '@shared/redux/store'
 import { NavigationContainer } from '@react-navigation/native'
 import  { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Data from './pages/data'
+import Notification from './pages/notification'
 import Navbar from '@shared/components/Navbar'
 import Layout from '@shared/components/Layout'
 import Login from '@shared/components/Login'
@@ -29,7 +30,11 @@ const App = (props) => {
         } else {
             const Tab = createBottomTabNavigator()
             return (
-                <Navbar Tab={Tab} HomeComponent={Data}/>
+                <Navbar 
+                Tab={Tab} 
+                HomeComponent={Data}
+                NotificationComponent={Notification}
+                />
             )
         }
     }

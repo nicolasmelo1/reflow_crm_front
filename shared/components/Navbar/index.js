@@ -70,6 +70,7 @@ const Navbar = (props) => {
         return (
             <Tab.Navigator>
                 <Tab.Screen name="Home" component={props.HomeComponent} />
+                <Tab.Screen name="Notification" component={props.NotificationComponent} />
             </Tab.Navigator>
         )
     }

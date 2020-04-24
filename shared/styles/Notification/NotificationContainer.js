@@ -8,4 +8,7 @@ styled.div`
     overflow-y: auto;
 `
 :
-styled(ScrollView)``
+styled(ScrollView)`
+    padding: 5px;
+    height: 95%;
+`

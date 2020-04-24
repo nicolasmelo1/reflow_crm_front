@@ -1,7 +1,9 @@
+import React from 'react'
 import styled from 'styled-components'
 import { Dropdown } from 'react-bootstrap'
 
-export default styled(Dropdown.Toggle)`
+export default process.env['APP'] === 'web' ? 
+styled(Dropdown.Toggle)`
     background-color: white !important;
     color: #444444 !important;
     border: 0px white;
@@ -14,3 +16,5 @@ export default styled(Dropdown.Toggle)`
         color: #444 !important ;
     }
 `
+:
+null

@@ -7,4 +7,7 @@ styled.small`
     color: #bfbfbf
 `
 :
-styled(Text)``
+styled(Text)`
+    color: #bfbfbf;
+    font-size: 10px 
+`

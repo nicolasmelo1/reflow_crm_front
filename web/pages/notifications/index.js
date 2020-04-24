@@ -12,14 +12,7 @@ class Notifications extends React.Component {
     render() {
         return (
             <Layout title={'Notificações / Reflow'}>
-                <Notification notifications={[
-                    {
-                        notification: 'teste {{ 1 }} teste'
-                    }, 
-                    {
-                        notification: 'teste {{ 2 }} sei la'
-                    },
-                ]}/>
+                <Notification/>
             </Layout>
         )
     }

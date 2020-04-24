@@ -9,4 +9,7 @@ styled.h2`
 ` 
 :
 styled(Text)`
+    color: #0dbf7e;
+    font-size: 24px;
+    margin-bottom: 5px;
 `
