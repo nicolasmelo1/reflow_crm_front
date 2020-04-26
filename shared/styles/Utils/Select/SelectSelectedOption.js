@@ -1,6 +1,10 @@
+import React from 'react'
 import styled from 'styled-components'
+import { TouchableOpacity } from 'react-native'
 
-export default styled.button`
+
+export default process.env['APP'] === 'web' ? 
+styled.button`
     display: inline-block;
     padding: .156rem .375rem;
     margin: .156rem 0 .156rem .375rem;
@@ -13,4 +17,15 @@ export default styled.button`
         color: #444;
         background-color: #bfbfbf
     }
+`
+:
+styled(TouchableOpacity)`
+    padding: 5px 5px;
+    margin: 2px;
+    justify-content: center;
+    align-items: center;
+    background-color: ${props => props.selected ? '#bfbfbf' : props.color};
+    border-radius: 5px;
+    border: 0;
+    color: ${props => props.selected ? '#444' : '#fff'};
 `

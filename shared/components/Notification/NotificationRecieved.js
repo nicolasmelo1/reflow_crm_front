@@ -4,7 +4,6 @@ import moment from 'moment'
 import { paths } from '../../utils/constants'
 import Router from 'next/router'
 import { View , Text } from 'react-native'
-import { navigation } from '@react-navigation/native'
 
 const NotificationRecieved = (props) => {
     const [hasFiredRequestForNewPage, _setHasFiredRequestForNewPage] = useState(false)
@@ -22,7 +21,6 @@ const NotificationRecieved = (props) => {
     }
 
     const onClickNotification = (formName, formId) => {
-        console.log('teste')
         // TODO: navigate
         if (process.env['APP'] === 'web') {
             Router.push({
@@ -76,8 +74,8 @@ const NotificationRecieved = (props) => {
     }, [])
 
     useEffect(() => {
-        paginationRef.current = props.pagination
-    }, [props.pagination])
+        paginationRef.current = props.notification.pagination
+    }, [props.notification])
 
 
     const renderMobile = () => {
@@ -85,7 +83,7 @@ const NotificationRecieved = (props) => {
             <View>
                 <NotificationTitle>Suas notificações</NotificationTitle>
                 <NotificationContainer onScroll={e=> {onScroll(e)}} scrollEventThrottle={16}>
-                    {props.notifications.map((notification, index)=> {
+                    {props.notification.data.map((notification, index)=> {
                         const notificationText = notification.notification
                         const splittedNotificationSentences = notificationText.split(/{(.*?)}(?!})/g)
                         const date = moment(notification.created_at).format(props.dateFormat)
@@ -125,7 +123,7 @@ const NotificationRecieved = (props) => {
             <div>
                 <NotificationTitle>Suas notificações</NotificationTitle>
                 <NotificationContainer ref={notificationContainerRef}>
-                    {props.notifications.map((notification, index)=> {
+                    {props.notification.data.map((notification, index)=> {
                         const notificationText = notification.notification
                         const splittedNotificationSentences = notificationText.split(/{(.*?)}(?!})/g)
                         const date = moment(notification.created_at).format(props.dateFormat)

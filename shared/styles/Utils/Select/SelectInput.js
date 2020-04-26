@@ -1,7 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
+import { TextInput } from 'react-native'
 
-export default styled(React.forwardRef(({searchValueColor, ...rest}, ref) => <input {...rest} ref={ref}/>))`
+export default process.env['APP'] === 'web' ? 
+styled(React.forwardRef(({searchValueColor, ...rest}, ref) => <input {...rest} ref={ref}/>))`
     color: ${props=>props.searchValueColor ? props.searchValueColor : 'black'};
     caret-color: ${props=>props.searchValueColor ? props.searchValueColor : 'black'};
     background-color: transparent;
@@ -15,4 +17,13 @@ export default styled(React.forwardRef(({searchValueColor, ...rest}, ref) => <in
     &:focus {
         outline: none;
     }
+`
+:
+styled(React.forwardRef(({searchValueColor, ...rest}, ref) => <TextInput {...rest} ref={ref}/>))`
+    color: ${props=>props.searchValueColor ? props.searchValueColor : 'black'};
+    border: 0;
+    padding: 4px;
+    margin: 1px 2px;
+    width: 50%;
+
 `

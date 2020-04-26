@@ -1,47 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import Utils from '../../styles/Utils'
-
-/**
- * This __MUST NOT__ be called from outside the file, this is only used to build the select options
- * @param {Array<Object>} options - contains all of the options you want to display
- * @param {Function} setSelectedOptions - Function to change the selected options by the user
- * @param {Function} updateOptions - function used to update the options displayed for the user that he can select
- * @param {Function} onChange - the onChange function recieved by Select component
- * @param {Array<Object>} selectedOptions - Containing all of the options the user selected. The objects here have the keys: 
- * - `label`: the value to display to the user
- * - `value`: the internal value, usually unique
- * - `selected`: usually `false` to tell if the user has selected this so we can delete
- * @param {String} optionDividerColor - (optional) - default to #fff
- * @param {String} optionOnHoverColor - (optional) - default to #444
- * @param {String} optionOnHoverBackgroundColor - (optional) - default to #bfbfbf
- * @param {Boolean} multiple - Explained in Select component
- * @param {String} placeholder - Text to show in the placeholder of the input when no option is selected.
- */
-const Option = (props) => {
-    const filteredOptions = props.options.filter(option=> props.selectedOptions.find(selectedOption=> selectedOption.value === option.value) === undefined);
-
-    return (
-        <Utils.Select.OptionsListContainer>
-            {filteredOptions.map((option, index)=> (
-                <Utils.Select.OptionItem 
-                hasBorder={index < filteredOptions.length-1}
-                key={option.value} 
-                optionDividerColor={props.optionDividerColor}
-                optionOnHoverColor={props.optionOnHoverColor}
-                optionOnHoverBackgroundColor={props.optionOnHoverBackgroundColor}
-                onClick={e=>{ 
-                    e.preventDefault()
-                    e.stopPropagation()
-                    props.onSelectOption(e, option) 
-                }}
-                >
-                    {props.renderLabel(option.label, index)}
-                </Utils.Select.OptionItem> 
-            ))}
-        </Utils.Select.OptionsListContainer>
-    )
-}
+import Utils from '../../../styles/Utils'
+import Option from './Option'
+import { SafeAreaView, Text } from 'react-native';
 
 /**
  * Custom select component used in our formulary, if you need to change something in the select, change this component.
@@ -107,12 +68,16 @@ const Select = (props) => {
     }
 
     const onSelectClick = (e) => {
-        e.stopPropagation();
-        if (selectRef.current && selectRef.current.contains(e.target)) {
+        if (e) e.stopPropagation()
+        if (process.env['APP'] === 'web') {
+            if (selectRef.current && selectRef.current.contains(e.target)) {
+                setIsOpen(true)
+            } else if (setIsOpenRef.current) {
+                setIsOpen(false)
+                onClickSelectedOption()
+            }
+        } else {
             setIsOpen(true)
-        } else if (setIsOpenRef.current) {
-            setIsOpen(false)
-            onClickSelectedOption()
         }
     }
 
@@ -144,7 +109,8 @@ const Select = (props) => {
     }
 
     const onRemoveSelectedOption = (e) => {
-        if ([46, 8].includes(e.keyCode)){
+        const keyCode = process.env['APP'] === 'web' ? e.keyCode : e.nativeEvent.key
+        if ([46, 8, 'Backspace'].includes(keyCode)){
             let newSelectedOptions = selectedOptions
             if (selectedOptions.find(selectedOption=> selectedOption.selected === true)) {
                 newSelectedOptions = selectedOptions.filter(selectedOption=>{
@@ -171,6 +137,13 @@ const Select = (props) => {
         }
     }
 
+
+    useEffect(() => {
+        if (isOpen) {
+            inputRef.current.focus()
+        }
+    }, [isOpen])
+
     useEffect(() => {
         try {
             if (JSON.stringify(props.options) !== JSON.stringify(options)) {
@@ -182,9 +155,13 @@ const Select = (props) => {
     }, [props.options])
 
     useEffect(() => {
-        document.addEventListener("mousedown", onSelectClick); 
+        if (process.env['APP'] === 'web') {
+            document.addEventListener("mousedown", onSelectClick)
+        }
         return () => {
-            document.removeEventListener("mousedown", onSelectClick);
+            if (process.env['APP'] === 'web') {
+                document.removeEventListener("mousedown", onSelectClick);
+            }
         };
     }, [onSelectClick]);
     
@@ -204,61 +181,125 @@ const Select = (props) => {
 
     }, [props.initialValues])
 
-    return(
-        <Utils.Select.Select isOpen={isOpen} ref={selectRef} onClick={e=>{inputRef.current.focus()}}>
-            <Utils.Select.SelectedOptionsContainer isOpen={isOpen}>
-                {(isOpen) ? (<Utils.Select.GoBackArrow icon="arrow-left" onClick={e=> {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    setIsOpen(false)
-                }}/>) : ''}
-                {selectedOptions.map((selectedOption, index)=> (
-                    <Utils.Select.SelectedOption 
-                    key={selectedOption.value} 
-                    color={selectedOption.color} 
-                    selected={selectedOption.selected} 
-                    onClick={e=>{
+    const renderMobile = () => {
+        return (
+            <Utils.Select.Select isOpen={isOpen} ref={selectRef} onPress={e=> {onSelectClick()}}>
+                <SafeAreaView>
+                    <Utils.Select.SelectedOptionsContainer isOpen={isOpen}>
+                        {(isOpen) ? (<Utils.Select.GoBackArrow title={'<'} onPress={e=> {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            setIsOpen(false)
+                        }}/>) : null}
+                        {selectedOptions.map((selectedOption, index)=> (
+                        <Utils.Select.SelectedOption 
+                        key={selectedOption.value} 
+                        color={selectedOption.color} 
+                        selected={selectedOption.selected} 
+                        onPress={e=>{
+                            e.preventDefault()
+                            e.stopPropagation()
+                            onClickSelectedOption(e, index)}}
+                        >
+                            <Text style={{color: '#fff'}}>
+                                {renderLabel(selectedOption.label, index)}
+                            </Text>
+                        </Utils.Select.SelectedOption>
+                        ))}
+                        <Utils.Select.Input 
+                            ref={inputRef} 
+                            placeholder={selectedOptions.length === 0 ? props.placeholder: ''}
+                            value={searchValue} 
+                            searchValueColor={props.searchValueColor}
+                            onChange={e => {updateOptions(e.nativeEvent.text, [...selectedOptions])}} 
+                            onKeyPress={e=>onRemoveSelectedOption(e)}
+                            onFocus={e=> onSelectClick()}
+                        />
+                    </Utils.Select.SelectedOptionsContainer>
+                    <Utils.Select.OptionsHolder>
+                        {(isOpen) ? (
+                            <Utils.Select.OptionsContainer 
+                            keyboardDismissMode={'on-drag'}
+                            keyboardShouldPersistTaps={'handled'}
+                            optionBackgroundColor={props.optionBackgroundColor}
+                            optionColor={props.optionColor}
+                            >
+                                <Option 
+                                optionDividerColor={props.optionDividerColor}
+                                optionOnHoverColor={props.optionOnHoverColor}
+                                optionOnHoverBackgroundColor={props.optionOnHoverBackgroundColor}
+                                options={options}
+                                onSelectOption={onSelectOption}
+                                selectedOptions={selectedOptions}
+                                renderLabel={renderLabel}
+                                />
+                            </Utils.Select.OptionsContainer>
+                        ): null}
+                    </Utils.Select.OptionsHolder>
+                </SafeAreaView>
+            </Utils.Select.Select>
+        )
+    }
+
+    const renderWeb = () => {
+        return(
+            <Utils.Select.Select isOpen={isOpen} ref={selectRef} onClick={e=>{inputRef.current.focus()}}>
+                <Utils.Select.SelectedOptionsContainer isOpen={isOpen}>
+                    {(isOpen) ? (<Utils.Select.GoBackArrow icon="arrow-left" onClick={e=> {
                         e.preventDefault()
                         e.stopPropagation()
-                        onClickSelectedOption(e, index)}}
-                    >
-                        {renderLabel(selectedOption.label, index)}
-                    </Utils.Select.SelectedOption>
-                ))}
-                <Utils.Select.Input 
-                ref={inputRef} 
-                type="text" 
-                placeholder={selectedOptions.length === 0 ? props.placeholder: ''}
-                value={searchValue} 
-                searchValueColor={props.searchValueColor}
-                onChange={e => {updateOptions(e.target.value, [...selectedOptions])}} 
-                onClick={e=> {
-                    e.preventDefault()
-                    e.stopPropagation()
-                }}
-                onKeyUp={e=>onRemoveSelectedOption(e)}
-                />
-            </Utils.Select.SelectedOptionsContainer>
-            <Utils.Select.OptionsHolder>
-                {(isOpen) ? (
-                    <Utils.Select.OptionsContainer 
-                    optionBackgroundColor={props.optionBackgroundColor}
-                    optionColor={props.optionColor}
-                    >
-                        <Option 
-                        optionDividerColor={props.optionDividerColor}
-                        optionOnHoverColor={props.optionOnHoverColor}
-                        optionOnHoverBackgroundColor={props.optionOnHoverBackgroundColor}
-                        options={options}
-                        onSelectOption={onSelectOption}
-                        selectedOptions={selectedOptions}
-                        renderLabel={renderLabel}
-                        />
-                    </Utils.Select.OptionsContainer>
-                ): ''}
-            </Utils.Select.OptionsHolder>
-        </Utils.Select.Select>
-    )
+                        setIsOpen(false)
+                    }}/>) : ''}
+                    {selectedOptions.map((selectedOption, index)=> (
+                        <Utils.Select.SelectedOption 
+                        key={selectedOption.value} 
+                        color={selectedOption.color} 
+                        selected={selectedOption.selected} 
+                        onClick={e=>{
+                            e.preventDefault()
+                            e.stopPropagation()
+                            onClickSelectedOption(e, index)}}
+                        >
+                            {renderLabel(selectedOption.label, index)}
+                        </Utils.Select.SelectedOption>
+                    ))}
+                    <Utils.Select.Input 
+                    ref={inputRef} 
+                    type="text" 
+                    placeholder={selectedOptions.length === 0 ? props.placeholder: ''}
+                    value={searchValue} 
+                    searchValueColor={props.searchValueColor}
+                    onChange={e => {updateOptions(e.target.value, [...selectedOptions])}} 
+                    onClick={e=> {
+                        e.preventDefault()
+                        e.stopPropagation()
+                    }}
+                    onKeyUp={e=>onRemoveSelectedOption(e.target.value)}
+                    />
+                </Utils.Select.SelectedOptionsContainer>
+                <Utils.Select.OptionsHolder>
+                    {(isOpen) ? (
+                        <Utils.Select.OptionsContainer 
+                        optionBackgroundColor={props.optionBackgroundColor}
+                        optionColor={props.optionColor}
+                        >
+                            <Option 
+                            optionDividerColor={props.optionDividerColor}
+                            optionOnHoverColor={props.optionOnHoverColor}
+                            optionOnHoverBackgroundColor={props.optionOnHoverBackgroundColor}
+                            options={options}
+                            onSelectOption={onSelectOption}
+                            selectedOptions={selectedOptions}
+                            renderLabel={renderLabel}
+                            />
+                        </Utils.Select.OptionsContainer>
+                    ): ''}
+                </Utils.Select.OptionsHolder>
+            </Utils.Select.Select>
+        )
+    }
+
+    return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 
 export default Select

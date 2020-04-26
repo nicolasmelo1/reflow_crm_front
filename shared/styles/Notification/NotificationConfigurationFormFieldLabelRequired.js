@@ -1,12 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
-import { View } from 'react-native'
+import { Text } from 'react-native'
 
 export default process.env['APP'] === 'web' ? 
-styled.ul`
-    margin: 0
+styled.p`
+    display: inline;
+    color: red;
 `
-:
-styled(View)`
-    margin: 0
+: 
+styled(Text)`
+    color: red;
 `

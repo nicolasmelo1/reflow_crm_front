@@ -1,6 +1,8 @@
+import React from 'react'
 import styled from 'styled-components'
 
-export default styled.div`
+export default process.env['APP'] === 'web' ?  
+styled.div`
     margin: 5px;
     display: inline-block;
 
@@ -8,3 +10,5 @@ export default styled.div`
         width: 47%;
     }
 `
+:
+null

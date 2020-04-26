@@ -197,8 +197,8 @@ const FORMULARY = {
 
 
 const HOME = {
-    getForms: async () => {
-        return await requests.get(`${companyId}/data/api/forms/`)
+    getForms: async (source) => {
+        return await requests.get(`${companyId}/data/api/forms/`, {}, {}, source)
     },
     getUpdateForms: async () => {
         return await requests.get(`${companyId}/settings/api/formulary/`)
@@ -258,6 +258,12 @@ const LISTING = {
 const NOTIFICATION = {
     getNotification: async (source, params) => {
         return await requests.get(`${companyId}/notification/api/`, params, {}, source)
+    },
+    getNotificationConfiguration: async (source, params) => {
+        return await requests.get(`${companyId}/notification/api/settings/`, params, {}, source)
+    },
+    getNotificationConfigurationFields: async (source, formId) => {
+        return await requests.get(`${companyId}/notification/api/settings/get_fields/${formId}/`, {}, {}, source)
     }
 }
 
@@ -304,4 +310,4 @@ export default {
     LISTING,
     KANBAN,
     FORMULARY
-};
+}

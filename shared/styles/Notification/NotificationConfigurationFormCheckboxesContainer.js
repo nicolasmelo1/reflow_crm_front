@@ -3,10 +3,14 @@ import styled from 'styled-components'
 import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ? 
-styled.ul`
-    margin: 0
+styled.label`
+    background-color: #fff;
+    padding: 5px;
+    border-radius: 4px;
+    user-select: none;
 `
 :
 styled(View)`
-    margin: 0
+    flex-direction: row;
+    flex-wrap: wrap
 `

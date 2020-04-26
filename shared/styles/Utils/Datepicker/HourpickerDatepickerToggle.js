@@ -1,6 +1,8 @@
+import React from 'react'
 import styled from 'styled-components'
 
-export default styled.div`
+export default process.env['APP'] === 'web' ? 
+styled.div`
     width: 100%;
     text-align: center;
     color: #fff;
@@ -11,3 +13,5 @@ export default styled.div`
         color: #0dbf7e;
     }
 `
+:
+null

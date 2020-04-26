@@ -1,6 +1,8 @@
+import React from 'react'
 import styled from 'styled-components'
 
-export default styled.div`
+export default process.env['APP'] === 'web' ?  
+styled.div`
     position: absolute;
     padding: 5px;
     background: #444;
@@ -13,3 +15,5 @@ export default styled.div`
     z-index: 6;
     transform: translate3d(0px, ${props=> props.translate.toString()}px, 0px)
 `
+:
+null

@@ -11,7 +11,7 @@ import { paths } from '../utils/constants'
 import agent from '../redux/agent'
 import ContentContainer from '../styles/ContentContainer'
 import Body from '../styles/Body'
-import { AsyncStorage, View } from 'react-native'
+import { AsyncStorage, View, Keyboard, TouchableWithoutFeedback } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { 
     faArrowDown, 
@@ -135,14 +135,16 @@ class Layout extends React.Component {
         return (
             <View style={{ height: '100%'}}>
                 {this.state.tokenLoaded ? (
-                    <Body>
-                        <Notify/> 
-                        <View style={{ height: '100%'}}>
-                            {this.props.showSideBar ?
-                                <Sidebar sidebarIsOpen={this.state.sidebarIsOpen} setSidebarIsOpen={this.setSidebarIsOpen} children={this.props.children}/>
-                            : this.props.children}
-                        </View>
-                    </Body>
+                    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+                        <Body>
+                            <Notify/> 
+                            <View style={{ height: '100%', backgroundColor:'#fff'}}>
+                                {this.props.showSideBar ?
+                                    <Sidebar sidebarIsOpen={this.state.sidebarIsOpen} setSidebarIsOpen={this.setSidebarIsOpen} children={this.props.children}/>
+                                : this.props.children}
+                            </View>
+                        </Body>
+                    </TouchableWithoutFeedback>
                 ) : null }
             </View>
         )

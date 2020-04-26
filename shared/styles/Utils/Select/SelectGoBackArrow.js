@@ -1,7 +1,10 @@
+import React from 'react'
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Button } from 'react-native'
 
-export default styled(FontAwesomeIcon)`
+export default process.env['APP'] === 'web' ?  
+styled(FontAwesomeIcon)`
     @media(min-width: 420px) {
         display: none;
     }
@@ -9,4 +12,7 @@ export default styled(FontAwesomeIcon)`
         margin: 0 10px;
         cursor: pointer;
     }
+`
+:
+styled(Button)`
 `

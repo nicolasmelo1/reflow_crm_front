@@ -14,6 +14,8 @@ import SidebarGroupEdit from './SidebarGroupEdit'// not implemented in RN
 import actions from '../../redux/actions'
 import { connect } from 'react-redux';
 import { strings } from '../../utils/constants'
+import axios from 'axios'
+
 /*** 
  * This is the sidebar of management pages, like kanban, listing and others, this side bar right now is only rendered in those pages.
  * It's important to notice the constructor, we make a request while constructing the component. 
@@ -21,13 +23,22 @@ import { strings } from '../../utils/constants'
 class Sidebar extends React.Component {
     constructor(props){
         super(props)
+        this.CancelToken = axios.CancelToken
+        this.source = null
         this.state = {
             isEditing: false
         }
     }
     
     componentDidMount() {
-        this.props.onGetForms()
+        this.source = this.CancelToken.source()
+        this.props.onGetForms(this.source)
+    }
+
+    componentWillUnmount = () => {
+        if (this.source) {
+            this.source.cancel()
+        }
     }
 
     enterEditMode = (e) => {

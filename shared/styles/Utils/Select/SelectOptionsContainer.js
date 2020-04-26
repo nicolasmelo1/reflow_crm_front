@@ -1,7 +1,9 @@
-import styled from 'styled-components'
 import React from 'react'
+import styled from 'styled-components'
+import { ScrollView } from 'react-native'
 
-export default styled(React.forwardRef(({optionBackgroundColor, optionColor, ...rest}, ref) => <div {...rest} ref={ref}/>))`
+export default process.env['APP'] === 'web' ? 
+styled(React.forwardRef(({optionBackgroundColor, optionColor, ...rest}, ref) => <div {...rest} ref={ref}/>))`
     width: 100%; 
     background-color: ${props => props.optionBackgroundColor ? props.optionBackgroundColor: '#444'};
     color: ${props => props.optionColor ? props.optionColor: '#f2f2f2'};
@@ -16,4 +18,11 @@ export default styled(React.forwardRef(({optionBackgroundColor, optionColor, ...
         position: absolute;
         z-index: 5;
     }
+`
+:
+styled(React.forwardRef(({optionBackgroundColor, optionColor, ...rest}, ref) => <ScrollView {...rest} ref={ref}/>))`
+    width: 100%; 
+    background-color: ${props => props.optionBackgroundColor ? props.optionBackgroundColor: '#444'};
+    color: ${props => props.optionColor ? props.optionColor: '#f2f2f2'};
+    height: 100%;
 `

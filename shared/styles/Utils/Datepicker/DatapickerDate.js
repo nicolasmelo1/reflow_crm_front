@@ -1,3 +1,4 @@
+import React from 'react'
 import styled from 'styled-components'
 
 const getBackgroundColor = (props) => {
@@ -12,7 +13,8 @@ const getBorderAndBackgroundColor = (isDarkBackground) => {
     return isDarkBackground ? '#fff': '#444'
 }
 
-export default styled.td`
+export default process.env['APP'] === 'web' ?  
+styled.td`
     text-align: center !important;
     padding: 5px 2px;
     font-size: 14px;
@@ -25,3 +27,5 @@ export default styled.td`
         background-color: ${props=>props.isDarkBackground ? '#ccc':'#999'};
     }
 `
+:
+null

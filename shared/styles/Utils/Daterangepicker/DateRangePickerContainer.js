@@ -1,6 +1,8 @@
+import React from 'react'
 import styled from 'styled-components'
 
-export default styled.div`
+export default process.env['APP'] === 'web' ?  
+styled.div`
     position: absolute;
     background-color: #f2f2f2;
     padding: 10px;
@@ -11,3 +13,5 @@ export default styled.div`
         width: 462px;
     }
 `
+:
+null

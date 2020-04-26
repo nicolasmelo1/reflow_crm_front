@@ -3,10 +3,10 @@ import styled from 'styled-components'
 import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ? 
-styled.ul`
-    margin: 0
+styled.div`
+    margin: ${props => props.isVariable ? '0 0 5px 0' : '0 10px 5px 10px'};
 `
 :
 styled(View)`
-    margin: 0
+    margin: ${props => props.isVariable ? '0 0 5px 0' : '0 10px 5px 10px'};
 `
