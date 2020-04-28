@@ -19,6 +19,7 @@ const NotificationConfiguration = (props) => {
                         formularies={props.formularies}
                         cancelToken={props.cancelToken}
                         updateNotification={props.updateNotification}
+                        createOrUpdateNotification={props.createOrUpdateNotification}
                         onGetNotificationConfigurationFields={props.onGetNotificationConfigurationFields}
                         notificationConfigurationFields={props.notificationConfigurationFields}
                         notificationConfigurationIndex={props.notificationConfigurationIndex}
@@ -42,6 +43,7 @@ const NotificationConfiguration = (props) => {
                         formularies={props.formularies}
                         cancelToken={props.cancelToken}
                         updateNotification={props.updateNotification}
+                        createOrUpdateNotification={props.createOrUpdateNotification}
                         onGetNotificationConfigurationFields={props.onGetNotificationConfigurationFields}
                         notificationConfigurationFields={props.notificationConfigurationFields}
                         notificationConfigurationIndex={props.notificationConfigurationIndex}

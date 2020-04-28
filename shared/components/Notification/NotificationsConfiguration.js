@@ -12,6 +12,13 @@ const NotificationsConfiguration = (props) => {
         props.onUpdateNotificationConfigurationState(notificationsData)
     }
 
+    const createOrUpdateNotification = (body) => {
+        if (body.id) {
+            return props.onUpdateNotificationConfiguration(body, body.id)
+        } else {
+            //props.createNotificationConfiguration(data)
+        }
+    }
 
     useEffect(() => {
         sourceRef.current = props.cancelToken.source()
@@ -27,13 +34,14 @@ const NotificationsConfiguration = (props) => {
         return (
             <View>
                 <Button onPress={e=> {props.setIsEditing(false)}} title={'< Voltar'}/>
-                <ScrollView>
+                <ScrollView keyboardShouldPersistTaps={'handled'}>
                     {props.notificationConfiguration.data.map((notificationConfiguration, index) => (
                         <NotificationConfiguration
                         key={index}
                         formularies={props.formularies}
                         onGetNotificationConfigurationFields={props.onGetNotificationConfigurationFields}
                         updateNotification={updateNotification}
+                        createOrUpdateNotification={createOrUpdateNotification}
                         cancelToken={props.cancelToken}
                         notificationConfigurationIndex={index}
                         notificationConfiguration={notificationConfiguration}
@@ -55,6 +63,7 @@ const NotificationsConfiguration = (props) => {
                     formularies={props.formularies}
                     onGetNotificationConfigurationFields={props.onGetNotificationConfigurationFields}
                     updateNotification={updateNotification}
+                    createOrUpdateNotification={createOrUpdateNotification}
                     cancelToken={props.cancelToken}
                     notificationConfigurationIndex={index}
                     notificationConfiguration={notificationConfiguration}

@@ -35,12 +35,17 @@ const onUpdateNotificationConfigurationState = (data) => {
     }
 }
 
+
+const onUpdateNotificationConfiguration = (body, notificationConfigurationId) => {
+    return (_) => {
+        return agent.NOTIFICATION.updateNotificationConfiguration(body, notificationConfigurationId)
+    }
+}
+
+
 const onGetNotificationConfigurationFields = (source, formId) => {
-    return async (dispatch) => {
-        const response = await agent.NOTIFICATION.getNotificationConfigurationFields(source, formId)
-        if (response && response.status === 200) {
-            dispatch({ type: SET_NOTIFICATION_CONFIGURATION_FIELDS, payload: response.data.data })
-        }
+    return (_) => {
+        return agent.NOTIFICATION.getNotificationConfigurationFields(source, formId)
     }
 }
 
@@ -48,5 +53,6 @@ export default {
     onGetNotifications,
     onGetNotificationConfiguration,
     onGetNotificationConfigurationFields,
-    onUpdateNotificationConfigurationState
+    onUpdateNotificationConfigurationState,
+    onUpdateNotificationConfiguration
 }

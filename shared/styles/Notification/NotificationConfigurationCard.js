@@ -8,6 +8,7 @@ styled.div`
     padding: 5px;
     background-color: ${props => props.formIsOpen ? '#0dbf7e' : 'transparent'};
     margin-top: 5px;
+    min-height: 40px;
     border-radius: 4px;
     cursor: pointer;
 `

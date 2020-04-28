@@ -1,12 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
-import { View } from 'react-native'
+import { KeyboardAvoidingView } from 'react-native'
 
 export default process.env['APP'] === 'web' ? 
 styled.ul`
     margin: 0
 `
 :
-styled(View)`
+styled(KeyboardAvoidingView)`
     margin: 0
 `

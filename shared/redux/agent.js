@@ -264,6 +264,9 @@ const NOTIFICATION = {
     },
     getNotificationConfigurationFields: async (source, formId) => {
         return await requests.get(`${companyId}/notification/api/settings/get_fields/${formId}/`, {}, {}, source)
+    },
+    updateNotificationConfiguration: async (body, notificationConfigurationId) => {
+        return await requests.put(`${companyId}/notification/api/settings/${notificationConfigurationId}/`, body, {}, {})
     }
 }
 

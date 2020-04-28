@@ -25,13 +25,14 @@ const Option = (props) => {
         return (
             <Utils.Select.OptionsListContainer>
                 {filteredOptions.map((option, index)=> (
-                    <View style={{
+                    <View 
+                    key={option.value} 
+                    style={{
                         borderBottomColor: `${props.optionDividerColor ? props.optionDividerColor : '#bfbfbf'}`,
                         borderBottomWidth: 1
                     }}>
                         <Utils.Select.OptionItem 
                         hasBorder={index < filteredOptions.length-1}
-                        key={option.value} 
                         optionDividerColor={props.optionDividerColor}
                         optionOnHoverColor={props.optionOnHoverColor}
                         optionOnHoverBackgroundColor={props.optionOnHoverBackgroundColor}

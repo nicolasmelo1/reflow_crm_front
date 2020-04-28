@@ -116,7 +116,6 @@ class Layout extends React.Component {
                 {this.state.tokenLoaded ? (
                     <Body>
                         <Header title={this.props.title}></Header>
-                        <Notify/> 
                         <div id="main-container">
                             {this.props.hideNavBar ? '' : <Navbar onDeauthenticate={this.props.onDeauthenticate} />}
                             {this.props.showSideBar ? <Sidebar sidebarIsOpen={this.state.sidebarIsOpen} setSidebarIsOpen={this.setSidebarIsOpen} /> : ''}

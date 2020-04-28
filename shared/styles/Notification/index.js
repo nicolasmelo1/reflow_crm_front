@@ -16,7 +16,11 @@ import NotificationConfigurationFormFieldInput from './NotificationConfiguration
 import NotificationConfigurationFormFieldContainer from './NotificationConfigurationFormFieldContainer'
 import NotificationConfigurationFormSelectContainer from './NotificationConfigurationFormSelectContainer'
 import NotificationConfigurationFormVariableContainer from './NotificationConfigurationFormVariableContainer'
+import NotificationConfigurationFormSaveButton from './NotificationConfigurationFormSaveButton'
+import NotificationConfigurationFormErrors from './NotificationConfigurationFormErrors'
 
+export { NotificationConfigurationFormErrors }
+export { NotificationConfigurationFormSaveButton }
 export { NotificationConfigurationFormVariableContainer }
 export { NotificationConfigurationFormSelectContainer }
 export { NotificationConfigurationFormFieldContainer }

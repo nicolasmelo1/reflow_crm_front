@@ -110,7 +110,7 @@ const Select = (props) => {
 
     const onRemoveSelectedOption = (e) => {
         const keyCode = process.env['APP'] === 'web' ? e.keyCode : e.nativeEvent.key
-        if ([46, 8, 'Backspace'].includes(keyCode)){
+        if ([46, 8, 'Backspace'].includes(keyCode) && searchValue === ''){
             let newSelectedOptions = selectedOptions
             if (selectedOptions.find(selectedOption=> selectedOption.selected === true)) {
                 newSelectedOptions = selectedOptions.filter(selectedOption=>{
@@ -169,8 +169,8 @@ const Select = (props) => {
         const selectedInitialValues = props.initialValues.map(initialValue=> {return{ ...initialValue, selected:false, color: selectedItemColors[Math.floor(Math.random() * selectedItemColors.length)] }})
         let filteredOptions = props.options.filter(option=> selectedInitialValues.find(selectedOption=> selectedOption.value === option.value) === undefined);
         
-        try {
-            if (JSON.stringify(props.initialValues) !== JSON.stringify(selectedOptions.map(selectedOption => { return { value: selectedOption.value, label: selectedOption.label} }))) {
+        try {   
+            if (JSON.stringify(props.initialValues.map(initialValue =>({ value: initialValue.value, label: initialValue.label }))) !== JSON.stringify(selectedOptions.map(selectedOption => { return { value: selectedOption.value, label: selectedOption.label} }))) {
                 setSelectedOptions(selectedInitialValues)
                 setOptions(filteredOptions)
             }
@@ -212,14 +212,14 @@ const Select = (props) => {
                             value={searchValue} 
                             searchValueColor={props.searchValueColor}
                             onChange={e => {updateOptions(e.nativeEvent.text, [...selectedOptions])}} 
-                            onKeyPress={e=>onRemoveSelectedOption(e)}
+                            onKeyPress={e=> {onRemoveSelectedOption(e)}}
                             onFocus={e=> onSelectClick()}
                         />
                     </Utils.Select.SelectedOptionsContainer>
                     <Utils.Select.OptionsHolder>
                         {(isOpen) ? (
                             <Utils.Select.OptionsContainer 
-                            keyboardDismissMode={'on-drag'}
+                            //keyboardDismissMode={'on-drag'}
                             keyboardShouldPersistTaps={'handled'}
                             optionBackgroundColor={props.optionBackgroundColor}
                             optionColor={props.optionColor}
@@ -274,7 +274,7 @@ const Select = (props) => {
                         e.preventDefault()
                         e.stopPropagation()
                     }}
-                    onKeyUp={e=>onRemoveSelectedOption(e.target.value)}
+                    onKeyUp={e=>onRemoveSelectedOption(e)}
                     />
                 </Utils.Select.SelectedOptionsContainer>
                 <Utils.Select.OptionsHolder>

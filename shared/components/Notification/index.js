@@ -14,7 +14,7 @@ class Notification extends React.Component {
         this.CancelToken = axios.CancelToken
         this.source = null
         this.state = {
-            isEditing: false
+            isEditing: true
         }
     }
 
@@ -78,6 +78,7 @@ class Notification extends React.Component {
                     onGetNotificationConfigurationFields={this.props.onGetNotificationConfigurationFields}
                     onGetNotificationConfiguration={this.props.onGetNotificationConfiguration}
                     onUpdateNotificationConfigurationState={this.props.onUpdateNotificationConfigurationState}
+                    onUpdateNotificationConfiguration={this.props.onUpdateNotificationConfiguration}
                     />
                 ) : (
                     <div>
