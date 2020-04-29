@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 
 export default styled(FontAwesomeIcon)`
     width: 15px;

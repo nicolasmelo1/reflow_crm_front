@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Row } from 'react-bootstrap'
 import { useRouter } from 'next/router'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import Field from '../../../styles/Formulary/Field'
 import { strings } from '../../../utils/constants'
 import agent from '../../../redux/agent'

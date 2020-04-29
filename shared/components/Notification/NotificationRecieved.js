@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { NotificationText, NotificationDate, NotificationContainer, NotificationTitle, NotificationCard } from '../../styles/Notification'
 import moment from 'moment'
-import { paths } from '../../utils/constants'
+import { strings, paths } from '../../utils/constants'
 import Router from 'next/router'
 import { View , Text } from 'react-native'
 
@@ -20,8 +20,14 @@ const NotificationRecieved = (props) => {
         _setHasFiredRequestForNewPage(data);
     }
 
-    const onClickNotification = (formName, formId) => {
-        // TODO: navigate
+
+    const onClickNotification = (notificationIndex, formName, formId) => {
+        const notificationsData = JSON.parse(JSON.stringify(props.notification.data))
+        notificationsData[notificationIndex].has_read = true
+        props.onReadNotifications(notificationsData, notificationsData[notificationIndex].id)
+
+        // TODO: navigate mobile
+        
         if (process.env['APP'] === 'web') {
             Router.push({
                 pathname: paths.home(formName, true),
@@ -81,14 +87,14 @@ const NotificationRecieved = (props) => {
     const renderMobile = () => {
         return(
             <View>
-                <NotificationTitle>Suas notificações</NotificationTitle>
+                <NotificationTitle>{strings['pt-br']['notificationRecievedTitleLabel']}</NotificationTitle>
                 <NotificationContainer onScroll={e=> {onScroll(e)}} scrollEventThrottle={16}>
                     {props.notification.data.map((notification, index)=> {
                         const notificationText = notification.notification
                         const splittedNotificationSentences = notificationText.split(/{(.*?)}(?!})/g)
                         const date = moment(notification.created_at).format(props.dateFormat)
                         return (
-                            <NotificationCard key={index} hasRead={notification.has_read} onPress={e=> {onClickNotification(notification.form_name, notification.form)}}>
+                            <NotificationCard key={notification.id} hasRead={notification.has_read} onPress={e=> {onClickNotification(index, notification.form_name, notification.form)}}>
                                 <NotificationDate>
                                     {date}
                                 </NotificationDate>
@@ -121,14 +127,14 @@ const NotificationRecieved = (props) => {
     const renderWeb = () => {
         return (
             <div>
-                <NotificationTitle>Suas notificações</NotificationTitle>
+                <NotificationTitle>{strings['pt-br']['notificationRecievedTitleLabel']}</NotificationTitle>
                 <NotificationContainer ref={notificationContainerRef}>
                     {props.notification.data.map((notification, index)=> {
                         const notificationText = notification.notification
                         const splittedNotificationSentences = notificationText.split(/{(.*?)}(?!})/g)
                         const date = moment(notification.created_at).format(props.dateFormat)
                         return (
-                            <NotificationCard key={index} hasRead={notification.has_read} onClick={e=> {onClickNotification(notification.form_name, notification.form)}}>
+                            <NotificationCard key={notification.id} hasRead={notification.has_read} onClick={e=> {onClickNotification(index, notification.form_name, notification.form)}}>
                                 <NotificationDate>
                                     {date}
                                 </NotificationDate>

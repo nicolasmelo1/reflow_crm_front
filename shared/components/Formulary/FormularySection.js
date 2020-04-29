@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { Col, Row } from 'react-bootstrap'
 import Fields from './Fields'
 import { Formularies } from '../../styles/Formulary'

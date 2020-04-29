@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ? 
-styled(React.forwardRef(({isOpen, ...rest}, ref) => <div {...rest} ref={ref}/>))`
+styled(React.forwardRef(({isOpen, errors, ...rest}, ref) => <div {...rest} ref={ref}/>))`
     background-color: white;
     color: #444;
     border: 1px solid ${props=>props.isOpen ? '#444': props.errors ? 'red': '#0dbf7e'};
@@ -12,8 +12,9 @@ styled(React.forwardRef(({isOpen, ...rest}, ref) => <div {...rest} ref={ref}/>))
     outline: none !important
 `
 :
-styled(View)`
+styled(React.forwardRef(({errors, ...rest}, ref) => <View {...rest} ref={ref}/>))`
     background-color: white;
     border: 1px solid ${props=> props.errors ? 'red': '#0dbf7e'};
     border-radius: 4px;
+    min-height: 30px;
 `

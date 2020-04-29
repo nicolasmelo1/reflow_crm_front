@@ -1,4 +1,4 @@
-import { SET_NOTIFICATION, SET_NOTIFICATION_CONFIGURATION, SET_NOTIFICATION_CONFIGURATION_FIELDS } from '../../types'
+import { SET_NOTIFICATION, SET_NOTIFICATION_CONFIGURATION } from '../../types'
 import agent from '../../agent'
 
 
@@ -20,6 +20,20 @@ const onGetNotifications = (source, params = { page: 1 }) => {
     }
 }
 
+const onReadNotifications = (stateData, notificationId) => {
+    return (dispatch, getState) => {
+        const payload = {
+            ...getState().notification.notification.data,
+            data: stateData
+        }
+        const body = {
+            notification_id: notificationId
+        }
+        agent.NOTIFICATION.readNotification(body)
+        dispatch({ type: SET_NOTIFICATION, payload: payload })
+    }
+}
+
 const onGetNotificationConfiguration = (source, params = {}) => {
     return async (dispatch) => {
         const response = await agent.NOTIFICATION.getNotificationConfiguration(source, params)
@@ -35,13 +49,23 @@ const onUpdateNotificationConfigurationState = (data) => {
     }
 }
 
-
 const onUpdateNotificationConfiguration = (body, notificationConfigurationId) => {
     return (_) => {
         return agent.NOTIFICATION.updateNotificationConfiguration(body, notificationConfigurationId)
     }
 }
 
+const onCreateNotificationConfiguration = (body) => {
+    return (_) => {
+        return agent.NOTIFICATION.createNotificationConfiguration(body)
+    }
+}
+
+const onRemoveNotificationConfiguration = (notificationConfigurationId) => {
+    return (_) => {
+        return agent.NOTIFICATION.removeNotificationConfiguration(notificationConfigurationId)
+    }
+}
 
 const onGetNotificationConfigurationFields = (source, formId) => {
     return (_) => {
@@ -51,8 +75,11 @@ const onGetNotificationConfigurationFields = (source, formId) => {
 
 export default {
     onGetNotifications,
+    onReadNotifications,
     onGetNotificationConfiguration,
     onGetNotificationConfigurationFields,
     onUpdateNotificationConfigurationState,
-    onUpdateNotificationConfiguration
+    onUpdateNotificationConfiguration,
+    onCreateNotificationConfiguration,
+    onRemoveNotificationConfiguration
 }

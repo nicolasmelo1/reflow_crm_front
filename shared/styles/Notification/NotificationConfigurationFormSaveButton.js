@@ -17,4 +17,13 @@ styled.button`
     }
 `
 :
-styled(TouchableOpacity)``
+styled(TouchableOpacity)`
+    width: 100%;
+    padding: 5px;
+    color: #f2f2f2;
+    border: 1px solid #444;
+    margin: 5px 0;
+    border-radius: 20px;
+    background-color: #444;
+    align-items: center;
+`

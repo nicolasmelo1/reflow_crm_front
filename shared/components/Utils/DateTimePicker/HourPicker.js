@@ -1,4 +1,4 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import Utils from '../../../styles/Utils'
 
 /** 

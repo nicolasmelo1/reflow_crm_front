@@ -4,9 +4,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 
 export default process.env['APP'] === 'web' ? 
 styled(FontAwesomeIcon)`
-    display: inline-block;
-    margin-right: 4px;
-    color: #444;
+    font-size: 20px;
+    margin: 0 10px;
+    color: #444
 `
 :
-null
+styled(FontAwesomeIcon)`
+    font-size: 20px;
+    color: #444
+`

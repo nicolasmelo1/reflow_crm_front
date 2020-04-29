@@ -6,7 +6,7 @@ import NotificationRecieved from './NotificationRecieved'
 import { View, Text } from 'react-native'
 import { NotificationButton } from '../../styles/Notification'
 import NotificationsConfiguration from './NotificationsConfiguration'
-
+import { strings } from '../../utils/constants'
 
 class Notification extends React.Component {
     constructor(props) {
@@ -14,7 +14,7 @@ class Notification extends React.Component {
         this.CancelToken = axios.CancelToken
         this.source = null
         this.state = {
-            isEditing: true
+            isEditing: false
         }
     }
 
@@ -42,19 +42,22 @@ class Notification extends React.Component {
                     <NotificationsConfiguration
                     formularies={this.props.formularies}
                     notificationConfiguration={this.props.notificationConfiguration}
-                    setIsEditing={this.setIsEditing}
                     cancelToken={this.CancelToken}
+                    setIsEditing={this.setIsEditing}
                     onGetNotificationConfigurationFields={this.props.onGetNotificationConfigurationFields}
                     onGetNotificationConfiguration={this.props.onGetNotificationConfiguration}
                     onUpdateNotificationConfigurationState={this.props.onUpdateNotificationConfigurationState}
+                    onUpdateNotificationConfiguration={this.props.onUpdateNotificationConfiguration}
+                    onCreateNotificationConfiguration={this.props.onCreateNotificationConfiguration}
                     />
                 ) : (
                     <View>
                         <NotificationButton onPress={e=> {this.setIsEditing(true)}}>
-                            <Text>Configurações</Text>
+                            <Text>{strings['pt-br']['notificationButtonToConfigurationLabel']}</Text>
                         </NotificationButton>
                         <NotificationRecieved
                         navigation={this.props.navigation}
+                        onReadNotifications={this.props.onReadNotifications}
                         onGetNotifications={this.props.onGetNotifications}
                         cancelToken={this.CancelToken}
                         notification={this.props.notification}
@@ -79,13 +82,16 @@ class Notification extends React.Component {
                     onGetNotificationConfiguration={this.props.onGetNotificationConfiguration}
                     onUpdateNotificationConfigurationState={this.props.onUpdateNotificationConfigurationState}
                     onUpdateNotificationConfiguration={this.props.onUpdateNotificationConfiguration}
+                    onCreateNotificationConfiguration={this.props.onCreateNotificationConfiguration}
+                    onRemoveNotificationConfiguration={this.props.onRemoveNotificationConfiguration}
                     />
                 ) : (
                     <div>
                         <NotificationButton onClick={e=> {this.setIsEditing(true)}}>
-                            Configurações
+                            {strings['pt-br']['notificationButtonToConfigurationLabel']}
                         </NotificationButton>
                         <NotificationRecieved
+                        onReadNotifications={this.props.onReadNotifications}
                         onGetNotifications={this.props.onGetNotifications}
                         cancelToken={this.CancelToken}
                         notification={this.props.notification}

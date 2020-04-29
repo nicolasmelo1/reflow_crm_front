@@ -3,7 +3,7 @@ import { FilterInputGroup, FilterInputDropdownButton, FilterInput, FilterDeleteB
 import DateRangePicker from '../Utils/DateRangePicker'
 import { stringToJsDateFormat, jsDateToStringFormat } from '../../utils/dates'
 import { strings } from '../../utils/constants'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { Dropdown } from 'react-bootstrap'
 
 /**

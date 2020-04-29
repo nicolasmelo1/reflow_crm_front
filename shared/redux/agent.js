@@ -259,6 +259,9 @@ const NOTIFICATION = {
     getNotification: async (source, params) => {
         return await requests.get(`${companyId}/notification/api/`, params, {}, source)
     },
+    readNotification: async (body) => {
+        return await requests.post(`${companyId}/notification/api/read/`, body, {}, {})
+    },
     getNotificationConfiguration: async (source, params) => {
         return await requests.get(`${companyId}/notification/api/settings/`, params, {}, source)
     },
@@ -267,6 +270,12 @@ const NOTIFICATION = {
     },
     updateNotificationConfiguration: async (body, notificationConfigurationId) => {
         return await requests.put(`${companyId}/notification/api/settings/${notificationConfigurationId}/`, body, {}, {})
+    },
+    createNotificationConfiguration: async (body) => {
+        return await requests.post(`${companyId}/notification/api/settings/`, body, {}, {})
+    },
+    removeNotificationConfiguration: async (notificationConfigurationId) => {
+        return await requests.delete(`${companyId}/notification/api/settings/${notificationConfigurationId}/`, {}, {}, {})
     }
 }
 

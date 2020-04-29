@@ -13,6 +13,7 @@ module.exports = {
             alias: {
                 ...config.resolve.alias,
                 '@react-native-community/async-storage': 'react-native-web/dist/exports/AsyncStorage/index.js',
+                '@fortawesome/react-native-fontawesome': '@fortawesome/react-fontawesome',
                 "react-native": path.join(__dirname, 'node_modules', 'react-native-web')
             },
             modules: [

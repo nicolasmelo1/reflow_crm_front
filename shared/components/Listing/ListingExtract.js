@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import moment from 'moment'
 import { ListingFilterAndExtractContainer, ListingFilterAndExtractButton, ListingExtractContainer, ListingExtractUpdateDateTitle, ListingExtractUpdateDateInput, ListingExtractButtons, ListingExtractUpdateDateContainer} from '../../styles/Listing'
 import DateRangePicker from '../Utils/DateRangePicker'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { strings } from '../../utils/constants'
 import sleep from '../../utils/sleep'
 import { stringToJsDateFormat, jsDateToStringFormat } from '../../utils/dates'

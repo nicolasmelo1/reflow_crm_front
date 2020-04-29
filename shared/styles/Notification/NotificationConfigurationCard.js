@@ -19,4 +19,7 @@ styled(TouchableOpacity)`
     border-radius: 4px;
     padding: 5px;
     margin-top: 5px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
 `

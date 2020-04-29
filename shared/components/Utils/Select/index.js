@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import Utils from '../../../styles/Utils'
 import Option from './Option'
 import { SafeAreaView, Text } from 'react-native';
@@ -183,10 +183,10 @@ const Select = (props) => {
 
     const renderMobile = () => {
         return (
-            <Utils.Select.Select isOpen={isOpen} ref={selectRef} onPress={e=> {onSelectClick()}}>
+            <Utils.Select.Select isOpen={isOpen} ref={selectRef} onPress={e=> {onSelectClick()}} animationType={'slide'}>
                 <SafeAreaView>
                     <Utils.Select.SelectedOptionsContainer isOpen={isOpen}>
-                        {(isOpen) ? (<Utils.Select.GoBackArrow title={'<'} onPress={e=> {
+                        {(isOpen) ? (<Utils.Select.GoBackArrow title={'<'} color={'#444'} onPress={e=> {
                             e.preventDefault()
                             e.stopPropagation()
                             setIsOpen(false)
