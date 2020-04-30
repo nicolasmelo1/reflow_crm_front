@@ -13,11 +13,9 @@ import Layout from '@shared/components/Layout'
 import Login from '@shared/components/Login'
 import { AsyncStorage, Text } from 'react-native'
 
-
 const App = (props) => {
     //const { Component, pageProps, store } = this.props
     const store = initStore()
-
     const [router, setRouter] = useState('login')
     
     const getComponent = () => {
@@ -42,14 +40,14 @@ const App = (props) => {
     useEffect(() => {
         AsyncStorage.getItem('token').then(token=> {
             if (token !== '') {
-                setRouter('data')
+                setRouter('login')
             }
         })
     }, [])
 
     return (
         <Provider store={store}>
-            <PersistGate persistor={persistStore(store)}>
+            <PersistGate loading={null} persistor={persistStore(store)}>
                 <NavigationContainer>
                     {getComponent()}
                 </NavigationContainer>

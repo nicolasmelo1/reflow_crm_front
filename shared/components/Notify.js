@@ -43,13 +43,13 @@ class Notify extends React.Component {
                 justifyContent: 'flex-start',
                 alignItems: 'flex-start'
             }}>
-                {this.props.notify.notification.map((notification, index) => (
+                {this.props.notify.notification ? this.props.notify.notification.map((notification, index) => (
                     <StyledAlert key={index} variant={notification.variant}>
                         <Text>
                             {notification.message}
                         </Text>
                     </StyledAlert>
-                ))}
+                )): null }
             </View>
         )
     }

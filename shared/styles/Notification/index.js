@@ -4,6 +4,7 @@ import NotificationDate from './NotificationDate'
 import NotificationTitle from './NotificationTitle'
 import NotificationCard from './NotificationCard'
 import NotificationButton from './NotificationButton'
+import NotificationConfigurationGoBackButton from './NotificationConfigurationGoBackButton'
 import NotificationConfigurationCard from './NotificationConfigurationCard'
 import NotificationConfigurationCardIcon from './NotificationConfigurationCardIcon'
 import NotificationConfigurationCardText from './NotificationConfigurationCardText'
@@ -40,6 +41,7 @@ export { NotificationConfigurationFormCheckboxText }
 export { NotificationConfigurationFormCheckboxesContainer }
 export { NotificationConfigurationFormCheckbox }
 export { NotificationConfigurationFormContainer }
+export { NotificationConfigurationGoBackButton }
 export { NotificationConfigurationCard }
 export { NotificationConfigurationCardIcon }
 export { NotificationConfigurationCardText }

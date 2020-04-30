@@ -120,6 +120,7 @@ const strings = {
         kanbanLoadMoreButtonLabel: 'Carregar Mais',
         notificationButtonToConfigurationLabel: 'Configurações',
         notificationRecievedTitleLabel: 'Suas notificações',
+        notificationConfigurationGoBackButtonLabel: '< Voltar',
         notificationConfigurationAddNewCardLabel: 'Adicione uma nova notificação',
         notificationConfigurationEmptyNameCardLabel: 'Insira um nome para a notificação',
         notificationConfigurationFormForCompanyLabel: 'Para toda a companhia',

@@ -17,6 +17,34 @@ import {
 } from '../../styles/Notification'
 import { errors, strings } from '../../utils/constants'
 
+/**
+ * This might be one of the biggest components of this project, yet.
+ * It is just a simple formulary basically, there is a lot of code being duplicated, specially in the Render part, it can work well on a smaller component
+ * 
+ * Most of the logic here resides on the variables. On our platform the user can write his own notification texts, he doesn't need to rely on our provided texts.
+ * But for this to work simply for our user there are lots of works on our side. 
+ * 
+ * For example, a simple notification text: 
+ * '{{username}}, you must call {{contact}} today. Use the following number: {{contactphonenumber}}'
+ * 
+ * On this example {{username}}, {{contact}} and {{contactphonenumber}} are variables inside of the text. Every notification is bound to a specific formulary, so
+ * as you might already been thinking these variables are fields inside of this formulary. The names inside of the `{{}}` are the field_names, that works like id for us, programmers.
+ * and are more readable than ids. So when the user types {{}} on the text field, we need to create a select field IN THE EXACT ORDER it was inserted for the user to select the variables.
+ * The same works when the user deletes the {{}} or just remove the option. 
+ * 
+ * For this we use basically regex.breadcrumb
+ * 
+ * On the Error part, the backend is kinda dumb on error handling, so must of the work is done on our side. We create a state with a object, with the field as keys and the message as the value.
+ * We display the error for each user on each field directly. But we leave the validation most for the backend.
+ * @param {Array<Object>} formularies - These are the formularies loaded from the sidebar, if the sidebar hasn't been loaded, we load when we open the notification configuration component
+ * @param {Object} cancelToken - A axios cancel token, we use this so we can cancel a request when a user unmounts a component before the data be retrieved
+ * @param {Boolean} setFormIsOpen - The configuration is loaded right below the card, this is a state function that can be true or false, defining if this component is opened or not
+ * @param {Function} updateNotification - Function to update the notification configuration state
+ * @param {Function} createOrUpdateNotification - action for redux, used for saving the notification configuration data.
+ * @param {Function} onGetNotificationConfigurationFields - action from redux used for retrieving the fields the user can select as variables and the `date` field_type fields of the form
+ * @param {BigInteger} notificationConfigurationIndex - Index of this notification configuration, we use this to update the state at a specific index.
+ * @param {Object} notificationConfiguration - The notification configuration data
+ */
 const NotificationConfigurationForm = (props) => {
     const sourceRef = React.useRef()
     const [notificationFieldOptions, setNotificationFieldOptions]= useState([])

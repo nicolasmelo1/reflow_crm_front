@@ -4,6 +4,10 @@ import { NotificationConfigurationCard, NotificationConfigurationCardText, Notif
 import NotificationConfigurationForm from  './NotificationConfigurationForm'
 import { strings } from '../../utils/constants'
 
+/**
+ * Holds each notification configuration card and formulary
+ * @param {*} props 
+ */
 const NotificationConfiguration = (props) => {
     const [formIsOpen, setFormIsOpen] = useState(false)
 

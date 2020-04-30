@@ -256,6 +256,9 @@ const LISTING = {
 }
 
 const NOTIFICATION = {
+    getNewNotifications: async () => {
+        return await requests.get(`${companyId}/notification/api/read/`, {}, {}, {})
+    },
     getNotification: async (source, params) => {
         return await requests.get(`${companyId}/notification/api/`, params, {}, source)
     },

@@ -47,11 +47,12 @@ import {
     faChevronUp, 
     faChevronDown, 
     faPlusCircle,
-    faFileUpload
+    faFileUpload,
+    faTimes
 } from '@fortawesome/free-solid-svg-icons'
 
 
-library.add(faPlusCircle, faPlusSquare, faEnvelope, faCalendarAlt, faSquareRootAlt, faPhone, faAlignLeft, faLink, faCheckSquare, faClipboardList, faParagraph, faArrowLeft, faRulerHorizontal, faClock, faTrash, faBell, faChartBar, faCircle, faCog, faTasks, faArrowsAlt, faEdit, faBars, faPen, faFilter, faSortAmountDown, faEye, faArrowsAlt, faChevronLeft, faChevronRight, faChevronUp, faChevronDown, faFileUpload, faPencilAlt, faArrowDown)
+library.add(faTimes, faPlusCircle, faPlusSquare, faEnvelope, faCalendarAlt, faSquareRootAlt, faPhone, faAlignLeft, faLink, faCheckSquare, faClipboardList, faParagraph, faArrowLeft, faRulerHorizontal, faClock, faTrash, faBell, faChartBar, faCircle, faCog, faTasks, faArrowsAlt, faEdit, faBars, faPen, faFilter, faSortAmountDown, faEye, faArrowsAlt, faChevronLeft, faChevronRight, faChevronUp, faChevronDown, faFileUpload, faPencilAlt, faArrowDown)
 
 /*** 
  * This is the main component of the page, we use this custom layout component so pages can override from this.
@@ -73,6 +74,7 @@ class Layout extends React.Component {
     async setToken() {
         let token = process.env['APP'] === 'web' ? window.localStorage.getItem('token') : await AsyncStorage.getItem('token')
         token = (token !== null) ? token : ''
+        agent.setCompanyId(this.props.companyId !== null ? this.props.companyId : '')
         agent.setToken(token)
         if (!token || token === '') {
             if (process.env['APP'] === 'web') {
@@ -160,4 +162,4 @@ class Layout extends React.Component {
     }
 }
 
-export default connect(state => ({ companyId: state.login.companyId }), actions)(Layout);
+export default connect(state => ({ companyId: state.login.companyId, login: state.login }), actions)(Layout);

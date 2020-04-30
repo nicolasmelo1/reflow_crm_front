@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { View, ScrollView, Button } from 'react-native'
-import { NotificationConfigurationAddNewCardIcon, NotificationConfigurationAddNewCard, NotificationConfigurationAddNewCardText } from '../../styles/Notification'
+import { NotificationConfigurationAddNewCardIcon, NotificationConfigurationAddNewCard, NotificationConfigurationAddNewCardText, NotificationConfigurationGoBackButton } from '../../styles/Notification'
 import NotificationConfiguration from './NotificationConfiguration'
 import { strings } from '../../utils/constants'
 
@@ -59,7 +59,9 @@ const NotificationsConfiguration = (props) => {
     const renderMobile = () => {
         return (
             <View style={{ height: '100%' }}>
-                <Button onPress={e=> {props.setIsEditing(false)}} title={'< Voltar'}/>
+                <View style={{ justifyContent: 'row', alignItems: 'flex-start'}}>
+                    <NotificationConfigurationGoBackButton onPress={e=> {props.setIsEditing(false)}} title={strings['pt-br']['notificationConfigurationGoBackButtonLabel']} color={'#444'}/>
+                </View>
                 <ScrollView keyboardShouldPersistTaps={'handled'} style={{ height: '100%' }}>
                     <NotificationConfigurationAddNewCard style={{ textAlign: 'center'}} onPress={e=> {addNewNotification()}}>
                         <NotificationConfigurationAddNewCardIcon icon="plus-circle"/>
@@ -90,26 +92,33 @@ const NotificationsConfiguration = (props) => {
     const renderWeb = () => {
         return (
             <div>
-                <NotificationConfigurationAddNewCard style={{ textAlign: 'center'}} onClick={e=> {addNewNotification()}}>
-                    <NotificationConfigurationAddNewCardIcon icon="plus-circle"/>
-                    <NotificationConfigurationAddNewCardText>
-                        {strings['pt-br']['notificationConfigurationAddNewCardLabel']}
-                    </NotificationConfigurationAddNewCardText>
-                </NotificationConfigurationAddNewCard>
-                {props.notificationConfiguration.data.map((notificationConfiguration, index) => (
-                    <NotificationConfiguration
-                    key={index}
-                    formularies={props.formularies}
-                    onGetNotificationConfigurationFields={props.onGetNotificationConfigurationFields}
-                    updateNotification={updateNotification}
-                    removeNotification={removeNotification}
-                    createOrUpdateNotification={createOrUpdateNotification}
-                    cancelToken={props.cancelToken}
-                    notificationConfigurationIndex={index}
-                    notificationConfiguration={notificationConfiguration}
-                    notificationConfigurationFields={props.notificationConfiguration.fields}
-                    />
-                ))}
+                <div>
+                    <NotificationConfigurationGoBackButton onClick={e=> {props.setIsEditing(false)}}>
+                        {strings['pt-br']['notificationConfigurationGoBackButtonLabel']}
+                    </NotificationConfigurationGoBackButton>
+                </div>
+                <div>
+                    <NotificationConfigurationAddNewCard style={{ textAlign: 'center'}} onClick={e=> {addNewNotification()}}>
+                        <NotificationConfigurationAddNewCardIcon icon="plus-circle"/>
+                        <NotificationConfigurationAddNewCardText>
+                            {strings['pt-br']['notificationConfigurationAddNewCardLabel']}
+                        </NotificationConfigurationAddNewCardText>
+                    </NotificationConfigurationAddNewCard>
+                    {props.notificationConfiguration.data.map((notificationConfiguration, index) => (
+                        <NotificationConfiguration
+                        key={index}
+                        formularies={props.formularies}
+                        onGetNotificationConfigurationFields={props.onGetNotificationConfigurationFields}
+                        updateNotification={updateNotification}
+                        removeNotification={removeNotification}
+                        createOrUpdateNotification={createOrUpdateNotification}
+                        cancelToken={props.cancelToken}
+                        notificationConfigurationIndex={index}
+                        notificationConfiguration={notificationConfiguration}
+                        notificationConfigurationFields={props.notificationConfiguration.fields}
+                        />
+                    ))}
+                </div>
             </div>
         )
     }

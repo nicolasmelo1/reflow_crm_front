@@ -1,4 +1,4 @@
-import { SET_NOTIFICATION, SET_NOTIFICATION_CONFIGURATION } from '../../types'
+import { SET_NOTIFICATION, SET_NOTIFICATION_CONFIGURATION, SET_NOTIFICATION_BADGE } from '../../types'
 import agent from '../../agent'
 
 
@@ -31,6 +31,16 @@ const onReadNotifications = (stateData, notificationId) => {
         }
         agent.NOTIFICATION.readNotification(body)
         dispatch({ type: SET_NOTIFICATION, payload: payload })
+    }
+}
+
+const onGetNewNotifications = () => {
+    return async (dispatch) => {
+        const response = await agent.NOTIFICATION.getNewNotifications()
+        if (response && response.status === 200) {
+            dispatch({ type: SET_NOTIFICATION_BADGE, payload: response.data.data })
+
+        } 
     }
 }
 
@@ -74,6 +84,7 @@ const onGetNotificationConfigurationFields = (source, formId) => {
 }
 
 export default {
+    onGetNewNotifications,
     onGetNotifications,
     onReadNotifications,
     onGetNotificationConfiguration,

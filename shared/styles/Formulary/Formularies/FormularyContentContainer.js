@@ -11,7 +11,6 @@ export default styled(({isOpen, height,...rest}) => <div {...rest}/>)`
     transition: height 0.3s ease-in-out, padding 0.3s ease-in-out;
 
     @media(max-width: 420px) {
-        min-height: ${props=> props.isOpen ? `calc(var(--app-height) - 50px)` : '0'};
         height: ${props=> props.isOpen ? `calc(var(--app-height) - 50px)` : '0'};
     }
 
@@ -20,6 +19,5 @@ export default styled(({isOpen, height,...rest}) => <div {...rest}/>)`
         width:80vw; 
         border-radius: 10px 0 0 0; 
         height: ${props=> props.isOpen ? '80vh' : '0'};
-
     }
 `

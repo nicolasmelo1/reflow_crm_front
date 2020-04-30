@@ -6,14 +6,20 @@
   "scripts": {
     "merge": "node merge.js",
     "sync": "node sync.js web mobile",
+
+    "uninstall:desktop": "npm uninstall --prefix desktop",
     "uninstall:web": "npm uninstall --prefix web",
     "uninstall:mobile": "npm uninstall --prefix mobile",
+
+    "install:desktop": "npm install --prefix desktop",
     "install:web": "npm install --prefix web",
     "install:mobile": "npm install --prefix mobile",
-    "mobile:start": "npm run start --prefix mobile",
+
+    "desktop:dev": "npm run dev --prefix desktop",
     "web:dev": "npm run dev --prefix web",
     "web:build": "npm run build --prefix web",
-    "web:start": "npm run start --prefix web"
+    "web:start": "npm run start --prefix web",
+    "mobile:start": "npm run start --prefix mobile"
   },
   "dependencies": {
     "@babel/core": "^7.8.3",
@@ -49,5 +55,8 @@
   "bugs": {
     "url": "https://github.com/nicolasmelo1/reflow_crm_front/issues"
   },
-  "homepage": "https://github.com/nicolasmelo1/reflow_crm_front#readme"
+  "homepage": "https://github.com/nicolasmelo1/reflow_crm_front#readme",
+  "devDependencies": {
+    "electron": "^8.2.4"
+  }
 }

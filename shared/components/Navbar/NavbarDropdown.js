@@ -1,25 +1,34 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { NavDropdown } from 'react-bootstrap'
-import { NavbarLinkIcon, NavbarLinkLabel} from '../../styles/Navbar'
-
+import NavbarLink from './NavbarLink'
+import { NavbarDropdownContentContainer, NavbarLinkIcon, NavbarLinkLabel, NavbarDropdownContainer, NavbarDropdownItem, NavbarDropdownButton, NavbarDropdownArrowIcon , NavbarLinkIconContainer} from '../../styles/Navbar'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 
 const NavbarDropdown = (props) => {
+    const [isOpen, setIsOpen] = useState(false)
+
     return (
-        <NavDropdown 
-        title={
-            <span>
-                <NavbarLinkIcon icon={props.icon} />
+        <NavbarDropdownContainer>
+            <NavbarDropdownButton isOpen={isOpen} onClick={e=> {
+                e.preventDefault()
+                setIsOpen(!isOpen)
+            }}>
+                <NavbarLinkIconContainer>
+                    <NavbarLinkIcon icon={props.icon} />
+                </NavbarLinkIconContainer>
                 <NavbarLinkLabel>{props.label}</NavbarLinkLabel>
-            </span>
-        }>
-            {props.items.map((item, index)=> {
-                return (
-                    <NavDropdown.Item as="button" key={index} href={item.href} onClick={e => { (item.onClick) ? item.onClick(e): null }}>
-                        {item.label}
-                    </NavDropdown.Item>
-                )
-            })}
-        </NavDropdown>
+                <NavbarDropdownArrowIcon icon={isOpen ? 'chevron-up' : 'chevron-down'} />
+            </NavbarDropdownButton>
+            {isOpen ? (
+                <NavbarDropdownContentContainer>
+                    {props.items.map((item, index)=> (
+                        <NavbarDropdownItem key={index} href={item.href} onClick={e => { (item.onClick) ? item.onClick(e): null }}>
+                            {item.label}
+                        </NavbarDropdownItem>
+                    ))}
+                </NavbarDropdownContentContainer>
+            ) : ''}
+        </NavbarDropdownContainer>
     )
 }
 
