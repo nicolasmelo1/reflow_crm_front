@@ -149,6 +149,9 @@ const LOGIN = {
     },
     getDataTypes: async () => {
         return await requests.get('types/')
+    },
+    registerPushNotification: async (body) => {
+        return await requests.post('login/push_notification/', body)
     }
 }
 
