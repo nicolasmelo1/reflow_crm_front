@@ -2,8 +2,8 @@ import styled from 'styled-components'
 import { Dropdown } from 'react-bootstrap'
 
 export default styled(Dropdown.Item)`
-    background-color: ${props => props.active ? '#444444' : '#f2f2f2'} !important;
-    color: ${props => props.active ? '#f2f2f2' : '#444444'};
+    background-color: ${props => props.active ? '#17242D' : '#f2f2f2'} !important;
+    color: ${props => props.active ? '#f2f2f2' : '#17242D'};
     border: 0;
     display: block;
     width: 100%;

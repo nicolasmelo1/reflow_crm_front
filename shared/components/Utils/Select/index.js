@@ -18,9 +18,9 @@ import { SafeAreaView, Text } from 'react-native';
  * @param {Function} setIsOpen = (optional) - set isOpenState to true so you know outside of this component that this is on an open state
  * @param {string} searchValueColor - (optional) - set color to search value, that the user types to search
  * @param {String} optionColor - (optional) - default to #f2f2f2
- * @param {String} optionBackgroundColor - (optional) - default to #444
+ * @param {String} optionBackgroundColor - (optional) - default to #17242D
  * @param {String} optionDividerColor - (optional) - default to #fff
- * @param {String} optionOnHoverColor - (optional) - default to #444
+ * @param {String} optionOnHoverColor - (optional) - default to #17242D
  * @param {String} optionOnHoverBackgroundColor - (optional) - default to #bfbfbf
  * @param {React.Component} label - (optional) - Instead of a simple text, display a custom label, if you do this, please define a onFilter
  * function
@@ -186,7 +186,7 @@ const Select = (props) => {
             <Utils.Select.Select isOpen={isOpen} ref={selectRef} onPress={e=> {onSelectClick()}} animationType={'slide'}>
                 <SafeAreaView>
                     <Utils.Select.SelectedOptionsContainer isOpen={isOpen}>
-                        {(isOpen) ? (<Utils.Select.GoBackArrow title={'<'} color={'#444'} onPress={e=> {
+                        {(isOpen) ? (<Utils.Select.GoBackArrow title={'<'} color={'#17242D'} onPress={e=> {
                             e.preventDefault()
                             e.stopPropagation()
                             setIsOpen(false)

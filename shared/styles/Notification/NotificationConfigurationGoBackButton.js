@@ -4,7 +4,7 @@ import { Button } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.button`
-    color: #444;
+    color: #17242D;
     font-size: 20px;
     background-color: transparent;
     border: 0;

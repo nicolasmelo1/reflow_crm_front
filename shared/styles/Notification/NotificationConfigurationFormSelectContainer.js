@@ -5,9 +5,9 @@ import { View } from 'react-native'
 export default process.env['APP'] === 'web' ? 
 styled(React.forwardRef(({isOpen, errors, ...rest}, ref) => <div {...rest} ref={ref}/>))`
     background-color: white;
-    color: #444;
-    border: 1px solid ${props=>props.isOpen ? '#444': props.errors ? 'red': '#0dbf7e'};
-    caret-color: #444;
+    color: #17242D;
+    border: 1px solid ${props=>props.isOpen ? '#17242D': props.errors ? 'red': '#0dbf7e'};
+    caret-color: #17242D;
     border-radius: .25rem;
     outline: none !important
 `

@@ -5,6 +5,6 @@ export default styled.div`
     padding: 10px; 
     text-align: center;
     background-color: white;
-    box-shadow: 0 3px 6px #444;
+    box-shadow: 0 3px 6px #17242D;
     border-radius: 10px
 `

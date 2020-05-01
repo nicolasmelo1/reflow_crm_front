@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { Button } from 'react-bootstrap'
 
 export default styled(Button)`
-    background-color: #444444 !important;
+    background-color: #17242D !important;
     border: 0;
     margin: 0;
     padding: 5px 10px;

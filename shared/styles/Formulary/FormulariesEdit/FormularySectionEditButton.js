@@ -22,7 +22,7 @@ const getShadowOnHover = (props) => {
 }
 
 export default styled(React.forwardRef(({isOpen, isConditional, ...rest}, ref) => <Col {...rest} ref={ref}/>))`
-    color: ${props=> props.isConditional && !props.isOpen ? '#f2f2f2': '#444'};
+    color: ${props=> props.isConditional && !props.isOpen ? '#f2f2f2': '#17242D'};
     border-radius: 5px;
     margin: 10px 10px;
     box-shadow: ${props=> getShadow(props)};

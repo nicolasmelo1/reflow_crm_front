@@ -10,7 +10,7 @@ styled(React.forwardRef(({hasBorder, optionDividerColor, optionOnHoverBackground
 
     &:hover {
         background-color: ${props => props.optionOnHoverBackgroundColor ? props.optionOnHoverBackgroundColor : '#bfbfbf'};
-        color: ${props => props.optionOnHoverColor ? props.optionOnHoverColor : '#444'}
+        color: ${props => props.optionOnHoverColor ? props.optionOnHoverColor : '#17242D'}
     }
 `
 :

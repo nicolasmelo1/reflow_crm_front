@@ -7,7 +7,7 @@ export default process.env['APP'] === 'web' ?
 styled(Form.Control)`
     border: 0;
     background-color: white !important;
-    color: #444;
+    color: #17242D;
     border: 1px solid ${props=> props.errors ? 'red': '#0dbf7e'};
     display: block;
     width: 100%;
@@ -22,9 +22,9 @@ styled(Form.Control)`
 
 
     &:focus {
-        color: #444;
+        color: #17242D;
         background-color: white;
-        border: 1px solid #444;
+        border: 1px solid #17242D;
         box-shadow: none;
         outline: 0;
     }
@@ -35,6 +35,6 @@ styled(TextInput)`
     border-radius: 4px;
     padding: 5px;
     min-height: 30px;
-    color: #444;
+    color: #17242D;
     border: 1px solid #0dbf7e;
 `

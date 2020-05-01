@@ -75,12 +75,12 @@ class Navbar extends React.Component {
 
 
     renderMobile() {
-        const Tab = props.Tab
+        const Tab = this.props.Tab
 
         return (
             <Tab.Navigator>
-                <Tab.Screen name="Home" component={props.HomeComponent} />
-                <Tab.Screen name="Notification" component={props.NotificationComponent} />
+                <Tab.Screen name="Home" component={this.props.HomeComponent} />
+                <Tab.Screen name="Notification" component={this.props.NotificationComponent} />
             </Tab.Navigator>
         )
     }

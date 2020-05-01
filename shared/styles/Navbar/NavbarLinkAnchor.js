@@ -4,7 +4,7 @@ import styled from 'styled-components'
 export default process.env['APP'] === 'web' ? 
 styled.a`
     padding: 10px;
-    color: #444;
+    color: #17242D;
     &:hover {
         color: #0dbf7e;
     }

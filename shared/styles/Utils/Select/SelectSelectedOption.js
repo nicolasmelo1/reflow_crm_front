@@ -11,10 +11,10 @@ styled.button`
     background-color: ${props => props.selected ? '#bfbfbf' : props.color};
     border-radius: 5px;
     border: 0;
-    color: ${props => props.selected ? '#444' : '#fff'};
+    color: ${props => props.selected ? '#17242D' : '#fff'};
     transiton: color 0.3s ease-in-out;
     &:hover {
-        color: #444;
+        color: #17242D;
         background-color: #bfbfbf
     }
 `
@@ -27,5 +27,5 @@ styled(TouchableOpacity)`
     background-color: ${props => props.selected ? '#bfbfbf' : props.color};
     border-radius: 5px;
     border: 0;
-    color: ${props => props.selected ? '#444' : '#fff'};
+    color: ${props => props.selected ? '#17242D' : '#fff'};
 `

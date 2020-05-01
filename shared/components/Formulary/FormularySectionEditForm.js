@@ -112,7 +112,7 @@ const FormularySectionEditForm = (props) => {
                             options={conditionalFieldOptions} 
                             initialValues={initialConditionalFieldOption} 
                             onChange={onChangeConditionalField} 
-                            optionColor={'#444'}
+                            optionColor={'#17242D'}
                             optionBackgroundColor={'#f2f2f2'}
                             optionDividerColor={'#0dbf7e'} 
                             />
@@ -125,7 +125,7 @@ const FormularySectionEditForm = (props) => {
                             options={conditionalTypesOptions} 
                             initialValues={initialConditionalType} 
                             onChange={onChangeConditionalType} 
-                            optionColor={'#444'}
+                            optionColor={'#17242D'}
                             optionBackgroundColor={'#f2f2f2'}
                             optionDividerColor={'#0dbf7e'} 
                             />

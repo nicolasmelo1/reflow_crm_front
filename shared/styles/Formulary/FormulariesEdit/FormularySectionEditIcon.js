@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 
 const getColor = (props) => {
     if (props.isEditing && !props.isConditional) {
-        return '#444'
+        return '#17242D'
     } else if (props.isEditing && props.isConditional) {
         return '#0dbf7e'
     } else {

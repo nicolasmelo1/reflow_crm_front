@@ -4,7 +4,7 @@ import { Text } from 'react-native'
 
 export default process.env['APP'] === 'web' ? 
 styled.label`
-    color: ${props => props.isVariable ? '#f2f2f2': '#444'};
+    color: ${props => props.isVariable ? '#f2f2f2': '#17242D'};
     display: block;
     margin: 0;
     font-weight: bold;
@@ -12,6 +12,6 @@ styled.label`
 `
 :
 styled(Text)`
-    color: ${props => props.isVariable ? '#f2f2f2': '#444'};
+    color: ${props => props.isVariable ? '#f2f2f2': '#17242D'};
     font-weight: bold;
 `

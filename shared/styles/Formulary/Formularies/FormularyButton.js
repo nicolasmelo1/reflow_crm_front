@@ -15,13 +15,13 @@ export default styled(React.forwardRef(({isOpen, ...rest}, ref) => <button {...r
     font-size: 20px; 
     top: -50px;
 
-    ${props => props.isOpen ? 'box-shadow: -5px 5px 20px #444;' : ''}
+    ${props => props.isOpen ? 'box-shadow: -5px 5px 20px #17242D;' : ''}
 
     &:hover {
-        background-color:#444; 
+        background-color:#17242D; 
     }
     &:active {
-        background-color:#444 !important; 
+        background-color:#17242D !important; 
     }
 
     @media(max-width: 420px) {

@@ -1,10 +1,10 @@
 import styled from 'styled-components'
 
 const StyledContainer = styled.div`
-    padding: 10px; 
+    padding: 15px; 
     margin-bottom: 10px;
-    border: 1px solid #f2f2f2;
-    border-radius: 5px;
+    background-color: #17242D;
+    margin: -10px -10px 10px -10px;
 `
 
 const StyledButton = styled.button`
@@ -13,10 +13,11 @@ const StyledButton = styled.button`
     border-radius: 5px;
     display: inline-block;
     margin: 0 5px;
-
+    padding: 10px 15px;
+    font-weight: bold; 
+    color: #f2f2f2;
     &:hover {
-        background-color: #f2f2f2;
-        color: #0dbf7e
+        background-color: #0dbf7e90;
     }
 `
 
@@ -25,7 +26,6 @@ const StyledParagraph = styled.p`
     margin: 0;
     color: #f2f2f2;
     margin: 0 5px;
-
 `
 /**
  * 

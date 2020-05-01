@@ -7,10 +7,10 @@ styled.button`
     width: 100%;
     padding: 5px;
     color: #f2f2f2;
-    border: 1px solid #444;
+    border: 1px solid #17242D;
     margin: 5px 0;
     border-radius: 20px;
-    background-color: #444;
+    background-color: #17242D;
 
     &:hover {
         color: #0dbf7e;
@@ -21,9 +21,9 @@ styled(TouchableOpacity)`
     width: 100%;
     padding: 5px;
     color: #f2f2f2;
-    border: 1px solid #444;
+    border: 1px solid #17242D;
     margin: 5px 0;
     border-radius: 20px;
-    background-color: #444;
+    background-color: #17242D;
     align-items: center;
 `

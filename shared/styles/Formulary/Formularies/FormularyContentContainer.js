@@ -1,8 +1,8 @@
 import styled from 'styled-components'
 
 export default styled(({isOpen, height,...rest}) => <div {...rest}/>)`
-    box-shadow: -5px 5px 20px #444;
-    background-color: #444; 
+    box-shadow: -5px 5px 20px #17242D;
+    background-color: #f2f2f2; 
     overflow-y: auto; 
     float: right; 
     display: block;

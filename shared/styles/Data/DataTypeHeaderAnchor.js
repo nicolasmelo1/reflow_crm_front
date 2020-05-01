@@ -5,5 +5,5 @@ export default styled.a`
     margin: 10px;
     font-size: 20px;
     font-weight: bold;
-    color: ${props => props.isSelected ? '#0dbf7e' : '#444'} !important;
+    color: ${props => props.isSelected ? '#0dbf7e' : '#17242D'} !important;
 `

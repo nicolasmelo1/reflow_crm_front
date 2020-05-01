@@ -26,7 +26,7 @@ const NativePicker = ({style,...props}) => {
             <Component onPress={e=> {setIsOpen(true)}} style={style}>
                 {Platform.OS === 'ios' ? (
                     <View>
-                        <Text style={{ color: '#444'}}>{label}</Text>
+                        <Text style={{ color: '#17242D'}}>{label}</Text>
                         {isOpen ? (
                             <Modal transparent={true}>
                                 <SafeAreaView style={{backgroundColor: '#00000050', height: '100%'}}>

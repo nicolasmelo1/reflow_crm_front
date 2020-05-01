@@ -60,7 +60,7 @@ const NotificationsConfiguration = (props) => {
         return (
             <View style={{ height: '100%' }}>
                 <View style={{ justifyContent: 'row', alignItems: 'flex-start'}}>
-                    <NotificationConfigurationGoBackButton onPress={e=> {props.setIsEditing(false)}} title={strings['pt-br']['notificationConfigurationGoBackButtonLabel']} color={'#444'}/>
+                    <NotificationConfigurationGoBackButton onPress={e=> {props.setIsEditing(false)}} title={strings['pt-br']['notificationConfigurationGoBackButtonLabel']} color={'#17242D'}/>
                 </View>
                 <ScrollView keyboardShouldPersistTaps={'handled'} style={{ height: '100%' }}>
                     <NotificationConfigurationAddNewCard style={{ textAlign: 'center'}} onPress={e=> {addNewNotification()}}>

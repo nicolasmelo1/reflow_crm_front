@@ -11,7 +11,7 @@ styled(({sidebarIsOpen, ...rest}) => <button {...rest}/>)`
     justify-content: space-around;
     font-weight: bold;
     height: 2rem;
-    background: #444;
+    background: #17242D;
     border-radius: 0 20px 20px 0;
     border: none;
     cursor: pointer;

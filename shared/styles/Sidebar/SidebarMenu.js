@@ -6,7 +6,7 @@ import { View } from 'react-native'
 export default process.env['APP'] === 'web' ?
 styled(({sidebarIsOpen, ...rest}) => <nav {...rest}/>)`
     justify-content: center;
-    background: #444;
+    background: #17242D;
     height: calc(100vh - 3.25rem);
     overflow-y: auto;
     text-align: auto;
@@ -14,7 +14,7 @@ styled(({sidebarIsOpen, ...rest}) => <nav {...rest}/>)`
     position: absolute;
     top: 0;
     transition: width 0.3s ease-in-out;
-    box-shadow: 0 4px 20px 0 #444444;
+    box-shadow: 0 4px 20px 0 #17242D;
 
     @media(max-width: 420px) {
         z-index: 4;
@@ -33,7 +33,7 @@ styled(({sidebarIsOpen, ...rest}) => <nav {...rest}/>)`
 `
 :
 styled(({sidebarIsOpen, ...rest}) => <View {...rest}/>)`
-    background-color: #444;
+    background-color: #17242D;
     text-align: auto;
     padding: 0 0 2px 0;
     align-self:stretch;

@@ -6,10 +6,10 @@ export default process.env['APP'] === 'web' ?
 styled(FontAwesomeIcon)`
     font-size: 20px;
     margin: 0 10px;
-    color: #444
+    color: #17242D
 `
 :
 styled(FontAwesomeIcon)`
     font-size: 20px;
-    color: #444
+    color: #17242D
 `

@@ -50,7 +50,7 @@ class MyApp extends App {
             } else {
                 const serviceWorker = await navigator.serviceWorker.ready;
                 const subscription = await serviceWorker.pushManager.getSubscription()
-                if (subscription === null) {
+                if (subscription === null || process.env.NODE_ENV !== 'production') {
                     // subscribe and return the subscription, if the user has a subscription, uns
                     this.subscribePushManager(serviceWorker).then(subscription=> {
                         agent.LOGIN.registerPushNotification(this.createSubscriptionBodyToServer(subscription.toJSON()))
@@ -68,10 +68,14 @@ class MyApp extends App {
     }
 
     componentDidMount() {
-        window.addEventListener('resize', this.appHeight)
-        this.appHeight()
-        this.registerServiceWorker()
-        this.askUserPermissionForNotification()
+        if (typeof window !== 'undefined') {
+            window.addEventListener('resize', this.appHeight)
+            this.appHeight()
+            this.registerServiceWorker()
+            if (window.localStorage.token && window.localStorage.token !== '') {
+                this.askUserPermissionForNotification()
+            }
+        }
     }
 
  

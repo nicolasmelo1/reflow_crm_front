@@ -8,6 +8,6 @@ export default styled.button`
     &:hover{
         border-radius: 5px;
         background-color: #fff;
-        color: #444;
+        color: #17242D;
     }
 `

@@ -10,6 +10,6 @@ export default styled(Card)`
     right: 0;
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 3px 6px #444;
+    box-shadow: 0 3px 6px #17242D;
     display: inline-block;
 `

@@ -7,7 +7,7 @@ styled.button`
     float: right;
     border: none;
     background-color: transparent;
-    color: #444;
+    color: #17242D;
     &:hover {
         color: #0dbf7e;
     }

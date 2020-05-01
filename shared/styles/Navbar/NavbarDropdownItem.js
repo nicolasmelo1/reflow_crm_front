@@ -5,7 +5,7 @@ export default process.env['APP'] === 'web' ?
 styled.a`
     display: block;
     text-decoration: none;
-    color: #444;
+    color: #17242D;
     padding: 5px;
 
     &:hover {

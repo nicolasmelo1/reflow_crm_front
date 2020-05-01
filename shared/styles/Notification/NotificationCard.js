@@ -4,7 +4,7 @@ import { TouchableOpacity } from 'react-native'
 
 export default process.env['APP'] === 'web' ? 
 styled.div`
-    border: 1px solid #444;
+    border: 1px solid #17242D;
     border-radius: 5px;
     margin-bottom: 10px; 
     padding: 5px;
@@ -13,7 +13,7 @@ styled.div`
 `
 :
 styled(TouchableOpacity)`
-    border: 1px solid #444;
+    border: 1px solid #17242D;
     border-radius: 5px;
     margin-bottom: 10px; 
     padding: 5px;
