@@ -85,7 +85,7 @@ const ListingTable = (props) => {
                     <div style={{ height:'20px'}} ref={scrollRef}></div>
                 </div>
             ): ''}
-            <ListingTableContainer ref={tableRef}>
+            <ListingTableContainer ref={tableRef} isMobile={isMobile}>
                 <Table>
                     <ListingTableHeader headers={headers} params={props.params} onSort={props.onSort} defineScrollWidth={defineScrollWidth}/>
                     <ListingTableContent headers={headers} pagination={props.pagination} data={data} setFormularyId={props.setFormularyId} onRemoveData={props.onRemoveData}/>

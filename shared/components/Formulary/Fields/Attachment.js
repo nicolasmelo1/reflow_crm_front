@@ -18,7 +18,7 @@ const AttachmentItem = (props) => {
     const fileFormat = splittedFullName[splittedFullName.length-1]
 
     return (
-        <Field.Attachment.Container isInitial={props.isInitial}>
+        <Field.Attachment.ItemContainer isInitial={props.isInitial} numberOfItems={props.numberOfItems}>
             {(props.addFile) ? (
                 <Field.Attachment.Label isInitial={props.isInitial}>
                     <Field.Attachment.Image isInitial={props.isInitial} src={(props.isInitial) ? "/add_icon.png" : `/${fileFormat}_icon.png`}/>
@@ -36,7 +36,7 @@ const AttachmentItem = (props) => {
                     <FontAwesomeIcon icon="trash"/> 
                 </Field.Attachment.Button>
             ): ''}
-        </Field.Attachment.Container>
+        </Field.Attachment.ItemContainer>
     )
 }
 
@@ -100,13 +100,13 @@ const Attachment = (props) => {
     }, [props.values])
 
     return (
-        <div>
-            <Row>
+        <Field.Attachment.Container>
+            <Field.Attachment.ScrollContainer>
                 {inputsProps.map((inputProps, index)=> {
-                    return (<AttachmentItem key={index} {...inputProps}/>)
+                    return (<AttachmentItem key={index} numberOfItems={inputsProps.length} {...inputProps}/>)
                 })}
-            </Row>
-        </div>
+            </Field.Attachment.ScrollContainer>
+        </Field.Attachment.Container>
     )
 }
 

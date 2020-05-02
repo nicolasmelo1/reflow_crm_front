@@ -22,7 +22,7 @@ class MyApp extends App {
     }
 
     registerServiceWorker = () => {
-        if (typeof navigator !== 'undefined' && typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+        if (process.env.NODE_ENV === 'production' && typeof navigator !== 'undefined' && typeof window !== 'undefined' && 'serviceWorker' in navigator) {
             window.addEventListener('load', function () {
                 navigator.serviceWorker.register('/service-worker.js', { scope: '/' }).then(function (registration) {
                     // force the service worker to always update

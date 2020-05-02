@@ -6,10 +6,10 @@ export default styled.div`
     overflow-y: auto;
     position: relative;
     
-    @media(max-width: 640px) {
-        max-height: calc(100vh - 355px)
+    @media(max-width: 420px) {
+        max-height: calc(var(--app-height) - ${props=> props.isMobile ? '285px' : '305px'});
     }
-    @media(min-width: 640px) {
-        max-height: calc(100vh - 245px)
+    @media(min-width: 420px) {
+        max-height: calc(var(--app-height) - ${props=> props.isMobile ? '195px' : '215px'})
     }
 `

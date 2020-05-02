@@ -8,6 +8,8 @@ styled(({ sidebarIsOpen, ...rest }) => <Container {...rest} />)`
     left: ${props => (props.sidebarIsOpen ? '310px' : '0')}; 
     transition: left 0.3s ease-in-out;
     max-width: 100%;    
+    background-color: #f2f2f2;
+    height: calc(var(--app-height) - 70px);
 `
 :
 styled(View)`

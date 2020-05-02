@@ -2,6 +2,8 @@ import FieldTextInput from './FieldTextInput'
 import FieldAttachmentImage from './FieldAttachmentImage'
 import FieldAttachmentInput from './FieldAttachmentInput'
 import FieldAttachmentContainer from './FieldAttachmentContainer'
+import FieldAttachmentsContainer from './FieldAttachmentsContainer'
+import FieldAttachmentScrollContainer from './FieldAttachmentScrollContainer'
 import FieldAttachmentText from './FieldAttachmentText'
 import FieldAttachmentLabel from './FieldAttachmentLabel'
 import FieldAttachmentButton from './FieldAttachmentButton'
@@ -30,12 +32,14 @@ export default {
         Value: FieldIdValue
     },
     Attachment: {
+        Container: FieldAttachmentsContainer,
+        ScrollContainer: FieldAttachmentScrollContainer,
         Button: FieldAttachmentButton,
         Image: FieldAttachmentImage,
         Input: FieldAttachmentInput,
         Label: FieldAttachmentLabel,
         Text: FieldAttachmentText,
-        Container: FieldAttachmentContainer
+        ItemContainer: FieldAttachmentContainer
     },
     Errors: FieldErrorLabel
 }

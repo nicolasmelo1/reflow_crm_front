@@ -97,7 +97,7 @@ const FormularySectionEditForm = (props) => {
             <Row>
                 <FormulariesEdit.Section.Formulary.ConditionalButtonContainer>
                     <FormulariesEdit.Section.Formulary.ConditionalButton>
-                        {strings['pt-br']['formularyEditIsConditionalButtonLabel']}<input type="checkbox" checked={props.isConditional} onChange={e => {onChangeIsConditional(e)}}/>
+                        {strings['pt-br']['formularyEditIsConditionalButtonLabel']}<input style={{ marginLeft: '10px'}} type="checkbox" checked={props.isConditional} onChange={e => {onChangeIsConditional(e)}}/>
                     </FormulariesEdit.Section.Formulary.ConditionalButton>
                 </FormulariesEdit.Section.Formulary.ConditionalButtonContainer>
             </Row>

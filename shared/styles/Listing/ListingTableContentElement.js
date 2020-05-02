@@ -6,6 +6,8 @@ export default styled.td`
     max-height: 20px;
     overflow: hidden;
     max-width: 50px;
+    color: #6a7074;
+    font-size: 15px;
     border: 1px solid #f2f2f2 !important;
     text-overflow: ellipsis; 
     white-space: nowrap

@@ -10,7 +10,7 @@ export default styled(Form.Control)`
     &:focus {
         color: #17242D;
         background-color: white;
-        border: 1px solid #0dbf7e;
+        border: 2px solid #0dbf7e;
         box-shadow: none;
         outline: 0;
     }

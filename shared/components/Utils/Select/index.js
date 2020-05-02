@@ -41,7 +41,8 @@ const Select = (props) => {
     const [options, setOptions] = useState(props.options)
     const inputRef = React.useRef(null)
     const selectRef = React.useRef()
-    const selectedItemColors = ['#0dbf7e', '#0BAB71', '#0A9864', '#098558', '#07724B']
+    const selectedItemColors = ['#98A0A6']
+    //const selectedItemColors = ['#0dbf7e', '#0BAB71', '#0A9864', '#098558', '#07724B']
     
     // creating a ref to the state is the only way we can get the state changes in the eventHandler function,
     // so we can use it for the mousedown eventListenet function
@@ -106,6 +107,14 @@ const Select = (props) => {
             return selectedOption
         })
         setSelectedOptions(newSelectedOptions)
+    }
+
+    const onClickToRemove = (index) => {
+        let newSelectedOptions = JSON.parse(JSON.stringify(selectedOptions))
+        newSelectedOptions.splice(index, 1)
+        props.onChange(newSelectedOptions.map(selectedOption=> selectedOption.value))
+        setSelectedOptions([...newSelectedOptions])
+        updateOptions('', [...newSelectedOptions])
     }
 
     const onRemoveSelectedOption = (e) => {
@@ -254,13 +263,28 @@ const Select = (props) => {
                         <Utils.Select.SelectedOption 
                         key={selectedOption.value} 
                         color={selectedOption.color} 
-                        selected={selectedOption.selected} 
-                        onClick={e=>{
-                            e.preventDefault()
-                            e.stopPropagation()
-                            onClickSelectedOption(e, index)}}
                         >
-                            {renderLabel(selectedOption.label, index)}
+                            <div>
+                                <Utils.Select.SelectedOptionsContentContainer 
+                                selected={selectedOption.selected} 
+                                onClick={e=>{
+                                    e.preventDefault()
+                                    e.stopPropagation()
+                                    onClickSelectedOption(e, index)}
+                                }
+                                >
+                                    {renderLabel(selectedOption.label, index)}
+                                </Utils.Select.SelectedOptionsContentContainer>
+                                <Utils.Select.ExcludeContainer
+                                onClick={e=>{
+                                    e.preventDefault()
+                                    e.stopPropagation()
+                                    onClickToRemove(index)}
+                                }
+                                >
+                                    <Utils.Select.ExcludeIcon icon="times"/>
+                                </Utils.Select.ExcludeContainer>
+                            </div>
                         </Utils.Select.SelectedOption>
                     ))}
                     <Utils.Select.Input 

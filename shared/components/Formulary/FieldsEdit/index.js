@@ -8,7 +8,7 @@ import Select from '../../Utils/Select'
 import { FormulariesEdit }  from '../../../styles/Formulary'
 import { types, strings } from '../../../utils/constants'
 import Overlay from '../../../styles/Overlay'
-
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 /**
  * We created this component because probably each selection item will be styled
  * 

@@ -2,8 +2,8 @@ import styled from 'styled-components'
 
 const StyledButtonContainer = styled.button`
     text-align: center;
-    background-image: linear-gradient(to right, #0e5741 , #0dbf7e);
-    border: 1px solid #fff;
+    border: 0;
+    background-color: #0dbf7e;
     border-radius: 5px;
     padding: 5px;
     width: 100%

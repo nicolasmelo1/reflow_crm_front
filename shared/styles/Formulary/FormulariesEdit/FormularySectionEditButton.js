@@ -4,12 +4,18 @@ import React from 'react'
 
 
 const getShadow = (props) => {
-    if (props.isOpen) {
-        return 'inset 2px 2px 1px #949494, inset -2px -2px 1px #ffffff'
-    } else if (props.isConditional) {
-        return '2px 2px 1px #323232, -2px -2px 1px #565656;'
+    if (props.isConditional) {
+        if (props.isOpen) {
+            return 'inset 5px 5px 10px #0f181e, inset -5px -5px 10px #1f303c'
+        } else {
+            return '5px 5px 10px #0f181e, -5px -5px 10px #1f303c'
+        }
     } else {
-        return '2px 2px 1px #0ba26b, -2px -2px 1px #0fdc91'
+        if (props.isOpen) {
+            return 'inset 5px 5px 10px #b3b3b3, inset -5px -5px 10px #ffffff'
+        } else {
+            return '5px 5px 10px #b3b3b3, -5px -5px 10px #ffffff'
+        }
     }
 }
 
@@ -17,20 +23,20 @@ const getShadowOnHover = (props) => {
     if (props.isConditional) {
         return 'inset 2px 2px 1px #323232, inset -2px -2px 1px #565656;'
     } else {
-        return 'inset 2px 2px 1px #0ba26b, inset -2px -2px 1px #0fdc91'
+        return 'inset 5px 5px 10px #b3b3b3, inset -5px -5px 10px #ffffff'
     }
 }
 
 export default styled(React.forwardRef(({isOpen, isConditional, ...rest}, ref) => <Col {...rest} ref={ref}/>))`
-    color: ${props=> props.isConditional && !props.isOpen ? '#f2f2f2': '#17242D'};
+    color: ${props=> props.isConditional ? '#f2f2f2': '#17242D'};
     border-radius: 5px;
     margin: 10px 10px;
     box-shadow: ${props=> getShadow(props)};
     text-align: center;
     cursor: pointer;
-    background-color: ${props=> props.isOpen ? '#f2f2f2': 'transparent'};
+    background-color: ${props=> props.isConditional ? '#fffff': 'transparent'};
 
     &:hover {
-        box-shadow: ${props=> getShadowOnHover(props)};
+        background-color: ${props=> props.isConditional ? '#0f181e' : '#f2f2f2'};
     }
 `

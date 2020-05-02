@@ -31,6 +31,7 @@ const KanbanConfigurationForm = (props) => {
         default_kanban_card_id: props.defaultKanbanCardId,
         default_dimension_field_id: props.defaultDimensionId,
     })
+    const [dimensionSelectIsOpen, setDimensionSelectIsOpen] = useState(false)
     const [dimensionOptions, setDimensionOptions] = useState([])
     const [cardFormIsOpen, setCardFormIsOpen] = useState(false)
     const [cardToEdit, setCardToEdit] = useState(null)
@@ -94,8 +95,10 @@ const KanbanConfigurationForm = (props) => {
             <KanbanConfigurationFormTitle>
                 {strings['pt-br']['kanbanConfigurationFormDimensionTitleLabel']}
             </KanbanConfigurationFormTitle>
-            <KanbanConfigurationFormSelectContainer>
+            <KanbanConfigurationFormSelectContainer isOpen={dimensionSelectIsOpen}>
                 <Select 
+                isOpen={dimensionSelectIsOpen}
+                setIsOpen={setDimensionSelectIsOpen}
                 options={dimensionOptions} 
                 onChange={onChangeDefaultDimension}
                 placeholder={strings['pt-br']['kanbanConfigurationFormDimensionSelectPlaceholder']}

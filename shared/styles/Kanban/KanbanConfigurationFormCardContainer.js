@@ -6,6 +6,7 @@ export default styled.div`
     padding: 10px;
     display: inline-block;
     margin: 5px;
+    width: 200px;
     vertical-align: top;
     cursor: pointer;
     color: ${props => props.isSelected ? '#f2f2f2': '#17242D'};

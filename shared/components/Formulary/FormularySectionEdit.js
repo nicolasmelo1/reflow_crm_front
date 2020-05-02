@@ -107,18 +107,18 @@ const FormularySectionEdit = (props) => {
                 <Row>
                     <Col>
                         <div style={{height: '1em', margin: '5px'}}>
-                            <Overlay text={strings['pt-br']['formularyEditFieldTrashIconPopover']}>
+                            <Overlay text={strings['pt-br']['formularyEditSectionTrashIconPopover']}>
                                 <FormulariesEdit.Icon.SectionIcon size="sm" icon="trash" onClick={e=> {onRemoveSection(e)}} isConditional={isConditional}/>
                             </Overlay>
-                            <Overlay text={strings['pt-br']['formularyEditFieldEyeIconPopover']}>
+                            <Overlay text={strings['pt-br']['formularyEditSectionEyeIconPopover']}>
                                 <FormulariesEdit.Icon.SectionIcon size="sm" icon="eye" onClick={e=> {onDisableSection(e)}} isConditional={isConditional}/>
                             </Overlay>
-                            <Overlay text={strings['pt-br']['formularyEditFieldMoveIconPopover']}>
+                            <Overlay text={strings['pt-br']['formularyEditSectionMoveIconPopover']}>
                                 <div style={{ float:'right' }} draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveSection(e)}} onDragEnd={e=>{onDragEnd(e)}}>
                                     <FormulariesEdit.Icon.SectionIcon size="sm" icon="arrows-alt" isConditional={isConditional}/>
                                 </div>
                             </Overlay>
-                            <Overlay text={strings['pt-br']['formularyEditFieldIsNotEditingIconPopover']}>
+                            <Overlay text={strings['pt-br']['formularyEditSectionIsEditingIconPopover']}>
                                 <FormulariesEdit.Icon.SectionIcon size="sm" icon="pencil-alt" onClick={e => {setOpenedSection(!openedSection)}} isEditing={openedSection} isConditional={isConditional}/>
                             </Overlay>
                         </div>
