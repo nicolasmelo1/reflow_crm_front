@@ -27,13 +27,13 @@ class MyApp extends App {
                 navigator.serviceWorker.register('/service-worker.js', { scope: '/' }).then(function (registration) {
                     // force the service worker to always update
                     registration.update()
-                    if(process.env.NODE_ENV !== 'production') {
-                        console.log('SW registered: ', registration)
-                    }
+                    //if(process.env.NODE_ENV !== 'production') {
+                    console.log('SW registered: ', registration)
+                    //}
                 }).catch(function (registrationError) {
-                    if(process.env.NODE_ENV !== 'production') {
-                        console.log('SW registration failed: ', registrationError)
-                    }
+                    //if(process.env.NODE_ENV !== 'production') {
+                    console.log('SW registration failed: ', registrationError)
+                    //}
                 })
             })
         }
