@@ -3,6 +3,7 @@ import Header from './Header'
 import Sidebar from './Sidebar'
 import Navbar from './Navbar'
 import Notify from './Notify'
+import Templates from './Templates'
 import { connect } from 'react-redux';
 import actions from '../redux/actions';
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -66,6 +67,7 @@ class Layout extends React.Component {
         super(props)
         this.companyId = null
         this.state = {
+            addTemplates: false,
             tokenLoaded: false,
             sidebarIsOpen: false,
         }
@@ -80,7 +82,7 @@ class Layout extends React.Component {
             if (process.env['APP'] === 'web') {
                 Router.push(paths.login())
             } else {
-                //this.props.setRouter('login')
+                this.props.isAuthenticated('false')
             }
         }
 
@@ -91,16 +93,15 @@ class Layout extends React.Component {
     }
 
     setSidebarIsOpen = () => {
-        this.setState(state => {
-            return {
-                sidebarIsOpen: !state.sidebarIsOpen
-            }
-        })
+        this.setState(state => state.sidebarIsOpen=!state.sidebarIsOpen)
+    } 
+
+    setAddTemplates = (data) => {
+        this.setState(state => state.addTemplates = data)
     } 
 
     componentDidUpdate = () => {
         agent.setCompanyId(this.props.companyId !== null ? this.props.companyId : '')
-        this.setToken()
     }
 
     componentDidMount = () => {
@@ -120,14 +121,19 @@ class Layout extends React.Component {
             <div>
                 {this.state.tokenLoaded ? (
                     <Body>
-                        <Header title={this.props.title}></Header>
-                        <div id="main-container">
-                            {this.props.hideNavBar ? '' : <Navbar onDeauthenticate={this.props.onDeauthenticate} />}
-                            {this.props.showSideBar ? <Sidebar sidebarIsOpen={this.state.sidebarIsOpen} setSidebarIsOpen={this.setSidebarIsOpen} /> : ''}
-                            <ContentContainer sidebarIsOpen={this.state.sidebarIsOpen}>
-                                {this.props.children}
-                            </ContentContainer>
-                        </div>
+                        <Header title={this.props.title}/>
+                        {this.state.addTemplates ? (
+                            <Templates setAddTemplates={this.setAddTemplates}/>
+                        ) : (
+                            <div id="main-container">
+                                {this.props.hideNavBar ? '' : <Navbar onDeauthenticate={this.props.onDeauthenticate} />}
+                                {this.props.showSideBar ? <Sidebar sidebarIsOpen={this.state.sidebarIsOpen} setSidebarIsOpen={this.setSidebarIsOpen} setAddTemplates={this.setAddTemplates}/> : ''}
+                                <ContentContainer sidebarIsOpen={this.state.sidebarIsOpen}>
+                                    {this.props.children}
+                                </ContentContainer>
+                            </div>
+                        )}
+                        
                     </Body>
                 ): ''}
             </div>

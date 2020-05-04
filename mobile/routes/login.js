@@ -4,10 +4,9 @@ import LoginPage from '../pages/login'
 
 const LoginRoutes = (props) => {
     const Stack = createStackNavigator()
-    console.log(props.setIsAuthenticated)
     return (
         <Stack.Navigator>
-            <Stack.Screen name={'Login'} component={LoginPage}/>
+            <Stack.Screen name={'Login'} component={LoginPage} options={{headerShown: false}}/>
         </Stack.Navigator>
     )
 }

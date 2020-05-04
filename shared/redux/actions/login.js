@@ -21,8 +21,16 @@ const onAuthenticate = (body) => {
 };
 
 const onDeauthenticate = () => {
-    return (dispatch) => {
-        dispatch({ type: DEAUTHENTICATE, payload: {} });
+    return async (dispatch) => {
+        if (process.env['APP'] === 'web') {
+            window.localStorage.setItem('refreshToken', '')
+            window.localStorage.setItem('token', '')
+        } else {
+            await AsyncStorage.setItem('refreshToken', '')
+            await AsyncStorage.setItem('token', '')
+        }
+        dispatch({ type: DEAUTHENTICATE, payload: {} })
+        return
     }
 }
 

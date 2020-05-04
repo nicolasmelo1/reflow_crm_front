@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { View } from 'react-native'
+import { Animated, View, Easing, Dimensions } from 'react-native'
 
 
 export default process.env['APP'] === 'web' ?
@@ -32,7 +32,7 @@ styled(({sidebarIsOpen, ...rest}) => <nav {...rest}/>)`
     }
 `
 :
-styled(({sidebarIsOpen, ...rest}) => <View {...rest}/>)`
+styled(({...rest}) => <View {...rest}/>)`
     background-color: #17242D;
     text-align: auto;
     padding: 0 0 2px 0;

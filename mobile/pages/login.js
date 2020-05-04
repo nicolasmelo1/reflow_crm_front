@@ -1,14 +1,15 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Layout from '@shared/components/Layout'
 import Login from '@shared/components/Login'
+import { AuthenticationContext } from '../contexts'
 import { View } from 'react-native'
 
 const LoginPage = (props) => {
-    console.log('teste2')
-    console.log(props.route)
+    const authentication = useContext(AuthenticationContext)
+    
     return (
-        <Layout navigation={props.navigation}>
-            <Login navigation={props.navigation}/>
+        <Layout setIsAuthenticated={authentication.setIsAuthenticated}>
+            <Login setIsAuthenticated={authentication.setIsAuthenticated}/>
         </Layout>
     )
 }

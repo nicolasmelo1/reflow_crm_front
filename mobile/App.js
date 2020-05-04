@@ -1,75 +1,18 @@
 
 import React, { useState, useEffect } from 'react'
-import { Provider } from 'react-redux';
+import { Provider } from 'react-redux'
+import Main from './pages/_main'
 import { persistStore } from 'redux-persist'
 import { PersistGate } from 'redux-persist/integration/react'
 import { initStore } from '@shared/redux/store'
 import { NavigationContainer } from '@react-navigation/native'
-import { AsyncStorage, Platform, Vibration, View, Text } from 'react-native'
-import { Notifications } from 'expo'
 import { loadAsync } from 'expo-font';
-import { getAsync, NOTIFICATIONS } from 'expo-permissions'
-import Constants from 'expo-constants';
-import { LoginRoutes, MainRoutes } from './routes'
-
 
 const App = (props) => {
     //const { Component, pageProps, store } = this.props
     const store = initStore()
-    const [isAuthenticated, setIsAuthenticated] = useState(false)
+    //const [isAuthenticated, setIsAuthenticated] = useState(false)
     const [fontIsLoaded, setFontIsLoaded] = useState(false)
-
-    registerForPushNotificationsAsync = async () => {
-        const { status: existingStatus } = await getAsync(NOTIFICATIONS)
-        let finalStatus = existingStatus
-        if (existingStatus !== 'granted') {
-            const { status } = await askAsync(NOTIFICATIONS)
-            finalStatus = status
-        }
-        if (finalStatus !== 'granted') {
-            if (__DEV__) {
-                console.log('Failed to get push token for push notification!')
-            }
-            return
-        }
-    
-        if (Platform.OS === 'android') {
-            Notifications.createChannelAndroidAsync('default', {
-                name: 'default',
-                sound: true,
-                priority: 'max',
-                vibrate: [0, 250, 250, 250],
-            })
-        }
-        Notifications.getExpoPushTokenAsync().then(token => {
-            if (token) {
-            }
-        }).catch(() => {})
-    }
-    
-    const handleNotification = notification => {
-        Vibration.vibrate()
-    }
-    
-    const getComponent = () => {
-        if (isAuthenticated) {
-            return <LoginRoutes setIsAuthenticated={setIsAuthenticated}/>
-        } else {
-            return <MainRoutes setIsAuthenticated={setIsAuthenticated}/>
-        }
-    }
-    
-    AsyncStorage.getItem('token').then(token=> {
-        if (token === '') {
-            setIsAuthenticated(false)
-        } else {
-            setIsAuthenticated(true)
-            if (Constants.isDevice) {
-                registerForPushNotificationsAsync()
-                Notifications.addListener(handleNotification);
-            }
-        }
-    })
 
     useEffect(() => {
         loadAsync({
@@ -92,11 +35,13 @@ const App = (props) => {
 
     return (
         <Provider store={store}>
-            {fontIsLoaded ? (
-                <NavigationContainer>
-                    {getComponent()}
-                </NavigationContainer>
-            ) : null}    
+            <PersistGate persistor={persistStore(store)}>
+                {fontIsLoaded ? (
+                    <NavigationContainer>
+                        <Main/>
+                    </NavigationContainer>
+                ) : null}
+            </PersistGate>
         </Provider>
     )
 }

@@ -16,13 +16,6 @@ const appReducer = combineReducers({
 
 const rootReducer = (state, action) => {
     if (action.type === DEAUTHENTICATE) {
-        if (process.env['APP'] === 'web') {
-            window.localStorage.setItem('refreshToken', '')
-            window.localStorage.setItem('token', '')
-        } else {
-            AsyncStorage.setItem('refreshToken', '')
-            AsyncStorage.setItem('token', '')
-        }
         state = undefined;
     }
 

@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { View } from 'react-native'
+import { Animated, View, Dimensions } from 'react-native'
+
 
 export default process.env['APP'] === 'web' ? 
 styled.div``

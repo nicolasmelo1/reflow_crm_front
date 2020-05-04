@@ -1,5 +1,6 @@
 /**
- * This function adds the functionality
+ * This function adds the functionality of delaying a 
+ * function execution based on the time
  * @param {BigInteger} ms - Number of Miliseconds to delay
  */
 const delay = (ms) => {

@@ -3,7 +3,9 @@ import NotificationContainer from './NotificationContainer'
 import NotificationDate from './NotificationDate'
 import NotificationTitle from './NotificationTitle'
 import NotificationCard from './NotificationCard'
+import NotificationHeader from './NotificationHeader'
 import NotificationButton from './NotificationButton'
+import NotificationConfigurationContainer from './NotificationConfigurationContainer'
 import NotificationConfigurationGoBackButton from './NotificationConfigurationGoBackButton'
 import NotificationConfigurationCard from './NotificationConfigurationCard'
 import NotificationConfigurationCardIcon from './NotificationConfigurationCardIcon'
@@ -45,8 +47,10 @@ export { NotificationConfigurationGoBackButton }
 export { NotificationConfigurationCard }
 export { NotificationConfigurationCardIcon }
 export { NotificationConfigurationCardText }
+export { NotificationConfigurationContainer }
 export { NotificationButton }
 export { NotificationCard }
+export { NotificationHeader }
 export { NotificationTitle }
 export { NotificationDate }
 export { NotificationText }

@@ -38,7 +38,7 @@ class Login extends React.Component {
                 if (process.env['APP'] === 'web'){
                     Router.push(paths.home(this.props.login.primaryForm, true), paths.home(this.props.login.primaryForm), { shallow: true })
                 } else {
-                    this.props.navigation.navigate('Home')
+                    this.props.setIsAuthenticated(true)
                 }
                 //Router.push(paths.home(this.props.login.primaryForm))
             }

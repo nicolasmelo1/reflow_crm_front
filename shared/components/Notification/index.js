@@ -5,7 +5,7 @@ import axios from 'axios'
 import { View, Text } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import NotificationRecieved from './NotificationRecieved'
-import { NotificationButton, NotificationTitle } from '../../styles/Notification'
+import { NotificationButton, NotificationTitle, NotificationHeader } from '../../styles/Notification'
 import NotificationsConfiguration from './NotificationsConfiguration'
 import { strings } from '../../utils/constants'
 
@@ -55,12 +55,12 @@ class Notification extends React.Component {
                     />
                 ) : (
                     <View>
-                        <View style={{ flexDirection: 'row',  borderBottomWidth: 1, borderBottomColor: '#f2f2f2', padding: 5}}>
+                        <NotificationHeader>
                             <NotificationTitle>{strings['pt-br']['notificationRecievedTitleLabel']}</NotificationTitle>
                             <NotificationButton onPress={e=> {this.setIsEditing(true)}}>
                                 <FontAwesomeIcon size={ 24 } icon={'cog'} style={{ color: '#17242D'}}/>
                             </NotificationButton>
-                        </View>
+                        </NotificationHeader>
                         <NotificationRecieved
                         navigation={this.props.navigation}
                         onReadNotifications={this.props.onReadNotifications}

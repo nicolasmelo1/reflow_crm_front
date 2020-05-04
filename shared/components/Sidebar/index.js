@@ -1,13 +1,6 @@
 import { Row, Col } from 'react-bootstrap'
-import { View } from 'react-native'
+import { View, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
-//import SidebarMenu from '../../styles/Sidebar/SidebarMenu'
-//import SidebarToggle from '../../styles/Sidebar/SidebarToggle'
-//import SidebarToggleContainer from '../../styles/Sidebar/SidebarToggleContainer'
-//import SidebarContainer from '../../styles/Sidebar/SidebarContainer'
-//import SidebarTopButtonsContainer from '../../styles/Sidebar/SidebarTopButtonsContainer'
-//import SidebarEditTemplateButton from '../../styles/Sidebar/SidebarEditTemplateButton'
-//import SidebarAddNewTemplateButton from '../../styles/Sidebar/SidebarAddNewTemplateButton'
 import { SidebarMenu, SidebarToggle, SidebarToggleContainer, SidebarContainer, SidebarTopButtonsContainer, SidebarEditTemplateButton, SidebarAddNewTemplateButton } from '../../styles/Sidebar' // not implemented in RN
 import SidebarGroup from './SidebarGroup'
 import SidebarGroupEdit from './SidebarGroupEdit'// not implemented in RN
@@ -64,7 +57,7 @@ class Sidebar extends React.Component {
                     </SidebarToggle>
                     <SidebarMenu sidebarIsOpen={this.props.sidebarIsOpen} >
                         <SidebarEditTemplateButton onClick={e => this.enterEditMode(e)}>{(this.state.isEditing) ? strings['pt-br']['goBack']: strings['pt-br']['sidebarEditTemplateButtonLabel']}</SidebarEditTemplateButton>
-                        { (this.state.isEditing) ? '': <SidebarAddNewTemplateButton>{strings['pt-br']['sidebarAddNewTemplateButtonLabel']}</SidebarAddNewTemplateButton>}
+                        { (this.state.isEditing) ? '': <SidebarAddNewTemplateButton onClick={e => this.props.setAddTemplates(true) }>{strings['pt-br']['sidebarAddNewTemplateButtonLabel']}</SidebarAddNewTemplateButton>}
                         { (this.state.isEditing) ? (
                             <SidebarGroupEdit 
                             companyId={this.props.companyId}
@@ -89,24 +82,26 @@ class Sidebar extends React.Component {
     
     renderMobile() {
         return (
-            <SidebarContainer>
-                {this.props.sidebarIsOpen ? (
-                    <SidebarMenu>
-                        <View style={{ height: 40 }}>
-                            <SidebarTopButtonsContainer horizontal={true}>
-                                <SidebarEditTemplateButton 
-                                onPress={e => this.enterEditMode(e)}
-                                title={(this.state.isEditing) ? strings['pt-br']['goBack']: strings['pt-br']['sidebarEditTemplateButtonLabel']}
-                                />
-                                {(this.state.isEditing) ? null : <SidebarAddNewTemplateButton title={strings['pt-br']['sidebarAddNewTemplateButtonLabel']}/>}
-                            </SidebarTopButtonsContainer>
-                        </View>
-                        <SidebarGroup elements={this.props.sidebar.initial}/>
-                    </SidebarMenu>
-                ) : null}
+            <SidebarContainer sidebarIsOpen={this.props.sidebarIsOpen}>
+                <SidebarMenu>
+                    <View style={{ height: 40 }}>
+                        <SidebarTopButtonsContainer horizontal={true}>
+                            <SidebarEditTemplateButton 
+                            onPress={e => this.enterEditMode(e)}
+                            title={(this.state.isEditing) ? strings['pt-br']['goBack']: strings['pt-br']['sidebarEditTemplateButtonLabel']}
+                            />
+                            {(this.state.isEditing) ? null : <SidebarAddNewTemplateButton title={strings['pt-br']['sidebarAddNewTemplateButtonLabel']}/>}
+                        </SidebarTopButtonsContainer>
+                    </View>
+                    <SidebarGroup elements={this.props.sidebar.initial}/>
+                </SidebarMenu>
         
-                <SidebarToggleContainer >
-                    <SidebarToggle onPress={e=>this.props.setSidebarIsOpen(e)} sidebarIsOpen={this.props.sidebarIsOpen} title={(this.props.sidebarIsOpen) ? '<<<': '>>>'}/>
+                <SidebarToggleContainer>
+                    <TouchableOpacity style={{backgroundColor: '#17242D', justifyContent:'center', borderRadius: 2, height: 40, width: 60}} activeOpacity={0.8} onPress={e=> {
+                        this.props.setSidebarIsOpen(e)
+                    }}>
+                        <Text style={{color: '#0dbf7e', alignSelf:'center'}}>{(this.props.sidebarIsOpen) ? '<<<': '>>>'}</Text>
+                    </TouchableOpacity>
                     {this.props.children}
                 </SidebarToggleContainer>
             </SidebarContainer> 

@@ -9,7 +9,6 @@ const MainRoutes = (props) => {
 
     return (
         <Navbar 
-        setIsAuthenticated={props.setIsAuthenticated}
         Tab={Tab} 
         HomeComponent={Data}
         NotificationComponent={Notification}
