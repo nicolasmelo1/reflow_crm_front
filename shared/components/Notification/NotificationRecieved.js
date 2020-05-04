@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { NotificationText, NotificationDate, NotificationContainer, NotificationTitle, NotificationCard } from '../../styles/Notification'
 import moment from 'moment'
 import { strings, paths } from '../../utils/constants'
 import Router from 'next/router'
-import { View , Text } from 'react-native'
+import { View , Text, RefreshControl } from 'react-native'
 
 const NotificationRecieved = (props) => {
+    const [refreshing, setRefreshing] = React.useState(false);
     const [hasFiredRequestForNewPage, _setHasFiredRequestForNewPage] = useState(false)
     const notificationContainerRef = React.useRef()
     const sourceRef = React.useRef()
@@ -64,6 +65,13 @@ const NotificationRecieved = (props) => {
         }
     }
 
+    const onRefresh = useCallback(() => {
+        setRefreshing(true)
+        props.onGetNotifications(sourceRef, { page: 1 }).then(_ => {
+            setRefreshing(false)
+        }) 
+      }, [refreshing]);
+
     useEffect(() => {
         sourceRef.current = props.cancelToken.source()
         if (notificationContainerRef.current) { 
@@ -87,14 +95,20 @@ const NotificationRecieved = (props) => {
     const renderMobile = () => {
         return(
             <View>
-                <NotificationTitle>{strings['pt-br']['notificationRecievedTitleLabel']}</NotificationTitle>
-                <NotificationContainer onScroll={e=> {onScroll(e)}} scrollEventThrottle={16}>
-                    {props.notification.data.map((notification, index)=> {
+                <NotificationContainer onScroll={e=> {onScroll(e)}} scrollEventThrottle={16} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
+                    { props.notification && props.notification.data && props.notification.data.length === 0 ? (
+                        <View style={{height: 30, alignItems: 'center'}}>
+                            <Text style={{ color: '#bfbfbf'}}>
+                                Puxe para baixo carregar as notificações
+                            </Text>
+                        </View>
+                    ) : null}
+                    {props.notification && props.notification.data ? props.notification.data.map((notification, index)=> {
                         const notificationText = notification.notification
                         const splittedNotificationSentences = notificationText.split(/{(.*?)}(?!})/g)
                         const date = moment(notification.created_at).format(props.dateFormat)
                         return (
-                            <NotificationCard key={notification.id} hasRead={notification.has_read} onPress={e=> {onClickNotification(index, notification.form_name, notification.form)}}>
+                            <NotificationCard key={index} hasRead={notification.has_read} onPress={e=> {onClickNotification(index, notification.form_name, notification.form)}}>
                                 <NotificationDate>
                                     {date}
                                 </NotificationDate>
@@ -118,7 +132,7 @@ const NotificationRecieved = (props) => {
                                 </Text>
                             </NotificationCard>
                         )    
-                    })}
+                    }) : null}
                 </NotificationContainer>
             </View>
         )

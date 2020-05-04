@@ -79,8 +79,8 @@ class Navbar extends React.Component {
 
         return (
             <Tab.Navigator>
-                <Tab.Screen name="Home" component={this.props.HomeComponent} />
-                <Tab.Screen name="Notification" component={this.props.NotificationComponent} />
+                <Tab.Screen name="Home" component={this.props.HomeComponent} initialParams={{setIsAuthenticated: this.props.setIsAuthenticated}}/>
+                <Tab.Screen name="Notification" component={this.props.NotificationComponent} initialParams={{setIsAuthenticated: this.props.setIsAuthenticated}}/>
             </Tab.Navigator>
         )
     }

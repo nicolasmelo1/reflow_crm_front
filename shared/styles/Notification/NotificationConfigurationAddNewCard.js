@@ -15,9 +15,8 @@ styled.div`
 :
 styled(TouchableOpacity)`
     align-items: center;
-    background-color: transparent;
-    border: 1px dashed #0dbf7e;
-    border-radius: 4px;
-    padding: 5px;
-    margin-top: 5px;
+    padding: 10px;
+    min-height: 50px;
+    border-bottom-width: 1px;
+    border-bottom-color: #0dbf7e;
 `

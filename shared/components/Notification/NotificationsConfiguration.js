@@ -1,8 +1,32 @@
-import React, { useEffect } from 'react'
-import { View, ScrollView, Button } from 'react-native'
+import React, { useState,useEffect } from 'react'
+import { Animated, View, ScrollView, Text, Dimensions } from 'react-native'
 import { NotificationConfigurationAddNewCardIcon, NotificationConfigurationAddNewCard, NotificationConfigurationAddNewCardText, NotificationConfigurationGoBackButton } from '../../styles/Notification'
 import NotificationConfiguration from './NotificationConfiguration'
 import { strings } from '../../utils/constants'
+
+const Screen = (props) => {
+    const [widthAnim] = useState(new Animated.Value(Dimensions.get('window').width))
+
+    React.useEffect(() => {
+      Animated.timing(widthAnim, {
+        toValue: 0,
+        duration: 300,
+      }).start()
+    }, [])
+  
+    return (
+      <Animated.View // Special animatable View
+        style={{
+            ...props.style,
+            transform: [{
+                translateX: widthAnim
+            }], // Bind opacity to animated value
+        }}>
+        {props.children}
+      </Animated.View>
+    )
+}
+
 
 const NotificationsConfiguration = (props) => {
     const sourceRef = React.useRef()
@@ -58,12 +82,12 @@ const NotificationsConfiguration = (props) => {
 
     const renderMobile = () => {
         return (
-            <View style={{ height: '100%' }}>
-                <View style={{ justifyContent: 'row', alignItems: 'flex-start'}}>
+            <Screen>
+                <View style={{ justifyContent: 'column', alignItems: 'flex-start', borderBottomWidth: 1, borderBottomColor: '#f2f2f2'}}>
                     <NotificationConfigurationGoBackButton onPress={e=> {props.setIsEditing(false)}} title={strings['pt-br']['notificationConfigurationGoBackButtonLabel']} color={'#17242D'}/>
                 </View>
-                <ScrollView keyboardShouldPersistTaps={'handled'} style={{ height: '100%' }}>
-                    <NotificationConfigurationAddNewCard style={{ textAlign: 'center'}} onPress={e=> {addNewNotification()}}>
+                <ScrollView keyboardShouldPersistTaps={'handled'} style={{ height: '100%'}}>
+                    <NotificationConfigurationAddNewCard onPress={e=> {addNewNotification()}}>
                         <NotificationConfigurationAddNewCardIcon icon="plus-circle"/>
                         <NotificationConfigurationAddNewCardText>
                             {strings['pt-br']['notificationConfigurationAddNewCardLabel']}
@@ -84,8 +108,7 @@ const NotificationsConfiguration = (props) => {
                         />
                     ))}
                 </ScrollView>
-
-            </View>
+            </Screen>
         )
     }
 

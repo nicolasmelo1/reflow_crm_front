@@ -10,7 +10,8 @@ styled.div`
 `
 :
 styled(View)`
-    margin: 0 10px;
     background-color: #f2f2f2;
+    border-bottom-color: #17242D;
+    border-bottom-width: 1px;
     padding: 5px 0;
 `

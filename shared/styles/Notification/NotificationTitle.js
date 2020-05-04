@@ -10,6 +10,6 @@ styled.h2`
 :
 styled(Text)`
     color: #0dbf7e;
-    font-size: 24px;
-    margin-bottom: 5px;
+    font-family: Roboto-Bold;
+    font-size: 30px;
 `

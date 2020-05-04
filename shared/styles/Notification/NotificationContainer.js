@@ -9,6 +9,6 @@ styled.div`
 `
 :
 styled(ScrollView)`
-    padding: 5px;
-    height: 95%;
+    min-height: 250px;
+    height: 93.4%;
 `

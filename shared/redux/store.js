@@ -2,7 +2,6 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import reducer from './reducers';
 import { persistReducer } from 'redux-persist'
-import autoMergeLevel1 from 'redux-persist/lib/stateReconciler/autoMergeLevel1'
 //import hardSet from 'redux-persist/lib/stateReconciler/hardSet'
 
 
@@ -22,7 +21,6 @@ export const initStore = (initialState = {}) => {
 
     const persistedReducer = persistReducer({
         key: 'primary',
-        stateReconciler: autoMergeLevel1,
         storage: storage,
         whitelist: ['login']
     }, reducer)

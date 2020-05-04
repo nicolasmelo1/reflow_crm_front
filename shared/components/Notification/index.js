@@ -2,9 +2,10 @@ import React from 'react'
 import actions from '../../redux/actions'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import NotificationRecieved from './NotificationRecieved'
 import { View, Text } from 'react-native'
-import { NotificationButton } from '../../styles/Notification'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import NotificationRecieved from './NotificationRecieved'
+import { NotificationButton, NotificationTitle } from '../../styles/Notification'
 import NotificationsConfiguration from './NotificationsConfiguration'
 import { strings } from '../../utils/constants'
 
@@ -36,6 +37,8 @@ class Notification extends React.Component {
     }
 
     renderMobile = () => {
+        const Stack = this.props.stack
+
         return ( 
             <View>
                 {this.state.isEditing ? (
@@ -52,9 +55,12 @@ class Notification extends React.Component {
                     />
                 ) : (
                     <View>
-                        <NotificationButton onPress={e=> {this.setIsEditing(true)}}>
-                            <Text>{strings['pt-br']['notificationButtonToConfigurationLabel']}</Text>
-                        </NotificationButton>
+                        <View style={{ flexDirection: 'row',  borderBottomWidth: 1, borderBottomColor: '#f2f2f2', padding: 5}}>
+                            <NotificationTitle>{strings['pt-br']['notificationRecievedTitleLabel']}</NotificationTitle>
+                            <NotificationButton onPress={e=> {this.setIsEditing(true)}}>
+                                <FontAwesomeIcon size={ 24 } icon={'cog'} style={{ color: '#17242D'}}/>
+                            </NotificationButton>
+                        </View>
                         <NotificationRecieved
                         navigation={this.props.navigation}
                         onReadNotifications={this.props.onReadNotifications}

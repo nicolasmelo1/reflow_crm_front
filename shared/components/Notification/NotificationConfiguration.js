@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { TouchableWithoutFeedback, View, Keyboard } from 'react-native'
+import { TouchableWithoutFeedback, TouchableOpacity , View, Keyboard } from 'react-native'
 import { NotificationConfigurationCard, NotificationConfigurationCardText, NotificationConfigurationCardIcon } from '../../styles/Notification'
 import NotificationConfigurationForm from  './NotificationConfigurationForm'
 import { strings } from '../../utils/constants'
@@ -19,10 +19,12 @@ const NotificationConfiguration = (props) => {
                         <NotificationConfigurationCardText formIsOpen={formIsOpen} isNew={[null, ''].includes(props.notificationConfiguration.name)}>
                             {[null, ''].includes(props.notificationConfiguration.name) ? strings['pt-br']['notificationConfigurationEmptyNameCardLabel'] : props.notificationConfiguration.name}
                         </NotificationConfigurationCardText>
-                        <NotificationConfigurationCardIcon icon="trash" onPress={e => {
+                        <TouchableOpacity style={{ height: 40, width: 40, alignItems: 'center', justifyContent:'center'}} onPress={e => {
                             e.stopPropagation()
                             props.removeNotification(props.notificationConfigurationIndex)
-                        }}/>
+                        }}>
+                            <NotificationConfigurationCardIcon icon="trash"/>
+                        </TouchableOpacity>
                     </NotificationConfigurationCard>
                     {formIsOpen ? (
                         <NotificationConfigurationForm

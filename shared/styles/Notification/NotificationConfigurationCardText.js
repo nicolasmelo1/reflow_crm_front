@@ -15,5 +15,6 @@ styled.h2`
 styled(Text)`
     margin: 0;
     font-size: 20px;
+    max-width: 85%;
     color: ${props => props.formIsOpen || props.isNew ? '#17242D' : '#0dbf7e'};
 `

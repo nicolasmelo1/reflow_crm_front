@@ -8,6 +8,8 @@ styled.small`
 `
 :
 styled(Text)`
+    font-size: 14px;
+    font-family: Roboto-Regular;
     color: #bfbfbf;
     font-size: 10px 
 `

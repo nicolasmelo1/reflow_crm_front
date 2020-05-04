@@ -10,8 +10,8 @@ styled.span`
 `
 :
 styled(Text)`
-    margin: 0;
-    padding: 5px;
+    font-size: 15px;
+    font-family: Roboto-Regular;
     color: ${props => props.isVariable ? '#0dbf7e' : '#17242D'};
     font-weight: ${props => props.isVariable ? 'bold' : 'normal'};
 `

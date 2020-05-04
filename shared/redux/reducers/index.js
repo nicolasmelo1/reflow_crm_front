@@ -4,6 +4,8 @@ import home from './home'
 import notify from './notify'
 import notification from './notification'
 import { DEAUTHENTICATE } from '../types'
+import { AsyncStorage } from 'react-native'
+
 
 const appReducer = combineReducers({
     login,
@@ -14,8 +16,13 @@ const appReducer = combineReducers({
 
 const rootReducer = (state, action) => {
     if (action.type === DEAUTHENTICATE) {
-        window.localStorage.setItem('refreshToken', '')
-        window.localStorage.setItem('token', '')
+        if (process.env['APP'] === 'web') {
+            window.localStorage.setItem('refreshToken', '')
+            window.localStorage.setItem('token', '')
+        } else {
+            AsyncStorage.setItem('refreshToken', '')
+            AsyncStorage.setItem('token', '')
+        }
         state = undefined;
     }
 

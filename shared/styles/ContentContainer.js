@@ -13,7 +13,6 @@ styled(({ sidebarIsOpen, ...rest }) => <Container {...rest} />)`
 `
 :
 styled(View)`
-    padding: 10px;
     height: 100%;
     width: 100%;
     flex: 2;

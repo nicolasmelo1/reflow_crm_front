@@ -7,6 +7,7 @@ const Body = (process.env['APP'] === 'web') ? styled.div`
     font-family: Roboto;
 ` : styled(SafeAreaView)`
     height: 100%;
+    font-family: Roboto-Regular;
     top: 0;
     flex-direction: column;
 `

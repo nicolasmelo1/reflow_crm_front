@@ -1,14 +1,21 @@
 import React from 'react'
 import Layout from '@shared/components/Layout'
-import { Text } from 'react-native'
+import { Button } from 'react-native'
+import { connect } from 'react-redux'
+import actions from '@shared/redux/actions'
 
+class Data extends React.Component {
+    constructor (props) {
+        super(props)   
+    }
 
-const Data = (props) => {
-    return (
-        <Layout showSideBar={true}>
-            <Text>Teste</Text>
-        </Layout>
-    )
+    render() {
+        return (
+            <Layout navigation={props.navigation} showSideBar={true}>
+                <Button onPress={e=> this.props.onDeauthenticate()} title={'Logout'}/>
+            </Layout>
+        )     
+    }
 }
 
-export default Data
+export default connect(state => ({}), actions)(Data)

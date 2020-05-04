@@ -15,5 +15,5 @@ styled.button`
 `
 :
 styled(React.forwardRef(({...props}, ref) => <Button {...props} ref={ref}/>))`
-    align-self: flex-start
+    align-self: flex-start;
 `

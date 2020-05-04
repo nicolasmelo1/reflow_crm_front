@@ -5,38 +5,32 @@ import { persistStore } from 'redux-persist'
 import { PersistGate } from 'redux-persist/integration/react'
 import { initStore } from '@shared/redux/store'
 import { NavigationContainer } from '@react-navigation/native'
-import  { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import Data from './pages/data'
-import Notification from './pages/notification'
-import Navbar from '@shared/components/Navbar'
-import Layout from '@shared/components/Layout'
-import Login from '@shared/components/Login'
-import { AsyncStorage, Text, Platform, Vibration } from 'react-native'
+import { AsyncStorage, Platform, Vibration, View, Text } from 'react-native'
 import { Notifications } from 'expo'
+import { loadAsync } from 'expo-font';
 import { getAsync, NOTIFICATIONS } from 'expo-permissions'
 import Constants from 'expo-constants';
+import { LoginRoutes, MainRoutes } from './routes'
+
 
 const App = (props) => {
     //const { Component, pageProps, store } = this.props
     const store = initStore()
-    const [router, setRouter] = useState('login')
-    
+    const [isAuthenticated, setIsAuthenticated] = useState(false)
+    const [fontIsLoaded, setFontIsLoaded] = useState(false)
+
     registerForPushNotificationsAsync = async () => {
-        if (Constants.isDevice) {
-            const { status: existingStatus } = await getAsync(NOTIFICATIONS);
-            let finalStatus = existingStatus;
-            if (existingStatus !== 'granted') {
-                const { status } = await askAsync(NOTIFICATIONS);
-                finalStatus = status;
+        const { status: existingStatus } = await getAsync(NOTIFICATIONS)
+        let finalStatus = existingStatus
+        if (existingStatus !== 'granted') {
+            const { status } = await askAsync(NOTIFICATIONS)
+            finalStatus = status
+        }
+        if (finalStatus !== 'granted') {
+            if (__DEV__) {
+                console.log('Failed to get push token for push notification!')
             }
-            if (finalStatus !== 'granted') {
-                alert('Failed to get push token for push notification!');
-                return;
-            }
-            token = await Notifications.getExpoPushTokenAsync();
-            console.log(token);
-        } else {
-            alert('Must use physical device for Push Notifications');
+            return
         }
     
         if (Platform.OS === 'android') {
@@ -45,55 +39,64 @@ const App = (props) => {
                 sound: true,
                 priority: 'max',
                 vibrate: [0, 250, 250, 250],
-            });
+            })
         }
-    };
+        Notifications.getExpoPushTokenAsync().then(token => {
+            if (token) {
+            }
+        }).catch(() => {})
+    }
     
     const handleNotification = notification => {
-        Vibration.vibrate();
-        console.log(notification);
+        Vibration.vibrate()
     }
     
     const getComponent = () => {
-        console.log('teste1')
-        if (router === 'login') {
-            return (
-                <Layout setRouter={setRouter}>
-                    <Login setRouter={setRouter}/>
-                </Layout>
-            )
+        if (isAuthenticated) {
+            return <LoginRoutes setIsAuthenticated={setIsAuthenticated}/>
         } else {
-            const Tab = createBottomTabNavigator()
-            console.log('teste2')
-
-            return (
-                <Navbar 
-                Tab={Tab} 
-                HomeComponent={Data}
-                NotificationComponent={Notification}
-                />
-            )
+            return <MainRoutes setIsAuthenticated={setIsAuthenticated}/>
         }
     }
     
     AsyncStorage.getItem('token').then(token=> {
         if (token === '') {
-            //registerForPushNotificationsAsync()
-            //Notifications.addListener(handleNotification);
-            setRouter('login')
+            setIsAuthenticated(false)
         } else {
-            registerForPushNotificationsAsync()
-            //Notifications.addListener(handleNotification);
+            setIsAuthenticated(true)
+            if (Constants.isDevice) {
+                registerForPushNotificationsAsync()
+                Notifications.addListener(handleNotification);
+            }
         }
     })
 
+    useEffect(() => {
+        loadAsync({
+            'Roboto-Black': require('./assets/font/Roboto-Black.ttf'),
+            'Roboto-BlackItalic': require('./assets/font/Roboto-BlackItalic.ttf'),
+            'Roboto-Bold': require('./assets/font/Roboto-Bold.ttf'),
+            'Roboto-BoldItalic': require('./assets/font/Roboto-BoldItalic.ttf'),
+            'Roboto-Italic': require('./assets/font/Roboto-Italic.ttf'),
+            'Roboto-Light': require('./assets/font/Roboto-Light.ttf'),
+            'Roboto-LightItalic': require('./assets/font/Roboto-LightItalic.ttf'),
+            'Roboto-Medium': require('./assets/font/Roboto-Medium.ttf'),
+            'Roboto-MediumItalic': require('./assets/font/Roboto-MediumItalic.ttf'),
+            'Roboto-Regular': require('./assets/font/Roboto-Regular.ttf'),
+            'Roboto-Thin': require('./assets/font/Roboto-Thin.ttf'),
+            'Roboto-ThinItalic': require('./assets/font/Roboto-ThinItalic.ttf'),
+        }).then(success=> {
+            setFontIsLoaded(true)
+        })
+    }, [])
+
     return (
         <Provider store={store}>
-            <PersistGate loading={null} persistor={persistStore(store)}>
+            {fontIsLoaded ? (
                 <NavigationContainer>
                     {getComponent()}
                 </NavigationContainer>
-            </PersistGate>
+            ) : null}    
         </Provider>
     )
 }

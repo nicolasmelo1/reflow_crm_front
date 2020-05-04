@@ -15,10 +15,10 @@ styled.div`
 :
 styled(TouchableOpacity)`
     background-color: ${props => props.formIsOpen ? '#0dbf7e' : 'transparent'};
-    border: ${props => props.formIsOpen ? '1px solid #0dbf7e' : '1px solid #17242D'};
-    border-radius: 4px;
+    border-bottom-width: 1px;
+    border-bottom-color: ${props => props.formIsOpen ? '#0dbf7e': '#17242D'};
     padding: 5px;
-    margin-top: 5px;
+    min-height: 50px;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;

@@ -14,10 +14,9 @@ styled.button`
 `
 :
 styled(TouchableOpacity)`
-    width: 100%;
-    background-color: #0dbf7e;
-    padding: 10px;
+    position:absolute;
+    font-size: 30px;
     border-radius: 4px;
-    justify-content: center;
-    align-items: center
+    padding: 12px;
+    right: 0
 `
