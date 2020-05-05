@@ -4,7 +4,7 @@ import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ? 
 styled(({ sidebarIsOpen, ...rest }) => <Container {...rest} />)`
-    padding: 30px 20px 0 20px;
+    padding: ${props => props.showSideBar ? '30px 20px 0 20px' : '10px 20px 0 20px'};
     left: ${props => (props.sidebarIsOpen ? '310px' : '0')}; 
     transition: left 0.3s ease-in-out;
     max-width: 100%;    

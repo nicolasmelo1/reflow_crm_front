@@ -28,6 +28,9 @@ const Screen = (props) => {
 }
 
 export default process.env['APP'] === 'web' ?
-styled.div``
+styled.div`
+    overflow-y: auto;
+    height: calc(var(--app-height) - 112px)
+`
 :
 styled(View)``

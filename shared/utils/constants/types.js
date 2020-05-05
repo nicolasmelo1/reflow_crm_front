@@ -42,6 +42,17 @@ const types = (lang, type, key) => {
         data_type: {
             kanban: strings[lang]['dataTypeKanban'],
             listing: strings[lang]['dataTypeListing']
+        },
+        group_type: {
+            empty: strings[lang]['groupTypeEmpty'],
+            sales: strings[lang]['groupTypeSales'],
+            development: strings[lang]['groupTypeDevelopment'],
+            rh: strings[lang]['groupTypeHumanResources'],
+            design: strings[lang]['groupTypeDesign'],
+            marketing: strings[lang]['groupTypeMarketing'],
+            operations: strings[lang]['groupTypeOperations'],
+            projects: strings[lang]['groupTypeProjects'],
+            finance: strings[lang]['groupTypeFinance']
         }
     }[type][key]
 }

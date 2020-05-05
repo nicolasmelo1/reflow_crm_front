@@ -12,6 +12,12 @@ class MyApp extends App {
     // You might want to check this https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
     // we need this for the formulary height that was causing some bugs on chrome on android phones.
     appHeight = () => document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`)
+    appWidth = () => document.documentElement.style.setProperty('--app-width', `${window.innerWidth}px`)
+    
+    setAppDefaults = () => {
+        this.appHeight()
+        this.appWidth()
+    }
 
     createSubscriptionBodyToServer = (subscriptionData) => {
         return {
@@ -69,8 +75,8 @@ class MyApp extends App {
 
     componentDidMount() {
         if (typeof window !== 'undefined') {
-            window.addEventListener('resize', this.appHeight)
-            this.appHeight()
+            window.addEventListener('resize', this.setAppDefaults)
+            this.setAppDefaults()
             this.registerServiceWorker()
             if (window.localStorage.token && window.localStorage.token !== '') {
                 this.askUserPermissionForNotification()

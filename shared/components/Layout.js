@@ -3,7 +3,7 @@ import Header from './Header'
 import Sidebar from './Sidebar'
 import Navbar from './Navbar'
 import Notify from './Notify'
-import Templates from './Templates'
+//import Templates from './Templates'
 import { connect } from 'react-redux';
 import actions from '../redux/actions';
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -82,7 +82,7 @@ class Layout extends React.Component {
             if (process.env['APP'] === 'web') {
                 Router.push(paths.login())
             } else {
-                this.props.isAuthenticated('false')
+                this.props.setIsAuthenticated(false)
             }
         }
 
@@ -128,7 +128,7 @@ class Layout extends React.Component {
                             <div id="main-container">
                                 {this.props.hideNavBar ? '' : <Navbar onDeauthenticate={this.props.onDeauthenticate} />}
                                 {this.props.showSideBar ? <Sidebar sidebarIsOpen={this.state.sidebarIsOpen} setSidebarIsOpen={this.setSidebarIsOpen} setAddTemplates={this.setAddTemplates}/> : ''}
-                                <ContentContainer sidebarIsOpen={this.state.sidebarIsOpen}>
+                                <ContentContainer sidebarIsOpen={this.state.sidebarIsOpen} showSideBar={this.props.showSideBar}>
                                     {this.props.children}
                                 </ContentContainer>
                             </div>

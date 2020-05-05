@@ -3,15 +3,16 @@ import login from './login'
 import home from './home'
 import notify from './notify'
 import notification from './notification'
+import templates from './templates'
 import { DEAUTHENTICATE } from '../types'
-import { AsyncStorage } from 'react-native'
 
 
 const appReducer = combineReducers({
     login,
     home,
     notify,
-    notification
+    notification,
+    templates
 });
 
 const rootReducer = (state, action) => {

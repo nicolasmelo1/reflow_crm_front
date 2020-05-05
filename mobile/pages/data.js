@@ -12,6 +12,7 @@ class Data extends React.Component {
     }
     
     static contextType = AuthenticationContext;
+    
     render() {
         return (
             <Layout setIsAuthenticated={this.context.setIsAuthenticated} showSideBar={true}>

@@ -3,9 +3,9 @@ import { View, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { SidebarMenu, SidebarToggle, SidebarToggleContainer, SidebarContainer, SidebarTopButtonsContainer, SidebarEditTemplateButton, SidebarAddNewTemplateButton } from '../../styles/Sidebar' // not implemented in RN
 import SidebarGroup from './SidebarGroup'
-import SidebarGroupEdit from './SidebarGroupEdit'// not implemented in RN
+import SidebarGroupEdit from './SidebarGroupEdit'
 import actions from '../../redux/actions'
-import { connect } from 'react-redux';
+import { connect } from 'react-redux'
 import { strings } from '../../utils/constants'
 import axios from 'axios'
 

@@ -26,6 +26,8 @@ const getToken = async () => {
  * Function that fires when a exception is catched in the requests object functions.
  * This is only for retrieving a new token while firing a request. This way, the token is refreshed 
  * behind the scenes and doesn't affect the request at all.
+ * Some nice update to it would be to create a Queue of requests, so this just fires once, the other
+ * requests wait for this to finish.
  * 
  * @param response - the response of the axios exception
  * @param callback - the function to fire with the new token after it has been refreshed. Callbacks are any `requests` functions like: 'get', 'del', etc.
@@ -143,9 +145,21 @@ const formEncodeData = (appendToKey, body, files = []) => {
     return formData
 }
 
+
+const TEMPLATES = {
+    getTemplates: async (source, groupName , page, filter) => {
+        const params = { page: page, filter: filter}
+        return await requests.get(`${companyId}/settings/api/themes/company_type/${groupName}/`, params, {}, source)
+    }
+}
+
+
 const LOGIN = {
     makeLogin: async (body) => {
         return await requests.post('login/', body)
+    },
+    testToken: async () => {
+        return await requests.get('login/test_token/')
     },
     getDataTypes: async () => {
         return await requests.get('types/')
@@ -172,7 +186,9 @@ const FORMULARY = {
     getFormularyFormFieldOptions: async (source, formName, fieldId) => {
         return await requests.get(`${companyId}/formulary/api/${formName}/${fieldId}/form/options/`, {}, {}, source)
     },
-    getAttachmentFile: (formName, formularyId, fieldId, fileName) => {
+    getAttachmentFile: async (formName, formularyId, fieldId, fileName) => {
+        await LOGIN.testToken()
+        const token = await getToken()
         return `${API_ROOT}${companyId}/formulary/${formName}/${formularyId}/${fieldId}/${fileName}/?token=${token}`
     },
     getFormularySettingsData: async (source, formId) => {
@@ -231,7 +247,9 @@ const LISTING = {
     getHasExportedData: async (isToDownload) => {
         const path = `${companyId}/data/api/extract/`
         if (isToDownload) {
-            window.open(`${API_ROOT}${path}?download=download&token=${token}`)
+            getToken().then(token => {
+                window.open(`${API_ROOT}${path}?download=download&token=${token}`)
+            })
         }
         return await requests.get(path)
     },
@@ -324,6 +342,7 @@ export default {
     setToken: _token => { token = _token },
     LOGIN,
     HOME,
+    TEMPLATES,
     NOTIFICATION,
     LISTING,
     KANBAN,

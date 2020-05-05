@@ -97,7 +97,7 @@ const NotificationsConfiguration = (props) => {
                         {strings['pt-br']['notificationConfigurationGoBackButtonLabel']}
                     </NotificationConfigurationGoBackButton>
                 </div>
-                <div>
+                <NotificationConfigurationContainer>
                     <NotificationConfigurationAddNewCard style={{ textAlign: 'center'}} onClick={e=> {addNewNotification()}}>
                         <NotificationConfigurationAddNewCardIcon icon="plus-circle"/>
                         <NotificationConfigurationAddNewCardText>
@@ -118,7 +118,7 @@ const NotificationsConfiguration = (props) => {
                         notificationConfigurationFields={props.notificationConfiguration.fields}
                         />
                     ))}
-                </div>
+                </NotificationConfigurationContainer>
             </div>
         )
     }

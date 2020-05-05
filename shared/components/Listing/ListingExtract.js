@@ -59,10 +59,10 @@ const ListingExtract = (props) => {
             if (response && response.data.status === 'ok') {
                 let response = await props.onGetExportedData()
                 let counter = 0
-                while (response.data.status === 'empty' || counter < 100) {
+                while (response.data.status === 'empty' || counter < 50) {
                     await sleep(2000);
                     response = await props.onGetExportedData()
-                    counter = (response.data.status !== 'empty') ? 101 : counter + 1
+                    counter = (response.data.status !== 'empty') ? 51 : counter + 1
                 }
             }
         })
