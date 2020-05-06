@@ -4,9 +4,17 @@ import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
-    flex-direction: column;
     color: black;
-    padding: 10px 
+    padding: 10px;
+    overflow-y: auto;
+
+    @media(max-width: 492px) {
+        max-height: calc(var(--app-height) - 207px)
+    }
+
+    @media(min-width: 492px) {
+        max-height: calc(var(--app-height) - 47px)
+    }
 `
 :
 styled(View)``

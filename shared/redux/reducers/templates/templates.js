@@ -1,4 +1,4 @@
-import { SET_TEMPLATES } from '../../types';
+import { SET_SELECT_TEMPLATES, SET_SELECT_TEMPLATE_DATA } from '../../types';
 
 let initialState = {
     data: {
@@ -20,12 +20,16 @@ let initialState = {
             },
             data: []
         },
+    },
+    loadedTemplate: {
+        display_name: '',
+        description: ''
     }
 }
 
 export default (state = initialState, action) => {
     switch (action.type) {
-        case SET_TEMPLATES:
+        case SET_SELECT_TEMPLATES:
             return {
                 ...state,
                 data:{
@@ -38,7 +42,11 @@ export default (state = initialState, action) => {
                     }
                 }
             }
-                
+        case SET_SELECT_TEMPLATE_DATA:
+            return {
+                ...state,
+                loadedTemplate: action.payload
+            }
         default:
             return state;
     }

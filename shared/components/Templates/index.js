@@ -5,15 +5,18 @@ import axios from 'axios'
 import { connect } from 'react-redux'
 import actions from '../../redux/actions'
 import { types, strings } from '../../utils/constants'
+import TemplatePreview from './TemplatePreview'
 import { 
     TemplatesContainer, 
     TemplatesGoBackButton, 
     TemplatesHeader, 
     TemplatesSelectionContainer,
     TemplatesSelectionCard,
+    TemplatesSelectionText,
     TemplatesContentContainer,
     TemplatesTemplateTypeSelectionContainer,
     TemplatesTemplateTypeSelectionTitle,
+    TemplatesTypeSelectionButtonsContainer,
     TemplatesTypeSelectionButtons,
     TemplatesTypeSelectionButtonsText,
     TemplatesTemplateFilterTypeButtonsContainer,
@@ -28,12 +31,12 @@ class Templates extends React.Component {
         this.source = null
         this.state = {
             selectedGroupType: null,
-            selectedTemplate: null,
+            selectedTemplate: -1,
         }
     }
 
     setSelectedTemplate = (data) => {
-        data = (this.state.selectedTemplate === data) ? null : data
+        data = (this.state.selectedTemplate === data) ? -1 : data
         this.setState(state=> state.selectedTemplate = data)
     }
 
@@ -73,6 +76,13 @@ class Templates extends React.Component {
     renderWeb = () => {
         return (
             <TemplatesContainer>
+                <TemplatePreview 
+                data={this.props.loadedTemplate}
+                cancelToken={this.CancelToken}
+                onGetTemplate={this.props.onGetTemplate}
+                selectedTemplateId={this.state.selectedTemplate} 
+                setSelectedTemplate={this.setSelectedTemplate}
+                />
                 <TemplatesHeader>
                     <TemplatesGoBackButton onClick={e=>this.props.setAddTemplates(false)}>
                         <FontAwesomeIcon icon={'chevron-left'} /> Voltar
@@ -92,21 +102,24 @@ class Templates extends React.Component {
                                 </TemplatesTemplateFilterTypeButtons>
                             ))}
                         </TemplatesTemplateFilterTypeButtonsContainer>
-                        {this.isGroupTypesDefined() ? 
-                        this.props.types.default.group_type.map((groupType, index) => (
-                            <TemplatesTypeSelectionButtons key={index} isSelected={groupType.name === this.state.selectedGroupType} onClick={e=> this.setSelectedGroupType(groupType.name)}>
-                                <TemplatesTypeSelectionButtonsText isSelected={groupType.name === this.state.selectedGroupType}>
-                                    {types('pt-br', 'group_type', groupType.name)}
-                                </TemplatesTypeSelectionButtonsText>
-                            </TemplatesTypeSelectionButtons>
-                        )) : null}
+                        <TemplatesTypeSelectionButtonsContainer>
+                            {this.isGroupTypesDefined() ? 
+                            this.props.types.default.group_type.map((groupType, index) => (
+                                <TemplatesTypeSelectionButtons key={index} isSelected={groupType.name === this.state.selectedGroupType} onClick={e=> this.setSelectedGroupType(groupType.name)}>
+                                    <TemplatesTypeSelectionButtonsText isSelected={groupType.name === this.state.selectedGroupType}>
+                                        {types('pt-br', 'group_type', groupType.name)}
+                                    </TemplatesTypeSelectionButtonsText>
+                                </TemplatesTypeSelectionButtons>
+                            )) : null}
+                        </TemplatesTypeSelectionButtonsContainer>
                     </TemplatesTemplateTypeSelectionContainer>
                     <TemplatesSelectionContainer>
                         {this.props.templates['reflow'].data.map((template, index) => (
                             <TemplatesSelectionCard key={index} 
-                            isSelected={this.state.selectedTemplate === template.display_name} 
-                            onClick={e=> this.setSelectedTemplate(template.display_name)}>
-                                <p>{template.display_name}</p>
+                            onClick={e=> this.setSelectedTemplate(template.id)}>
+                                <TemplatesSelectionText>
+                                    {template.display_name}
+                                </TemplatesSelectionText>
                             </TemplatesSelectionCard>
                         ))}
                     </TemplatesSelectionContainer>
@@ -118,4 +131,4 @@ class Templates extends React.Component {
     render = () => process.env['APP'] === 'web' ?  this.renderWeb() : this.renderMobile()
 }
 
-export default connect(state=> ({ templates: state.templates.templates.data, types: state.login.types }), actions)(Templates)
+export default connect(state=> ({ templates: state.templates.templates.data, loadedTemplate: state.templates.templates.loadedTemplate, types: state.login.types }), actions)(Templates)

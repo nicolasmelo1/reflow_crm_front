@@ -10,4 +10,4 @@ styled.button`
     background-color: transparent
 `
 :
-styled(View)``
+styled(Button)``

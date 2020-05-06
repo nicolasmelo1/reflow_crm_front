@@ -11,6 +11,15 @@ styled.button`
     border-radius: 20px;
     margin: 10px 0;
     cursor: pointer;
+
+    @media(max-width: 492px) {
+        display: inline;
+        overflow: hidden;
+    }
+
+    @media(min-width: 492px) {
+        display: block;
+    }
 `
 :
 styled(TouchableOpacity)

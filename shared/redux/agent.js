@@ -147,9 +147,12 @@ const formEncodeData = (appendToKey, body, files = []) => {
 
 
 const TEMPLATES = {
-    getTemplates: async (source, groupName , page, filter) => {
+    getSelectTemplates: async (source, groupName , page, filter) => {
         const params = { page: page, filter: filter}
-        return await requests.get(`${companyId}/settings/api/themes/company_type/${groupName}/`, params, {}, source)
+        return await requests.get(`${companyId}/settings/api/themes/select/company_type/${groupName}/`, params, {}, source)
+    },
+    getSelectTemplate: async (source, templateId) => {
+        return await requests.get(`${companyId}/settings/api/themes/select/${templateId}/`, {}, {}, source)
     }
 }
 

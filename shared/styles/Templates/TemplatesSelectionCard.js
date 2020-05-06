@@ -4,14 +4,25 @@ import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
-    height: ${props => props.isSelected ? 'var(--app-height)': '150px'};
-    width: ${props => props.isSelected ? 'var(--app-width)': '150px'};
-    position: ${props => props.isSelected ? 'absolute': 'relative'};
-    top: ${props => props.isSelected ? '0': 'auto'};
-    left: ${props => props.isSelected ? '0': 'auto'};
+    height: 150px;
+    width: 150px;
     background-color: #fff;
     border-radius: 5px;
-    transition: width 1s ease-in-out, height 1s ease-in-out;
+    cursor: pointer;
+    text-align: center;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    
+    @media(max-width: 390px) {
+        margin: 10px auto;
+    }
+
+    @media(min-width: 390px) {
+        float: left;
+        margin: 10px;
+    }
 `
 :
 styled(View)``

@@ -3,7 +3,7 @@ import Header from './Header'
 import Sidebar from './Sidebar'
 import Navbar from './Navbar'
 import Notify from './Notify'
-//import Templates from './Templates'
+import Templates from './Templates'
 import { connect } from 'react-redux';
 import actions from '../redux/actions';
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -67,7 +67,7 @@ class Layout extends React.Component {
         super(props)
         this.companyId = null
         this.state = {
-            addTemplates: false,
+            addTemplates: true,
             tokenLoaded: false,
             sidebarIsOpen: false,
         }

@@ -4,17 +4,9 @@ import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
+    flex-direction: column;
     display: flex;
-    padding: 0 10px;
-    overflow: auto;
-
-    @media(max-width: 492px) {
-        flex-direction: column;
-    }
-
-    @media(min-width: 492px) {
-        flex-direction: row;
-    }
+    max-width: 45%;
 `
 :
 styled(View)``
