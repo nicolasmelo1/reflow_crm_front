@@ -12,8 +12,7 @@ import { paths } from '../utils/constants'
 import agent from '../redux/agent'
 import ContentContainer from '../styles/ContentContainer'
 import Body from '../styles/Body'
-import { AsyncStorage, View, Keyboard, ScrollView } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
+import { AsyncStorage, View } from 'react-native'
 import { 
     faArrowDown, 
     faPlusSquare, 

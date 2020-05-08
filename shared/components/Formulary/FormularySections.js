@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import FormularySection from './FormularySection'
 import { Formularies } from '../../styles/Formulary'
 import { strings } from '../../utils/constants'
-
+import { useRouter } from 'next/router'
 /**
  * This component controls all sections and contains all sections data. It is one of the main components from the formulary.
  * @param {*} data - defines the WHAT to render from the form. if nothing is provided we build one from scratch
@@ -11,7 +11,9 @@ import { strings } from '../../utils/constants'
  */
 const FormularySections = (props) => {
     const [conditionalSections,  setConditionalSections] = useState([])
-    const [sectionsData, setSectionsData] = useState([])
+    const router = useRouter()
+
+    //const [sectionsData, setSectionsData] = useState([])
 
     const addNewSectionsData = (sectionId) => {
         return {
@@ -23,10 +25,11 @@ const FormularySections = (props) => {
     
     const onChangeSectionData = (sectionsData, conditionals=conditionalSections) => {
         const newSectionsData = toggleConditionals(sectionsData, conditionals)
-        setSectionsData([...newSectionsData])
-        if (JSON.stringify(props.data.depends_on_dynamic_form) !== JSON.stringify(sectionsData)) {
-            props.setData(newSectionsData)
-        }
+        props.setFilledData(props.data.id, [...newSectionsData])
+        //setSectionsData([...newSectionsData])
+        //if (JSON.stringify(props.data.depends_on_dynamic_form) !== JSON.stringify(sectionsData)) {
+        //    props.setFilledData(props.data.id, newSectionsData)
+        //}
     }
 
     const toggleConditionals = (sectionsData, conditionals) => {
@@ -76,23 +79,19 @@ const FormularySections = (props) => {
         return newSectionsData
     }
 
-    const updateFiles = (files) => {
-        props.onChangeFormularyFilesState(files)
-    }
-
     const addSection = (e, section) => {
         e.preventDefault()
         if (section.form_type === 'multi-form') {
-            sectionsData.splice(0,0, addNewSectionsData(section.id))
+            props.data.depends_on_dynamic_form.splice(0,0, addNewSectionsData(section.id))
         } else {
-            sectionsData.push(addNewSectionsData(section.id))
+            props.data.depends_on_dynamic_form.push(addNewSectionsData(section.id))
         }
-        setSectionsData([...sectionsData])
+        props.setFilledData(props.data.id, [...props.data.depends_on_dynamic_form])
     }
 
     const updateSection = (newData, sectionId, sectionDataIndex) => {
-        let changedData = sectionsData.filter(sectionData=> sectionId.toString() === sectionData.form_id.toString())
-        const unchangedData = sectionsData.filter(sectionData=> sectionId.toString() !== sectionData.form_id.toString())
+        let changedData = props.data.depends_on_dynamic_form.filter(sectionData=> sectionId.toString() === sectionData.form_id.toString())
+        const unchangedData = props.data.depends_on_dynamic_form.filter(sectionData=> sectionId.toString() !== sectionData.form_id.toString())
 
         changedData[sectionDataIndex] = newData
         changedData = changedData.concat(unchangedData)
@@ -101,8 +100,8 @@ const FormularySections = (props) => {
     }
 
     const removeSection = (sectionId, sectionDataIndex) => {
-        let changedData = sectionsData.filter(sectionData=> sectionId.toString() === sectionData.form_id.toString())
-        const unChangedData = sectionsData.filter(sectionData=> sectionId.toString() !== sectionData.form_id.toString())
+        let changedData = props.data.depends_on_dynamic_form.filter(sectionData=> sectionId.toString() === sectionData.form_id.toString())
+        const unChangedData = props.data.depends_on_dynamic_form.filter(sectionData=> sectionId.toString() !== sectionData.form_id.toString())
 
         changedData.splice(sectionDataIndex, 1)
         changedData = changedData.concat(unChangedData)
@@ -141,23 +140,26 @@ const FormularySections = (props) => {
      * change is made. When the user load some data is the only moment the data propagate down in the hierarchy
      */
     useEffect (() => {
-        const conditionals = props.sections.filter(section => !['', null].includes(section.conditional_value))
-        if (JSON.stringify(conditionalSections) !== JSON.stringify(conditionals)) {
-            setConditionalSections(conditionals)
-        }
-
-        if (props.sections.length > 0 && JSON.stringify(props.data.depends_on_dynamic_form) !== JSON.stringify(sectionsData)) {            
-            if (props.data.depends_on_dynamic_form) {
-                onLoadData(props.data.depends_on_dynamic_form, conditionals)
-            } else {
-                buildInitialData(conditionals)
+        if (props.sections.length > 0) {
+            const conditionals = props.sections.filter(section => !['', null].includes(section.conditional_value))
+            if (JSON.stringify(conditionalSections) !== JSON.stringify(conditionals)) {
+                setConditionalSections(conditionals)
+            }
+            if (!props.hasBuiltInitial) {
+                if (props.data.id === null) {
+                    buildInitialData(conditionals)
+                }
+                if (props.data.id) {
+                    onLoadData(props.data.depends_on_dynamic_form, conditionals)
+                }
+                props.setFilledHasBuiltInitial(true)
             }
         }
     }, [props.sections, props.data])
-
+   
     return (
         <div>
-            { props.sections.filter(section=> (section.form_type==='multi-form' || sectionsData.map(sectionData => sectionData.form_id.toString()).includes(section.id.toString())) ).map((section, index) => (
+            { props.sections.filter(section=> (section.form_type==='multi-form' || props.data.depends_on_dynamic_form.map(sectionData => sectionData.form_id.toString()).includes(section.id.toString())) ).map((section, index) => (
                 <Formularies.SectionContainer key={index} isConditional={section.conditional_value !== null}>
                     <Formularies.TitleLabel>{ section.label_name }</Formularies.TitleLabel>
                     {section.form_type==='multi-form' ? (
@@ -165,15 +167,15 @@ const FormularySections = (props) => {
                             {strings['pt-br']['formularyMultiFormAddButtonLabel']}
                         </Formularies.MultiForm.AddButton>
                     ): ''} 
-                    {sectionsData.filter(sectionData=> section.id.toString() === sectionData.form_id.toString()).map((sectionData, index) => (
+                    {props.data.depends_on_dynamic_form.filter(sectionData=> section.id.toString() === sectionData.form_id.toString()).map((sectionData, index) => (
                         <FormularySection 
                         errors={props.errors}
                         onChangeFormulary={props.onChangeFormulary}
-                        key={(sectionsData.id) ? sectionData.id: index} 
+                        key={(sectionData.id) ? sectionData.id: index} 
                         sectionData={sectionData} 
                         files={props.files}
                         updateSection={updateSection}
-                        updateFiles={updateFiles}
+                        setFilledFiles={props.setFilledFiles}
                         sectionDataIndex={index} 
                         section={section} 
                         fields={section.form_fields}

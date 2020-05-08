@@ -8,42 +8,42 @@ const makeDelay = delay(1000)
 const onOpenFormulary = (isOpen) => {
     return async (dispatch) => {
         dispatch({type: OPEN_FORMULARY, payload: isOpen })
-        return true
+        return isOpen
     }
 }
 
 const onGetBuildFormulary = (source, formName) => {
     return async (dispatch) => {
-        try {
-            let response = await agent.FORMULARY.getBuildFormulary(source, formName)
-            dispatch({type: GET_FORMULARY, payload: response.data.data})
-            return response
-        } catch {}
+        let data = {}
+        let response = await agent.FORMULARY.getBuildFormulary(source, formName)
+        if (response && response.status === 200) {
+            data = response.data.data
+            //dispatch({type: GET_FORMULARY, payload: data})
+        }
+        return data
     }
 }
 
 const onGetFormularyData = (source, formName, formId, defaults=[]) => {
-    return (dispatch) => {
-        try {
-            agent.FORMULARY.getFormularyData(source, formName, formId).then(response => {
-                //const formularyIsOpen = getState().home.formulary.isOpen
-                if (response && response.status === 200){
-                    let data = response.data.data
-                    defaults.forEach(defaultData => {
-                        const formValueId = defaultData.form_value_id
-                        const sectionFormValuesIds = data.depends_on_dynamic_form.map(data=> data.dynamic_form_value.map(formValue => formValue.id))
-                        const sectionIndex = sectionFormValuesIds.findIndex(section=> section.includes(formValueId.toString()))
-                        if (sectionIndex !== -1) {
-                            const formValueIndex = sectionFormValuesIds[sectionIndex].findIndex(formValue => formValue === formValueId.toString())
-                            if (formValueIndex !== -1) {
-                                data.depends_on_dynamic_form[sectionIndex].dynamic_form_value[formValueIndex].value = defaultData.new_value
-                            }    
-                        }
-                    })
-                    dispatch({ type: SET_FORMULARY_DATA, payload: data})
+    return async (dispatch) => {
+        let data = {}
+        const response = await agent.FORMULARY.getFormularyData(source, formName, formId)
+        if (response && response.status === 200){
+            data = response.data.data
+            defaults.forEach(defaultData => {
+                const formValueId = defaultData.form_value_id
+                const sectionFormValuesIds = data.depends_on_dynamic_form.map(data=> data.dynamic_form_value.map(formValue => formValue.id))
+                const sectionIndex = sectionFormValuesIds.findIndex(section=> section.includes(formValueId.toString()))
+                if (sectionIndex !== -1) {
+                    const formValueIndex = sectionFormValuesIds[sectionIndex].findIndex(formValue => formValue === formValueId.toString())
+                    if (formValueIndex !== -1) {
+                        data.depends_on_dynamic_form[sectionIndex].dynamic_form_value[formValueIndex].value = defaultData.new_value
+                    }    
                 }
             })
-        } catch {}
+            dispatch({ type: SET_FORMULARY_DATA, payload: data})
+        }
+        return data
     }
 }
 

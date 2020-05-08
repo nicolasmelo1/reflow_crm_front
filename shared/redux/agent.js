@@ -153,6 +153,9 @@ const TEMPLATES = {
     },
     getSelectTemplate: async (source, templateId) => {
         return await requests.get(`${companyId}/settings/api/themes/select/${templateId}/`, {}, {}, source)
+    },
+    getSelectTemplateFormulary: async (source, templateId, templateFormId) => {
+        return await requests.get(`${companyId}/settings/api/themes/select/${templateId}/${templateFormId}/`, {}, {}, source)
     }
 }
 

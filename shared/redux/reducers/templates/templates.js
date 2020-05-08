@@ -23,7 +23,8 @@ let initialState = {
     },
     loadedTemplate: {
         display_name: '',
-        description: ''
+        description: '',
+        theme_form: []
     }
 }
 

@@ -161,8 +161,7 @@ WITH THE WHAT DATA PART, THAT TELLS US WHAT SHOULD WE RENDER
 ```
 
 Notice that this is the object we recieve and the one we POST to the backend. Remember our example? Let's go with the objects from the array with form_id `99`.
-Looking at this simple JSON we notice right away this is a multi-section. There are 2 sections with data from just ONE section. Section number `96` and `98` appears 
-just once.
+Looking at this simple JSON we notice right away this is a multi-section. There are 2 sections with data from just ONE section. Section number `96` and `98` appears just once.
 
 Okay, everything seems fine, but remember that i said we actually need this data to build the form? 
 When the user opens the form the first time, without any data being loaded, 

@@ -40,13 +40,13 @@ const FormularySection = (props) => {
             file: file,
             name: fieldName
         })
-        props.updateFiles([...props.files])
+        props.setFilledFiles([...props.files])
     }
 
     const removeFieldFile = (fieldName, fileName) => {
         const indexToRemove = props.files.findIndex(sectionFile => sectionFile.name === fieldName && sectionFile.file.name === fileName)
         props.files.splice(indexToRemove, 1)
-        props.updateFiles([...props.files])
+        props.setFilledFiles([...props.files])
     }
 
     return (

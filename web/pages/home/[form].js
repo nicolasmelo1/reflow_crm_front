@@ -46,6 +46,10 @@ class Data extends React.Component {
         })
     }
 
+    /**
+     * Works like a signal for the visualization, like 
+     * listing and kanban to load the header and dimensions again
+     */
     setFormularySettingsHasBeenUpdated = () => {
         this.setState(state => {
             return {
@@ -183,7 +187,7 @@ class Data extends React.Component {
                             </Col>
                         </Row>
                         <Formulary 
-                        router={this.props.router.query} 
+                        formName={this.props.router.query.form} 
                         formularyId={this.state.formularyId} 
                         setFormularyId={this.setFormularyId} 
                         setFormularySettingsHasBeenUpdated={this.setFormularySettingsHasBeenUpdated}
