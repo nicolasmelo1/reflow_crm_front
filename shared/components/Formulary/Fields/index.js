@@ -136,9 +136,9 @@ const Fields = (props) => {
                         <Field.FieldTitle.Label>
                             { props.field.label_name }
                             <Field.FieldTitle.Required>{(props.field.required) ? '*': ''}</Field.FieldTitle.Required>
-                            {(typeName === 'form') ? (
+                            {(typeName === 'form' && props.type !== 'embbed') ? (
                                 <Field.FieldTitle.FormButton 
-                                onClick={e => {props.onChangeFormulary(props.field.form_field_as_option.form_name, (values.length > 0) ? values[0].value: null)}}
+                                onClick={e => {props.type === 'full' ? props.onChangeFormulary(props.field.form_field_as_option.form_name, (values.length > 0) ? values[0].value: null) : () => {}}}
                                 >
                                     {formFieldLabelButtonText()}
                                 </Field.FieldTitle.FormButton>

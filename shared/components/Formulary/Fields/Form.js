@@ -42,7 +42,7 @@ const Form = (props) => {
             } catch {}
         }  
 
-        if (options.length === 0) {
+        if (options.length === 0 && props.type !== 'preview') {
             fetchFormOptions(source)
         }
         return () => {

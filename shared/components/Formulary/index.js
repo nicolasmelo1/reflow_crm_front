@@ -9,7 +9,44 @@ import { strings } from '../../utils/constants'
 import { Formularies } from '../../styles/Formulary'
 
 /**
- * You might want to read the README to understand how this and all of it's components work.
+ * IMPORTANT: You might want to read the README to understand how this and all of it's components work.
+ * 
+ * This component renders the formulary. The formulary is actually one of the main components of our application
+ * and usually the one that contains most logic. This happens because EVERYTHING is powered by formularies in our system.
+ * For the kanban to be created you actually need to insert data, for listing data to be shown, data has to be inserted.
+ * For dashboard to show numbers the formulary have to be used. This is why it is one of the main components of
+ * our application. 
+ * 
+ * Because of this we might need to think of every edge case when we want to display a form to a user, and the usually are:
+ * - in the bottom of the screen 
+ * - as a standalone component in the screen
+ * - as a preview (on templates)
+ * - embbed in an external website or custom url (similar as a standalone component, but without some functionalites)
+ * 
+ * @param {Enum['bottom', 'standalone']} display - how you want to display the formulary:
+ * - standalone - display the relative to the page layout
+ * - bottom - adds a widget on the bottom of the page to open or close the formulary
+ * @param {Enum['full', 'preview', 'embbed']} type - this have some differeces on what is shown to the user,
+ * - embbed - is the formulary that is used to embed in external websites and urls, so, for the external world. 
+ * it deactivates funcionalities like: add new or edit connection field is not available, cannot edit.
+ * - preview - the formulary is fully functional, except it doesn't have a save button
+ * - full - usually the formulary that is used in the home page.
+ * @param {String} formName - the current formName, you can get this by the url or it is the primaryForm in login's react redux
+ * @param {Object} buildData - (optional) - usually used in themes, sometimes you want to display a formulary, but you don`t want to load it
+ * inside of this component, you can use this props to send the build data for the form to be rendered.
+ * @param {BigInteger} formularyId - (optional) - the Id of the form you want to load, if you save the form it automatically saves an id
+ * you can use this id to load the formulary, usually used when the user clicks a listing row or a kanban card
+ * @param {Function} setFormularyId - (optional) - REQUIRED IF `formularyId` set. Sets the formulary id to null when the user closes
+ * the 'open and close' type of formulary. It is used to reset the form to a default state.
+ * @param {Function} setFormularySettingsHasBeenUpdated - (optional) - works like a signal, if the settings of the formulary have been
+ * updated we notify using this function, usually used to update the kanban dimension order or the fields headers in the listing.
+ * @param {Function} setFormularyHasBeenUpdated - (optional) - same as above, the difference is to notify a data have been inserted. 
+ * A formulary have been saved.
+ * @param {Function} setFormularyDefaultData - (optional) - REQUIRED IF `formularyDefaultData` is set. Sets the `formularyDefaultData` to 
+ * null when the user closes the 'open and close' type of formulary. It is used to reset the form to a default state.
+ * @param {Array<Object>} formularyDefaultData - (optional) - check components/Kanban/KanbanDimension.js to check how this data is defined. The default
+ * data is used to override the data that is loaded in the formulary.
+ * @param {Function} onOpenOrCloseFormulary - (optional) - function to set the formulary to open or close states
  * */
 class Formulary extends React.Component {
     constructor(props) {
@@ -27,7 +64,6 @@ class Formulary extends React.Component {
                 },
                 files: []
             },
-            //markToUpdate: false,
             isEditing: false,
             errors: {},
             isLoading: false,
@@ -36,8 +72,6 @@ class Formulary extends React.Component {
             auxOriginalInitial: {}
         }
     }
-
-    //setMarkToUpdate = (data) => this.setState(state => state.markToUpdate = data)
 
     setIsSubmitting = (data) => this.setState(state => state.isSubmitting = data)
 
@@ -66,9 +100,7 @@ class Formulary extends React.Component {
     
 
     setIsOpen = () => {
-        // when user closes we reset the states on the formulary
         this.props.onOpenOrCloseFormulary(!this.props.formulary.isOpen)
-        //this.setMarkToUpdate(true)
     }
 
 
@@ -133,7 +165,7 @@ class Formulary extends React.Component {
             })
         }
         if (formId) {
-            this.props.onGetFormularyData(this.source, formName, formId).then(data=> {
+            this.props.onGetFormularyData(this.source, formName, formId, this.props.formularyDefaultData).then(data=> {
                 const id = data.id ? data.id : null
                 const sectionsData = data.depends_on_dynamic_form ? data.depends_on_dynamic_form : []
                 this.setFilledData(id, sectionsData)
@@ -162,6 +194,17 @@ class Formulary extends React.Component {
         }
     }
 
+    showToEdit = () => {
+        // we can only edit the form if the form you are in is not an embbeded or in preview, 
+        // and the formName is the same you are int
+        return this.state.buildData && this.state.buildData.group_id && this.state.buildData.id && 
+               this.props.type === 'full' && this.state.buildData.form_name === this.props.formName
+    }
+
+    showNavigator = () => {
+        return this.state.buildData && this.state.buildData.form_name !== this.props.formName && this.props.type === 'full'
+    }
+
     componentDidMount = () => {
         this._ismounted = true
         this.onLoadFormulary(this.props.formName, this.props.formularyId)
@@ -177,6 +220,11 @@ class Formulary extends React.Component {
 
 
     componentDidUpdate = (oldProps) => {
+        // the data is reset with 2 conditions:
+        // - first the formName has changed,
+        // - second the props.formulary.isOpen has changed.
+        //
+        // if the formularyId has changed it doesn't reload the formulary, but only the data it contains
         if (oldProps.formName !== this.props.formName) {
             if (this.source) {
                 this.source.cancel()
@@ -189,7 +237,7 @@ class Formulary extends React.Component {
                 this.source.cancel()
             }
             this.source = this.CancelToken.source()
-            this.props.onGetFormularyData(this.source, this.props.formName, this.props.formularyId).then(data=> {
+            this.props.onGetFormularyData(this.source, this.props.formName, this.props.formularyId, this.props.formularyDefaultData).then(data=> {
                 const id = data.id ? data.id : null
                 const sectionsData = data.depends_on_dynamic_form ? data.depends_on_dynamic_form : []
                 this.setFilledData(id, sectionsData)
@@ -204,88 +252,75 @@ class Formulary extends React.Component {
                 this.setFilledHasBuiltInitial(false)
             }
             this.props.setFormularyId(null)
+            this.props.setFormularyDefaultData([])
         }
     }
 
     render() {
         const sections = (this.state.buildData && this.state.buildData.depends_on_form) ? this.state.buildData.depends_on_form : []
         return (
-            <div styles={this.props.styles ? this.props.styles : {}}>
-                {this.props.buildData ? (
-                    <FormularySections 
-                    errors={this.state.errors}
-                    types={this.props.types}
-                    onChangeFormulary={this.onChangeFormulary}
-                    data={this.state.filled.data}
-                    files={this.state.filled.files}
-                    hasBuiltInitial={this.state.filled.hasBuiltInitial}
-                    setFilledHasBuiltInitial={this.setFilledHasBuiltInitial}
-                    setFilledFiles={this.setFilledFiles}
-                    setFilledData={this.setFilledData}
-                    sections={sections}
-                    />
-                ) : (
-                    <Formularies.Container>
-                        <Formularies.Button onClick={e=>{this.setIsOpen()}} isOpen={this.props.formulary.isOpen} disabled={this.state.isLoading}>
-                            {this.getFormularyButtonTitle()}
-                        </Formularies.Button>
-                        <Formularies.ContentContainer isOpen={this.props.formulary.isOpen}>
-                            {(this.state.isEditing) ? (
+            <Formularies.Container display={this.props.diplay}>
+                {this.props.display === 'bottom' ? (
+                    <Formularies.Button onClick={e=>{this.setIsOpen()}} isOpen={this.props.formulary.isOpen} disabled={this.state.isLoading}>
+                        {this.getFormularyButtonTitle()}
+                    </Formularies.Button>
+                ) : ''}
+                <Formularies.ContentContainer isOpen={this.props.formulary.isOpen} display={this.props.diplay}>
+                    {(this.state.isEditing) ? (
+                        <div>
+                            <FormularySectionsEdit
+                            onRemoveFormularySettingsField={this.props.onRemoveFormularySettingsField}
+                            onUpdateFormularySettingsField={this.props.onUpdateFormularySettingsField}
+                            onCreateFormularySettingsField={this.props.onCreateFormularySettingsField}
+                            onRemoveFormularySettingsSection={this.props.onRemoveFormularySettingsSection}
+                            onUpdateFormularySettingsSection={this.props.onUpdateFormularySettingsSection}
+                            onCreateFormularySettingsSection={this.props.onCreateFormularySettingsSection}
+                            onChangeFormularySettingsState={this.props.onChangeFormularySettingsState}
+                            formId={this.state.buildData.id}
+                            types={this.props.types}
+                            setIsEditing={this.setIsEditing}
+                            data={this.props.formulary.update}
+                            />
+                        </div>
+                    ): (
+                        <div>
+                            {this.state.isLoading ? '' : (
                                 <div>
-                                    <FormularySectionsEdit
-                                    onRemoveFormularySettingsField={this.props.onRemoveFormularySettingsField}
-                                    onUpdateFormularySettingsField={this.props.onUpdateFormularySettingsField}
-                                    onCreateFormularySettingsField={this.props.onCreateFormularySettingsField}
-                                    onRemoveFormularySettingsSection={this.props.onRemoveFormularySettingsSection}
-                                    onUpdateFormularySettingsSection={this.props.onUpdateFormularySettingsSection}
-                                    onCreateFormularySettingsSection={this.props.onCreateFormularySettingsSection}
-                                    onChangeFormularySettingsState={this.props.onChangeFormularySettingsState}
-                                    formId={this.state.buildData.id}
+                                    {this.showToEdit() ? (
+                                        <Formularies.EditButton onClick={e => this.setIsEditing()} label={strings['pt-br']['formularyEditButtonLabel']} description={strings['pt-br']['formularyEditButtonDescription']}/>
+                                    ) : ''}
+                                    {this.showNavigator() ? (
+                                        <Formularies.Navigator 
+                                        onClick={e => {this.onFullResetFormulary(this.state.auxOriginalInitial.filled, this.state.auxOriginalInitial.buildData)}}
+                                        >
+                                            &lt;&nbsp;{(this.state.auxOriginalInitial.buildData) ? this.state.auxOriginalInitial.buildData.label_name : ''}
+                                        </Formularies.Navigator>
+                                    ) : ''}   
+                                    <FormularySections 
+                                    type={this.props.type}
                                     types={this.props.types}
-                                    setIsEditing={this.setIsEditing}
-                                    data={this.props.formulary.update}
+                                    errors={this.state.errors}
+                                    onChangeFormulary={this.onChangeFormulary}
+                                    data={this.state.filled.data}
+                                    files={this.state.filled.files}
+                                    hasBuiltInitial={this.state.filled.hasBuiltInitial}
+                                    setFilledHasBuiltInitial={this.setFilledHasBuiltInitial}
+                                    setFilledFiles={this.setFilledFiles}
+                                    setFilledData={this.setFilledData}
+                                    sections={sections}
                                     />
-                                </div>
-                            ): (
-                                <div>
-                                    {this.state.isLoading ? '' : (
-                                        <div>
-                                            {(this.state.buildData && this.state.buildData.group_id && this.state.buildData.id) ? (
-                                                <Formularies.EditButton onClick={this.setIsEditing} label={strings['pt-br']['formularyEditButtonLabel']} description={strings['pt-br']['formularyEditButtonDescription']}/>
-                                            ) : ''}
-                                            {(this.state.buildData && this.state.buildData.form_name !== this.props.formName) ? (
-                                                <Formularies.Navigator 
-                                                onClick={e => {this.onFullResetFormulary(this.state.auxOriginalInitial.filled, this.state.auxOriginalInitial.buildData)}}
-                                                >
-                                                    &lt;&nbsp;{(this.state.auxOriginalInitial.buildData) ? this.state.auxOriginalInitial.buildData.label_name : ''}
-                                                </Formularies.Navigator>
-                                            ) : ''}   
-                                            <FormularySections 
-                                            errors={this.state.errors}
-                                            types={this.props.types}
-                                            onChangeFormulary={this.onChangeFormulary}
-                                            data={this.state.filled.data}
-                                            files={this.state.filled.files}
-                                            hasBuiltInitial={this.state.filled.hasBuiltInitial}
-                                            setFilledHasBuiltInitial={this.setFilledHasBuiltInitial}
-                                            setFilledFiles={this.setFilledFiles}
-                                            setFilledData={this.setFilledData}
-                                            sections={sections}
-                                            />
-                                            {sections.length > 0 ? (
-                                                <Formularies.SaveButton disabled={this.state.isSubmitting} onClick={e=> {this.onSubmit()}}>
-                                                    {this.state.isSubmitting ? (<Spinner animation="border" />) : strings['pt-br']['formularySaveButtonLabel']}
-                                                </Formularies.SaveButton>
-                                            ) : ''}
-                                            
-                                        </div> 
-                                    )}
-                                </div>
+                                    {sections.length > 0 && this.props.type !== 'preview' ? (
+                                        <Formularies.SaveButton disabled={this.state.isSubmitting} onClick={e=> {this.onSubmit()}}>
+                                            {this.state.isSubmitting ? (<Spinner animation="border" />) : strings['pt-br']['formularySaveButtonLabel']}
+                                        </Formularies.SaveButton>
+                                    ) : ''}
+                                    
+                                </div> 
                             )}
-                        </Formularies.ContentContainer>
-                    </Formularies.Container>
-                )}
-            </div>
+                        </div>
+                    )}
+                </Formularies.ContentContainer>
+            </Formularies.Container>
         )
     }
 }

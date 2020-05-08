@@ -13,9 +13,7 @@ This is actually IMPORTANT, so keep this in mind.
 
 ### The HOW
 This is the first data we recieve, and it is HOW to render the formulary. So we revieve a JSON containing each section and within each section, each field from the section.
-This data contains stuff like, how to format numbers and dates, what is the label_name to display to the user, is it required or not?, and many of
-other stuff. This json, obviously, return just one section even if it's a multi-section. So in our example, we would have a 
-object about the `historico` section only once, it looks like a regular object.
+This data contains stuff like, how to format numbers and dates, what is the label_name to display to the user, is it required or not?, and many other stuff. This json, obviously, return just one section even if it's a multi-section. So in our example, we would have a object about the `historico` section only once, it looks like a regular object.
 
 ### The WHAT
 The __WHAT__ is basically an array containing all the sections which each of them contains an array that with each field value.
@@ -37,8 +35,7 @@ Okay, i think it's okay until now in formal language so let's try to explain in 
 
 ## HARDER EXPLANATION
 
-THIS IS THE data recieved from the __HOW__ to build the formulary. Looking at this JSON you quickly realize you have stuff like `placeholder`,
-`is_required` that defines if the field is required, conditionals from the sections, and all of that.
+THIS IS THE data recieved from the __HOW__ to build the formulary. Looking at this JSON you quickly realize you have stuff like `placeholder`, `is_required` that defines if the field is required, conditionals from the sections, and all of that.
 
 ```json
 {
@@ -165,4 +162,4 @@ Looking at this simple JSON we notice right away this is a multi-section. There 
 
 Okay, everything seems fine, but remember that i said we actually need this data to build the form? 
 When the user opens the form the first time, without any data being loaded, 
-we actually build this object in the state while building the form, so we can know what to build from the formulary.
+we actually build this object in the state while building the form, so we can know __what__ to build from the formulary.

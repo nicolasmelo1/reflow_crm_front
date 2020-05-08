@@ -1,10 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-import { View } from 'react-native'
+import { Text } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
-styled.div`
-    padding: 10px;
+styled.h2`
+    color: #17242D
 `
 :
-styled(View)``
+styled(Text)``

@@ -73,6 +73,7 @@ const FormularySection = (props) => {
                     removeFieldFormValue={removeFieldFormValue}
                     updateFieldFormValue={updateFieldFormValue}
                     addFieldFile={addFieldFile}
+                    type={props.type}
                     types={props.types}
                     removeFieldFile={removeFieldFile}
                     />

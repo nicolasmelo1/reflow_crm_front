@@ -173,7 +173,7 @@ class Data extends React.Component {
                     <Error404/>
                 ) : (
                     <div>
-                        <Row>
+                        {/*<Row>
                             <Col>
                                 {this.props.types && this.props.types.default && this.props.types.default.data_type ? this.props.types.default.data_type.map(dataType => (
                                     <DataTypeHeaderAnchor 
@@ -185,8 +185,10 @@ class Data extends React.Component {
                                     </DataTypeHeaderAnchor> 
                                 )) : ''}
                             </Col>
-                        </Row>
+                        </Row>*/}
                         <Formulary 
+                        display='standalone'
+                        type='full'
                         formName={this.props.router.query.form} 
                         formularyId={this.state.formularyId} 
                         setFormularyId={this.setFormularyId} 
@@ -196,7 +198,7 @@ class Data extends React.Component {
                         formularyDefaultData={this.state.formularyDefaultData}
                         onOpenOrCloseFormulary={this.props.onOpenFormulary}
                         />
-                        {this.renderVisualization()}
+                        {/*this.renderVisualization()*/}
                     </div>
                 )}
             </Layout>

@@ -7,7 +7,6 @@ import { View } from 'react-native'
 const LoginPage = (props) => {
     const authentication = useContext(AuthenticationContext)
     
-    console.log(authentication.setIsAuthenticated)
     return (
         <Layout setIsAuthenticated={authentication.setIsAuthenticated}>
             <Login setIsAuthenticated={authentication.setIsAuthenticated}/>

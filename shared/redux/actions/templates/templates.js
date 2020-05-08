@@ -20,6 +20,7 @@ const onGetTemplate = (source, templateId) => {
         const response = await agent.TEMPLATES.getSelectTemplate(source, templateId)
         if (response && response.status === 200) {
             const payload = {
+                id: response.data.data.id,
                 display_name: response.data.data.display_name,
                 description: response.data.data.description,
                 theme_form: response.data.data.theme_form

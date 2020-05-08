@@ -4,10 +4,10 @@ import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
-    flex-direction: column;
-    display: flex;
-    width: 100%;
     min-width: 300px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
 
     @media(max-width: 900px) {
         margin: 10px 0;
