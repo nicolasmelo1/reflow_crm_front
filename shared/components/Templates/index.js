@@ -106,15 +106,17 @@ class Templates extends React.Component {
                         <TemplatesTemplateTypeSelectionTitle>
                             {strings['pt-br']['templateTypeSelectionTitleLabel']}
                         </TemplatesTemplateTypeSelectionTitle>
+                        {/*
                         <TemplatesTemplateFilterTypeButtonsContainer>
-                            {['reflow', 'community', 'company'].map(templateFilterType => (
-                                <TemplatesTemplateFilterTypeButtons>
+                            {['reflow', 'community', 'company'].map((templateFilterType, index)=> (
+                                <TemplatesTemplateFilterTypeButtons key={index}>
                                     <TemplatesTemplateFilterTypeButtonsText>
                                         {templateFilterType}
                                     </TemplatesTemplateFilterTypeButtonsText>
                                 </TemplatesTemplateFilterTypeButtons>
                             ))}
                         </TemplatesTemplateFilterTypeButtonsContainer>
+                        */}
                         <TemplatesTypeSelectionButtonsContainer>
                             {this.isGroupTypesDefined() ? 
                             this.props.types.default.group_type.map((groupType, index) => (

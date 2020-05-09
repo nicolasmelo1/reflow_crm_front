@@ -50,27 +50,29 @@ class MyApp extends App {
     }
 
     askUserPermissionForNotification = async () => {
-        return Notification.requestPermission().then(async consent=> {
-            if (consent !== "granted") {
-                console.log('consent not granted')
-            } else {
-                const serviceWorker = await navigator.serviceWorker.ready;
-                const subscription = await serviceWorker.pushManager.getSubscription()
-                if (subscription === null || process.env.NODE_ENV !== 'production') {
-                    // subscribe and return the subscription, if the user has a subscription, uns
-                    this.subscribePushManager(serviceWorker).then(subscription=> {
-                        agent.LOGIN.registerPushNotification(this.createSubscriptionBodyToServer(subscription.toJSON()))
-                    }).catch(_=> {
-                        // TODO: delete subscription based on endpoint
-                        subscription.unsubscribe().then(_ => {
-                            this.subscribePushManager(serviceWorker).then(subscription=> {
-                                agent.LOGIN.registerPushNotification(this.createSubscriptionBodyToServer(subscription.toJSON()))
-                            })
-                        }).catch({})
-                    })
+        if (typeof Notification !== undefined && Notification.requestPermission() !== undefined) {
+            return Notification.requestPermission().then(async consent=> {
+                if (consent !== "granted") {
+                    console.log('consent not granted')
+                } else {
+                    const serviceWorker = await navigator.serviceWorker.ready;
+                    const subscription = await serviceWorker.pushManager.getSubscription()
+                    if (subscription === null || process.env.NODE_ENV !== 'production') {
+                        // subscribe and return the subscription, if the user has a subscription, uns
+                        this.subscribePushManager(serviceWorker).then(subscription=> {
+                            agent.LOGIN.registerPushNotification(this.createSubscriptionBodyToServer(subscription.toJSON()))
+                        }).catch(_=> {
+                            // TODO: delete subscription based on endpoint
+                            subscription.unsubscribe().then(_ => {
+                                this.subscribePushManager(serviceWorker).then(subscription=> {
+                                    agent.LOGIN.registerPushNotification(this.createSubscriptionBodyToServer(subscription.toJSON()))
+                                })
+                            }).catch({})
+                        })
+                    }
                 }
-            }
-        })
+            })
+        }
     }
 
     componentDidMount() {

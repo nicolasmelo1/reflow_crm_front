@@ -25,7 +25,7 @@ class Navbar extends React.Component {
 
     handleLogout = (e) => {
         e.preventDefault()
-        props.onDeauthenticate()
+        this.props.onDeauthenticate()
         Router.push(paths.login())
     }
 

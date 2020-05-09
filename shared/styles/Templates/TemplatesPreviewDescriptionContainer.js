@@ -11,6 +11,7 @@ styled.div`
 
     @media(max-width: 900px) {
         margin: 10px 0;
+        height: 100%;
     }
 
     @media(min-width: 900px) {

@@ -4,14 +4,13 @@ import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
-    display: flex;
 
     @media(max-width: 900px) {
-        flex-direction: column;
-        overflow-y: auto;
-        max-height: calc(var(--app-height) - 40px)
+        overflow-y: scroll;
+        max-height: calc(var(--app-height) - 60px)
     }
     @media(min-width: 900px) {
+        display: flex;
         flex-direction: row;
     }
 `
