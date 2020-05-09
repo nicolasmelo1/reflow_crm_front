@@ -66,7 +66,7 @@ class Layout extends React.Component {
         super(props)
         this.companyId = null
         this.state = {
-            addTemplates: true,
+            addTemplates: (this.props.addTemplates) ? this.props.addTemplates : false,
             tokenLoaded: false,
             sidebarIsOpen: false,
         }

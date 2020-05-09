@@ -16,14 +16,15 @@ class Index extends React.Component {
     checkIfLogged() {
         return !(!window.localStorage.getItem('token') || window.localStorage.getItem('token') === '')
     }
+
     componentDidMount() {
-        if (this.checkIfLogged()) {
+        if (this.checkIfLogged() && !['', null, undefined].includes(this.props.login.primaryForm)) {
             Router.push(paths.home(this.props.login.primaryForm))
         }
     }
     render (){
         return (
-            <Layout title={strings['pt-br']['indexPageTitle']}/>
+            <Layout addTemplates={['', null, undefined].includes(this.props.login.primaryForm)} title={strings['pt-br']['indexPageTitle']}/>
         )
     }
 }

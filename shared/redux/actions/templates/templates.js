@@ -30,7 +30,37 @@ const onGetTemplate = (source, templateId) => {
     }
 }
 
+const onGetTemplateFormulary = (source, templateId, templateFormularyId) => {
+    return async (_) => {
+        let data = {}
+        const response = await agent.TEMPLATES.getSelectTemplateFormulary(source, templateId, templateFormularyId)
+        if (response && response.status === 200) {
+            data = {
+                ...response.data.data,
+                depends_on_form: response.data.data.depends_on_theme_form.map(sectionForm => ({
+                    ...sectionForm,
+                    form_fields: sectionForm.theme_form_fields.map(formField => ({
+                        ...formField,
+                        field_option: formField.theme_field_option
+                    }))
+                }))
+            }
+            delete data.depends_on_theme_form
+        }
+        return data
+    }
+}
+
+const onSelectTemplate = (templateId) => {
+    return (_) => {
+        return agent.TEMPLATES.useTemplate(templateId)
+    }
+}
+
+
 export default {
+    onSelectTemplate,
+    onGetTemplateFormulary,
     onGetTemplates,
     onGetTemplate
 }

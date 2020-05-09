@@ -62,6 +62,7 @@ class Sidebar extends React.Component {
                             <SidebarGroupEdit 
                             companyId={this.props.companyId}
                             groups={this.props.sidebar.update}
+                            onRemoveGroup={this.props.onRemoveGroup}
                             onUpdateGroup={this.props.onUpdateGroup}
                             onChangeGroupState={this.props.onChangeGroupState}
                             onCreateOrUpdateForm={this.props.onCreateOrUpdateForm}

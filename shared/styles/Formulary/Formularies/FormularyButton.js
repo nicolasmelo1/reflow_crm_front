@@ -20,9 +20,6 @@ export default styled(React.forwardRef(({isOpen, ...rest}, ref) => <button {...r
     &:hover {
         background-color:#17242D; 
     }
-    &:active {
-        background-color:#17242D !important; 
-    }
 
     @media(max-width: 420px) {
         width: 100%;

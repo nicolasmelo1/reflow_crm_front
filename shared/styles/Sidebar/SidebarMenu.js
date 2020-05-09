@@ -7,7 +7,7 @@ export default process.env['APP'] === 'web' ?
 styled(({sidebarIsOpen, ...rest}) => <nav {...rest}/>)`
     justify-content: center;
     background: #17242D;
-    height: calc(100vh - 3.25rem);
+    height: calc(var(--app-height) - 71px);
     overflow-y: auto;
     text-align: auto;
     padding: 0 0 2rem 0;

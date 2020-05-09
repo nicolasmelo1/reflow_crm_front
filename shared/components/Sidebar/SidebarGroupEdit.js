@@ -17,7 +17,6 @@ const SidebarGroupEdit = (props) => {
 
     }
 
-
     const reorder = (groups) => {
         return groups.map((group, groupIndex) => {
             group.form_group = group.form_group.map((form, formIndex) => {
@@ -35,6 +34,15 @@ const SidebarGroupEdit = (props) => {
         const data = JSON.parse(JSON.stringify(props.groups[index]))
         const groups = JSON.parse(JSON.stringify(props.groups))
         props.onUpdateGroup(data)
+        props.onChangeGroupState(groups)
+    }
+
+    const onRemoveGroup = (index) => {
+        if (props.groups[index].id) {
+            props.onRemoveGroup(props.groups[index].id)
+        }
+        let groups = JSON.parse(JSON.stringify(props.groups))
+        groups.splice(index, 1)
         props.onChangeGroupState(groups)
     }
 
@@ -93,8 +101,8 @@ const SidebarGroupEdit = (props) => {
                     <SidebarCard onDragOver={e=> {onDragOver(e)}} onDrop={e=> {onDrop(e, index)}}>
                         <SidebarCardHeader className="group-container">
                             <SidebarIconsContainer>
-                                <SidebarIcons icon="eye" onClick={e=>{onDisableGroup(e, index)}}/>
-                                <SidebarIcons icon="trash"/>
+                                <SidebarIcons icon="eye" onClick={e=> onDisableGroup(e, index)}/>
+                                <SidebarIcons icon="trash" onClick={e=> onRemoveGroup(index)}/>
                                 <div draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveGroup(e, index)}} onDragEnd={e=>{onDragEnd(e)}}  >
                                     <SidebarIcons icon="arrows-alt" />
                                 </div>

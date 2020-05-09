@@ -156,6 +156,9 @@ const TEMPLATES = {
     },
     getSelectTemplateFormulary: async (source, templateId, templateFormId) => {
         return await requests.get(`${companyId}/settings/api/themes/select/${templateId}/${templateFormId}/`, {}, {}, source)
+    },
+    useTemplate: async (templateId) => {
+        return await requests.post(`${companyId}/settings/api/themes/select/${templateId}/`, {}, {}, {})
     }
 }
 
@@ -231,8 +234,11 @@ const HOME = {
     getFieldOptions: async (formId) => {
         return await requests.get(`${companyId}/settings/api/formulary/${formId}/field_options/`)
     },
-    updateGroup: async (body, id) => {
-        return await requests.put(`${companyId}/settings/api/formulary/groups/${id}/`, body)
+    updateGroup: async (body, groupId) => {
+        return await requests.put(`${companyId}/settings/api/formulary/groups/${groupId}/`, body)
+    },
+    removeGroup: async (groupId) => {
+        return await requests.delete(`${companyId}/settings/api/formulary/groups/${groupId}/`, {} , {} , {})
     },
     createForm: async (body) => {
         return await requests.post(`${companyId}/settings/api/formulary/forms/`, body)

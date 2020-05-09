@@ -259,13 +259,13 @@ class Formulary extends React.Component {
     render() {
         const sections = (this.state.buildData && this.state.buildData.depends_on_form) ? this.state.buildData.depends_on_form : []
         return (
-            <Formularies.Container display={this.props.diplay}>
+            <Formularies.Container display={this.props.display}>
                 {this.props.display === 'bottom' ? (
                     <Formularies.Button onClick={e=>{this.setIsOpen()}} isOpen={this.props.formulary.isOpen} disabled={this.state.isLoading}>
                         {this.getFormularyButtonTitle()}
                     </Formularies.Button>
                 ) : ''}
-                <Formularies.ContentContainer isOpen={this.props.formulary.isOpen} display={this.props.diplay}>
+                <Formularies.ContentContainer isOpen={this.props.formulary.isOpen} display={this.props.display}>
                     {(this.state.isEditing) ? (
                         <div>
                             <FormularySectionsEdit

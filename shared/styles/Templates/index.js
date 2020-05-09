@@ -18,6 +18,7 @@ import TemplatesPreviewContentsContainer from './TemplatesPreviewContentsContain
 import TemplatesPreviewDescriptionContainer from './TemplatesPreviewDescriptionContainer'
 import TemplatesPreviewDescriptionText from './TemplatesPreviewDescriptionText'
 import TemplatesPreviewDescriptionTitle from './TemplatesPreviewDescriptionTitle'
+import TemplatesPreviewDescriptionUseButton from './TemplatesPreviewDescriptionUseButton'
 import TemplatesPreviewFormularyOptionsContainer from './TemplatesPreviewFormularyOptionsContainer'
 import TemplatesPreviewFormularyOptionsTitle from './TemplatesPreviewFormularyOptionsTitle'
 import TemplatesPreviewFormularyOptionsText from './TemplatesPreviewFormularyOptionsText'
@@ -36,6 +37,7 @@ export { TemplatesPreviewFormularyOptionsIcon }
 export { TemplatesPreviewFormularyOptionsText }
 export { TemplatesPreviewFormularyOptionsTitle }
 export { TemplatesPreviewFormularyOptionsContainer }
+export { TemplatesPreviewDescriptionUseButton }
 export { TemplatesPreviewDescriptionTitle }
 export { TemplatesPreviewDescriptionText }
 export { TemplatesPreviewDescriptionContainer }

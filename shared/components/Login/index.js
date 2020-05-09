@@ -35,12 +35,16 @@ class Login extends React.Component {
                 agent.setCompanyId(this.props.login.companyId)
                 agent.setToken(response.data.access_token)
 
-                if (process.env['APP'] === 'web'){
-                    Router.push(paths.home(this.props.login.primaryForm, true), paths.home(this.props.login.primaryForm), { shallow: true })
+                if (!['', null, undefined].includes(this.props.login.primaryForm)) {
+                    if (process.env['APP'] === 'web') {
+                        Router.push(paths.home(this.props.login.primaryForm, true), paths.home(this.props.login.primaryForm), { shallow: true })
+                    } else {
+                        this.props.setIsAuthenticated(true)
+                    }
+
                 } else {
-                    this.props.setIsAuthenticated(true)
-                }
-                //Router.push(paths.home(this.props.login.primaryForm))
+                    this.props.setAddTemplates(true)
+                }            
             }
         })
     }

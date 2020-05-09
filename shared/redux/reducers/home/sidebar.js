@@ -10,7 +10,7 @@ export default (state=initialState, action) => {
         case GET_FORMS:
             return {
                 ...state,
-                initial: action.payload.data
+                initial: action.payload
             }
         case UPDATE_GROUPS:
             return {

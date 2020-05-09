@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
+import Router from 'next/router'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import Formulary from '../Formulary'
-import agent from '../../redux/agent'
+import { paths, strings } from '../../utils/constants'
 import { 
     TemplatesPreviewFormularyPreviewFormularyContainer,
     TemplatesPreviewFormularyPreviewTitle,
@@ -13,6 +14,7 @@ import {
     TemplatesPreviewFormularyOptionsTitle,
     TemplatesPreviewFormularyOptionsContainer,
     TemplatesPreviewContentsContainer, 
+    TemplatesPreviewDescriptionUseButton,
     TemplatesPreviewDescriptionContainer,
     TemplatesPreviewDescriptionText,
     TemplatesPreviewDescriptionTitle,
@@ -35,24 +37,27 @@ const TemplatePreview = (props) => {
     })
 
     const onChangeFormulary = (formId) => {
-        let data = {}
-        agent.TEMPLATES.getSelectTemplateFormulary(sourceRef.current, props.data.id, formId).then(response=> {
+        props.onGetTemplateFormulary(sourceRef.current, props.data.id, formId).then(data=> {
+            setFormData({ 
+                formId: data.id, 
+                templateId: props.data.id, 
+                formName: data.form_name + props.data.id,
+                formData: data
+            })
+        })
+    }
+
+    const onClickUseButton = () => {
+        props.onSelectTemplate(props.data.id).then(response => {
             if (response && response.status === 200) {
-                data = {
-                    ...response.data.data,
-                    depends_on_form: response.data.data.depends_on_theme_form.map(sectionForm => ({
-                        ...sectionForm,
-                        form_fields: sectionForm.theme_form_fields.map(formField => ({
-                            ...formField,
-                            field_option: formField.theme_field_option
-                        }))
-                    }))
+                props.setAddTemplates(false)
+                if (props.groups.length === 0) {
+                    Router.push(paths.home(response.data.data.last_form_name, true), paths.home(response.data.data.last_form_name), { shallow: true })
                 }
-                delete data.depends_on_theme_form;
-                setFormData({ formId: data.id, templateId: props.data.id, formName: data.form_name + props.data.id,formData: data})
             }
         })
     }
+
 
     useEffect(() => {
         sourceRef.current = props.cancelToken.source()
@@ -63,17 +68,20 @@ const TemplatePreview = (props) => {
         }
     }, [])
 
+    
     useEffect(() => {
         if (props.selectedTemplateId !== -1) {
             props.onGetTemplate(sourceRef.current, props.selectedTemplateId)
         }
     }, [props.selectedTemplateId])
 
+
     useEffect(() => {
         if (props.data.theme_form.length > 0) {
             onChangeFormulary(props.data.theme_form[0].id)
         }
     }, [props.data])
+
 
     const renderMobile = () => {
         return (
@@ -95,13 +103,16 @@ const TemplatePreview = (props) => {
                         <TemplatesPreviewDescriptionText>
                             {props.data.description}
                         </TemplatesPreviewDescriptionText>
+                        <TemplatesPreviewDescriptionUseButton onClick={e=> onClickUseButton()}>
+                            Usar
+                        </TemplatesPreviewDescriptionUseButton>
                     </TemplatesPreviewDescriptionContainer>
                     <TemplatesPreviewFormularyOptionsContainer>
                         <TemplatesPreviewFormularyOptionsTitle>
                             Formulários
                         </TemplatesPreviewFormularyOptionsTitle>
-                        {props.data.theme_form.map(themeForm => (
-                            <TemplatesPreviewFormularyOptionsButton onClick={e=> {onChangeFormulary(themeForm.id)}}>
+                        {props.data.theme_form.map((themeForm, index) => (
+                            <TemplatesPreviewFormularyOptionsButton key={index} onClick={e=> {onChangeFormulary(themeForm.id)}}>
                                 {formData.formId === themeForm.id ? (
                                     <TemplatesPreviewFormularyOptionsIcon icon={'chevron-right'}/>
                                 ): ''}
@@ -122,13 +133,6 @@ const TemplatePreview = (props) => {
                                 type={'preview'}
                                 formName={formData.formName} 
                                 buildData={formData.formData}
-                                //formularyId={this.state.formularyId} 
-                                //setFormularyId={this.setFormularyId} 
-                                //setFormularySettingsHasBeenUpdated={this.setFormularySettingsHasBeenUpdated}
-                                //setFormularyHasBeenUpdated={this.setFormularyHasBeenUpdated}
-                                //setFormularyDefaultData={this.setFormularyDefaultData}
-                                //formularyDefaultData={this.state.formularyDefaultData}
-                                //onOpenOrCloseFormulary={this.props.onOpenFormulary}
                                 />
                             ) : ''}
                         </TemplatesPreviewFormularyPreviewFormularyContainer>

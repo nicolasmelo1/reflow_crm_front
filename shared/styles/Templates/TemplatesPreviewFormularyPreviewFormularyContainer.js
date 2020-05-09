@@ -7,7 +7,7 @@ styled.div`
     overflow-y: auto;
 
     @media(min-width: 900px) {
-        max-height: calc(var(--app-height) - 85px);
+        max-height: calc(var(--app-height) - 105px);
     }
 `
 :

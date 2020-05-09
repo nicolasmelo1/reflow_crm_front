@@ -47,6 +47,10 @@ class Templates extends React.Component {
         }
     }
 
+    isInitialDefined = () => {
+        return this.props.groups.length > 0 
+    }
+
     isGroupTypesDefined = () => {
         return this.props.types && this.props.types.default && this.props.types.default.group_type
     }
@@ -56,6 +60,9 @@ class Templates extends React.Component {
         if (this.isGroupTypesDefined() && this.props.types.default.group_type.length > 0) {
             const selected = this.props.types.default.group_type[0].name
             this.setSelectedGroupType(selected)
+        }
+        if (!this.isInitialDefined()) {
+            this.props.onGetForms(this.source)
         }
     }
 
@@ -77,16 +84,22 @@ class Templates extends React.Component {
         return (
             <TemplatesContainer>
                 <TemplatePreview 
+                groups={this.props.groups}
                 data={this.props.loadedTemplate}
                 cancelToken={this.CancelToken}
                 onGetTemplate={this.props.onGetTemplate}
                 selectedTemplateId={this.state.selectedTemplate} 
+                onSelectTemplate={this.props.onSelectTemplate}
+                setAddTemplates={this.props.setAddTemplates}
                 setSelectedTemplate={this.setSelectedTemplate}
+                onGetTemplateFormulary={this.props.onGetTemplateFormulary}
                 />
                 <TemplatesHeader>
-                    <TemplatesGoBackButton onClick={e=>this.props.setAddTemplates(false)}>
-                        <FontAwesomeIcon icon={'chevron-left'} /> Voltar
-                    </TemplatesGoBackButton>
+                    {this.props.groups.length > 0 ? (
+                        <TemplatesGoBackButton onClick={e=>this.props.setAddTemplates(false)}>
+                            <FontAwesomeIcon icon={'chevron-left'} /> Voltar
+                        </TemplatesGoBackButton>
+                    ) : ''}
                 </TemplatesHeader>
                 <TemplatesContentContainer>
                     <TemplatesTemplateTypeSelectionContainer>
@@ -131,4 +144,4 @@ class Templates extends React.Component {
     render = () => process.env['APP'] === 'web' ?  this.renderWeb() : this.renderMobile()
 }
 
-export default connect(state=> ({ templates: state.templates.templates.data, loadedTemplate: state.templates.templates.loadedTemplate, types: state.login.types }), actions)(Templates)
+export default connect(state=> ({ groups: state.home.sidebar.initial, templates: state.templates.templates.data, loadedTemplate: state.templates.templates.loadedTemplate, types: state.login.types }), actions)(Templates)

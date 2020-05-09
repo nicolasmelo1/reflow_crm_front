@@ -8,14 +8,13 @@ import agent from '../../agent'
 
 const onGetForms = (source) => {
     return async (dispatch) => {
-        try {
-            let response = await agent.HOME.getForms(source)
-            if (response && response.status === 200) {
-                dispatch({type: GET_FORMS, payload: response.data})
-            }
-        } catch {}
-    };
-};
+        let response = await agent.HOME.getForms(source)
+        if (response && response.status === 200) {
+            dispatch({type: GET_FORMS, payload: response.data.data })
+        }
+        return response && response.status === 200 ? response.data.data : []
+    }
+}
 
 const onGetUpdateForms = () => {
     return async (dispatch) => {
@@ -38,6 +37,11 @@ const onUpdateGroup = (body) => {
     }
 } 
 
+const onRemoveGroup = (groupId) => {
+    return async (_) => {
+        agent.HOME.removeGroup(groupId)
+    }
+}
 
 /*********
  *       *
@@ -76,38 +80,6 @@ const onRemoveFormulary = (formId) => {
     }
 }
 
-/*
-const onReorderForm = (movedForm, movedIndex, groupMovedIndex, targetForm, targetIndex, groupTargetIndex) => {
-    return async (dispatch, getState) => {
-        let stateData = getState().home.sidebar.update
-        
-        // make a copy of the data, in default it`s just a reference
-        const movedFormGroup = JSON.parse(JSON.stringify(form.group))
-        const targetFormGroup = JSON.parse(JSON.stringify(form.group))
-
-        movedForm.group = stateData[groupTargetIndex].id
-        targetForm.group = stateData[groupMovedIndex].id
-
-        stateData[groupTargetIndex].form_group[targetIndex] = movedForm;
-        stateData[groupMovedIndex].form_group[movedIndex] = targetForm;
-
-        // recount order
-        // The groupTargetIndex object now holds the movedForm, so we need to pass the original movedFormGroup on this iteration.
-        // Same on groupMovedIndex.
-        [[groupTargetIndex, movedFormGroup], [groupMovedIndex, targetFormGroup]].forEach(([groupIndex, originalGroupId])=>{
-            stateData[groupIndex].form_group.map((form, index) => {
-                form.order = index
-                if ([movedForm.id, targetForm.id].includes(form.id)) {
-                    agent.HOME.updateForm(form, form.id)
-                }
-            })
-        })
-
-        dispatch({ type: UPDATE_GROUPS, payload: stateData })        
-    }
-}*/
-
-
 const onAddNewForm = (body, groupIndex) => {
     return async (dispatch, getState) => {
         let stateData = getState().home.sidebar.update
@@ -128,6 +100,7 @@ export default {
     onGetUpdateForms,
     onChangeGroupState,
     onUpdateGroup,
+    onRemoveGroup,
     onCreateFormulary,
     onUpdateFormulary,
     onRemoveFormulary,
