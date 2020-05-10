@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { View } from 'react-native'
+import { SafeAreaView } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
@@ -16,4 +16,4 @@ styled.div`
     transform: translate3d(0,0,0);
 `
 :
-styled(View)``
+styled(SafeAreaView)``

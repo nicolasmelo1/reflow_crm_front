@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Button } from 'react-native'
+import { Text } from 'react-native'
 
 export default process.env['APP'] === 'web' ? 
 styled.button`
@@ -18,5 +18,7 @@ styled.button`
     }
 ` 
 : 
-styled(({...rest}) => <Button color="#0dbf7e" {...rest}/>)`
+styled(({...rest}) => <Text {...rest}/>)`
+    color: #0dbf7e;
+    font-size: 19px;
 `

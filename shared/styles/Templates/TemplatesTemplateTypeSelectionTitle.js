@@ -7,4 +7,8 @@ styled.h2`
     color: #0dbf7e
 `
 :
-styled(Text)``
+styled(Text)`
+    color: #0dbf7e;
+    font-size: 24px;
+    margin: 0 0 0 10px;
+`

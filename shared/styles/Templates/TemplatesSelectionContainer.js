@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { View } from 'react-native'
+import { FlatList } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
@@ -17,4 +17,8 @@ styled.div`
     }
 `
 :
-styled(View)``
+styled(FlatList)`
+    height: 85%;
+    width: 100%;
+    padding: 10px;
+`

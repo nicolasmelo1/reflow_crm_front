@@ -1,6 +1,6 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { View } from 'react-native'
+import { Modal } from 'react-native'
 import axios from 'axios'
 import { connect } from 'react-redux'
 import actions from '../../redux/actions'
@@ -74,9 +74,73 @@ class Templates extends React.Component {
 
     renderMobile = () => {
         return (
-            <View>
+            <Modal
+            animationType="slide"
+            >
+                <TemplatesContainer>
+                    {this.state.selectedTemplate !== -1 ? (
+                        <TemplatePreview 
+                        groups={this.props.groups}
+                        data={this.props.loadedTemplate}
+                        cancelToken={this.CancelToken}
+                        onGetTemplate={this.props.onGetTemplate}
+                        selectedTemplateId={this.state.selectedTemplate} 
+                        onSelectTemplate={this.props.onSelectTemplate}
+                        setAddTemplates={this.props.setAddTemplates}
+                        setSelectedTemplate={this.setSelectedTemplate}
+                        onGetTemplateFormulary={this.props.onGetTemplateFormulary}
+                        />
+                    ) : null}
+                    <TemplatesHeader>
+                        {this.props.groups.length > 0 ? (
+                            <TemplatesGoBackButton onPress={e=>this.props.setAddTemplates(false)} title={'x'}/>
+                        ) : ''}
+                    </TemplatesHeader>
+                    <TemplatesContentContainer>
+                        <TemplatesTemplateTypeSelectionContainer>
+                            <TemplatesTemplateTypeSelectionTitle>
+                                {strings['pt-br']['templateTypeSelectionTitleLabel']}
+                            </TemplatesTemplateTypeSelectionTitle>
+                            {/*
+                            <TemplatesTemplateFilterTypeButtonsContainer>
+                                {['reflow', 'community', 'company'].map((templateFilterType, index)=> (
+                                    <TemplatesTemplateFilterTypeButtons key={index}>
+                                        <TemplatesTemplateFilterTypeButtonsText>
+                                            {templateFilterType}
+                                        </TemplatesTemplateFilterTypeButtonsText>
+                                    </TemplatesTemplateFilterTypeButtons>
+                                ))}
+                            </TemplatesTemplateFilterTypeButtonsContainer>
+                            */}
+                            <TemplatesTypeSelectionButtonsContainer horizontal={true}>
+                                {this.isGroupTypesDefined() ? 
+                                this.props.types.default.group_type.map((groupType, index) => (
+                                    <TemplatesTypeSelectionButtons key={index} isSelected={groupType.name === this.state.selectedGroupType} onPress={e=> this.setSelectedGroupType(groupType.name)}>
+                                        <TemplatesTypeSelectionButtonsText isSelected={groupType.name === this.state.selectedGroupType}>
+                                            {types('pt-br', 'group_type', groupType.name)}
+                                        </TemplatesTypeSelectionButtonsText>
+                                    </TemplatesTypeSelectionButtons>
+                                )) : null}
+                            </TemplatesTypeSelectionButtonsContainer>
+                        </TemplatesTemplateTypeSelectionContainer>
+                        <TemplatesSelectionContainer
+                            data={this.props.templates['reflow'].data}
+                            keyExtractor={item => item.id}
+                            numColumns={2}
+                            renderItem={({ item }) => (
+                                <TemplatesSelectionCard
+                                onPress={e=> this.setSelectedTemplate(item.id)}
+                                >
+                                    <TemplatesSelectionText>
+                                        {item.display_name}
+                                    </TemplatesSelectionText>
+                                </TemplatesSelectionCard>
+                            )}
+                        />
+                    </TemplatesContentContainer>
+                </TemplatesContainer>
+            </Modal>
 
-            </View>
         )
     }
 

@@ -22,4 +22,9 @@ styled.button`
     }
 `
 :
-styled(TouchableOpacity)
+styled(TouchableOpacity)`
+    background-color: ${props => props.isSelected ? '#0dbf7e': '#fff'};
+    margin: 5px 5px;
+    padding: 10px;
+    border-radius: 20px;
+`

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { View } from 'react-native'
+import { Modal, Text } from 'react-native'
 import Router from 'next/router'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import Formulary from '../Formulary'
+//import Formulary from '../Formulary'
 import { paths, strings } from '../../utils/constants'
 import { 
     TemplatesPreviewFormularyPreviewFormularyContainer,
@@ -85,7 +85,52 @@ const TemplatePreview = (props) => {
 
     const renderMobile = () => {
         return (
-            <View></View>
+            <Modal animationType="slide">
+                <TemplatesPreviewContainer isOpen={props.selectedTemplateId !== -1}>
+                    <TemplatesGoBackButton onPress={e=>props.setSelectedTemplate(-1)}>
+                        <Text>
+                            <FontAwesomeIcon icon={'chevron-left'} /> Voltar
+                        </Text>
+                    </TemplatesGoBackButton>
+                    <TemplatesPreviewContentsContainer>
+                        <TemplatesPreviewDescriptionContainer>
+                            <TemplatesPreviewDescriptionTitle>
+                                Descrição
+                            </TemplatesPreviewDescriptionTitle>
+                            <TemplatesPreviewDescriptionText>
+                                {props.data.description}
+                            </TemplatesPreviewDescriptionText>
+                            <TemplatesPreviewDescriptionUseButton onClick={e=> onClickUseButton()}>
+                                <Text>
+                                    Usar
+                                </Text>
+                            </TemplatesPreviewDescriptionUseButton>
+                        </TemplatesPreviewDescriptionContainer>
+                        <TemplatesPreviewFormularyOptionsContainer>
+                            <TemplatesPreviewFormularyOptionsTitle>
+                                Formulários
+                            </TemplatesPreviewFormularyOptionsTitle>
+                            {props.data.theme_form.map((themeForm, index) => (
+                                <TemplatesPreviewFormularyOptionsButton key={index} onPress={e=> {onChangeFormulary(themeForm.id)}}>
+                                    {formData.formId === themeForm.id ? (
+                                        <TemplatesPreviewFormularyOptionsIcon icon={'chevron-right'}/>
+                                    ) : null}
+                                    <TemplatesPreviewFormularyOptionsText isSelected={formData.formId === themeForm.id}>
+                                        {themeForm.label_name}
+                                    </TemplatesPreviewFormularyOptionsText>
+                                </TemplatesPreviewFormularyOptionsButton>
+                            ))}
+                        </TemplatesPreviewFormularyOptionsContainer>
+                        <TemplatesPreviewFormularyPreviewContainer>
+                            <TemplatesPreviewFormularyPreviewTitle>
+                                Preview
+                            </TemplatesPreviewFormularyPreviewTitle>
+                            <TemplatesPreviewFormularyPreviewFormularyContainer>
+                            </TemplatesPreviewFormularyPreviewFormularyContainer>
+                        </TemplatesPreviewFormularyPreviewContainer>
+                    </TemplatesPreviewContentsContainer>
+                </TemplatesPreviewContainer>
+            </Modal>
         )
     }
 

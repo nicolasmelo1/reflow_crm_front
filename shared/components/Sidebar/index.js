@@ -87,22 +87,29 @@ class Sidebar extends React.Component {
                 <SidebarMenu>
                     <View style={{ height: 40 }}>
                         <SidebarTopButtonsContainer horizontal={true}>
-                            <SidebarEditTemplateButton 
-                            onPress={e => this.enterEditMode(e)}
-                            title={(this.state.isEditing) ? strings['pt-br']['goBack']: strings['pt-br']['sidebarEditTemplateButtonLabel']}
-                            />
-                            {(this.state.isEditing) ? null : <SidebarAddNewTemplateButton title={strings['pt-br']['sidebarAddNewTemplateButtonLabel']}/>}
+                            <TouchableOpacity onPress={e => this.enterEditMode(e)} style={{padding: 10}}>
+                                <SidebarEditTemplateButton>
+                                    {(this.state.isEditing) ? strings['pt-br']['goBack']: strings['pt-br']['sidebarEditTemplateButtonLabel']}
+                                </SidebarEditTemplateButton>
+                            </TouchableOpacity>
+                            {(this.state.isEditing) ? 
+                            null : (
+                                <TouchableOpacity onPress={e => this.props.setAddTemplates(true)} style={{padding: 10}}>
+                                    <SidebarAddNewTemplateButton>
+                                        {strings['pt-br']['sidebarAddNewTemplateButtonLabel']}
+                                    </SidebarAddNewTemplateButton>
+                                </TouchableOpacity>
+                            )}
                         </SidebarTopButtonsContainer>
                     </View>
                     <SidebarGroup elements={this.props.sidebar.initial}/>
                 </SidebarMenu>
-        
                 <SidebarToggleContainer>
-                    <TouchableOpacity style={{backgroundColor: '#17242D', justifyContent:'center', borderRadius: 2, height: 40, width: 60}} activeOpacity={0.8} onPress={e=> {
+                    <SidebarToggle activeOpacity={0.8} onPress={e=> {
                         this.props.setSidebarIsOpen(e)
                     }}>
                         <Text style={{color: '#0dbf7e', alignSelf:'center'}}>{(this.props.sidebarIsOpen) ? '<<<': '>>>'}</Text>
-                    </TouchableOpacity>
+                    </SidebarToggle>
                     {this.props.children}
                 </SidebarToggleContainer>
             </SidebarContainer> 

@@ -32,7 +32,7 @@ const SidebarGroup = (props) => {
         return (
             <SidebarGroupsContainer>
                 { props.elements.map((element, index) => (
-                    <Text key={index}>{element.name}</Text>
+                    <Text style={{ color: '#f2f2f2', margin: 10}} key={index}>{element.name}</Text>
                 ))}
             </SidebarGroupsContainer>
         )

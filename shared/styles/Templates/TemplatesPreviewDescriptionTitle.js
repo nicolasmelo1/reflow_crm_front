@@ -7,4 +7,4 @@ styled.h2`
     color: #0dbf7e
 `
 :
-styled(View)``
+styled(Text)``

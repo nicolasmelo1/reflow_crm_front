@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { View } from 'react-native'
+import { SafeAreaView } from 'react-native'
 
 export default process.env['APP'] === 'web' ? 
 styled.div`
@@ -12,5 +12,7 @@ styled.div`
     width: 100vw
 `
 :
-styled(View)`
+styled(SafeAreaView)`
+    background-color: #f2f2f2;
+    height: 100%;
 `

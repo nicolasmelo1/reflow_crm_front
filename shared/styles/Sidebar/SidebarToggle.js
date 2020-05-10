@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Button } from 'react-native'
+import { TouchableOpacity } from 'react-native'
 
 export default process.env['APP'] === 'web' ? 
 styled(({sidebarIsOpen, ...rest}) => <button {...rest}/>)`
@@ -33,9 +33,11 @@ styled(({sidebarIsOpen, ...rest}) => <button {...rest}/>)`
     }
 `
 :
-styled(({sidebarIsOpen, ...rest}) => <Button color="#0dbf7e" {...rest}/>)`
-    font-weight: bold;
-    margin-left: 90px;
-    height: 20px;
-    left: 20px;
+styled(({sidebarIsOpen, ...rest}) => <TouchableOpacity {...rest}/>)`
+    background-color: #17242D;
+    justify-content: center;
+    border-bottom-right-radius: 20px;
+    border-top-right-radius: 20px;
+    height: 40px;
+    width: 60px;
 `

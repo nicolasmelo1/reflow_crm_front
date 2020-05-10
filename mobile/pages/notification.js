@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Layout from '@shared/components/Layout'
 import { View } from 'react-native'
 import Notification from '@shared/components/Notification'

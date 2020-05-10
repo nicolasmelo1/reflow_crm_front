@@ -1,5 +1,5 @@
-import React, { useState,useEffect } from 'react'
-import { Animated, View, ScrollView, Text, Dimensions } from 'react-native'
+import React, { useEffect } from 'react'
+import { ScrollView, Modal } from 'react-native'
 import { NotificationConfigurationContainer, NotificationHeader, NotificationConfigurationAddNewCardIcon, NotificationConfigurationAddNewCard, NotificationConfigurationAddNewCardText, NotificationConfigurationGoBackButton } from '../../styles/Notification'
 import NotificationConfiguration from './NotificationConfiguration'
 import { strings } from '../../utils/constants'
@@ -59,33 +59,37 @@ const NotificationsConfiguration = (props) => {
 
     const renderMobile = () => {
         return (
-            <NotificationConfigurationContainer>
-                <NotificationHeader>
-                    <NotificationConfigurationGoBackButton onPress={e=> {props.setIsEditing(false)}} title={strings['pt-br']['notificationConfigurationGoBackButtonLabel']} color={'#17242D'}/>
-                </NotificationHeader>
-                <ScrollView keyboardShouldPersistTaps={'handled'} style={{ height: '93.5%'}}>
-                    <NotificationConfigurationAddNewCard onPress={e=> {addNewNotification()}}>
-                        <NotificationConfigurationAddNewCardIcon icon="plus-circle"/>
-                        <NotificationConfigurationAddNewCardText>
-                            {strings['pt-br']['notificationConfigurationAddNewCardLabel']}
-                        </NotificationConfigurationAddNewCardText>
-                    </NotificationConfigurationAddNewCard>
-                    {props.notificationConfiguration.data.map((notificationConfiguration, index) => (
-                        <NotificationConfiguration
-                        key={index}
-                        formularies={props.formularies}
-                        onGetNotificationConfigurationFields={props.onGetNotificationConfigurationFields}
-                        updateNotification={updateNotification}
-                        removeNotification={removeNotification}
-                        createOrUpdateNotification={createOrUpdateNotification}
-                        cancelToken={props.cancelToken}
-                        notificationConfigurationIndex={index}
-                        notificationConfiguration={notificationConfiguration}
-                        notificationConfigurationFields={props.notificationConfiguration.fields}
-                        />
-                    ))}
-                </ScrollView>
-            </NotificationConfigurationContainer>
+            <Modal
+            animationType="slide"
+            >
+                <NotificationConfigurationContainer>
+                    <NotificationHeader>
+                        <NotificationConfigurationGoBackButton onPress={e=> {props.setIsEditing(false)}} title={'x'} color={'#17242D'}/>
+                    </NotificationHeader>
+                    <ScrollView keyboardShouldPersistTaps={'handled'} style={{ height: '93.5%'}}>
+                        <NotificationConfigurationAddNewCard onPress={e=> {addNewNotification()}}>
+                            <NotificationConfigurationAddNewCardIcon icon="plus-circle"/>
+                            <NotificationConfigurationAddNewCardText>
+                                {strings['pt-br']['notificationConfigurationAddNewCardLabel']}
+                            </NotificationConfigurationAddNewCardText>
+                        </NotificationConfigurationAddNewCard>
+                        {props.notificationConfiguration.data.map((notificationConfiguration, index) => (
+                            <NotificationConfiguration
+                            key={index}
+                            formularies={props.formularies}
+                            onGetNotificationConfigurationFields={props.onGetNotificationConfigurationFields}
+                            updateNotification={updateNotification}
+                            removeNotification={removeNotification}
+                            createOrUpdateNotification={createOrUpdateNotification}
+                            cancelToken={props.cancelToken}
+                            notificationConfigurationIndex={index}
+                            notificationConfiguration={notificationConfiguration}
+                            notificationConfigurationFields={props.notificationConfiguration.fields}
+                            />
+                        ))}
+                    </ScrollView>
+                </NotificationConfigurationContainer>
+            </Modal>
         )
     }
 

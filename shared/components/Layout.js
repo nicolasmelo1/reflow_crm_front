@@ -12,7 +12,7 @@ import { paths } from '../utils/constants'
 import agent from '../redux/agent'
 import ContentContainer from '../styles/ContentContainer'
 import Body from '../styles/Body'
-import { AsyncStorage, View } from 'react-native'
+import { AsyncStorage, View, SafeAreaView, Platform } from 'react-native'
 import { 
     faArrowDown, 
     faPlusSquare, 
@@ -142,18 +142,27 @@ class Layout extends React.Component {
 
     renderMobile() {
         return (
-            <View style={{ height: '100%'}}>
+            <SafeAreaView style={{ height: '100%', paddingTop: Platform.OS === 'android' ? 25 : 0}}>
                 {this.state.tokenLoaded ? (
                     <Body>
                         <Notify/> 
-                        <View style={{ height: '100%', backgroundColor:'#fff'}}>
-                            {this.props.showSideBar ?
-                                <Sidebar sidebarIsOpen={this.state.sidebarIsOpen} setSidebarIsOpen={this.setSidebarIsOpen} children={this.props.children}/>
-                            : this.props.children}
-                        </View>
+                        {this.state.addTemplates ? (
+                            <Templates setAddTemplates={this.setAddTemplates}/>
+                        ) : (
+                            <SafeAreaView style={{ height: '100%', backgroundColor:'#fff'}}>
+                                {this.props.showSideBar ?
+                                    <Sidebar 
+                                    sidebarIsOpen={this.state.sidebarIsOpen} 
+                                    setSidebarIsOpen={this.setSidebarIsOpen} 
+                                    children={this.props.children} 
+                                    setAddTemplates={this.setAddTemplates}
+                                    />
+                                : this.props.children}
+                            </SafeAreaView>
+                        )}
                     </Body>
                 ) : null }
-            </View>
+            </SafeAreaView>
         )
     }
 

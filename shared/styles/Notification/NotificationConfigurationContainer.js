@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Animated, Dimensions, Easing, View } from 'react-native'
+import { Animated, Dimensions, Easing, SafeAreaView } from 'react-native'
 import styled from 'styled-components'
 
 const Screen = (props) => {
@@ -33,4 +33,4 @@ styled.div`
     height: calc(var(--app-height) - 112px)
 `
 :
-styled(View)``
+styled(SafeAreaView)``
