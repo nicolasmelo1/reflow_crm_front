@@ -27,8 +27,7 @@ const Header = (props) => (
         <link rel="apple-touch-icon" sizes="384x384" href="/pwa/images/icons/icon-384x384.png"/>
         <link rel="apple-touch-icon" sizes="512x512" href="/pwa/images/icons/icon-512x512.png"/>
         <link rel="icon" type="image/png" sizes="72x72" href="/pwa/images/icons/icon-72x72.png"/>
-        <link rel="manifest" href="/pwa/manifest.json" />
-        
+        <link rel="manifest" href="/pwa/manifest.json"/>
         <script type="text/javascript" src="/dragdroptouch/js/dragdroptouch.js"></script>
         <link rel="stylesheet" href="/bulma/css/bulma.min.css" />
         <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'></link>
