@@ -9,7 +9,7 @@ styled.div`
     margin-bottom: 10px; 
     padding: 5px;
     cursor: pointer;
-    background-color: ${props => props.hasRead ? 'transparent': '#f2f2f2'}
+    background-color: ${props => props.hasRead ? 'transparent': '#fff'}
 `
 :
 styled(TouchableOpacity)`
@@ -17,5 +17,5 @@ styled(TouchableOpacity)`
     border-bottom-width: 1px;
     border-bottom-color: #17242D;
     min-height: 50px;
-    background-color: ${props => props.hasRead ? 'transparent': '#f2f2f2'}
+    background-color: ${props => props.hasRead ? 'transparent': '#fff'}
 `
