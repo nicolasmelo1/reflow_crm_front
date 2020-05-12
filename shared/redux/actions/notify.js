@@ -1,5 +1,4 @@
 import { SET_NOTIFY } from '../types';
-import agent from '../agent'
 
 /**
  * This is used for adding notification toasts to the top of the page

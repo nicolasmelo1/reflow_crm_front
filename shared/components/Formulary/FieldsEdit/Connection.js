@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Select from '../../Utils/Select'
-import agent from '../../../redux/agent'
+import agent from '../../../utils/agent'
 import { strings } from '../../../utils/constants'
 import { FormulariesEdit }  from '../../../styles/Formulary'
 
@@ -57,7 +57,7 @@ const Connection = (props) => {
         async function fetchFieldOptions() {
             if (selectedForm) {
                 try {
-                    const response = await agent.HOME.getFieldOptions(selectedForm)
+                    const response = await agent.http.SIDEBAR.getFieldOptions(selectedForm)
                     if (!didCancel && response.status === 200) {
                         setFields(response.data.data)
                     }

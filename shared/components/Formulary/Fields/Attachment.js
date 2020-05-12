@@ -4,14 +4,14 @@ import { useRouter } from 'next/router'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import Field from '../../../styles/Formulary/Field'
 import { strings } from '../../../utils/constants'
-import agent from '../../../redux/agent'
+import agent from '../../../utils/agent'
 
 const AttachmentItem = (props) => {
     const router = useRouter()
 
     const onClick = async () => {
         if (![null, undefined, ''].includes(props.value.id)){
-            window.open(await agent.FORMULARY.getAttachmentFile(router.query.form, props.sectionId, props.field.id, props.value.value))
+            window.open(await agent.http.FORMULARY.getAttachmentFile(router.query.form, props.sectionId, props.field.id, props.value.value))
         }
     }
     const splittedFullName = (props.value) ? props.value.value.split('.') : []

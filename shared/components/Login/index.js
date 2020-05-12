@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Form, Button } from 'react-bootstrap'
 import { LoginInput, LoginButton, LoginButtonText } from '../../styles/Login'
 import actions from '../../redux/actions'
-import agent from '../../redux/agent'
+import agent from '../../utils/agent'
 import { strings, errors, paths } from '../../utils/constants'
 
 class Login extends React.Component {
@@ -33,7 +33,6 @@ class Login extends React.Component {
 
                 // we set it here because of react, Next.js always constructs the Layout component, so it always pass on the constructor part, React Native on the other hand don't.
                 agent.setCompanyId(this.props.login.companyId)
-                agent.setToken(response.data.access_token)
 
                 if (!['', null, undefined].includes(this.props.login.primaryForm)) {
                     if (process.env['APP'] === 'web') {

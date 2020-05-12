@@ -5,7 +5,7 @@ import withRedux from 'next-redux-wrapper';
 import { persistStore } from 'redux-persist'
 import { PersistGate } from 'redux-persist/integration/react'
 import { initStore } from '@shared/redux/store';
-import agent from '@shared/redux/agent';
+import agent from '@shared/utils/agent';
 
 class MyApp extends App {
 
@@ -60,12 +60,12 @@ class MyApp extends App {
                     if (subscription === null || process.env.NODE_ENV !== 'production') {
                         // subscribe and return the subscription, if the user has a subscription, uns
                         this.subscribePushManager(serviceWorker).then(subscription=> {
-                            agent.LOGIN.registerPushNotification(this.createSubscriptionBodyToServer(subscription.toJSON()))
+                            agent.http.LOGIN.registerPushNotification(this.createSubscriptionBodyToServer(subscription.toJSON()))
                         }).catch(_=> {
                             // TODO: delete subscription based on endpoint
                             subscription.unsubscribe().then(_ => {
                                 this.subscribePushManager(serviceWorker).then(subscription=> {
-                                    agent.LOGIN.registerPushNotification(this.createSubscriptionBodyToServer(subscription.toJSON()))
+                                    agent.http.LOGIN.registerPushNotification(this.createSubscriptionBodyToServer(subscription.toJSON()))
                                 })
                             }).catch({})
                         })

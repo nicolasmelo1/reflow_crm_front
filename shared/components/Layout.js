@@ -9,7 +9,7 @@ import actions from '../redux/actions';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import Router from 'next/router';
 import { paths } from '../utils/constants'
-import agent from '../redux/agent'
+import agent from '../utils/agent'
 import ContentContainer from '../styles/ContentContainer'
 import Body from '../styles/Body'
 import { AsyncStorage, View, SafeAreaView, Platform } from 'react-native'
@@ -76,7 +76,7 @@ class Layout extends React.Component {
         let token = process.env['APP'] === 'web' ? window.localStorage.getItem('token') : await AsyncStorage.getItem('token')
         token = (token !== null) ? token : ''
         agent.setCompanyId(this.props.companyId !== null ? this.props.companyId : '')
-        agent.setToken(token)
+        //agent.setToken(token)
         if (!token || token === '') {
             if (process.env['APP'] === 'web') {
                 Router.push(paths.login())

@@ -4,12 +4,12 @@ import {
     SET_KANBAN_INITIAL,
     SET_CARDS
 } from '../../types';
-import agent from '../../agent'
+import agent from '../../../utils/agent'
 
 const onRenderKanban = (source, formName) => {
     return async (dispatch) => {
         try {
-            let response = await agent.KANBAN.getRenderData(source, formName)
+            let response = await agent.http.KANBAN.getRenderData(source, formName)
             dispatch({ type: SET_KANBAN_INITIAL, payload: {
                 formName: formName,
                 ...response.data.data
@@ -21,7 +21,7 @@ const onRenderKanban = (source, formName) => {
 const onGetCards = (source, formName) => {
     return async (dispatch) => {
         try {
-            let response = await agent.KANBAN.getCards(source, formName)
+            let response = await agent.http.KANBAN.getCards(source, formName)
             dispatch({ type: SET_CARDS, payload: response.data.data })
         } catch {}
     }
@@ -30,7 +30,7 @@ const onGetCards = (source, formName) => {
 const onCreateOrUpdateCard = (body, formName, cardIndex) => {
     return async (dispatch, getState) => {
         let stateData = getState().home.kanban.cards
-        let response = (body.id) ? await agent.KANBAN.updateCard(body, formName, body.id) : await agent.KANBAN.createCard(body, formName)
+        let response = (body.id) ? await agent.http.KANBAN.updateCard(body, formName, body.id) : await agent.http.KANBAN.createCard(body, formName)
         if (response.status === 200) {
             stateData[cardIndex] = response.data.data
             dispatch({ type: SET_CARDS, payload: stateData})
@@ -43,7 +43,7 @@ const onRemoveCard = (formName, cardIndex) => {
         let stateData = getState().home.kanban.cards
         const stateInitial = getState().home.kanban.initial
         if (stateData[cardIndex].id) {
-            agent.KANBAN.removeCard(formName, stateData[cardIndex].id)
+            agent.http.KANBAN.removeCard(formName, stateData[cardIndex].id)
             if (stateData[cardIndex].id === stateInitial.default_kanban_card_id) {
                 const payload = {
                     ...stateInitial,
@@ -72,7 +72,7 @@ const onChangeDefaultState = (defaults, formName=null) => {
             ...defaults
         }
         if (formName) {
-            agent.KANBAN.updateDefaults(defaults, formName)
+            agent.http.KANBAN.updateDefaults(defaults, formName)
         }
         dispatch({ type: SET_KANBAN_INITIAL, payload: data })
     }
@@ -81,7 +81,7 @@ const onChangeDefaultState = (defaults, formName=null) => {
 const onGetDimensionOrders = (source, formName, dimensionId) => {
     return async (dispatch) => {
         try {
-            const response = await agent.KANBAN.getDimensionOrders(source, formName, dimensionId)
+            const response = await agent.http.KANBAN.getDimensionOrders(source, formName, dimensionId)
             if (response.status == 200) {
                 dispatch({ type: SET_DIMENSION_ORDER, payload: response.data.data })
             }
@@ -93,7 +93,7 @@ const onGetDimensionOrders = (source, formName, dimensionId) => {
 const onChangeDimensionOrdersState = (dimensionOrders, dimensionId=null, formName=null) => {
     return (dispatch) => {
         if (dimensionId && formName) {
-            agent.KANBAN.updateDimensionOrders(dimensionOrders, dimensionId, formName)
+            agent.http.KANBAN.updateDimensionOrders(dimensionOrders, dimensionId, formName)
         }
         dispatch({ type: SET_DIMENSION_ORDER, payload: dimensionOrders })
     }
@@ -125,7 +125,7 @@ const onGetKanbanData = (source, params, formName, columnName = null) => {
                             ...defaultParameters,
                             search_value: params.search_value.concat(dimensionOrder.options),
                         }
-                        let response = await agent.KANBAN.getData(source, parameters, formName)
+                        let response = await agent.http.KANBAN.getData(source, parameters, formName)
                         payload.push({
                             dimension: dimensionOrder.options, 
                             pagination: response.data.pagination,
@@ -138,7 +138,7 @@ const onGetKanbanData = (source, params, formName, columnName = null) => {
                         ...defaultParameters,
                         search_value: params.search_value.concat(columnName),
                     }
-                    let response = await agent.KANBAN.getData(source, parameters, formName)
+                    let response = await agent.http.KANBAN.getData(source, parameters, formName)
                     const dimensionIndexInData = data.findIndex(dimensionData => dimensionData.dimension === columnName)
                     if (dimensionIndexInData !== -1) {
                         data[dimensionIndexInData].pagination = response.data.pagination
@@ -164,7 +164,7 @@ const onGetKanbanData = (source, params, formName, columnName = null) => {
 const onChangeKanbanData = (body, formName, data) => {
     return async (dispatch) => {
         try {
-            const response = await agent.KANBAN.updateCardDimension(body, formName)
+            const response = await agent.http.KANBAN.updateCardDimension(body, formName)
             if (response.status === 200){
                 dispatch({ type: SET_DATA_KANBAN, payload: data})
                 return response

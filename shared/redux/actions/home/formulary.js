@@ -1,5 +1,5 @@
 import { OPEN_FORMULARY, GET_FORMULARY, SET_FORMULARY_DATA, SET_FORMULARY_FILES, SET_FORMULARY_SETTINGS_DATA } from '../../types';
-import agent from '../../agent'
+import agent from '../../../utils/agent'
 import delay from '../../../utils/delay'
 
 
@@ -15,7 +15,7 @@ const onOpenFormulary = (isOpen) => {
 const onGetBuildFormulary = (source, formName) => {
     return async (dispatch) => {
         let data = {}
-        let response = await agent.FORMULARY.getBuildFormulary(source, formName)
+        let response = await agent.http.FORMULARY.getBuildFormulary(source, formName)
         if (response && response.status === 200) {
             data = response.data.data
             //dispatch({type: GET_FORMULARY, payload: data})
@@ -27,7 +27,7 @@ const onGetBuildFormulary = (source, formName) => {
 const onGetFormularyData = (source, formName, formId, defaults=[]) => {
     return async (dispatch) => {
         let data = {}
-        const response = await agent.FORMULARY.getFormularyData(source, formName, formId)
+        const response = await agent.http.FORMULARY.getFormularyData(source, formName, formId)
         if (response && response.status === 200){
             data = response.data.data
             defaults.forEach(defaultData => {
@@ -71,7 +71,7 @@ const onChangeFormularyFilesState = (files) => {
 const onCreateFormularyData = (body, files, formName) => {
     return async (dispatch) => {
         try {
-            const response = await agent.FORMULARY.createFormularyData(body, files, formName)
+            const response = await agent.http.FORMULARY.createFormularyData(body, files, formName)
             if (response.status === 200) {
                 dispatch({ type: SET_FORMULARY_DATA, payload: {} })
                 dispatch({ type: SET_FORMULARY_FILES, payload: [] })
@@ -85,7 +85,7 @@ const onCreateFormularyData = (body, files, formName) => {
 const onUpdateFormularyData = (body, files, formName, formId) => {
     return async (dispatch) => {
         try {
-            const response = await agent.FORMULARY.updateFormularyData(body, files, formName, formId)
+            const response = await agent.http.FORMULARY.updateFormularyData(body, files, formName, formId)
             if (response.status === 200) {
                 dispatch({ type: SET_FORMULARY_DATA, payload: {} })
                 dispatch({ type: SET_FORMULARY_FILES, payload: [] })
@@ -112,7 +112,7 @@ const onChangeFormularySettingsState = (formSettingsData) => {
 const onGetFormularySettings = (source, formularyId) => {
     return async (dispatch) => {
         try {
-            const response = await agent.FORMULARY.getFormularySettingsData(source, formularyId)
+            const response = await agent.http.FORMULARY.getFormularySettingsData(source, formularyId)
             dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: response.data.data })
             return response
         } catch {}
@@ -126,7 +126,7 @@ const onCreateFormularySettingsSection = (body, formId, sectionIndex) => {
         if (body.id === null) {
             makeDelay(() => { 
                 stateData.depends_on_form[sectionIndex].id = -1
-                agent.FORMULARY.createFormularySettingsSection(body, formId).then(response=> {
+                agent.http.FORMULARY.createFormularySettingsSection(body, formId).then(response=> {
                     if (response && response.status === 200){
                         stateData.depends_on_form[sectionIndex] = response.data.data
                     } else {
@@ -144,13 +144,13 @@ const onCreateFormularySettingsSection = (body, formId, sectionIndex) => {
 
 const onUpdateFormularySettingsSection = (body, formId, sectionId) => {
     return (_) => {
-        agent.FORMULARY.updateFormularySettingsSection(body, formId, sectionId)
+        agent.http.FORMULARY.updateFormularySettingsSection(body, formId, sectionId)
     }
 }
 
 const onRemoveFormularySettingsSection = (formId, sectionId) => {
     return (_) => {
-        agent.FORMULARY.removeFormularySettingsSection(formId, sectionId)
+        agent.http.FORMULARY.removeFormularySettingsSection(formId, sectionId)
     }
 }
 
@@ -160,7 +160,7 @@ const onCreateFormularySettingsField = (body, formId, sectionIndex, fieldIndex) 
         if (body.id === null) {
             makeDelay(() => { 
                 stateData.depends_on_form[sectionIndex].form_fields[fieldIndex].id = -1
-                agent.FORMULARY.createFormularySettingsField(body, formId).then(response=> {
+                agent.http.FORMULARY.createFormularySettingsField(body, formId).then(response=> {
                     if(response.status === 200) {
                         stateData.depends_on_form[sectionIndex].form_fields[fieldIndex] = response.data.data
                     } else {
@@ -177,13 +177,13 @@ const onCreateFormularySettingsField = (body, formId, sectionIndex, fieldIndex) 
 
 const onUpdateFormularySettingsField = (body, formId, fieldId) => {
     return (_) => {
-        agent.FORMULARY.updateFormularySettingsField(body, formId, fieldId)
+        agent.http.FORMULARY.updateFormularySettingsField(body, formId, fieldId)
     }
 }
 
 const onRemoveFormularySettingsField = (formId, fieldId) => {
     return (_) => {
-        agent.FORMULARY.removeFormularySettingsField(formId, fieldId)
+        agent.http.FORMULARY.removeFormularySettingsField(formId, fieldId)
     }
 }
 

@@ -3,7 +3,7 @@ import {
     SET_HEADERS,
     SET_TOTALS
 } from '../../types';
-import agent from '../../agent'
+import agent from '../../../utils/agent'
 
 
 const onGetListingData = (source, params, formName) => {
@@ -15,7 +15,7 @@ const onGetListingData = (source, params, formName) => {
         }
 
         try {
-            let response = await agent.LISTING.getData(source, params, formName)
+            let response = await agent.http.LISTING.getData(source, params, formName)
             payload.pagination = response.data.pagination
             if (params.page === 1) {
                 payload.data = response.data.data
@@ -31,9 +31,9 @@ const onGetListingData = (source, params, formName) => {
 
 const onGetExportedData = () => {
     return async (_) => {
-        let response = await agent.LISTING.getHasExportedData() 
+        let response = await agent.http.LISTING.getHasExportedData() 
         if (response.data.status === 'ok') {
-            agent.LISTING.getHasExportedData(true)
+            agent.http.LISTING.getHasExportedData(true)
         }
         return response
     }
@@ -46,21 +46,21 @@ const onRemoveData = (data, formName, formId) => {
             ...state,
             data: data
         }
-        agent.LISTING.removeData(formName, formId)
+        agent.http.LISTING.removeData(formName, formId)
         dispatch({ type: GET_DATA, payload: payload })
     }
 }
 
 const onExportData = (params, formName) => {
     return async (_) => {
-        return await agent.LISTING.exportData(params, formName) 
+        return await agent.http.LISTING.exportData(params, formName) 
     }
 }
 
 const onRenderListing = (source, formName) => {
     return async (dispatch) => {
         try {
-            let response = await agent.LISTING.getRenderData(source, formName)
+            let response = await agent.http.LISTING.getRenderData(source, formName)
             if (response.status === 200) {
                 dispatch({ type: SET_HEADERS, payload: response.data.data });
             }
@@ -77,7 +77,7 @@ const onUpdateHeader = (header) => {
 const onGetTotals = (params, formName) => {
     return async (dispatch) => {
         try {
-            let response = await agent.LISTING.getTotals(params, formName)
+            let response = await agent.http.LISTING.getTotals(params, formName)
             if (response.status === 200) {
                 dispatch({ type: SET_TOTALS, payload: response.data.totals })
             }
@@ -93,19 +93,19 @@ const onUpdateTotals = (totalsData) => {
 
 const onCreateTotal = (body, formName) => {
     return async (_) => {
-        agent.LISTING.createTotal(body, formName)
+        agent.http.LISTING.createTotal(body, formName)
     }
 }
 
 const onRemoveTotal = (formName, totalId) => {
     return (_) => {
-        agent.LISTING.removeTotal(formName, totalId)
+        agent.http.LISTING.removeTotal(formName, totalId)
     }
 }
 
 const onUpdateSelected = (body, formName) => {
     return async (_) => {
-        agent.LISTING.updateSelectedFields(body, formName)
+        agent.http.LISTING.updateSelectedFields(body, formName)
     }
 }
 

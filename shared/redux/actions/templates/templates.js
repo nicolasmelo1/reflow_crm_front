@@ -1,9 +1,9 @@
 import { SET_SELECT_TEMPLATES, SET_SELECT_TEMPLATE_DATA } from '../../types'
-import agent from '../../agent'
+import agent from '../../../utils/agent'
 
 const onGetTemplates = (source, groupName, page, filter) => {
     return async (dispatch) => {
-        const response = await agent.TEMPLATES.getSelectTemplates(source, groupName, page, filter)
+        const response = await agent.http.TEMPLATES.getSelectTemplates(source, groupName, page, filter)
         if (response && response.status === 200) {
             const payload = {
                 filter: filter,
@@ -17,7 +17,7 @@ const onGetTemplates = (source, groupName, page, filter) => {
 
 const onGetTemplate = (source, templateId) => {
     return async (dispatch) => {
-        const response = await agent.TEMPLATES.getSelectTemplate(source, templateId)
+        const response = await agent.http.TEMPLATES.getSelectTemplate(source, templateId)
         if (response && response.status === 200) {
             const payload = {
                 id: response.data.data.id,
@@ -33,7 +33,7 @@ const onGetTemplate = (source, templateId) => {
 const onGetTemplateFormulary = (source, templateId, templateFormularyId) => {
     return async (_) => {
         let data = {}
-        const response = await agent.TEMPLATES.getSelectTemplateFormulary(source, templateId, templateFormularyId)
+        const response = await agent.http.TEMPLATES.getSelectTemplateFormulary(source, templateId, templateFormularyId)
         if (response && response.status === 200) {
             data = {
                 ...response.data.data,
@@ -53,7 +53,7 @@ const onGetTemplateFormulary = (source, templateId, templateFormularyId) => {
 
 const onSelectTemplate = (templateId) => {
     return (_) => {
-        return agent.TEMPLATES.useTemplate(templateId)
+        return agent.http.TEMPLATES.useTemplate(templateId)
     }
 }
 

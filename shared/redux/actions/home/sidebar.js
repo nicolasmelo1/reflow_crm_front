@@ -3,12 +3,12 @@ import {
     UPDATE_GROUPS,
     ERROR 
 } from '../../types';
-import agent from '../../agent'
+import agent from '../../../utils/agent'
 
 
 const onGetForms = (source) => {
     return async (dispatch) => {
-        let response = await agent.HOME.getForms(source)
+        let response = await agent.http.SIDEBAR.getForms(source)
         if (response && response.status === 200) {
             dispatch({type: GET_FORMS, payload: response.data.data })
         }
@@ -18,7 +18,7 @@ const onGetForms = (source) => {
 
 const onGetUpdateForms = () => {
     return async (dispatch) => {
-        let response = await agent.HOME.getUpdateForms()
+        let response = await agent.http.SIDEBAR.getUpdateForms()
         if (response && response.status === 200) {
             dispatch({ type: UPDATE_GROUPS, payload: response.data.data })
         }
@@ -33,13 +33,13 @@ const onChangeGroupState = (groupsData) => {
 
 const onUpdateGroup = (body) => {
     return async (_) => {
-        agent.HOME.updateGroup(body, body.id)
+        agent.http.SIDEBAR.updateGroup(body, body.id)
     }
 } 
 
 const onRemoveGroup = (groupId) => {
     return async (_) => {
-        agent.HOME.removeGroup(groupId)
+        agent.http.SIDEBAR.removeGroup(groupId)
     }
 }
 
@@ -52,7 +52,7 @@ const onCreateFormulary = (body, groupIndex, formIndex) => {
     return (dispatch, getState) => {
         let stateData = getState().home.sidebar.update
         if (body.id !== -1) {
-            agent.HOME.createForm(body).then(response=> {
+            agent.http.SIDEBAR.createForm(body).then(response=> {
                 if(response.status === 200) {
                     stateData[groupIndex].form_group[formIndex] = response.data.data
                 } else {
@@ -70,13 +70,13 @@ const onCreateFormulary = (body, groupIndex, formIndex) => {
 
 const onUpdateFormulary = (body, formId) => {
     return (_) => {
-        agent.HOME.updateForm(body, formId)
+        agent.http.SIDEBAR.updateForm(body, formId)
     }
 }
 
 const onRemoveFormulary = (formId) => {
     return (_) => {
-        agent.HOME.removeForm(formId)
+        agent.http.SIDEBAR.removeForm(formId)
     }
 }
 

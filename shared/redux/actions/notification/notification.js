@@ -1,10 +1,10 @@
 import { SET_NOTIFICATION, SET_NOTIFICATION_CONFIGURATION, SET_NOTIFICATION_BADGE } from '../../types'
-import agent from '../../agent'
+import agent from '../../../utils/agent'
 
 
 const onGetNotifications = (source, params = { page: 1 }) => {
     return async (dispatch, getState) => {
-        const response = await agent.NOTIFICATION.getNotification(source, params)
+        const response = await agent.http.NOTIFICATION.getNotification(source, params)
         if (response && response.status === 200) {
             let notificationsData = getState().notification.notification.data.data
             const payload = {
@@ -29,14 +29,14 @@ const onReadNotifications = (stateData, notificationId) => {
         const body = {
             notification_id: notificationId
         }
-        agent.NOTIFICATION.readNotification(body)
+        agent.http.NOTIFICATION.readNotification(body)
         dispatch({ type: SET_NOTIFICATION, payload: payload })
     }
 }
 
 const onGetNewNotifications = () => {
     return async (dispatch) => {
-        const response = await agent.NOTIFICATION.getNewNotifications()
+        const response = await agent.http.NOTIFICATION.getNewNotifications()
         if (response && response.status === 200) {
             dispatch({ type: SET_NOTIFICATION_BADGE, payload: response.data.data })
 
@@ -46,7 +46,7 @@ const onGetNewNotifications = () => {
 
 const onGetNotificationConfiguration = (source, params = {}) => {
     return async (dispatch) => {
-        const response = await agent.NOTIFICATION.getNotificationConfiguration(source, params)
+        const response = await agent.http.NOTIFICATION.getNotificationConfiguration(source, params)
         if (response && response.status === 200) {
             dispatch({ type: SET_NOTIFICATION_CONFIGURATION, payload: response.data.data })
         }
@@ -61,25 +61,25 @@ const onUpdateNotificationConfigurationState = (data) => {
 
 const onUpdateNotificationConfiguration = (body, notificationConfigurationId) => {
     return (_) => {
-        return agent.NOTIFICATION.updateNotificationConfiguration(body, notificationConfigurationId)
+        return agent.http.NOTIFICATION.updateNotificationConfiguration(body, notificationConfigurationId)
     }
 }
 
 const onCreateNotificationConfiguration = (body) => {
     return (_) => {
-        return agent.NOTIFICATION.createNotificationConfiguration(body)
+        return agent.http.NOTIFICATION.createNotificationConfiguration(body)
     }
 }
 
 const onRemoveNotificationConfiguration = (notificationConfigurationId) => {
     return (_) => {
-        return agent.NOTIFICATION.removeNotificationConfiguration(notificationConfigurationId)
+        return agent.http.NOTIFICATION.removeNotificationConfiguration(notificationConfigurationId)
     }
 }
 
 const onGetNotificationConfigurationFields = (source, formId) => {
     return (_) => {
-        return agent.NOTIFICATION.getNotificationConfigurationFields(source, formId)
+        return agent.http.NOTIFICATION.getNotificationConfigurationFields(source, formId)
     }
 }
 

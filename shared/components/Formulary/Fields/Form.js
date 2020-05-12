@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import Select from '../../Utils/Select'
-import agent from '../../../redux/agent'
+import agent from '../../../utils/agent'
 import { Field } from '../../../styles/Formulary'
 
 const Form = (props) => {
@@ -35,7 +35,7 @@ const Form = (props) => {
 
         async function fetchFormOptions(source) {
             try {
-                const response = await agent.FORMULARY.getFormularyFormFieldOptions(source, router.query.form, props.field.id);
+                const response = await agent.http.FORMULARY.getFormularyFormFieldOptions(source, router.query.form, props.field.id);
                 if (!didCancel) {
                     setOptions(response.data.data.map(option => { return {value: option.form_id, label: option.value} }))
                 }
