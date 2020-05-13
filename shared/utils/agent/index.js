@@ -1,13 +1,13 @@
 import { setCompanyId } from './utils'
 import http from './http'
-import webhook from './webhook'
+import websocket from './websocket'
 
 export default {
     setCompanyId: setCompanyId,
     http: {
         ...http
     },
-    webhook: {
-        ...webhook
+    websocket: {
+        ...websocket
     }
 }

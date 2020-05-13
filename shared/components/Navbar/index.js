@@ -59,7 +59,7 @@ class Navbar extends React.Component {
     ]
 
     componentDidMount = () => {
-        this.notificationSocket = agent.webhook.NOTIFICATION.recieveNotification()
+        this.notificationSocket = agent.websocket.NOTIFICATION.recieveNotification()
         this.notificationSocket.then(notificationSocket => {
             notificationSocket.recieve(this.onGetNotificationNumber)
         })

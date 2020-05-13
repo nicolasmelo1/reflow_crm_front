@@ -77,13 +77,13 @@ class Formulary extends React.Component {
 
     setIsLoading = (data) => (this._ismounted) ? this.setState(state => state.isLoading = data): null
 
-    setErrors = (errors) => this.setState(state => state.errors = errors)
+    setErrors = (errors) => (this._ismounted) ? this.setState(state => state.errors = errors) : null
 
-    setBuildData = (data) => this.setState(state => state.buildData = data)
+    setBuildData = (data) => (this._ismounted) ? this.setState(state => state.buildData = data) : null
 
-    setFilledHasBuiltInitial = (data) => this.setState(state => state.filled.hasBuiltInitial = data)
+    setFilledHasBuiltInitial = (data) => (this._ismounted) ? this.setState(state => state.filled.hasBuiltInitial = data) : null
 
-    setFilledFiles = (data) => this.setState(state => state.filled.files = data)
+    setFilledFiles = (data) => (this._ismounted) ? this.setState(state => state.filled.files = data) : null
 
     setFilledData = (id, sectionsData) => this.setState(state => 
         state.filled.data = {
@@ -99,9 +99,7 @@ class Formulary extends React.Component {
     }) : null
     
 
-    setIsOpen = () => {
-        this.props.onOpenOrCloseFormulary(!this.props.formulary.isOpen)
-    }
+    setIsOpen = () => (this._ismounted) ? this.props.onOpenOrCloseFormulary(!this.props.formulary.isOpen) : null
 
 
     setIsEditing = () => {
