@@ -4,7 +4,7 @@ import { BEARER, API } from '../../config'
 
 const API_ROOT = API;
 let companyId = null
-
+let logoutFunctionForView = null
 
 /***
  * Function that sets the token in the header, called inside of the `requests` object functions
@@ -35,9 +35,15 @@ const setCompanyId = (_companyId) => {
     companyId = _companyId
 }
 
+const setLogout = (_logoutFunctionForView) => {
+    logoutFunctionForView = _logoutFunctionForView
+}
+
 
 export { 
+    setLogout,
     setCompanyId,
+    logoutFunctionForView,
     companyId,
     formEncodeData,
     getToken,

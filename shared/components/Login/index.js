@@ -1,12 +1,20 @@
 import React, { createRef } from 'react'
-import { View, Text, TextInput } from 'react-native'
+import { View, Text } from 'react-native'
 import Router from 'next/router'
 import { connect } from 'react-redux';
-import { Form, Button } from 'react-bootstrap'
-import { LoginInput, LoginButton, LoginButtonText } from '../../styles/Login'
 import actions from '../../redux/actions'
 import agent from '../../utils/agent'
 import { strings, errors, paths } from '../../utils/constants'
+import { 
+    LoginContainer, 
+    LoginInput, 
+    LoginButton, 
+    LoginButtonText, 
+    LoginFormContainer, 
+    LoginLogo, 
+    LoginLabel 
+} from '../../styles/Login'
+
 
 class Login extends React.Component {
     constructor(props) {
@@ -14,20 +22,24 @@ class Login extends React.Component {
         this.passwordRef = createRef()
         this.emailRef = createRef()
         this.state = {
-            notification: {
-                variant: '',
-                message: '',
-            },
-            email: 'reflow@reflow.com.br',
-            password: 'Mudar123'
+            slideLogo: false,
+            showLogo: false,
+            showForm: false,
+            email: process.env.NODE_ENV === 'production' ? '' : 'reflow@reflow.com.br',
+            password: process.env.NODE_ENV === 'production' ? '' : 'Mudar123'
         }
     }
 
-    async handleLogin() { 
+    handleLogin() { 
+        // we use the reference because most browser saves the credentials on the client side, when
+        // if this applies, if the user press `enter` it does not enter because the state will not be set
+        // since he will not have written anything
         this.state.email = (this.state.email == '' && this.emailRef.current && this.emailRef.current.value ) ? this.emailRef.current.value : this.state.email
         this.state.password = (this.state.password == '' && this.passwordRef.current && this.passwordRef.current.value ) ? this.passwordRef.current.value : this.state.password
         this.props.onAuthenticate(this.state).then(response => {
-            if (response.status !== 200) {
+            if (!response) {
+                this.props.onAddNotification('Parece que aconteceu um erro inesperado','error')
+            } else if (response.status !== 200) {
                 this.props.onAddNotification(errors('pt-br', 'incorrect_pass_or_user'), 'error')
             } else {
 
@@ -48,25 +60,40 @@ class Login extends React.Component {
         })
     }
 
+    componentDidMount = () => {
+        this._ismounted = true
+        // Used for anymating, it's better to use key frames, but i don't actually care.
+        // (it'll be better if you change it)
+        setTimeout(() => {
+            if (this._ismounted) this.setState(state => state.showLogo = true)
+        }, 100)
+        setTimeout(() => {
+            if (this._ismounted) this.setState(state => state.slideLogo = true)
+        }, 1000)
+        setTimeout(() => {
+            if (this._ismounted) this.setState(state => state.showForm = true)
+        }, 1500)
+    }
+
+    componentWillUnmount = () => {
+        this._ismounted = false
+    }
+
     renderWeb() {
         return (
-            <div>
-                <h2>Login Reflow</h2>
-                <Form>
-                    <Form.Group>
-                        <Form.Label>{strings['pt-br']['emailLoginLabel']}</Form.Label>
-                        <Form.Control required ref={this.emailRef} required value={this.state.email} onChange={e => this.setState({ email: e.target.value })} />
-                    </Form.Group>
-                    <Form.Group>
-                        <Form.Label>{strings['pt-br']['passLoginLabel']}</Form.Label>
-                        <Form.Control required ref={this.passwordRef} type='password' value={this.state.password} onChange={e => this.setState({ password: e.target.value })} />
-                    </Form.Group>
-                    <Button type="submit" onClick={e => {
+            <LoginContainer>
+                <LoginLogo src="/complete_logo.png" showLogo={this.state.showLogo} slideLogo={this.state.slideLogo }/>
+                <LoginFormContainer showForm={this.state.showForm}>
+                    <LoginLabel>{strings['pt-br']['emailLoginLabel']}</LoginLabel>
+                    <LoginInput type={'text'} ref={this.emailRef} value={this.state.email} onChange={e => this.setState({ email: e.target.value })}/>
+                    <LoginLabel>{strings['pt-br']['passLoginLabel']}</LoginLabel>
+                    <LoginInput type={'text'} ref={this.passwordRef} type='password' value={this.state.password} onChange={e => this.setState({ password: e.target.value })} />
+                    <button type="submit" onClick={e => {
                         e.preventDefault(); 
                         this.handleLogin()
-                    }}>{strings['pt-br']['submitButtonLabel']}</Button>
-                </Form>
-            </div>
+                    }}>{strings['pt-br']['submitButtonLabel']}</button>
+                </LoginFormContainer>
+            </LoginContainer>
         )
     }
 

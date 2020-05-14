@@ -85,22 +85,45 @@ class Formulary extends React.Component {
 
     setFilledFiles = (data) => (this._ismounted) ? this.setState(state => state.filled.files = data) : null
 
-    setFilledData = (id, sectionsData) => this.setState(state => 
+    setFilledData = (id, sectionsData) => (this._ismounted) ? this.setState(state => 
         state.filled.data = {
             id: id,
             depends_on_dynamic_form: [...sectionsData]
-        })
-
+        }) : null
+        
+    setFilledDataAndBuildData = (id, filledSectionsData, filledFilesData, buildData) => (this._ismounted) ? this.setState(state=> ({
+            ...state,
+            filled: {
+                hasBuiltInitial: false,
+                files: filledFilesData,
+                data: {
+                    id: id,
+                    depends_on_dynamic_form: [...filledSectionsData]
+                }
+            }, 
+            buildData: buildData 
+        })) : null
+    
     setAuxOriginalInitial = () => (this._ismounted) ? this.setState(state => {
         state.auxOriginalInitial = {
             buildData: JSON.parse(JSON.stringify(this.state.buildData)),
-            filled: JSON.parse(JSON.stringify(this.state.filled)),
+            filled: {
+                hasBuiltInitial: false, 
+                files: this.state.filled.files.map(file=> {
+                    let newFile = new Blob([file.file], {type: originalFile.type})
+                    newFile.name = file.file.name
+                    return {
+                        ...file,
+                        file: newFile
+                    }
+                }),
+                data: JSON.parse(JSON.stringify(this.state.filled.data))
+            }
         }
     }) : null
     
 
     setIsOpen = () => (this._ismounted) ? this.props.onOpenOrCloseFormulary(!this.props.formulary.isOpen) : null
-
 
     setIsEditing = () => {
         if (!this.state.isEditing) {
@@ -144,9 +167,12 @@ class Formulary extends React.Component {
     }
 
     onFullResetFormulary = (filled, buildData) => {
-        this.setFilledData(filled.data.id, filled.data.depends_on_dynamic_form)
-        this.setFilledFiles(filled.files)
-        this.setBuildData(buildData)
+        this.setFilledDataAndBuildData(
+            filled.data.id, 
+            filled.data.depends_on_dynamic_form, 
+            filled.files, 
+            buildData
+        )
     }
 
     onLoadFormulary = async (formName, formId=null) => {
@@ -155,20 +181,25 @@ class Formulary extends React.Component {
         // you can build the data outside of the formulary, so you can use this to render other formularies (like themes for example)
         if (this.props.buildData) {
             this.setBuildData(this.props.buildData)
+        // this part is used when loading from the home page for example
         } else {
             this.setIsLoading(true)
-            this.props.onGetBuildFormulary(this.source, formName).then(data => {
-                this.setIsLoading(false)
-                this.setBuildData(data)
-            })
+            if (formId) {
+                this.props.onGetFormularyData(this.source, formName, formId, this.props.formularyDefaultData).then(data=> {
+                    const id = data.id ? data.id : null
+                    const sectionsData = data.depends_on_dynamic_form ? data.depends_on_dynamic_form : []
+                    this.props.onGetBuildFormulary(this.source, formName).then(data => {
+                        this.setIsLoading(false)
+                        this.setFilledDataAndBuildData(id, sectionsData, [], data)
+                    })
+                })
+            } else {
+                this.props.onGetBuildFormulary(this.source, formName).then(data => {
+                    this.setIsLoading(false)
+                    this.setBuildData(data)
+                })
+            }
         }
-        if (formId) {
-            this.props.onGetFormularyData(this.source, formName, formId, this.props.formularyDefaultData).then(data=> {
-                const id = data.id ? data.id : null
-                const sectionsData = data.depends_on_dynamic_form ? data.depends_on_dynamic_form : []
-                this.setFilledData(id, sectionsData)
-            })
-        } 
     }
 
     /**
@@ -230,7 +261,7 @@ class Formulary extends React.Component {
             this.setBuildData({})
             this.onLoadFormulary(this.props.formName, null)
         } 
-        if (oldProps.formularyId !== this.props.formularyId && this.props.formularyId) {
+        if (oldProps.formularyId !== this.props.formularyId && this.props.formularyId && oldProps.formularyId === null) {
             if (this.source) {
                 this.source.cancel()
             }

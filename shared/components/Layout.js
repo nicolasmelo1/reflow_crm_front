@@ -75,7 +75,6 @@ class Layout extends React.Component {
     async setToken() {
         let token = process.env['APP'] === 'web' ? window.localStorage.getItem('token') : await AsyncStorage.getItem('token')
         token = (token !== null) ? token : ''
-        agent.setCompanyId(this.props.companyId !== null ? this.props.companyId : '')
         //agent.setToken(token)
         if (!token || token === '') {
             if (process.env['APP'] === 'web') {
@@ -91,13 +90,19 @@ class Layout extends React.Component {
         }
     }
 
-    setSidebarIsOpen = () => {
-        this.setState(state => state.sidebarIsOpen=!state.sidebarIsOpen)
-    } 
+    setLogout = (data) => {
+        if (data) {
+            if (process.env['APP'] === 'web') {
+                Router.push(paths.login())
+            } else {
+                this.props.setIsAuthenticated(false)
+            }
+        }
+    }
+    
+    setSidebarIsOpen = () => this.setState(state => state.sidebarIsOpen=!state.sidebarIsOpen)
 
-    setAddTemplates = (data) => {
-        this.setState(state => state.addTemplates = data)
-    } 
+    setAddTemplates = (data) => this.setState(state => state.addTemplates = data)
 
     componentDidUpdate = () => {
         agent.setCompanyId(this.props.companyId !== null ? this.props.companyId : '')
@@ -106,6 +111,7 @@ class Layout extends React.Component {
     componentDidMount = () => {
         this._ismounted = true
         agent.setCompanyId(this.props.companyId !== null ? this.props.companyId : '')
+        agent.setLogout(this.setLogout)
         this.props.getDataTypes()
         this.setToken()
     }
@@ -114,20 +120,20 @@ class Layout extends React.Component {
         this._ismounted = false
     }
 
-
     renderWeb() {
         return (
             <div>
+                <Header title={this.props.title}/>
                 {this.state.tokenLoaded ? (
                     <Body>
-                        <Header title={this.props.title}/>
+                        <Notify/> 
                         {this.state.addTemplates ? (
                             <Templates setAddTemplates={this.setAddTemplates}/>
                         ) : (
                             <div id="main-container">
                                 {this.props.hideNavBar ? '' : <Navbar onDeauthenticate={this.props.onDeauthenticate} />}
                                 {this.props.showSideBar ? <Sidebar sidebarIsOpen={this.state.sidebarIsOpen} setSidebarIsOpen={this.setSidebarIsOpen} setAddTemplates={this.setAddTemplates}/> : ''}
-                                <ContentContainer sidebarIsOpen={this.state.sidebarIsOpen} showSideBar={this.props.showSideBar}>
+                                <ContentContainer sidebarIsOpen={this.state.sidebarIsOpen} showSideBar={this.props.showSideBar} isNotLogged={this.props.isNotLogged}>
                                     {this.props.children}
                                 </ContentContainer>
                             </div>

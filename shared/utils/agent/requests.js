@@ -1,14 +1,24 @@
 import axios from 'axios'
 import { AsyncStorage } from 'react-native'
-import { getToken, setHeader, API_ROOT } from './utils'
+import { getToken, setHeader, API_ROOT, logoutFunctionForView } from './utils'
 
+
+const setStorageToken = async (tokenValue, refreshTokenValue) => {
+    if (process.env['APP'] === 'web') {
+        window.localStorage.setItem('refreshToken', refreshTokenValue)
+        window.localStorage.setItem('token', tokenValue)
+    } else {
+        await AsyncStorage.setItem('refreshToken', refreshTokenValue)
+        await AsyncStorage.setItem('token', tokenValue)
+    }
+}
 
 /***
  * Function that fires when a exception is catched in the requests object functions.
  * This is only for retrieving a new token while firing a request. This way, the token is refreshed 
  * behind the scenes and doesn't affect the request at all.
  * Some nice update to it would be to create a Queue of requests, so this just fires once, the other
- * requests wait for this to finish.
+ * requests wait for the first one to finish before continuing.
  * 
  * @param response - the response of the axios exception
  * @param callback - the function to fire with the new token after it has been refreshed. Callbacks are any `requests` functions like: 'get', 'del', etc.
@@ -23,34 +33,20 @@ const refreshToken = async (response, callback, url, params, headers) => {
             response = await requests.get('login/refresh_token/', {}, setHeader(refreshToken))
             // checks if the response was an error and handles it next
             if (response.status !== 200) {
-                if (process.env['APP'] === 'web') {
-                    window.localStorage.setItem('refreshToken', '')
-                    window.localStorage.setItem('token', '')
-                } else {
-                    await AsyncStorage.setItem('refreshToken', '')
-                    await AsyncStorage.setItem('token', '')
+                await setStorageToken('', '')
+                if (logoutFunctionForView) {
+                    logoutFunctionForView(true)
                 }
-                token = null
             } else {
-                if (process.env['APP'] === 'web') {
-                    window.localStorage.setItem('refreshToken', response.data.refresh_token)
-                    window.localStorage.setItem('token', response.data.access_token)
-                } else {
-                    await AsyncStorage.setItem('refreshToken', response.data.refresh_token)
-                    await AsyncStorage.setItem('token', response.data.access_token)
-                }
+                await setStorageToken(response.data.access_token, response.data.refresh_token)
             }
             return callback(url, params, headers)
         }
         if (['invalid_token', 'login_required'].includes(response.data.reason)) {
-            if (process.env['APP'] === 'web') {
-                window.localStorage.setItem('refreshToken', '')
-                window.localStorage.setItem('token', '')
-            } else {
-                await AsyncStorage.setItem('refreshToken', '')
-                await AsyncStorage.setItem('token', '')
-            }
-            token = null
+            await setStorageToken('', '')
+            if (logoutFunctionForView) {
+                logoutFunctionForView(true)
+            }        
         }
     }
     return response

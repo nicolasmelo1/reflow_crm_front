@@ -61,7 +61,7 @@ class Navbar extends React.Component {
     renderWeb = () => {
         return (
             <NavbarContainer>
-                <NavbarLogo src="/logo_reflow_navbar.png"/>
+                <NavbarLogo src="/complete_logo.png"/>
                 <NavbarToggleButton onClick={e=> {this.setIsOpen(!this.state.isOpen)}}>
                     <FontAwesomeIcon icon={this.state.isOpen ? 'times' : 'bars'}/>
                 </NavbarToggleButton>

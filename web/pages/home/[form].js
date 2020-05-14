@@ -85,9 +85,8 @@ class Data extends React.Component {
     }
 
     openFormularyId = (value) => {
-        this.props.onOpenFormulary(true).then(_=> {
-            this.setFormularyId(value)
-        })
+        this.setFormularyId(value)
+        this.props.onOpenFormulary(true)
     }
 
     setSearch = (searchField, searchValue, searchExact) => {
@@ -150,7 +149,8 @@ class Data extends React.Component {
     componentDidMount = () => {
         this.props.onUpdatePrimaryForm(this.props.router.query.form)
         if (this.props.router.query.formId) {
-            // we take out the formId parameter of the url because it can cause some behaviour not wanted to the user to happen to the user if it is defined
+            // we take out the formId parameter of the url because it can cause some weird and non wanted
+            // behaviour to the user if it is defined
             Router.push(paths.home(this.props.router.query.form, true), paths.home(this.props.router.query.form), {shallow: true})            
             this.openFormularyId(this.props.router.query.formId)
         }

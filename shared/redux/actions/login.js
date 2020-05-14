@@ -6,7 +6,7 @@ import agent from '../../utils/agent'
 const onAuthenticate = (body) => {
     return async (dispatch) => {
         let response = await agent.http.LOGIN.makeLogin(body)
-        if (response.status === 200) {
+        if (response && response.status === 200) {
             if (process.env['APP'] === 'web') {
                 window.localStorage.setItem('token', response.data.access_token)
                 window.localStorage.setItem('refreshToken', response.data.refresh_token)

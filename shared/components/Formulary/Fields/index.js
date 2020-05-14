@@ -11,7 +11,43 @@ import LongText from './LongText'
 import Form from './Form'
 import { Field } from '../../../styles/Formulary'
 import { errors, strings } from '../../../utils/constants'
+import isEqual from '../../../utils/isEqual'
 
+/**
+ * This component controls each field individually, it's the parent component for all of the field types.
+ * This component doesn't contain any logic from any field in particular EXCEPT the Form/Connection type of field.
+ * 
+ * It is supposed to be able to handle all the functionalities for all of the fields. If you need to add new
+ * features for a specific field, check the field type main component in `shared/components/Formulary/Fields` folder. 
+ * If you want to add any new Field, you can create it in the `shared/components/Formulary/Fields` folder.
+ * 
+ * So for example suppose we want a new field that is supposed to handle MAPs.
+ * 1 - We create a new component in the `shared/components/Formulary/Fields` called `Maps.js`
+ * 2 - All of the functionality for this field should be inside the new file `Maps.js`
+ * 3 - Don't forget to register the field in `.getFieldType()` function in order to be rendered correctly.
+ * 
+ * @param {Object} errors - An object with errors for each field.
+ * @param {Function} onChangeFormulary - Function to be fired when the user clicks "Add New" or "Edit" in 
+ * Form/Connection type of field. It changes the formulary automatically.
+ * @param {Interger} sectionId - The id of the current section
+ * @param {Object} field - Remember the HOW and the WHAT explained in Formulary main component? This is the data
+ * from HOW to render about the current view.
+ * @param {Array<Object>} fieldFormValues - This is the What for the particular field, so what are the values this
+ * specific field contains. It is important to notice that we ONLY use this when the state of the `values` state is
+ * different than what this object contains. This way we can propagate changes up in the chain but not down. This way
+ * we keep the Field component in it's `own litle world`.
+ * @param {Function} getFieldFormValues - Function for retrieving the formValues from the parent state. Used only when
+ * we update the formValue, this way we can keep this data and parent in sync with each other.
+ * @param {Function} addFieldFormValue - Function to add form value to the parent state.
+ * @param {Function} removeFieldFormValue - Function to remove form value from the parent state.
+ * @param {Function} updateFieldFormValue - Function to add formValue from the parent state.
+ * @param {Function} addFieldFile - Function to add new file, this function was defined in Formulary component and is used here
+ * to add new files.
+ * @param {Function} removeFieldFile - Function to remove a file from the files array in `index.js` in `shared/components/Formulary`.
+ * @param {String} type - The type of the formulary, check `index.js` in `shared/components/Formulary`.
+ * @param {Array<Object>} types - Array of objects about types. I think by now you might understand what it is, but anyway.
+ * Types are used as default and required data used for everything around our application.
+ */
 const Fields = (props) => {
     const [values, setValues] = useState([])
     const typeId = (props.field.type.type) ? props.field.type.type : props.field.type
@@ -94,7 +130,8 @@ const Fields = (props) => {
             return ''
         }
     }
-
+    
+    // checks in the field level if any error has occurred
     const checkErrors = () => {
         if (Object.keys(props.errors).length !== 0 && props.errors.detail.includes(props.field.name)) {
             switch (props.errors.reason[0]) {
@@ -120,7 +157,8 @@ const Fields = (props) => {
     }
 
     useEffect(()=> {
-        if (props.addFieldFormValue && props.fieldFormValues) {
+        // We prevent the changes from propagating back down if the states are equal.
+        if (props.addFieldFormValue && props.fieldFormValues && !isEqual(props.fieldFormValues, values)) {
             setValues(props.fieldFormValues)
             if (props.fieldFormValues.length === 0 && props.field.field_is_hidden) {
                 props.addFieldFormValue(props.field.name, '')

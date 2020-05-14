@@ -109,7 +109,7 @@ const FormularySections = (props) => {
     }
 
     function onLoadData(sectionsData, conditionals) {
-        const newSectionsData = getNewSectionData()
+        let newSectionsData = getNewSectionData()
         const sectionsDataIds = sectionsData.map(sectionData=> sectionData.form_id)
         
         newSectionsData.forEach(sectionData => {
@@ -117,7 +117,9 @@ const FormularySections = (props) => {
                 sectionsData.push(sectionData)
             }
         })
-        onChangeSectionData(sectionsData, conditionals)
+        newSectionsData = toggleConditionals(sectionsData, conditionals)
+        props.setFilledData(props.data.id, [...newSectionsData])
+        //onChangeSectionData(sectionsData, conditionals)
     }
 
     function buildInitialData(conditionals) {
@@ -132,11 +134,13 @@ const FormularySections = (props) => {
                 setConditionalSections(conditionals)
             }
             if (!props.hasBuiltInitial) {
+
                 if (props.data.id === null) {
                     buildInitialData(conditionals)
                 }
                 if (props.data.id) {
                     onLoadData(props.data.depends_on_dynamic_form, conditionals)
+
                 }
                 props.setFilledHasBuiltInitial(true)
             }
