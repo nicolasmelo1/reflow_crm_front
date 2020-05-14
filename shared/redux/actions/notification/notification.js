@@ -40,7 +40,18 @@ const onGetNewNotifications = () => {
         if (response && response.status === 200) {
             dispatch({ type: SET_NOTIFICATION_BADGE, payload: response.data.data })
 
-        } 
+        }
+        agent.websocket.NOTIFICATION.recieveNotificationBadge({
+            callback: (data) => {
+                dispatch({ type: SET_NOTIFICATION_BADGE, payload: data.data })
+            }
+        })
+    }
+}
+
+const onSetNewNotifications = (data) => {
+    return async (dispatch) => {
+        dispatch({ type: SET_NOTIFICATION_BADGE, payload: data })
     }
 }
 
@@ -85,6 +96,7 @@ const onGetNotificationConfigurationFields = (source, formId) => {
 
 export default {
     onGetNewNotifications,
+    onSetNewNotifications,
     onGetNotifications,
     onReadNotifications,
     onGetNotificationConfiguration,

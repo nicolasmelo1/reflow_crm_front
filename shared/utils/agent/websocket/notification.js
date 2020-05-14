@@ -1,9 +1,17 @@
 import socket from '../socket'
-import { companyId } from '../utils'
 
 const NOTIFICATION = {
-    recieveNotification: async (callback) => {
-        return socket.connect(`websocket/${companyId}/notification/read/`, callback)
+    recieveNotificationBadge: async ({data, callback}) => {
+        if (data && data.type === 'send_notification') {
+            return callback(data)
+        } else {
+            const websocket = await socket()
+            websocket.addCallback(NOTIFICATION.recieveNotificationBadge, {callback})
+        }
+    },
+    updateNotificationBadge: async ({data}) => {
+        const websocket = await socket()
+        websocket.send(data)
     }
 }
 

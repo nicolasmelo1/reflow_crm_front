@@ -29,10 +29,6 @@ class Navbar extends React.Component {
         this.props.onDeauthenticate()
         Router.push(paths.login())
     }
-    
-    onGetNotificationNumber = (data) => {
-        console.log(data)
-    }
 
     configDropdown = [
         {
@@ -59,10 +55,6 @@ class Navbar extends React.Component {
     ]
 
     componentDidMount = () => {
-        this.notificationSocket = agent.websocket.NOTIFICATION.recieveNotification()
-        this.notificationSocket.then(notificationSocket => {
-            notificationSocket.recieve(this.onGetNotificationNumber)
-        })
         this.props.onGetNewNotifications()
     }
 
