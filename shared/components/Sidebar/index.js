@@ -7,6 +7,7 @@ import SidebarGroupEdit from './SidebarGroupEdit'
 import actions from '../../redux/actions'
 import { connect } from 'react-redux'
 import { strings } from '../../utils/constants'
+import isAdmin from '../../utils/isAdmin'
 import axios from 'axios'
 
 /*** 
@@ -56,11 +57,15 @@ class Sidebar extends React.Component {
                         {(this.props.sidebarIsOpen) ? '<<<': '>>>'}
                     </SidebarToggle>
                     <SidebarMenu sidebarIsOpen={this.props.sidebarIsOpen} >
-                        <SidebarEditTemplateButton onClick={e => this.enterEditMode(e)}>{(this.state.isEditing) ? strings['pt-br']['goBack']: strings['pt-br']['sidebarEditTemplateButtonLabel']}</SidebarEditTemplateButton>
-                        { (this.state.isEditing) ? '': <SidebarAddNewTemplateButton onClick={e => this.props.setAddTemplates(true) }>{strings['pt-br']['sidebarAddNewTemplateButtonLabel']}</SidebarAddNewTemplateButton>}
+                        {isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user) ? (
+                            <div>
+                                <SidebarEditTemplateButton onClick={e => this.enterEditMode(e)}>{(this.state.isEditing) ? strings['pt-br']['goBack']: strings['pt-br']['sidebarEditTemplateButtonLabel']}</SidebarEditTemplateButton>
+                                { (this.state.isEditing) ? null: <SidebarAddNewTemplateButton onClick={e => this.props.setAddTemplates(true) }>{strings['pt-br']['sidebarAddNewTemplateButtonLabel']}</SidebarAddNewTemplateButton>}
+                            </div>
+                        ) : null}
                         { (this.state.isEditing) ? (
                             <SidebarGroupEdit 
-                            companyId={this.props.companyId}
+                            companyId={this.props.login.companyId}
                             groups={this.props.sidebar.update}
                             onRemoveGroup={this.props.onRemoveGroup}
                             onUpdateGroup={this.props.onUpdateGroup}
@@ -126,4 +131,4 @@ class Sidebar extends React.Component {
     }
 }
 
-export default connect(state => ({ sidebar: state.home.sidebar, companyId: state.login.companyId }), actions)(Sidebar);
+export default connect(state => ({ sidebar: state.home.sidebar, login: state.login }), actions)(Sidebar);

@@ -12,6 +12,7 @@ import { paths } from '../utils/constants'
 import agent from '../utils/agent'
 import ContentContainer from '../styles/ContentContainer'
 import Body from '../styles/Body'
+import isAdmin from '../utils/isAdmin'
 import { AsyncStorage, View, SafeAreaView, Platform } from 'react-native'
 import { 
     faArrowDown, 
@@ -64,7 +65,6 @@ library.add(faTimes, faPlusCircle, faPlusSquare, faEnvelope, faCalendarAlt, faSq
 class Layout extends React.Component {
     constructor(props) {
         super(props)
-        this.companyId = null
         this.state = {
             addTemplates: (this.props.addTemplates) ? this.props.addTemplates : false,
             tokenLoaded: false,
@@ -77,11 +77,7 @@ class Layout extends React.Component {
         token = (token !== null) ? token : ''
         //agent.setToken(token)
         if (!token || token === '') {
-            if (process.env['APP'] === 'web') {
-                Router.push(paths.login(), paths.login(),{ shallow: true })
-            } else {
-                this.props.setIsAuthenticated(false)
-            }
+            this.setLogout(true)
         }
 
         // this is probably an anti-pattern, read here: https://reactjs.org/blog/2015/12/16/ismounted-antipattern.html
@@ -98,6 +94,7 @@ class Layout extends React.Component {
                 this.props.setIsAuthenticated(false)
             }
         }
+        this.props.onDeauthenticate()
     }
     
     setSidebarIsOpen = () => this.setState(state => state.sidebarIsOpen=!state.sidebarIsOpen)
@@ -105,12 +102,12 @@ class Layout extends React.Component {
     setAddTemplates = (data) => this.setState(state => state.addTemplates = data)
 
     componentDidUpdate = () => {
-        agent.setCompanyId(this.props.companyId !== null ? this.props.companyId : '')
+        agent.setCompanyId(this.props.login.companyId)
     }
 
     componentDidMount = () => {
         this._ismounted = true
-        agent.setCompanyId(this.props.companyId !== null ? this.props.companyId : '')
+        agent.setCompanyId(this.props.login.companyId)
         agent.setLogout(this.setLogout)
         this.props.getDataTypes()
         this.setToken()
@@ -127,7 +124,7 @@ class Layout extends React.Component {
                 {this.state.tokenLoaded ? (
                     <Body>
                         <Notify/> 
-                        {this.state.addTemplates ? (
+                        {this.state.addTemplates && isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user) ? (
                             <Templates setAddTemplates={this.setAddTemplates}/>
                         ) : (
                             <div id="main-container">
@@ -182,4 +179,4 @@ class Layout extends React.Component {
     }
 }
 
-export default connect(state => ({ companyId: state.login.companyId, login: state.login }), actions)(Layout);
+export default connect(state => ({ login: state.login }), actions)(Layout);

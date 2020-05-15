@@ -76,6 +76,8 @@ const NotificationsConfiguration = (props) => {
                         {props.notificationConfiguration.data.map((notificationConfiguration, index) => (
                             <NotificationConfiguration
                             key={index}
+                            types={props.types}
+                            user={props.user}
                             formularies={props.formularies}
                             onGetNotificationConfigurationFields={props.onGetNotificationConfigurationFields}
                             updateNotification={updateNotification}
@@ -111,6 +113,8 @@ const NotificationsConfiguration = (props) => {
                     {props.notificationConfiguration.data.map((notificationConfiguration, index) => (
                         <NotificationConfiguration
                         key={index}
+                        types={props.types}
+                        user={props.user}
                         formularies={props.formularies}
                         onGetNotificationConfigurationFields={props.onGetNotificationConfigurationFields}
                         updateNotification={updateNotification}

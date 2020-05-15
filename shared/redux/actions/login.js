@@ -1,6 +1,7 @@
 import { DEAUTHENTICATE, AUTHENTICATE, SET_PRIMARY_FORM, DATA_TYPES, SET_USER } from '../types';
 import { AsyncStorage } from 'react-native'
 import agent from '../../utils/agent'
+import isEqual from '../../utils/isEqual'
 
 // gets token from the api and stores it in the redux store and in cookie
 const onAuthenticate = (body) => {
@@ -48,14 +49,11 @@ const onUpdatePrimaryForm = (formName) => {
 
 const getDataTypes = () => {
     return async (dispatch, getState) => {
-        //if (window.localStorage.getItem('refreshToken') !== '' && window.localStorage.getItem('token') !== '') {
         const stateData = getState().login
-        try { 
-            let response = await agent.http.LOGIN.getDataTypes()
-            if (JSON.stringify(stateData.types) !== JSON.stringify(response.data.data)) {
-                dispatch({ type: DATA_TYPES, payload: response.data.data });
-            }
-        } catch {}
+        const response = await agent.http.LOGIN.getDataTypes()
+        if (response && response.status === 200 && !isEqual(response.data.data, stateData.types)) {
+            dispatch({ type: DATA_TYPES, payload: response.data.data })
+        }
     }
 }
 

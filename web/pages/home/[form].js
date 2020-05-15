@@ -103,7 +103,7 @@ class Data extends React.Component {
     }
 
     getDataType = (dataTypeId) => {
-        return  this.props.types ? this.props.types.default.data_type.filter(dataType => dataType.id === dataTypeId) : 'listing'
+        return  this.props.types ? this.props.types.defaults.data_type.filter(dataType => dataType.id === dataTypeId) : 'listing'
     }
 
 
@@ -175,7 +175,7 @@ class Data extends React.Component {
                     <div>
                         <Row>
                             <Col>
-                                {this.props.types && this.props.types.default && this.props.types.default.data_type ? this.props.types.default.data_type.map(dataType => (
+                                {this.props.types && this.props.types.defaults && this.props.types.defaults.data_type ? this.props.types.defaults.data_type.map(dataType => (
                                     <DataTypeHeaderAnchor 
                                     key={dataType.id}
                                     onClick={e=> {this.setVisualization(dataType.id)}} 

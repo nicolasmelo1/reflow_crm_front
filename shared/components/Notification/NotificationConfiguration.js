@@ -28,6 +28,8 @@ const NotificationConfiguration = (props) => {
                     </NotificationConfigurationCard>
                     {formIsOpen ? (
                         <NotificationConfigurationForm
+                            types={props.types}
+                            user={props.user}
                             formularies={props.formularies}
                             cancelToken={props.cancelToken}
                             setFormIsOpen={setFormIsOpen}
@@ -58,6 +60,8 @@ const NotificationConfiguration = (props) => {
                 </NotificationConfigurationCard>
                 {formIsOpen ? (
                     <NotificationConfigurationForm
+                        types={props.types}
+                        user={props.user}
                         formularies={props.formularies}
                         cancelToken={props.cancelToken}
                         setFormIsOpen={setFormIsOpen}

@@ -6,6 +6,7 @@ import FormularySections from './FormularySections'
 import FormularySectionsEdit from './FormularySectionsEdit'
 import actions from '../../redux/actions'
 import { strings } from '../../utils/constants'
+import isAdmin from '../../utils/isAdmin'
 import { Formularies } from '../../styles/Formulary'
 
 /**
@@ -227,7 +228,8 @@ class Formulary extends React.Component {
         // we can only edit the form if the form you are in is not an embbeded or in preview, 
         // and the formName is the same you are int
         return this.state.buildData && this.state.buildData.group_id && this.state.buildData.id && 
-               this.props.type === 'full' && this.state.buildData.form_name === this.props.formName
+               this.props.type === 'full' && this.state.buildData.form_name === this.props.formName &&
+               isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user)
     }
 
     showNavigator = () => {
@@ -306,7 +308,7 @@ class Formulary extends React.Component {
                             onCreateFormularySettingsSection={this.props.onCreateFormularySettingsSection}
                             onChangeFormularySettingsState={this.props.onChangeFormularySettingsState}
                             formId={this.state.buildData.id}
-                            types={this.props.types}
+                            types={this.props.login.types}
                             setIsEditing={this.setIsEditing}
                             data={this.props.formulary.update}
                             />
@@ -327,7 +329,7 @@ class Formulary extends React.Component {
                                     ) : ''}   
                                     <FormularySections 
                                     type={this.props.type}
-                                    types={this.props.types}
+                                    types={this.props.login.types}
                                     errors={this.state.errors}
                                     onChangeFormulary={this.onChangeFormulary}
                                     data={this.state.filled.data}
@@ -354,4 +356,4 @@ class Formulary extends React.Component {
     }
 }
 
-export default connect(state => ({ formulary: state.home.formulary, types: state.login.types }), actions)(Formulary);
+export default connect(state => ({ formulary: state.home.formulary, login: state.login }), actions)(Formulary);

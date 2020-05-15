@@ -52,13 +52,13 @@ class Templates extends React.Component {
     }
 
     isGroupTypesDefined = () => {
-        return this.props.types && this.props.types.default && this.props.types.default.group_type
+        return this.props.types && this.props.types.defaults && this.props.types.defaults.group_type
     }
 
     componentDidMount = () => {
         this.source = this.CancelToken.source()
-        if (this.isGroupTypesDefined() && this.props.types.default.group_type.length > 0) {
-            const selected = this.props.types.default.group_type[0].name
+        if (this.isGroupTypesDefined() && this.props.types.defaults.group_type.length > 0) {
+            const selected = this.props.types.defaults.group_type[0].name
             this.setSelectedGroupType(selected)
         }
         if (!this.isInitialDefined()) {
@@ -114,7 +114,7 @@ class Templates extends React.Component {
                             */}
                             <TemplatesTypeSelectionButtonsContainer horizontal={true}>
                                 {this.isGroupTypesDefined() ? 
-                                this.props.types.default.group_type.map((groupType, index) => (
+                                this.props.types.defaults.group_type.map((groupType, index) => (
                                     <TemplatesTypeSelectionButtons key={index} isSelected={groupType.name === this.state.selectedGroupType} onPress={e=> this.setSelectedGroupType(groupType.name)}>
                                         <TemplatesTypeSelectionButtonsText isSelected={groupType.name === this.state.selectedGroupType}>
                                             {types('pt-br', 'group_type', groupType.name)}
@@ -183,7 +183,7 @@ class Templates extends React.Component {
                         */}
                         <TemplatesTypeSelectionButtonsContainer>
                             {this.isGroupTypesDefined() ? 
-                            this.props.types.default.group_type.map((groupType, index) => (
+                            this.props.types.defaults.group_type.map((groupType, index) => (
                                 <TemplatesTypeSelectionButtons key={index} isSelected={groupType.name === this.state.selectedGroupType} onClick={e=> this.setSelectedGroupType(groupType.name)}>
                                     <TemplatesTypeSelectionButtonsText isSelected={groupType.name === this.state.selectedGroupType}>
                                         {types('pt-br', 'group_type', groupType.name)}

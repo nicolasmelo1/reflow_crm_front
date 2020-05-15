@@ -7,7 +7,7 @@ import { NavbarLogo, NavbarToggleButton, NavbarItemsContainer, NavbarContainer }
 import Router from 'next/router'
 import { connect } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import agent from '../../utils/agent'
+import isAdmin from '../../utils/isAdmin'
 
 // On the browser this component is called inside of the Layout component, but since React Navigation works differently, on mobile we need to call it on the App.js component
 // since it needs to be on the root of the page.
@@ -30,7 +30,8 @@ class Navbar extends React.Component {
         this.props.onDeauthenticate()
     }
 
-    configDropdown = [
+    configDropdown = isAdmin(this.props.login.types?.defaults?.profile_type, this.props.login.user) ? 
+    [
         {
             label: strings['pt-br']['headerRefferalLabel'],
             href: '#'
@@ -52,6 +53,20 @@ class Navbar extends React.Component {
             href: '#',
             onClick: this.handleLogout
         }
+    ] : [
+        {
+            label: strings['pt-br']['headerRefferalLabel'],
+            href: '#'
+        },
+        {
+            label: strings['pt-br']['headerChangeDataLabel'],
+            href: '#'
+        },
+        {
+            label: strings['pt-br']['headerLogoutLabel'],
+            href: '#',
+            onClick: this.handleLogout
+        }
     ]
 
     componentDidMount = () => {
@@ -66,7 +81,7 @@ class Navbar extends React.Component {
                     <FontAwesomeIcon icon={this.state.isOpen ? 'times' : 'bars'}/>
                 </NavbarToggleButton>
                 <NavbarItemsContainer isOpen={this.state.isOpen}>
-                    <NavbarLink link={paths.home(this.props.primaryForm)} slug={paths.home(this.props.primaryForm, true)} icon='tasks' label={strings['pt-br']['headerGestaoLabel']}/>
+                    <NavbarLink link={paths.home(this.props.login.primaryForm)} slug={paths.home(this.props.login.primaryForm, true)} icon='tasks' label={strings['pt-br']['headerGestaoLabel']}/>
                     <NavbarLink badge={this.props.notificationBadge > 0 ? this.props.notificationBadge : null} link={paths.notifications()} slug={paths.notifications()} icon='bell' label={strings['pt-br']['headerNotificationLabel']}/>
                     <NavbarDropdown icon='cog' label={strings['pt-br']['headerSettingsLabel']} items={this.configDropdown}/>
                 </NavbarItemsContainer>
@@ -91,4 +106,4 @@ class Navbar extends React.Component {
     }
 };
 
-export default connect(store => ({primaryForm: store.login.primaryForm, notificationBadge: store.notification.notification.badge }), actions)(Navbar)
+export default connect(store => ({login: store.login, notificationBadge: store.notification.notification.badge }), actions)(Navbar)

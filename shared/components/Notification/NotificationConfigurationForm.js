@@ -16,6 +16,8 @@ import {
     NotificationConfigurationFormSaveButton
 } from '../../styles/Notification'
 import { errors, strings } from '../../utils/constants'
+import isAdmin from '../../utils/isAdmin'
+
 
 /**
  * This might be one of the biggest components of this project, yet.
@@ -221,12 +223,14 @@ const NotificationConfigurationForm = (props) => {
     const renderMobile = () => {
         return (
             <NotificationConfigurationFormContainer>
-                <NotificationConfigurationFormFieldContainer>
-                    <NotificationConfigurationFormCheckboxesContainer>
-                        <Switch value={props.notificationConfiguration.for_company} onValueChange={value => {onChangeForCompany(value)}}/>
-                        <NotificationConfigurationFormCheckboxText> {strings['pt-br']['notificationConfigurationFormForCompanyLabel']}</NotificationConfigurationFormCheckboxText>
-                    </NotificationConfigurationFormCheckboxesContainer>
-                </NotificationConfigurationFormFieldContainer>
+                {isAdmin(props.types.defaults?.profile_type, props.user) ? (
+                    <NotificationConfigurationFormFieldContainer>
+                        <NotificationConfigurationFormCheckboxesContainer>
+                            <Switch value={props.notificationConfiguration.for_company} onValueChange={value => {onChangeForCompany(value)}}/>
+                            <NotificationConfigurationFormCheckboxText> {strings['pt-br']['notificationConfigurationFormForCompanyLabel']}</NotificationConfigurationFormCheckboxText>
+                        </NotificationConfigurationFormCheckboxesContainer>
+                    </NotificationConfigurationFormFieldContainer>
+                ) : null}
                 <NotificationConfigurationFormFieldContainer>
                     <NotificationConfigurationFormFieldLabel>
                         {strings['pt-br']['notificationConfigurationFormNotificationNameLabel']}
@@ -354,12 +358,14 @@ const NotificationConfigurationForm = (props) => {
     const renderWeb = () => {
         return (
             <NotificationConfigurationFormContainer>
-                <NotificationConfigurationFormFieldContainer>
-                    <NotificationConfigurationFormCheckboxesContainer>
-                        <input type="checkbox" checked={props.notificationConfiguration.for_company} onChange={e => {onChangeForCompany(e.target.checked)}}/>
-                        <NotificationConfigurationFormCheckboxText> {strings['pt-br']['notificationConfigurationFormForCompanyLabel']}</NotificationConfigurationFormCheckboxText>
-                    </NotificationConfigurationFormCheckboxesContainer>
-                </NotificationConfigurationFormFieldContainer>
+                {isAdmin(props.types.defaults?.profile_type, props.user) ? (
+                    <NotificationConfigurationFormFieldContainer>
+                        <NotificationConfigurationFormCheckboxesContainer>
+                            <input type="checkbox" checked={props.notificationConfiguration.for_company} onChange={e => {onChangeForCompany(e.target.checked)}}/>
+                            <NotificationConfigurationFormCheckboxText> {strings['pt-br']['notificationConfigurationFormForCompanyLabel']}</NotificationConfigurationFormCheckboxText>
+                        </NotificationConfigurationFormCheckboxesContainer>
+                    </NotificationConfigurationFormFieldContainer>
+                ) : null}
                 <NotificationConfigurationFormFieldContainer>
                     <NotificationConfigurationFormFieldLabel>
                         {strings['pt-br']['notificationConfigurationFormNotificationNameLabel']}

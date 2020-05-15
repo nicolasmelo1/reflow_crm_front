@@ -43,6 +43,8 @@ class Notification extends React.Component {
             <View>
                 {this.state.isEditing ? (
                     <NotificationsConfiguration
+                    types={this.props.login.types}
+                    user={this.props.login.user}
                     formularies={this.props.formularies}
                     notificationConfiguration={this.props.notificationConfiguration}
                     cancelToken={this.CancelToken}
@@ -80,6 +82,8 @@ class Notification extends React.Component {
             <div>
                 {this.state.isEditing ? (
                     <NotificationsConfiguration
+                    types={this.props.login.types}
+                    user={this.props.login.user}
                     formularies={this.props.formularies}
                     notificationConfiguration={this.props.notificationConfiguration}
                     cancelToken={this.CancelToken}
@@ -101,7 +105,7 @@ class Notification extends React.Component {
                         onGetNotifications={this.props.onGetNotifications}
                         cancelToken={this.CancelToken}
                         notification={this.props.notification}
-                        dateFormat={this.props.dateFormat}
+                        dateFormat={this.props.login.dateFormat}
                         />
                     </div>
                 )}
@@ -118,5 +122,5 @@ export default connect(state => ({
     formularies: state.home.sidebar.initial,
     notificationConfiguration: state.notification.notification.update,
     notification: state.notification.notification.data, 
-    dateFormat: state.login.dateFormat 
+    login: state.login 
 }), actions)(Notification)

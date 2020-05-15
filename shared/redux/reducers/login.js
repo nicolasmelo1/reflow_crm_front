@@ -29,6 +29,7 @@ export default (state = initialState, action) => {
                 primaryForm: action.payload
             }
         case DATA_TYPES:
+            console.log(action.payload)
             return { 
                 ...state,
                 types: action.payload
