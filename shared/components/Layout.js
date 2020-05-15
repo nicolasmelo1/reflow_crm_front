@@ -78,7 +78,7 @@ class Layout extends React.Component {
         //agent.setToken(token)
         if (!token || token === '') {
             if (process.env['APP'] === 'web') {
-                Router.push(paths.login())
+                Router.push(paths.login(), paths.login(),{ shallow: true })
             } else {
                 this.props.setIsAuthenticated(false)
             }
@@ -93,7 +93,7 @@ class Layout extends React.Component {
     setLogout = (data) => {
         if (data) {
             if (process.env['APP'] === 'web') {
-                Router.push(paths.login())
+                Router.push(paths.login(), paths.login(),{ shallow: true })
             } else {
                 this.props.setIsAuthenticated(false)
             }

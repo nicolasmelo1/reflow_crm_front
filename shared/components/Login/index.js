@@ -38,7 +38,7 @@ class Login extends React.Component {
         this.state.password = (this.state.password == '' && this.passwordRef.current && this.passwordRef.current.value ) ? this.passwordRef.current.value : this.state.password
         this.props.onAuthenticate(this.state).then(response => {
             if (!response) {
-                this.props.onAddNotification('Parece que aconteceu um erro inesperado','error')
+                this.props.onAddNotification(strings['pt-br']['unknownLoginError'],'error')
             } else if (response.status !== 200) {
                 this.props.onAddNotification(errors('pt-br', 'incorrect_pass_or_user'), 'error')
             } else {
@@ -88,10 +88,10 @@ class Login extends React.Component {
                     <LoginInput type={'text'} ref={this.emailRef} value={this.state.email} onChange={e => this.setState({ email: e.target.value })}/>
                     <LoginLabel>{strings['pt-br']['passLoginLabel']}</LoginLabel>
                     <LoginInput type={'text'} ref={this.passwordRef} type='password' value={this.state.password} onChange={e => this.setState({ password: e.target.value })} />
-                    <button type="submit" onClick={e => {
+                    <LoginButton type="submit" onClick={e => {
                         e.preventDefault(); 
                         this.handleLogin()
-                    }}>{strings['pt-br']['submitButtonLabel']}</button>
+                    }}>{strings['pt-br']['submitButtonLabel']}</LoginButton>
                 </LoginFormContainer>
             </LoginContainer>
         )

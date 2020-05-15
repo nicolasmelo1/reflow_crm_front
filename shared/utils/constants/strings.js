@@ -10,6 +10,7 @@ const strings = {
         emailLoginLabel: 'E-mail',
         passLoginLabel: 'Senha',
         submitButtonLabel: 'Entrar',
+        unknownLoginError: 'Parece que aconteceu um erro inesperado',
         incorrectPassOrUserError: 'Login e/ou senha incorretos',
         managementPageTitle: 'Gestão / {} / Reflow',
         disabledGroupLabel: 'O Grupo está desativado',

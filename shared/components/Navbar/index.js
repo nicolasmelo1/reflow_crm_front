@@ -26,8 +26,8 @@ class Navbar extends React.Component {
 
     handleLogout = (e) => {
         e.preventDefault()
+        Router.push(paths.login(), paths.login(),{ shallow: true })
         this.props.onDeauthenticate()
-        Router.push(paths.login())
     }
 
     configDropdown = [

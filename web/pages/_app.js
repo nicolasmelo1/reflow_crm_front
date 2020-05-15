@@ -6,8 +6,18 @@ import { persistStore } from 'redux-persist'
 import { PersistGate } from 'redux-persist/integration/react'
 import { initStore } from '@shared/redux/store';
 import agent from '@shared/utils/agent';
+import SplashScreen from '../components/styles/SplashScreen'
+import SplashLogo from '../components/styles/SplashLogo'
 
 class MyApp extends App {
+
+    constructor(props) {
+        super(props)
+        this.state = {
+            showLogo: false,
+            showSplashScreen: true
+        }
+    }
 
     // You might want to check this https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
     // we need this for the formulary height that was causing some bugs on chrome on android phones.
@@ -17,6 +27,10 @@ class MyApp extends App {
     setAppDefaults = () => {
         this.appHeight()
         this.appWidth()
+    }
+
+    usetIsLogged = () => {
+        return window.localStorage.getItem('token') && window.localStorage.getItem('token') !== ''
     }
 
     createSubscriptionBodyToServer = (subscriptionData) => {
@@ -76,23 +90,42 @@ class MyApp extends App {
     }
 
     componentDidMount() {
+        this._ismounted = true
         if (typeof window !== 'undefined') {
             window.addEventListener('resize', this.setAppDefaults)
             this.setAppDefaults()
             this.registerServiceWorker()
-            if (window.localStorage.token && window.localStorage.token !== '') {
+            if (this.usetIsLogged()) {
                 this.askUserPermissionForNotification()
+                setTimeout(() => {
+                    if (this._ismounted) this.setState(state => state.showLogo = true)
+                }, 100)
+        
+                setTimeout(() => {
+                    if (this._ismounted) this.setState(state => state.showSplashScreen = false)
+                }, 2000)
+            } else {
+                setTimeout(() => {
+                    if (this._ismounted) this.setState(state => state.showSplashScreen = false)
+                })
             }
         }
     }
 
- 
+    componentWillUnmount = () => {
+        this._ismounted = false
+    }
 
     render() {
         const { Component, pageProps, store } = this.props
         return (
             <Provider store={store}>
                 <PersistGate persistor={persistStore(store)}>
+                    {this.state.showSplashScreen ? (
+                        <SplashScreen>
+                            <SplashLogo src="/complete_logo.png" showLogo={this.state.showLogo}/>
+                        </SplashScreen>
+                    ) : ''}
                     <Component {...pageProps} />
                 </PersistGate>
             </Provider>
