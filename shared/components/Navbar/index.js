@@ -30,23 +30,56 @@ class Navbar extends React.Component {
         this.props.onDeauthenticate()
     }
 
+    handleOldVersion = (e) => {
+        e.preventDefault()
+        Object.assign(document.createElement('a'), { target: '_blank', href: `${process.env['OLD_APP_HOST']}`}).click();
+    }
+
+    handleBilling = (e) => {
+        e.preventDefault()
+        Object.assign(document.createElement('a'), { target: '_blank', href: `${process.env['OLD_APP_HOST']}${this.props.login.companyId}/settings/billing/`}).click();
+    }
+
+    handleUsers = (e) => {
+        e.preventDefault()
+        Object.assign(document.createElement('a'), { target: '_blank', href: `${process.env['OLD_APP_HOST']}${this.props.login.companyId}/settings/employee/`}).click();
+    }
+
+    handleCompany = (e) => {
+        e.preventDefault()
+        Object.assign(document.createElement('a'), { target: '_blank', href: `${process.env['OLD_APP_HOST']}${this.props.login.companyId}/settings/company/`}).click();
+    }
+
+
     configDropdown = isAdmin(this.props.login.types?.defaults?.profile_type, this.props.login.user) ? 
     [
-        {
+        /*{
             label: strings['pt-br']['headerRefferalLabel'],
             href: '#'
+        },*/
+        {
+            label: 'Versão antiga',
+            href: '#',
+            onClick: this.handleOldVersion
         },
         {
             label: strings['pt-br']['headerCompanyLabel'],
-            href: '#'
+            href: '#',
+            onClick: this.handleCompany
         },
-        {
+        /*{
             label: strings['pt-br']['headerChangeDataLabel'],
             href: '#'
-        },
+        },*/
         {
             label: strings['pt-br']['headerBillingLabel'],
-            href: '#'
+            href: '#',
+            onClick: this.handleBilling
+        },
+        {
+            label: strings['pt-br']['headerUsersLabel'],
+            href: '#',
+            onClick: this.handleUsers
         },
         {
             label: strings['pt-br']['headerLogoutLabel'],
@@ -54,14 +87,19 @@ class Navbar extends React.Component {
             onClick: this.handleLogout
         }
     ] : [
-        {
+        /*{
             label: strings['pt-br']['headerRefferalLabel'],
             href: '#'
-        },
+        },*/
         {
+            label: 'Versão antiga',
+            href: '#',
+            onClick: this.handleOldVersion
+        },
+        /*{
             label: strings['pt-br']['headerChangeDataLabel'],
             href: '#'
-        },
+        },*/
         {
             label: strings['pt-br']['headerLogoutLabel'],
             href: '#',

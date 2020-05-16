@@ -96,6 +96,9 @@ const DateTimePicker = (props) => {
         updateMonthDetails(date.getFullYear(), date.getMonth(), date.getHours(), date.getMinutes())
         setSelectedDay(date)
         props.onChange(date)
+        if (!props.withoutHourPicker && !hourPickerIsOpen) {
+            setHourPickerIsOpen(true)
+        }
         if (props.closeWhenSelected) {
             setIsOpen(false)
         }
@@ -107,6 +110,7 @@ const DateTimePicker = (props) => {
             setIsOpen(true)
             topOrDown(e)
         } else if (isOpenRef.current) {
+            setHourPickerIsOpen(false)
             setIsOpen(false)
         }
     }

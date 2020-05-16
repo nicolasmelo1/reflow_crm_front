@@ -9,6 +9,7 @@ const StyledButtonContainer = styled.button`
     padding: 5px;
     width: 100%;
     font-size: 25px;
+    margin-bottom: 10px;
 `
 
 const StyledButtonText = styled.h4`

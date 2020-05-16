@@ -1,4 +1,5 @@
 import { API_ROOT, getToken } from './utils'
+import http from './http'
 import isEqual from '../isEqual'
 
 
@@ -21,9 +22,15 @@ let callbacks = []
 const socket = async () => {
     const domain = API_ROOT.replace('http://', 'ws://').replace('https://', 'wss://')
 
-    function getUrl() {
-        const token = await getToken()
-        return domain + `websocket/?token=${token}`
+    async function getUrl() {
+        let token = await getToken()
+        if (token && token !== '') {
+            await http.LOGIN.testToken()
+            token = await getToken()
+            return domain + `websocket/?token=${token}`
+        } else {
+            return domain + `websocket/`
+        }
     }
 
     function callbacksArrayContainsCallback(callbackObject) {
@@ -42,7 +49,13 @@ const socket = async () => {
     }
 
     /**
+     * Adds a callback function to be fired when you recieve a new message.
+     * Push the function to callbacks if the function is different from the already existing function
+     * This prevents duplicate functions
      * 
+     * IMPORTANT: With this if you change a callback function in development mode the 
+     * function will be added again so it will be fired twice, to prevent this if you change a callback
+     * function, always make a full reload of the hole page.
      */
     function addCallback(callback, argument={}) {
         const callbackObject = {
@@ -51,7 +64,9 @@ const socket = async () => {
         }
         if (!callbacksArrayContainsCallback(callbackObject)) {
             callbacks.push(callbackObject)
-            registeredSocket.addEventListener("message", (e) => callback({ data: JSON.parse(e.data), ...argument}))
+            if (registeredSocket) {
+                registeredSocket.addEventListener("message", (e) => callback({ data: JSON.parse(e.data), ...argument}))
+            }
         }
     }
 
@@ -87,6 +102,7 @@ const socket = async () => {
     async function connect() {
         registeredSocket = new WebSocket(await getUrl())
         onClose()
+        onRecieve()
     }
 
     const send = (data={}) => {

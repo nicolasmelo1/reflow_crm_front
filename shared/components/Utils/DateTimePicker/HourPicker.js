@@ -1,3 +1,4 @@
+import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import Utils from '../../../styles/Utils'
 
@@ -38,13 +39,23 @@ const HourPicker = (props) => {
                     </tr>
                     <tr>
                         <Utils.Datepicker.HourpickerItem>
-                            {props.selectedDay.getHours() < 10 ? '0'+props.selectedDay.getHours().toString() :props.selectedDay.getHours()}
+                            <Utils.Datepicker.HourpickerInput 
+                            type="text"
+                            onClick={e=> e.target.focus()}
+                            value={(props.selectedDay.getHours() < 10 ? '0'+props.selectedDay.getHours().toString() : props.selectedDay.getHours()).toString()} 
+                            onChange={e=>updateHour(parseInt(e.target.value.replace(/[^0-9]/g,'')), props.selectedDay.getMinutes())}
+                            />
                         </Utils.Datepicker.HourpickerItem>
                         <Utils.Datepicker.HourpickerItem>
                             :
                         </Utils.Datepicker.HourpickerItem>
                         <Utils.Datepicker.HourpickerItem>
-                            {props.selectedDay.getMinutes() < 10 ? '0'+props.selectedDay.getMinutes().toString() :props.selectedDay.getMinutes()}
+                            <Utils.Datepicker.HourpickerInput 
+                            type="text"
+                            onClick={e=> e.target.focus()}
+                            value={(props.selectedDay.getMinutes() < 10 ? '0'+props.selectedDay.getMinutes().toString() :props.selectedDay.getMinutes()).toString()} 
+                            onChange={e=>updateHour(props.selectedDay.getHours(), parseInt(e.target.value.replace(/[^0-9]/g,'')))}
+                            />
                         </Utils.Datepicker.HourpickerItem>
                     </tr>
                     <tr>

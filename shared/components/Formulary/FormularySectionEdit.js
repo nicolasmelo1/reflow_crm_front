@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { Col, Row } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 
 import FormularyFieldsEdit from './FormularyFieldsEdit'
@@ -41,6 +40,7 @@ import { FormulariesEdit } from '../../styles/Formulary'
  * the `form` field type or when the user creates a conditional section
  */
 const FormularySectionEdit = (props) => {
+    const isMoving = React.useRef(false)
     const formulariesOptions = useSelector(state => state.home.sidebar.initial)
     const [openedSection, setOpenedSection] = useState(false)
     const [isConditional, setIsConditional] = useState(false)
@@ -63,12 +63,25 @@ const FormularySectionEdit = (props) => {
         props.removeSection(props.sectionIndex)
     }
 
+    // THIS IS REQUIRED BECAUSE OF YOUR BELOVED TRASH GOOGLE CHROME, IF WE DISMISS THE SCROLL DIRECTLY WHEN THE USER
+    // MOVES IT CAUSES A BUG. The bug is: the scroll goes back to the top and the drag is dismissed.
+    const setIsMoving = (data) => {
+        if (data === true) {
+            setTimeout(() => {if (isMoving.current) props.setIsMoving(true)}, 100)
+        } else {
+            props.setIsMoving(false)
+        }
+    }
+
     const onMoveSection = (e) => {
         let sectionContainer = e.currentTarget.closest('.section-container')
-        let elementRect = e.currentTarget.getBoundingClientRect()
-        e.dataTransfer.setDragImage(sectionContainer, elementRect.width-elementRect.left - ( elementRect.right - elementRect.width ), 20)
+        let elementRect = sectionContainer.getBoundingClientRect()
+        const buttonRect = e.currentTarget.getBoundingClientRect()
+        console.log(buttonRect)
+        e.dataTransfer.setDragImage(sectionContainer, elementRect.width - (window.innerWidth - buttonRect.right - buttonRect.width), 20)
         e.dataTransfer.setData('sectionIndexToMove', JSON.stringify(props.sectionIndex))
-        props.setIsMoving(true)
+        isMoving.current = true
+        setIsMoving(isMoving.current)
     }
 
     const onDrop = (e) => {
@@ -93,7 +106,8 @@ const FormularySectionEdit = (props) => {
     const onDragEnd = (e) => {
         e.preventDefault()
         e.stopPropagation()
-        props.setIsMoving(false)
+        isMoving.current = false
+        setIsMoving(isMoving.current)
     }
 
 

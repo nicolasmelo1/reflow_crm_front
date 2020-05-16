@@ -45,6 +45,7 @@ const strings = {
         headerCompanyLabel: 'Empresa',
         headerChangeDataLabel: 'Alterar Dados',
         headerBillingLabel: 'Pagamento',
+        headerUsersLabel: 'Usuários',
         headerNotificationLabel: 'Notificações',
         headerHelpLabel: 'Ajuda',
         headerLogoutLabel: 'Logout',

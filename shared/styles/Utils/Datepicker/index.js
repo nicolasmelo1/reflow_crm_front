@@ -8,6 +8,7 @@ import DatepickerWeekdays from './DatepickerWeekdays'
 import DatepickerMain from './DatepickerMain'
 import DatepickerMonthItemsContainer from './DatepickerMonthItemsContainer'
 import HourpickerTable from './HourpickerTable'
+import HourpickerInput from './HourpickerInput'
 import HourpickerItem from './HourpickerItem'
 import HourpickerArrow from './HourpickerArrow'
 import HourpickerContainer from './HourpickerContainer'
@@ -27,5 +28,6 @@ export default {
     HourpickerContainer: HourpickerContainer,
     HourpickerDatepickerToggle: HourpickerDatepickerToggle,
     HourpickerItem: HourpickerItem,
-    HourpickerArrow: HourpickerArrow
+    HourpickerArrow: HourpickerArrow,
+    HourpickerInput: HourpickerInput
 }
