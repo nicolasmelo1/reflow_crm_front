@@ -19,9 +19,12 @@ let callbacks = []
  * This exposes 3 methods: addCallback, getSocket, send
  */
 const socket = async () => {
-    const token = await getToken()
     const domain = API_ROOT.replace('http://', 'ws://').replace('https://', 'wss://')
-    const url = domain + `websocket/?token=${token}`
+
+    function getUrl() {
+        const token = await getToken()
+        return domain + `websocket/?token=${token}`
+    }
 
     function callbacksArrayContainsCallback(callbackObject) {
         for (let i = 0; i < callbacks.length; i++) {
@@ -66,8 +69,8 @@ const socket = async () => {
         }
     }
 
-    function reconnect() {
-        registeredSocket = new WebSocket(url)
+    async function reconnect() {
+        registeredSocket = new WebSocket(await getUrl())
 
         setTimeout(() => {
             if (registeredSocket.readyState !== 1) {
@@ -81,8 +84,8 @@ const socket = async () => {
         }, 10000);
     }
 
-    function connect() {
-        registeredSocket = new WebSocket(url)
+    async function connect() {
+        registeredSocket = new WebSocket(await getUrl())
         onClose()
     }
 
