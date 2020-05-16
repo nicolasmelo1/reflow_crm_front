@@ -96,7 +96,7 @@ class MyApp extends App {
             this.setAppDefaults()
             this.registerServiceWorker()
             if (this.usetIsLogged()) {
-                this.askUserPermissionForNotification()
+                window.addEventListener('load', this.askUserPermissionForNotification)
                 setTimeout(() => {
                     if (this._ismounted) this.setState(state => state.showLogo = true)
                 }, 100)
