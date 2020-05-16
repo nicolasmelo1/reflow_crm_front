@@ -20,7 +20,7 @@ let callbacks = []
  */
 const socket = async () => {
     const token = await getToken()
-    const domain = API_ROOT.replace('http://', 'ws://').replace('https://', 'ws://')
+    const domain = API_ROOT.replace('http://', 'ws://').replace('https://', 'wss://')
     const url = domain + `websocket/?token=${token}`
 
     function callbacksArrayContainsCallback(callbackObject) {
