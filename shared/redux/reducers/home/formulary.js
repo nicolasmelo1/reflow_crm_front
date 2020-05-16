@@ -1,4 +1,4 @@
-import { OPEN_FORMULARY, GET_FORMULARY, SET_FORMULARY_DATA, SET_FORMULARY_FILES, SET_FORMULARY_SETTINGS_DATA } from '../../types';
+import { OPEN_FORMULARY, SET_FORMULARY_SETTINGS_DATA } from '../../types';
 //import { createReducer } from '@reduxjs/toolkit'
 
 let initialState = {
@@ -17,27 +17,6 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 isOpen: action.payload
-            }
-        case GET_FORMULARY:
-            return {
-                ...state,
-                buildData: action.payload
-            }
-        case SET_FORMULARY_DATA:
-            return {
-                ...state,
-                filled: {
-                    ...state.filled,
-                    data: (action.payload) ? action.payload : initialState.filled.data
-                }
-            }
-        case SET_FORMULARY_FILES:
-            return {
-                ...state,
-                filled: {
-                    ...state.filled,
-                    files: (action.payload) ? action.payload : initialState.filled.files
-                }
             }
         case SET_FORMULARY_SETTINGS_DATA:
             return {

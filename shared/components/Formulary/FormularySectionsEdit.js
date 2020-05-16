@@ -194,6 +194,8 @@ const FormularySectionsEdit = (props) => {
                 types={props.types} 
                 fieldOptions={fieldOptions}
                 formulariesOptions={props.formulariesOptions}
+                formName={props.formName}
+                userOptions={props.userOptions}
                 />
             )): ''}
             <FormulariesEdit.AddNewSectionButton text={strings['pt-br']['formularyEditAddNewSectionButtonLabel']} onClick={e=>{onAddNewSection()}} />

@@ -171,6 +171,7 @@ const FormularySections = (props) => {
                         sectionDataIndex={index} 
                         section={section} 
                         fields={section.form_fields}
+                        userOptions={props.userOptions}
                         removeSection={section.form_type==='multi-form' ? removeSection: null}
                         />
                     ))}

@@ -4,7 +4,7 @@ import styled from 'styled-components'
 export default process.env['APP'] === 'web' ?  
 styled.td`
     color: #fff;
-    text-align: center;
+    text-align: center !important;
     vertical-align: middle;
     font-size: 30px;
     width: 33.3% !important;

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Number from './Number'
+import Period from './Period'
 import Option from './Option'
 import Connection from './Connection'
 import Datetime from './Datetime'
@@ -42,6 +43,7 @@ const FieldOption = (props) => {
  * the `form` field type or when the user creates a conditional section
  */
 const FormularyFieldEdit = (props) => {
+    const [fieldTypeIsOpen, setFieldTypeIsOpen] = useState(false)
     const [isEditing, setIsEditing] = useState(false)
     const [fieldTypes, setFieldTypes] = useState([])
     const [initialFieldType, setInitialFieldType] = useState([])
@@ -171,6 +173,16 @@ const FormularyFieldEdit = (props) => {
                 fieldIndex={props.fieldIndex}
                 />
             )
+        } else if (fieldType.type === 'period') {
+            return (
+                <Period
+                field={props.field}
+                onUpdateField={props.onUpdateField}
+                types={props.types}
+                sectionIndex={props.sectionIndex}
+                fieldIndex={props.fieldIndex}
+                />
+            )
         } else if (fieldType.type === 'date') {
             return (
                 <Datetime
@@ -184,6 +196,7 @@ const FormularyFieldEdit = (props) => {
         } else if (fieldType.type === 'form') {
             return (
                 <Connection
+                formName={props.formName}
                 field={props.field}
                 onUpdateField={props.onUpdateField}
                 types={props.types}
@@ -235,6 +248,7 @@ const FormularyFieldEdit = (props) => {
                 <div>
                     {props.field ? (
                         <Fields 
+                        userOptions={props.userOptions}
                         errors={{}}
                         field={props.field}
                         types={props.types}
@@ -259,8 +273,10 @@ const FormularyFieldEdit = (props) => {
                                         <FormulariesEdit.FieldFormLabel>
                                             {strings['pt-br']['formularyEditFieldTypeSelectorLabel']}
                                         </FormulariesEdit.FieldFormLabel>
-                                        <FormulariesEdit.SelectorContainer>
+                                        <FormulariesEdit.SelectorContainer isOpen={fieldTypeIsOpen}>
                                             <Select 
+                                                setIsOpen={setFieldTypeIsOpen}
+                                                isOpen={fieldTypeIsOpen}
                                                 onFilter={onFilterFieldType}
                                                 label={FieldOption}
                                                 options={fieldTypes} 

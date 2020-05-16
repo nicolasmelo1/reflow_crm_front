@@ -76,6 +76,7 @@ const FormularySection = (props) => {
                     type={props.type}
                     types={props.types}
                     removeFieldFile={removeFieldFile}
+                    userOptions={props.userOptions}
                     />
                 </Formularies.FieldContainer>
             ))}

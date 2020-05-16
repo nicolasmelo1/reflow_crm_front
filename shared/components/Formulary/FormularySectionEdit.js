@@ -104,28 +104,22 @@ const FormularySectionEdit = (props) => {
     return (
         <FormulariesEdit.Section.Container>
             <FormulariesEdit.Section.TitleAndIconsContainer isConditional={isConditional} className="section-container" onDragOver={e => {onDragOver(e)}} onDrop={e => {onDrop(e)}}>
-                <Row>
-                    <Col>
-                        <div style={{height: '1em', margin: '5px'}}>
-                            <Overlay text={strings['pt-br']['formularyEditSectionTrashIconPopover']}>
-                                <FormulariesEdit.Icon.SectionIcon size="sm" icon="trash" onClick={e=> {onRemoveSection(e)}} isConditional={isConditional}/>
-                            </Overlay>
-                            <Overlay text={strings['pt-br']['formularyEditSectionEyeIconPopover']}>
-                                <FormulariesEdit.Icon.SectionIcon size="sm" icon="eye" onClick={e=> {onDisableSection(e)}} isConditional={isConditional}/>
-                            </Overlay>
-                            <Overlay text={strings['pt-br']['formularyEditSectionMoveIconPopover']}>
-                                <div style={{ float:'right' }} draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveSection(e)}} onDragEnd={e=>{onDragEnd(e)}}>
-                                    <FormulariesEdit.Icon.SectionIcon size="sm" icon="arrows-alt" isConditional={isConditional}/>
-                                </div>
-                            </Overlay>
-                            <Overlay text={strings['pt-br']['formularyEditSectionIsEditingIconPopover']}>
-                                <FormulariesEdit.Icon.SectionIcon size="sm" icon="pencil-alt" onClick={e => {setOpenedSection(!openedSection)}} isEditing={openedSection} isConditional={isConditional}/>
-                            </Overlay>
-                        </div>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
+                    <div style={{height: '1em', margin: '10px 0 0 0'}}>
+                        <Overlay text={strings['pt-br']['formularyEditSectionTrashIconPopover']}>
+                            <FormulariesEdit.Icon.SectionIcon size="sm" icon="trash" onClick={e=> {onRemoveSection(e)}} isConditional={isConditional}/>
+                        </Overlay>
+                        <Overlay text={strings['pt-br']['formularyEditSectionEyeIconPopover']}>
+                            <FormulariesEdit.Icon.SectionIcon size="sm" icon="eye" onClick={e=> {onDisableSection(e)}} isConditional={isConditional}/>
+                        </Overlay>
+                        <Overlay text={strings['pt-br']['formularyEditSectionMoveIconPopover']}>
+                            <div style={{ float:'right' }} draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveSection(e)}} onDragEnd={e=>{onDragEnd(e)}}>
+                                <FormulariesEdit.Icon.SectionIcon size="sm" icon="arrows-alt" isConditional={isConditional}/>
+                            </div>
+                        </Overlay>
+                        <Overlay text={strings['pt-br']['formularyEditSectionIsEditingIconPopover']}>
+                            <FormulariesEdit.Icon.SectionIcon size="sm" icon="pencil-alt" onClick={e => {setOpenedSection(!openedSection)}} isEditing={openedSection} isConditional={isConditional}/>
+                        </Overlay>
+                    </div>
                     {props.section.enabled ? (
                         <FormulariesEdit.Section.LabelInput
                         value={props.section.label_name}
@@ -138,9 +132,6 @@ const FormularySectionEdit = (props) => {
                             {strings['pt-br']['formularyEditSectionDisabledLabel']}
                         </h2>
                     )}
-                        
-                    </Col>
-                </Row>
             </FormulariesEdit.Section.TitleAndIconsContainer>
             {props.section.enabled && !props.isMoving ? (
                 <div>
@@ -166,10 +157,12 @@ const FormularySectionEdit = (props) => {
                                     sectionIndex={props.sectionIndex}
                                     onMoveField={props.onMoveField}
                                     types={props.types}
+                                    formName={props.formName}
                                     removeField={props.removeField}
                                     fields={props.section.form_fields}
                                     onAddNewField={props.onAddNewField}
                                     onUpdateField={props.onUpdateField}
+                                    userOptions={props.userOptions}
                                     formulariesOptions={formulariesOptions}
                                     />
                                 </FormulariesEdit.FieldsContainer>

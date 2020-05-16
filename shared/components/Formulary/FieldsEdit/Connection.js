@@ -5,6 +5,9 @@ import { strings } from '../../../utils/constants'
 import { FormulariesEdit }  from '../../../styles/Formulary'
 
 const Connection = (props) => {
+    const [templateSelectIsOpen, setTemplateSelectIsOpen] = useState(false)
+    const [formularySelectIsOpen, setFormularySelectIsOpen] = useState(false)
+    const [fieldSelectIsOpen, setFieldSelectIsOpen] = useState(false)
     const [selectedGroup, setSelectedGroup] = useState((props.field.form_field_as_option) ? props.field.form_field_as_option.form_depends_on_group_id : null)
     const [selectedForm, setSelectedForm] = useState((props.field.form_field_as_option) ? props.field.form_field_as_option.form_depends_on_id : null)
     const [groupOptions, setGroupOptions] = useState([])
@@ -37,15 +40,17 @@ const Connection = (props) => {
     for (let groupIndex = 0; groupIndex < props.formulariesOptions.length; groupIndex++) {
         if (props.formulariesOptions[groupIndex].id === selectedGroup) {
             for (let formIndex = 0; formIndex < props.formulariesOptions[groupIndex].form_group.length; formIndex++) {
-                const data = {
-                    value: props.formulariesOptions[groupIndex].form_group[formIndex].id,
-                    label: props.formulariesOptions[groupIndex].form_group[formIndex].label_name
-                }
+                if (props.formName !== props.formulariesOptions[groupIndex].form_group[formIndex].form_name) {
+                    const data = {
+                        value: props.formulariesOptions[groupIndex].form_group[formIndex].id,
+                        label: props.formulariesOptions[groupIndex].form_group[formIndex].label_name
+                    }
 
-                if (props.formulariesOptions[groupIndex].form_group[formIndex].id === selectedForm) {
-                    initialForm.push(data)
+                    if (props.formulariesOptions[groupIndex].form_group[formIndex].id === selectedForm) {
+                        initialForm.push(data)
+                    }
+                    formOptions.push(data)
                 }
-                formOptions.push(data)
             }
         }
     }
@@ -91,8 +96,10 @@ const Connection = (props) => {
                 <FormulariesEdit.FieldFormLabel>
                     {strings['pt-br']['formularyEditFieldConnectionTemplateSelectorLabel']}
                 </FormulariesEdit.FieldFormLabel>
-                <FormulariesEdit.SelectorContainer>
+                <FormulariesEdit.SelectorContainer isOpen={templateSelectIsOpen}>
                     <Select 
+                    isOpen={templateSelectIsOpen}
+                    setIsOpen={setTemplateSelectIsOpen}
                     options={groupOptions} 
                     initialValues={initialGroup} 
                     onChange={onChangeGroup} 
@@ -104,8 +111,10 @@ const Connection = (props) => {
                     <FormulariesEdit.FieldFormLabel>
                         {strings['pt-br']['formularyEditFieldConnectionFormularySelectorLabel']}
                     </FormulariesEdit.FieldFormLabel>
-                    <FormulariesEdit.SelectorContainer>
+                    <FormulariesEdit.SelectorContainer isOpen={formularySelectIsOpen}>
                         <Select 
+                        isOpen={formularySelectIsOpen}
+                        setIsOpen={setFormularySelectIsOpen}
                         options={formOptions} 
                         initialValues={initialForm} 
                         onChange={onChangeForm} 
@@ -118,8 +127,10 @@ const Connection = (props) => {
                     <FormulariesEdit.FieldFormLabel>
                         {strings['pt-br']['formularyEditFieldConnectionFieldSelectorLabel']}
                     </FormulariesEdit.FieldFormLabel>
-                    <FormulariesEdit.SelectorContainer>
+                    <FormulariesEdit.SelectorContainer isOpen={fieldSelectIsOpen}>
                         <Select 
+                        isOpen={fieldSelectIsOpen}
+                        setIsOpen={setFieldSelectIsOpen}
                         options={fieldOptions} 
                         initialValues={initialField} 
                         onChange={onChangeField} 

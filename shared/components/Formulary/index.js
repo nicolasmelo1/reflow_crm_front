@@ -57,6 +57,7 @@ class Formulary extends React.Component {
         this.formularyId = null
         this.state = {
             buildData: {},
+            userOptions: [],
             filled: {
                 hasBuiltInitial: false,
                 data: {
@@ -74,7 +75,9 @@ class Formulary extends React.Component {
         }
     }
 
-    setIsSubmitting = (data) => this.setState(state => state.isSubmitting = data)
+    setUserOptions = (data) => (this._ismounted) ? this.setState(state => state.userOptions = data) : null
+
+    setIsSubmitting = (data) => (this._ismounted) ? this.setState(state => state.isSubmitting = data) : null
 
     setIsLoading = (data) => (this._ismounted) ? this.setState(state => state.isLoading = data): null
 
@@ -145,17 +148,18 @@ class Formulary extends React.Component {
 
     onSubmit = () => {
         this.setIsSubmitting(true)
-        let response = null
+        let request = null
         if (this.state.filled.data.id) {
-            response = this.props.onUpdateFormularyData(this.state.filled.data, this.state.filled.files, this.state.buildData.form_name, this.state.filled.data.id)
+            request = this.props.onUpdateFormularyData(this.state.filled.data, this.state.filled.files, this.state.buildData.form_name, this.state.filled.data.id)
         } else {
-            response = this.props.onCreateFormularyData(this.state.filled.data, this.state.filled.files,this.state.buildData.form_name)
+            request = this.props.onCreateFormularyData(this.state.filled.data, this.state.filled.files,this.state.buildData.form_name)
         }
         
-        if (response) {
-            response.then(response=> {
+        if (request) {
+            request.then(response=> {
                 this.setIsSubmitting(false)
-                if (response.status !== 200) {
+                console.log(response)
+                if (response && response.status !== 200) {
                     this.setErrors(response.data.error)
                 } else if (this.state.buildData.form_name !== this.props.formName) {
                     this.onFullResetFormulary(this.state.auxOriginalInitial.filled, this.state.auxOriginalInitial.buildData)
@@ -179,6 +183,11 @@ class Formulary extends React.Component {
     onLoadFormulary = async (formName, formId=null) => {
         this.setFilledHasBuiltInitial(false)
         this.source = this.CancelToken.source()
+        this.props.onGetFormularyUserOptions(this.source, formName).then(response=> {
+            if (response && response.status === 200) {
+                this.setUserOptions(response.data.data)
+            }
+        })
         // you can build the data outside of the formulary, so you can use this to render other formularies (like themes for example)
         if (this.props.buildData) {
             this.setBuildData(this.props.buildData)
@@ -300,6 +309,7 @@ class Formulary extends React.Component {
                     {(this.state.isEditing) ? (
                         <div>
                             <FormularySectionsEdit
+                            formName={this.props.formName}
                             onRemoveFormularySettingsField={this.props.onRemoveFormularySettingsField}
                             onUpdateFormularySettingsField={this.props.onUpdateFormularySettingsField}
                             onCreateFormularySettingsField={this.props.onCreateFormularySettingsField}
@@ -311,6 +321,7 @@ class Formulary extends React.Component {
                             types={this.props.login.types}
                             setIsEditing={this.setIsEditing}
                             data={this.props.formulary.update}
+                            userOptions={this.state.userOptions}
                             />
                         </div>
                     ): (
@@ -339,6 +350,7 @@ class Formulary extends React.Component {
                                     setFilledFiles={this.setFilledFiles}
                                     setFilledData={this.setFilledData}
                                     sections={sections}
+                                    userOptions={this.state.userOptions}
                                     />
                                     {sections.length > 0 && this.props.type !== 'preview' ? (
                                         <Formularies.SaveButton disabled={this.state.isSubmitting} onClick={e=> {this.onSubmit()}}>

@@ -13,19 +13,18 @@ const onOpenFormulary = (isOpen) => {
 }
 
 const onGetBuildFormulary = (source, formName) => {
-    return async (dispatch) => {
+    return async (_) => {
         let data = {}
         let response = await agent.http.FORMULARY.getBuildFormulary(source, formName)
         if (response && response.status === 200) {
             data = response.data.data
-            //dispatch({type: GET_FORMULARY, payload: data})
         }
         return data
     }
 }
 
 const onGetFormularyData = (source, formName, formId, defaults=[]) => {
-    return async (dispatch) => {
+    return async (_) => {
         let data = {}
         const response = await agent.http.FORMULARY.getFormularyData(source, formName, formId)
         if (response && response.status === 200){
@@ -41,57 +40,28 @@ const onGetFormularyData = (source, formName, formId, defaults=[]) => {
                     }    
                 }
             })
-            dispatch({ type: SET_FORMULARY_DATA, payload: data})
         }
         return data
     }
 }
 
-const onFullResetFormularyState = (formFilledData={}, formFilledFiles=[], formBuildData={}) => {
-    return (dispatch) => {
-        dispatch({ type: SET_FORMULARY_DATA, payload: formFilledData })
-        dispatch({ type: SET_FORMULARY_FILES, payload: formFilledFiles })
-        dispatch({ type: GET_FORMULARY, payload: formBuildData })
-        dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: {} })
-    }
-}
 
-const onChangeFormularyDataState = (formData) => {
-    return (dispatch) => {
-        dispatch({ type: SET_FORMULARY_DATA, payload: formData })
-    }
-}
-
-const onChangeFormularyFilesState = (files) => {
-    return (dispatch) => {
-        dispatch({ type: SET_FORMULARY_FILES, payload: files })
-    }
+const onGetFormularyUserOptions = (source, formName) => {
+    return (_) => {
+        return agent.http.FORMULARY.getFormularyUserOptions(source, formName)
+    } 
 }
 
 const onCreateFormularyData = (body, files, formName) => {
-    return async (dispatch) => {
-        try {
-            const response = await agent.http.FORMULARY.createFormularyData(body, files, formName)
-            if (response.status === 200) {
-                dispatch({ type: SET_FORMULARY_DATA, payload: {} })
-                dispatch({ type: SET_FORMULARY_FILES, payload: [] })
-            }
-            return response
-        } catch {}
+    return (_) => {
+        return agent.http.FORMULARY.createFormularyData(body, files, formName)
     }
 }
 
 
 const onUpdateFormularyData = (body, files, formName, formId) => {
-    return async (dispatch) => {
-        try {
-            const response = await agent.http.FORMULARY.updateFormularyData(body, files, formName, formId)
-            if (response.status === 200) {
-                dispatch({ type: SET_FORMULARY_DATA, payload: {} })
-                dispatch({ type: SET_FORMULARY_FILES, payload: [] })
-            }
-            return response
-        } catch {}
+    return (_) => {
+        return agent.http.FORMULARY.updateFormularyData(body, files, formName, formId)
     }
 }
 
@@ -191,10 +161,8 @@ const onRemoveFormularySettingsField = (formId, fieldId) => {
 export default {
     onOpenFormulary,
     onChangeFormularySettingsState,
-    onChangeFormularyDataState,
-    onChangeFormularyFilesState,
-    onFullResetFormularyState,
     onGetFormularySettings,
+    onGetFormularyUserOptions,
     onGetBuildFormulary,
     onGetFormularyData,
     onCreateFormularyData,

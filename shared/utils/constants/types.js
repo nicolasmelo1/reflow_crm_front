@@ -34,6 +34,26 @@ const types = (lang, type, key) => {
             user: strings[lang]['fieldTypeUser'],
             period: strings[lang]['fieldTypePeriod']
         },
+        date_configuration_date_format_type: {
+            date: strings[lang]['dateFormatTypeDate'],
+            datetime: strings[lang]['dateFormatTypeDatetime']
+        },
+        period_configuration_period_format_type: {
+            seconds: strings[lang]['periodFormatTypeSecond'],
+            minutes: strings[lang]['periodFormatTypeMinute'],
+            hours: strings[lang]['periodFormatTypeHour'],
+            days: strings[lang]['periodFormatTypeDay'],
+            weeks: strings[lang]['periodFormatTypeWeek'],
+            month: strings[lang]['periodFormatTypeMonth']
+        },
+        period_configuration_periods_format_type: {
+            seconds: strings[lang]['periodFormatTypeSeconds'],
+            minutes: strings[lang]['periodFormatTypeMinutes'],
+            hours: strings[lang]['periodFormatTypeHours'],
+            days: strings[lang]['periodFormatTypeDays'],
+            weeks: strings[lang]['periodFormatTypeWeeks'],
+            month: strings[lang]['periodFormatTypeMonths']
+        },
         number_configuration_number_format_type: {
             number: strings[lang]['numberFormatTypeNumber'],
             currency: strings[lang]['numberFormatTypeCurrency'],

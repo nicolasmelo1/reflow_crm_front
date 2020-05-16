@@ -3,6 +3,8 @@ import Text from './Text'
 import Number from './Number'
 import Datetime from './Datetime'
 import Email from './Email'
+import User from './User'
+import Period from './Period'
 import Option from './Option'
 import MultiOption from './MultiOption'
 import Attachment from './Attachment'
@@ -50,7 +52,7 @@ import isEqual from '../../../utils/isEqual'
  */
 const Fields = (props) => {
     const [values, setValues] = useState([])
-    const typeId = (props.field.type.type) ? props.field.type.type : props.field.type
+    const typeId = (props.field.type?.type) ? props.field.type.type : props.field.type
 
     let typeName = (props.types.data) ? props.types.data.field_type.filter(fieldType => fieldType.id === typeId): []
     typeName = (typeName.length !== 0) ? typeName[0].type : ''
@@ -67,6 +69,10 @@ const Fields = (props) => {
                 return Datetime
             case "email": 
                 return Email
+            case "period":
+                return Period
+            case "user":
+                return User
             case "option":
                 return Option
             case "multi_option":

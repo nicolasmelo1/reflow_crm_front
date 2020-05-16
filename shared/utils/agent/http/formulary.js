@@ -1,9 +1,12 @@
 import requests from '../requests'
 import LOGIN from './login'
-import { getToken, companyId, API_ROOT } from '../utils'
+import { getToken, companyId, API_ROOT, formEncodeData } from '../utils'
 
 
 const FORMULARY = {
+    getFormularyUserOptions: async (source, formName) => {
+        return await requests.get(`${companyId}/formulary/api/${formName}/user/options/`, {}, {}, source)
+    },
     getBuildFormulary: async (source, formName) => {
         return await requests.get(`${companyId}/formulary/api/${formName}/`, {}, {}, source)
     },
