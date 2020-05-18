@@ -173,7 +173,7 @@ const Fields = (props) => {
     }, [props.fieldFormValues])
 
     return (
-        <Field.Container invalid={checkErrors()}>
+        <Field.Container invalid={checkErrors()} fieldIsHidden={props.field.field_is_hidden}>
             {(props.field_is_hidden) ? '' : (
                 <div>
                     {(props.field.label_is_hidden) ? '' : (

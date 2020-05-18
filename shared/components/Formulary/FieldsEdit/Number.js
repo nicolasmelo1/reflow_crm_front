@@ -42,7 +42,7 @@ const Number = (props) => {
                 <FormulariesEdit.FieldFormLabel>
                     {strings['pt-br']['formularyEditFieldNumberFormulaLabel']}
                 </FormulariesEdit.FieldFormLabel>
-                <FormulariesEdit.InputField type="text"/>
+                <FormulariesEdit.InputField type="text" value={props.field.formula_configuration ? props.field.formula_configuration : ''}/>
             </FormulariesEdit.FieldFormFieldContainer>
         </div>
     )
