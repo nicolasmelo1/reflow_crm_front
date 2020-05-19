@@ -8,8 +8,9 @@ styled.img`
     display: block;
     margin-bottom: 20px; 
     opacity: ${props => props.showLogo ? '1 !important': '0 !important'};
-    transform: ${props => props.slideLogo ? 'translateY(-180px)': 'translateY(0px)'};
-    transition: transform 1s ease-in-out, opacity 0.9s ease-in-out;
+    top: ${props => props.slideLogo ? '10px': '48%'};
+    transition: top 1s ease-in-out, opacity 0.9s ease-in-out;
+    max-width: 30%;
 `
 :
 styled(Image)``

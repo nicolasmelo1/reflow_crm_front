@@ -6,6 +6,7 @@ import actions from '../../redux/actions'
 import agent from '../../utils/agent'
 import { strings, errors, paths } from '../../utils/constants'
 import { 
+    LoginOnboardingButton,
     LoginContainer, 
     LoginInput, 
     LoginButton, 
@@ -30,13 +31,21 @@ class Login extends React.Component {
         }
     }
 
+    redirectToOnboarding = () => {
+        if (this._ismounted) {
+            if (process.env['APP'] === 'web') {
+                Router.push(paths.onboarding(), paths.onboarding(), { shallow: true })
+            }
+        }
+    }
+
     handleLogin() { 
         // we use the reference because most browser saves the credentials on the client side, when
         // if this applies, if the user press `enter` it does not enter because the state will not be set
         // since he will not have written anything
         this.state.email = (this.state.email == '' && this.emailRef.current && this.emailRef.current.value ) ? this.emailRef.current.value : this.state.email
         this.state.password = (this.state.password == '' && this.passwordRef.current && this.passwordRef.current.value ) ? this.passwordRef.current.value : this.state.password
-        this.props.onAuthenticate(this.state).then(response => {
+        this.props.onAuthenticate({ email: this.state.email, password: this.state.password}).then(response => {
             if (!response) {
                 this.props.onAddNotification(strings['pt-br']['unknownLoginError'],'error')
             } else if (response.status !== 200) {
@@ -92,6 +101,12 @@ class Login extends React.Component {
                         e.preventDefault(); 
                         this.handleLogin()
                     }}>{strings['pt-br']['submitButtonLabel']}</LoginButton>
+                    <LoginOnboardingButton onClick={e => {
+                        e.preventDefault(); 
+                        this.redirectToOnboarding()
+                    }}>
+                        {'Cadastre-se'}
+                    </LoginOnboardingButton>
                 </LoginFormContainer>
             </LoginContainer>
         )

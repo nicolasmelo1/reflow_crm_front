@@ -24,7 +24,7 @@ class Index extends React.Component {
     }
     render (){
         return (
-            <Layout addTemplates={['', null, undefined].includes(this.props.login.primaryForm)} title={strings['pt-br']['indexPageTitle']}/>
+            <Layout addTemplates={['', null, undefined].includes(this.props.login.primaryForm)} title={strings['pt-br']['indexPageTitle']} />
         )
     }
 }

@@ -14,6 +14,7 @@ class LoginPage extends React.Component {
     setAddTemplates = (data) => this.setState(state => state.addTemplates = data)
 
     render() {
+        console.log(this.state.addTemplates)
         return (
             <Layout addTemplates={this.state.addTemplates} title={strings['pt-br']['loginPageTitle']} hideNavBar={true} isNotLogged={true}>
                 <Login setAddTemplates={this.setAddTemplates}/>

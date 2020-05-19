@@ -43,6 +43,7 @@ import {
     faFilter, 
     faSortAmountDown, 
     faEye, 
+    faEyeSlash,
     faChevronLeft, 
     faChevronRight, 
     faChevronUp, 
@@ -53,7 +54,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 
-library.add(faTimes, faPlusCircle, faPlusSquare, faEnvelope, faCalendarAlt, faSquareRootAlt, faPhone, faAlignLeft, faLink, faCheckSquare, faClipboardList, faParagraph, faArrowLeft, faRulerHorizontal, faClock, faTrash, faBell, faChartBar, faCircle, faCog, faTasks, faArrowsAlt, faEdit, faBars, faPen, faFilter, faSortAmountDown, faEye, faArrowsAlt, faChevronLeft, faChevronRight, faChevronUp, faChevronDown, faFileUpload, faPencilAlt, faArrowDown)
+library.add(faTimes, faPlusCircle, faEyeSlash, faPlusSquare, faEnvelope, faCalendarAlt, faSquareRootAlt, faPhone, faAlignLeft, faLink, faCheckSquare, faClipboardList, faParagraph, faArrowLeft, faRulerHorizontal, faClock, faTrash, faBell, faChartBar, faCircle, faCog, faTasks, faArrowsAlt, faEdit, faBars, faPen, faFilter, faSortAmountDown, faEye, faArrowsAlt, faChevronLeft, faChevronRight, faChevronUp, faChevronDown, faFileUpload, faPencilAlt, faArrowDown)
 
 /*** 
  * This is the main component of the page, we use this custom layout component so pages can override from this.
@@ -87,7 +88,7 @@ class Layout extends React.Component {
     }
 
     setLogout = (data) => {
-        if (data) {
+        if (data && !this.props.isNotLogged) {
             if (process.env['APP'] === 'web') {
                 Router.push(paths.login(), paths.login(),{ shallow: true })
             } else {
@@ -124,7 +125,7 @@ class Layout extends React.Component {
                 {this.state.tokenLoaded ? (
                     <Body>
                         <Notify/> 
-                        {this.state.addTemplates && isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user) ? (
+                        {(this.state.addTemplates || this.props.addTemplates) && isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user) ? (
                             <Templates setAddTemplates={this.setAddTemplates}/>
                         ) : (
                             <div id="main-container">
@@ -149,7 +150,7 @@ class Layout extends React.Component {
                 {this.state.tokenLoaded ? (
                     <Body>
                         <Notify/> 
-                        {this.state.addTemplates ? (
+                        {(this.state.addTemplates || this.props.addTemplates) && isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user) ? (
                             <Templates setAddTemplates={this.setAddTemplates}/>
                         ) : (
                             <SafeAreaView style={{ height: '100%', backgroundColor:'#fff'}}>

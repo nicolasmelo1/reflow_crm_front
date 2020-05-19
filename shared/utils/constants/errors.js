@@ -8,7 +8,9 @@ const errors = (lang, key) => {
         already_exists: strings[lang]['formularyUniqueFieldError'],
         invalid_variable: strings[lang]['notificationConfigurationFormInvalidVariableError'],
         blank_field: strings[lang]['notificationConfigurationFormFieldBlankError'],
-        unknown_field: strings[lang]['notificationConfigurationFormFieldUnknownError']
+        unknown_field: strings[lang]['notificationConfigurationFormFieldUnknownError'],
+        existing_user: strings[lang]['onboardingExistingUserError'],
+        invalid_data: strings[lang]['onboardingUnknownError']
     }[key]
 }
 
