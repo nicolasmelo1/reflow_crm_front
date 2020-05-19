@@ -162,7 +162,7 @@ class Onboarding extends React.Component {
     renderWeb = () => {
         return (
             <OnboardingContainer step={this.state.step}>
-                <OnboardingLogo src="/complete_logo.png" showLogo={this.state.showLogo} slideLogo={this.state.slideLogo}/>
+                <OnboardingLogo src="/complete_logo.png" showLogo={this.state.showLogo} slideLogo={this.state.slideLogo} step={this.state.step}/>
                 {this.formularySteps[this.state.step] === 'set-email' ? (
                     <OnboardingFormContainer showForm={this.state.showForm}>
                         <OnboardingLabel>{strings['pt-br']['onboardingNameAndLastNameLabel']}<OnboardingRequiredLabel>*</OnboardingRequiredLabel></OnboardingLabel>
