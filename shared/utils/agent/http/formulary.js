@@ -47,6 +47,9 @@ const FORMULARY = {
     },
     removeFormularySettingsField: async (formId, fieldId) => {
         return await requests.delete(`${companyId}/settings/api/formulary/${formId}/fields/${fieldId}/`)
+    },
+    testFormularyFormulaField: async (source, formId, text) => {
+        return await requests.get(`${companyId}/formula/${formId}/`, { text: text }, {}, source)
     }
 }
 

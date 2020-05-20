@@ -8,6 +8,9 @@ const paths = {
     onboarding() {
         return '/onboarding'
     },
+    changepassword() {
+        return '/changepassword'
+    },
     home(form, slugged=false) {
         return slugged ? `/home/[form]` : `/home/${form}`
     },

@@ -1,17 +1,7 @@
 import axios from 'axios'
 import { AsyncStorage } from 'react-native'
-import { getToken, setHeader, API_ROOT, logoutFunctionForView } from './utils'
+import { getToken, setHeader, API_ROOT, logoutFunctionForView, setStorageToken } from './utils'
 
-
-const setStorageToken = async (tokenValue, refreshTokenValue) => {
-    if (process.env['APP'] === 'web') {
-        window.localStorage.setItem('refreshToken', refreshTokenValue)
-        window.localStorage.setItem('token', tokenValue)
-    } else {
-        await AsyncStorage.setItem('refreshToken', refreshTokenValue)
-        await AsyncStorage.setItem('token', tokenValue)
-    }
-}
 
 /***
  * Function that fires when a exception is catched in the requests object functions.

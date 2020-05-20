@@ -1,6 +1,9 @@
 import requests from '../requests'
 
 const LOGIN = {
+    forgotPassword: async (body) => {
+        return await requests.post('login/forgot/', body)
+    },
     makeLogin: async (body) => {
         return await requests.post('login/', body)
     },

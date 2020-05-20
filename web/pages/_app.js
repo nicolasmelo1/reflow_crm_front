@@ -8,6 +8,7 @@ import { initStore } from '@shared/redux/store';
 import agent from '@shared/utils/agent';
 import SplashScreen from '../components/styles/SplashScreen'
 import SplashLogo from '../components/styles/SplashLogo'
+import getConfig from 'next/config'
 
 class MyApp extends App {
 
@@ -29,7 +30,7 @@ class MyApp extends App {
         this.appWidth()
     }
 
-    usetIsLogged = () => {
+    userIsLogged = () => {
         return window.localStorage.getItem('token') && window.localStorage.getItem('token') !== ''
     }
 
@@ -42,7 +43,7 @@ class MyApp extends App {
     }
 
     registerServiceWorker = () => {
-        if (process.env.NODE_ENV === 'production' && typeof navigator !== 'undefined' && typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+        if ((process.env.NODE_ENV==='production' || process.env.REGISTER_SW_IN_DEV_MODE) && typeof navigator !== 'undefined' && typeof window !== 'undefined' && 'serviceWorker' in navigator) {
             window.addEventListener('load', function () {
                 navigator.serviceWorker.register('/service-worker.js', { scope: '/' }).then(function (registration) {
                     // force the service worker to always update
@@ -64,15 +65,16 @@ class MyApp extends App {
     }
 
     askUserPermissionForNotification = async () => {
-        if (typeof Notification !== undefined && Notification.requestPermission() !== undefined) {
-            return Notification.requestPermission().then(async consent=> {
-                if (consent !== "granted") {
-                    console.log('consent not granted')
-                } else {
-                    const serviceWorker = await navigator.serviceWorker.ready;
-                    const subscription = await serviceWorker.pushManager.getSubscription()
-                    if (subscription === null || process.env.NODE_ENV !== 'production') {
-                        // subscribe and return the subscription, if the user has a subscription, uns
+        if (typeof Notification !== 'undefined') {
+            try {
+                return Notification.requestPermission().then(async consent=> {
+                    if (consent !== "granted") {
+                        console.log('consent not granted')
+                    } else {
+                        const serviceWorker = await navigator.serviceWorker.ready
+                        const subscription = await serviceWorker.pushManager.getSubscription()
+                        
+                        // subscribe and return the subscription, if the user has a subscription, unsubscribe
                         this.subscribePushManager(serviceWorker).then(subscription=> {
                             agent.http.LOGIN.registerPushNotification(this.createSubscriptionBodyToServer(subscription.toJSON()))
                         }).catch(_=> {
@@ -84,8 +86,10 @@ class MyApp extends App {
                             }).catch({})
                         })
                     }
-                }
-            })
+                })
+            } catch {
+                // probably is safari
+            }
         }
     }
 
@@ -95,7 +99,7 @@ class MyApp extends App {
             window.addEventListener('resize', this.setAppDefaults)
             this.setAppDefaults()
             this.registerServiceWorker()
-            if (this.usetIsLogged()) {
+            if (this.userIsLogged()) {
                 window.addEventListener('load', this.askUserPermissionForNotification)
                 setTimeout(() => {
                     if (this._ismounted) this.setState(state => state.showLogo = true)

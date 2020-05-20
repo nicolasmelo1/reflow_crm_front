@@ -194,7 +194,9 @@ const FormularySectionsEdit = (props) => {
                 types={props.types} 
                 fieldOptions={fieldOptions}
                 formulariesOptions={props.formulariesOptions}
+                onTestFormularySettingsFormulaField={props.onTestFormularySettingsFormulaField}
                 formName={props.formName}
+                formId={props.formId}
                 userOptions={props.userOptions}
                 />
             )): ''}

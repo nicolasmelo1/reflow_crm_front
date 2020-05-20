@@ -157,6 +157,12 @@ const onRemoveFormularySettingsField = (formId, fieldId) => {
     }
 }
 
+const onTestFormularySettingsFormulaField = (source, formId, text) => {
+    return (_) => {
+        return agent.http.FORMULARY.testFormularyFormulaField(source, formId, text)
+    }
+}
+
 
 export default {
     onOpenFormulary,
@@ -172,5 +178,6 @@ export default {
     onRemoveFormularySettingsSection,
     onCreateFormularySettingsField,
     onUpdateFormularySettingsField,
-    onRemoveFormularySettingsField
+    onRemoveFormularySettingsField,
+    onTestFormularySettingsFormulaField
 }

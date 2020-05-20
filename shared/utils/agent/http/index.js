@@ -6,8 +6,10 @@ import NOTIFICATION from './notification'
 import SIDEBAR from './sidebar'
 import TEMPLATES from './templates'
 import ONBOARDING from './onboarding'
+import CHANGE_PASSWORD from './changepassword'
 
 export default {
+    CHANGE_PASSWORD,
     FORMULARY,
     KANBAN,
     LISTING,

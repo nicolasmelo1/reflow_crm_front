@@ -24,6 +24,9 @@ import FormularyEditInputCheckboxBox from './FormularyEditInputCheckboxBox'
 import FormularyEditInputCheckboxDivider from './FormularyEditInputCheckboxDivider'
 import FormularySectionEditFieldContainer from './FormularySectionEditFieldContainer'
 import FormularySectionEditFieldFormularyContainer from './FormularySectionEditFieldFormularyContainer'
+import FormularySectionEditFieldFormFieldNumberExplanationContainer from './FormularySectionEditFieldFormFieldNumberExplanationContainer'
+import FormularySectionEditFieldFormFieldNumberExplanationDescription from './FormularySectionEditFieldFormFieldNumberExplanationDescription'
+import FormularySectionEditFieldFormFieldNumberExplanationLabel from './FormularySectionEditFieldFormFieldNumberExplanationLabel'
 
 export default {
     AddNewSectionButton: FormularySectionEditAddNewButton,
@@ -59,5 +62,8 @@ export default {
     FieldFormCheckboxDivider: FormularyEditInputCheckboxDivider,
     FieldFormLabel: FormularySectionEditFieldFormLabel,
     FieldsContainer: FormularySectionEditFieldsContainer,
-    FieldContainer: FormularySectionEditFieldContainer
+    FieldContainer: FormularySectionEditFieldContainer,
+    FormulaExplanationContainer: FormularySectionEditFieldFormFieldNumberExplanationContainer,
+    FormulaExplanationDescription: FormularySectionEditFieldFormFieldNumberExplanationDescription,
+    FormulaExplanationLabel: FormularySectionEditFieldFormFieldNumberExplanationLabel
 }

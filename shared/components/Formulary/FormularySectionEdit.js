@@ -166,12 +166,14 @@ const FormularySectionEdit = (props) => {
                             {![null, -1].includes(props.section.id) ? (
                                 <FormulariesEdit.FieldsContainer>
                                     <FormularyFieldsEdit
+                                    onTestFormularySettingsFormulaField={props.onTestFormularySettingsFormulaField}
                                     fieldIsMoving={props.fieldIsMoving}
                                     setFieldIsMoving={props.setFieldIsMoving}
                                     sectionIndex={props.sectionIndex}
                                     onMoveField={props.onMoveField}
                                     types={props.types}
                                     formName={props.formName}
+                                    formId={props.formId}
                                     removeField={props.removeField}
                                     fields={props.section.form_fields}
                                     onAddNewField={props.onAddNewField}

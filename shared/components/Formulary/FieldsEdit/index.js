@@ -171,6 +171,8 @@ const FormularyFieldEdit = (props) => {
                 types={props.types}
                 sectionIndex={props.sectionIndex}
                 fieldIndex={props.fieldIndex}
+                formId={props.formId}
+                onTestFormularySettingsFormulaField={props.onTestFormularySettingsFormulaField}
                 />
             )
         } else if (fieldType.type === 'period') {

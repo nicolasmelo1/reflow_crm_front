@@ -1,6 +1,7 @@
 import { DEAUTHENTICATE, AUTHENTICATE, SET_PRIMARY_FORM, DATA_TYPES, SET_USER } from '../types';
 import { AsyncStorage } from 'react-native'
 import agent from '../../utils/agent'
+import { setStorageToken } from '../../utils/agent/utils'
 import isEqual from '../../utils/isEqual'
 
 // gets token from the api and stores it in the redux store and in cookie
@@ -8,13 +9,7 @@ const onAuthenticate = (body) => {
     return async (dispatch) => {
         let response = await agent.http.LOGIN.makeLogin(body)
         if (response && response.status === 200) {
-            if (process.env['APP'] === 'web') {
-                window.localStorage.setItem('token', response.data.access_token)
-                window.localStorage.setItem('refreshToken', response.data.refresh_token)
-            } else {
-                await AsyncStorage.setItem('token', response.data.access_token)
-                await AsyncStorage.setItem('refreshToken', response.data.refresh_token)
-            }
+            await setStorageToken(response.data.access_token, response.data.refresh_token)
             dispatch({ type: AUTHENTICATE, payload: response.data });
         }
         return response
@@ -23,15 +18,15 @@ const onAuthenticate = (body) => {
 
 const onDeauthenticate = () => {
     return async (dispatch) => {
-        if (process.env['APP'] === 'web') {
-            window.localStorage.setItem('refreshToken', '')
-            window.localStorage.setItem('token', '')
-        } else {
-            await AsyncStorage.setItem('refreshToken', '')
-            await AsyncStorage.setItem('token', '')
-        }
+        await setStorageToken('', '')
         dispatch({ type: DEAUTHENTICATE, payload: {} })
         return
+    }
+}
+
+const onForgotPassword = (email, changePasswordUrl) => {
+    return (_) => {
+        return agent.http.LOGIN.forgotPassword({email: email, change_password_url: changePasswordUrl})
     }
 }
 
@@ -58,6 +53,7 @@ const getDataTypes = () => {
 }
 
 export default {
+    onForgotPassword,
     onUpdateUser,
     onUpdatePrimaryForm,
     onAuthenticate,

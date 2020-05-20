@@ -1,32 +1,24 @@
 import React from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import Router from 'next/router'
 import { connect } from 'react-redux';
 import actions from '../../redux/actions'
 import { strings, paths, errors } from '../../utils/constants'
-import config from '../../config'
+import FirstStepForm from './FirstStepForm'
+import SecondStepForm from './SecondStepForm'
+
 import { 
     OnboardingLogo,
-    OnboardingContainer,
-    OnboardingLabel,
-    OnboardingRequiredLabel,
-    OnboardingNonRequiredFieldMessage,
-    OnboardingInput,
-    OnboardingError,
-    OnboardingFormContainer,
-    OnboardingDeclarationInput,
-    OnboardingDeclarationLabel, 
-    OnboardingContinueButton,
-    OnboardingSubmitButton,
-    OnboardingVisualizePasswordLabel,
-    OnboardingGoBackButton,
-    OnboardingBottomButtonsContainer
+    OnboardingContainer
 } from '../../styles/Onboarding'
 import { View } from 'react-native'
 
 /**
- * {Description of your component, what does it do}
- * @param {Type} props - {go in detail about every prop it recieves}
+ * This component handles the onboarding of a new user. It is important to understand that right now the onboarding formulary consists of 2 simple steps: 
+ * 1-All of the basic information we need for the user to start using reflow
+ * 2-Set password
+ * 
+ * @param {String} partner - The partner name, usually recieved from the url as a parameter with the ?partner= tag
+ * @param {String} shared_by - The company endpoint, used for referral, usually recieved from the url as a query parameter with the ?shared_by= tag
  */
 class Onboarding extends React.Component {
     constructor(props) {
@@ -53,7 +45,6 @@ class Onboarding extends React.Component {
             declarationChecked: false,
             password: '',
             confirmPassword: '',
-            visiblePassword: false
         }
     }
     
@@ -72,7 +63,6 @@ class Onboarding extends React.Component {
 
     setPassword = (data) => this.setState(state => ({...state, password: data}))
     setConfirmPassword = (data) => this.setState(state => ({...state, confirmPassword: data}))
-    setVisiblePassword = (data) => this.setState(state => ({...state, visiblePassword: data}))
 
     isValid = (name, value) => {
         switch (name) {
@@ -116,7 +106,7 @@ class Onboarding extends React.Component {
             } else if (!response) {
                 this.props.onAddNotification(strings['pt-br']['onboardingUnknownError'], 'error')
             } else {
-                Router.push(paths.login(), paths.login(), {shallow: true})
+                this.redirectToLogin()
             }
         })
     }
@@ -125,15 +115,6 @@ class Onboarding extends React.Component {
         if (process.env['APP'] === 'web') {
             Router.push(paths.login(), paths.login(), { shallow: true })
         }
-    }
-
-    continueButtonDisabled = () => {
-        return !this.state.declarationChecked || this.state.errors.hasOwnProperty('name') || this.state.errors.hasOwnProperty('email') || 
-                this.state.errors.hasOwnProperty('confirmEmail') || this.state.name === '' || this.state.email === '' || this.state.confirmEmail === ''
-    }
-
-    submitButtonDisabled = () => {
-        return this.state.errors.hasOwnProperty('confirmPassword') || this.state.password === '' || this.state.confirmPassword === ''
     }
 
     componentDidMount = () => {
@@ -164,105 +145,35 @@ class Onboarding extends React.Component {
             <OnboardingContainer step={this.state.step}>
                 <OnboardingLogo src="/complete_logo.png" showLogo={this.state.showLogo} slideLogo={this.state.slideLogo} step={this.state.step}/>
                 {this.formularySteps[this.state.step] === 'set-email' ? (
-                    <OnboardingFormContainer showForm={this.state.showForm}>
-                        <OnboardingLabel>{strings['pt-br']['onboardingNameAndLastNameLabel']}<OnboardingRequiredLabel>*</OnboardingRequiredLabel></OnboardingLabel>
-                        <OnboardingInput
-                            error={this.state.errors.hasOwnProperty('name')} 
-                            type='text' 
-                            value={this.state.name} 
-                            onChange={e=> {
-                                this.onValidate('name', e.target.value)
-                                this.setName(e.target.value)
-                            }} 
-                            onBlur={e => {this.onValidate('name', e.target.value)}}
-                        />
-                        <OnboardingError>{this.state.errors.hasOwnProperty('name') ? this.state.errors['name'] : ''}</OnboardingError>
-                        <OnboardingLabel>{strings['pt-br']['onboardingEmailLabel']}<OnboardingRequiredLabel>*</OnboardingRequiredLabel></OnboardingLabel>
-                        <OnboardingInput 
-                            error={this.state.errors.hasOwnProperty('email')} 
-                            type='text' 
-                            value={this.state.email} 
-                            onChange={e=> {
-                                this.onValidate('email', e.target.value)
-                                this.setEmail(e.target.value)
-                            }}
-                            onBlur={e => {this.onValidate('email', e.target.value)}}
-                        />
-                        <OnboardingError>{this.state.errors.hasOwnProperty('email') ? this.state.errors['email'] : ''}</OnboardingError>
-                        <OnboardingLabel>{strings['pt-br']['onboardingConfirmEmailLabel']}<OnboardingRequiredLabel>*</OnboardingRequiredLabel></OnboardingLabel>
-                        <OnboardingInput 
-                            error={this.state.errors.hasOwnProperty('confirmEmail')} 
-                            type='text' 
-                            value={this.state.confirmEmail} 
-                            onChange={e=> {
-                                this.onValidate('confirmEmail', e.target.value)
-                                this.setConfirmEmail(e.target.value)
-                            }}
-                            onBlur={e => {this.onValidate('confirmEmail', e.target.value)}}
-                        />
-                        <OnboardingError>{this.state.errors.hasOwnProperty('confirmEmail') ? this.state.errors['confirmEmail'] : ''}</OnboardingError>
-                        <OnboardingLabel>{strings['pt-br']['onboardingCompanyNameLabel']}</OnboardingLabel>
-                        <OnboardingInput type='text' value={this.state.companyName} onChange={e=> {this.setCompanyName(e.target.value)}}/>
-                        <OnboardingNonRequiredFieldMessage>{strings['pt-br']['onboardingNoCompanyNameMessage']}</OnboardingNonRequiredFieldMessage>
-                        <OnboardingDeclarationLabel>
-                            <OnboardingDeclarationInput type="checkbox" checked={this.state.declarationChecked} onChange={e => this.setDeclarationChecked(!this.state.declarationChecked)}/>
-                            &nbsp;{strings['pt-br']['onboardingFirstPartDeclarationLabel']}
-                            <a href="https://www.reflow.com.br/termo-de-uso" style={{ color: '#0dbf7e'}} target="_blank">
-                                {strings['pt-br']['onboardingTermsOfUsageDeclarationLabel']}
-                            </a>{strings['pt-br']['onboardingSecondPartDeclarationLabel']}
-                            <a href="https://www.reflow.com.br/privacidade" style={{ color: '#0dbf7e'}} target="_blank">
-                                {strings['pt-br']['onboardingPrivacyDeclarationLabel']}
-                            </a>{strings['pt-br']['onboardingThirdPartDeclarationLabel']}
-                        </OnboardingDeclarationLabel>
-                        <OnboardingBottomButtonsContainer> 
-                            <OnboardingGoBackButton onClick={e=> this.redirectToLogin()}>
-                                {strings['pt-br']['onboardingLoginButtonLabel']}
-                            </OnboardingGoBackButton>
-                            <OnboardingContinueButton disabled={this.continueButtonDisabled()} onClick={e=> this.setStep(1)}>
-                                {strings['pt-br']['onboardingCOntinueButtonLabel']}
-                            </OnboardingContinueButton>
-                        </OnboardingBottomButtonsContainer>
-                    </OnboardingFormContainer>
+                    <FirstStepForm
+                    showForm={this.state.showForm}
+                    onValidate={this.onValidate}
+                    errors={this.state.errors}
+                    name={this.state.name}
+                    setName={this.setName}
+                    email={this.state.email}
+                    setEmail={this.setEmail}
+                    confirmEmail={this.state.confirmEmail}
+                    setConfirmEmail={this.setConfirmEmail}
+                    companyName={this.state.companyName}
+                    setCompanyName={this.setCompanyName}
+                    declarationChecked={this.state.declarationChecked}
+                    setDeclarationChecked={this.setDeclarationChecked}
+                    redirectToLogin={this.redirectToLogin}
+                    setStep={this.setStep}
+                    />
                 ) : (
-                    <OnboardingFormContainer showForm={this.state.showForm}>
-                        <OnboardingLabel>{strings['pt-br']['onboardingPasswordLabel']}<OnboardingRequiredLabel>*</OnboardingRequiredLabel></OnboardingLabel>
-                        <OnboardingInput
-                            error={this.state.errors.hasOwnProperty('password')} 
-                            type={this.state.visiblePassword ? 'text' : 'password'}
-                            value={this.state.password} 
-                            onChange={e=> {
-                                this.onValidate('password', e.target.value)
-                                this.setPassword(e.target.value)
-                            }} 
-                            onBlur={e => {this.onValidate('password', e.target.value)}}
-                        />
-                        <OnboardingError>{this.state.errors.hasOwnProperty('password') ? this.state.errors['password'] : ''}</OnboardingError>
-                        <OnboardingLabel>{strings['pt-br']['onboardingConfirmPasswordLabel']}<OnboardingRequiredLabel>*</OnboardingRequiredLabel></OnboardingLabel>
-                        <OnboardingInput 
-                            error={this.state.errors.hasOwnProperty('confirmPassword')} 
-                            type={this.state.visiblePassword ? 'text' : 'password'}
-                            value={this.state.confirmPassword} 
-                            onChange={e=> {
-                                this.onValidate('confirmPassword', e.target.value)
-                                this.setConfirmPassword(e.target.value)
-                            }}
-                            onBlur={e => {this.onValidate('confirmPassword', e.target.value)}}
-                        />
-                        <OnboardingError>{this.state.errors.hasOwnProperty('confirmPassword') ? this.state.errors['confirmPassword'] : ''}</OnboardingError>
-                        <OnboardingVisualizePasswordLabel>
-                            <input style={{display:'none'}} type="checkbox" checked={this.state.visiblePassword} onChange={e => this.setVisiblePassword(!this.state.visiblePassword)}/>
-                            <FontAwesomeIcon icon={this.state.visiblePassword ? 'eye-slash' : 'eye'}/>
-                            &nbsp;{this.state.visiblePassword ? strings['pt-br']['onboardingHidePasswordLabel'] : strings['pt-br']['onboardingShowPasswordLabel']}
-                        </OnboardingVisualizePasswordLabel>
-                        <OnboardingBottomButtonsContainer> 
-                            <OnboardingGoBackButton onClick={e=> this.setStep(0)}>
-                                {strings['pt-br']['onboardingGobackButtonLabel']}
-                            </OnboardingGoBackButton>
-                            <OnboardingSubmitButton disabled={this.submitButtonDisabled()} onClick={e=> this.onSubmitForm()}>
-                                {strings['pt-br']['onboardingSubmitButtonLabel']}
-                            </OnboardingSubmitButton>
-                        </OnboardingBottomButtonsContainer>
-                    </OnboardingFormContainer>
+                    <SecondStepForm
+                    showForm={this.state.showForm}
+                    onValidate={this.onValidate}
+                    setStep={this.setStep}
+                    errors={this.state.errors}
+                    password={this.state.password}
+                    setPassword={this.setPassword}
+                    confirmPassword={this.state.confirmPassword}
+                    setConfirmPassword={this.setConfirmPassword}
+                    onSubmitForm={this.onSubmitForm}
+                    />
                 )}
             </OnboardingContainer>
         )

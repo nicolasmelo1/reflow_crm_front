@@ -40,7 +40,9 @@ const FormularyFieldsEdit = (props) => {
                 formulariesOptions={props.formulariesOptions}
                 userOptions={props.userOptions}
                 formName={props.formName}
+                formId={props.formId}
                 fieldIndex={index}
+                onTestFormularySettingsFormulaField={props.onTestFormularySettingsFormulaField}
                 />
             ))}
             <FormulariesEdit.AddNewFieldButton text={strings['pt-br']['formularyEditAddNewFieldButtonLabel']} onClick={e=>{props.onAddNewField(props.sectionIndex)}}/>

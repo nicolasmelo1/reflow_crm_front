@@ -6,6 +6,17 @@ const API_ROOT = API;
 let companyId = null
 let logoutFunctionForView = null
 
+
+const setStorageToken = async (tokenValue, refreshTokenValue) => {
+    if (process.env['APP'] === 'web') {
+        window.localStorage.setItem('refreshToken', refreshTokenValue)
+        window.localStorage.setItem('token', tokenValue)
+    } else {
+        await AsyncStorage.setItem('refreshToken', refreshTokenValue)
+        await AsyncStorage.setItem('token', tokenValue)
+    }
+}
+
 /***
  * Function that sets the token in the header, called inside of the `requests` object functions
  * 
@@ -41,6 +52,7 @@ const setLogout = (_logoutFunctionForView) => {
 
 
 export { 
+    setStorageToken,
     setLogout,
     setCompanyId,
     logoutFunctionForView,

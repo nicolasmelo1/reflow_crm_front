@@ -43,7 +43,7 @@ const NotificationsConfiguration = (props) => {
         if (body.id) {
             return props.onUpdateNotificationConfiguration(body, body.id)
         } else {
-            props.onCreateNotificationConfiguration(data)
+            return props.onCreateNotificationConfiguration(body)
         }
     }
 

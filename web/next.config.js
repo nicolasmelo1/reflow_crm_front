@@ -40,6 +40,7 @@ module.exports = withOffline({
         ]
     },
     env: {
+        REGISTER_SW_IN_DEV_MODE: false,
         OLD_APP_HOST: process.env.OLD_APP_HOST ? process.env.OLD_APP_HOST : 'https://app.reflow.com.br/',
         API_HOST: process.env.API_HOST,
         APP: 'web'

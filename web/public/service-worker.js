@@ -3242,10 +3242,10 @@ class NetworkFirst {
           logs.push(`Timing out the network response at ` + `${this._networkTimeoutSeconds} seconds.`);
         }
 
-        resolve((await this._respondFromCache({
+        resolve(await this._respondFromCache({
           request,
           event
-        })));
+        }));
       };
 
       timeoutId = setTimeout(onNetworkTimeout, this._networkTimeoutSeconds * 1000);
@@ -4459,7 +4459,7 @@ self.addEventListener('message', event => {
 
 precacheAndRoute([{
   "url": "_next/static/chunks/0.js",
-  "revision": "019e8d55926f7fee330ac1dcd87009dc"
+  "revision": "00c65416cf5968d4e832f63611e86ea3"
 }, {
   "url": "_next/static/development/_buildManifest.js",
   "revision": "fb96ae7926f5104f50f0cf1b3a23a9b5"
@@ -4470,26 +4470,32 @@ precacheAndRoute([{
   "url": "_next/static/development/dll/dll_dc8ac110ce5d8530b237.js",
   "revision": "799d5f1e070371cf53e1ebab02fb59f7"
 }, {
+  "url": "_next/static/development/pages/404.js",
+  "revision": "9f36576db48ece757dcc17824cd9a721"
+}, {
   "url": "_next/static/development/pages/_app.js",
-  "revision": "807bf13c54d4b13c594318fabe995879"
+  "revision": "e7273ba8bdbd9b805a28b4d4541d3866"
 }, {
   "url": "_next/static/development/pages/_error.js",
-  "revision": "2b47c988be25076bbaed39ca7ab88733"
+  "revision": "ff43a59ce7a15f2ea8d1e0b54dd5bcc1"
 }, {
   "url": "_next/static/development/pages/home/[form].js",
-  "revision": "42562fe0e13a34983775f480bc2054ae"
+  "revision": "82b02bb293dc390861f9aa3d20427f8b"
 }, {
   "url": "_next/static/runtime/amp.js",
-  "revision": "2402d9faa492321238c6fb742a20fb51"
+  "revision": "a6b66156c9c719c493b1fbbb4423e9a4"
 }, {
   "url": "_next/static/runtime/main.js",
-  "revision": "a11318e6bfc2af223a1c6c1ebf1396bb"
+  "revision": "a28555720773ecef8643e7722ccda742"
 }, {
   "url": "_next/static/runtime/polyfills.js",
-  "revision": "cf6f4b12f4634f8f79378d41f3a855a4"
+  "revision": "d0229676bc063342ab7d9564f33827d1"
+}, {
+  "url": "_next/static/runtime/react-refresh.js",
+  "revision": "9d11ea7095b60a828f2db49ed1004ade"
 }, {
   "url": "_next/static/runtime/webpack.js",
-  "revision": "2787b74573fb845b4d955874f32a9460"
+  "revision": "f6ba1535250c2ec5aea1b17169bb20f5"
 }], {});
 registerRoute(/^https?.*/, new NetworkFirst({
   "cacheName": "https-calls",

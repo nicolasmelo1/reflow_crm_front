@@ -10,10 +10,10 @@ class OnboardingPage extends React.Component {
 
     render() {
         return (
-            <Layout title={'Quero ser Reflow'} hideNavBar={true} isNotLogged={true}>
+            <Layout title={strings['pt-br']['onboardingPageTitle']} hideNavBar={true} isNotLogged={true}>
                 <Onboarding/>
             </Layout>
-        );
+        )
     }
 }
 
