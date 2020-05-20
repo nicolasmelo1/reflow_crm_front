@@ -74,7 +74,7 @@ const FirstStepForm = (props) => {
                     <a href="https://www.reflow.com.br/termo-de-uso" style={{ color: '#0dbf7e'}} target="_blank">
                         {strings['pt-br']['onboardingTermsOfUsageDeclarationLabel']}
                     </a>{strings['pt-br']['onboardingSecondPartDeclarationLabel']}
-                    <a href="https://www.reflow.com.br/privacidade" style={{ color: '#0dbf7e'}} target="_blank">
+                    <a href="https://www.reflow.com.br/politicas-de-privacidade" style={{ color: '#0dbf7e'}} target="_blank">
                         {strings['pt-br']['onboardingPrivacyDeclarationLabel']}
                     </a>{strings['pt-br']['onboardingThirdPartDeclarationLabel']}
                 </OnboardingDeclarationLabel>
@@ -138,7 +138,7 @@ const FirstStepForm = (props) => {
                     <a href="https://www.reflow.com.br/termo-de-uso" style={{ color: '#0dbf7e'}} target="_blank">
                         {strings['pt-br']['onboardingTermsOfUsageDeclarationLabel']}
                     </a>{strings['pt-br']['onboardingSecondPartDeclarationLabel']}
-                    <a href="https://www.reflow.com.br/privacidade" style={{ color: '#0dbf7e'}} target="_blank">
+                    <a href="https://www.reflow.com.br/politicas-de-privacidade" style={{ color: '#0dbf7e'}} target="_blank">
                         {strings['pt-br']['onboardingPrivacyDeclarationLabel']}
                     </a>{strings['pt-br']['onboardingThirdPartDeclarationLabel']}
                 </OnboardingDeclarationLabel>

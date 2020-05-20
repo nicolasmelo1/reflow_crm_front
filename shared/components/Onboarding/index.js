@@ -113,7 +113,13 @@ class Onboarding extends React.Component {
 
     redirectToLogin = () => {
         if (process.env['APP'] === 'web') {
-            Router.push(paths.login(), paths.login(), { shallow: true })
+            if (window.location !== window.parent.location) { 
+                // The page is in an iFrames 
+                window.parent.location.replace(window.location.origin + paths.login());
+            } else { 
+                // The page is not in an iFrame 
+                Router.push(paths.login(), paths.login(), { shallow: true })
+            } 
         }
     }
 
