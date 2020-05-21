@@ -158,7 +158,6 @@ class Formulary extends React.Component {
         if (request) {
             request.then(response=> {
                 this.setIsSubmitting(false)
-                console.log(response)
                 if (response && response.status !== 200) {
                     this.setErrors(response.data.error)
                 } else if (this.state.buildData.form_name !== this.props.formName) {

@@ -77,7 +77,6 @@ const FormularySectionEdit = (props) => {
         let sectionContainer = e.currentTarget.closest('.section-container')
         let elementRect = sectionContainer.getBoundingClientRect()
         const buttonRect = e.currentTarget.getBoundingClientRect()
-        console.log(buttonRect)
         e.dataTransfer.setDragImage(sectionContainer, elementRect.width - (window.innerWidth - buttonRect.right - buttonRect.width), 20)
         e.dataTransfer.setData('sectionIndexToMove', JSON.stringify(props.sectionIndex))
         isMoving.current = true
