@@ -29,7 +29,7 @@ function openPushNotification(event) {
     console.log(event.notification.data.toString())
     console.log(event.notification.data.toString() === 'notification')
     // if we recieve a full url we open the window the backend wants us to open
-    if (event.notification.data.contains('https://') || event.notification.data.contains('http://')) {
+    if (event.notification.data.includes('https://') || event.notification.data.includes('http://')) {
         console.log('Entrou aqui')
         console.log(event.notification.data)
         event.waitUntil(clients.openWindow(event.notification.data))
