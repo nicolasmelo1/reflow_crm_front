@@ -24,7 +24,6 @@ function receivePushNotification(event) {
   
 function openPushNotification(event) {
     console.log("[Service Worker] Notification click Received.", event.notification.data);
-    event.notification.close();
 
     // if we recieve a full url we open the window the backend wants us to open
     if (event.notification.data.contains('https://') || event.notification.data.contains('http://')) {
@@ -40,6 +39,7 @@ function openPushNotification(event) {
             event.waitUntil(clients.openWindow(self.location.origin + '/notifications'));
         }
     }
+    event.notification.close();
 }
   
 self.addEventListener("push", receivePushNotification);
