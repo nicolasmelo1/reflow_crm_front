@@ -25,15 +25,20 @@ function receivePushNotification(event) {
 function openPushNotification(event) {
     console.log("[Service Worker] Notification click Received.", event.notification.data);
 
+    console.log('testeeeee')
+    console.log(event.notification.data.toString())
+    console.log(event.notification.data.toString() === 'notification')
     // if we recieve a full url we open the window the backend wants us to open
     if (event.notification.data.contains('https://') || event.notification.data.contains('http://')) {
         console.log('Entrou aqui')
         console.log(event.notification.data)
         event.waitUntil(clients.openWindow(event.notification.data))
     } else {
+        console.log(event.notification.data.toString())
+        console.log(event.notification.data.toString() === 'notification')
         // handles the open of the url for different types
         // The backend doesn't need to be aware of any url of the front end, this needs to be handled here.
-        if (event.notification.data === 'notification') {
+        if (event.notification.data.toString() === 'notification') {
             console.log('entrou no notification')
             console.log(self.location.origin + '/notifications')
             event.waitUntil(clients.openWindow(self.location.origin + '/notifications'));
