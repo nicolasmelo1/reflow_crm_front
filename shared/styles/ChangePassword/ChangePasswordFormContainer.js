@@ -11,4 +11,7 @@ styled.div`
     flex-direction: column;
 `
 :
-styled(View)``
+styled(View)`
+    width: 70%;
+    padding: 10px;
+`

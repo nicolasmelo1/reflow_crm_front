@@ -1,6 +1,43 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { Image } from 'react-native'
+import { Animated, Image, Easing } from 'react-native'
+
+const Logo = (props) => {
+    const [xAnim] = useState(new Animated.Value(0))
+    const [opacity] = useState(new Animated.Value(0))
+
+    useEffect(() => {
+        Animated.sequence([
+            Animated.timing(opacity, {
+                toValue: 1,
+                duration: 1000,
+                easing: Easing.ease,
+                useNativeDrive: true
+            }),
+            Animated.timing(xAnim, {
+                toValue: -210,
+                duration: 1000,
+                easing: Easing.ease,
+                useNativeDrive: true
+            })
+        ]).start()
+    }, [])
+  
+    return (
+      <Animated.Image // Special animatable View
+        source={props.source}
+        style={{
+            ...props.style['0'],
+            opacity: opacity,
+            transform: [{
+                translateY: xAnim
+            }], // Bind opacity to animated value
+        }}>
+        {props.children}
+      </Animated.Image>
+    )
+}
+
 
 export default process.env['APP'] === 'web' ?
 styled.img`
@@ -13,4 +50,10 @@ styled.img`
     transition: transform 1s ease-in-out, opacity 0.9s ease-in-out;
 `
 :
-styled(Image)``
+styled(Logo)`
+    position: absolute;
+    width: 50%;
+    align-self: center;
+    resize-mode: contain;
+    z-index: 5
+`

@@ -7,7 +7,10 @@ styled.div``
 :
 styled(View)`
     flex-direction: row;
+    align-items: center;
+    direction: ${props => props.isEditing ? 'rtl': 'inherit'};
+    width: 100%;
     border-bottom-width: 1px;
     border-bottom-color: #f2f2f2; 
-    padding: 5px;
+    padding: 10px;
 `

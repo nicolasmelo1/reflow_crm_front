@@ -7,14 +7,23 @@ import { PersistGate } from 'redux-persist/integration/react'
 import { initStore } from '@shared/redux/store'
 import { NavigationContainer } from '@react-navigation/native'
 import { loadAsync } from 'expo-font';
+import { navigationRef } from './pages/_navigation'
 
-const App = (props) => {
+class App extends React.Component {
+    constructor(props) {
+        super(props)
+        this.store = initStore()
+        this.state = {
+            fontIsLoaded: false
+        }
+        this.setFontIsLoaded = (data) => this.setState(state => ({...state, fontIsLoaded: data}))
+
+    }
+
+
     //const { Component, pageProps, store } = this.props
-    const store = initStore()
     //const [isAuthenticated, setIsAuthenticated] = useState(false)
-    const [fontIsLoaded, setFontIsLoaded] = useState(false)
-
-    useEffect(() => {
+    componentDidMount = () => {
         loadAsync({
             'Roboto-Black': require('./assets/font/Roboto-Black.ttf'),
             'Roboto-BlackItalic': require('./assets/font/Roboto-BlackItalic.ttf'),
@@ -29,22 +38,30 @@ const App = (props) => {
             'Roboto-Thin': require('./assets/font/Roboto-Thin.ttf'),
             'Roboto-ThinItalic': require('./assets/font/Roboto-ThinItalic.ttf'),
         }).then(success=> {
-            setFontIsLoaded(true)
+            this.setFontIsLoaded(true)
         })
-    }, [])
-
-    return (
-        <Provider store={store}>
-            <PersistGate persistor={persistStore(store)}>
-                {fontIsLoaded ? (
-                    <NavigationContainer>
-                        <Main/>
-                    </NavigationContainer>
-                ) : null}
-            </PersistGate>
-        </Provider>
-    )
+    }
+    static getDerivedStateFromError(error) {   
+         // Atualiza o state para que a próxima renderização mostre a UI alternativa.   
+    }
+    
+    componentDidCatch(error, errorInfo) {    
+        // Você também pode registrar o erro em um serviço de relatórios de erro    
+        //logErrorToMyService(error, errorInfo);  
+    }
+    render() {
+        return (
+            <Provider store={this.store}>
+                <PersistGate persistor={persistStore(this.store)}>
+                    {this.state.fontIsLoaded ? (
+                        <NavigationContainer ref={navigationRef}>
+                            <Main/>
+                        </NavigationContainer>
+                    ) : null}
+                </PersistGate>
+            </Provider>
+        )
+    }
 }
-
 
 export default App

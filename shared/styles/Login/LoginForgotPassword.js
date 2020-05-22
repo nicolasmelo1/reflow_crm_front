@@ -12,4 +12,10 @@ styled.small`
     cursor: pointer;
 `
 :
-styled(Text)``
+styled(Text)`
+    color: #0dbf7e;
+    min-height: 20px;
+    align-self: flex-start;
+    margin-bottom: 20px;
+    margin-top: 10px;
+`

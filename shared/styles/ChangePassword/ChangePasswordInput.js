@@ -20,8 +20,9 @@ styled.input`
 `
 :
 styled(TextInput)`
-    width: 100%;
-    padding: 5px;
-    border: 1px solid #17242D;
+    width: 100%; 
     border-radius: 5px;
+    color: #17242D;
+    border: 2px solid ${props => props.error ? 'red': props.isFocused ? '#0dbf7e' : '#f2f2f2'};
+    padding: 10px;
 `

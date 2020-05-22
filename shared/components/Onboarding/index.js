@@ -1,6 +1,7 @@
 import React from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux';
+import { Linking } from 'expo'
 import actions from '../../redux/actions'
 import { strings, paths, errors } from '../../utils/constants'
 import FirstStepForm from './FirstStepForm'
@@ -120,20 +121,24 @@ class Onboarding extends React.Component {
                 // The page is not in an iFrame 
                 Router.push(paths.login(), paths.login(), { shallow: true })
             } 
+        } else {
+            Linking.openURL(Linking.makeUrl(paths.login()))
         }
     }
 
     componentDidMount = () => {
         this._ismounted = true
-        setTimeout(() => {
-            if (this._ismounted) this.setShowLogo(true)
-        }, 100)
-        setTimeout(() => {
-            if (this._ismounted) this.setSlideLogo(true)
-        }, 1000)
-        setTimeout(() => {
-            if (this._ismounted) this.setShowForm(true)
-        }, 1500)
+        if (process.env['APP'] === 'web') {
+            setTimeout(() => {
+                if (this._ismounted) this.setShowLogo(true)
+            }, 100)
+            setTimeout(() => {
+                if (this._ismounted) this.setSlideLogo(true)
+            }, 1000)
+            setTimeout(() => {
+                if (this._ismounted) this.setShowForm(true)
+            }, 1500)
+        }
     }
 
     componentWillUnmount = () => {
@@ -142,7 +147,40 @@ class Onboarding extends React.Component {
 
     renderMobile = () => {
         return (
-            <View></View>
+            <OnboardingContainer>
+                {this.formularySteps[this.state.step] === 'set-email' ? (
+                    <FirstStepForm
+                    openLinks={this.props.openLinks}
+                    showForm={this.state.showForm}
+                    onValidate={this.onValidate}
+                    errors={this.state.errors}
+                    name={this.state.name}
+                    setName={this.setName}
+                    email={this.state.email}
+                    setEmail={this.setEmail}
+                    confirmEmail={this.state.confirmEmail}
+                    setConfirmEmail={this.setConfirmEmail}
+                    companyName={this.state.companyName}
+                    setCompanyName={this.setCompanyName}
+                    declarationChecked={this.state.declarationChecked}
+                    setDeclarationChecked={this.setDeclarationChecked}
+                    redirectToLogin={this.redirectToLogin}
+                    setStep={this.setStep}
+                    />
+                ) : (
+                    <SecondStepForm
+                    showForm={this.state.showForm}
+                    onValidate={this.onValidate}
+                    setStep={this.setStep}
+                    errors={this.state.errors}
+                    password={this.state.password}
+                    setPassword={this.setPassword}
+                    confirmPassword={this.state.confirmPassword}
+                    setConfirmPassword={this.setConfirmPassword}
+                    onSubmitForm={this.onSubmitForm}
+                    />
+                )}
+            </OnboardingContainer>
         )
     }
 

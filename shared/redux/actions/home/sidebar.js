@@ -12,7 +12,7 @@ const onGetForms = (source) => {
         if (response && response.status === 200) {
             dispatch({type: GET_FORMS, payload: response.data.data })
         }
-        return response && response.status === 200 ? response.data.data : []
+        return response
     }
 }
 

@@ -10,4 +10,5 @@ styled(FontAwesomeIcon)`
     width: 1.25em !important
 `
 :
-styled(FontAwesomeIcon)``
+styled(FontAwesomeIcon)`
+`

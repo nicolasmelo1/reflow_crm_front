@@ -16,4 +16,6 @@ styled.div`
     transform: translate3d(0,0,0);
 `
 :
-styled(SafeAreaView)``
+styled(SafeAreaView)`
+    padding: 10px;
+`

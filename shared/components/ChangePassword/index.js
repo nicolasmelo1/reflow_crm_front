@@ -1,5 +1,5 @@
 import React from 'react'
-import { View } from 'react-native'
+import { Modal, Text, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import Router from 'next/router'
 import { strings, paths } from '../../utils/constants'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
@@ -13,7 +13,9 @@ import {
     ChangePasswordContainer,
     ChangePasswordFormContainer,
     ChangePasswordSubmitButton,
-    ChangePasswordVisualizePasswordLabel
+    ChangePasswordVisualizePasswordLabel,
+    ChangePasswordHeader,
+    ChangePasswordGoBackButton
  } from '../../styles/ChangePassword'
 
 
@@ -25,6 +27,9 @@ class ChangePassword extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            currentPasswordIsFocused: false,
+            newPasswordIsFocused: false,
+            confirmNewPasswordIsFocused: false,
             visiblePassword: false,
             errors: {},
             currentPassword: (this.props.temporaryPassword) ? this.props.temporaryPassword : '',
@@ -32,6 +37,10 @@ class ChangePassword extends React.Component {
             confirmNewPassword: ''
         }
     }
+    setCurrentPasswordIsFocused = (data) => this.setState(state => ({...state, currentPasswordIsFocused: data}))
+    setNewPasswordIsFocused = (data) => this.setState(state => ({...state, newPasswordIsFocused: data}))
+    setConfirmNewPasswordIsFocused = (data) => this.setState(state => ({...state, confirmNewPasswordIsFocused: data}))
+
 
     setVisiblePassword = (data) => this.setState(state => ({...state, visiblePassword: data}))
 
@@ -106,10 +115,86 @@ class ChangePassword extends React.Component {
     componentWillUnmount = () => {
         this._ismounted = false
     }
-
+ 
     renderMobile = () => {
         return (
-            <View></View>
+            <Modal animationType="slide">
+                <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+                    <ChangePasswordContainer>
+                        <ChangePasswordHeader>
+                            <ChangePasswordGoBackButton onPress={e=> this.props.goBack()}>
+                                <FontAwesomeIcon icon={'times'}/>
+                            </ChangePasswordGoBackButton>
+                        </ChangePasswordHeader>
+                        <ChangePasswordLogo source={process.env['APP'] !== 'web' ? require('../../../mobile/assets/complete_logo.png') : ''}/>
+                        <ChangePasswordFormContainer>
+                            <ChangePasswordLabel>{strings['pt-br']['changePasswordTemporaryPasswordLabel']}</ChangePasswordLabel>
+                            <ChangePasswordInput 
+                            isFocused={this.state.currentPasswordIsFocused}
+                            error={this.state.errors.hasOwnProperty('currentPassword')} 
+                            secureTextEntry={!this.state.visiblePassword} 
+                            value={this.state.currentPassword} 
+                            onChange={e=> {
+                                this.onValidate('currentPassword', e.nativeEvent.text)
+                                this.setCurrentPassword(e.nativeEvent.text)
+                            }} 
+                            onFocus={e=> this.setCurrentPasswordIsFocused(true)}
+                            onBlur={e => {
+                                this.setCurrentPasswordIsFocused(false)
+                                this.onValidate('currentPassword', e.nativeEvent.text)
+                            }}
+                            />
+                            <ChangePasswordError>{this.state.errors.hasOwnProperty('currentPassword') ? this.state.errors['currentPassword'] : ''}</ChangePasswordError>
+                        </ChangePasswordFormContainer>
+                        <ChangePasswordFormContainer>
+                            <ChangePasswordLabel>{strings['pt-br']['changePasswordNewPasswordLabel']}</ChangePasswordLabel>
+                            <ChangePasswordInput
+                            isFocused={this.state.newPasswordIsFocused}
+                            error={this.state.errors.hasOwnProperty('newPassword')} 
+                            secureTextEntry={!this.state.visiblePassword} 
+                            value={this.state.newPassword} 
+                            onChange={e=> {
+                                this.onValidate('newPassword', e.nativeEvent.text)
+                                this.setNewPassword(e.nativeEvent.text)
+                            }} 
+                            onFocus={e=> this.setNewPasswordIsFocused(true)}
+                            onBlur={e => {
+                                this.setNewPasswordIsFocused(false)
+                                this.onValidate('newPassword', e.nativeEvent.text)
+                            }}
+                            />
+                            <ChangePasswordError>{this.state.errors.hasOwnProperty('newPassword') ? this.state.errors['newPassword'] : ''}</ChangePasswordError>
+                            <ChangePasswordLabel>{strings['pt-br']['changePasswordConfirmNewPasswordLabel']}</ChangePasswordLabel>
+                            <ChangePasswordInput
+                            isFocused={this.state.confirmNewPasswordIsFocused}
+                            error={this.state.errors.hasOwnProperty('confirmNewPassword')} 
+                            secureTextEntry={!this.state.visiblePassword} 
+                            value={this.state.confirmNewPassword} 
+                            onChange={e=> {
+                                this.onValidate('confirmNewPassword', e.nativeEvent.text)
+                                this.setConfirmNewPassword(e.nativeEvent.text)
+                            }} 
+                            onFocus={e=> this.setConfirmNewPasswordIsFocused(true)}
+                            onBlur={e => {
+                                this.setConfirmNewPasswordIsFocused(false)
+                                this.onValidate('confirmNewPassword', e.nativeEvent.text)
+                            }}/>
+                            <ChangePasswordError>{this.state.errors.hasOwnProperty('confirmNewPassword') ? this.state.errors['confirmNewPassword'] : ''}</ChangePasswordError>
+                            <ChangePasswordVisualizePasswordLabel onPress={e=> this.setVisiblePassword(!this.state.visiblePassword)}>
+                                <FontAwesomeIcon icon={this.state.visiblePassword ? 'eye-slash' : 'eye'}/>
+                                <Text>
+                                    &nbsp;{this.state.visiblePassword ? strings['pt-br']['changePasswordIsVisiblePassword'] : strings['pt-br']['changePasswordIsNotVisiblePassword']}
+                                </Text>
+                            </ChangePasswordVisualizePasswordLabel>
+                        </ChangePasswordFormContainer>
+                        <ChangePasswordSubmitButton disabled={this.submitButtonDisabled()} onPress={e=> this.onSubmit()}>
+                            <Text>
+                                {strings['pt-br']['changePasswordSubmitNewPasswordLabel']}
+                            </Text>
+                        </ChangePasswordSubmitButton>
+                    </ChangePasswordContainer>
+                </TouchableWithoutFeedback>
+            </Modal>
         )
     }
 

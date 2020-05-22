@@ -7,4 +7,9 @@ styled.h2`
     color: #0dbf7e
 `
 :
-styled(Text)``
+styled(Text)`
+    margin-top: 15px;
+    color: #0dbf7e;
+    font-size: 24px;
+    font-weight: bold;
+`

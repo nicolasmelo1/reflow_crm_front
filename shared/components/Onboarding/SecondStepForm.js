@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import { View } from 'react-native'
+import { TouchableOpacity, Text } from 'react-native'
 import { strings } from '../../utils/constants'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { 
@@ -20,6 +20,8 @@ import {
  * @param {Type} props - {go in detail about every prop it recieves}
  */
 const SecondStepForm = (props) => {
+    const [passwordIsFocused, setPasswordIsFocused] = useState(false)
+    const [confirmPasswordIsFocused, setConfirmPasswordIsFocused] = useState(false)
     const [visiblePassword, setVisiblePassword] = useState(false)
 
     const submitButtonDisabled = () => {
@@ -28,7 +30,60 @@ const SecondStepForm = (props) => {
 
     const renderMobile = () => {
         return (
-            <View></View>
+            <OnboardingFormContainer showForm={props.showForm}>
+                <OnboardingLabel>{strings['pt-br']['onboardingPasswordLabel']}<OnboardingRequiredLabel>*</OnboardingRequiredLabel></OnboardingLabel>
+                <OnboardingInput
+                    isFocused={passwordIsFocused}
+                    secureTextEntry={!visiblePassword} 
+                    error={props.errors.hasOwnProperty('password')} 
+                    value={props.password} 
+                    onChange={e=> {
+                        props.onValidate('password', e.nativeEvent.text)
+                        props.setPassword(e.nativeEvent.text)
+                    }} 
+                    onFocus={e=>setPasswordIsFocused(true)}
+                    onBlur={e => {
+                        props.onValidate('password', e.nativeEvent.text)
+                        setPasswordIsFocused(false)
+                    }}
+                />
+                <OnboardingError>{props.errors.hasOwnProperty('password') ? props.errors['password'] : ''}</OnboardingError>
+                <OnboardingLabel>{strings['pt-br']['onboardingConfirmPasswordLabel']}<OnboardingRequiredLabel>*</OnboardingRequiredLabel></OnboardingLabel>
+                <OnboardingInput 
+                    isFocused={confirmPasswordIsFocused}
+                    secureTextEntry={!visiblePassword} 
+                    error={props.errors.hasOwnProperty('confirmPassword')} 
+                    value={props.confirmPassword} 
+                    onChange={e=> {
+                        props.onValidate('confirmPassword', e.nativeEvent.text)
+                        props.setConfirmPassword(e.nativeEvent.text)
+                    }}
+                    onFocus={e=>setConfirmPasswordIsFocused(true)}
+                    onBlur={e => {
+                        props.onValidate('confirmPassword', e.nativeEvent.text)
+                        setConfirmPasswordIsFocused(false)
+                    }}
+                />
+                <OnboardingError>{props.errors.hasOwnProperty('confirmPassword') ? props.errors['confirmPassword'] : ''}</OnboardingError>
+                <OnboardingVisualizePasswordLabel onPress={e=> setVisiblePassword(!visiblePassword)}>
+                    <FontAwesomeIcon icon={visiblePassword ? 'eye-slash' : 'eye'}/>
+                    <Text>
+                        &nbsp;{visiblePassword ? strings['pt-br']['onboardingHidePasswordLabel'] : strings['pt-br']['onboardingShowPasswordLabel']}
+                    </Text>
+                </OnboardingVisualizePasswordLabel>
+                <OnboardingBottomButtonsContainer> 
+                    <OnboardingSubmitButton disabled={submitButtonDisabled()} onPress={e=> props.onSubmitForm()}>
+                        <Text>
+                        {strings['pt-br']['onboardingSubmitButtonLabel']}
+                        </Text>
+                    </OnboardingSubmitButton>
+                    <OnboardingGoBackButton onPress={e=> props.setStep(0)}>
+                        <Text>
+                            {strings['pt-br']['onboardingGobackButtonLabel']}
+                        </Text>
+                    </OnboardingGoBackButton>
+                </OnboardingBottomButtonsContainer>
+            </OnboardingFormContainer>
         )
     }
     

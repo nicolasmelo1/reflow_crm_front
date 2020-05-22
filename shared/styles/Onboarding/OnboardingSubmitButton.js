@@ -13,4 +13,8 @@ styled.button`
     margin: 0 0 0 20px;
 `
 :
-styled(TouchableOpacity)``
+styled(TouchableOpacity)`
+    background-color: ${props => props.disabled ? '#f2f2f2' : '#0dbf7e'};
+    border-radius: 20px;
+    padding: 10px;
+`

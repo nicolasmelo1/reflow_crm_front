@@ -15,8 +15,9 @@ styled.button`
 :
 styled(TouchableOpacity)`
     background-color: #f2f2f2;
-    border-radius: 5px;
+    border-radius: 20px;
     border: 1px solid #0dbf7e;
     margin: 5px 0;
-    padding: 5px;
+    padding: 10px;
+    align-items: center;
 `

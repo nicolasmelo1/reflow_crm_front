@@ -17,4 +17,9 @@ styled.div`
     }
 `
 :
-styled(View)``
+styled(View)`
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+`

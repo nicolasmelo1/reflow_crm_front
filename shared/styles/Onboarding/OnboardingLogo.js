@@ -20,4 +20,9 @@ styled.img`
     }
 `
 :
-styled(Image)``
+styled(Image)`
+    width: 50%;
+    top: 10px;
+    align-self: center;
+    resize-mode: contain;
+`

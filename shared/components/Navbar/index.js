@@ -119,7 +119,7 @@ class Navbar extends React.Component {
                     <FontAwesomeIcon icon={this.state.isOpen ? 'times' : 'bars'}/>
                 </NavbarToggleButton>
                 <NavbarItemsContainer isOpen={this.state.isOpen}>
-                    <NavbarLink link={paths.home(this.props.login.primaryForm)} slug={paths.home(this.props.login.primaryForm, true)} icon='tasks' label={strings['pt-br']['headerGestaoLabel']}/>
+                    <NavbarLink link={paths.home(this.props.login.primaryForm)} slug={paths.home()} icon='tasks' label={strings['pt-br']['headerGestaoLabel']}/>
                     <NavbarLink badge={this.props.notificationBadge > 0 ? this.props.notificationBadge : null} link={paths.notifications()} slug={paths.notifications()} icon='bell' label={strings['pt-br']['headerNotificationLabel']}/>
                     <NavbarDropdown icon='cog' label={strings['pt-br']['headerSettingsLabel']} items={this.configDropdown}/>
                 </NavbarItemsContainer>
@@ -130,11 +130,10 @@ class Navbar extends React.Component {
 
     renderMobile() {
         const Tab = this.props.Tab
-
         return (
             <Tab.Navigator>
-                <Tab.Screen name="Home" component={this.props.HomeComponent} initialParams={{setIsAuthenticated: this.props.setIsAuthenticated}}/>
-                <Tab.Screen name="Notification" component={this.props.NotificationComponent} params={{setIsAuthenticated: this.handleLogout}}/>
+                <Tab.Screen name="home" component={this.props.HomeComponent} initialParams={{setIsAuthenticated: this.props.setIsAuthenticated}}/>
+                <Tab.Screen name="notifications" component={this.props.NotificationComponent} params={{setIsAuthenticated: this.handleLogout}}/>
             </Tab.Navigator>
         )
     }

@@ -19,7 +19,8 @@ import {
     TemplatesPreviewDescriptionText,
     TemplatesPreviewDescriptionTitle,
     TemplatesPreviewContainer, 
-    TemplatesGoBackButton 
+    TemplatesGoBackButton,
+    TemplatesHeader
 } from '../../styles/Templates'
 
 
@@ -52,7 +53,11 @@ const TemplatePreview = (props) => {
             if (response && response.status === 200) {
                 props.setAddTemplates(false)
                 if (props.groups.length === 0) {
-                    Router.push(paths.home(response.data.data.last_form_name, true), paths.home(response.data.data.last_form_name), { shallow: true })
+                    if (process.env['APP'] === 'web') {
+                        Router.push(paths.home(), paths.home(response.data.data.last_form_name), { shallow: true })
+                    } else {
+                        // navigate to screen on mobile
+                    }
                 }
             }
         })
@@ -87,11 +92,11 @@ const TemplatePreview = (props) => {
         return (
             <Modal animationType="slide">
                 <TemplatesPreviewContainer isOpen={props.selectedTemplateId !== -1}>
-                    <TemplatesGoBackButton onPress={e=>props.setSelectedTemplate(-1)}>
-                        <Text>
-                            <FontAwesomeIcon icon={'chevron-left'} /> Voltar
-                        </Text>
-                    </TemplatesGoBackButton>
+                    <TemplatesHeader>
+                        <TemplatesGoBackButton onPress={e=>props.setSelectedTemplate(-1)}>
+                            <FontAwesomeIcon icon={'times'} />
+                        </TemplatesGoBackButton>
+                    </TemplatesHeader>
                     <TemplatesPreviewContentsContainer>
                         <TemplatesPreviewDescriptionContainer>
                             <TemplatesPreviewDescriptionTitle>
@@ -100,7 +105,7 @@ const TemplatePreview = (props) => {
                             <TemplatesPreviewDescriptionText>
                                 {props.data.description}
                             </TemplatesPreviewDescriptionText>
-                            <TemplatesPreviewDescriptionUseButton onClick={e=> onClickUseButton()}>
+                            <TemplatesPreviewDescriptionUseButton onPress={e=> onClickUseButton()}>
                                 <Text>
                                     Usar
                                 </Text>
@@ -111,7 +116,7 @@ const TemplatePreview = (props) => {
                                 Formulários
                             </TemplatesPreviewFormularyOptionsTitle>
                             {props.data.theme_form.map((themeForm, index) => (
-                                <TemplatesPreviewFormularyOptionsButton key={index} onPress={e=> {onChangeFormulary(themeForm.id)}}>
+                                <TemplatesPreviewFormularyOptionsButton key={index} onPress={e=> {onChangeFormulary(themeForm.id)}} isSelected={formData.formId === themeForm.id}>
                                     {formData.formId === themeForm.id ? (
                                         <TemplatesPreviewFormularyOptionsIcon icon={'chevron-right'}/>
                                     ) : null}

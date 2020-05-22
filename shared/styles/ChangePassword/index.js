@@ -6,7 +6,11 @@ import ChangePasswordLogo from './ChangePasswordLogo'
 import ChangePasswordError from './ChangePasswordError'
 import ChangePasswordSubmitButton from './ChangePasswordSubmitButton'
 import ChangePasswordVisualizePasswordLabel from './ChangePasswordVisualizePasswordLabel'
+import ChangePasswordHeader from './ChangePasswordHeader'
+import ChangePasswordGoBackButton from './ChangePasswordGoBackButton'
 
+export { ChangePasswordGoBackButton }
+export { ChangePasswordHeader }
 export { ChangePasswordVisualizePasswordLabel }
 export { ChangePasswordSubmitButton }
 export { ChangePasswordFormContainer }

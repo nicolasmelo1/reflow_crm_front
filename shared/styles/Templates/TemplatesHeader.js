@@ -7,4 +7,10 @@ styled.div`
     padding: 10px;
 `
 :
-styled(View)``
+styled(View)`
+    width: 100%;
+    display: flex;
+    direction: rtl;
+    flex-direction: row;
+    padding: 10px;
+`

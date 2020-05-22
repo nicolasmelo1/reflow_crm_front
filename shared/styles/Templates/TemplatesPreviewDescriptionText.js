@@ -8,4 +8,6 @@ styled.p`
     margin: 0
 `
 :
-styled(Text)``
+styled(Text)`
+    margin-bottom: 10px
+`

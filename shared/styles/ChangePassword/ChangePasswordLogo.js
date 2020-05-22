@@ -11,4 +11,7 @@ styled.img`
     top: 10px;
 `
 :
-styled(Image)``
+styled(Image)`
+    width: 50%;
+    resize-mode: contain;
+`

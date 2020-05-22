@@ -13,7 +13,7 @@ import agent from '../utils/agent'
 import ContentContainer from '../styles/ContentContainer'
 import Body from '../styles/Body'
 import isAdmin from '../utils/isAdmin'
-import { AsyncStorage, View, SafeAreaView, Platform } from 'react-native'
+import { AsyncStorage, TouchableWithoutFeedback, Keyboard, SafeAreaView, Platform, View } from 'react-native'
 import { 
     faArrowDown, 
     faPlusSquare, 
@@ -145,24 +145,41 @@ class Layout extends React.Component {
 
 
     renderMobile() {
+        const Content = () => (
+            <View>
+                <Notify/> 
+                {(this.state.addTemplates || this.props.addTemplates) && isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user) ? (
+                    <Templates setAddTemplates={this.setAddTemplates}/>
+                ) : (
+                    <SafeAreaView style={{ height: '100%', backgroundColor:'#fff'}}>
+                        {this.props.showSideBar ?
+                            <Sidebar 
+                            setAddTemplates={this.state.setAddTemplates}
+                            sidebarIsOpen={this.state.sidebarIsOpen} 
+                            setSidebarIsOpen={this.setSidebarIsOpen} 
+                            children={this.props.children} 
+                            setAddTemplates={this.setAddTemplates}
+                            />
+                        : this.props.children}
+                    </SafeAreaView>
+                )}
+            </View>
+        )
+
         return (
             <SafeAreaView style={{ height: '100%', paddingTop: Platform.OS === 'android' ? 25 : 0}}>
                 {this.state.tokenLoaded ? (
                     <Body>
-                        <Notify/> 
-                        {(this.state.addTemplates || this.props.addTemplates) && isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user) ? (
-                            <Templates setAddTemplates={this.setAddTemplates}/>
+                        {this.props.isNotLogged ? (
+                            <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+                                <View>
+                                    {Content()}
+                                </View>
+                            </TouchableWithoutFeedback>
                         ) : (
-                            <SafeAreaView style={{ height: '100%', backgroundColor:'#fff'}}>
-                                {this.props.showSideBar ?
-                                    <Sidebar 
-                                    sidebarIsOpen={this.state.sidebarIsOpen} 
-                                    setSidebarIsOpen={this.setSidebarIsOpen} 
-                                    children={this.props.children} 
-                                    setAddTemplates={this.setAddTemplates}
-                                    />
-                                : this.props.children}
-                            </SafeAreaView>
+                            <View>
+                                {Content()}
+                            </View>
                         )}
                     </Body>
                 ) : null }

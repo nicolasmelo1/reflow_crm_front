@@ -4,13 +4,16 @@ import { getAsync, NOTIFICATIONS } from 'expo-permissions'
 import Constants from 'expo-constants'
 import { AsyncStorage, Platform, Vibration } from 'react-native'
 import { Notifications } from 'expo'
+import { handleNavigation } from './_navigation.js';
+import * as Linking from 'expo-linking'
 import { LoginRoutes, MainRoutes } from '../routes'
+import { useEffect } from 'react'
 
 
 const Main = (props) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false)
 
-    registerForPushNotificationsAsync = async () => {
+    const registerForPushNotificationsAsync = async () => {
         const { status: existingStatus } = await getAsync(NOTIFICATIONS)
         let finalStatus = existingStatus
         if (existingStatus !== 'granted') {
@@ -44,7 +47,7 @@ const Main = (props) => {
     
     const getComponent = () => {
         if (!isAuthenticated) {
-            return <LoginRoutes/>
+            return <LoginRoutes />
         } else {
             return <MainRoutes/>
         }
@@ -62,8 +65,21 @@ const Main = (props) => {
         }
     })
 
+    useEffect(() => {
+        Linking.addEventListener('url', (e) => {
+            handleNavigation(e.url)
+        })
+        Linking.getInitialURL().then(response => {
+            handleNavigation(response)
+        })
+        return () => {
+            Linking.removeEventListener('url')
+        }
+    }, [])
+
     return (
         <AuthenticationContext.Provider value={{
+            isAuthenticated: isAuthenticated,
             setIsAuthenticated: setIsAuthenticated
         }}>
             {getComponent()}

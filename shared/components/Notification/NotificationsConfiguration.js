@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { ScrollView, Modal } from 'react-native'
 import { NotificationConfigurationContainer, NotificationHeader, NotificationConfigurationAddNewCardIcon, NotificationConfigurationAddNewCard, NotificationConfigurationAddNewCardText, NotificationConfigurationGoBackButton } from '../../styles/Notification'
 import NotificationConfiguration from './NotificationConfiguration'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { strings } from '../../utils/constants'
 
 
@@ -63,8 +64,10 @@ const NotificationsConfiguration = (props) => {
             animationType="slide"
             >
                 <NotificationConfigurationContainer>
-                    <NotificationHeader>
-                        <NotificationConfigurationGoBackButton onPress={e=> {props.setIsEditing(false)}} title={'x'} color={'#17242D'}/>
+                    <NotificationHeader isEditing={true}>
+                        <NotificationConfigurationGoBackButton onPress={e=> {props.setIsEditing(false)}}>
+                            <FontAwesomeIcon icon={'times'}/>
+                        </NotificationConfigurationGoBackButton>
                     </NotificationHeader>
                     <ScrollView keyboardShouldPersistTaps={'handled'} style={{ height: '93.5%'}}>
                         <NotificationConfigurationAddNewCard onPress={e=> {addNewNotification()}}>

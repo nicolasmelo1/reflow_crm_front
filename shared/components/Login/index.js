@@ -1,8 +1,8 @@
 import React, { createRef } from 'react'
-import { View, Text } from 'react-native'
+import { Text, TouchableOpacity } from 'react-native'
 import Router from 'next/router'
 import { connect } from 'react-redux';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { Linking } from 'expo'
 import actions from '../../redux/actions'
 import agent from '../../utils/agent'
 import { setStorageToken } from '../../utils/agent/utils'
@@ -40,6 +40,8 @@ class Login extends React.Component {
             slideLogo: false,
             showLogo: false,
             showForm: false,
+            isEmailInputFocused: false,
+            isPasswordInputFocused: false,
             emailError: '',
             email: process.env.NODE_ENV === 'production' ? '' : 'reflow@reflow.com.br',
             password: process.env.NODE_ENV === 'production' ? '' : 'Mudar123'
@@ -48,8 +50,7 @@ class Login extends React.Component {
 
     onClickForgotPassword = () => {
         const changePasswordUrl = (process.env['APP']=== 'web') ? window.location.origin + paths.changepassword() + '?temp_pass={}' : ''
-        const email = (this.emailRef.current) ? this.emailRef.current.value : this.state.email
-
+        const email = (this.emailRef.current?.value) ? this.emailRef.current.value : this.state.email
 
         if (![null, undefined, ''].includes(email) && /@\w+\./g.test(email)) {
             this.props.onForgotPassword(email, changePasswordUrl).then(response => {
@@ -68,6 +69,8 @@ class Login extends React.Component {
         if (this._ismounted) {
             if (process.env['APP'] === 'web') {
                 Router.push(paths.onboarding(), paths.onboarding(), { shallow: true })
+            } else {
+                Linking.openURL(Linking.makeUrl(paths.onboarding()))
             }
         }
     }
@@ -90,11 +93,10 @@ class Login extends React.Component {
 
                 if (!['', null, undefined].includes(this.props.login.primaryForm)) {
                     if (process.env['APP'] === 'web') {
-                        Router.push(paths.home(this.props.login.primaryForm, true), paths.home(this.props.login.primaryForm), { shallow: true })
+                        Router.push(paths.home(), paths.home(this.props.login.primaryForm), { shallow: true })
                     } else {
                         this.props.setIsAuthenticated(true)
                     }
-
                 } else if(isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user)) {
                     this.props.setAddTemplates(true)
                 } else {
@@ -109,15 +111,17 @@ class Login extends React.Component {
         this._ismounted = true
         // Used for anymating, it's better to use key frames, but i don't actually care.
         // (it'll be better if you change it)
-        setTimeout(() => {
-            if (this._ismounted) this.setState(state => state.showLogo = true)
-        }, 100)
-        setTimeout(() => {
-            if (this._ismounted) this.setState(state => state.slideLogo = true)
-        }, 1000)
-        setTimeout(() => {
-            if (this._ismounted) this.setState(state => state.showForm = true)
-        }, 1500)
+        if (process.env['APP'] === 'web') {
+            setTimeout(() => {
+                if (this._ismounted) this.setState(state => state.showLogo = true)
+            }, 100)
+            setTimeout(() => {
+                if (this._ismounted) this.setState(state => state.slideLogo = true)
+            }, 1000)
+            setTimeout(() => {
+                if (this._ismounted) this.setState(state => state.showForm = true)
+            }, 1500)
+        }
     }
 
     componentWillUnmount = () => {
@@ -155,24 +159,59 @@ class Login extends React.Component {
 
     renderMobile() {
         return (
-            <View style={{ 
-                top: '25%',
-                justifyContent: 'center',
-                alignItems: 'center'
-            }}>
-                <View style={{ width: '50%' }}>
-                    <Text>Login Reflow</Text>
-                    <Text>{strings['pt-br']['loginEmailLabel']}</Text>
-                    <LoginInput value={this.state.email} onChangeText={text => this.setState({ email: text })}/>
-                    <Text>{strings['pt-br']['loginPassLabel']}</Text>
-                    <LoginInput value={this.state.password} onChangeText={text => this.setState({ password: text })}/>
-                    <LoginButton onPress={e=> {this.handleLogin(e)}}>
-                        <LoginButtonText>
+            <LoginContainer >
+                <LoginLogo source={process.env['APP'] !== 'web' ? require('../../../mobile/assets/complete_logo.png') : ''}/>
+                <LoginFormContainer>
+                    <LoginLabel>{strings['pt-br']['loginEmailLabel']}</LoginLabel>
+                    <LoginInput type={'text'} 
+                        autoCapitalize={'none'}
+                        keyboardType={'email-address'}
+                        ref={this.emailRef} 
+                        isFocused={this.state.isEmailInputFocused}
+                        value={this.state.email} 
+                        onChange={e => this.setState({ email: e.nativeEvent.text, emailError: '' })} 
+                        error={![null, undefined, ''].includes(this.state.emailError)}
+                        onFocus={e => this.setState({ isEmailInputFocused: true})}
+                        onBlur={e => this.setState({ isEmailInputFocused: false})}
+                    />
+                    <LoginFieldError>{![null, undefined, ''].includes(this.state.emailError) ? this.state.emailError : ''}</LoginFieldError>
+                    <LoginLabel>{strings['pt-br']['loginPassLabel']}</LoginLabel>
+                    <LoginInputContainer>
+                        <LoginInput 
+                            isPassword={true}
+                            ref={this.passwordRef} 
+                            isFocused={this.state.isPasswordInputFocused}
+                            secureTextEntry={!this.state.visualizePassword} 
+                            value={this.state.password} 
+                            onChange={e => this.setState({ password: e.nativeEvent.text })}
+                            onFocus={e => this.setState({ isPasswordInputFocused: true})}
+                            onBlur={e => this.setState({ isPasswordInputFocused: false})}
+                        />
+                        <TouchableOpacity style={{alignItems: 'center', justifyContent:'center', marginLeft: 10, width: 40}} onPress={e=> this.setState(state => ({...state, visualizePassword: !state.visualizePassword}))}>
+                            <LoginVisualizePasswordIcon icon={this.state.visualizePassword ? 'eye-slash' : 'eye'} />
+                        </TouchableOpacity>
+                    </LoginInputContainer>
+                    <LoginForgotPassword onPress={e=> this.onClickForgotPassword()}>
+                        <Text>
+                            {strings['pt-br']['loginRedefinePasswordButtonLabel']}
+                        </Text>
+                    </LoginForgotPassword>
+                    <LoginButton type="submit" onPress={e => {
+                        this.handleLogin()
+                    }}>
+                        <Text>
                             {strings['pt-br']['loginSubmitButtonLabel']}
-                        </LoginButtonText>
+                        </Text>
                     </LoginButton>
-                </View>
-            </View>
+                    <LoginOnboardingButton onPress={e => {
+                        this.redirectToOnboarding()
+                    }}>
+                        <Text>
+                            {strings['pt-br']['loginOboardingButtonLabel']}
+                        </Text>
+                    </LoginOnboardingButton>
+                </LoginFormContainer>
+            </LoginContainer>
         )
     }
 

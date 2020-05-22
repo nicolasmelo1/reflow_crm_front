@@ -151,7 +151,7 @@ class Data extends React.Component {
         if (this.props.router.query.formId) {
             // we take out the formId parameter of the url because it can cause some weird and non wanted
             // behaviour to the user if it is defined
-            Router.push(paths.home(this.props.router.query.form, true), paths.home(this.props.router.query.form), {shallow: true})            
+            Router.push(paths.home(), paths.home(this.props.router.query.form), {shallow: true})            
             this.openFormularyId(this.props.router.query.formId)
         }
     }

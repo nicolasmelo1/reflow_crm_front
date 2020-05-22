@@ -8,4 +8,6 @@ styled.div`
     flex-direction: row;
 `
 :
-styled(View)``
+styled(View)`
+    flex-direction: row;
+`

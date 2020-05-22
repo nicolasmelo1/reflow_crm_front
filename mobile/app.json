@@ -15,6 +15,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "scheme":"reflow",
     "updates": {
       "fallbackToCacheTimeout": 0
     },

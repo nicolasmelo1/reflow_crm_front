@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { View } from 'react-native'
+import { SafeAreaView } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
@@ -9,8 +9,13 @@ styled.div`
     justify-content: center;
     align-items: center;
     text-align: center;
-    justify-content: center;
     min-height: var(--app-height);
 `
 :
-styled(View)``
+styled(SafeAreaView)`
+    padding: 0;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
+`

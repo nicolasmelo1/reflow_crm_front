@@ -8,4 +8,8 @@ styled.small`
     color: #bfbfbf
 `
 :
-styled(Text)``
+styled(Text)`
+    font-size: 13px;
+    align-self: flex-start;
+    color: #bfbfbf
+`

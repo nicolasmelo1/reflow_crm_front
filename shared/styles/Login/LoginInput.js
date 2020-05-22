@@ -20,8 +20,10 @@ styled.input`
 `
 :
 styled(TextInput)`
-    width: 100%;
-    padding: 5px;
-    border: 1px solid #17242D;
+    width: ${props => props.isPassword ? '80%' : '100%'}; 
     border-radius: 5px;
+    color: #17242D;
+    border: 1px solid ${props => props.error ? 'red': props.isFocused ? '#0dbf7e' : '#17242D'};
+    padding: 10px;
+    background-color: #fff;
 `

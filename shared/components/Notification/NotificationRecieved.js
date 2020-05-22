@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
+import { Linking } from 'expo'
 import { NotificationText, NotificationDate, NotificationContainer, NotificationTitle, NotificationCard } from '../../styles/Notification'
 import moment from 'moment'
 import { strings, paths } from '../../utils/constants'
@@ -31,7 +32,7 @@ const NotificationRecieved = (props) => {
         
         if (process.env['APP'] === 'web') {
             Router.push({
-                pathname: paths.home(formName, true),
+                pathname: paths.home(),
                 query: {
                     formId: formId
                 }
@@ -42,7 +43,7 @@ const NotificationRecieved = (props) => {
                 }
             }, {shallow: true})
         } else{
-            props.navigation.navigate('Home')
+            Linking.openURL(Linking.makeUrl(paths.home(formName), { formId: formId }))
         }
     }
 

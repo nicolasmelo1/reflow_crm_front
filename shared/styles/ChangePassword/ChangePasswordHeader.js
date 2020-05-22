@@ -3,16 +3,12 @@ import styled from 'styled-components'
 import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
-styled.div`
-    display: flex;
-    flex-direction: row; 
-    justify-content: space-between;
-    width: 100%
-`
+styled.div``
 :
 styled(View)`
     width: 100%;
+    display: flex;
     direction: rtl;
-    flex-direction: row; 
-    justify-content: space-between;
+    flex-direction: row;
+    padding: 10px;
 `

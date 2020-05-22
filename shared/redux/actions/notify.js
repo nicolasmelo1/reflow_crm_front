@@ -9,7 +9,7 @@ import { SET_NOTIFY } from '../types';
 const onAddNotification = (message, variant) => {
     return (dispatch, getState) => {
         let stateData = getState().notify.notification
-        stateData.push({ message: message, variant: variant})
+        stateData.splice(0, 1, { message: message, variant: variant})
         dispatch({ type: SET_NOTIFY, payload: stateData })
     }
 }

@@ -10,4 +10,8 @@ styled.small`
     margin-bottom: 5px;
 `
 :
-styled(Text)``
+styled(Text)`
+    min-height: 30px;
+    align-self: flex-start;
+    color: red;
+`

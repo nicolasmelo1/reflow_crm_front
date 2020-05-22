@@ -1,6 +1,6 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { Modal } from 'react-native'
+import { Modal, Text } from 'react-native'
 import axios from 'axios'
 import { connect } from 'react-redux'
 import actions from '../../redux/actions'
@@ -93,8 +93,10 @@ class Templates extends React.Component {
                     ) : null}
                     <TemplatesHeader>
                         {this.props.groups.length > 0 ? (
-                            <TemplatesGoBackButton onPress={e=>this.props.setAddTemplates(false)} title={'x'}/>
-                        ) : ''}
+                            <TemplatesGoBackButton onPress={e=>this.props.setAddTemplates(false)}>
+                                <FontAwesomeIcon icon={'times'} />
+                            </TemplatesGoBackButton>
+                        ) : null}
                     </TemplatesHeader>
                     <TemplatesContentContainer>
                         <TemplatesTemplateTypeSelectionContainer>

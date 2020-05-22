@@ -11,8 +11,8 @@ const paths = {
     changepassword() {
         return '/changepassword'
     },
-    home(form, slugged=false) {
-        return slugged ? `/home/[form]` : `/home/${form}`
+    home(form) {
+        return form ? `/home/${form}` : `/home/[form]`
     },
     notifications() {
         return '/notifications'

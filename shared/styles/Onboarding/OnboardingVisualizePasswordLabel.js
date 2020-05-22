@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Text } from 'react-native'
+import { TouchableOpacity } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.label`
@@ -9,4 +9,8 @@ styled.label`
     margin-bottom: 20px;
 `
 :
-styled(Text)``
+styled(TouchableOpacity)`
+    align-items: center;
+    flex-direction: row;
+    margin-bottom: 20px;
+`

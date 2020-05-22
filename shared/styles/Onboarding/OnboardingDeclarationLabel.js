@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Text } from 'react-native'
+import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.label`
@@ -10,4 +10,11 @@ styled.label`
     user-select: none;
 `
 :
-styled(Text)``
+styled(View)`
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 15px;
+    font-size: 13px;
+`

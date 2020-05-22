@@ -9,6 +9,7 @@ const Notifications = (props) => {
     const authentication = useContext(AuthenticationContext)
     const Stack = createStackNavigator()
 
+    console.log(props)
     return (
         <Layout navigation={props.navigation} setIsAuthenticated={authentication.setIsAuthenticated}>
             <View>

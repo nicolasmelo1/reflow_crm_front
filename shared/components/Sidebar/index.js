@@ -26,7 +26,12 @@ class Sidebar extends React.Component {
     
     componentDidMount() {
         this.source = this.CancelToken.source()
-        this.props.onGetForms(this.source)
+        // force to load templates if the user is logged and doesn't have any template
+        this.props.onGetForms(this.source).then(response => {
+            if (response && response.status === 200 && response.data.data.length === 0) {
+                this.props.setAddTemplates(true)
+            }
+        })
     }
 
     componentWillUnmount = () => {

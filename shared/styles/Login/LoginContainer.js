@@ -12,4 +12,8 @@ styled.div`
     min-height: var(--app-height);
 `
 :
-styled(View)``
+styled(View)`
+    top: 25%;
+    justify-content: center;
+    align-items: center
+`

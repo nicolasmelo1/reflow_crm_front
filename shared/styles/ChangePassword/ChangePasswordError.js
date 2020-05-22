@@ -9,4 +9,8 @@ styled.small`
     min-height: 20px;
 `
 :
-styled(Text)``
+styled(Text)`
+    color: red;
+    align-self: flex-start;
+    min-height: 20px;
+`

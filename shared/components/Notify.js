@@ -43,11 +43,10 @@ class Notify extends React.Component {
     renderMobile() {
         return (
             <View styled={{
-                flex: 1,
-                flexDirection: 'row', 
-                flexWrap: 'nowrap', 
-                justifyContent: 'flex-start',
-                alignItems: 'flex-start'
+                position: 'absolute',
+                top:0,
+                left: 0,
+                zIndex: 1000
             }}>
                 {this.props.notify.notification ? this.props.notify.notification.map((notification, index) => (
                     <StyledAlert key={index} variant={notification.variant}>

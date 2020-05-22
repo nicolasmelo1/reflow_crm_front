@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Button } from 'react-native'
+import { TouchableOpacity } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.button`
@@ -14,6 +14,10 @@ styled.button`
     }
 `
 :
-styled(React.forwardRef(({...props}, ref) => <Button {...props} ref={ref}/>))`
-    align-self: flex-start;
+styled(TouchableOpacity)`
+    align-self: center;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
 `

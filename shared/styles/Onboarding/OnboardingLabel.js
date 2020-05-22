@@ -14,4 +14,8 @@ styled.label`
     }
 `
 :
-styled(Text)``
+styled(Text)`
+    font-weight: bold;
+    margin: 10px 0 5px 0;
+    align-self: flex-start;
+`

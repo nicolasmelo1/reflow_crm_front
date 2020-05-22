@@ -13,4 +13,10 @@ styled.div`
     transition: opacity 1s ease-in-out; 
 `
 :
-styled(View)``
+styled(View)`
+    border-radius: 20px;
+    padding: 20px;
+    align-items: center;
+    width: 100%;
+    flex-direction: column;
+`

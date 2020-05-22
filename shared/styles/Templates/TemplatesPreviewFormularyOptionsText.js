@@ -11,4 +11,6 @@ styled.p`
     transition: margin .5s ease-in-out
 `
 :
-styled(Text)``
+styled(Text)`
+    color: ${props => props.isSelected ? '#f2f2f2' : '#17242D'};
+`
