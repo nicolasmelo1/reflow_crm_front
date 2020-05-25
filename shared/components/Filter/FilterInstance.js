@@ -45,6 +45,7 @@ const FilterInstance = (props) => {
     const onSelectField = (field) => {
         const fieldName = field.name
         onChangeFieldName(fieldName)
+        props.onChangeFilter(props.index, fieldName, searchValue)
     }
     
     const onChangeFilterValue = (value) => {
@@ -81,7 +82,7 @@ const FilterInstance = (props) => {
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                     {props.fields.map((field, index) => (
-                        <Dropdown.Item as="button" key={index} onClick={e => (onSelectField(field))}>
+                        <Dropdown.Item as="button" key={index} onClick={e => onSelectField(field)}>
                             {field.label}
                         </Dropdown.Item>
                     ))}

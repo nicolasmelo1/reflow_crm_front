@@ -86,12 +86,6 @@ const Number = (props) => {
     }
 
     useEffect(() => {
-        return () => {
-            source.current.cancel()
-        }
-    }, [])
-
-    useEffect(() => {
         setInitialNumberMaskType(
             props.types.data.field_number_format_type
                 .filter(numberFormatType=> numberFormatType.id === props.field.number_configuration_number_format_type)
@@ -105,6 +99,9 @@ const Number = (props) => {
 
     useEffect(() => {
         testFormula(props.field.formula_configuration ? props.field.formula_configuration : '')
+        return () => {
+            source.current.cancel()
+        }
     }, [])
 
     const formulaVariablesOptions = formularyFields.map(field => ({ value: field.id.toString(), label: field.label_name, field_name: field.name }))
