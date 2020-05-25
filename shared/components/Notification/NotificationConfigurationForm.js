@@ -91,6 +91,7 @@ const NotificationConfigurationForm = (props) => {
     const onChangeFormulary = (data) => {
         notificationConfigurationData.form = data.length > 0 ? data[0] : null
         notificationConfigurationData.field = null
+        // when the user changes the formulary we reset all the variables.
         notificationConfigurationData.text = notificationConfigurationData.text.replace(/{{(\w+)?}}/g, '{{}}')
         notificationConfigurationData.notification_configuration_variables.forEach((_, i) => {
             notificationConfigurationData.notification_configuration_variables[i] = addNewVariable(null, null)

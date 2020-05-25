@@ -12,7 +12,6 @@ class Data extends React.Component {
 
 
     render() {
-        console.log(this.props)
 
         return (
             <Layout setIsAuthenticated={this.props.authenticationContext.setIsAuthenticated} showSideBar={true}>

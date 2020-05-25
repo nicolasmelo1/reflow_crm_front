@@ -1,14 +1,17 @@
-import React,  { useState, useEffect } from 'react';
-import { types, strings } from '../../../utils/constants';
+import React,  { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
+import { types, strings } from '../../../utils/constants'
 import delay from '../../../utils/delay';
 import Select from '../../Utils/Select';
 import { FormulariesEdit } from '../../../styles/Formulary'
 import axios from 'axios'
 
+const makeDelay = delay(1000)
+
 const Number = (props) => {
     const source = React.useRef(axios.CancelToken.source())
-    const makeDelay = delay(1000)
-
+    const formularyData = useSelector(state=>state.home.formulary.update)
+    const formularyFields = formularyData.depends_on_form ? [].concat.apply([], formularyData.depends_on_form.map(group => group.form_fields.map(field => field))) : []
     const [isFormulaInvalid, setIsFormulaInvalid] = useState(false)
     const [isEditingFormula, setIsEditingFormula] = useState(false)
     const [initialNumberMaskType, setInitialNumberMaskType] = useState([])
@@ -19,19 +22,67 @@ const Number = (props) => {
         props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
     }
 
-    const onChangeFormula = (data) => {
-        props.field.formula_configuration = data
+    const getFormulaOccurences = (formulaText) => {
+        return (formulaText.match(/{{(\w+)?}}/g) || []).map(variable=> variable.replace('{{', '').replace('}}', ''))
+    }
+
+    const formatFormula = (value, occurences) => {
+        let formulaText = (value) ? value : ''
+        const formattedFormulaText = formulaText.replace(/{{(\w+)?}}/g, '{{}}')
+        const backendText = formattedFormulaText.split('{{}}')
+        const userText = formattedFormulaText.split('{{}}')
+        let counter = 1
+
+        for (let i=0; i<occurences.length; i++) {
+            const fieldVariable = formularyFields.filter(field => field.id.toString() === occurences[i] || field.name.toString() === occurences[i])
+            if (fieldVariable.length > 0) {
+                backendText.splice(i+counter, 0,`{{${fieldVariable[0].id}}}`)
+                userText.splice(i+counter, 0,`{{${fieldVariable[0].name}}}`)
+            } else {
+                backendText.splice(i+counter, 0,`{{}}`)
+                userText.splice(i+counter, 0,`{{}}`)
+            }
+            counter++
+
+        }
+        return {
+            userText: userText.join(''),
+            backendText: backendText.join('')
+        }
+    }
+   
+    const testFormula = (text) => {
+        makeDelay(() => {
+            if (text !== '') {
+                props.onTestFormularySettingsFormulaField(source.current, props.formId, text).then(response => {
+                    if (response && response.status !== 200) {
+                        setIsFormulaInvalid(true)
+                    } else {
+                        setIsFormulaInvalid(false)
+                    }
+                })
+            }
+        })
+    }
+
+    const onChangeFormulaVariable = (index, data) => {
+        let formulaText = (props.field.formula_configuration) ? props.field.formula_configuration : ''
+        let occurences = getFormulaOccurences(formulaText)
+        occurences[index] = data[0]
+        props.field.formula_configuration = formatFormula(formulaText, occurences).backendText
         props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
 
-        makeDelay(() => {
-            props.onTestFormularySettingsFormulaField(source.current, props.formId, data).then(response => {
-                if (response && response.status !== 200) {
-                    setIsFormulaInvalid(true)
-                } else {
-                    setIsFormulaInvalid(false)
-                }
-            })
-        })
+        testFormula(props.field.formula_configuration)
+    }
+
+    
+    const onChangeFormula = (data) => {
+        const occurences = getFormulaOccurences(data)
+        const backendText = formatFormula(data, occurences).backendText
+        props.field.formula_configuration = backendText
+        props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
+
+        testFormula(props.field.formula_configuration)
     }
 
     useEffect(() => {
@@ -52,6 +103,11 @@ const Number = (props) => {
         setNumberMaskTypes(props.types.data.field_number_format_type.map(numberFormatType=> { return { value: numberFormatType.id, label: types('pt-br', 'number_configuration_number_format_type', numberFormatType.type) } }))
     }, [props.types.data.field_number_format_type])
 
+    useEffect(() => {
+        testFormula(props.field.formula_configuration ? props.field.formula_configuration : '')
+    }, [])
+
+    const formulaVariablesOptions = formularyFields.map(field => ({ value: field.id.toString(), label: field.label_name, field_name: field.name }))
     return (
         <div>
             <FormulariesEdit.FieldFormFieldContainer>
@@ -72,8 +128,8 @@ const Number = (props) => {
                 </FormulariesEdit.FieldFormLabel>
                 <FormulariesEdit.InputField
                 error={isFormulaInvalid}
-                type="text" 
-                value={props.field.formula_configuration ? props.field.formula_configuration : ''} 
+                type="text"
+                value={props.field.formula_configuration ? formatFormula(props.field.formula_configuration, getFormulaOccurences(props.field.formula_configuration)).userText : ''} 
                 onChange={e=>onChangeFormula(e.target.value)}
                 onFocus={e=>setIsEditingFormula(true)} 
                 onBlur={e=>setIsEditingFormula(false)}
@@ -91,6 +147,18 @@ const Number = (props) => {
                         <FormulariesEdit.FormulaExplanationDescription>{strings['pt-br']['formularyEditFieldFormulaExplanationDescription4']}</FormulariesEdit.FormulaExplanationDescription>
                     </FormulariesEdit.FormulaExplanationContainer>
                 ) : ''}
+                {getFormulaOccurences(props.field.formula_configuration ? props.field.formula_configuration : '').map((variable, index) => {
+                    const initialFormulaVariablesOptions = formulaVariablesOptions.filter(field => field.value.toString() === variable)
+                    return (
+                        <FormulariesEdit.SelectorContainer key={index}>
+                            <Select 
+                                options={formulaVariablesOptions} 
+                                initialValues={initialFormulaVariablesOptions} 
+                                onChange={(data) => onChangeFormulaVariable(index, data)} 
+                            />
+                        </FormulariesEdit.SelectorContainer>
+                    )
+                })}
             </FormulariesEdit.FieldFormFieldContainer>
         </div>
     )
