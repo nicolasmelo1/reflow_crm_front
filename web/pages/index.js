@@ -22,6 +22,7 @@ class Index extends React.Component {
             Router.push(paths.home(), paths.home(this.props.login.primaryForm), {shallow: true})
         }
     }
+    
     render (){
         return (
             <Layout addTemplates={['', null, undefined].includes(this.props.login.primaryForm)} title={strings['pt-br']['indexPageTitle']}  hideNavBar={true}/>

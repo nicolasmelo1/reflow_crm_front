@@ -75,10 +75,8 @@ class Layout extends React.Component {
 
     async setToken() {
         let token = process.env['APP'] === 'web' ? window.localStorage.getItem('token') : await AsyncStorage.getItem('token')
-        token = (token !== null) ? token : ''
-        //agent.setToken(token)
         if (!token || token === '') {
-            //this.setLogout(true)
+            this.setLogout(true)
         }
 
         // this is probably an anti-pattern, read here: https://reactjs.org/blog/2015/12/16/ismounted-antipattern.html
