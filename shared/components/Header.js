@@ -44,6 +44,9 @@ const Header = (props) => (
         <link rel="stylesheet" href="/bootstrap/css/bootstrap-grid.min.css"/>
         <link rel="stylesheet" href="/bootstrap/css/bootstrap-reboot.min.css"/>
         <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css"/>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-144919276-1"></script>
+        <script type="text/javascript" src="/google/analytics/index.js"></script>
+        <script type="text/javascript" src="/google/tagmanager/index.js"></script>
     </Head>
 )
 

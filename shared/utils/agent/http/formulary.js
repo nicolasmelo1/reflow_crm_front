@@ -16,8 +16,9 @@ const FORMULARY = {
     getFormularyData: async (source, formName, formId) => {
         return await requests.get(`${companyId}/formulary/api/${formName}/${formId}/`, {}, {}, source)
     },
-    updateFormularyData: async (body, files, formName, formId) => {
-        return await requests.post(`${companyId}/formulary/api/${formName}/${formId}/`, formEncodeData('data', body, files), {'Content-Type': 'multipart/form-data'})
+    updateFormularyData: async (body, files, formName, formId, duplicate=null) => {
+        const duplicateUrl = (duplicate) ? '?duplicate=duplicate' : ''
+        return await requests.post(`${companyId}/formulary/api/${formName}/${formId}/${duplicateUrl}`, formEncodeData('data', body, files), {'Content-Type': 'multipart/form-data'})
     },
     getFormularyFormFieldOptions: async (source, formName, fieldId) => {
         return await requests.get(`${companyId}/formulary/api/${formName}/${fieldId}/form/options/`, {}, {}, source)

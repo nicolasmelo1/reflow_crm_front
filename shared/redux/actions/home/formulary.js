@@ -59,9 +59,9 @@ const onCreateFormularyData = (body, files, formName) => {
 }
 
 
-const onUpdateFormularyData = (body, files, formName, formId) => {
+const onUpdateFormularyData = (body, files, formName, formId, duplicate=null) => {
     return (_) => {
-        return agent.http.FORMULARY.updateFormularyData(body, files, formName, formId)
+        return agent.http.FORMULARY.updateFormularyData(body, files, formName, formId, duplicate)
     }
 }
 

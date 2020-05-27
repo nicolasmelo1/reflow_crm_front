@@ -146,11 +146,11 @@ class Formulary extends React.Component {
     }
 
 
-    onSubmit = () => {
+    onSubmit = (duplicate=null) => {
         this.setIsSubmitting(true)
         let request = null
         if (this.state.filled.data.id) {
-            request = this.props.onUpdateFormularyData(this.state.filled.data, this.state.filled.files, this.state.buildData.form_name, this.state.filled.data.id)
+            request = this.props.onUpdateFormularyData(this.state.filled.data, this.state.filled.files, this.state.buildData.form_name, this.state.filled.data.id, duplicate)
         } else {
             request = this.props.onCreateFormularyData(this.state.filled.data, this.state.filled.files,this.state.buildData.form_name)
         }
@@ -354,9 +354,16 @@ class Formulary extends React.Component {
                                     userOptions={this.state.userOptions}
                                     />
                                     {sections.length > 0 && this.props.type !== 'preview' ? (
-                                        <Formularies.SaveButton disabled={this.state.isSubmitting} onClick={e=> {this.onSubmit()}}>
-                                            {this.state.isSubmitting ? (<Spinner animation="border" />) : strings['pt-br']['formularySaveButtonLabel']}
-                                        </Formularies.SaveButton>
+                                        <div>
+                                            <Formularies.SaveButton disabled={this.state.isSubmitting} onClick={e=> {this.onSubmit()}}>
+                                                {this.state.isSubmitting ? (<Spinner animation="border" />) : strings['pt-br']['formularySaveButtonLabel']}
+                                            </Formularies.SaveButton>
+                                            {this.state.filled.data.id ? (
+                                                <Formularies.SaveButton disabled={this.state.isSubmitting} onClick={e=> {this.onSubmit(true)}}>
+                                                    {this.state.isSubmitting ? (<Spinner animation="border" />) : 'Salvar como novo'}
+                                                </Formularies.SaveButton>
+                                            ) : ''}
+                                        </div>
                                     ) : ''}
                                     
                                 </div> 

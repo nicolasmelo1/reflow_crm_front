@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { FilterInputGroup, FilterInputDropdownButton, FilterInput, FilterDeleteButton } from '../../styles/Filter'
+import { FilterInputGroup, FilterInputDropdownButton, FilterInput, FilterDeleteButton, FilterDropdownMenu } from '../../styles/Filter'
 import DateRangePicker from '../Utils/DateRangePicker'
 import { stringToJsDateFormat, jsDateToStringFormat } from '../../utils/dates'
 import { strings } from '../../utils/constants'
@@ -23,7 +23,6 @@ import { Dropdown } from 'react-bootstrap'
  */
 const FilterInstance = (props) => {
     const dateFormat = 'DD/MM/YYYY'
-
     const [searchFieldType, setSearchFieldType] = useState(null)
     const [searchField, setSearchField] = useState('')
     const [searchValue, setSearchValue] = useState('')
@@ -80,13 +79,13 @@ const FilterInstance = (props) => {
                 <Dropdown.Toggle as={FilterInputDropdownButton}>
                     {searchFieldTitle}
                 </Dropdown.Toggle>
-                <Dropdown.Menu>
+                <FilterDropdownMenu>
                     {props.fields.map((field, index) => (
                         <Dropdown.Item as="button" key={index} onClick={e => onSelectField(field)}>
                             {field.label}
                         </Dropdown.Item>
                     ))}
-                </Dropdown.Menu>
+                </FilterDropdownMenu>
             </Dropdown>
             <FilterInput ref={inputRef} placeholder={strings['pt-br']['filterInputPlaceholder']} value={searchValue} onChange={e => onChangeFilterValue(e.target.value)}/>
             {searchFieldType === 'date' ? (
