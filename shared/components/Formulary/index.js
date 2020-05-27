@@ -360,7 +360,7 @@ class Formulary extends React.Component {
                                             </Formularies.SaveButton>
                                             {this.state.filled.data.id ? (
                                                 <Formularies.SaveButton disabled={this.state.isSubmitting} onClick={e=> {this.onSubmit(true)}}>
-                                                    {this.state.isSubmitting ? (<Spinner animation="border" />) : 'Salvar como novo'}
+                                                    {this.state.isSubmitting ? (<Spinner animation="border" />) : strings['pt-br']['formularyDuplicateButtonLabel']}
                                                 </Formularies.SaveButton>
                                             ) : ''}
                                         </div>

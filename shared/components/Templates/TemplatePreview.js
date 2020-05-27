@@ -100,20 +100,20 @@ const TemplatePreview = (props) => {
                     <TemplatesPreviewContentsContainer>
                         <TemplatesPreviewDescriptionContainer>
                             <TemplatesPreviewDescriptionTitle>
-                                Descrição
+                                {strings['pt-br']['templateDescriptionTitleLabel']}
                             </TemplatesPreviewDescriptionTitle>
                             <TemplatesPreviewDescriptionText>
                                 {props.data.description}
                             </TemplatesPreviewDescriptionText>
                             <TemplatesPreviewDescriptionUseButton onPress={e=> onClickUseButton()}>
                                 <Text>
-                                    Usar
+                                    {strings['pt-br']['templateUseButtonLabel']}
                                 </Text>
                             </TemplatesPreviewDescriptionUseButton>
                         </TemplatesPreviewDescriptionContainer>
                         <TemplatesPreviewFormularyOptionsContainer>
                             <TemplatesPreviewFormularyOptionsTitle>
-                                Formulários
+                                {strings['pt-br']['templateFormularyTitleLabel']}
                             </TemplatesPreviewFormularyOptionsTitle>
                             {props.data.theme_form.map((themeForm, index) => (
                                 <TemplatesPreviewFormularyOptionsButton key={index} onPress={e=> {onChangeFormulary(themeForm.id)}} isSelected={formData.formId === themeForm.id}>
@@ -128,7 +128,7 @@ const TemplatePreview = (props) => {
                         </TemplatesPreviewFormularyOptionsContainer>
                         <TemplatesPreviewFormularyPreviewContainer>
                             <TemplatesPreviewFormularyPreviewTitle>
-                                Preview
+                                {strings['pt-br']['templatePreviewTitleLabel']}
                             </TemplatesPreviewFormularyPreviewTitle>
                             <TemplatesPreviewFormularyPreviewFormularyContainer>
                             </TemplatesPreviewFormularyPreviewFormularyContainer>
@@ -148,18 +148,18 @@ const TemplatePreview = (props) => {
                 <TemplatesPreviewContentsContainer>
                     <TemplatesPreviewDescriptionContainer>
                         <TemplatesPreviewDescriptionTitle>
-                            Descrição
+                            {strings['pt-br']['templateDescriptionTitleLabel']}
                         </TemplatesPreviewDescriptionTitle>
                         <TemplatesPreviewDescriptionText>
                             {props.data.description}
                         </TemplatesPreviewDescriptionText>
                         <TemplatesPreviewDescriptionUseButton onClick={e=> onClickUseButton()}>
-                            Usar
+                            {strings['pt-br']['templateUseButtonLabel']}
                         </TemplatesPreviewDescriptionUseButton>
                     </TemplatesPreviewDescriptionContainer>
                     <TemplatesPreviewFormularyOptionsContainer>
                         <TemplatesPreviewFormularyOptionsTitle>
-                            Formulários
+                            {strings['pt-br']['templateFormularyTitleLabel']}
                         </TemplatesPreviewFormularyOptionsTitle>
                         {props.data.theme_form.map((themeForm, index) => (
                             <TemplatesPreviewFormularyOptionsButton key={index} onClick={e=> {onChangeFormulary(themeForm.id)}}>
@@ -174,7 +174,7 @@ const TemplatePreview = (props) => {
                     </TemplatesPreviewFormularyOptionsContainer>
                     <TemplatesPreviewFormularyPreviewContainer>
                         <TemplatesPreviewFormularyPreviewTitle>
-                            Preview
+                            {strings['pt-br']['templatePreviewTitleLabel']}
                         </TemplatesPreviewFormularyPreviewTitle>
                         <TemplatesPreviewFormularyPreviewFormularyContainer>
                             {formData.templateId === props.data.id ? (
