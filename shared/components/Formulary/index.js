@@ -98,7 +98,7 @@ class Formulary extends React.Component {
     setFilledDataAndBuildData = (id, filledSectionsData, filledFilesData, buildData) => (this._ismounted) ? this.setState(state=> ({
             ...state,
             filled: {
-                hasBuiltInitial: false,
+                hasBuiltInitial: true,
                 files: filledFilesData,
                 data: {
                     id: id,
