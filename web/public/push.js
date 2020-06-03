@@ -7,8 +7,6 @@ function receivePushNotification(event) {
     const { image, tag, url, title, text, actions } = event.data.json();
     
     const imageUrl = image ? image : self.location.origin+'/pwa/images/icons/icon-512x512.png'
-    console.log('imageUrl')
-    console.log(imageUrl)
     const options = {
         data: url,
         body: text,

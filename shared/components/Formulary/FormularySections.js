@@ -11,6 +11,7 @@ import { useRouter } from 'next/router'
  */
 const FormularySections = (props) => {
     const [conditionalSections,  setConditionalSections] = useState([])
+    const [sectionsToLoad, setSectionsToLoad] = useState([])
 
     const addNewSectionsData = (sectionId) => {
         return {
@@ -26,7 +27,6 @@ const FormularySections = (props) => {
     }
 
     const toggleConditionals = (sectionsData, conditionals) => {
-        //CONDITIONALS LOGIC
         let newSectionsData = [...sectionsData]
         let formValues = sectionsData.map(sectionData=> sectionData.dynamic_form_value)
         formValues = [].concat(...formValues);
@@ -54,7 +54,7 @@ const FormularySections = (props) => {
         // this appends or removes the conditionals from the  sectionsData state, if the show is set to false we remove,
         // otherwise we add a new sectionData
         conditionalsToToggle.forEach(conditionalToToggle => {
-            if (conditionalToToggle.show) {
+            if (conditionalToToggle.show && conditionalsToToggle.form_type !== 'multi-form') {
                 // we check if the sectionId is already in the sectionData array and if the section is a multiForm, 
                 // this way we can safely append a new sectionData
                 if (!sectionDataIds.includes(conditionalToToggle.id.toString()) && conditionalToToggle.form_type !== 'multi-form') {
@@ -69,7 +69,38 @@ const FormularySections = (props) => {
             }
         })
 
+        const conditionalsNotToToggleIds = conditionalsToToggle
+            .filter(conditionalToToggle => !conditionalToToggle.show)
+            .map(conditionalToToggle => conditionalToToggle.id)
+        setSectionsToLoad(props.sections.filter(section => !conditionalsNotToToggleIds.includes(section.id)))
+
         return newSectionsData
+    }
+
+
+    function getNewSectionData() {
+        return props.sections
+            .filter(section => !(!['', null].includes(section.conditional_value) || section.form_type==='multi-form'))
+            .map(section=> addNewSectionsData(section.id))
+    }
+
+    function onLoadData(sectionsData, conditionals) {
+        let newSectionsData = getNewSectionData()
+        const sectionsDataIds = sectionsData.map(sectionData=> sectionData.form_id)
+        
+        newSectionsData.forEach(sectionData => {
+            if (!sectionsDataIds.includes(sectionData.form_id)) {
+                sectionsData.push(sectionData)
+            }
+        })
+        newSectionsData = toggleConditionals(sectionsData, conditionals)
+        props.setFilledData(props.data.id, [...newSectionsData])
+        //onChangeSectionData(sectionsData, conditionals)
+    }
+
+    function buildInitialData(conditionals) {
+        const newSectionsData = getNewSectionData()
+        onChangeSectionData(newSectionsData, conditionals)
     }
 
     const addSection = (e, section) => {
@@ -102,30 +133,6 @@ const FormularySections = (props) => {
         onChangeSectionData(changedData)
     }
 
-    function getNewSectionData() {
-        return props.sections
-            .filter(section => !(!['', null].includes(section.conditional_value) || section.form_type==='multi-form'))
-            .map(section=> addNewSectionsData(section.id))
-    }
-
-    function onLoadData(sectionsData, conditionals) {
-        let newSectionsData = getNewSectionData()
-        const sectionsDataIds = sectionsData.map(sectionData=> sectionData.form_id)
-        
-        newSectionsData.forEach(sectionData => {
-            if (!sectionsDataIds.includes(sectionData.form_id)) {
-                sectionsData.push(sectionData)
-            }
-        })
-        newSectionsData = toggleConditionals(sectionsData, conditionals)
-        props.setFilledData(props.data.id, [...newSectionsData])
-        //onChangeSectionData(sectionsData, conditionals)
-    }
-
-    function buildInitialData(conditionals) {
-        const newSectionsData = getNewSectionData()
-        onChangeSectionData(newSectionsData, conditionals)
-    }
 
     useEffect (() => {
         if (props.sections.length > 0) {
@@ -133,25 +140,32 @@ const FormularySections = (props) => {
             if (JSON.stringify(conditionalSections) !== JSON.stringify(conditionals)) {
                 setConditionalSections(conditionals)
             }
-            if (!props.hasBuiltInitial) {
-
-                if (props.data.id === null) {
+            // Okay, so here we really need to be REALLLY careful, because really easily we can enter
+            // on an infinite loop. If you see, we always finish the conditional here changing the state
+            // that`s because on a second pass, the state is not valid to enter the conditional again.
+            // We validate two conditionals: the first is if the data has been built, the other is to signal
+            // if the data is a AuxOriginalInitial. The first is really straight forward, but the second not really.
+            // If you already inserted data in a formulary and clicked `add new` from the connected `field_type`
+            // you actually save Original Initial formulary in a variable, when you save or you click to go back,
+            // to the original initial formulary, you need to load the data, the problem is, we already built the form
+            // so we actually don't want to build again, but instead, load the data that we saved in the variable.
+            if (!props.hasBuiltInitial || props.isAuxOriginalInitial) {
+                if (props.data.id === null && !props.isAuxOriginalInitial) {
                     buildInitialData(conditionals)
-                }
-                if (props.data.id) {
+                } else if (props.data.id || props.isAuxOriginalInitial) {
                     onLoadData(props.data.depends_on_dynamic_form, conditionals)
-
                 }
-                props.setFilledHasBuiltInitial(true)
+                if (!props.hasBuiltInitial) props.setFilledHasBuiltInitial(true)
+                if (props.isAuxOriginalInitial) props.setFilledIsAuxOriginalInitial(false)
             }
         }
     }, [props.sections, props.data])
    
     return (
         <div>
-            { props.sections.filter(section=> (section.form_type==='multi-form' || props.data.depends_on_dynamic_form.map(sectionData => sectionData.form_id.toString()).includes(section.id.toString())) ).map((section, index) => (
-                <Formularies.SectionContainer key={index} isConditional={section.conditional_value !== null}>
-                    <Formularies.TitleLabel>{ section.label_name }</Formularies.TitleLabel>
+            { sectionsToLoad.map((section, index) => (
+                <Formularies.SectionContainer key={index} isConditional={section.conditional_value !== null} isMultiSection={section.form_type==='multi-form'}>
+                    <Formularies.TitleLabel isConditional={section.conditional_value !== null}>{ section.label_name }</Formularies.TitleLabel>
                     {section.form_type==='multi-form' ? (
                         <Formularies.MultiForm.AddButton onClick={e=>addSection(e, section)}>
                             {strings['pt-br']['formularyMultiFormAddButtonLabel']}

@@ -136,6 +136,7 @@ const strings = {
         formularyEditFieldConnectionFormularySelectorLabel: 'Com qual formulário você deseja conectar?',
         formularyEditFieldConnectionFieldSelectorLabel: 'Qual campo será usado como opção?',
         formularyEditFieldNoFieldTypeLabel: 'Selecione um tipo de campo',
+        formularyEditFieldHiddenFieldLabel: 'O campo está escondido',
         formularyEditFieldDisabledLabel: 'O campo está desativado',
         formularyEditSectionPlaceholderLabel: 'Insira o nome da seção',
         formularyEditSectionDisabledLabel: 'A seção está desativada',

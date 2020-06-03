@@ -60,6 +60,7 @@ class Formulary extends React.Component {
             userOptions: [],
             filled: {
                 hasBuiltInitial: false,
+                isAuxOriginalInitial: false,
                 data: {
                     id: null,
                     depends_on_dynamic_form: []
@@ -87,6 +88,8 @@ class Formulary extends React.Component {
 
     setFilledHasBuiltInitial = (data) => (this._ismounted) ? this.setState(state => state.filled.hasBuiltInitial = data) : null
 
+    setFilledIsAuxOriginalInitial = (data) => (this._ismounted) ? this.setState(state => state.filled.isAuxOriginalInitial = data) : null
+
     setFilledFiles = (data) => (this._ismounted) ? this.setState(state => state.filled.files = data) : null
 
     setFilledData = (id, sectionsData) => (this._ismounted) ? this.setState(state => 
@@ -95,10 +98,11 @@ class Formulary extends React.Component {
             depends_on_dynamic_form: [...sectionsData]
         }) : null
         
-    setFilledDataAndBuildData = (id, filledSectionsData, filledFilesData, buildData) => (this._ismounted) ? this.setState(state=> ({
+    setFilledDataAndBuildData = (id, hasBuiltInitial, isAuxOriginalInitial, filledSectionsData, filledFilesData, buildData) => (this._ismounted) ? this.setState(state=> ({
             ...state,
             filled: {
-                hasBuiltInitial: true,
+                hasBuiltInitial: hasBuiltInitial,
+                isAuxOriginalInitial: isAuxOriginalInitial,
                 files: filledFilesData,
                 data: {
                     id: id,
@@ -112,7 +116,8 @@ class Formulary extends React.Component {
         state.auxOriginalInitial = {
             buildData: JSON.parse(JSON.stringify(this.state.buildData)),
             filled: {
-                hasBuiltInitial: false, 
+                hasBuiltInitial: true,
+                isAuxOriginalInitial: true, 
                 files: this.state.filled.files.map(file=> {
                     let newFile = new Blob([file.file], {type: originalFile.type})
                     newFile.name = file.file.name
@@ -173,6 +178,8 @@ class Formulary extends React.Component {
     onFullResetFormulary = (filled, buildData) => {
         this.setFilledDataAndBuildData(
             filled.data.id, 
+            filled.hasBuiltInitial,
+            filled.isAuxOriginalInitial,
             filled.data.depends_on_dynamic_form, 
             filled.files, 
             buildData
@@ -182,6 +189,7 @@ class Formulary extends React.Component {
     onLoadFormulary = async (formName, formId=null) => {
         this.setFilledHasBuiltInitial(false)
         this.source = this.CancelToken.source()
+        // if the formulary has user field type we load the options here.
         this.props.onGetFormularyUserOptions(this.source, formName).then(response=> {
             if (response && response.status === 200) {
                 this.setUserOptions(response.data.data)
@@ -199,7 +207,7 @@ class Formulary extends React.Component {
                     const sectionsData = data.depends_on_dynamic_form ? data.depends_on_dynamic_form : []
                     this.props.onGetBuildFormulary(this.source, formName).then(data => {
                         this.setIsLoading(false)
-                        this.setFilledDataAndBuildData(id, sectionsData, [], data)
+                        this.setFilledDataAndBuildData(id, false, false, sectionsData, [], data)
                     })
                 })
             } else {
@@ -277,16 +285,29 @@ class Formulary extends React.Component {
                 this.source.cancel()
             }
             this.source = this.CancelToken.source()
+            //this.onLoadFormulary(this.props.formName, this.props.formularyId)
             this.props.onGetFormularyData(this.source, this.props.formName, this.props.formularyId, this.props.formularyDefaultData).then(data=> {
                 const id = data.id ? data.id : null
                 const sectionsData = data.depends_on_dynamic_form ? data.depends_on_dynamic_form : []
+                // need to set hasBuiltInitial to false in order to update in the sections
+                this.setFilledHasBuiltInitial(false)
                 this.setFilledData(id, sectionsData)
             })
         }
 
         if (oldProps.formulary.isOpen !== this.props.formulary.isOpen && oldProps.formulary.isOpen) {
             if (this.state.auxOriginalInitial.filled && this.state.auxOriginalInitial.buildData) {
-                this.onFullResetFormulary(this.state.auxOriginalInitial.filled, this.state.auxOriginalInitial.buildData)
+                // full reset the formulary with the build data not the filled data
+                this.onFullResetFormulary(
+                    {
+                        hasBuiltInitial: false,
+                        data: {
+                            id: null,
+                            depends_on_dynamic_form: []
+                        },
+                        files: []
+                    }, this.state.auxOriginalInitial.buildData
+                )
             } else {
                 this.setFilledData(null, [])
                 this.setFilledHasBuiltInitial(false)
@@ -346,6 +367,8 @@ class Formulary extends React.Component {
                                     onChangeFormulary={this.onChangeFormulary}
                                     data={this.state.filled.data}
                                     files={this.state.filled.files}
+                                    isAuxOriginalInitial={this.state.filled.isAuxOriginalInitial}
+                                    setFilledIsAuxOriginalInitial={this.setFilledIsAuxOriginalInitial}
                                     hasBuiltInitial={this.state.filled.hasBuiltInitial}
                                     setFilledHasBuiltInitial={this.setFilledHasBuiltInitial}
                                     setFilledFiles={this.setFilledFiles}
