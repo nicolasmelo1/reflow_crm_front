@@ -9,6 +9,7 @@ import FormularySectionFieldsEditFieldIcon from './FormularySectionFieldsEditFie
 import FormularySectionEditSectionTypeButton from './FormularySectionEditSectionTypeButton'
 import FormularySectionEditToggleConditionalInput from './FormularySectionEditToggleConditionalInput'
 import FormularySectionEditSectionContainer from './FormularySectionEditSectionContainer'
+import FormularySectionEditSectionDisabledLabelTitle from './FormularySectionEditSectionDisabledLabelTitle'
 import FormularySectionEditSettingsFormTypeLabel from './FormularySectionEditSettingsFormTypeLabel'
 import FormularySectionEditSettingsIsConditionalButtonContainer from './FormularySectionEditSettingsIsConditionalButtonContainer'
 import FormularySectionEditSettingsIsConditionalButton from './FormularySectionEditSettingsIsConditionalButton'
@@ -27,7 +28,6 @@ import FormularySectionEditFieldFormularyContainer from './FormularySectionEditF
 import FormularySectionEditFieldFormFieldNumberExplanationContainer from './FormularySectionEditFieldFormFieldNumberExplanationContainer'
 import FormularySectionEditFieldFormFieldNumberExplanationDescription from './FormularySectionEditFieldFormFieldNumberExplanationDescription'
 import FormularySectionEditFieldFormFieldNumberExplanationLabel from './FormularySectionEditFieldFormFieldNumberExplanationLabel'
-
 export default {
     AddNewSectionButton: FormularySectionEditAddNewButton,
     AddNewFieldButton: FormularySectionEditFieldAddNewButton,
@@ -37,6 +37,7 @@ export default {
         TitleAndIconsContainer: FormularySectionEditTitleAndIconsContainer,
         Container: FormularySectionEditSectionContainer,
         LabelInput: FormularySectionEditNameInput,
+        DisabledLabel: FormularySectionEditSectionDisabledLabelTitle,
         Formulary: {
             Container: FormularySectionEditSettingsContainer,
             FormTypeLabel: FormularySectionEditSettingsFormTypeLabel,

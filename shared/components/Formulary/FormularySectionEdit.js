@@ -141,9 +141,11 @@ const FormularySectionEdit = (props) => {
                         isConditional={isConditional}
                         />
                     ) : (
-                        <h2>
+                        <FormulariesEdit.Section.DisabledLabel 
+                        isConditional={isConditional}
+                        >
                             {strings['pt-br']['formularyEditSectionDisabledLabel']}
-                        </h2>
+                        </FormulariesEdit.Section.DisabledLabel>
                     )}
             </FormulariesEdit.Section.TitleAndIconsContainer>
             {props.section.enabled && !props.isMoving ? (
