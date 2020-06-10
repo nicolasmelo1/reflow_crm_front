@@ -20,7 +20,7 @@ const refreshToken = async (response, callback, url, params, headers) => {
     if (response && response.data && response.data.reason && ['invalid_token', 'login_required', 'expired_token'].includes(response.data.reason)) {
         if (response.data.reason === 'expired_token') {
             const refreshToken = process.env['APP'] === 'web' ?  window.localStorage.getItem('refreshToken') : await AsyncStorage.getItem('refreshToken')
-            response = await requests.get('login/refresh_token/', {}, setHeader(refreshToken))
+            response = await requests.get('authentication/refresh_token/', {}, setHeader(refreshToken))
             // checks if the response was an error and handles it next
             if (response.status !== 200) {
                 await setStorageToken('', '')

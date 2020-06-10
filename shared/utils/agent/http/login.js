@@ -2,16 +2,16 @@ import requests from '../requests'
 
 const LOGIN = {
     forgotPassword: async (body) => {
-        return await requests.post('login/forgot/', body)
+        return await requests.post('authentication/forgot/', body)
     },
     makeLogin: async (body) => {
-        return await requests.post('login/', body)
+        return await requests.post('authentication/login/', body)
     },
     testToken: async () => {
-        return await requests.get('login/test_token/')
+        return await requests.get('authentication/test_token/')
     },
     getDataTypes: async () => {
-        return await requests.get('types/')
+        return await requests.get('core/types/')
     },
     registerPushNotification: async (body) => {
         return await requests.post('login/push_notification/', body)

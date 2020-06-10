@@ -2,7 +2,7 @@ import requests from '../requests'
 
 const CHANGE_PASSWORD = {
     updateUserPassword: async (body) => {
-        return await requests.post('login/change_password/', body)
+        return await requests.post('authentication/change_password/', body)
     }
 }
 
