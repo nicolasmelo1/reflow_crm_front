@@ -11,14 +11,14 @@ const FORMULARY = {
         return await requests.get(`formulary/${companyId}/${formName}/`, {}, {}, source)
     },
     createFormularyData: async (body, files, formName) => {
-        return await requests.post(`formulary/${companyId}/api/${formName}/`, formEncodeData('data', body, files), {'Content-Type': 'multipart/form-data'})
+        return await requests.post(`data/${companyId}/${formName}/`, formEncodeData('data', body, files), {'Content-Type': 'multipart/form-data'})
     },
     getFormularyData: async (source, formName, formId) => {
-        return await requests.get(`formulary/${companyId}/${formName}/${formId}/`, {}, {}, source)
+        return await requests.get(`data/${companyId}/${formName}/${formId}/`, {}, {}, source)
     },
     updateFormularyData: async (body, files, formName, formId, duplicate=null) => {
         const duplicateUrl = (duplicate) ? '?duplicate=duplicate' : ''
-        return await requests.post(`formulary/${companyId}/${formName}/${formId}/${duplicateUrl}`, formEncodeData('data', body, files), {'Content-Type': 'multipart/form-data'})
+        return await requests.post(`data/${companyId}/${formName}/${formId}/${duplicateUrl}`, formEncodeData('data', body, files), {'Content-Type': 'multipart/form-data'})
     },
     getFormularyFormFieldOptions: async (source, formName, fieldId) => {
         return await requests.get(`formulary/${companyId}/${formName}/${fieldId}/form/options/`, {}, {}, source)
@@ -26,7 +26,7 @@ const FORMULARY = {
     getAttachmentFile: async (formName, formularyId, fieldId, fileName) => {
         await LOGIN.testToken()
         const token = await getToken()
-        return `${API_ROOT}formulary/${companyId}/${formName}/${formularyId}/${fieldId}/${fileName}/?token=${token}`
+        return `${API_ROOT}data/${companyId}/${formName}/${formularyId}/${fieldId}/${fileName}/?token=${token}`
     },
     getFormularySettingsData: async (source, formId) => {
         return await requests.get(`formulary/${companyId}/settings/forms/${formId}/`, {}, {}, source)

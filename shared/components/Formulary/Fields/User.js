@@ -1,10 +1,16 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
+import agent from '../../../utils/agent'
 import Field from '../../../styles/Formulary/Field' 
 import Select from '../../Utils/Select'
+import axios from 'axios'
+
 
 const User = (props) => {
+    const router = useRouter()
+
     const [options, setOptions] = useState([])
-    const [data, _] = useState(props.userOptions ? props.userOptions.map(option => ({value: option.id, label: `${option.first_name} ${option.last_name}`})) : [])
+    //const [data, _] = useState(props.userOptions ? props.userOptions.map(option => ({value: option.id, label: `${option.first_name} ${option.last_name}`})) : [])
     const [isOpen, setIsOpen] = useState(false)
     
     const onChange = (newData) => {
@@ -22,18 +28,16 @@ const User = (props) => {
         const cancelToken = axios.CancelToken
         const source = cancelToken.source()
 
-        async function fetchFormOptions(source) {
-            try {
+        async function fetchUserOptions(source) {
+            try{
                 const response = await agent.http.FORMULARY.getFormularyUserOptions(source, router.query.form, props.field.id)
-                
                 if (!didCancel) {
-                    setOptions(response.data.data.map(option => { return {value: option.form_id, label: option.value} }))
+                    setOptions(response.data.data.map(option => { return {value: option.id, label: `${option.first_name} ${option.last_name}`} }))
                 }
             } catch {}
         }  
-
         if (options.length === 0) {
-            fetchFormOptions(source)
+            fetchUserOptions(source)
         }
         return () => {
             didCancel = true
@@ -46,7 +50,7 @@ const User = (props) => {
 
     return (
         <Field.Select isOpen={isOpen}>
-            <Select options={data} onChange={onChange} initialValues={fieldValue} setIsOpen={setIsOpen} isOpen={isOpen}/>
+            <Select options={options} onChange={onChange} initialValues={fieldValue} setIsOpen={setIsOpen} isOpen={isOpen}/>
         </Field.Select>
     )
 }

@@ -71,7 +71,7 @@ class Listing extends React.Component {
                 params.search_exact.push(0)
             }
         })
-        this.props.onGetTotals(this.state.params, this.props.router.form)
+        //this.props.onGetTotals(this.state.params, this.props.router.form)
         this.props.setSearch(params.search_field, params.search_value, params.search_exact)
         this.setParams({...params})
     }
@@ -136,7 +136,6 @@ class Listing extends React.Component {
         }
     }
     render() {
-        console.log(this.props.list)
         return (
             <div>
                 {/*<Row>

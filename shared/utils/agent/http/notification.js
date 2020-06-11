@@ -4,28 +4,28 @@ import { companyId } from '../utils'
 
 const NOTIFICATION = {
     getNewNotifications: async () => {
-        return await requests.get(`${companyId}/notification/api/read/`, {}, {}, {})
+        return await requests.get(`notification/${companyId}/read/`, {}, {}, {})
     },
     getNotification: async (source, params) => {
-        return await requests.get(`${companyId}/notification/api/`, params, {}, source)
+        return await requests.get(`notification/${companyId}/`, params, {}, source)
     },
     readNotification: async (body) => {
-        return await requests.post(`${companyId}/notification/api/read/`, body, {}, {})
+        return await requests.post(`notification/${companyId}/read/`, body, {}, {})
     },
     getNotificationConfiguration: async (source, params) => {
-        return await requests.get(`${companyId}/notification/api/settings/`, params, {}, source)
+        return await requests.get(`notification/${companyId}/settings/`, params, {}, source)
     },
     getNotificationConfigurationFields: async (source, formId) => {
-        return await requests.get(`${companyId}/notification/api/settings/get_fields/${formId}/`, {}, {}, source)
+        return await requests.get(`notification/${companyId}/settings/get_fields/${formId}/`, {}, {}, source)
     },
     updateNotificationConfiguration: async (body, notificationConfigurationId) => {
-        return await requests.put(`${companyId}/notification/api/settings/${notificationConfigurationId}/`, body, {}, {})
+        return await requests.put(`notification/${companyId}/settings/${notificationConfigurationId}/`, body, {}, {})
     },
     createNotificationConfiguration: async (body) => {
-        return await requests.post(`${companyId}/notification/api/settings/`, body, {}, {})
+        return await requests.post(`notification/${companyId}/settings/`, body, {}, {})
     },
     removeNotificationConfiguration: async (notificationConfigurationId) => {
-        return await requests.delete(`${companyId}/notification/api/settings/${notificationConfigurationId}/`, {}, {}, {})
+        return await requests.delete(`notification/${companyId}/settings/${notificationConfigurationId}/`, {}, {}, {})
     }
 }
 
