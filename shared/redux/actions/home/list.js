@@ -59,12 +59,11 @@ const onExportData = (params, formName) => {
 
 const onRenderListing = (source, formName) => {
     return async (dispatch) => {
-        try {
-            let response = await agent.http.LISTING.getRenderData(source, formName)
-            if (response.status === 200) {
-                dispatch({ type: SET_HEADERS, payload: response.data.data });
-            }
-        } catch {}
+        let response = await agent.http.LISTING.getRenderData(source, formName)
+        if (response.status === 200) {
+            console.log(response.data.data)
+            dispatch({ type: SET_HEADERS, payload: response.data.data });
+        }
     }
 }
 

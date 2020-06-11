@@ -79,20 +79,20 @@ const ListingTableHead = (props) => {
     return (
         <thead>
             <tr>
-                {props.headers.map(function (data, index) {
-                    if (data.user_selected) {
+                {props.field_headers.map(function (header_field, index) {
+                    if (header_field.is_selected) {
                         return (
                             <ListingTableHeaderContainer key={index}>
                                 <ListingTableHeaderElement>
                                     <div>
                                         <ListingTableHeaderElementParagraph>
-                                            {data.label_name}
+                                            {header_field.field.label_name}
                                         </ListingTableHeaderElementParagraph>
                                     </div>
-                                    <ListingTableHeaderElementIconContainer onClick={e=> {onSortTable(data.name, sort[data.name])}}>
+                                    <ListingTableHeaderElementIconContainer onClick={e=> {onSortTable(header_field.field.name, sort[header_field.field.name])}}>
                                         <img 
-                                        style={{width: '20px', height: sort[data.name] && sort[data.name] !== 'none' ? '20px': '2px', margin: 'auto', display: 'block', filter:'invert(59%) sepia(26%) saturate(1229%) hue-rotate(107deg) brightness(94%) contrast(100%)'}} 
-                                        src={sort[data.name] && sort[data.name] !== 'none' ? `/${sort[data.name]}.png` : '/line.png'}/>
+                                        style={{width: '20px', height: sort[header_field.field.name] && sort[header_field.field.name] !== 'none' ? '20px': '2px', margin: 'auto', display: 'block', filter:'invert(59%) sepia(26%) saturate(1229%) hue-rotate(107deg) brightness(94%) contrast(100%)'}} 
+                                        src={sort[header_field.field.name] && sort[header_field.field.name] !== 'none' ? `/${sort[header_field.field.name]}.png` : '/line.png'}/>
                                     </ListingTableHeaderElementIconContainer>
                                     <ListingTableHeaderElementDragger onMouseDown={e=> {onMouseDown(e)}}/>
                                 </ListingTableHeaderElement>

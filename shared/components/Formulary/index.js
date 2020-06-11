@@ -190,11 +190,11 @@ class Formulary extends React.Component {
         this.setFilledHasBuiltInitial(false)
         this.source = this.CancelToken.source()
         // if the formulary has user field type we load the options here.
-        this.props.onGetFormularyUserOptions(this.source, formName).then(response=> {
+        /*this.props.onGetFormularyUserOptions(this.source, formName).then(response=> {
             if (response && response.status === 200) {
                 this.setUserOptions(response.data.data)
             }
-        })
+        })*/
         // you can build the data outside of the formulary, so you can use this to render other formularies (like themes for example)
         if (this.props.buildData) {
             this.setBuildData(this.props.buildData)

@@ -14,13 +14,12 @@ import mobilecheck from '../../utils/mobilecheck'
  * from the Data page sets a FormularyId when the user clicks the pencil button to edit and open the formulary.
  * @param {Object} params - the parameters of the listing, parameters define the filter, the sort, the date range
  * and many other stuff. With this we can know the sorted field.
- * @param {Object} headers - object containing primarly all of the fields in the header.
+ * @param {Array(Object)} field_headers - array containing primarly all of the fields in the header.
  * @param {Array<Object>} data - The data to display on the table.
  */
 const ListingTable = (props) => {
     const isMobile = mobilecheck()
     const [hasFiredRequestForNewPage, _setHasFiredRequestForNewPage] = useState(false)
-    const headers = (props.headers && props.headers.field_headers) ? props.headers.field_headers: []
     const tableRef = React.useRef()
     const scrollWrapperRef = React.useRef()
     const scrollRef = React.useRef()
@@ -87,8 +86,8 @@ const ListingTable = (props) => {
             ): ''}
             <ListingTableContainer ref={tableRef} isMobile={isMobile}>
                 <Table>
-                    <ListingTableHeader headers={headers} params={props.params} onSort={props.onSort} defineScrollWidth={defineScrollWidth}/>
-                    <ListingTableContent headers={headers} pagination={props.pagination} data={data} setFormularyId={props.setFormularyId} onRemoveData={props.onRemoveData}/>
+                    <ListingTableHeader field_headers={props.field_headers} params={props.params} onSort={props.onSort} defineScrollWidth={defineScrollWidth}/>
+                    <ListingTableContent field_headers={props.field_headers} pagination={props.pagination} data={data} setFormularyId={props.setFormularyId} onRemoveData={props.onRemoveData}/>
                 </Table>
                 
                 {hasFiredRequestForNewPage ? (

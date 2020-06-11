@@ -46,9 +46,9 @@ const onGetFormularyData = (source, formName, formId, defaults=[]) => {
 }
 
 
-const onGetFormularyUserOptions = (source, formName) => {
+const onGetFormularyUserOptions = (source, formName, fieldId) => {
     return (_) => {
-        return agent.http.FORMULARY.getFormularyUserOptions(source, formName)
+        return agent.http.FORMULARY.getFormularyUserOptions(source, formName, fieldId)
     } 
 }
 

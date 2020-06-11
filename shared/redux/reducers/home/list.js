@@ -13,9 +13,7 @@ let initialState = {
         },
         data: []
     },
-    header: {
-        field_headers: [],
-    },
+    field_headers: [],
     totals: []
 }
 
@@ -30,7 +28,7 @@ export default (state = initialState, action) => {
         case SET_HEADERS:
             return {
                 ...state,
-                header: action.payload
+                field_headers: action.payload
             }
         case SET_TOTALS:
             return {

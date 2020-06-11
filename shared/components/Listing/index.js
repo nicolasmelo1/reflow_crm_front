@@ -136,7 +136,7 @@ class Listing extends React.Component {
         }
     }
     render() {
-
+        console.log(this.props.list)
         return (
             <div>
                 {/*<Row>
@@ -170,8 +170,8 @@ class Listing extends React.Component {
                 <Row style={{margin: '5px -15px'}}>
                     <ListingButtonsContainer>
                         <Filter
-                        fields={(this.props.list.header && this.props.list.header.field_headers) ? 
-                                this.props.list.header.field_headers.map(field=> ({name: field.name, label: field.label_name, type: field.type})) : []} 
+                        fields={(this.props.list.field_headers && this.props.list.field_headers) ? 
+                                this.props.list.field_headers.map(field=> ({name: field.field.name, label: field.field.label_name, type: field.field.type})) : []} 
                         params={this.state.params} 
                         onFilter={this.onFilter}
                         types={this.props.types}
@@ -189,7 +189,7 @@ class Listing extends React.Component {
                     </ListingButtonsContainer>
                     <ListingButtonsContainer>
                         <ListingColumnSelect
-                        headers={this.props.list.header} 
+                        field_headers={this.props.list.field_headers} 
                         onUpdateHeader={this.props.onUpdateHeader}
                         onUpdateSelected={this.props.onUpdateSelected}
                         formName={this.props.router.form}
@@ -203,7 +203,7 @@ class Listing extends React.Component {
                         onRemoveData={this.props.onRemoveData}
                         onSort={this.onSort} 
                         setParams={this.setParams}
-                        headers={this.props.list.header} 
+                        field_headers={this.props.list.field_headers} 
                         data={this.props.list.data.data}
                         pagination={this.props.list.data.pagination} 
                         setFormularyId={this.props.setFormularyId}

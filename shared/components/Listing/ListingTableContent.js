@@ -71,8 +71,8 @@ const ListingTableContent = (props) => {
         <tbody>
             {props.data.map((data, dataIndex) => (
                 <tr key={data.id}>
-                    {props.headers.filter(head => head.user_selected).map((head, headIndex) => {
-                        const elements = (data) ? data.dynamic_form_value.filter(data => data.field_name == head.name): []
+                    {props.field_headers.filter(head => head.is_selected).map((head, headIndex) => {
+                        const elements = (data) ? data.dynamic_form_value.filter(data => data.field_name == head.field.name): []
                         return (
                             <TableContentElement key={dataIndex+headIndex} elements={elements}/>
                         )
