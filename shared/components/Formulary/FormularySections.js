@@ -160,10 +160,11 @@ const FormularySections = (props) => {
             }
         }
     }, [props.sections, props.data])
-   
+    
+
     return (
         <div>
-            { sectionsToLoad.map((section, index) => (
+            {sectionsToLoad.map((section, index) => (
                 <Formularies.SectionContainer key={index} isConditional={section.conditional_value !== null} isMultiSection={section.form_type==='multi-form'}>
                     <Formularies.TitleLabel isConditional={section.conditional_value !== null}>{ section.label_name }</Formularies.TitleLabel>
                     {section.form_type==='multi-form' ? (
@@ -185,7 +186,6 @@ const FormularySections = (props) => {
                         sectionDataIndex={index} 
                         section={section} 
                         fields={section.form_fields}
-                        userOptions={props.userOptions}
                         removeSection={section.form_type==='multi-form' ? removeSection: null}
                         />
                     ))}

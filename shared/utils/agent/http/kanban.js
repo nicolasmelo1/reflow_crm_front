@@ -31,7 +31,7 @@ const KANBAN = {
         return await requests.get(`data/${companyId}/${formName}/all/`, params, {}, source)
     },
     updateCardDimension: async(body, formName) => {
-        return await requests.put(`${companyId}/data/api/kanban/${formName}/change/`, body)
+        return await requests.put(`kanban/${companyId}/${formName}/change/`, body)
     }
 }
 

@@ -9,10 +9,10 @@ const onGetNotifications = (source, params = { page: 1 }) => {
             let notificationsData = getState().notification.notification.data.data
             const payload = {
                 pagination: {
-                    current: response.data.pagination.current,
-                    total: response.data.pagination.total
+                    current: response.data.data.pagination.current,
+                    total: response.data.data.pagination.total
                 },
-                data: params.page > 1 ? notificationsData.concat(response.data.data) : response.data.data
+                data: params.page > 1 ? notificationsData.concat(response.data.data.data) : response.data.data.data
             }
             dispatch({ type: SET_NOTIFICATION, payload: payload })
         }

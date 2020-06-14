@@ -57,7 +57,6 @@ class Formulary extends React.Component {
         this.formularyId = null
         this.state = {
             buildData: {},
-            userOptions: [],
             filled: {
                 hasBuiltInitial: false,
                 isAuxOriginalInitial: false,
@@ -76,7 +75,6 @@ class Formulary extends React.Component {
         }
     }
 
-    setUserOptions = (data) => (this._ismounted) ? this.setState(state => state.userOptions = data) : null
 
     setIsSubmitting = (data) => (this._ismounted) ? this.setState(state => state.isSubmitting = data) : null
 
@@ -140,6 +138,7 @@ class Formulary extends React.Component {
             this.props.onGetFormularySettings(this.source, this.state.buildData.id)
         } else {
             this.props.setFormularySettingsHasBeenUpdated()
+            this.setFilledDataAndBuildData(null, false, false, [], [], {})
             this.onLoadFormulary(this.props.formName, this.props.formularyId)
         }
         this.setState(state => {
@@ -176,6 +175,9 @@ class Formulary extends React.Component {
     }
 
     onFullResetFormulary = (filled, buildData) => {
+        // reset the errors as the data, obviously
+        this.setErrors({})
+
         this.setFilledDataAndBuildData(
             filled.data.id, 
             filled.hasBuiltInitial,
@@ -187,35 +189,26 @@ class Formulary extends React.Component {
     }
 
     onLoadFormulary = async (formName, formId=null) => {
-        this.setFilledHasBuiltInitial(false)
         this.source = this.CancelToken.source()
-        // if the formulary has user field type we load the options here.
-        /*this.props.onGetFormularyUserOptions(this.source, formName).then(response=> {
-            if (response && response.status === 200) {
-                this.setUserOptions(response.data.data)
-            }
-        })*/
+
         // you can build the data outside of the formulary, so you can use this to render other formularies (like themes for example)
         if (this.props.buildData) {
             this.setBuildData(this.props.buildData)
         // this part is used when loading from the home page for example
         } else {
             this.setIsLoading(true)
-            if (formId) {
-                this.props.onGetFormularyData(this.source, formName, formId, this.props.formularyDefaultData).then(data=> {
-                    const id = data.id ? data.id : null
-                    const sectionsData = data.depends_on_dynamic_form ? data.depends_on_dynamic_form : []
-                    this.props.onGetBuildFormulary(this.source, formName).then(data => {
-                        this.setIsLoading(false)
-                        this.setFilledDataAndBuildData(id, false, false, sectionsData, [], data)
+            this.props.onGetBuildFormulary(this.source, formName).then(formularyBuildData => {
+                this.setIsLoading(false)
+                if (formId) {
+                    this.props.onGetFormularyData(this.source, formName, formId, this.props.formularyDefaultData).then(data=> {
+                        const id = data.id ? data.id : null
+                        const sectionsData = data.depends_on_dynamic_form ? data.depends_on_dynamic_form : []
+                        this.setFilledDataAndBuildData(id, false, false, sectionsData, [], formularyBuildData)
                     })
-                })
-            } else {
-                this.props.onGetBuildFormulary(this.source, formName).then(data => {
-                    this.setIsLoading(false)
-                    this.setBuildData(data)
-                })
-            }
+                } else {
+                    this.setBuildData(formularyBuildData)
+                }
+            })
         }
     }
 
@@ -280,6 +273,7 @@ class Formulary extends React.Component {
             this.setBuildData({})
             this.onLoadFormulary(this.props.formName, null)
         } 
+        // formulary id has changed, it was null and is not null anymore
         if (oldProps.formularyId !== this.props.formularyId && this.props.formularyId && oldProps.formularyId === null) {
             if (this.source) {
                 this.source.cancel()
@@ -294,24 +288,19 @@ class Formulary extends React.Component {
                 this.setFilledData(id, sectionsData)
             })
         }
-
+        // The formulary is closing
         if (oldProps.formulary.isOpen !== this.props.formulary.isOpen && oldProps.formulary.isOpen) {
-            if (this.state.auxOriginalInitial.filled && this.state.auxOriginalInitial.buildData) {
-                // full reset the formulary with the build data not the filled data
-                this.onFullResetFormulary(
-                    {
-                        hasBuiltInitial: false,
-                        data: {
-                            id: null,
-                            depends_on_dynamic_form: []
-                        },
-                        files: []
-                    }, this.state.auxOriginalInitial.buildData
-                )
-            } else {
-                this.setFilledData(null, [])
-                this.setFilledHasBuiltInitial(false)
-            }
+            const buildData = (this.state.auxOriginalInitial.filled && this.state.auxOriginalInitial.buildData) ? this.state.auxOriginalInitial.buildData : this.state.buildData
+            this.onFullResetFormulary(
+                {
+                    hasBuiltInitial: false,
+                    data: {
+                        id: null,
+                        depends_on_dynamic_form: []
+                    },
+                    files: []
+                }, buildData
+            )
             this.props.setFormularyId(null)
             this.props.setFormularyDefaultData([])
         }
@@ -343,7 +332,6 @@ class Formulary extends React.Component {
                             types={this.props.login.types}
                             setIsEditing={this.setIsEditing}
                             data={this.props.formulary.update}
-                            userOptions={this.state.userOptions}
                             />
                         </div>
                     ): (
@@ -374,7 +362,6 @@ class Formulary extends React.Component {
                                     setFilledFiles={this.setFilledFiles}
                                     setFilledData={this.setFilledData}
                                     sections={sections}
-                                    userOptions={this.state.userOptions}
                                     />
                                     {sections.length > 0 && this.props.type !== 'preview' ? (
                                         <div>
