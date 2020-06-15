@@ -7,7 +7,7 @@ const LISTING = {
         return await requests.get(`listing/${companyId}/${formName}/`, {}, {}, source)
     },
     getHasExportedData: async (isToDownload) => {
-        const path = `listing/${companyId}/${formName}/extract/`
+        const path = `listing/${companyId}/extract/`
         if (isToDownload) {
             getToken().then(token => {
                 window.open(`${API_ROOT}${path}?download=download&token=${token}`)

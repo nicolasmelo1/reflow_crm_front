@@ -51,18 +51,18 @@ const ListingExtract = (props) => {
     const onExtract = (format) => {
         const data = {
             ...props.params,
-            from: updateDates.startDate,
-            to: updateDates.endDate,
+            from_date: updateDates.startDate,
+            to_date: updateDates.endDate,
             format: format
         }
         props.onExportData(data, props.formName).then(async response => {   
             if (response && response.data.status === 'ok') {
                 let response = await props.onGetExportedData()
                 let counter = 0
-                while (response.data.status === 'empty' || counter < 50) {
+                while (response.data.status === 'empty' && counter < 10) {
                     await sleep(2000);
                     response = await props.onGetExportedData()
-                    counter = (response.data.status !== 'empty') ? 51 : counter + 1
+                    counter = (response.data.status !== 'empty') ? 11 : counter + 1
                 }
             }
         })
