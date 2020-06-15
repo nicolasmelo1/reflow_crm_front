@@ -60,7 +60,7 @@ const onExportData = (params, formName) => {
 const onRenderListing = (source, formName) => {
     return async (dispatch) => {
         let response = await agent.http.LISTING.getRenderData(source, formName)
-        if (response.status === 200) {
+        if (response && response.status === 200) {
             dispatch({ type: SET_HEADERS, payload: response.data.data });
         }
     }

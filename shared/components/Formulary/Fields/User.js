@@ -45,7 +45,7 @@ const User = (props) => {
         }
     },[])
     
-    const fieldValue =  (props.values.length === 0) ? []: data.filter(initialOption => initialOption.value.toString() === props.values[0].value.toString())
+    const fieldValue =  (props.values.length === 0) ? []: options.filter(initialOption => initialOption.value.toString() === props.values[0].value.toString())
 
 
     return (

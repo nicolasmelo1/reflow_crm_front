@@ -50,7 +50,7 @@ const FORMULARY = {
         return await requests.delete(`formulary/${companyId}/settings/fields/${formId}/${fieldId}/`)
     },
     testFormularyFormulaField: async (source, formId, text) => {
-        return await requests.get(`formulary/${companyId}/formula/${formId}/`, { text: text }, {}, source)
+        return await requests.get(`formula/${companyId}/${formId}/`, { text: text }, {}, source)
     }
 }
 
