@@ -165,7 +165,7 @@ class Formulary extends React.Component {
                 if (response && response.status !== 200) {
                     this.setErrors(response.data.error)
                 } else if (this.state.buildData.form_name !== this.props.formName) {
-                    this.onFullResetFormulary(this.state.auxOriginalInitial.filled, this.state.auxOriginalInitial.buildData)
+                    this.onFullResetFormulary(this.state.auxOriginalInitial.buildData, this.state.auxOriginalInitial.filled)
                 } else {
                     this.props.setFormularyHasBeenUpdated()
                     this.setIsOpen()
@@ -174,7 +174,17 @@ class Formulary extends React.Component {
         }
     }
 
-    onFullResetFormulary = (filled, buildData) => {
+    onFullResetFormulary = (buildData, filled=null) => {
+        if (typeof(filled) === 'undefined' || filled === null){
+            filled = {
+                hasBuiltInitial: false,
+                data: {
+                    id: null,
+                    depends_on_dynamic_form: []
+                },
+                files: []
+            }
+        }
         // reset the errors as the data, obviously
         this.setErrors({})
 
@@ -193,7 +203,7 @@ class Formulary extends React.Component {
 
         // you can build the data outside of the formulary, so you can use this to render other formularies (like themes for example)
         if (this.props.buildData) {
-            this.setBuildData(this.props.buildData)
+            this.onFullResetFormulary(this.props.buildData)
         // this part is used when loading from the home page for example
         } else {
             this.setIsLoading(true)
@@ -206,7 +216,7 @@ class Formulary extends React.Component {
                         this.setFilledDataAndBuildData(id, false, false, sectionsData, [], formularyBuildData)
                     })
                 } else {
-                    this.setBuildData(formularyBuildData)
+                    this.onFullResetFormulary(formularyBuildData)
                 }
             })
         }
@@ -218,7 +228,6 @@ class Formulary extends React.Component {
      */
     onChangeFormulary = (formName, formId=null) => { 
         this.setAuxOriginalInitial()
-        this.setBuildData({})
         this.onLoadFormulary(formName, formId)
     }
 
@@ -270,7 +279,6 @@ class Formulary extends React.Component {
                 this.source.cancel()
             }
             if (this.state.isEditing) this.setIsEditing()
-            this.setBuildData({})
             this.onLoadFormulary(this.props.formName, null)
         } 
         // formulary id has changed, it was null and is not null anymore
@@ -291,16 +299,7 @@ class Formulary extends React.Component {
         // The formulary is closing
         if (oldProps.formulary.isOpen !== this.props.formulary.isOpen && oldProps.formulary.isOpen) {
             const buildData = (this.state.auxOriginalInitial.filled && this.state.auxOriginalInitial.buildData) ? this.state.auxOriginalInitial.buildData : this.state.buildData
-            this.onFullResetFormulary(
-                {
-                    hasBuiltInitial: false,
-                    data: {
-                        id: null,
-                        depends_on_dynamic_form: []
-                    },
-                    files: []
-                }, buildData
-            )
+            this.onFullResetFormulary(buildData)
             this.props.setFormularyId(null)
             this.props.setFormularyDefaultData([])
         }
@@ -343,7 +342,7 @@ class Formulary extends React.Component {
                                     ) : ''}
                                     {this.showNavigator() ? (
                                         <Formularies.Navigator 
-                                        onClick={e => {this.onFullResetFormulary(this.state.auxOriginalInitial.filled, this.state.auxOriginalInitial.buildData)}}
+                                        onClick={e => {this.onFullResetFormulary(this.state.auxOriginalInitial.buildData, this.state.auxOriginalInitial.filled)}}
                                         >
                                             &lt;&nbsp;{(this.state.auxOriginalInitial.buildData) ? this.state.auxOriginalInitial.buildData.label_name : ''}
                                         </Formularies.Navigator>
