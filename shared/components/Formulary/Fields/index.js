@@ -173,25 +173,23 @@ const Fields = (props) => {
     }, [props.fieldFormValues])
 
     return (
-        <Field.Container invalid={checkErrors()} fieldIsHidden={props.field.field_is_hidden}>
-            {(props.field_is_hidden) ? '' : (
-                <div>
-                    {(props.field.label_is_hidden) ? '' : (
-                        <Field.FieldTitle.Label>
-                            { props.field.label_name }
-                            <Field.FieldTitle.Required>{(props.field.required) ? '*': ''}</Field.FieldTitle.Required>
-                            {(typeName === 'form' && props.type !== 'embbed') ? (
-                                <Field.FieldTitle.FormButton 
-                                onClick={e => {props.type === 'full' ? props.onChangeFormulary(props.field.form_field_as_option.form_name, (values.length > 0) ? values[0].value: null) : () => {}}}
-                                >
-                                    {formFieldLabelButtonText()}
-                                </Field.FieldTitle.FormButton>
-                            ) : ''}
-                        </Field.FieldTitle.Label>
-                    )}
-                    {renderFieldType()}
-                </div>
-            )}
+        <Field.Container invalid={checkErrors()}>
+            <div>
+                {(props.field.label_is_hidden) ? '' : (
+                    <Field.FieldTitle.Label>
+                        { props.field.label_name }
+                        <Field.FieldTitle.Required>{(props.field.required) ? '*': ''}</Field.FieldTitle.Required>
+                        {(typeName === 'form' && props.type !== 'embbed') ? (
+                            <Field.FieldTitle.FormButton 
+                            onClick={e => {props.type === 'full' ? props.onChangeFormulary(props.field.form_field_as_option.form_name, (values.length > 0) ? values[0].value: null) : () => {}}}
+                            >
+                                {formFieldLabelButtonText()}
+                            </Field.FieldTitle.FormButton>
+                        ) : ''}
+                    </Field.FieldTitle.Label>
+                )}
+                {props.field.field_is_hidden ? null : renderFieldType()}
+            </div>
             {(checkErrors()) ? (
                 <Field.Errors>{errors('pt-br', props.errors.reason[0])}</Field.Errors>
             ) : ''}

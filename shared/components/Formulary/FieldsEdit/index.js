@@ -250,19 +250,13 @@ const FormularyFieldEdit = (props) => {
                 <div>
                     {props.field ? (
                         <div>
-                            {props.field.field_is_hidden ? (
-                                <p>
-                                    {strings['pt-br']['formularyEditFieldHiddenFieldLabel']}
-                                </p>
-                            ) : (
-                                <Fields 
-                                userOptions={props.userOptions}
-                                errors={{}}
-                                field={props.field}
-                                types={props.types}
-                                fieldFormValues={[]}
-                                />
-                            )}
+                            <Fields 
+                            userOptions={props.userOptions}
+                            errors={{}}
+                            field={props.field}
+                            types={props.types}
+                            fieldFormValues={[]}
+                            />
                         </div>
                     ) : (
                         <p>

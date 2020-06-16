@@ -5,6 +5,7 @@ import { SidebarDisabledGroupLabel, SidebarGroupInput, SidebarIconsContainer, Si
 import { paths, strings } from '../../utils/constants'
 
 const SidebarGroupEdit = (props) => {
+    const isMoving = React.useRef(false)
     const [isDragging,  setIsDragging] = useState(false)
     const router = useRouter()
 
@@ -55,13 +56,25 @@ const SidebarGroupEdit = (props) => {
         props.onChangeGroupState(groups)
     }
 
+    // THIS IS REQUIRED BECAUSE OF YOUR BELOVED TRASH GOOGLE CHROME, IF WE DISMISS THE SCROLL DIRECTLY WHEN THE USER
+    // MOVES IT CAUSES A BUG. The bug is: the scroll goes back to the top and the drag is dismissed.
+    const setIsMoving = (data) => {
+        if (data === true) {
+            setTimeout(() => {if (isMoving.current) setIsDragging(true)}, 100)
+        } else {
+            setIsDragging(false)
+        }
+    }
+
+
     const onMoveGroup = (e, index) => {
         const groupContainer = e.currentTarget.closest('.group-container')
         const elementRect = e.currentTarget.getBoundingClientRect()
 
         e.dataTransfer.setDragImage(groupContainer, elementRect.width - 5, 20)
         e.dataTransfer.setData('groupToMoveIndex', index.toString())
-        setIsDragging(true)
+        isMoving.current = true
+        setIsMoving(isMoving.current)
     }
 
     const onDrag = (e) => {
@@ -77,7 +90,8 @@ const SidebarGroupEdit = (props) => {
     const onDragEnd = (e) => {
         e.preventDefault()
         e.stopPropagation()
-        setIsDragging(false)
+        isMoving.current = false
+        setIsMoving(isMoving.current)
     }
     
     // almost equal as the onMoveSection() function in FormularySectionsEdit component in the Formulary folder
