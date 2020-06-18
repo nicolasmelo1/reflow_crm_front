@@ -37,6 +37,7 @@ const Filter = (props) => {
     const [searchInstances, setSearchInstances] = useState([]);
     const dropdownRef = React.useRef()
     const fields = (props.fields) ? props.fields: []
+    console.log(props.fields)
 
     // Check Components/Utils/Select for reference and explanation
     const setIsOpenRef = React.useRef(isOpen);
