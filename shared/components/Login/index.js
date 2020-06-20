@@ -97,11 +97,8 @@ class Login extends React.Component {
                     } else {
                         this.props.setIsAuthenticated(true)
                     }
-                } else if(isAdmin(this.props.login?.types?.defaults?.profile_type, response.data.user)) {
-                    this.props.setAddTemplates(true)
                 } else {
-                    this.props.onAddNotification(strings['pt-br']['loginNoFormLoginError'],'error')
-                    setStorageToken('', '')
+                    this.props.setAddTemplates(true)
                 }
             }
         })
