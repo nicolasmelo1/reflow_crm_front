@@ -1,6 +1,4 @@
 const isAdmin = (profilesType, userObject) => {
-    console.log(profilesType)
-    console.log(userObject)
     if (profilesType && userObject) {
         // HINT: Just some hint here that i was not aware of and i think it's important to share
         // when i created this line below first i implemented it as profilesType.filter(profile=> profile.id = userObject.profile)
