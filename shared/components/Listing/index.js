@@ -26,6 +26,7 @@ class Listing extends React.Component {
         this.source = null
         this.state = {
             isOpenedTotalsForm: false,
+            isLoadingData: false,
             params: {
                 page: 1,
                 sort_value: [],
@@ -35,6 +36,16 @@ class Listing extends React.Component {
                 search_field: this.props.search.field
             }
         }
+    }
+
+    // If the data is being loaded by the visualization
+    setIsLoadingData = (isLoading) => {
+        this.setState(state => {
+            return {
+                ...state,
+                isLoadingData: isLoading
+            }
+        })
     }
 
     setIsOpenedTotalsForm = (isOpenedTotalsForm) => {
@@ -47,6 +58,9 @@ class Listing extends React.Component {
     }
 
     setParams = (params) => {
+        if (this.source) {
+            this.source.cancel()
+        }
         this.source = this.CancelToken.source();
         this.setState(state => {
             return {
@@ -58,6 +72,7 @@ class Listing extends React.Component {
     }
     
     onFilter = (searchInstances) => {
+        this.setIsLoadingData(true)
         const params = {
             ...this.state.params,
             search_value: [],
@@ -73,7 +88,9 @@ class Listing extends React.Component {
         })
         //this.props.onGetTotals(this.state.params, this.props.router.form)
         this.props.setSearch(params.search_field, params.search_value, params.search_exact)
-        this.setParams({...params})
+        this.setParams({...params}).then(response => {
+            this.setIsLoadingData(false)
+        })
     }
 
     onSort = (fieldName, value) => {
@@ -124,6 +141,9 @@ class Listing extends React.Component {
             this.props.onRenderListing(this.source, this.props.router.form)
         }
         if (this.props.formularyHasBeenUpdated !== prevProps.formularyHasBeenUpdated) {
+            if (this.source) {
+                this.source.cancel()
+            }
             this.source = this.CancelToken.source()
             this.props.onGetListingData(this.source, this.state.params, this.props.router.form)
             //this.props.onGetTotals(this.state.params, this.props.router.form)    
@@ -169,6 +189,7 @@ class Listing extends React.Component {
                 <Row style={{margin: '5px -15px'}}>
                     <ListingButtonsContainer>
                         <Filter
+                        isLoading={this.state.isLoadingData}
                         fields={(this.props.list.field_headers && this.props.list.field_headers) ? 
                                 this.props.list.field_headers.map(field=> ({name: field.field.name, label: field.field.label_name, type: field.field.type})) : []} 
                         params={this.state.params} 

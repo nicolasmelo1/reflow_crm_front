@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 import FilterInstance from './FilterInstance'
-import { FilterAddNewFilterButton, FilterSearchButton } from '../../styles/Filter';
+import { FilterAddNewFilterButton, FilterSearchButton, FilterSpinner } from '../../styles/Filter';
 import { strings } from '../../utils/constants'
 
 /**
@@ -22,6 +22,8 @@ import { strings } from '../../utils/constants'
  * and many other stuff. With this we can create the filters based on the params.
  * @param {Function} onFilter - function responsible for effectively adding all of the filters to the params object 
  * and for calling the function to get the new filtered data.
+ * @param {Boolean} isLoading - When you press to search, the filter enters in a loading state so the user cannot load
+ * again until it is not in loading state anymore
  * @param {Object} types - the types state, this types are usually the required data from this system to work. 
  * Types defines all of the field types, form types, format of numbers and dates and many other stuff
  * @param {React.Component} container - (optional) - defaults to a simple div, this is the holder of the button and the dropdown
@@ -85,7 +87,6 @@ const Filter = (props) => {
     const sendFilterData = (e) => {
         e.preventDefault()
         props.onFilter(searchInstances)
-        setIsOpen(false)
     }
 
     const onToggleFilterOnClickOutside = (e) => {
@@ -117,6 +118,11 @@ const Filter = (props) => {
         setSearchInstances(search)
     }, [props.params])
 
+    useEffect(() => {
+        if (!props.isLoading && isOpen) {
+            setIsOpen(false)
+        }
+    }, [props.isLoading])
 
     useEffect(() => {
         document.addEventListener("mousedown", onToggleFilterOnClickOutside); 
@@ -155,7 +161,9 @@ const Filter = (props) => {
                         fields={fields}
                         />
                     ))}
-                    <FilterSearchButton onClick={e => {sendFilterData(e)}}>{strings['pt-br']['filterSearchButtonLabel']}</FilterSearchButton>
+                    <FilterSearchButton onClick={e => {props.isLoading ? null : sendFilterData(e)}}>
+                        {props.isLoading ? (<FilterSpinner animation="border" size="sm"/>) : (strings['pt-br']['filterSearchButtonLabel'])}
+                    </FilterSearchButton>
                     <FilterAddNewFilterButton onClick={e => {addNewFilter(e)}}>{strings['pt-br']['filterAddNewFilterButtonLabel']}</FilterAddNewFilterButton>
                 </FilterContainerComponent>
             ) : ''}

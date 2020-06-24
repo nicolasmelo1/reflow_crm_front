@@ -33,6 +33,7 @@ class Kanban extends React.Component {
         this.source = null
         this.state = {
             configurationIsOpen: false,
+            isLoadingData: false,
             params: {
                 page: 1,
                 search_value: this.props.search.value,
@@ -42,22 +43,35 @@ class Kanban extends React.Component {
         }
     }
 
-
-    setParams = async (params) => {
-        if (this.props.kanban.initial.default_dimension_field_id && this.props.kanban.initial.default_kanban_card_id) {
-            this.source = this.CancelToken.source()
-            this.props.onGetKanbanData(this.source, params ,this.props.router.form)
-        }
-
+    // If the data is being loaded by the visualization
+    setIsLoadingData = (isLoading) => {
         this.setState(state => {
             return {
                 ...state,
-                params: params
+                isLoadingData: isLoading
             }
         })
     }
 
+    setParams = async (params) => {
+        if (this.props.kanban.initial.default_dimension_field_id && this.props.kanban.initial.default_kanban_card_id) {
+            if (this.source){
+                this.source.cancel()
+            }
+            this.setState(state => {
+                return {
+                    ...state,
+                    params: params
+                }
+            })
+            this.source = this.CancelToken.source()
+            return this.props.onGetKanbanData(this.source, params ,this.props.router.form)
+        }
+        return Promise.resolve(null)
+    }
+
     onFilter = (searchInstances) => {
+        this.setIsLoadingData(true)
         const params = {
             ...this.state.params,
             search_value: [],
@@ -72,7 +86,9 @@ class Kanban extends React.Component {
             }
         })
         this.props.setSearch(params.search_field, params.search_value, params.search_exact)
-        this.setParams({...params})
+        this.setParams({...params}).then(response=> {
+            this.setIsLoadingData(false)
+        })
     }
 
     setConfigurationIsOpen = (configurationIsOpen) => {
@@ -108,6 +124,9 @@ class Kanban extends React.Component {
             this.props.onRenderKanban(this.source, this.props.router.form)
         }
         if (this.canUpdateKanbanData(prevProps)) {
+            if (this.source) {
+                this.source.cancel()
+            }
             this.source = this.CancelToken.source()
             this.props.onGetKanbanData(this.source, this.state.params, this.props.router.form)
         }
@@ -139,6 +158,7 @@ class Kanban extends React.Component {
                                         </KanbanConfigurationButton>
                                         {this.state.configurationIsOpen ? '' : (
                                             <Filter
+                                            isLoading={this.state.isLoadingData}
                                             fields={(this.props.kanban.initial.fields) ? this.props.kanban.initial.fields.map(field=> ({ name: field.name, label: field.label_name, type: field.type })) : []}
                                             params={this.state.params} 
                                             onFilter={this.onFilter}

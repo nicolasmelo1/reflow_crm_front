@@ -25,7 +25,9 @@ const onGetListingData = (source, params, formName) => {
             dispatch({ type: GET_DATA, payload: payload })
             return response
 
-        } catch {}
+        } catch {
+            return null
+        }
     }
 }
 

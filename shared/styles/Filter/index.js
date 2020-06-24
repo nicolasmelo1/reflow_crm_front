@@ -2,6 +2,7 @@ import FilterAddNewFilterButton from './FilterAddNewFilterButton'
 import FilterAndExtractButton from './FilterAndExtractButton'
 import FilterContainer from './FilterContainer'
 import FilterDeleteButton from './FilterDeleteButton'
+import FilterSpinner from './FilterSpinner'
 import FilterIcon from './FilterIcon'
 import FilterInput from './FilterInput'
 import FilterInputDropdownButton from './FilterInputDropdownButton'
@@ -14,6 +15,7 @@ export { FilterAddNewFilterButton }
 export { FilterAndExtractButton }
 export { FilterContainer }
 export { FilterDeleteButton }
+export { FilterSpinner }
 export { FilterIcon }
 export { FilterInput }
 export { FilterInputDropdownButton }
