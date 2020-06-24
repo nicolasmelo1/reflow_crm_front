@@ -20,8 +20,16 @@ import {
 
 
 /**
- * {Description of your component, what does it do}
- * @param {Type} props - {go in detail about every prop it recieves}
+ * This component is just used for the user to change the password, the user don't
+ * enter here from by any links inside of our platform, but from external links that 
+ * he recieve on his email.
+ * @param {String} temporaryPassword - Used for automatically setting the temporaryPassword
+ * on the currentPassword input.
+ * @param {Function} onUpdateUserPassword - This is a react redux action function used for
+ * upading the new userPassword.
+ * @param {Function} onAddNotification - React redux action function  to set custom notify notification
+ * messages.
+ * @param {Function} goBack - Go back function to go back to the login page.
  */
 class ChangePassword extends React.Component {
     constructor(props) {

@@ -107,7 +107,7 @@ class Kanban extends React.Component {
     componentDidMount() {
         this.source = this.CancelToken.source()
         this.props.onRenderKanban(this.source, this.props.router.form)
-        this.props.onGetCards(this.source, this.props.router.form)
+        this.props.onGetCards(this.source, this.props.router.form).then()
     }
 
     componentDidUpdate(prevProps) {
