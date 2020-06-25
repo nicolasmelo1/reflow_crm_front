@@ -1,6 +1,6 @@
 import React from 'react'
 import { View } from 'react-native'
-
+import DashboardConfiguration from './DashboardConfiguration'
 /**
  * Main function for Dashboards visualization
  * @param {Type} props - {go in detail about every prop it recieves}
@@ -31,7 +31,10 @@ class Dashboard extends React.Component {
     renderWeb = () => {
         return (
             <div>
-                <button>Configurações</button>
+                <button onClick={e=> {this.setIsEditing(true)}}>Configurações</button>
+                {this.state.isEditing ? (
+                    <DashboardConfiguration/>
+                ): null}
             </div>
         )
     }
@@ -41,4 +44,4 @@ class Dashboard extends React.Component {
     }
 }
 
-export default index
+export default Dashboard

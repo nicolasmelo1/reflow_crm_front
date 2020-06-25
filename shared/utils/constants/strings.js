@@ -251,7 +251,8 @@ const strings = {
         numberFormatTypeCurrency: 'Monetário',
         numberFormatTypePercentage: 'Porcentagem',
         dataTypeKanban: 'Kanban',
-        dataTypeListing: 'Listagem'
+        dataTypeListing: 'Listagem',
+        dataTypeDashboard: 'Dashboard'
     }
 }
 

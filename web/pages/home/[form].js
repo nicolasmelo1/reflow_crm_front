@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Row, Col } from 'react-bootstrap';
 import Router, { withRouter } from 'next/router'
 import actions from '@shared/redux/actions';
-import { Layout, Formulary, Listing, Kanban, Error404 } from '@shared/components';
+import { Layout, Formulary, Listing, Kanban, Error404, Dashboard } from '@shared/components';
 import { DataTypeHeaderAnchor } from '@shared/styles/Data'
 import { strings, types, paths } from '@shared/utils/constants';
 
@@ -114,7 +114,9 @@ class Data extends React.Component {
 
     renderVisualization = () => {
         const dataType = this.props.user && this.getDataType(this.props.user.data_type).length > 0 ? this.getDataType(this.props.user.data_type)[0].name : 'listing'
-        switch(dataType){
+        switch(dataType) {
+            case 'dashboard':
+                return <Dashboard/>
             case 'listing': 
                 return <Listing 
                         router={this.props.router.query} 

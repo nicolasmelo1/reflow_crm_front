@@ -61,7 +61,8 @@ const types = (lang, type, key) => {
         },
         data_type: {
             kanban: strings[lang]['dataTypeKanban'],
-            listing: strings[lang]['dataTypeListing']
+            listing: strings[lang]['dataTypeListing'],
+            dashboard: strings[lang]['dataTypeDashboard']
         },
         group_type: {
             empty: strings[lang]['groupTypeEmpty'],
