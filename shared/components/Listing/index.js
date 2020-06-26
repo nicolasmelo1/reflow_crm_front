@@ -75,6 +75,7 @@ class Listing extends React.Component {
         this.setIsLoadingData(true)
         const params = {
             ...this.state.params,
+            page: 1,
             search_value: [],
             search_exact: [],
             search_field: []
@@ -94,7 +95,10 @@ class Listing extends React.Component {
     }
 
     onSort = (fieldName, value) => {
-        const params = {...this.state.params}
+        const params = {
+            ...this.state.params,
+            page: 1
+        }
         if (!fieldName || !value) {
             throw new SyntaxError("onSort() function should recieve a fieldName and a value")
         } 
