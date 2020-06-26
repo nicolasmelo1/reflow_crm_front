@@ -173,12 +173,13 @@ const Fields = (props) => {
         }
     }, [props.fieldFormValues])
 
+    // Scroll into field when there are any errors in the formulary
     useEffect(() => {
         if (checkErrors() && fieldContainerRef.current) {
             fieldContainerRef.current.scrollIntoView()
         }
     })
-    
+
     return (
         <Field.Container ref={fieldContainerRef} invalid={checkErrors()}>
             <div>
