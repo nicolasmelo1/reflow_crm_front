@@ -116,7 +116,11 @@ class Data extends React.Component {
         const dataType = this.props.user && this.getDataType(this.props.user.data_type).length > 0 ? this.getDataType(this.props.user.data_type)[0].name : 'listing'
         switch(dataType) {
             case 'dashboard':
-                return <Dashboard/>
+                return <Dashboard
+                        formName={this.props.router.query.form}
+                        search={this.state.search}
+                        setSearch={this.setSearch} 
+                        />
             case 'listing': 
                 return <Listing 
                         router={this.props.router.query} 

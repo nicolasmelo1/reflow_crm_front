@@ -28,32 +28,66 @@ const possibleColors = [
 ]
 
 const chart = (context, type, labels, values) => {
+    let colors = Array.from(possibleColors)
     const datasetOptions = {
         line: {
             fill: false,
-            borderColor:possibleColors[Math.floor(Math.random() * possibleColors.length)]
+            borderColor:colors[Math.floor(Math.random() * colors.length)]
         },
         bar: {
-            backgroundColor: values.map(__=>possibleColors[Math.floor(Math.random() * possibleColors.length)])
+            backgroundColor: values.map(__=> {
+                const indexToRemove = Math.floor(Math.random() * colors.length)
+                const color = JSON.parse(JSON.stringify(colors[indexToRemove]))
+                colors.splice(indexToRemove, 1)
+                return color
+            })
         },
         pie: {
-            backgroundColor: values.map(__=>possibleColors[Math.floor(Math.random() * possibleColors.length)])
+            backgroundColor: values.map(__=> {
+                const indexToRemove = Math.floor(Math.random() * colors.length)
+                const color = JSON.parse(JSON.stringify(colors[indexToRemove]))
+                colors.splice(indexToRemove, 1)
+                return color
+            })
         }
     }
     const options = {
         line: {
+            title: {
+                display: true,
+                text: 'Exemplo'
+            },
             legend: {
                 display: false
+            },
+            tooltips: {
+                callbacks: {
+                    label: (tooltipItem, data) => {
+                        return '$ ' + tooltipItem.value
+                    }
+                }
             },
             scales: {
                 yAxes: [{
                     ticks: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        callback: (value, index, values) => {
+                            return '$ ' + value
+                        }
                     }
                 }]
+            },
+            elements: {
+                line: {
+                    tension: 0 // disables bezier curves
+                }
             }
         }, 
         bar: {
+            title: {
+                display: true,
+                text: 'Exemplo'
+            },
             legend: {
                 display: false
             },
@@ -65,7 +99,12 @@ const chart = (context, type, labels, values) => {
                 }]
             }
         },
-        pie: {}
+        pie: {
+            title: {
+                display: true,
+                text: 'Exemplo'
+            }
+        }
     }
     return new Chart(
         context,
