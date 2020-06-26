@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
-import { DashboardConfigurationAddNewCard, DashboardConfigurationAddNewIcon, DashboardConfigurationAddNewText } from '../../styles/Dashboard'
-import charts from '../../utils/charts'
-import DashboardConfigurationForm from './DashboardConfigurationForm'
+import DashboardConfigurationCard from './DashboardConfigurationCard'
+import { 
+    DashboardConfigurationAddNewCard, 
+    DashboardConfigurationCardsContainer, 
+    DashboardConfigurationAddNewIcon, 
+    DashboardConfigurationAddNewText 
+} from '../../styles/Dashboard'
+
 
 /**
  * {Description of your component, what does it do}
@@ -11,17 +16,6 @@ import DashboardConfigurationForm from './DashboardConfigurationForm'
 const DashboardConfiguration = (props) => {
     const [dashboardSettingsData, setDashboardSettingsData] = useState([])
     const sourceRef = React.useRef(null)
-    //const buildChart = React.useRef(null)
-    //const chart = React.useRef(null)
-    
-    //const [chartType, setChartType] = useState('bar')
-
-    /*const changeChargeType = () => {
-        if (chart.current) {
-            chart.current.destroy()
-        }
-        chart.current = charts(buildChart.current, chartType, ['Jan', 'Fev', 'Mar'], [10, 20, 30])
-    }*/
 
     const onUpdateDashboardSettings = (index, newData) => {
         dashboardSettingsData[index] = newData
@@ -34,6 +28,14 @@ const DashboardConfiguration = (props) => {
     }
 
     const addDashboardSettings = () => {
+        let chartTypeId = null
+        let aggregationTypeId = null
+        if (props.types?.defaults?.chart_type && props.types.defaults.chart_type.length > 0) {
+            chartTypeId = props.types.defaults.chart_type[Math.floor(Math.random() * props.types.defaults.chart_type.length)].id
+        }
+        if (props.types?.defaults?.aggregation_type && props.types.defaults.aggregation_type.length > 0) {
+            aggregationTypeId = props.types.defaults.aggregation_type[Math.floor(Math.random() * props.types.defaults.aggregation_type.length)].id
+        }
         dashboardSettingsData.push({
             id: null,
             name: '',
@@ -41,8 +43,8 @@ const DashboardConfiguration = (props) => {
             value_field: null,
             label_field: null,
             number_format_type: null,
-            chart_type: null,
-            aggregation_type: null
+            chart_type: chartTypeId,
+            aggregation_type: aggregationTypeId
         })
         setDashboardSettingsData([...dashboardSettingsData])
     }
@@ -70,21 +72,22 @@ const DashboardConfiguration = (props) => {
 
     const renderWeb = () => {
         return (
-            <div>
+            <DashboardConfigurationCardsContainer>
                 <DashboardConfigurationAddNewCard onClick={e=>{addDashboardSettings()}}>
                     <DashboardConfigurationAddNewIcon icon="plus-circle"/>
                     <DashboardConfigurationAddNewText>Adicionar um novo dash</DashboardConfigurationAddNewText>
                 </DashboardConfigurationAddNewCard>
                 {dashboardSettingsData.map((dashboardSetting, index) => (
-                    <DashboardConfigurationForm
+                    <DashboardConfigurationCard
                     key={index}
+                    types={props.types}
                     dashboardConfigurationIndex={index}
                     onUpdateDashboardSettings={onUpdateDashboardSettings}
                     onRemoveDashboardSettings={onRemoveDashboardSettings}
                     dashboardConfigurationData={dashboardSetting}
                     />
                 ))}
-            </div>
+            </DashboardConfigurationCardsContainer>
         )
     }
 

@@ -97,6 +97,7 @@ class Dashboard extends React.Component {
                 {this.state.isEditing ? (
                     <DashboardConfiguration
                     cancelToken={this.CancelToken}
+                    types={this.props.login.types}
                     formName={this.props.formName}
                     onGetDashboardSettings={this.props.onGetDashboardSettings}
                     />

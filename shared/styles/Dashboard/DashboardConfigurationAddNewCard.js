@@ -7,11 +7,17 @@ styled.div`
     border: 1px dashed #0dbf7e;
     padding: 5px;
     background-color: transparent;
-    margin-top: 5px;
-    min-height: 40px;
+    margin: 5px;
+    height: 250px;
+    width: 250px;
     border-radius: 4px;
     cursor: pointer;
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    user-select: none;
 `
 :
 styled(View)``
