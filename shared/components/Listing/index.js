@@ -145,11 +145,10 @@ class Listing extends React.Component {
             this.props.onRenderListing(this.source, this.props.router.form)
         }
         if (this.props.formularyHasBeenUpdated !== prevProps.formularyHasBeenUpdated) {
-            if (this.source) {
-                this.source.cancel()
-            }
-            this.source = this.CancelToken.source()
-            this.props.onGetListingData(this.source, this.state.params, this.props.router.form)
+            this.setParams({
+                ...this.state.params,
+                page: 1
+            })
             //this.props.onGetTotals(this.state.params, this.props.router.form)    
         }
     }
