@@ -53,6 +53,7 @@ import isEqual from '../../../utils/isEqual'
 const Fields = (props) => {
     const [values, setValues] = useState([])
     const typeId = (props.field.type?.type) ? props.field.type.type : props.field.type
+    const fieldContainerRef = React.useRef(null)
 
     let typeName = (props.types.data) ? props.types.data.field_type.filter(fieldType => fieldType.id === typeId): []
     typeName = (typeName.length !== 0) ? typeName[0].type : ''
@@ -172,8 +173,15 @@ const Fields = (props) => {
         }
     }, [props.fieldFormValues])
 
+    // Scroll into field when there are any errors in the formulary
+    useEffect(() => {
+        if (checkErrors() && fieldContainerRef.current) {
+            fieldContainerRef.current.scrollIntoView()
+        }
+    })
+
     return (
-        <Field.Container invalid={checkErrors()}>
+        <Field.Container ref={fieldContainerRef} invalid={checkErrors()}>
             <div>
                 {(props.field.label_is_hidden) ? '' : (
                     <Field.FieldTitle.Label>

@@ -75,6 +75,7 @@ class Listing extends React.Component {
         this.setIsLoadingData(true)
         const params = {
             ...this.state.params,
+            page: 1,
             search_value: [],
             search_exact: [],
             search_field: []
@@ -94,7 +95,10 @@ class Listing extends React.Component {
     }
 
     onSort = (fieldName, value) => {
-        const params = {...this.state.params}
+        const params = {
+            ...this.state.params,
+            page: 1
+        }
         if (!fieldName || !value) {
             throw new SyntaxError("onSort() function should recieve a fieldName and a value")
         } 
@@ -141,11 +145,10 @@ class Listing extends React.Component {
             this.props.onRenderListing(this.source, this.props.router.form)
         }
         if (this.props.formularyHasBeenUpdated !== prevProps.formularyHasBeenUpdated) {
-            if (this.source) {
-                this.source.cancel()
-            }
-            this.source = this.CancelToken.source()
-            this.props.onGetListingData(this.source, this.state.params, this.props.router.form)
+            this.setParams({
+                ...this.state.params,
+                page: 1
+            })
             //this.props.onGetTotals(this.state.params, this.props.router.form)    
         }
     }
