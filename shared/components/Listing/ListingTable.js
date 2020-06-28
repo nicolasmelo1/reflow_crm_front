@@ -86,7 +86,14 @@ const ListingTable = (props) => {
             ): ''}
             <ListingTableContainer ref={tableRef} isMobile={isMobile}>
                 <Table>
-                    <ListingTableHeader field_headers={props.field_headers} params={props.params} onSort={props.onSort} defineScrollWidth={defineScrollWidth}/>
+                    <ListingTableHeader 
+                    isLoadingData={props.isLoadingData}
+                    setIsLoadingData={props.setIsLoadingData}
+                    field_headers={props.field_headers} 
+                    params={props.params} 
+                    onSort={props.onSort} 
+                    defineScrollWidth={defineScrollWidth}
+                    />
                     <ListingTableContent field_headers={props.field_headers} pagination={props.pagination} data={data} setFormularyId={props.setFormularyId} onRemoveData={props.onRemoveData}/>
                 </Table>
                 

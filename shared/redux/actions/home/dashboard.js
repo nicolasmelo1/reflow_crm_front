@@ -6,6 +6,13 @@ const onGetDashboardSettings = (source, formName) => {
     }
 }
 
+const onGetFieldOptions = (source, formName) => {
+    return (_) => {
+        return agent.http.DASHBOARD.getDashboardSettingsFieldsOptions(source, formName)
+    }
+}
+
 export default {
-    onGetDashboardSettings
+    onGetDashboardSettings,
+    onGetFieldOptions
 }

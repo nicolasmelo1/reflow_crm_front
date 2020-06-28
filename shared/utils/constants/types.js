@@ -64,6 +64,20 @@ const types = (lang, type, key) => {
             listing: strings[lang]['dataTypeListing'],
             dashboard: strings[lang]['dataTypeDashboard']
         },
+        aggregation_type: {
+            sum: strings[lang]['aggregationTypeSum'],
+            avg: strings[lang]['aggregationTypeAvg'],
+            percent: strings[lang]['aggregationTypePercent'],
+            max: strings[lang]['aggregationTypeMax'],
+            min: strings[lang]['aggregationTypeMin'],
+            count: strings[lang]['aggregationTypeCount']
+        },
+        chart_type: {
+            pie: strings[lang]['chartTypePie'],
+            line: strings[lang]['chartTypeLine'],
+            bar: strings[lang]['chartTypeBar'],
+            card: strings[lang]['chartTypeCard']
+        },
         group_type: {
             empty: strings[lang]['groupTypeEmpty'],
             sales: strings[lang]['groupTypeSales'],

@@ -99,6 +99,7 @@ class Dashboard extends React.Component {
                     cancelToken={this.CancelToken}
                     types={this.props.login.types}
                     formName={this.props.formName}
+                    onGetFieldOptions={this.props.onGetFieldOptions}
                     onGetDashboardSettings={this.props.onGetDashboardSettings}
                     />
                 ): (

@@ -89,12 +89,13 @@ class Listing extends React.Component {
         })
         //this.props.onGetTotals(this.state.params, this.props.router.form)
         this.props.setSearch(params.search_field, params.search_value, params.search_exact)
-        this.setParams({...params}).then(response => {
+        this.setParams({...params}).then(__ => {
             this.setIsLoadingData(false)
         })
     }
 
     onSort = (fieldName, value) => {
+        this.setIsLoadingData(true)
         const params = {
             ...this.state.params,
             page: 1
@@ -119,7 +120,9 @@ class Listing extends React.Component {
                 params.sort_field.push(fieldName)
             }
         }
-        this.setParams({...params})
+        this.setParams({...params}).then(__ => {
+            this.setIsLoadingData(false)
+        })
     }
 
     componentDidMount = () => {
@@ -222,6 +225,8 @@ class Listing extends React.Component {
                 <Row>
                     <Col>
                         <ListingTable 
+                        isLoadingData={this.state.isLoadingData}
+                        setIsLoadingData={this.setIsLoadingData}
                         params={this.state.params} 
                         onRemoveData={this.props.onRemoveData}
                         onSort={this.onSort} 

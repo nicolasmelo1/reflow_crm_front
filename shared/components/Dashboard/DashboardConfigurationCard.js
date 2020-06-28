@@ -50,6 +50,8 @@ const DashboardConfigurationCard = (props) => {
                 <DashboardConfigurationFormContainer isOpen={formIsOpen}>
                     <DashboardConfigurationForm
                     setFormIsOpen={setFormIsOpen}
+                    types={props.types}
+                    fieldOptions={props.fieldOptions}
                     dashboardConfigurationData={props.dashboardConfigurationData}
                     onUpdateDashboardSettings={props.onUpdateDashboardSettings}
                     />

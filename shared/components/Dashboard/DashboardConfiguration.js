@@ -15,6 +15,7 @@ import {
  */
 const DashboardConfiguration = (props) => {
     const [dashboardSettingsData, setDashboardSettingsData] = useState([])
+    const [fieldOptions, setFieldOptions] = useState([])
     const sourceRef = React.useRef(null)
 
     const onUpdateDashboardSettings = (index, newData) => {
@@ -57,6 +58,11 @@ const DashboardConfiguration = (props) => {
                 setDashboardSettingsData(response.data.data)
             }
         })
+        props.onGetFieldOptions(sourceRef.current, props.formName).then(response => {
+            if (response && response.status === 200) {
+                setFieldOptions(response.data.data)
+            }
+        })
         return () => {
             if (sourceRef.current) {
                 sourceRef.current.cancel()
@@ -81,6 +87,7 @@ const DashboardConfiguration = (props) => {
                     <DashboardConfigurationCard
                     key={index}
                     types={props.types}
+                    fieldOptions={fieldOptions}
                     dashboardConfigurationIndex={index}
                     onUpdateDashboardSettings={onUpdateDashboardSettings}
                     onRemoveDashboardSettings={onRemoveDashboardSettings}
