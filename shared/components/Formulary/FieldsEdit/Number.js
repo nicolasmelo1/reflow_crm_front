@@ -104,7 +104,7 @@ const Number = (props) => {
         }
     }, [])
 
-    const formulaVariablesOptions = formularyFields.map(field => ({ value: field.id.toString(), label: field.label_name, field_name: field.name }))
+    const formulaVariablesOptions = formularyFields.filter(field=> field.id !== null).map(field => ({ value: field.id.toString(), label: field.label_name, field_name: field.name }))
     return (
         <div>
             <FormulariesEdit.FieldFormFieldContainer>

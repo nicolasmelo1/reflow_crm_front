@@ -6,8 +6,8 @@ const LISTING = {
     getRenderData: async (source, formName) => {
         return await requests.get(`listing/${companyId}/${formName}/`, {}, {}, source)
     },
-    getHasExportedData: async (isToDownload) => {
-        const path = `listing/${companyId}/extract/`
+    getHasExportedData: async (fileId, isToDownload) => {
+        const path = `listing/${companyId}/extract/${fileId}/`
         if (isToDownload) {
             getToken().then(token => {
                 window.open(`${API_ROOT}${path}?download=download&token=${token}`)

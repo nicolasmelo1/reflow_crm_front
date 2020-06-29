@@ -49,6 +49,16 @@ const ListingExtract = (props) => {
         _setIsOpen(data);
     }
     
+    const onGetExportData = async (fileId) => {
+        let response = await props.onGetExportedData(fileId)
+        let counter = 0
+        while (response.data.status === 'empty' && counter < 10) {
+            await sleep(2000);
+            response = await props.onGetExportedData(fileId)
+            counter = (response.data.status !== 'empty') ? 11 : counter + 1
+        }
+    }
+
     const onExtract = (format) => {
         const data = {
             ...props.params,
@@ -56,17 +66,10 @@ const ListingExtract = (props) => {
             to_date: updateDates.endDate,
             format: format
         }
-        props.onExportData(data, props.formName).then(async response => {   
+        props.onExportData(data, props.formName).then(response => {   
             if (response && response.data.status === 'ok') {
-                setIsExtracting(true)
-                let response = await props.onGetExportedData()
-                let counter = 0
-                while (response.data.status === 'empty' && counter < 10) {
-                    await sleep(2000);
-                    response = await props.onGetExportedData()
-                    counter = (response.data.status !== 'empty') ? 11 : counter + 1
-                }
-                setIsExtracting(false)
+                const fileId = response.data.data.file_id
+                onGetExportData(fileId)
             }
         })
     }

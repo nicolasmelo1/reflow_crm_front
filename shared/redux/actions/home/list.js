@@ -31,11 +31,11 @@ const onGetListingData = (source, params, formName) => {
     }
 }
 
-const onGetExportedData = () => {
+const onGetExportedData = (fileId) => {
     return async (_) => {
-        let response = await agent.http.LISTING.getHasExportedData() 
+        let response = await agent.http.LISTING.getHasExportedData(fileId) 
         if (response.data.status === 'ok') {
-            agent.http.LISTING.getHasExportedData(true)
+            agent.http.LISTING.getHasExportedData(fileId, true)
         }
         return response
     }
@@ -54,8 +54,8 @@ const onRemoveData = (data, formName, formId) => {
 }
 
 const onExportData = (params, formName) => {
-    return async (_) => {
-        return await agent.http.LISTING.exportData(params, formName) 
+    return (_) => {
+        return agent.http.LISTING.exportData(params, formName) 
     }
 }
 

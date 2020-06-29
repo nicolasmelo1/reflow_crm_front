@@ -46,14 +46,22 @@ const FormularySectionsEdit = (props) => {
     const onMoveField = (movedSectionFieldIndex, movedFieldIndex, targetSectionFieldIndex, targetFieldIndex) => {
         const movedElement = {...props.data.depends_on_form[movedSectionFieldIndex].form_fields[movedFieldIndex]}
         let newArrayWithoutMoved = [...props.data.depends_on_form]
-        newArrayWithoutMoved[movedSectionFieldIndex].form_fields = [...props.data.depends_on_form[movedSectionFieldIndex].form_fields.filter((_, index) => index !== movedFieldIndex)]
-        newArrayWithoutMoved[targetSectionFieldIndex].form_fields.splice(targetFieldIndex, 0, movedElement)
-        props.data.depends_on_form = newArrayWithoutMoved
-        reorder()
-        if (props.data.depends_on_form[targetSectionFieldIndex].form_fields[targetFieldIndex].id) {
-            props.onUpdateFormularySettingsField(props.data.depends_on_form[targetSectionFieldIndex].form_fields[targetFieldIndex], props.formId, props.data.depends_on_form[targetSectionFieldIndex].form_fields[targetFieldIndex].id)
+        const targetSectionId = newArrayWithoutMoved[targetSectionFieldIndex].id
+        let confirmation = true
+        if (movedElement.form !== targetSectionId) {
+            confirmation = confirm(`ALERTA!\nMover os campos entre seções, exclui os dados desse campo, deseja continuar?`)
         }
-        props.onChangeFormularySettingsState({...props.data})
+        if (confirmation) {
+            movedElement.form = targetSectionId
+            newArrayWithoutMoved[movedSectionFieldIndex].form_fields = [...props.data.depends_on_form[movedSectionFieldIndex].form_fields.filter((_, index) => index !== movedFieldIndex)]
+            newArrayWithoutMoved[targetSectionFieldIndex].form_fields.splice(targetFieldIndex, 0, movedElement)
+            props.data.depends_on_form = newArrayWithoutMoved
+            reorder()
+            if (props.data.depends_on_form[targetSectionFieldIndex].form_fields[targetFieldIndex].id) {
+                props.onUpdateFormularySettingsField(props.data.depends_on_form[targetSectionFieldIndex].form_fields[targetFieldIndex], props.formId, props.data.depends_on_form[targetSectionFieldIndex].form_fields[targetFieldIndex].id)
+            }
+            props.onChangeFormularySettingsState({...props.data})
+        }
     }
 
      // almost equal as the onDrop() function in SidebarGroupEdit component in the Sidebar folder
