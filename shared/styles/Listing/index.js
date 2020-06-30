@@ -28,6 +28,7 @@ import ListingTotalAddNewButton from './ListingTotalAddNewButton'
 import ListingTableHeaderElement from './ListingTableHeaderElement'
 import ListingTableHeaderElementParagraph from './ListingTableHeaderElementParagraph'
 import ListingTableHeaderElementDragger from './ListingTableHeaderElementDragger'
+import ListingTableHeaderElementIconSpinner from './ListingTableHeaderElementIconSpinner'
 import ListingTableHeaderElementIconContainer from './ListingTableHeaderElementIconContainer'
 import ListingTableHeaderContainer from './ListingTableHeaderContainer'
 import ListingTableContentElement from './ListingTableContentElement'
@@ -51,6 +52,7 @@ export { ListingFilterAndExtractButton }
 export { ListingFilterIcon }
 export { ListingTableContentElement }
 export { ListingTableContentPopoverElement }
+export { ListingTableHeaderElementIconSpinner }
 export { ListingTableHeaderElementIconContainer }
 export { ListingTableHeaderContainer }
 export { ListingTableHeaderElementDragger }

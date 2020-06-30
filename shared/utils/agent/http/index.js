@@ -7,6 +7,7 @@ import SIDEBAR from './sidebar'
 import TEMPLATES from './templates'
 import ONBOARDING from './onboarding'
 import CHANGE_PASSWORD from './changepassword'
+import DASHBOARD from './dashboard'
 
 export default {
     CHANGE_PASSWORD,
@@ -17,5 +18,6 @@ export default {
     ONBOARDING,
     NOTIFICATION,
     SIDEBAR,
-    TEMPLATES 
+    TEMPLATES,
+    DASHBOARD
 }

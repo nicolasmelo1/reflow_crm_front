@@ -1,4 +1,4 @@
-import { OPEN_FORMULARY, GET_FORMULARY, SET_FORMULARY_DATA, SET_FORMULARY_FILES, SET_FORMULARY_SETTINGS_DATA } from '../../types';
+import { OPEN_FORMULARY, SET_FORMULARY_SETTINGS_DATA } from '../../types';
 import agent from '../../../utils/agent'
 import delay from '../../../utils/delay'
 

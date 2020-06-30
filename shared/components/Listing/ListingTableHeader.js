@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react'
+import { Spinner } from 'react-bootstrap'
 import { strings } from '../../utils/constants'
 import { 
     ListingTableHeaderContainer, 
     ListingTableHeaderElement, 
     ListingTableHeaderElementDragger, 
     ListingTableHeaderElementParagraph,
-    ListingTableHeaderElementIconContainer
+    ListingTableHeaderElementIconContainer,
+    ListingTableHeaderElementIconSpinner
 } from '../../styles/Listing'
 
 /**
@@ -89,10 +91,14 @@ const ListingTableHead = (props) => {
                                             {header_field.field.label_name}
                                         </ListingTableHeaderElementParagraph>
                                     </div>
-                                    <ListingTableHeaderElementIconContainer onClick={e=> {onSortTable(header_field.field.name, sort[header_field.field.name])}}>
-                                        <img 
-                                        style={{width: '20px', height: sort[header_field.field.name] && sort[header_field.field.name] !== 'none' ? '20px': '2px', margin: 'auto', display: 'block', filter:'invert(59%) sepia(26%) saturate(1229%) hue-rotate(107deg) brightness(94%) contrast(100%)'}} 
-                                        src={sort[header_field.field.name] && sort[header_field.field.name] !== 'none' ? `/${sort[header_field.field.name]}.png` : '/line.png'}/>
+                                    <ListingTableHeaderElementIconContainer onClick={e=> {props.isLoadingData ? null : onSortTable(header_field.field.name, sort[header_field.field.name])}}>
+                                        {props.isLoadingData ? (
+                                            <ListingTableHeaderElementIconSpinner animation="border" size="sm"/>
+                                        ) : (
+                                            <img 
+                                            style={{width: '20px', height: sort[header_field.field.name] && sort[header_field.field.name] !== 'none' ? '20px': '2px', margin: 'auto', display: 'block', filter:'invert(59%) sepia(26%) saturate(1229%) hue-rotate(107deg) brightness(94%) contrast(100%)'}} 
+                                            src={sort[header_field.field.name] && sort[header_field.field.name] !== 'none' ? `/${sort[header_field.field.name]}.png` : '/line.png'}/>
+                                        )}
                                     </ListingTableHeaderElementIconContainer>
                                     <ListingTableHeaderElementDragger onMouseDown={e=> {onMouseDown(e)}}/>
                                 </ListingTableHeaderElement>

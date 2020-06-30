@@ -251,7 +251,18 @@ const strings = {
         numberFormatTypeCurrency: 'Monetário',
         numberFormatTypePercentage: 'Porcentagem',
         dataTypeKanban: 'Kanban',
-        dataTypeListing: 'Listagem'
+        dataTypeListing: 'Listagem',
+        dataTypeDashboard: 'Dashboard',
+        chartTypePie: 'Pizza',
+        chartTypeLine: 'Linha',
+        chartTypeBar: 'Barra',
+        chartTypeCard: 'Card',
+        aggregationTypeSum: 'Soma',
+        aggregationTypeAvg: 'Média',
+        aggregationTypePercent: 'Porcentagem',
+        aggregationTypeMax: 'Máximo',
+        aggregationTypeMin: 'Mínimo',
+        aggregationTypeCount: 'Contagem'
     }
 }
 

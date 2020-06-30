@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment'
+import { Spinner } from 'react-bootstrap'
 import { ListingFilterAndExtractContainer, ListingFilterAndExtractButton, ListingExtractContainer, ListingExtractUpdateDateTitle, ListingExtractUpdateDateInput, ListingExtractButtons, ListingExtractUpdateDateContainer} from '../../styles/Listing'
 import DateRangePicker from '../Utils/DateRangePicker'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
@@ -28,13 +29,13 @@ import { stringToJsDateFormat, jsDateToStringFormat } from '../../utils/dates'
  */
 const ListingExtract = (props) => {
     const dateFormat = 'DD/MM/YYYY'
-
     const start = moment().subtract(59, 'days').toDate();
     const end = moment().toDate();    
     const [updateDates, setUpdateDates] = useState({
         startDate: jsDateToStringFormat(start, dateFormat),
         endDate: jsDateToStringFormat(end, dateFormat)
     })
+    const [isExtracting, setIsExtracting] = useState(false)
     const [value, setValue] = useState(updateDates.startDate + " - " + updateDates.endDate)
     const [isOpen, _setIsOpen] = useState(false)
 
@@ -56,6 +57,7 @@ const ListingExtract = (props) => {
             response = await props.onGetExportedData(fileId)
             counter = (response.data.status !== 'empty') ? 11 : counter + 1
         }
+        setIsExtracting(false)
     }
 
     const onExtract = (format) => {
@@ -67,6 +69,7 @@ const ListingExtract = (props) => {
         }
         props.onExportData(data, props.formName).then(response => {   
             if (response && response.data.status === 'ok') {
+                setIsExtracting(true)
                 const fileId = response.data.data.file_id
                 onGetExportData(fileId)
             }
@@ -124,11 +127,21 @@ const ListingExtract = (props) => {
                         onChange={onChangeUpdateDate} 
                         initialDays={initialDays}
                         />
-                        <ListingExtractButtons onClick={e=> {onExtract('csv')}}>
-                            <FontAwesomeIcon icon="arrow-down"/>{strings['pt-br']['listingExtractCSVButtonLabel']}
+                        <ListingExtractButtons onClick={e=> {isExtracting ? null : onExtract('csv')}}>
+                            {isExtracting ? (
+                                <Spinner animation="border" size="sm"/>
+                            ) : (
+                                <FontAwesomeIcon icon="arrow-down"/>
+                            )}
+                            {strings['pt-br']['listingExtractCSVButtonLabel']}
                         </ListingExtractButtons>
-                        <ListingExtractButtons onClick={e=> {onExtract('xlsx')}}>
-                            <FontAwesomeIcon icon="arrow-down"/>{strings['pt-br']['listingExtractXLSXButtonLabel']}
+                        <ListingExtractButtons onClick={e=> {isExtracting ? null : onExtract('xlsx')}}>
+                            {isExtracting ? (
+                                <Spinner animation="border" size="sm"/>
+                            ) : (
+                                <FontAwesomeIcon icon="arrow-down"/>
+                            )}
+                            {strings['pt-br']['listingExtractXLSXButtonLabel']}
                         </ListingExtractButtons>
                     </div>
                 </ListingExtractContainer>
