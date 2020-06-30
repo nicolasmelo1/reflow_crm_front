@@ -57,6 +57,7 @@ const ListingExtract = (props) => {
             response = await props.onGetExportedData(fileId)
             counter = (response.data.status !== 'empty') ? 11 : counter + 1
         }
+        setIsExtracting(false)
     }
 
     const onExtract = (format) => {
@@ -68,6 +69,7 @@ const ListingExtract = (props) => {
         }
         props.onExportData(data, props.formName).then(response => {   
             if (response && response.data.status === 'ok') {
+                setIsExtracting(true)
                 const fileId = response.data.data.file_id
                 onGetExportData(fileId)
             }
