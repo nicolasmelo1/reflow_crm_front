@@ -117,7 +117,8 @@ class Formulary extends React.Component {
                 hasBuiltInitial: true,
                 isAuxOriginalInitial: true, 
                 files: this.state.filled.files.map(file=> {
-                    let newFile = new Blob([file.file], {type: originalFile.type})
+                    // reference here: https://stackoverflow.com/a/55741583/13158385
+                    let newFile = new Blob([file.file], {type: file.type})
                     newFile.name = file.file.name
                     return {
                         ...file,
