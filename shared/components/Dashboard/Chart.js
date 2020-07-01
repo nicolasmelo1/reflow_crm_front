@@ -51,7 +51,8 @@ const Chart = (props) => {
 
     const addChartJs = () => {
         if (chartjsTypes.includes(props.chartType) && chartRef.current === null) {
-            chartRef.current = charts(canvasRef.current, props.chartType, props.labels, props.values)
+            const numberFormat = (props.numberFormat) ? props.numberFormat : null
+            chartRef.current = charts(canvasRef.current, props.chartType, props.labels, props.values, numberFormat)
         }
     }
 
@@ -65,7 +66,7 @@ const Chart = (props) => {
             chartRef.current = null
         } 
         addChartJs()
-    }, [props.chartType])
+    }, [props.chartType, props.numberFormat])
 
     const renderMobile = () => {
         return (

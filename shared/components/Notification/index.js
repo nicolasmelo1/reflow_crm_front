@@ -9,6 +9,7 @@ import { NotificationButton, NotificationTitle, NotificationHeader } from '../..
 import NotificationsConfiguration from './NotificationsConfiguration'
 import { strings } from '../../utils/constants'
 
+
 class Notification extends React.Component {
     constructor(props) {
         super(props)

@@ -6,7 +6,7 @@ import {
     DashboardConfigurationCardContainer, 
     DashboardConfigurationCardTitle, 
     DashboardConfigurationCardIcon,
-    DashboardConfigurationFormContainer
+    DashboardConfigurationFullFormContainer
 } from '../../styles/Dashboard'
 
 /**
@@ -47,15 +47,18 @@ const DashboardConfigurationCard = (props) => {
                     />
                     <DashboardConfigurationCardIcon icon={'trash'} onClick={e=>{props.onRemoveDashboardSettings(props.dashboardConfigurationIndex)}}/>
                 </DashboardConfigurationCardContainer>
-                <DashboardConfigurationFormContainer isOpen={formIsOpen}>
-                    <DashboardConfigurationForm
-                    setFormIsOpen={setFormIsOpen}
-                    types={props.types}
-                    fieldOptions={props.fieldOptions}
-                    dashboardConfigurationData={props.dashboardConfigurationData}
-                    onUpdateDashboardSettings={props.onUpdateDashboardSettings}
-                    />
-                </DashboardConfigurationFormContainer>
+                <DashboardConfigurationFullFormContainer isOpen={formIsOpen}>
+                    {formIsOpen ? (
+                        <DashboardConfigurationForm
+                        setFormIsOpen={setFormIsOpen}
+                        types={props.types}
+                        getChartTypeNameById={getChartTypeNameById}
+                        fieldOptions={props.fieldOptions}
+                        dashboardConfigurationData={props.dashboardConfigurationData}
+                        onUpdateDashboardSettings={props.onUpdateDashboardSettings}
+                        />
+                    ) : null}
+                </DashboardConfigurationFullFormContainer>
 
             </div>
         )

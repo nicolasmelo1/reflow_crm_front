@@ -1,4 +1,6 @@
 import Chart from 'chart.js'
+import formatNumber from './formatNumber'
+
 
 const possibleColors = [
     '#0dbf52', 
@@ -27,8 +29,30 @@ const possibleColors = [
     '#0dbf35'
 ]
 
-const chart = (context, type, labels, values) => {
+const chart = (context, type, labels, values, numberFormat=null) => {
     let colors = Array.from(possibleColors)
+    const defaultOptions = {
+        title: {
+            display: false
+        },
+        tooltips: {
+            callbacks: {
+                title: (tooltipItem, data) => {
+                    return data?.labels[tooltipItem[0].index]
+                },
+                label: (tooltipItem, data) => {
+                    data = (data?.datasets[0]?.data) ? data.datasets[0].data : []
+                    if (numberFormat) {
+                        const decimalSeparator = (numberFormat.decimal_separator) ? numberFormat.decimal_separator : '.'
+                        const value = data[tooltipItem.index].toString().replace('.', decimalSeparator)
+                        return formatNumber(value, numberFormat)
+                    } else {
+                        return data[tooltipItem.index]
+                    }
+                }
+            }
+        }
+    }
     const datasetOptions = {
         line: {
             fill: false,
@@ -53,18 +77,13 @@ const chart = (context, type, labels, values) => {
     }
     const options = {
         line: {
-            title: {
-                display: true,
-                text: 'Exemplo'
-            },
+            ...defaultOptions,
             legend: {
                 display: false
             },
-            tooltips: {
-                callbacks: {
-                    label: (tooltipItem, data) => {
-                        return '$ ' + tooltipItem.value
-                    }
+            elements: {
+                line: {
+                    tension: 0 // disables bezier curves
                 }
             },
             scales: {
@@ -72,38 +91,42 @@ const chart = (context, type, labels, values) => {
                     ticks: {
                         beginAtZero: true,
                         callback: (value, index, values) => {
-                            return '$ ' + value
+                            if (numberFormat) {
+                                const decimalSeparator = (numberFormat.decimal_separator) ? numberFormat.decimal_separator : '.'
+                                value = value.toString().replace('.', decimalSeparator)
+                                return formatNumber(value, numberFormat)
+                            } else {
+                                return value
+                            }
                         }
                     }
                 }]
-            },
-            elements: {
-                line: {
-                    tension: 0 // disables bezier curves
-                }
             }
         }, 
         bar: {
-            title: {
-                display: true,
-                text: 'Exemplo'
-            },
+            ...defaultOptions,
             legend: {
                 display: false
             },
             scales: {
                 yAxes: [{
                     ticks: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        callback: (value, index, values) => {
+                            if (numberFormat) {
+                                const decimalSeparator = (numberFormat.decimal_separator) ? numberFormat.decimal_separator : '.'
+                                value = value.toString().replace('.', decimalSeparator)
+                                return formatNumber(value, numberFormat)
+                            } else {
+                                return value
+                            }
+                        }
                     }
                 }]
             }
         },
         pie: {
-            title: {
-                display: true,
-                text: 'Exemplo'
-            }
+            ...defaultOptions,
         }
     }
     return new Chart(

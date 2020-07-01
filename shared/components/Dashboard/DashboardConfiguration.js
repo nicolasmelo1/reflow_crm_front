@@ -18,9 +18,18 @@ const DashboardConfiguration = (props) => {
     const [fieldOptions, setFieldOptions] = useState([])
     const sourceRef = React.useRef(null)
 
-    const onUpdateDashboardSettings = (index, newData) => {
-        dashboardSettingsData[index] = newData
-        setDashboardSettingsData([...dashboardSettingsData])
+    const onUpdateDashboardSettings = async (index, newData) => {
+        let response = null
+        if (newData.id) {
+
+        } else {
+            response = await props.onCreateDashboardSettings(newData, props.formName)
+        }
+        if (response && response.status === 200) {
+            dashboardSettingsData[index] = newData
+            setDashboardSettingsData([...dashboardSettingsData])
+        }
+        return response
     }
 
     const onRemoveDashboardSettings = (index) => {
@@ -88,8 +97,7 @@ const DashboardConfiguration = (props) => {
                     key={index}
                     types={props.types}
                     fieldOptions={fieldOptions}
-                    dashboardConfigurationIndex={index}
-                    onUpdateDashboardSettings={onUpdateDashboardSettings}
+                    onUpdateDashboardSettings={(data) => (onUpdateDashboardSettings(index, data))}
                     onRemoveDashboardSettings={onRemoveDashboardSettings}
                     dashboardConfigurationData={dashboardSetting}
                     />

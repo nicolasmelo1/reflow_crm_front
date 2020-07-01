@@ -12,7 +12,14 @@ const onGetFieldOptions = (source, formName) => {
     }
 }
 
+const onCreateDashboardSettings = (body, formName) => {
+    return (_) => {
+        return agent.http.DASHBOARD.createDashboardSettings(body, formName)
+    }
+}
+
 export default {
     onGetDashboardSettings,
-    onGetFieldOptions
+    onGetFieldOptions,
+    onCreateDashboardSettings
 }
