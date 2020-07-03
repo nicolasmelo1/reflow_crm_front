@@ -36,7 +36,7 @@ const socket = () => {
     function callbacksArrayContainsCallback(callbackObject) {
         for (let i = 0; i < callbacks.length; i++) {
             if (isEqual(callbacks[i], callbackObject)) {
-                return true
+                return i
             }
         }
         return false
@@ -62,11 +62,13 @@ const socket = () => {
             callback,
             argument
         }
-        if (!callbacksArrayContainsCallback(callbackObject)) {
-            callbacks.push(callbackObject)
-            if (registeredSocket) {
-                registeredSocket.addEventListener("message", (e) => callback({ data: JSON.parse(e.data), ...argument}))
-            }
+        const callbackIndex = callbacksArrayContainsCallback(callbackObject)
+        if (callbackIndex !== false) {
+            callbacks.splice(callbackIndex, 1)
+        }
+        callbacks.push(callbackObject)
+        if (registeredSocket) {
+            registeredSocket.addEventListener("message", (e) => callback({ data: JSON.parse(e.data), ...argument}))
         }
     }
 

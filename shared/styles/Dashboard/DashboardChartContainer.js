@@ -6,7 +6,8 @@ export default process.env['APP'] === 'web' ?
 styled.div`
     padding-bottom: 20px;
     margin-bottom: 20px;
-
+    overflow: auto; 
+    
     &:last-child {
         margin-bottom: 50px
     }

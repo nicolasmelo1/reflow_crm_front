@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react'
 import { View } from 'react-native'
+import { OverlayTrigger, Popover } from 'react-bootstrap'
 import charts from '../../utils/charts'
+import isEqual from '../../utils/isEqual'
 import { 
     ChartContainer,
     ChartTotalContainer,
@@ -37,6 +39,16 @@ const Totals = (props) => {
     )
 }
 
+const PopoverWithTotals = React.forwardRef((props, ref) => {
+    return (
+        <Popover ref={ref} {...props}>
+            <Popover.Content>
+                {props.labels && props.values ? (<Totals labels={props.labels} values={props.values}/>): ''}
+            </Popover.Content>
+        </Popover>
+    )
+})
+
 
 /**
  * {Description of your component, what does it do}
@@ -46,10 +58,22 @@ const Totals = (props) => {
  */
 const Chart = (props) => {
     const chartjsTypes = ['bar', 'pie', 'line']
+    const valuesRef = React.useRef(null)
+    const labelsRef = React.useRef(null)
+    const chartTypeRef = React.useRef(null)
+    const numberFormatRef = React.useRef(null)
     const canvasRef = React.useRef(null)
     const chartRef = React.useRef(null)
 
     const addChartJs = () => {
+        chartTypeRef.current = props.chartType
+        numberFormatRef.current = props.numberFormat
+        labelsRef.current = props.labels
+        valuesRef.current = props.values
+        if (chartRef.current) {
+            chartRef.current.destroy()
+            chartRef.current = null
+        }
         if (chartjsTypes.includes(props.chartType) && chartRef.current === null) {
             const maintainAspectRatio = (typeof props.maintainAspectRatio !== 'undefined') ? props.maintainAspectRatio : true
             const numberFormat = (props.numberFormat) ? props.numberFormat : null
@@ -62,11 +86,14 @@ const Chart = (props) => {
     }, [])
 
     useEffect(() => {
-        if (chartRef.current) {
-            chartRef.current.destroy()
-            chartRef.current = null
-        } 
-        addChartJs()
+        if (
+            chartTypeRef.current !== props.chartType || 
+            numberFormatRef.current !== props.numberFormat ||
+            !isEqual(labelsRef.current, props.labels) ||
+            !isEqual(valuesRef.current, props.values)
+        ) {
+            addChartJs()
+        }
     }, [props.chartType, props.numberFormat, props.labels, props.values])
 
     const renderMobile = () => {
@@ -82,9 +109,24 @@ const Chart = (props) => {
                     <canvas ref={canvasRef}/>
                 ) : (
                     <ChartTotalContainer>
-                        <ChartTotalContent>
-                            <Totals labels={props.labels} values={props.values}/>
-                        </ChartTotalContent>
+                        <OverlayTrigger 
+                        trigger="click" 
+                        placement="bottom" 
+                        rootClose={true}
+                        delay={{ show: 250, hide: 100 }} 
+                        overlay={<PopoverWithTotals labels={props.labels} values={props.values}/>}
+                        popperConfig={{
+                            modifiers: {
+                                preventOverflow: {
+                                    boundariesElement: 'offsetParent'
+                                }
+                            }
+                        }} 
+                        >
+                            <ChartTotalContent>
+                                <Totals labels={props.labels} values={props.values}/>
+                            </ChartTotalContent>
+                        </OverlayTrigger>
                   </ChartTotalContainer>  
                 )}
             </ChartContainer>

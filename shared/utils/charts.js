@@ -31,7 +31,6 @@ const possibleColors = [
 
 const chart = (context, type, labels, values, numberFormat=null, maintainAspectRatio=true) => {
     let colors = Array.from(possibleColors)
-
     const defineColors = () => {
         let colors = Array.from(possibleColors)
         return values.map(__=> {

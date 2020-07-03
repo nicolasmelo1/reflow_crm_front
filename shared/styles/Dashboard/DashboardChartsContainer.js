@@ -7,6 +7,7 @@ styled.div`
     height: calc(var(--app-height) - 180px);
     padding-bottom: 50px;
     overflow: auto;
+    position: relative
 `
 :
 styled(View)``

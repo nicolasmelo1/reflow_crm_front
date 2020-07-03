@@ -7,7 +7,9 @@ import actions from '../../redux/actions'
 import Chart from './Chart'
 import { 
     DashboardChartsContainer,
-    DashboardChartContainer
+    DashboardChartContainer,
+    DashboardChartTitle,
+    DashboardConfigurationButton
  } from '../../styles/Dashboard'
 
 
@@ -26,19 +28,13 @@ class Dashboard extends React.Component {
         }
     }
 
-    // First we add the dashboard than it is rendered and then we update the chart in
-    // componentdidupdate 
-    /*addDashboard = () => {
-        this.setState(state => {
-            return {
-                ...state,
-                dashboards: [...state.dashboards, {
-                    chart: null,
-                    reference: React.createRef()
-                }]
-            }
-        })
-    }*/
+    onLoadDashboard = () => {
+        if (this.source) {
+            this.source.cancel()
+        }
+        this.source = this.CancelToken.source()
+        this.props.onGetDashboardCharts(this.source, this.props.formName)
+    }
 
     getChartTypeNameById = (id) => {
         const chartType =  this.props.login.types.defaults.chart_type.filter(chartType => chartType.id === id)
@@ -46,6 +42,9 @@ class Dashboard extends React.Component {
     }
 
     setIsEditing = () => {
+        if (this.state.isEditing) {
+            this.onLoadDashboard()
+        }
         this.setState(state=> {
             return {
                 ...state,
@@ -55,8 +54,13 @@ class Dashboard extends React.Component {
     }
 
     componentDidMount = () => {
-        this.source = this.CancelToken.source()
-        this.props.onGetDashboardCharts(this.source, this.props.formName)
+        this.onLoadDashboard()
+    }
+
+    componentWillUnmount = () => {
+        if (this.source) {
+            this.source.cancel()
+        }
     }
 
     renderMobile = () => {
@@ -66,10 +70,11 @@ class Dashboard extends React.Component {
     }
 
     renderWeb = () => {
-        console.log(this.props.dashboard.charts)
         return (
             <div>
-                <button onClick={e=> {this.setIsEditing()}}>Configurações</button>
+                <DashboardConfigurationButton onClick={e=> {this.setIsEditing()}}>
+                    Configurações
+                </DashboardConfigurationButton>
                 {this.state.isEditing ? (
                     <DashboardConfiguration
                     onRemoveDashboardSettings={this.props.onRemoveDashboardSettings}
@@ -86,13 +91,18 @@ class Dashboard extends React.Component {
                     <DashboardChartsContainer>
                         {this.props.dashboard.charts.map((chart, index) => (
                             <DashboardChartContainer key={index}>
-                                <h2 style={{textAlign: 'center'}}>{chart.name}</h2>
-                                <Chart
-                                maintainAspectRatio={false}
-                                chartType={this.getChartTypeNameById(chart.chart_type)}
-                                labels={chart.data.labels}
-                                values={chart.data.values}
-                                /> 
+                                <DashboardChartTitle>
+                                    {chart.name}
+                                </DashboardChartTitle>
+                                <div style={{ marginTop: '40px'}}>
+                                    <Chart
+                                    maintainAspectRatio={false}
+                                    numberFormat={this.props.login.types?.data?.field_number_format_type.filter(numberFormatType => numberFormatType.id === chart.number_format_type)[0]}
+                                    chartType={this.getChartTypeNameById(chart.chart_type)}
+                                    labels={chart.data.labels}
+                                    values={chart.data.values}
+                                    /> 
+                                </div>
                             </DashboardChartContainer>
                         ))}
                     </DashboardChartsContainer>
