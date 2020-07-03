@@ -52,10 +52,11 @@ const ListingExtract = (props) => {
     const onGetExportData = async (fileId) => {
         let response = await props.onGetExportedData(fileId)
         let counter = 0
-        while (response.data.status === 'empty' && counter < 10) {
+        // try to extract for 2 minutes, otherwise it doesn't extract
+        while (response.data.status === 'empty' && counter < 60) {
             await sleep(2000);
             response = await props.onGetExportedData(fileId)
-            counter = (response.data.status !== 'empty') ? 11 : counter + 1
+            counter = (response.data.status !== 'empty') ? 61 : counter + 1
         }
         setIsExtracting(false)
     }
