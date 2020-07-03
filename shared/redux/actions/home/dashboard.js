@@ -1,14 +1,30 @@
 import { SET_DASHBOARD_CHARTS } from '../../types';
 import agent from '../../../utils/agent'
 
+const getAndDispatchDashboardCharts = (dispatch, source, formName) => {
+    agent.http.DASHBOARD.getDashboardCharts(source, formName).then(async response=> {
+        if (response && response.status === 200) {
+            let payload = response.data.data
+            const promises = payload.map(async (chart, index) => {
+                const response = await agent.http.DASHBOARD.getDashboardChartData(source, formName, chart.id)
+                if (response && response.status === 200) {
+                    payload[index].data = response.data.data
+                }
+            })
+            await Promise.all(promises)
+            dispatch({ type: SET_DASHBOARD_CHARTS, payload: payload})
+        }
+    })
+}
 
 const onGetDashboardCharts = (source, formName) => {
-    return async (dispatch) => {
-        const response = await agent.http.DASHBOARD.getDashboardCharts(source, formName)
-        if (response && response.status === 200) {
-            return dispatch({ type: SET_DASHBOARD_CHARTS, payload: response.data.data})
-        }
-        return response
+    return (dispatch) => {
+        getAndDispatchDashboardCharts(dispatch, source, formName)
+        agent.websocket.DASHBOARD.recieveDataUpdated({
+            callback: (data) => {
+                getAndDispatchDashboardCharts(dispatch, source, formName)
+            }
+        })
     }
 }
 

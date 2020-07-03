@@ -51,8 +51,9 @@ const Chart = (props) => {
 
     const addChartJs = () => {
         if (chartjsTypes.includes(props.chartType) && chartRef.current === null) {
+            const maintainAspectRatio = (typeof props.maintainAspectRatio !== 'undefined') ? props.maintainAspectRatio : true
             const numberFormat = (props.numberFormat) ? props.numberFormat : null
-            chartRef.current = charts(canvasRef.current, props.chartType, props.labels, props.values, numberFormat)
+            chartRef.current = charts(canvasRef.current, props.chartType, props.labels, props.values, numberFormat, maintainAspectRatio)
         }
     }
 
@@ -66,7 +67,7 @@ const Chart = (props) => {
             chartRef.current = null
         } 
         addChartJs()
-    }, [props.chartType, props.numberFormat])
+    }, [props.chartType, props.numberFormat, props.labels, props.values])
 
     const renderMobile = () => {
         return (
@@ -76,7 +77,7 @@ const Chart = (props) => {
 
     const renderWeb = () => {
         return (
-            <ChartContainer>
+            <ChartContainer maintainAspectRatio={props.maintainAspectRatio}>
                 {['bar', 'pie', 'line'].includes(props.chartType) ? (
                     <canvas ref={canvasRef}/>
                 ) : (

@@ -4,7 +4,12 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import DashboardConfiguration from './DashboardConfiguration'
 import actions from '../../redux/actions'
-import charts from '../../utils/charts'
+import Chart from './Chart'
+import { 
+    DashboardChartsContainer,
+    DashboardChartContainer
+ } from '../../styles/Dashboard'
+
 
 /**
  * Main function for Dashboards visualization
@@ -36,7 +41,7 @@ class Dashboard extends React.Component {
     }*/
 
     getChartTypeNameById = (id) => {
-        const chartType =  props.types.defaults.chart_type.filter(chartType => chartType.id === id)
+        const chartType =  this.props.login.types.defaults.chart_type.filter(chartType => chartType.id === id)
         return (chartType.length > 0) ? chartType[0].name : null
     }
 
@@ -51,11 +56,7 @@ class Dashboard extends React.Component {
 
     componentDidMount = () => {
         this.source = this.CancelToken.source()
-        this.props.onGetDashboardCharts(this.source, this.props.formName).then(response => {
-            if (response && response.data.data) {
-                //get each dashboard data
-            }
-        })
+        this.props.onGetDashboardCharts(this.source, this.props.formName)
     }
 
     renderMobile = () => {
@@ -65,7 +66,7 @@ class Dashboard extends React.Component {
     }
 
     renderWeb = () => {
-        console.log(this.props.dashboard)
+        console.log(this.props.dashboard.charts)
         return (
             <div>
                 <button onClick={e=> {this.setIsEditing()}}>Configurações</button>
@@ -74,7 +75,7 @@ class Dashboard extends React.Component {
                     onRemoveDashboardSettings={this.props.onRemoveDashboardSettings}
                     onUpdateDashboardSettings={this.props.onUpdateDashboardSettings}
                     onCreateDashboardSettings={this.props.onCreateDashboardSettings}
-                    getChartTypeNameById={this.props.getChartTypeNameById}
+                    getChartTypeNameById={this.getChartTypeNameById}
                     cancelToken={this.CancelToken}
                     types={this.props.login.types}
                     formName={this.props.formName}
@@ -82,11 +83,19 @@ class Dashboard extends React.Component {
                     onGetDashboardSettings={this.props.onGetDashboardSettings}
                     />
                 ): (
-                    <div>
-                        {this.props.dashboard.charts.map((dashboard, index) => (
-                            <canvas key={index} ref={dashboard.reference}/>
+                    <DashboardChartsContainer>
+                        {this.props.dashboard.charts.map((chart, index) => (
+                            <DashboardChartContainer key={index}>
+                                <h2 style={{textAlign: 'center'}}>{chart.name}</h2>
+                                <Chart
+                                maintainAspectRatio={false}
+                                chartType={this.getChartTypeNameById(chart.chart_type)}
+                                labels={chart.data.labels}
+                                values={chart.data.values}
+                                /> 
+                            </DashboardChartContainer>
                         ))}
-                    </div>
+                    </DashboardChartsContainer>
                 )}
             </div>
         )

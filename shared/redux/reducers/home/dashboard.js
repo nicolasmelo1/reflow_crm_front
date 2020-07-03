@@ -1,7 +1,7 @@
 import { SET_DASHBOARD_CHARTS } from '../../types'
 
 let initialState = {
-    charts: []
+    charts: [],
 }
 
 export default (state = initialState, action) => {

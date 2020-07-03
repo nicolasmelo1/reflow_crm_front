@@ -29,9 +29,24 @@ const possibleColors = [
     '#0dbf35'
 ]
 
-const chart = (context, type, labels, values, numberFormat=null) => {
+const chart = (context, type, labels, values, numberFormat=null, maintainAspectRatio=true) => {
     let colors = Array.from(possibleColors)
+
+    const defineColors = () => {
+        let colors = Array.from(possibleColors)
+        return values.map(__=> {
+            const indexToRemove = Math.floor(Math.random() * colors.length)
+            if (!colors[indexToRemove]) {
+                colors = Array.from(possibleColors)
+            }
+            const color = colors[indexToRemove].toString().slice(0)
+            colors.splice(indexToRemove, 1)
+            return color
+        })
+    } 
+
     const defaultOptions = {
+        maintainAspectRatio: maintainAspectRatio,
         title: {
             display: false
         },
@@ -53,28 +68,20 @@ const chart = (context, type, labels, values, numberFormat=null) => {
             }
         }
     }
+
     const datasetOptions = {
         line: {
             fill: false,
             borderColor:colors[Math.floor(Math.random() * colors.length)]
         },
         bar: {
-            backgroundColor: values.map(__=> {
-                const indexToRemove = Math.floor(Math.random() * colors.length)
-                const color = JSON.parse(JSON.stringify(colors[indexToRemove]))
-                colors.splice(indexToRemove, 1)
-                return color
-            })
+            backgroundColor: defineColors()
         },
         pie: {
-            backgroundColor: values.map(__=> {
-                const indexToRemove = Math.floor(Math.random() * colors.length)
-                const color = JSON.parse(JSON.stringify(colors[indexToRemove]))
-                colors.splice(indexToRemove, 1)
-                return color
-            })
+            backgroundColor: defineColors()
         }
     }
+    
     const options = {
         line: {
             ...defaultOptions,

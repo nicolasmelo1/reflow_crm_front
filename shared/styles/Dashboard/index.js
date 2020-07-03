@@ -25,7 +25,11 @@ import ChartTotalContainer from './ChartTotalContainer'
 import ChartTotalContent from './ChartTotalContent'
 import ChartTotalLabel from './ChartTotalLabel'
 import ChartTotalLabelContainer from './ChartTotalLabelContainer'
+import DashboardChartContainer from './DashboardChartContainer'
+import DashboardChartsContainer from './DashboardChartsContainer'
 
+export { DashboardChartContainer }
+export { DashboardChartsContainer }
 export { ChartTotalLabelContainer }
 export { ChartTotalLabel }
 export { ChartTotalContent }

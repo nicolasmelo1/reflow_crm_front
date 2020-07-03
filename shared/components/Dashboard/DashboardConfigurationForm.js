@@ -200,8 +200,8 @@ const DashboardConfigurationForm = (props) => {
                             </DashboardConfigurationFormFieldLabel>
                             <DashboardConfigurationFormFieldInput
                             type={'text'}
-                            onChange={e=> {onChangeDashboardName(e.target.value)}}
-                            value={dashboardConfigurationData.name}
+                            onChange={e => {onChangeDashboardName(e.target.value)}}
+                            value={(dashboardConfigurationData.name) ? dashboardConfigurationData.name : ''}
                             errors={formErrors.name}
                             />
                         </DashboardConfigurationFormFieldContainer>

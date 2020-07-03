@@ -87,7 +87,6 @@ class Listing extends React.Component {
                 params.search_exact.push(0)
             }
         })
-        //this.props.onGetTotals(this.state.params, this.props.router.form)
         this.props.setSearch(params.search_field, params.search_value, params.search_exact)
         this.setParams({...params}).then(__ => {
             this.setIsLoadingData(false)
@@ -130,7 +129,6 @@ class Listing extends React.Component {
 
         this.props.onRenderListing(this.source, this.props.router.form)
         this.props.onGetListingData(this.source, this.state.params, this.props.router.form)
-        //this.props.onGetTotals(this.state.params, this.props.router.form)
     }
 
     componentDidUpdate = (prevProps) => {
@@ -152,7 +150,6 @@ class Listing extends React.Component {
                 ...this.state.params,
                 page: 1
             })
-            //this.props.onGetTotals(this.state.params, this.props.router.form)    
         }
     }
 
@@ -164,34 +161,6 @@ class Listing extends React.Component {
     render() {
         return (
             <div>
-                {/*<Row>
-                    <Col>
-                        <ListingTotalLabel>
-                            {strings['pt-br']['listingTotalTitleLabel']}
-                            {this.state.isOpenedTotalsForm ? '' : (
-                                <ListingTotalAddNewButton onClick={e => {this.setIsOpenedTotalsForm(true)}}/>
-                            )}
-                        </ListingTotalLabel>
-                        {this.state.isOpenedTotalsForm ? (
-                            <ListingTotalsForm
-                            formName={this.props.router.form} 
-                            params={this.state.params}
-                            headers={this.props.list.header} 
-                            onGetTotals={this.props.onGetTotals}
-                            onCreateTotal={this.props.onCreateTotal}
-                            setIsOpenedTotalsForm={this.setIsOpenedTotalsForm}
-                            types={this.props.types}
-                            />
-                        ): (
-                            <ListingTotals 
-                            onRemoveTotal={this.props.onRemoveTotal}
-                            onUpdateTotals={this.props.onUpdateTotals}
-                            totals={this.props.list.totals} 
-                            formName={this.props.router.form} 
-                            />
-                        )}
-                    </Col>
-                </Row>*/}
                 <Row style={{margin: '5px -15px'}}>
                     <ListingButtonsContainer>
                         <Filter
