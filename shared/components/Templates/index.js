@@ -163,7 +163,7 @@ class Templates extends React.Component {
                 <TemplatesHeader>
                     {this.props.groups.length > 0 ? (
                         <TemplatesGoBackButton onClick={e=>this.props.setAddTemplates(false)}>
-                            <FontAwesomeIcon icon={'chevron-left'} /> Voltar
+                            <FontAwesomeIcon icon={'chevron-left'} />&nbsp;{strings['pt-br']['templateGoBackButtonLabel']}
                         </TemplatesGoBackButton>
                     ) : ''}
                 </TemplatesHeader>

@@ -7,6 +7,7 @@ import {
     DashboardConfigurationAddNewIcon, 
     DashboardConfigurationAddNewText 
 } from '../../styles/Dashboard'
+import { strings } from '../../utils/constants'
 
 
 /**
@@ -21,7 +22,7 @@ const DashboardConfiguration = (props) => {
     const onUpdateDashboardSettings = async (index, newData) => {
         let response = null
         if (newData.id) {
-
+            response = await props.onUpdateDashboardSettings(newData, props.formName, newData.id)
         } else {
             response = await props.onCreateDashboardSettings(newData, props.formName)
         }
@@ -33,8 +34,13 @@ const DashboardConfiguration = (props) => {
     }
 
     const onRemoveDashboardSettings = (index) => {
-        dashboardSettingsData.splice(index, 1)
-        setDashboardSettingsData([...dashboardSettingsData])
+        if (dashboardSettingsData[index]) {
+            if (dashboardSettingsData[index].id) {
+                props.onRemoveDashboardSettings(props.formName, dashboardSettingsData[index].id)
+            }
+            dashboardSettingsData.splice(index, 1)
+            setDashboardSettingsData([...dashboardSettingsData])
+        }
     }
 
     const addDashboardSettings = () => {
@@ -90,15 +96,16 @@ const DashboardConfiguration = (props) => {
             <DashboardConfigurationCardsContainer>
                 <DashboardConfigurationAddNewCard onClick={e=>{addDashboardSettings()}}>
                     <DashboardConfigurationAddNewIcon icon="plus-circle"/>
-                    <DashboardConfigurationAddNewText>Adicionar um novo dash</DashboardConfigurationAddNewText>
+                    <DashboardConfigurationAddNewText>{strings['pt-br']['dashboardConfigurationAddNewCardLabel']}</DashboardConfigurationAddNewText>
                 </DashboardConfigurationAddNewCard>
                 {dashboardSettingsData.map((dashboardSetting, index) => (
                     <DashboardConfigurationCard
                     key={index}
                     types={props.types}
+                    getChartTypeNameById={props.getChartTypeNameById}
                     fieldOptions={fieldOptions}
                     onUpdateDashboardSettings={(data) => (onUpdateDashboardSettings(index, data))}
-                    onRemoveDashboardSettings={onRemoveDashboardSettings}
+                    onRemoveDashboardSettings={() => (onRemoveDashboardSettings(index))}
                     dashboardConfigurationData={dashboardSetting}
                     />
                 ))}

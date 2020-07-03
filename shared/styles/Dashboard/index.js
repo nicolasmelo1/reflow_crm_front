@@ -4,8 +4,13 @@ import DashboardConfigurationAddNewText from './DashboardConfigurationAddNewText
 import DashboardConfigurationCardContainer from './DashboardConfigurationCardContainer'
 import DashboardConfigurationCardTitle from './DashboardConfigurationCardTitle'
 import DashboardConfigurationCardIcon from './DashboardConfigurationCardIcon'
+import DashboardConfigurationCardChartAndTitleContainer from './DashboardConfigurationCardChartAndTitleContainer'
+import DashboardConfigurationCardButtonsContainer from './DashboardConfigurationCardButtonsContainer'
 import DashboardConfigurationFullFormContainer from './DashboardConfigurationFullFormContainer'
+import DashboardConfigurationChartAndFormContainer from './DashboardConfigurationChartAndFormContainer'
 import DashboardConfigurationFormContainer from './DashboardConfigurationFormContainer'
+import DashboardConfigurationFormGoBackButton from './DashboardConfigurationFormGoBackButton'
+import DashboardConfigurationFormHeader from './DashboardConfigurationFormHeader'
 import DashboardConfigurationFormSelectContainer from './DashboardConfigurationFormSelectContainer'
 import DashboardConfigurationPreviewTitleLabel from './DashboardConfigurationPreviewTitleLabel'
 import DashboardConfigurationSaveButton from './DashboardConfigurationSaveButton'
@@ -35,8 +40,13 @@ export { DashboardConfigurationFormContainer }
 export { DashboardConfigurationPreviewTitleLabel }
 export { DashboardConfigurationSaveButton }
 export { DashboardConfigurationChartContainer }
+export { DashboardConfigurationChartAndFormContainer }
+export { DashboardConfigurationFormGoBackButton }
+export { DashboardConfigurationFormHeader }
 export { DashboardConfigurationFullFormContainer }
 export { DashboardConfigurationFormSelectContainer }
+export { DashboardConfigurationCardButtonsContainer }
+export { DashboardConfigurationCardChartAndTitleContainer }
 export { DashboardConfigurationCardIcon }
 export { DashboardConfigurationCardTitle }
 export { DashboardConfigurationCardContainer }

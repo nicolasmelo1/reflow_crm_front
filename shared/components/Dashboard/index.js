@@ -23,7 +23,7 @@ class Dashboard extends React.Component {
 
     // First we add the dashboard than it is rendered and then we update the chart in
     // componentdidupdate 
-    addDashboard = () => {
+    /*addDashboard = () => {
         this.setState(state => {
             return {
                 ...state,
@@ -33,26 +33,11 @@ class Dashboard extends React.Component {
                 }]
             }
         })
-    }
+    }*/
 
-    updateDashboard = (index, newData) => {
-        this.setState(state => {
-            state.dashboards[index] = newData
-            return {
-                ...state,
-                dashboards: [...state.dashboards]
-            }
-        })
-    }
-
-    removeDashboard = () => {
-        this.setState(state => {
-            state.dashboards.pop()
-            return {
-                ...state,
-                dashboards: [...state.dashboards]
-            }
-        })
+    getChartTypeNameById = (id) => {
+        const chartType =  props.types.defaults.chart_type.filter(chartType => chartType.id === id)
+        return (chartType.length > 0) ? chartType[0].name : null
     }
 
     setIsEditing = () => {
@@ -66,20 +51,11 @@ class Dashboard extends React.Component {
 
     componentDidMount = () => {
         this.source = this.CancelToken.source()
-        /*agent.http.DASHBOARD.getDashboardData(this.source, 'sum').then(response => 
-            charts(this.canvas.current, 'bar', response.data.data.labels, response.data.data.values)
-        )*/
-    }
-
-    componentDidUpdate = () => {
-        /*this.state.dashboards.forEach((dashboard, index) => {
-            if (dashboard.chart === null){
-                agent.http.DASHBOARD.getDashboardData(this.source, 'sum').then(response => {
-                    dashboard.chart = charts(dashboard.reference.current, 'bar', response.data.data.labels, response.data.data.values)
-                    this.updateDashboard(index, dashboard)
-                })
+        this.props.onGetDashboardCharts(this.source, this.props.formName).then(response => {
+            if (response && response.data.data) {
+                //get each dashboard data
             }
-        })*/
+        })
     }
 
     renderMobile = () => {
@@ -89,14 +65,16 @@ class Dashboard extends React.Component {
     }
 
     renderWeb = () => {
+        console.log(this.props.dashboard)
         return (
             <div>
-                <button onClick={e=> {this.removeDashboard()}}>Remover Dashboard</button>
-                <button onClick={e=> {this.addDashboard()}}>Adicionar Dashboard</button>
                 <button onClick={e=> {this.setIsEditing()}}>Configurações</button>
                 {this.state.isEditing ? (
                     <DashboardConfiguration
+                    onRemoveDashboardSettings={this.props.onRemoveDashboardSettings}
+                    onUpdateDashboardSettings={this.props.onUpdateDashboardSettings}
                     onCreateDashboardSettings={this.props.onCreateDashboardSettings}
+                    getChartTypeNameById={this.props.getChartTypeNameById}
                     cancelToken={this.CancelToken}
                     types={this.props.login.types}
                     formName={this.props.formName}
@@ -105,7 +83,7 @@ class Dashboard extends React.Component {
                     />
                 ): (
                     <div>
-                        {this.state.dashboards.map((dashboard, index) => (
+                        {this.props.dashboard.charts.map((dashboard, index) => (
                             <canvas key={index} ref={dashboard.reference}/>
                         ))}
                     </div>
@@ -119,4 +97,4 @@ class Dashboard extends React.Component {
     }
 }
 
-export default connect(state => ({ login: state.login }), actions)(Dashboard);
+export default connect(state => ({ dashboard: state.home.dashboard, login: state.login }), actions)(Dashboard);

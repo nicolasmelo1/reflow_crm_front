@@ -3,29 +3,24 @@ import { View } from 'react-native'
 import Chart from './Chart'
 import DashboardConfigurationForm from './DashboardConfigurationForm'
 import { 
-    DashboardConfigurationCardContainer, 
+    DashboardConfigurationCardContainer,
+    DashboardConfigurationCardButtonsContainer,
+    DashboardConfigurationCardChartAndTitleContainer,
     DashboardConfigurationCardTitle, 
     DashboardConfigurationCardIcon,
     DashboardConfigurationFullFormContainer
 } from '../../styles/Dashboard'
+import { strings } from '../../utils/constants'
 
 /**
- * {Description of your component, what does it do}
+ * This component is actully just a single card of the dashboard configuration.
+ * When you click on the dashboard configuration, every chart that the user has becomes a `card`
+ * in the system. So this is actually each of those cards.
+ * 
  * @param {Type} props - {go in detail about every prop it recieves}
  */
 const DashboardConfigurationCard = (props) => {
     const [formIsOpen, setFormIsOpen] = useState(false)
-
-    const getChartTypeNameById = (id) => {
-        const chartType =  props.types.defaults.chart_type.filter(chartType => chartType.id === id)
-        return (chartType.length > 0) ? chartType[0].name : null
-    }
-
-    /*useEffect(() => {
-        if (previewCanvas.current && props.dashboardConfigurationData.chart_type) {
-            previewChart.current = charts(previewCanvas.current, getChartTypeNameById(props.dashboardConfigurationData.chart_type), ['Jan', 'Fev', 'Mar'], [10, 20, 30])
-        }
-    })*/
 
     const renderMobile = () => {
         return (
@@ -36,23 +31,28 @@ const DashboardConfigurationCard = (props) => {
     const renderWeb = () => {
         return (
             <div>
-                <DashboardConfigurationCardContainer isOpen={formIsOpen} onClick={e => {setFormIsOpen(true)}}>
-                    <DashboardConfigurationCardTitle isOpen={formIsOpen}>
-                        {props.dashboardConfigurationData.name}
-                    </DashboardConfigurationCardTitle>
-                    <Chart
-                    chartType={getChartTypeNameById(props.dashboardConfigurationData.chart_type)}
-                    labels={['Jan', 'Fev', 'Mar']}
-                    values={[10, 20, 30]}
-                    />
-                    <DashboardConfigurationCardIcon icon={'trash'} onClick={e=>{props.onRemoveDashboardSettings(props.dashboardConfigurationIndex)}}/>
+                <DashboardConfigurationCardContainer isOpen={formIsOpen}>
+                    <DashboardConfigurationCardButtonsContainer>
+                        <DashboardConfigurationCardIcon icon={'pencil-alt'} onClick={e=>{setFormIsOpen(true)}}/>
+                        <DashboardConfigurationCardIcon icon={'trash'} onClick={e=>{props.onRemoveDashboardSettings()}}/>
+                    </DashboardConfigurationCardButtonsContainer>
+                    <DashboardConfigurationCardChartAndTitleContainer>
+                        <DashboardConfigurationCardTitle isOpen={formIsOpen}>
+                            {(props.dashboardConfigurationData.name === '') ? strings['pt-br']['dashboardConfigurationCardEmptyTitleLabel'] : props.dashboardConfigurationData.name}
+                        </DashboardConfigurationCardTitle>
+                        <Chart
+                        chartType={props.getChartTypeNameById(props.dashboardConfigurationData.chart_type)}
+                        labels={['Jan', 'Fev', 'Mar']}
+                        values={[10, 20, 30]}
+                        />
+                    </DashboardConfigurationCardChartAndTitleContainer>
                 </DashboardConfigurationCardContainer>
                 <DashboardConfigurationFullFormContainer isOpen={formIsOpen}>
                     {formIsOpen ? (
                         <DashboardConfigurationForm
                         setFormIsOpen={setFormIsOpen}
                         types={props.types}
-                        getChartTypeNameById={getChartTypeNameById}
+                        getChartTypeNameById={props.getChartTypeNameById}
                         fieldOptions={props.fieldOptions}
                         dashboardConfigurationData={props.dashboardConfigurationData}
                         onUpdateDashboardSettings={props.onUpdateDashboardSettings}

@@ -143,7 +143,7 @@ const TemplatePreview = (props) => {
         return (
             <TemplatesPreviewContainer isOpen={props.selectedTemplateId !== -1}>
                 <TemplatesGoBackButton onClick={e=>props.setSelectedTemplate(-1)}>
-                    <FontAwesomeIcon icon={'chevron-left'} /> Voltar
+                    <FontAwesomeIcon icon={'chevron-left'} />&nbsp;{strings['pt-br']['templateGoBackButtonLabel']}
                 </TemplatesGoBackButton>
                 <TemplatesPreviewContentsContainer>
                     <TemplatesPreviewDescriptionContainer>
