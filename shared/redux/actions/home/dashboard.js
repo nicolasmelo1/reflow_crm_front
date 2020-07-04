@@ -21,6 +21,7 @@ const onGetDashboardCharts = (source, formName) => {
     return (dispatch) => {
         getAndDispatchDashboardCharts(dispatch, source, formName)
         agent.websocket.DASHBOARD.recieveDataUpdated({
+            formName: formName,
             callback: (data) => {
                 getAndDispatchDashboardCharts(dispatch, source, formName)
             }
