@@ -12,9 +12,9 @@ import mobilecheck from '../../utils/mobilecheck'
  * this function also updates the `data` array, since it makes a call to the backend to retrieve the sorted data.
  * @param {Function} setFormularyId - This function is actually retrieved from the page, this function retrieved 
  * from the Data page sets a FormularyId when the user clicks the pencil button to edit and open the formulary.
- * @param {Object} params - the parameters of the listing, parameters define the filter, the sort, the date range
+ * @param {Function} getParams - Function for retrieving the parameters of the listing, parameters define the filter, the sort, the date range
  * and many other stuff. With this we can know the sorted field.
- * @param {Array(Object)} field_headers - array containing primarly all of the fields in the header.
+ * @param {Array(Object)} fieldHeaders - array containing primarly all of the fields in the header.
  * @param {Array<Object>} data - The data to display on the table.
  */
 const ListingTable = (props) => {
@@ -49,12 +49,9 @@ const ListingTable = (props) => {
         if (scrollWrapperRef.current) scrollWrapperRef.current.scrollLeft = tableRef.current.scrollLeft
         if (!hasFiredRequestForNewPageRef.current && props.pagination.current < props.pagination.total && tableRef.current.scrollTop >= (tableRef.current.scrollHeight - tableRef.current.offsetHeight))  {
             setHasFiredRequestForNewPage(true) 
-            props.params.page = props.pagination.current + 1
-            props.setParams(props.params).then(response=> {
+            const page = props.pagination.current + 1
+            props.setPageParam(page).then(response=> {
                 if (response.status === 200) {
-                    if (response.data.data.length===0) {
-                        setLastResponseWasEmpty(true)
-                    }
                     setHasFiredRequestForNewPage(false) 
                 }
             })
@@ -89,12 +86,12 @@ const ListingTable = (props) => {
                     <ListingTableHeader 
                     isLoadingData={props.isLoadingData}
                     setIsLoadingData={props.setIsLoadingData}
-                    field_headers={props.field_headers} 
-                    params={props.params} 
+                    fieldHeaders={props.fieldHeaders} 
+                    getParams={props.getParams} 
                     onSort={props.onSort} 
                     defineScrollWidth={defineScrollWidth}
                     />
-                    <ListingTableContent field_headers={props.field_headers} pagination={props.pagination} data={data} setFormularyId={props.setFormularyId} onRemoveData={props.onRemoveData}/>
+                    <ListingTableContent fieldHeaders={props.fieldHeaders} pagination={props.pagination} data={data} setFormularyId={props.setFormularyId} onRemoveData={props.onRemoveData}/>
                 </Table>
                 
                 {hasFiredRequestForNewPage ? (

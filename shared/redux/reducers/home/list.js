@@ -1,5 +1,5 @@
 import {
-    GET_DATA,
+    GET_LISTING_DATA,
     SET_HEADERS,
     SET_TOTALS,
     UPDATE_HEAD_SELECT
@@ -19,7 +19,7 @@ let initialState = {
 
 export default (state = initialState, action) => {
     switch (action.type) {
-        case GET_DATA:
+        case GET_LISTING_DATA:
             return {
                 ...state,
                 data: action.payload

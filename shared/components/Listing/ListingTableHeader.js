@@ -28,8 +28,8 @@ const ListingTableHead = (props) => {
     const sortValues = ['upper', 'down', 'none']
 
     const sort = {}
-    for (let i=0; i<props.params.sort_value.length; i++) {
-        sort[props.params.sort_field[i]] = props.params.sort_value[i]
+    for (let i=0; i<props.getParams(0).sort_value.length; i++) {
+        sort[props.getParams(0).sort_field[i]] = props.getParams(0).sort_value[i]
     }
 
     const onMouseDown = (e) => {
@@ -81,7 +81,7 @@ const ListingTableHead = (props) => {
     return (
         <thead>
             <tr>
-                {props.field_headers.map(function (header_field, index) {
+                {props.fieldHeaders.map(function (header_field, index) {
                     if (header_field.is_selected) {
                         return (
                             <ListingTableHeaderContainer key={index}>

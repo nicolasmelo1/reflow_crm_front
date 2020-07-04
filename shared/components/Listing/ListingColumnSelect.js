@@ -9,7 +9,7 @@ import { ListingColumnSelectButton, ListingColumnSelectItemsContainer, ListingCo
  * This component renders the button and the options it display, it also contains the logic when the user
  * selects or unselect a column.
  * 
- * @param {Array} field_headers - list containing primarly all of the fields in the header. we use this array
+ * @param {Array} fieldHeaders - list containing primarly all of the fields in the header. we use this array
  * to construct all of the field options he can select or unselect to show or don't show on the table.
  * @param {Function} onUpdateHeader - function to update Header data in the redux, this function does not fire
  * any request to the backend, it just updates the header state in the redux.
@@ -20,9 +20,9 @@ const ListingColumnSelect = (props) => {
 
     const onToggleSelect = (e, index) => {
         e.preventDefault()
-        props.field_headers[index].is_selected = !props.field_headers[index].is_selected
-        props.onUpdateHeader(props.field_headers)
-        props.onUpdateSelected(props.field_headers, props.formName)
+        props.fieldHeaders[index].is_selected = !props.fieldHeaders[index].is_selected
+        props.onUpdateHeader(props.fieldHeaders)
+        props.onUpdateSelected(props.fieldHeaders, props.formName)
     }
 
     return (
@@ -32,7 +32,7 @@ const ListingColumnSelect = (props) => {
             </Dropdown.Toggle>
 
             <ListingColumnSelectItemsContainer>
-                {props.field_headers.map(function (data, index) {
+                {props.fieldHeaders.map(function (data, index) {
                     return (
                         <ListingColumnSelectItems
                             as="button"

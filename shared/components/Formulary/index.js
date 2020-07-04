@@ -41,8 +41,6 @@ import { Formularies } from '../../styles/Formulary'
  * the 'open and close' type of formulary. It is used to reset the form to a default state.
  * @param {Function} setFormularySettingsHasBeenUpdated - (optional) - works like a signal, if the settings of the formulary have been
  * updated we notify using this function, usually used to update the kanban dimension order or the fields headers in the listing.
- * @param {Function} setFormularyHasBeenUpdated - (optional) - same as above, the difference is to notify a data have been inserted. 
- * A formulary have been saved.
  * @param {Function} setFormularyDefaultData - (optional) - REQUIRED IF `formularyDefaultData` is set. Sets the `formularyDefaultData` to 
  * null when the user closes the 'open and close' type of formulary. It is used to reset the form to a default state.
  * @param {Array<Object>} formularyDefaultData - (optional) - check components/Kanban/KanbanDimension.js to check how this data is defined. The default
@@ -168,7 +166,6 @@ class Formulary extends React.Component {
                 } else if (this.state.buildData.form_name !== this.props.formName) {
                     this.onFullResetFormulary(this.state.auxOriginalInitial.buildData, this.state.auxOriginalInitial.filled)
                 } else {
-                    this.props.setFormularyHasBeenUpdated()
                     this.setIsOpen()
                 }
             })

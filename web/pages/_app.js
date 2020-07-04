@@ -8,7 +8,7 @@ import { initStore } from '@shared/redux/store';
 import agent from '@shared/utils/agent';
 import SplashScreen from '../components/styles/SplashScreen'
 import SplashLogo from '../components/styles/SplashLogo'
-import getConfig from 'next/config'
+
 
 class MyApp extends App {
 
@@ -92,7 +92,7 @@ class MyApp extends App {
             }
         }
     }
-
+    
     componentDidMount() {
         this._ismounted = true
         if (typeof window !== 'undefined') {
@@ -119,7 +119,7 @@ class MyApp extends App {
     componentWillUnmount = () => {
         this._ismounted = false
     }
-
+    
     render() {
         const { Component, pageProps, store } = this.props
         return (
