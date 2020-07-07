@@ -96,6 +96,35 @@ const Chart = (props) => {
         }
     }, [props.chartType, props.numberFormat, props.labels, props.values])
 
+    const renderChartWeb = () => (
+        <ChartContainer maintainAspectRatio={props.maintainAspectRatio}>
+            <canvas ref={canvasRef}/>
+        </ChartContainer>
+    )
+
+    const renderTotalWeb = () => (
+        <ChartTotalContainer>
+            <OverlayTrigger 
+            trigger="click" 
+            placement="bottom" 
+            rootClose={true}
+            delay={{ show: 250, hide: 100 }} 
+            overlay={<PopoverWithTotals labels={props.labels} values={props.values}/>}
+            popperConfig={{
+                modifiers: {
+                    preventOverflow: {
+                        boundariesElement: 'offsetParent'
+                    }
+                }
+            }} 
+            >
+                <ChartTotalContent>
+                    <Totals labels={props.labels} values={props.values}/>
+                </ChartTotalContent>
+            </OverlayTrigger>
+        </ChartTotalContainer>
+    )
+
     const renderMobile = () => {
         return (
             <View></View>
@@ -103,34 +132,7 @@ const Chart = (props) => {
     }
 
     const renderWeb = () => {
-        return (
-            <ChartContainer maintainAspectRatio={props.maintainAspectRatio}>
-                {['bar', 'pie', 'line'].includes(props.chartType) ? (
-                    <canvas ref={canvasRef}/>
-                ) : (
-                    <ChartTotalContainer>
-                        <OverlayTrigger 
-                        trigger="click" 
-                        placement="bottom" 
-                        rootClose={true}
-                        delay={{ show: 250, hide: 100 }} 
-                        overlay={<PopoverWithTotals labels={props.labels} values={props.values}/>}
-                        popperConfig={{
-                            modifiers: {
-                                preventOverflow: {
-                                    boundariesElement: 'offsetParent'
-                                }
-                            }
-                        }} 
-                        >
-                            <ChartTotalContent>
-                                <Totals labels={props.labels} values={props.values}/>
-                            </ChartTotalContent>
-                        </OverlayTrigger>
-                  </ChartTotalContainer>  
-                )}
-            </ChartContainer>
-        )
+        return ['bar', 'pie', 'line'].includes(props.chartType) ? renderChartWeb() : renderTotalWeb()
     }
 
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile()

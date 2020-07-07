@@ -29,7 +29,17 @@ import DashboardChartContainer from './DashboardChartContainer'
 import DashboardChartsContainer from './DashboardChartsContainer'
 import DashboardChartTitle from './DashboardChartTitle'
 import DashboardConfigurationButton from './DashboardConfigurationButton'
+import DashboardTotalContainer from './DashboardTotalContainer'
+import DashboardFilterIcon from './DashboardFilterIcon'
+import DashboardFilterHolder from './DashboardFilterHolder'
+import DashboardFilterContainer from './DashboardFilterContainer'
+import DashboardFilterButton from './DashboardFilterButton'
 
+export { DashboardFilterButton }
+export { DashboardFilterContainer }
+export { DashboardFilterHolder }
+export { DashboardFilterIcon }
+export { DashboardTotalContainer }
 export { DashboardConfigurationButton }
 export { DashboardChartTitle }
 export { DashboardChartContainer }

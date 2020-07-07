@@ -14,6 +14,9 @@ styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 20px
 `
 :
 styled(View)``

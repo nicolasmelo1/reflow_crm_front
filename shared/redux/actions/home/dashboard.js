@@ -1,7 +1,7 @@
 import { SET_DASHBOARD_CHARTS } from '../../types';
 import agent from '../../../utils/agent'
 
-const getAndDispatchDashboardCharts = (dispatch, source, formName) => {
+const getAndDispatchDashboardCharts = (dispatch, source, formName, params) => {
     agent.http.DASHBOARD.getDashboardCharts(source, formName).then(async response=> {
         if (response && response.status === 200) {
             let payload = response.data.data
@@ -17,13 +17,19 @@ const getAndDispatchDashboardCharts = (dispatch, source, formName) => {
     })
 }
 
-const onGetDashboardCharts = (source, formName) => {
-    return (dispatch) => {
-        getAndDispatchDashboardCharts(dispatch, source, formName)
+const onGetDashboardCharts = (source, formName, params) => {
+    return (dispatch, getState) => {
+        getAndDispatchDashboardCharts(dispatch, source, formName, params)
         agent.websocket.DASHBOARD.recieveDataUpdated({
             formName: formName,
             callback: (data) => {
-                getAndDispatchDashboardCharts(dispatch, source, formName)
+                const filterParams = getState().home.filter
+                const params = {
+                    search_field: filterParams.search_field,
+                    search_value: filterParams.search_value,
+                    search_exact: filterParams.search_exact
+                }
+                getAndDispatchDashboardCharts(dispatch, source, formName, params)
             }
         })
     }

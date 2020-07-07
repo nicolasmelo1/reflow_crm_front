@@ -4,12 +4,18 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import DashboardConfiguration from './DashboardConfiguration'
 import actions from '../../redux/actions'
+import Filter from '../Filter'
 import Chart from './Chart'
 import { 
     DashboardChartsContainer,
     DashboardChartContainer,
     DashboardChartTitle,
-    DashboardConfigurationButton
+    DashboardConfigurationButton,
+    DashboardFilterButton,
+    DashboardFilterContainer,
+    DashboardFilterHolder,
+    DashboardFilterIcon,
+    DashboardTotalContainer
  } from '../../styles/Dashboard'
 
 
@@ -23,8 +29,55 @@ class Dashboard extends React.Component {
         this.CancelToken = axios.CancelToken
         this.source = null
         this.state = {
-            dashboards: [],
-            isEditing: false
+            fieldOptions: [],
+            isEditing: false,
+            isLoadingData: false
+        }
+    }
+
+    setFieldOptions = (data) => {
+        this.setState(state => {
+            return {
+                ...state,
+                fieldOptions: data
+            }
+        })
+    }
+
+    // If the data is being loaded by the visualization
+    setIsLoadingData = (isLoading) => {
+        this.setState(state => {
+            return {
+                ...state,
+                isLoadingData: isLoading
+            }
+        })
+    }
+
+    onLoadData = (source, params={}) => {
+        this.props.onGetDashboardCharts(this.source, this.props.formName, params)
+    }
+
+
+    onFilter = (searchInstances) => {
+        this.setIsLoadingData(true)
+        const searchParams = this.props.onSetSearch(searchInstances.map(
+            searchInstance => ({
+                searchField: searchInstance.field_name,
+                searchValue: searchInstance.value,
+            })
+        ))
+
+        this.getNewDataFromUpdatedParams({...searchParams}).then(__ => {
+            this.setIsLoadingData(false)
+        })
+    }
+
+    getParams = () => {
+        return {
+            search_value: this.props.filter.search_value,
+            search_field: this.props.filter.search_field,
+            search_exact: this.props.filter.search_exact
         }
     }
 
@@ -33,7 +86,11 @@ class Dashboard extends React.Component {
             this.source.cancel()
         }
         this.source = this.CancelToken.source()
-        this.props.onGetDashboardCharts(this.source, this.props.formName)
+        this.props.onGetFieldOptions(this.source, this.props.formName).then(response => {
+            if (response && response.status === 200) {
+                this.setFieldOptions(response.data.data)
+            }
+        })
     }
 
     getChartTypeNameById = (id) => {
@@ -75,6 +132,16 @@ class Dashboard extends React.Component {
                 <DashboardConfigurationButton onClick={e=> {this.setIsEditing()}}>
                     Configurações
                 </DashboardConfigurationButton>
+                <Filter
+                fields={this.state.fieldOptions.map(fieldOption => ({ name: fieldOption.name, label: fieldOption.label_name, type: fieldOption.type }))}
+                params={this.getParams()} 
+                onFilter={this.onFilter}
+                types={this.props.login.types}
+                container={DashboardFilterHolder}
+                filterButton={DashboardFilterButton}
+                filterContainer={DashboardFilterContainer}
+                filterButtonIcon={<DashboardFilterIcon icon="filter"/>}
+                />
                 {this.state.isEditing ? (
                     <DashboardConfiguration
                     onRemoveDashboardSettings={this.props.onRemoveDashboardSettings}
@@ -89,7 +156,19 @@ class Dashboard extends React.Component {
                     />
                 ): (
                     <DashboardChartsContainer>
-                        {this.props.dashboard.charts.map((chart, index) => (
+                        <DashboardTotalContainer>
+                            {this.props.dashboard.charts.filter(chart => this.getChartTypeNameById(chart.chart_type) === 'card').map((chart, index) => (
+                                <Chart
+                                key={index}
+                                maintainAspectRatio={false}
+                                numberFormat={this.props.login.types?.data?.field_number_format_type.filter(numberFormatType => numberFormatType.id === chart.number_format_type)[0]}
+                                chartType={this.getChartTypeNameById(chart.chart_type)}
+                                labels={chart.data.labels}
+                                values={chart.data.values}
+                                />
+                            ))}
+                        </DashboardTotalContainer>
+                        {this.props.dashboard.charts.filter(chart => this.getChartTypeNameById(chart.chart_type) !== 'card').map((chart, index) => (
                             <DashboardChartContainer key={index}>
                                 <DashboardChartTitle>
                                     {chart.name}
@@ -116,4 +195,4 @@ class Dashboard extends React.Component {
     }
 }
 
-export default connect(state => ({ dashboard: state.home.dashboard, login: state.login }), actions)(Dashboard);
+export default connect(state => ({ filter: state.home.filter, dashboard: state.home.dashboard, login: state.login }), actions)(Dashboard);
