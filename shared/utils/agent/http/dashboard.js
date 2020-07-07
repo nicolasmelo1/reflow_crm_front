@@ -2,8 +2,8 @@ import requests from '../requests'
 import { companyId } from '../utils'
 
 const DASHBOARD = {
-    getDashboardChartData: async (source, formName, dashboardConfigurationId) => {
-        return await requests.get(`dashboard/${companyId}/${formName}/${dashboardConfigurationId}/`, {}, {}, source)
+    getDashboardChartData: async (source, formName, dashboardConfigurationId, params) => {
+        return await requests.get(`dashboard/${companyId}/${formName}/${dashboardConfigurationId}/`, params, {}, source)
     },
     getDashboardCharts: async (source, formName) => {
         return await requests.get(`dashboard/${companyId}/${formName}/`, {}, {}, source)

@@ -55,12 +55,17 @@ class Dashboard extends React.Component {
     }
 
     onLoadData = (source, params={}) => {
-        this.props.onGetDashboardCharts(this.source, this.props.formName, params)
+        return this.props.onGetDashboardCharts(source, this.props.formName, params)
     }
 
 
     onFilter = (searchInstances) => {
         this.setIsLoadingData(true)
+        if (this.source) {
+            this.source.cancel()
+        }
+        this.source = this.CancelToken.source()
+
         const searchParams = this.props.onSetSearch(searchInstances.map(
             searchInstance => ({
                 searchField: searchInstance.field_name,
@@ -68,7 +73,7 @@ class Dashboard extends React.Component {
             })
         ))
 
-        this.getNewDataFromUpdatedParams({...searchParams}).then(__ => {
+        this.onLoadData(this.source, {...searchParams}).then(__ => {
             this.setIsLoadingData(false)
         })
     }
@@ -86,6 +91,7 @@ class Dashboard extends React.Component {
             this.source.cancel()
         }
         this.source = this.CancelToken.source()
+        this.onLoadData(this.source, this.getParams())
         this.props.onGetFieldOptions(this.source, this.props.formName).then(response => {
             if (response && response.status === 200) {
                 this.setFieldOptions(response.data.data)
