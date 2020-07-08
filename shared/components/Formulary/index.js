@@ -290,8 +290,15 @@ class Formulary extends React.Component {
                 const id = data.id ? data.id : null
                 const sectionsData = data.depends_on_dynamic_form ? data.depends_on_dynamic_form : []
                 // need to set hasBuiltInitial to false in order to update in the sections
-                this.setFilledHasBuiltInitial(false)
-                this.setFilledData(id, sectionsData)
+                onFullResetFormulary(this.state.buildData, {
+                    hasBuiltInitial: false,
+                    isAuxOriginalInitial: false,
+                    data: {
+                        id: id,
+                        depends_on_dynamic_form: sectionsData
+                    },
+                    files: []
+                })
             })
         }
         // The formulary is closing
