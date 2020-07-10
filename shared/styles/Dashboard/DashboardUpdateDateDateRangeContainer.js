@@ -4,12 +4,10 @@ import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
-    width: 100%;
-    overflow: auto;
-    white-space: nowrap;
-    border-bottom: 1px solid #bfbfbf;
-    border-top: 1px solid #bfbfbf;
-    padding: 10px;
+    position: absolute;
+    z-index: 10;
+    width: calc(var(--app-width) - 40px);
+    left: 20px
 `
 :
 styled(View)``

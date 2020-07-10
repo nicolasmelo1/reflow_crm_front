@@ -6,6 +6,8 @@ styled.button`
     border: 0;
     background-color: transparent;
     padding: 0;
+    width: 100%;
+    
     &:hover{
         background-color: #bfbfbf;
         border-radius: 2px;

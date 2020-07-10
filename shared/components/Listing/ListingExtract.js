@@ -28,12 +28,11 @@ import { stringToJsDateFormat, jsDateToStringFormat } from '../../utils/dates'
  * the generated file after the file is ready.
  */
 const ListingExtract = (props) => {
-    const dateFormat = 'DD/MM/YYYY'
     const start = moment().subtract(59, 'days').toDate();
     const end = moment().toDate();    
     const [updateDates, setUpdateDates] = useState({
-        startDate: jsDateToStringFormat(start, dateFormat),
-        endDate: jsDateToStringFormat(end, dateFormat)
+        startDate: jsDateToStringFormat(start, props.dateFormat.split(' ')[0]),
+        endDate: jsDateToStringFormat(end, props.dateFormat.split(' ')[0])
     })
     const [isExtracting, setIsExtracting] = useState(false)
     const [value, setValue] = useState(updateDates.startDate + " - " + updateDates.endDate)
@@ -78,8 +77,8 @@ const ListingExtract = (props) => {
     }
 
     const onChangeUpdateDate = (dates) => {
-        updateDates.startDate = (dates[0] !== '') ? jsDateToStringFormat(dates[0], dateFormat) : dates[0]
-        updateDates.endDate = (dates[1] !== '') ? jsDateToStringFormat(dates[1], dateFormat) : dates[1]
+        updateDates.startDate = (dates[0] !== '') ? jsDateToStringFormat(dates[0], props.dateFormat.split(' ')[0]) : dates[0]
+        updateDates.endDate = (dates[1] !== '') ? jsDateToStringFormat(dates[1], props.dateFormat.split(' ')[0]) : dates[1]
         if (updateDates.startDate !== '' && updateDates.endDate !== '') {
             setValue(updateDates.startDate + " - " + updateDates.endDate)
         }
@@ -107,8 +106,8 @@ const ListingExtract = (props) => {
     }, [onToggleFilterOnClickOutside]);
 
     const initialDays = [
-        updateDates.startDate !== '' ? stringToJsDateFormat(updateDates.startDate, dateFormat) : '', 
-        updateDates.endDate !== '' ? stringToJsDateFormat(updateDates.endDate, dateFormat) : ''
+        updateDates.startDate !== '' ? stringToJsDateFormat(updateDates.startDate, props.dateFormat.split(' ')[0]) : '', 
+        updateDates.endDate !== '' ? stringToJsDateFormat(updateDates.endDate, props.dateFormat.split(' ')[0]) : ''
     ]
 
     return (

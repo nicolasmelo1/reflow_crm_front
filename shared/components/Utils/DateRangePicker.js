@@ -35,6 +35,7 @@ const DateRangePicker = (props) => {
     const monthReference = props.monthReference || ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
     const withTranslate = props.withTranslate || false
 
+    const [maximumHeight, _setMaximumHeight] = useState(null)
     const [isOpen, _setIsOpen] = useState(false)
     const [firstMonth, setFirstMonth] = useState(today.getMonth())
     const [firstYear, setFirstYear] = useState(today.getFullYear())
@@ -48,12 +49,29 @@ const DateRangePicker = (props) => {
     const dateRangePickerContainerRef = React.useRef(null)
     const dateRangePickerRef = React.useRef(null);
 
+    // this is for always be inside the container height
+    const maximumHeightRef = React.useRef(maximumHeight)
+    const setMaximumHeight = () => {
+        if (dateRangePickerRef.current) {
+            const dateRangeHeightIsBiggerThanViewport = dateRangePickerRef.current.getBoundingClientRect().bottom > (window.innerHeight || document.documentElement.clientHeight)
+            const dateRangeHeightToFitViewport = dateRangePickerRef.current.getBoundingClientRect().height - dateRangePickerRef.current.getBoundingClientRect().bottom + (window.innerHeight || document.documentElement.clientHeight)
+            if (dateRangeHeightIsBiggerThanViewport) {
+                maximumHeightRef.current = dateRangeHeightToFitViewport
+                _setMaximumHeight(maximumHeightRef.current)
+            } else if (maximumHeightRef.current !== null && maximumHeightRef.current !== dateRangeHeightToFitViewport) {
+                maximumHeightRef.current = null
+                _setMaximumHeight(maximumHeightRef.current)
+            }
+        }
+    };
+
     // check Select Component in components/utils
-     const isOpenRef = React.useRef(isOpen);
-     const setIsOpen = data => {
-         isOpenRef.current = data;
-         _setIsOpen(data);
-     };
+    const isOpenRef = React.useRef(isOpen);
+    const setIsOpen = data => {
+        isOpenRef.current = data
+        _setIsOpen(data)
+        defineHeight()
+    };
 
     // we define this way because it needs for the JS compiler,
     // we use the function before calling it, please read this:
@@ -142,10 +160,16 @@ const DateRangePicker = (props) => {
         }
     }
 
+    const defineHeight = () => {
+        setMaximumHeight()
+    }
+
     useEffect (() => {
+        window.addEventListener('resize', defineHeight)
         document.addEventListener("mousedown", onInputClick)
         document.addEventListener("scroll", topOrDown, true)
         return () => {
+            window.addEventListener('resize', defineHeight)
             document.removeEventListener("mousedown", onInputClick)
             document.removeEventListener("scroll", topOrDown, true)
         }
@@ -162,7 +186,7 @@ const DateRangePicker = (props) => {
     return(
         <Utils.Daterangepicker.Holder ref={dateRangePickerContainerRef}>
             {isOpen ? (
-                <Utils.Daterangepicker.Container translate={translate3D} ref={dateRangePickerRef}>
+                <Utils.Daterangepicker.Container translate={translate3D} ref={dateRangePickerRef} maximumHeight={maximumHeight}>
                     <Utils.Daterangepicker.DatePickerContainer>
                         <Utils.Daterangepicker.Header>
                             <thead>

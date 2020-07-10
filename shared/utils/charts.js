@@ -57,8 +57,10 @@ const chart = (context, type, labels, values, numberFormat=null, maintainAspectR
                 label: (tooltipItem, data) => {
                     data = (data?.datasets[0]?.data) ? data.datasets[0].data : []
                     if (numberFormat) {
-                        const decimalSeparator = (numberFormat.decimal_separator) ? numberFormat.decimal_separator : '.'
-                        const value = data[tooltipItem.index].toString().replace('.', decimalSeparator)
+                        let value = data[tooltipItem.index].toString().split('.')[0]
+                        if (numberFormat.decimal_separator) {
+                            value = data[tooltipItem.index].toString().replace('.', numberFormat.decimal_separator)
+                        }
                         return formatNumber(value, numberFormat)
                     } else {
                         return data[tooltipItem.index]
@@ -98,8 +100,10 @@ const chart = (context, type, labels, values, numberFormat=null, maintainAspectR
                         beginAtZero: true,
                         callback: (value, index, values) => {
                             if (numberFormat) {
-                                const decimalSeparator = (numberFormat.decimal_separator) ? numberFormat.decimal_separator : '.'
-                                value = value.toString().replace('.', decimalSeparator)
+                                value = value.toString().split('.')[0]
+                                if (numberFormat.decimal_separator) {
+                                    value = value.toString().replace('.', numberFormat.decimal_separator)
+                                }
                                 return formatNumber(value, numberFormat)
                             } else {
                                 return value
@@ -120,8 +124,10 @@ const chart = (context, type, labels, values, numberFormat=null, maintainAspectR
                         beginAtZero: true,
                         callback: (value, index, values) => {
                             if (numberFormat) {
-                                const decimalSeparator = (numberFormat.decimal_separator) ? numberFormat.decimal_separator : '.'
-                                value = value.toString().replace('.', decimalSeparator)
+                                value = value.toString().split('.')[0]
+                                if (numberFormat.decimal_separator) {
+                                    value = value.toString().replace('.', numberFormat.decimal_separator)
+                                }
                                 return formatNumber(value, numberFormat)
                             } else {
                                 return value

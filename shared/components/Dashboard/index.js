@@ -5,17 +5,26 @@ import axios from 'axios'
 import DashboardConfiguration from './DashboardConfiguration'
 import actions from '../../redux/actions'
 import Filter from '../Filter'
+import DateRangePicker from '../Utils/DateRangePicker'
 import Chart from './Chart'
+import { strings } from '../../utils/constants'
+import { stringToJsDateFormat } from '../../utils/dates'
 import { 
     DashboardChartsContainer,
     DashboardChartContainer,
     DashboardChartTitle,
+    DashboardTopButtonsContainer,
     DashboardConfigurationButton,
+    DashboardConfigurationButtonHolder,
     DashboardFilterButton,
     DashboardFilterContainer,
     DashboardFilterHolder,
     DashboardFilterIcon,
-    DashboardTotalContainer
+    DashboardTotalContainer,
+    DashboardUpdateDateHolder,
+    DashboardUpdateDateLabel,
+    DashboardUpdateDateInput,
+    DashboardUpdateDateDateRangeContainer
  } from '../../styles/Dashboard'
 
 
@@ -28,6 +37,7 @@ class Dashboard extends React.Component {
         super(props)
         this.CancelToken = axios.CancelToken
         this.source = null
+        this.updateDateRangeInputRef = React.createRef()
         this.state = {
             fieldOptions: [],
             isEditing: false,
@@ -54,10 +64,19 @@ class Dashboard extends React.Component {
         })
     }
 
-    onLoadData = (source, params={}) => {
-        return this.props.onGetDashboardCharts(source, this.props.formName, params)
+    onChangeUpdateDates = (dates) => {
+        if (this.source) {
+            this.source.cancel()
+        }
+        this.source = this.CancelToken.source()
+        const response = this.props.setDashboardUpdateDate(dates)
+        const params = {
+            ...this.getParams(),
+            to_date: response.endDate,
+            from_date: response.startDate
+        }
+        this.props.onGetDashboardCharts(this.source, this.props.formName, params)
     }
-
 
     onFilter = (searchInstances) => {
         this.setIsLoadingData(true)
@@ -73,13 +92,15 @@ class Dashboard extends React.Component {
             })
         ))
 
-        this.onLoadData(this.source, {...searchParams}).then(__ => {
+        this.props.onGetDashboardCharts(source, this.props.formName, {...searchParams}).then(__ => {
             this.setIsLoadingData(false)
         })
     }
 
     getParams = () => {
         return {
+            to_date: this.props.dashboard.updateDates.endDate,
+            from_date: this.props.dashboard.updateDates.startDate,
             search_value: this.props.filter.search_value,
             search_field: this.props.filter.search_field,
             search_exact: this.props.filter.search_exact
@@ -91,7 +112,7 @@ class Dashboard extends React.Component {
             this.source.cancel()
         }
         this.source = this.CancelToken.source()
-        this.onLoadData(this.source, this.getParams())
+        this.props.onGetDashboardCharts(this.source, this.props.formName, this.getParams())
         this.props.onGetFieldOptions(this.source, this.props.formName).then(response => {
             if (response && response.status === 200) {
                 this.setFieldOptions(response.data.data)
@@ -120,6 +141,15 @@ class Dashboard extends React.Component {
         this.onLoadDashboard()
     }
 
+    componentDidUpdate = (prevProps) => {
+        if (prevProps.formName !== this.props.formName) {
+            if (this.source) {
+                this.source.cancel()
+            }
+            this.source = this.CancelToken.source()
+            this.onLoadDashboard()
+        }
+    }
     componentWillUnmount = () => {
         if (this.source) {
             this.source.cancel()
@@ -135,19 +165,41 @@ class Dashboard extends React.Component {
     renderWeb = () => {
         return (
             <div>
-                <DashboardConfigurationButton onClick={e=> {this.setIsEditing()}}>
-                    Configurações
-                </DashboardConfigurationButton>
-                <Filter
-                fields={this.state.fieldOptions.map(fieldOption => ({ name: fieldOption.name, label: fieldOption.label_name, type: fieldOption.type }))}
-                params={this.getParams()} 
-                onFilter={this.onFilter}
-                types={this.props.login.types}
-                container={DashboardFilterHolder}
-                filterButton={DashboardFilterButton}
-                filterContainer={DashboardFilterContainer}
-                filterButtonIcon={<DashboardFilterIcon icon="filter"/>}
-                />
+                <DashboardTopButtonsContainer>
+                    <DashboardConfigurationButtonHolder>
+                        <DashboardConfigurationButton onClick={e=> {this.setIsEditing()}}>
+                            {this.state.isEditing ?  strings['pt-br']['dashboardConfigurationButtonLabelOpen'] : strings['pt-br']['dashboardConfigurationButtonLabelClosed']}
+                        </DashboardConfigurationButton>
+                    </DashboardConfigurationButtonHolder>
+                    {this.state.isEditing ? '' : (
+                        <DashboardUpdateDateHolder>
+                            <DashboardUpdateDateLabel>{strings['pt-br']['dashboardUpdateDatesLabel']}</DashboardUpdateDateLabel>
+                            <DashboardUpdateDateInput value={`${this.props.dashboard.updateDates.startDate} - ${this.props.dashboard.updateDates.endDate}`} ref={this.updateDateRangeInputRef} readOnly={true}/>
+                            <DashboardUpdateDateDateRangeContainer>
+                                <DateRangePicker input={this.updateDateRangeInputRef} 
+                                closeWhenSelected={true}
+                                onChange={this.onChangeUpdateDates} 
+                                initialDays={[
+                                    this.props.dashboard.updateDates.startDate !== '' ? stringToJsDateFormat(this.props.dashboard.updateDates.startDate, this.props.login.dateFormat.split(' ')[0]) : '', 
+                                    this.props.dashboard.updateDates.endDate !== '' ? stringToJsDateFormat(this.props.dashboard.updateDates.endDate, this.props.login.dateFormat.split(' ')[0]) : ''
+                                ]}
+                                />
+                            </DashboardUpdateDateDateRangeContainer>
+                        </DashboardUpdateDateHolder>
+                    )}
+                    {this.state.isEditing ? '' : (
+                        <Filter
+                        fields={this.state.fieldOptions.map(fieldOption => ({ name: fieldOption.name, label: fieldOption.label_name, type: fieldOption.type }))}
+                        params={this.getParams()} 
+                        onFilter={this.onFilter}
+                        types={this.props.login.types}
+                        container={DashboardFilterHolder}
+                        filterButton={DashboardFilterButton}
+                        filterContainer={DashboardFilterContainer}
+                        filterButtonIcon={<DashboardFilterIcon icon="filter"/>}
+                        />
+                    )}
+                </DashboardTopButtonsContainer>
                 {this.state.isEditing ? (
                     <DashboardConfiguration
                     onRemoveDashboardSettings={this.props.onRemoveDashboardSettings}
@@ -162,34 +214,40 @@ class Dashboard extends React.Component {
                     />
                 ): (
                     <DashboardChartsContainer>
-                        <DashboardTotalContainer>
-                            {this.props.dashboard.charts.filter(chart => this.getChartTypeNameById(chart.chart_type) === 'card').map((chart, index) => (
-                                <Chart
-                                key={index}
-                                maintainAspectRatio={false}
-                                numberFormat={this.props.login.types?.data?.field_number_format_type.filter(numberFormatType => numberFormatType.id === chart.number_format_type)[0]}
-                                chartType={this.getChartTypeNameById(chart.chart_type)}
-                                labels={chart.data.labels}
-                                values={chart.data.values}
-                                />
-                            ))}
-                        </DashboardTotalContainer>
-                        {this.props.dashboard.charts.filter(chart => this.getChartTypeNameById(chart.chart_type) !== 'card').map((chart, index) => (
-                            <DashboardChartContainer key={index}>
-                                <DashboardChartTitle>
-                                    {chart.name}
-                                </DashboardChartTitle>
-                                <div style={{ marginTop: '40px'}}>
-                                    <Chart
-                                    maintainAspectRatio={false}
-                                    numberFormat={this.props.login.types?.data?.field_number_format_type.filter(numberFormatType => numberFormatType.id === chart.number_format_type)[0]}
-                                    chartType={this.getChartTypeNameById(chart.chart_type)}
-                                    labels={chart.data.labels}
-                                    values={chart.data.values}
-                                    /> 
-                                </div>
-                            </DashboardChartContainer>
-                        ))}
+                        {this.props.dashboard.charts.length === 0 ? (
+                            <p>{strings['pt-br']['dashboardNoChartsMessageLabel']}</p>
+                        ) : (
+                            <div>
+                                <DashboardTotalContainer>
+                                    {this.props.dashboard.charts.filter(chart => this.getChartTypeNameById(chart.chart_type) === 'card').map((chart, index) => (
+                                        <Chart
+                                        key={index}
+                                        maintainAspectRatio={false}
+                                        numberFormat={this.props.login.types?.data?.field_number_format_type.filter(numberFormatType => numberFormatType.id === chart.number_format_type)[0]}
+                                        chartType={this.getChartTypeNameById(chart.chart_type)}
+                                        labels={chart.data.labels}
+                                        values={chart.data.values}
+                                        />
+                                    ))}
+                                </DashboardTotalContainer>
+                                {this.props.dashboard.charts.filter(chart => this.getChartTypeNameById(chart.chart_type) !== 'card').map((chart, index) => (
+                                    <DashboardChartContainer key={index}>
+                                        <DashboardChartTitle>
+                                            {chart.name}
+                                        </DashboardChartTitle>
+                                        <div style={{ marginTop: '40px'}}>
+                                            <Chart
+                                            maintainAspectRatio={false}
+                                            numberFormat={this.props.login.types?.data?.field_number_format_type.filter(numberFormatType => numberFormatType.id === chart.number_format_type)[0]}
+                                            chartType={this.getChartTypeNameById(chart.chart_type)}
+                                            labels={chart.data.labels}
+                                            values={chart.data.values}
+                                            /> 
+                                        </div>
+                                    </DashboardChartContainer>
+                                ))}
+                            </div>
+                        )}
                     </DashboardChartsContainer>
                 )}
             </div>

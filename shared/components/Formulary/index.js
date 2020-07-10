@@ -290,7 +290,7 @@ class Formulary extends React.Component {
                 const id = data.id ? data.id : null
                 const sectionsData = data.depends_on_dynamic_form ? data.depends_on_dynamic_form : []
                 // need to set hasBuiltInitial to false in order to update in the sections
-                onFullResetFormulary(this.state.buildData, {
+                this.onFullResetFormulary(this.state.buildData, {
                     hasBuiltInitial: false,
                     isAuxOriginalInitial: false,
                     data: {

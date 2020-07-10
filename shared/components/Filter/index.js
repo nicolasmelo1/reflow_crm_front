@@ -79,8 +79,8 @@ const Filter = (props) => {
     }
 
     const onToggleFilter = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
+        e.preventDefault()
+        e.stopPropagation()
         setIsOpen(!isOpen)
     }
 
@@ -125,10 +125,10 @@ const Filter = (props) => {
     }, [props.isLoading])
 
     useEffect(() => {
-        document.addEventListener("mousedown", onToggleFilterOnClickOutside); 
+        document.addEventListener("mousedown", onToggleFilterOnClickOutside)
         return () => {
-            document.removeEventListener("mousedown", onToggleFilterOnClickOutside);
-        };
+            document.removeEventListener("mousedown", onToggleFilterOnClickOutside)
+        }
     }, [onToggleFilterOnClickOutside])
 
     const ContainerComponent = props.container ? props.container : `div`

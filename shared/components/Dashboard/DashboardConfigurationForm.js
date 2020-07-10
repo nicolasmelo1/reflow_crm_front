@@ -285,7 +285,7 @@ const DashboardConfigurationForm = (props) => {
                         </DashboardConfigurationSaveButton>
                     </DashboardConfigurationFormContainer>
                     <DashboardConfigurationChartContainer>
-                        <DashboardConfigurationPreviewTitleLabel>Preview</DashboardConfigurationPreviewTitleLabel>
+                        <DashboardConfigurationPreviewTitleLabel>{strings['pt-br']['dashboardConfigurationFormPreviewTitleLabel']}</DashboardConfigurationPreviewTitleLabel>
                         <Chart
                         chartType={props.getChartTypeNameById(dashboardConfigurationData.chart_type)}
                         labels={['Jan', 'Fev', 'Mar']}

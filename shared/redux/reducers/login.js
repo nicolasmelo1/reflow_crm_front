@@ -7,10 +7,11 @@ const initialState = {
     user: null,
     company: null,
     types: {},
-};
+}
+
 
 export default (state = initialState, action) => {
-    switch (action.type) {
+    switch (action?.type) {
         case AUTHENTICATE:
             return { 
                 ...state,
@@ -36,4 +37,4 @@ export default (state = initialState, action) => {
         default:
             return state;
     }
-};
+}

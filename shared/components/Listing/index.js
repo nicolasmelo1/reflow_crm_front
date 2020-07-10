@@ -4,12 +4,10 @@ import { Row, Col } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import ListingTable from './ListingTable'
 import ListingExtract from './ListingExtract'
-import ListingTotals from './ListingTotals'
-import ListingTotalsForm from './ListingTotalsForm'
 import ListingColumnSelect from './ListingColumnSelect'
 import Filter from '../Filter'
 import actions from '../../redux/actions'
-import { ListingFilterAndExtractContainer, ListingFilterContainer, ListingFilterIcon, ListingFilterAndExtractButton, ListingTotalLabel, ListingTotalAddNewButton, ListingButtonsContainer } from '../../styles/Listing'
+import { ListingFilterAndExtractContainer, ListingFilterContainer, ListingFilterIcon, ListingFilterAndExtractButton, ListingButtonsContainer } from '../../styles/Listing'
 
 /**
  * This component render all of the listing logic, like the table, the totals, filters and extract
@@ -158,6 +156,7 @@ class Listing extends React.Component {
                         />
                         <ListingExtract 
                         params={this.getParams(this.state.params.page)} 
+                        dateFormat={this.props.dateFormat}
                         onExportData={this.props.onExportData} 
                         onGetExportedData={this.props.onGetExportedData} 
                         formName={this.props.router.form}
@@ -194,4 +193,4 @@ class Listing extends React.Component {
     }
 }
 
-export default connect(state => ({ filter: state.home.filter, list: state.home.list, types: state.login.types }), actions)(Listing)
+export default connect(state => ({ filter: state.home.filter, list: state.home.list, dateFormat: state.login.dateFormat, types: state.login.types }), actions)(Listing)

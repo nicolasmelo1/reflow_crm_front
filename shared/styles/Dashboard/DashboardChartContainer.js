@@ -13,7 +13,7 @@ styled.div`
     }
 
     &:not(:last-child) {
-        border-bottom: 2px solid #17242D
+        border-bottom: 1px solid #bfbfbf
     }
 `
 :

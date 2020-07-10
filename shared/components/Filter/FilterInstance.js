@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import { FilterInputGroup, FilterInputDropdownButton, FilterInput, FilterDeleteButton, FilterDropdownMenu } from '../../styles/Filter'
 import DateRangePicker from '../Utils/DateRangePicker'
 import { stringToJsDateFormat, jsDateToStringFormat } from '../../utils/dates'
@@ -22,11 +23,12 @@ import { Dropdown } from 'react-bootstrap'
  * to filter on, and the value to filter.
  */
 const FilterInstance = (props) => {
-    const dateFormat = 'DD/MM/YYYY'
     const [searchFieldType, setSearchFieldType] = useState(null)
     const [searchField, setSearchField] = useState('')
     const [searchValue, setSearchValue] = useState('')
     const [searchFieldTitle, setSearchFieldTitle] = useState(strings['pt-br']['filterFieldsDropdownButttonLabel'])
+
+    const dateFormat = useSelector(state => state.login.dateFormat)
 
     const inputRef = React.useRef()
 
@@ -49,7 +51,7 @@ const FilterInstance = (props) => {
     
     const onChangeFilterValue = (value) => {
         if (searchFieldType === 'date') {
-            value = `${jsDateToStringFormat(value[0], dateFormat)} - ${jsDateToStringFormat(value[1], dateFormat)}`
+            value = `${jsDateToStringFormat(value[0], dateFormat.split(' ')[0])} - ${jsDateToStringFormat(value[1], dateFormat.split(' ')[0])}`
         }
 
         setSearchValue(value)
@@ -99,4 +101,4 @@ const FilterInstance = (props) => {
     )
 }
 
-export default FilterInstance;
+export default FilterInstance

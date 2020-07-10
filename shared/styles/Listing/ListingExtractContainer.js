@@ -2,7 +2,6 @@ import styled from 'styled-components'
 
 export default styled.div`
     position: absolute;
-    max-width: 600px;
     z-index: 10;
     background-color: #17242D;
     border-radius: 5px; 
@@ -12,5 +11,6 @@ export default styled.div`
 
     @media(max-width: 640px) {
        right:0;
+       width: calc(var(--app-width) - 40px);
     }
 `

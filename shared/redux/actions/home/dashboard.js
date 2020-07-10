@@ -1,5 +1,7 @@
-import { SET_DASHBOARD_CHARTS } from '../../types';
+import { SET_DASHBOARD_CHARTS, SET_DASHBOARD_UPDATE_DATES } from '../../types';
 import agent from '../../../utils/agent'
+import { jsDateToStringFormat } from '../../../utils/dates'
+
 
 const getAndDispatchDashboardCharts = (dispatch, source, formName, params) => {
     return agent.http.DASHBOARD.getDashboardCharts(source, formName).then(async response=> {
@@ -23,7 +25,10 @@ const onGetDashboardCharts = (source, formName, params) => {
             formName: formName,
             callback: (data) => {
                 const filterParams = getState().home.filter
+                const updateDateParams = getState().home.dashboard.updateDates
                 const params = {
+                    to_date: updateDateParams.endDate,
+                    from_date: updateDateParams.startDate,
                     search_field: filterParams.search_field,
                     search_value: filterParams.search_value,
                     search_exact: filterParams.search_exact
@@ -32,6 +37,25 @@ const onGetDashboardCharts = (source, formName, params) => {
             }
         })
         return getAndDispatchDashboardCharts(dispatch, source, formName, params)
+    }
+}
+
+const setDashboardUpdateDate = (dates) => {
+    return (dispatch, getState) => {
+        const dateFormat = getState().login.dateFormat
+
+        const startDate = (dates[0] !== '') ? jsDateToStringFormat(dates[0], dateFormat.split(' ')[0]) : dates[0]
+        const endDate = (dates[1] !== '') ? jsDateToStringFormat(dates[1], dateFormat.split(' ')[0]) : dates[1]
+        const payload = {
+            startDate: startDate,
+            endDate: endDate
+        }
+        dispatch({ 
+            type: SET_DASHBOARD_UPDATE_DATES, 
+            payload: payload
+        })
+
+        return payload
     }
 }
 
@@ -66,6 +90,7 @@ const onRemoveDashboardSettings = (formName, dashboardConfigurationId) => {
 }
 
 export default {
+    setDashboardUpdateDate,
     onGetDashboardCharts,
     onGetDashboardSettings,
     onGetFieldOptions,
