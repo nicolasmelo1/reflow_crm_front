@@ -23,7 +23,8 @@ const Option = (props) => {
 
     const renderMobile = () => {
         return (
-            <Utils.Select.OptionsListContainer>
+            <Utils.Select.OptionsListContainer                             
+            >
                 {filteredOptions.map((option, index)=> (
                     <View 
                     key={option.value} 

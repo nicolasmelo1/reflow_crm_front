@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View } from 'react-native'
+import { FlatList } from 'react-native'
 import DashboardConfigurationCard from './DashboardConfigurationCard'
 import { 
     DashboardConfigurationAddNewCard, 
@@ -86,8 +86,40 @@ const DashboardConfiguration = (props) => {
     }, [])
 
     const renderMobile = () => {
+        if (!dashboardSettingsData[0] || Object.keys(dashboardSettingsData[0]).length !== 0) {
+            dashboardSettingsData.splice(0, 0, {})
+        }
         return (
-            <View></View>
+            <DashboardConfigurationCardsContainer>
+                <FlatList
+                keyboardShouldPersistTaps={'handled'}
+                data={dashboardSettingsData}
+                keyExtractor={(__, index) => index.toString()}
+                contentContainerStyle={{justifyContent: 'center', alignItems: 'center'}}
+                renderItem={({ item, index, __ }) => {
+                    if (index === 0) {
+                        return (
+                            <DashboardConfigurationAddNewCard key={index} onPress={e=>{addDashboardSettings()}}>
+                                <DashboardConfigurationAddNewIcon icon="plus-circle"/>
+                                <DashboardConfigurationAddNewText>{strings['pt-br']['dashboardConfigurationAddNewCardLabel']}</DashboardConfigurationAddNewText>
+                            </DashboardConfigurationAddNewCard>
+                        )
+                    } else {
+                        return (
+                            <DashboardConfigurationCard
+                            key={index}
+                            types={props.types}
+                            getChartTypeNameById={props.getChartTypeNameById}
+                            fieldOptions={fieldOptions}
+                            onUpdateDashboardSettings={(data) => (onUpdateDashboardSettings(index, data))}
+                            onRemoveDashboardSettings={() => (onRemoveDashboardSettings(index))}
+                            dashboardConfigurationData={dashboardSettingsData[index]}
+                            />
+                        )
+                    }
+                }}
+                />
+            </DashboardConfigurationCardsContainer>
         )
     }
 

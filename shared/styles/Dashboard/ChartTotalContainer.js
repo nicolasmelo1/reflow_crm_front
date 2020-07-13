@@ -17,4 +17,14 @@ styled.div`
     background-color: #fff;
 `
 :
-styled(View)``
+styled(View)`
+    width: 150px;
+    height: 150px;
+    margin: 5px;
+    top: 0;
+    right: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: #17242D;
+    background-color: #fff;
+`

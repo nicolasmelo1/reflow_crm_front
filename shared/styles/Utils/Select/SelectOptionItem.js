@@ -16,4 +16,5 @@ styled(React.forwardRef(({hasBorder, optionDividerColor, optionOnHoverBackground
 :
 styled(React.forwardRef(({hasBorder, optionDividerColor, optionOnHoverBackgroundColor, optionOnHoverColor, ...rest}, ref) => <TouchableOpacity {...rest} ref={ref}/>))`
     padding: 5px;
+    margin: 10px;
 `

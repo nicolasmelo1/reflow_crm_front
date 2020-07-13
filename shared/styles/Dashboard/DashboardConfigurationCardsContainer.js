@@ -12,4 +12,6 @@ styled.div`
     overflow-y: auto;
 `
 :
-styled(View)``
+styled(View)`
+    height: 100%;
+`

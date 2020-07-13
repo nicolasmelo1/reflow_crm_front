@@ -1,11 +1,11 @@
 import React from 'react'
-import { View } from 'react-native'
+import { View, Text, FlatList } from 'react-native'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import DashboardConfiguration from './DashboardConfiguration'
 import actions from '../../redux/actions'
-import Filter from '../Filter'
-import DateRangePicker from '../Utils/DateRangePicker'
+//import Filter from '../Filter'
+//import DateRangePicker from '../Utils/DateRangePicker'
 import Chart from './Chart'
 import { strings } from '../../utils/constants'
 import { stringToJsDateFormat } from '../../utils/dates'
@@ -158,7 +158,55 @@ class Dashboard extends React.Component {
 
     renderMobile = () => {
         return (
-            <View></View>
+            <View style={{ width:'100%', height: '79%'}}>
+                <DashboardConfigurationButton onPress={e=> {this.setIsEditing()}}>
+                    <Text style={{ color:'#fff' }}>
+                        {this.state.isEditing ?  strings['pt-br']['dashboardConfigurationButtonLabelOpen'] : strings['pt-br']['dashboardConfigurationButtonLabelClosed']}
+                    </Text>
+                </DashboardConfigurationButton>
+                {this.state.isEditing ? (
+                    <DashboardConfiguration
+                    onRemoveDashboardSettings={this.props.onRemoveDashboardSettings}
+                    onUpdateDashboardSettings={this.props.onUpdateDashboardSettings}
+                    onCreateDashboardSettings={this.props.onCreateDashboardSettings}
+                    getChartTypeNameById={this.getChartTypeNameById}
+                    cancelToken={this.CancelToken}
+                    types={this.props.login.types}
+                    formName={this.props.formName}
+                    onGetFieldOptions={this.props.onGetFieldOptions}
+                    onGetDashboardSettings={this.props.onGetDashboardSettings}
+                    />
+                ) : (
+                    <DashboardChartsContainer>
+                        {this.props.dashboard.charts.length === 0 ? (
+                            <Text>{strings['pt-br']['dashboardNoChartsMessageLabel']}</Text>
+                        ) : (
+                            <FlatList
+                            keyboardShouldPersistTaps={'handled'}
+                            data={this.props.dashboard.charts}
+                            keyExtractor={(__, index) => index.toString()}
+                            renderItem={({ item, index, __ }) => {
+                                return (
+                                    <DashboardChartContainer key={index}>
+                                        <DashboardChartTitle>
+                                            {this.props.dashboard.charts[index].name}
+                                        </DashboardChartTitle>
+                                        <Chart
+                                        maintainAspectRatio={false}
+                                        numberFormat={this.props.login.types?.data?.field_number_format_type.filter(numberFormatType => numberFormatType.id === this.props.dashboard.charts[index].number_format_type)[0]}
+                                        chartType={this.getChartTypeNameById(this.props.dashboard.charts[index].chart_type)}
+                                        labels={this.props.dashboard.charts[index].data.labels}
+                                        values={this.props.dashboard.charts[index].data.values}
+                                        /> 
+                                    </DashboardChartContainer>
+                                )
+                            }}
+                            />
+                        )}
+                    </DashboardChartsContainer>
+
+                )}
+            </View>
         )
     }
 

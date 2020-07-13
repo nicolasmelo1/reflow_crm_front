@@ -24,5 +24,5 @@ styled(React.forwardRef(({optionBackgroundColor, optionColor, ...rest}, ref) => 
     width: 100%; 
     background-color: ${props => props.optionBackgroundColor ? props.optionBackgroundColor: '#17242D'};
     color: ${props => props.optionColor ? props.optionColor: '#f2f2f2'};
-    height: 100%;
+    height: 93%;
 `

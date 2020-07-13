@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import { View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View, Text } from 'react-native'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
 import charts from '../../utils/charts'
 import isEqual from '../../utils/isEqual'
@@ -11,9 +11,12 @@ import {
     ChartTotalLabelContainer
 } from '../../styles/Dashboard'
 import chart from '../../utils/charts'
+import formatNumber from '../../utils/formatNumber'
 
-
-
+let WebView;
+if(process.env['APP'] !== 'web') {
+    WebView = require('react-native-webview').WebView
+}
 /**
  * Since we render the totals the same way on the card and on the popover
  * we created this handy component, so you don't have to repeat code.
@@ -23,7 +26,22 @@ import chart from '../../utils/charts'
  * occurence.
  */
 const Totals = (props) => {
-    return (
+    const renderMobile = () => (
+        <View>
+            {props.values.map((__, index) => (
+                <ChartTotalLabelContainer key={index} hasBorderBottom={index < props.values.length-1}>
+                    <ChartTotalLabel>
+                        {props.labels[index]}
+                    </ChartTotalLabel>
+                    <ChartTotalLabel isTotal={true}>
+                        {props.values[index]}
+                    </ChartTotalLabel>
+                </ChartTotalLabelContainer>
+            ))}
+        </View>
+    )
+
+    const renderWeb = () => (
         <div>
             {props.values.map((__, index) => (
                 <ChartTotalLabelContainer key={index} hasBorderBottom={index < props.values.length-1}>
@@ -37,6 +55,8 @@ const Totals = (props) => {
             ))}
         </div>
     )
+
+    return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 
 const PopoverWithTotals = React.forwardRef((props, ref) => {
@@ -57,6 +77,7 @@ const PopoverWithTotals = React.forwardRef((props, ref) => {
  * @param {String} chartType - {go in detail about every prop it recieves}
  */
 const Chart = (props) => {
+    //const [jsToInject, setJsToInject] = useState('')
     const chartjsTypes = ['bar', 'pie', 'line']
     const valuesRef = React.useRef(null)
     const labelsRef = React.useRef(null)
@@ -64,20 +85,46 @@ const Chart = (props) => {
     const numberFormatRef = React.useRef(null)
     const canvasRef = React.useRef(null)
     const chartRef = React.useRef(null)
+    const hasRenderedChartJSRef = React.useRef(false)
 
-    const addChartJs = () => {
-        chartTypeRef.current = props.chartType
-        numberFormatRef.current = props.numberFormat
-        labelsRef.current = props.labels
-        valuesRef.current = props.values
-        if (chartRef.current) {
-            chartRef.current.destroy()
-            chartRef.current = null
-        }
-        if (chartjsTypes.includes(props.chartType) && chartRef.current === null) {
+
+    const getJsToInjectInWebview = (gettingOnRender=false) => {
+        if ((gettingOnRender && !hasRenderedChartJSRef.current) || !gettingOnRender) {
             const maintainAspectRatio = (typeof props.maintainAspectRatio !== 'undefined') ? props.maintainAspectRatio : true
             const numberFormat = (props.numberFormat) ? props.numberFormat : null
-            chartRef.current = charts(canvasRef.current, props.chartType, props.labels, props.values, numberFormat, maintainAspectRatio)
+            return `
+                ${formatNumber.toString()}
+                ${chart.toString()
+                    .replace(/_formatNumber\.default/g, 'formatNumber')
+                    .replace(/_chart\.default/g, 'Chart')
+                    .replace(/_objectSpread/g, 'Object.assign')}
+                var ctx = document.getElementById('chart');
+                if (myChart) {
+                    myChart.destroy()
+                }
+                var myChart = chart(ctx, '${props.chartType}',  [${props.labels.map(label=> `'${label}'`)}],  [${props.values}], ${JSON.stringify(numberFormat)}, ${maintainAspectRatio})
+            `
+        }
+    }
+    const addChartJs = () => {
+        if(process.env['APP'] === 'web') {
+            chartTypeRef.current = props.chartType
+            numberFormatRef.current = props.numberFormat
+            labelsRef.current = props.labels
+            valuesRef.current = props.values
+            if (chartRef.current) {
+                chartRef.current.destroy()
+                chartRef.current = null
+            }
+            if (chartjsTypes.includes(props.chartType) && chartRef.current === null) {
+                const maintainAspectRatio = (typeof props.maintainAspectRatio !== 'undefined') ? props.maintainAspectRatio : true
+                const numberFormat = (props.numberFormat) ? props.numberFormat : null
+                chartRef.current = charts(canvasRef.current, props.chartType, props.labels, props.values, numberFormat, maintainAspectRatio)
+            }
+        } else {
+            if (chartRef.current) {
+                chartRef.current.injectJavaScript(getJsToInjectInWebview())
+            }
         }
     }
 
@@ -102,6 +149,48 @@ const Chart = (props) => {
         </ChartContainer>
     )
 
+    const renderChartMobile = () => (
+        <WebView
+            ref={chartRef}
+            originWhitelist={['*']}
+            scrollEnabled={typeof props.maintainAspectRatio !== 'undefined'}
+            javaScriptEnabled={true}
+            injectedJavaScript={getJsToInjectInWebview(true)}
+            source={{html: `
+            <html>
+                <head>
+                    <meta charset="utf-8">
+                    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1">
+                    <script>
+                        eval(atob("${require('../../../mobile/assets/js/Chart.min.js').default}"));
+                    </script>
+                    <style type="text/css">
+                        body {
+                            margin: 0;
+                            padding: 0;
+                            width: 100vw;
+                            height: 100vh;
+                            overflow-y: auto;
+                        }
+                        .chart {
+                            width: 100vw;
+                            height: 100vh;
+                            overflow-y: auto;
+                        }
+                    </style>
+                </head>
+    
+                <body>
+                    <canvas id="chart" class="chart" width="400" height="400"></canvas>
+                </body>
+                <script>
+                </script>
+            </html>
+            ` }}
+        />    
+    )
+
     const renderTotalWeb = () => (
         <ChartTotalContainer>
             <OverlayTrigger 
@@ -124,11 +213,16 @@ const Chart = (props) => {
             </OverlayTrigger>
         </ChartTotalContainer>
     )
-
+    
+    const renderTotalMobile = () => (
+        <ChartTotalContainer>
+            <ChartTotalContent>
+                <Totals labels={props.labels} values={props.values}/>
+            </ChartTotalContent>
+        </ChartTotalContainer>
+    )
     const renderMobile = () => {
-        return (
-            <View></View>
-        )
+        return ['bar', 'pie', 'line'].includes(props.chartType) ? renderChartMobile() : renderTotalMobile()
     }
 
     const renderWeb = () => {

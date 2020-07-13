@@ -9,4 +9,6 @@ styled.p`
     margin: 0
 `
 :
-styled(Text)``
+styled(Text)`
+    color: red;
+`

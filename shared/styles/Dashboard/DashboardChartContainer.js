@@ -17,4 +17,6 @@ styled.div`
     }
 `
 :
-styled(View)``
+styled(View)`
+    height: 500px;
+`

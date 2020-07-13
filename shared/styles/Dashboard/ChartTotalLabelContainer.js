@@ -8,4 +8,6 @@ styled.div`
     ${props => props.hasBorderBottom ? 'border-bottom: 1px solid #17242D;' : ''}
 `
 :
-styled(View)``
+styled(View)`
+    padding: 0;
+`

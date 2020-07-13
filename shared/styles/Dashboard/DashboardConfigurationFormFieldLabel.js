@@ -11,4 +11,6 @@ styled.label`
     user-select: none;
 `
 :
-styled(Text)``
+styled(Text)`
+    font-weight: bold;
+`

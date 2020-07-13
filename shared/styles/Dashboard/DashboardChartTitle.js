@@ -10,4 +10,9 @@ styled.h2`
     color: #0dbf7e
 `
 :
-styled(Text)``
+styled(Text)`
+    text-align: center;
+    width: 100%;
+    color: #0dbf7e;
+    font-size: 24px;
+`

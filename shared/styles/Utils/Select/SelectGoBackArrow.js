@@ -3,8 +3,7 @@ import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { Button } from 'react-native'
 
-export default process.env['APP'] === 'web' ?  
-styled(FontAwesomeIcon)`
+export default styled(FontAwesomeIcon)`
     @media(min-width: 420px) {
         display: none;
     }
@@ -12,7 +11,4 @@ styled(FontAwesomeIcon)`
         margin: 0 10px;
         cursor: pointer;
     }
-`
-:
-styled(Button)`
 `

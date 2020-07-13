@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Modal, Text } from 'react-native'
 import Router from 'next/router'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import Formulary from '../Formulary'
+//import Formulary from '../Formulary'
 import { paths, strings } from '../../utils/constants'
 import { 
     TemplatesPreviewFormularyPreviewFormularyContainer,

@@ -10,4 +10,10 @@ styled.div`
     justify-content: flex-end
 `
 :
-styled(View)``
+styled(View)`
+    align-self: flex-start;
+    padding: 10px;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+`

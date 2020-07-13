@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View } from 'react-native'
+import { TouchableOpacity } from 'react-native'
 import Chart from './Chart'
 import DashboardConfigurationForm from './DashboardConfigurationForm'
 import { 
@@ -24,7 +24,38 @@ const DashboardConfigurationCard = (props) => {
 
     const renderMobile = () => {
         return (
-            <View></View>
+            <DashboardConfigurationCardContainer>
+                <DashboardConfigurationCardButtonsContainer>
+                    <TouchableOpacity onPress={e => {setFormIsOpen(true)}}>
+                        <DashboardConfigurationCardIcon icon={'pencil-alt'}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={e => {props.onRemoveDashboardSettings()}}>
+                        <DashboardConfigurationCardIcon icon={'trash'}/>
+                    </TouchableOpacity>
+                </DashboardConfigurationCardButtonsContainer>
+                <DashboardConfigurationCardChartAndTitleContainer chartType={props.getChartTypeNameById(props.dashboardConfigurationData.chart_type)}>
+                    <DashboardConfigurationCardTitle>
+                        {(props.dashboardConfigurationData.name === '') ? strings['pt-br']['dashboardConfigurationCardEmptyTitleLabel'] : props.dashboardConfigurationData.name}
+                    </DashboardConfigurationCardTitle>
+                    <Chart
+                    chartType={props.getChartTypeNameById(props.dashboardConfigurationData.chart_type)}
+                    labels={['Jan', 'Fev', 'Mar']}
+                    values={[10, 20, 30]}
+                    />
+                </DashboardConfigurationCardChartAndTitleContainer>
+                {formIsOpen ? (
+                    <DashboardConfigurationFullFormContainer>
+                        <DashboardConfigurationForm
+                        setFormIsOpen={setFormIsOpen}
+                        types={props.types}
+                        getChartTypeNameById={props.getChartTypeNameById}
+                        fieldOptions={props.fieldOptions}
+                        dashboardConfigurationData={props.dashboardConfigurationData}
+                        onUpdateDashboardSettings={props.onUpdateDashboardSettings}
+                        />
+                    </DashboardConfigurationFullFormContainer>
+                ) : null}
+            </DashboardConfigurationCardContainer>
         )
     }
 

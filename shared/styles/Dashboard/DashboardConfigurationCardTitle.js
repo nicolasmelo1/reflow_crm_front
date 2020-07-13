@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { View } from 'react-native'
+import { Text } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.h2`
@@ -11,4 +11,8 @@ styled.h2`
     width: 100%;
 `
 :
-styled(View)``
+styled(Text)`
+    align-self: center;
+    color: ${props=> props.isOpen ? '#17242D' : '#0dbf7e'};
+    font-weight: bold;
+`

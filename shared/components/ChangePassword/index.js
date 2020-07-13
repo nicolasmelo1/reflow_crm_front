@@ -16,7 +16,7 @@ import {
     ChangePasswordVisualizePasswordLabel,
     ChangePasswordHeader,
     ChangePasswordGoBackButton
- } from '../../styles/ChangePassword'
+} from '../../styles/ChangePassword'
 
 
 /**

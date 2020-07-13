@@ -14,6 +14,7 @@ styled.button`
 styled(TouchableOpacity)`
     align-items: center;
     justify-content: center;
+    margin-top: 10px;
     width: 30px;
     height: 30px;
 `

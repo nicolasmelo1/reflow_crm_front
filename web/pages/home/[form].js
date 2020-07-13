@@ -108,16 +108,12 @@ class Data extends React.Component {
             case 'dashboard':
                 return <Dashboard
                         formName={this.props.router.query.form}
-                        search={this.state.search}
-                        setSearch={this.setSearch} 
                         />
             case 'listing': 
                 return <Listing 
                         router={this.props.router.query} 
                         setFormularyId={this.openFormularyId} 
-                        setSearch={this.setSearch} 
                         formularySettingsHasBeenUpdated={this.state.formularySettingsHasBeenUpdated}
-                        search={this.state.search}
                         />
             case 'kanban':
                 return <Kanban 
@@ -125,16 +121,12 @@ class Data extends React.Component {
                         setFormularyId={this.openFormularyId}
                         setFormularyDefaultData={this.setFormularyDefaultData}
                         formularySettingsHasBeenUpdated={this.state.formularySettingsHasBeenUpdated}
-                        setSearch={this.setSearch} 
-                        search={this.state.search}
                         />
             default:
                 return <Listing 
                         router={this.props.router.query} 
                         setFormularyId={this.openFormularyId} 
-                        setSearch={this.setSearch} 
                         formularySettingsHasBeenUpdated={this.state.formularySettingsHasBeenUpdated}
-                        search={this.state.search}
                         />
         }
     }

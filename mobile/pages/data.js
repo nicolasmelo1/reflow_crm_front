@@ -4,6 +4,7 @@ import { Button, Linking } from 'react-native'
 import { connect } from 'react-redux'
 import actions from '@shared/redux/actions'
 import { withAuthenticationContext } from '../contexts'
+import Dashboard from '@shared/components/Dashboard'
 
 class Data extends React.Component {
     constructor (props) {
@@ -20,6 +21,9 @@ class Data extends React.Component {
                         this.props.authenticationContext.setIsAuthenticated(false)
                     })
                 }} title={'Logout'}/>
+                <Dashboard 
+                formName={'comercial123'}
+                />
             </Layout>
         )     
     }

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import Utils from '../../../styles/Utils'
 import Option from './Option'
-import { SafeAreaView, Text } from 'react-native';
+import { SafeAreaView, Text, TouchableOpacity } from 'react-native';
 
 /**
  * Custom select component used in our formulary, if you need to change something in the select, change this component.
@@ -195,11 +195,15 @@ const Select = (props) => {
             <Utils.Select.Select isOpen={isOpen} ref={selectRef} onPress={e=> {onSelectClick()}} animationType={'slide'}>
                 <SafeAreaView>
                     <Utils.Select.SelectedOptionsContainer isOpen={isOpen}>
-                        {(isOpen) ? (<Utils.Select.GoBackArrow title={'<'} color={'#17242D'} onPress={e=> {
+                        {(isOpen) ? (
+                        <TouchableOpacity style={{ margin: 15 }} onPress={e=> {
                             e.preventDefault()
                             e.stopPropagation()
                             setIsOpen(false)
-                        }}/>) : null}
+                        }}>
+                            <Utils.Select.GoBackArrow icon="arrow-left"/>
+                        </TouchableOpacity>
+                        ) : null}
                         {selectedOptions.map((selectedOption, index)=> (
                         <Utils.Select.SelectedOption 
                         key={selectedOption.value} 

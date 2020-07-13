@@ -11,4 +11,6 @@ styled.div`
     width: calc(var(--app-width) - 40px);
 `
 :
-styled(View)``
+styled(View)`
+    height: 98%;
+`

@@ -15,4 +15,13 @@ styled.div`
     overflow: hidden;
 `
 :
-styled(View)``
+styled(View)`
+    border-width: 2px;
+    height: 250px;
+    width: 250px;
+    border-radius: 5px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+`

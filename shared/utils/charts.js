@@ -2,34 +2,33 @@ import Chart from 'chart.js'
 import formatNumber from './formatNumber'
 
 
-const possibleColors = [
-    '#0dbf52', 
-    '#0dbf60', 
-    '#0dbfb9',
-    '#0db6bf',
-    '#0dbf43',
-    '#0d98bf',
-    '#0d89bf',
-    '#0d7bbf',
-    '#0dbf7f',
-    '#0dbf6f', 
-    '#0dbf7e', 
-    '#0dbf8d', 
-    '#0dbf9c',
-    '#0dbfab',
-    '#0db5bf',
-    '#0da7bf',
-    '#0dbfba', 
-    '#0dbf61',
-    '#0dbf26',
-    '#0dbf34',
-    '#21bf0d',
-    '#12bf0d',
-    '#0dbf17',
-    '#0dbf35'
-]
-
 const chart = (context, type, labels, values, numberFormat=null, maintainAspectRatio=true) => {
+    let possibleColors = [
+        '#0dbf52', 
+        '#0dbf60', 
+        '#0dbfb9',
+        '#0db6bf',
+        '#0dbf43',
+        '#0d98bf',
+        '#0d89bf',
+        '#0d7bbf',
+        '#0dbf7f',
+        '#0dbf6f', 
+        '#0dbf7e', 
+        '#0dbf8d', 
+        '#0dbf9c',
+        '#0dbfab',
+        '#0db5bf',
+        '#0da7bf',
+        '#0dbfba', 
+        '#0dbf61',
+        '#0dbf26',
+        '#0dbf34',
+        '#21bf0d',
+        '#12bf0d',
+        '#0dbf17',
+        '#0dbf35'
+    ]
     let colors = Array.from(possibleColors)
     const defineColors = () => {
         let colors = Array.from(possibleColors)

@@ -7,4 +7,6 @@ styled.div`
     margin: 0px 10px 5px;
 `
 :
-styled(View)``
+styled(View)`
+    margin: 8px 5px;
+`

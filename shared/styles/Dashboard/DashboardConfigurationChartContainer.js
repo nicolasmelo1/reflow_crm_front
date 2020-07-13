@@ -13,4 +13,9 @@ styled.div`
     }
 `
 :
-styled(View)``
+styled(View)`
+    padding: 10px;
+    height: 400px;
+    ${props => props.chartType === 'card' ? `align-items: center;` : ''}
+    width: 100%;
+`
