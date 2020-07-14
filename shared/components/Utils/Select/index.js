@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import Utils from '../../../styles/Utils'
 import Option from './Option'
-import { SafeAreaView, Text, TouchableOpacity } from 'react-native';
+import { SafeAreaView, Text, Keyboard, TouchableOpacity } from 'react-native';
 
 /**
  * Custom select component used in our formulary, if you need to change something in the select, change this component.
@@ -196,7 +195,7 @@ const Select = (props) => {
                 <SafeAreaView>
                     <Utils.Select.SelectedOptionsContainer isOpen={isOpen}>
                         {(isOpen) ? (
-                        <TouchableOpacity style={{ margin: 15 }} onPress={e=> {
+                        <TouchableOpacity style={{ padding: 15 }} onPress={e=> {
                             e.preventDefault()
                             e.stopPropagation()
                             setIsOpen(false)
@@ -233,6 +232,8 @@ const Select = (props) => {
                         {(isOpen) ? (
                             <Utils.Select.OptionsContainer 
                             //keyboardDismissMode={'on-drag'}
+                            onScroll={e=> {Keyboard.dismiss()}}
+                            scrollEventThrottle={32}
                             keyboardShouldPersistTaps={'handled'}
                             optionBackgroundColor={props.optionBackgroundColor}
                             optionColor={props.optionColor}

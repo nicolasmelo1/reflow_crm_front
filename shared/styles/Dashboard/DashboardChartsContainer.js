@@ -13,4 +13,5 @@ styled.div`
 :
 styled(View)`
     height: 98%;
+    padding: 0 10px;
 `

@@ -12,6 +12,4 @@ styled.div`
     }
 `
 :
-styled(KeyboardAvoidingView)`
-    width: 100%;
-`
+styled(KeyboardAvoidingView)``

@@ -25,5 +25,4 @@ styled(React.forwardRef(({searchValueColor, ...rest}, ref) => <TextInput {...res
     padding: 4px;
     margin: 1px 2px;
     width: 50%;
-
 `

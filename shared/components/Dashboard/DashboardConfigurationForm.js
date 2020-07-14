@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Modal, Switch, Text, View } from 'react-native'
+import { Modal, Switch, Text, View, SafeAreaView } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { Select } from '../Utils'
 import Chart from './Chart'
@@ -174,122 +174,124 @@ const DashboardConfigurationForm = (props) => {
     const renderMobile = () => {
         return (
             <Modal animationType={'slide'}>
-                <DashboardConfigurationFormHeader>
-                    <DashboardConfigurationFormGoBackButton onPress={e=> {props.setFormIsOpen(false)}}>
-                        <FontAwesomeIcon icon={'times'} />
-                    </DashboardConfigurationFormGoBackButton>
-                </DashboardConfigurationFormHeader>
-                <DashboardConfigurationChartAndFormContainer keyboardShouldPersistTaps={'handled'}>
-                    <DashboardConfigurationFormContainer>
-                        <DashboardConfigurationFormFieldContainer>
-                            <View style={{ flexDirection: 'row'}}>
-                                <Switch value={dashboardConfigurationData.for_company ? dashboardConfigurationData.for_company : false} onValueChange={value => {onChangeForCompany(value)}}/> 
-                                <Text style={{ alignSelf: 'center' }}>&nbsp;{strings['pt-br']['dashboardConfigurationFormForCompanyLabel']}</Text>
-                            </View>
-                        </DashboardConfigurationFormFieldContainer>
-                        <DashboardConfigurationFormFieldContainer>
-                            <DashboardConfigurationFormFieldLabel>
-                                {strings['pt-br']['dashboardConfigurationFormChartNameLabel']}
-                                <DashboardConfigurationFormFieldRequiredLabel>*</DashboardConfigurationFormFieldRequiredLabel>
-                            </DashboardConfigurationFormFieldLabel>
-                            <DashboardConfigurationFormFieldInput
-                            type={'text'}
-                            onChange={e => {onChangeDashboardName(e.nativeEvent.text)}}
-                            value={(dashboardConfigurationData.name) ? dashboardConfigurationData.name : ''}
-                            errors={formErrors.name}
+                <SafeAreaView>
+                    <DashboardConfigurationFormHeader>
+                        <DashboardConfigurationFormGoBackButton onPress={e=> {props.setFormIsOpen(false)}}>
+                            <FontAwesomeIcon icon={'times'} />
+                        </DashboardConfigurationFormGoBackButton>
+                    </DashboardConfigurationFormHeader>
+                    <DashboardConfigurationChartAndFormContainer keyboardShouldPersistTaps={'handled'}>
+                        <DashboardConfigurationFormContainer>
+                            <DashboardConfigurationFormFieldContainer>
+                                <View style={{ flexDirection: 'row'}}>
+                                    <Switch value={dashboardConfigurationData.for_company ? dashboardConfigurationData.for_company : false} onValueChange={value => {onChangeForCompany(value)}}/> 
+                                    <Text style={{ alignSelf: 'center' }}>&nbsp;{strings['pt-br']['dashboardConfigurationFormForCompanyLabel']}</Text>
+                                </View>
+                            </DashboardConfigurationFormFieldContainer>
+                            <DashboardConfigurationFormFieldContainer>
+                                <DashboardConfigurationFormFieldLabel>
+                                    {strings['pt-br']['dashboardConfigurationFormChartNameLabel']}
+                                    <DashboardConfigurationFormFieldRequiredLabel>*</DashboardConfigurationFormFieldRequiredLabel>
+                                </DashboardConfigurationFormFieldLabel>
+                                <DashboardConfigurationFormFieldInput
+                                type={'text'}
+                                onChange={e => {onChangeDashboardName(e.nativeEvent.text)}}
+                                value={(dashboardConfigurationData.name) ? dashboardConfigurationData.name : ''}
+                                errors={formErrors.name}
+                                />
+                            </DashboardConfigurationFormFieldContainer>
+                            <DashboardConfigurationFormFieldContainer>
+                                <DashboardConfigurationFormFieldLabel>
+                                    {strings['pt-br']['dashboardConfigurationFormChartTypeSelectorLabel']}
+                                    <DashboardConfigurationFormFieldRequiredLabel>*</DashboardConfigurationFormFieldRequiredLabel>
+                                </DashboardConfigurationFormFieldLabel>
+                                <DashboardConfigurationFormSelectContainer isOpen={isOpenChartTypeSelect} errors={formErrors.chart_type}>
+                                    <Select
+                                    options={chartTypeOptions}
+                                    initialValues={chartTypeOptions.filter(chartTypeOption => chartTypeOption.value === dashboardConfigurationData.chart_type)}
+                                    onChange={onChangeChartType}
+                                    setIsOpen={setIsOpenChartTypeSelect}
+                                    isOpen={isOpenChartTypeSelect}
+                                    />
+                                </DashboardConfigurationFormSelectContainer>
+                            </DashboardConfigurationFormFieldContainer>
+                            <DashboardConfigurationFormFieldContainer>
+                                <DashboardConfigurationFormFieldLabel>
+                                    {strings['pt-br']['dashboardConfigurationFormFieldLabelSelectorLabel']}
+                                    <DashboardConfigurationFormFieldRequiredLabel>*</DashboardConfigurationFormFieldRequiredLabel>
+                                </DashboardConfigurationFormFieldLabel>
+                                <DashboardConfigurationFormSelectContainer isOpen={isOpenLabelFieldSelect} errors={formErrors.label_field}>
+                                    <Select
+                                    options={fieldOptions}
+                                    initialValues={fieldOptions.filter(fieldOption => fieldOption.value === dashboardConfigurationData.label_field)}
+                                    onChange={onChangeLabelField}
+                                    setIsOpen={setIsOpenLabelFieldSelect}
+                                    isOpen={isOpenLabelFieldSelect}
+                                    />
+                                </DashboardConfigurationFormSelectContainer>
+                            </DashboardConfigurationFormFieldContainer>
+                            <DashboardConfigurationFormFieldContainer>
+                                <DashboardConfigurationFormFieldLabel>
+                                    {strings['pt-br']['dashboardConfigurationFormFieldValueSelectorLabel']}
+                                    <DashboardConfigurationFormFieldRequiredLabel>*</DashboardConfigurationFormFieldRequiredLabel>
+                                </DashboardConfigurationFormFieldLabel>
+                                <DashboardConfigurationFormSelectContainer isOpen={isOpenValueFieldSelect} errors={formErrors.value_field}>
+                                    <Select
+                                    options={fieldOptions}
+                                    initialValues={fieldOptions.filter(fieldOption => fieldOption.value === dashboardConfigurationData.value_field)}
+                                    onChange={onChangeValueField}
+                                    setIsOpen={setIsOpenValueFieldSelect}
+                                    isOpen={isOpenValueFieldSelect}
+                                    />
+                                </DashboardConfigurationFormSelectContainer>
+                            </DashboardConfigurationFormFieldContainer>
+                            <DashboardConfigurationFormFieldContainer>
+                                <DashboardConfigurationFormFieldLabel>
+                                    {strings['pt-br']['dashboardConfigurationFormAggregationTypeSelectorLabel']}
+                                    <DashboardConfigurationFormFieldRequiredLabel>*</DashboardConfigurationFormFieldRequiredLabel>
+                                </DashboardConfigurationFormFieldLabel>
+                                <DashboardConfigurationFormSelectContainer isOpen={isOpenAggregationTypeSelect} errors={formErrors.aggregation_type}>
+                                    <Select
+                                    options={formattedAggregationTypeOtions}
+                                    initialValues={aggregationTypeOptions.filter(aggregationTypeOption => aggregationTypeOption.value === dashboardConfigurationData.aggregation_type)}
+                                    onChange={onChangeAggregationType}
+                                    setIsOpen={setIsOpenAggregationTypeSelect}
+                                    isOpen={isOpenAggregationTypeSelect}
+                                    />
+                                </DashboardConfigurationFormSelectContainer>
+                            </DashboardConfigurationFormFieldContainer>
+                            <DashboardConfigurationFormFieldContainer>
+                                <DashboardConfigurationFormFieldLabel>
+                                    {strings['pt-br']['dashboardConfigurationFormNumberFormatSelectorLabel']}
+                                    <DashboardConfigurationFormFieldRequiredLabel>*</DashboardConfigurationFormFieldRequiredLabel>
+                                </DashboardConfigurationFormFieldLabel>
+                                <DashboardConfigurationFormSelectContainer isOpen={isOpenNumberFormatTypeSelect}>
+                                    <Select
+                                    options={numberFormatTypeOptions}
+                                    initialValues={numberFormatTypeOptions.filter(numberFormatTypeOption => numberFormatTypeOption.value === dashboardConfigurationData.number_format_type)}
+                                    onChange={onChangeNumberFormatType}
+                                    setIsOpen={setIsOpenNumberFormatTypeSelect}
+                                    isOpen={isOpenNumberFormatTypeSelect}
+                                    />
+                                </DashboardConfigurationFormSelectContainer>
+                            </DashboardConfigurationFormFieldContainer>
+                            <DashboardConfigurationSaveButton onPress={e=> onSubmit()}>
+                                <Text>
+                                    {strings['pt-br']['dashboardConfigurationFormSaveButtonLabel']}
+                                </Text>
+                            </DashboardConfigurationSaveButton>
+                        </DashboardConfigurationFormContainer>
+                        <DashboardConfigurationChartContainer chartType={props.getChartTypeNameById(dashboardConfigurationData.chart_type)}>
+                            <DashboardConfigurationPreviewTitleLabel>{strings['pt-br']['dashboardConfigurationFormPreviewTitleLabel']}</DashboardConfigurationPreviewTitleLabel>
+                            <Chart
+                            chartType={props.getChartTypeNameById(dashboardConfigurationData.chart_type)}
+                            labels={['Jan', 'Fev', 'Mar']}
+                            values={[10, 20, 30]}
+                            numberFormat={props.types?.data?.field_number_format_type.filter(numberFormatType => numberFormatType.id === dashboardConfigurationData.number_format_type)[0]}
                             />
-                        </DashboardConfigurationFormFieldContainer>
-                        <DashboardConfigurationFormFieldContainer>
-                            <DashboardConfigurationFormFieldLabel>
-                                {strings['pt-br']['dashboardConfigurationFormChartTypeSelectorLabel']}
-                                <DashboardConfigurationFormFieldRequiredLabel>*</DashboardConfigurationFormFieldRequiredLabel>
-                            </DashboardConfigurationFormFieldLabel>
-                            <DashboardConfigurationFormSelectContainer isOpen={isOpenChartTypeSelect} errors={formErrors.chart_type}>
-                                <Select
-                                options={chartTypeOptions}
-                                initialValues={chartTypeOptions.filter(chartTypeOption => chartTypeOption.value === dashboardConfigurationData.chart_type)}
-                                onChange={onChangeChartType}
-                                setIsOpen={setIsOpenChartTypeSelect}
-                                isOpen={isOpenChartTypeSelect}
-                                />
-                            </DashboardConfigurationFormSelectContainer>
-                        </DashboardConfigurationFormFieldContainer>
-                        <DashboardConfigurationFormFieldContainer>
-                            <DashboardConfigurationFormFieldLabel>
-                                {strings['pt-br']['dashboardConfigurationFormFieldLabelSelectorLabel']}
-                                <DashboardConfigurationFormFieldRequiredLabel>*</DashboardConfigurationFormFieldRequiredLabel>
-                            </DashboardConfigurationFormFieldLabel>
-                            <DashboardConfigurationFormSelectContainer isOpen={isOpenLabelFieldSelect} errors={formErrors.label_field}>
-                                <Select
-                                options={fieldOptions}
-                                initialValues={fieldOptions.filter(fieldOption => fieldOption.value === dashboardConfigurationData.label_field)}
-                                onChange={onChangeLabelField}
-                                setIsOpen={setIsOpenLabelFieldSelect}
-                                isOpen={isOpenLabelFieldSelect}
-                                />
-                            </DashboardConfigurationFormSelectContainer>
-                        </DashboardConfigurationFormFieldContainer>
-                        <DashboardConfigurationFormFieldContainer>
-                            <DashboardConfigurationFormFieldLabel>
-                                {strings['pt-br']['dashboardConfigurationFormFieldValueSelectorLabel']}
-                                <DashboardConfigurationFormFieldRequiredLabel>*</DashboardConfigurationFormFieldRequiredLabel>
-                            </DashboardConfigurationFormFieldLabel>
-                            <DashboardConfigurationFormSelectContainer isOpen={isOpenValueFieldSelect} errors={formErrors.value_field}>
-                                <Select
-                                options={fieldOptions}
-                                initialValues={fieldOptions.filter(fieldOption => fieldOption.value === dashboardConfigurationData.value_field)}
-                                onChange={onChangeValueField}
-                                setIsOpen={setIsOpenValueFieldSelect}
-                                isOpen={isOpenValueFieldSelect}
-                                />
-                            </DashboardConfigurationFormSelectContainer>
-                        </DashboardConfigurationFormFieldContainer>
-                        <DashboardConfigurationFormFieldContainer>
-                            <DashboardConfigurationFormFieldLabel>
-                                {strings['pt-br']['dashboardConfigurationFormAggregationTypeSelectorLabel']}
-                                <DashboardConfigurationFormFieldRequiredLabel>*</DashboardConfigurationFormFieldRequiredLabel>
-                            </DashboardConfigurationFormFieldLabel>
-                            <DashboardConfigurationFormSelectContainer isOpen={isOpenAggregationTypeSelect} errors={formErrors.aggregation_type}>
-                                <Select
-                                options={formattedAggregationTypeOtions}
-                                initialValues={aggregationTypeOptions.filter(aggregationTypeOption => aggregationTypeOption.value === dashboardConfigurationData.aggregation_type)}
-                                onChange={onChangeAggregationType}
-                                setIsOpen={setIsOpenAggregationTypeSelect}
-                                isOpen={isOpenAggregationTypeSelect}
-                                />
-                            </DashboardConfigurationFormSelectContainer>
-                        </DashboardConfigurationFormFieldContainer>
-                        <DashboardConfigurationFormFieldContainer>
-                            <DashboardConfigurationFormFieldLabel>
-                                {strings['pt-br']['dashboardConfigurationFormNumberFormatSelectorLabel']}
-                                <DashboardConfigurationFormFieldRequiredLabel>*</DashboardConfigurationFormFieldRequiredLabel>
-                            </DashboardConfigurationFormFieldLabel>
-                            <DashboardConfigurationFormSelectContainer isOpen={isOpenNumberFormatTypeSelect}>
-                                <Select
-                                options={numberFormatTypeOptions}
-                                initialValues={numberFormatTypeOptions.filter(numberFormatTypeOption => numberFormatTypeOption.value === dashboardConfigurationData.number_format_type)}
-                                onChange={onChangeNumberFormatType}
-                                setIsOpen={setIsOpenNumberFormatTypeSelect}
-                                isOpen={isOpenNumberFormatTypeSelect}
-                                />
-                            </DashboardConfigurationFormSelectContainer>
-                        </DashboardConfigurationFormFieldContainer>
-                        <DashboardConfigurationSaveButton onPress={e=> onSubmit()}>
-                            <Text>
-                                {strings['pt-br']['dashboardConfigurationFormSaveButtonLabel']}
-                            </Text>
-                        </DashboardConfigurationSaveButton>
-                    </DashboardConfigurationFormContainer>
-                    <DashboardConfigurationChartContainer chartType={props.getChartTypeNameById(dashboardConfigurationData.chart_type)}>
-                        <DashboardConfigurationPreviewTitleLabel>{strings['pt-br']['dashboardConfigurationFormPreviewTitleLabel']}</DashboardConfigurationPreviewTitleLabel>
-                        <Chart
-                        chartType={props.getChartTypeNameById(dashboardConfigurationData.chart_type)}
-                        labels={['Jan', 'Fev', 'Mar']}
-                        values={[10, 20, 30]}
-                        numberFormat={props.types?.data?.field_number_format_type.filter(numberFormatType => numberFormatType.id === dashboardConfigurationData.number_format_type)[0]}
-                        />
-                    </DashboardConfigurationChartContainer>
-                </DashboardConfigurationChartAndFormContainer>
+                        </DashboardConfigurationChartContainer>
+                    </DashboardConfigurationChartAndFormContainer>
+                </SafeAreaView>
             </Modal>
         )
     }

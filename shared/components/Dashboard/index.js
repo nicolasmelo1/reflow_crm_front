@@ -1,11 +1,11 @@
 import React from 'react'
-import { View, Text, FlatList } from 'react-native'
+import { View, Text, FlatList, ScrollView } from 'react-native'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import DashboardConfiguration from './DashboardConfiguration'
 import actions from '../../redux/actions'
-//import Filter from '../Filter'
-//import DateRangePicker from '../Utils/DateRangePicker'
+import Filter from '../Filter'
+import DateRangePicker from '../Utils/DateRangePicker'
 import Chart from './Chart'
 import { strings } from '../../utils/constants'
 import { stringToJsDateFormat } from '../../utils/dates'
@@ -181,27 +181,46 @@ class Dashboard extends React.Component {
                         {this.props.dashboard.charts.length === 0 ? (
                             <Text>{strings['pt-br']['dashboardNoChartsMessageLabel']}</Text>
                         ) : (
-                            <FlatList
+                            <ScrollView 
                             keyboardShouldPersistTaps={'handled'}
-                            data={this.props.dashboard.charts}
-                            keyExtractor={(__, index) => index.toString()}
-                            renderItem={({ item, index, __ }) => {
-                                return (
+                            >
+                                {this.props.dashboard.charts.filter(chart => this.getChartTypeNameById(chart.chart_type) === 'card').length !== 0 ? (
+                                    <DashboardTotalContainer>
+                                        <FlatList
+                                        horizontal={true}
+                                        keyboardShouldPersistTaps={'handled'}
+                                        data={this.props.dashboard.charts.filter(chart => this.getChartTypeNameById(chart.chart_type) === 'card')}
+                                        keyExtractor={(__, index) => index.toString()}
+                                        renderItem={({ item, index, __ }) => {
+                                            return (
+                                                <Chart
+                                                maintainAspectRatio={false}
+                                                numberFormat={this.props.login.types?.data?.field_number_format_type.filter(numberFormatType => numberFormatType.id === item.number_format_type)[0]}
+                                                chartType={this.getChartTypeNameById(item.chart_type)}
+                                                labels={item.data.labels}
+                                                values={item.data.values}
+                                                /> 
+                                            )
+                                        }}
+                                        />
+                                    </DashboardTotalContainer>
+                                ) : null }
+                                {this.props.dashboard.charts.filter(chart => this.getChartTypeNameById(chart.chart_type) !== 'card').map((chart, index) => (
                                     <DashboardChartContainer key={index}>
                                         <DashboardChartTitle>
-                                            {this.props.dashboard.charts[index].name}
+                                            {chart.name}
                                         </DashboardChartTitle>
                                         <Chart
                                         maintainAspectRatio={false}
-                                        numberFormat={this.props.login.types?.data?.field_number_format_type.filter(numberFormatType => numberFormatType.id === this.props.dashboard.charts[index].number_format_type)[0]}
-                                        chartType={this.getChartTypeNameById(this.props.dashboard.charts[index].chart_type)}
-                                        labels={this.props.dashboard.charts[index].data.labels}
-                                        values={this.props.dashboard.charts[index].data.values}
+                                        numberFormat={this.props.login.types?.data?.field_number_format_type.filter(numberFormatType => numberFormatType.id === chart.number_format_type)[0]}
+                                        chartType={this.getChartTypeNameById(chart.chart_type)}
+                                        labels={chart.data.labels}
+                                        values={chart.data.values}
                                         /> 
                                     </DashboardChartContainer>
-                                )
-                            }}
-                            />
+                                ))}
+                            </ScrollView>
+
                         )}
                     </DashboardChartsContainer>
 
@@ -266,18 +285,20 @@ class Dashboard extends React.Component {
                             <p>{strings['pt-br']['dashboardNoChartsMessageLabel']}</p>
                         ) : (
                             <div>
-                                <DashboardTotalContainer>
-                                    {this.props.dashboard.charts.filter(chart => this.getChartTypeNameById(chart.chart_type) === 'card').map((chart, index) => (
-                                        <Chart
-                                        key={index}
-                                        maintainAspectRatio={false}
-                                        numberFormat={this.props.login.types?.data?.field_number_format_type.filter(numberFormatType => numberFormatType.id === chart.number_format_type)[0]}
-                                        chartType={this.getChartTypeNameById(chart.chart_type)}
-                                        labels={chart.data.labels}
-                                        values={chart.data.values}
-                                        />
-                                    ))}
-                                </DashboardTotalContainer>
+                                {this.props.dashboard.charts.filter(chart => this.getChartTypeNameById(chart.chart_type) === 'card').length !== 0 ? (
+                                    <DashboardTotalContainer>
+                                        {this.props.dashboard.charts.filter(chart => this.getChartTypeNameById(chart.chart_type) === 'card').map((chart, index) => (
+                                            <Chart
+                                            key={index}
+                                            maintainAspectRatio={false}
+                                            numberFormat={this.props.login.types?.data?.field_number_format_type.filter(numberFormatType => numberFormatType.id === chart.number_format_type)[0]}
+                                            chartType={this.getChartTypeNameById(chart.chart_type)}
+                                            labels={chart.data.labels}
+                                            values={chart.data.values}
+                                            />
+                                        ))}
+                                    </DashboardTotalContainer>
+                                ) : ''}
                                 {this.props.dashboard.charts.filter(chart => this.getChartTypeNameById(chart.chart_type) !== 'card').map((chart, index) => (
                                     <DashboardChartContainer key={index}>
                                         <DashboardChartTitle>

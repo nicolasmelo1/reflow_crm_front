@@ -56,9 +56,11 @@ const chart = (context, type, labels, values, numberFormat=null, maintainAspectR
                 label: (tooltipItem, data) => {
                     data = (data?.datasets[0]?.data) ? data.datasets[0].data : []
                     if (numberFormat) {
-                        let value = data[tooltipItem.index].toString().split('.')[0]
+                        let value = ''
                         if (numberFormat.decimal_separator) {
                             value = data[tooltipItem.index].toString().replace('.', numberFormat.decimal_separator)
+                        } else {
+                            value = data[tooltipItem.index].toString().split('.')[0]
                         }
                         return formatNumber(value, numberFormat)
                     } else {
@@ -99,9 +101,10 @@ const chart = (context, type, labels, values, numberFormat=null, maintainAspectR
                         beginAtZero: true,
                         callback: (value, index, values) => {
                             if (numberFormat) {
-                                value = value.toString().split('.')[0]
                                 if (numberFormat.decimal_separator) {
                                     value = value.toString().replace('.', numberFormat.decimal_separator)
+                                } else {
+                                    value = value.toString().split('.')[0]
                                 }
                                 return formatNumber(value, numberFormat)
                             } else {
@@ -123,9 +126,10 @@ const chart = (context, type, labels, values, numberFormat=null, maintainAspectR
                         beginAtZero: true,
                         callback: (value, index, values) => {
                             if (numberFormat) {
-                                value = value.toString().split('.')[0]
                                 if (numberFormat.decimal_separator) {
                                     value = value.toString().replace('.', numberFormat.decimal_separator)
+                                } else {
+                                    value = value.toString().split('.')[0] 
                                 }
                                 return formatNumber(value, numberFormat)
                             } else {

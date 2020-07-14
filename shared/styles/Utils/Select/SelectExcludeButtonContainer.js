@@ -14,6 +14,4 @@ styled.div`
     }
 `
 :
-styled(TouchableOpacity)`
-
-`
+styled(TouchableOpacity)``

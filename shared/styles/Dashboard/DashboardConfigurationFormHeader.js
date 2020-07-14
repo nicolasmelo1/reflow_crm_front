@@ -12,5 +12,5 @@ styled(View)`
     display: flex;
     direction: rtl;
     flex-direction: row;
-    padding: 10px;
+    padding: 0 10px;
 `

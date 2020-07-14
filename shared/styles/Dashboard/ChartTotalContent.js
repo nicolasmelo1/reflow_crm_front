@@ -16,6 +16,5 @@ styled.div`
 :
 styled(ScrollView)`
     margin: 5px;
-    padding: 10px;
-    padding-bottom: 40px;
+    padding: 0 10px;
 `

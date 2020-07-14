@@ -24,7 +24,6 @@ styled(View)`
     top: 0;
     right: 0;
     border-radius: 10px;
-    overflow: hidden;
     border: #17242D;
     background-color: #fff;
 `

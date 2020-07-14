@@ -34,5 +34,5 @@ styled(React.forwardRef(({isOpen, ...rest}, ref) => {
     ${props => props.isOpen ? 'position: absolute;': ''}
     top: 0;
     left:0;
-    width: 100%
+    width: 100%;
 `

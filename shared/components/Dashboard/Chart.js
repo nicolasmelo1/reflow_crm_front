@@ -13,6 +13,7 @@ import {
 import chart from '../../utils/charts'
 import formatNumber from '../../utils/formatNumber'
 
+
 let WebView;
 if(process.env['APP'] !== 'web') {
     WebView = require('react-native-webview').WebView
@@ -26,6 +27,19 @@ if(process.env['APP'] !== 'web') {
  * occurence.
  */
 const Totals = (props) => {
+    const values = props.values.map(value=> {
+        if (props.numberFormat) {
+            if (props.numberFormat.decimal_separator) {
+                value = value.toString().replace('.', props.numberFormat.decimal_separator)
+            } else {
+                value = value.toString().split('.')[0]
+            }
+            return formatNumber(value, props.numberFormat)
+        } else {
+            return value
+        }
+    })
+
     const renderMobile = () => (
         <View>
             {props.values.map((__, index) => (
@@ -34,7 +48,7 @@ const Totals = (props) => {
                         {props.labels[index]}
                     </ChartTotalLabel>
                     <ChartTotalLabel isTotal={true}>
-                        {props.values[index]}
+                        {values[index]}
                     </ChartTotalLabel>
                 </ChartTotalLabelContainer>
             ))}
@@ -49,7 +63,7 @@ const Totals = (props) => {
                         {props.labels[index]}
                     </ChartTotalLabel>
                     <ChartTotalLabel isTotal={true}>
-                        {props.values[index]}
+                        {values[index]}
                     </ChartTotalLabel>
                 </ChartTotalLabelContainer>
             ))}
@@ -93,6 +107,7 @@ const Chart = (props) => {
             const maintainAspectRatio = (typeof props.maintainAspectRatio !== 'undefined') ? props.maintainAspectRatio : true
             const numberFormat = (props.numberFormat) ? props.numberFormat : null
             return `
+                eval(atob("${require('../../../mobile/assets/js/Chart.min.js').default}"));
                 ${formatNumber.toString()}
                 ${chart.toString()
                     .replace(/_formatNumber\.default/g, 'formatNumber')
@@ -102,7 +117,7 @@ const Chart = (props) => {
                 if (myChart) {
                     myChart.destroy()
                 }
-                var myChart = chart(ctx, '${props.chartType}',  [${props.labels.map(label=> `'${label}'`)}],  [${props.values}], ${JSON.stringify(numberFormat)}, ${maintainAspectRatio})
+                var myChart = chart(ctx, '${props.chartType}',  [${props.labels.map(label=> `'${label}'`)}],  [${props.values}], ${JSON.stringify(numberFormat)}, false)
             `
         }
     }
@@ -162,27 +177,25 @@ const Chart = (props) => {
                     <meta charset="utf-8">
                     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1">
-                    <script>
-                        eval(atob("${require('../../../mobile/assets/js/Chart.min.js').default}"));
-                    </script>
                     <style type="text/css">
                         body {
                             margin: 0;
                             padding: 0;
-                            width: 100vw;
-                            height: 100vh;
-                            overflow-y: auto;
+                            min-width: 250px;
+                            min-height: 100vh;
                         }
-                        .chart {
-                            width: 100vw;
-                            height: 100vh;
+                        .chart-container{
+                            position: relative;
                             overflow-y: auto;
+                            height: 100%;
                         }
                     </style>
                 </head>
     
                 <body>
-                    <canvas id="chart" class="chart" width="400" height="400"></canvas>
+                    <div id="chart-container" class="chart-container">
+                        <canvas id="chart" class="chart"></canvas>
+                    </div>
                 </body>
                 <script>
                 </script>
@@ -208,7 +221,7 @@ const Chart = (props) => {
             }} 
             >
                 <ChartTotalContent>
-                    <Totals labels={props.labels} values={props.values}/>
+                    <Totals labels={props.labels} values={props.values} numberFormat={props.numberFormat}/>
                 </ChartTotalContent>
             </OverlayTrigger>
         </ChartTotalContainer>
@@ -217,7 +230,7 @@ const Chart = (props) => {
     const renderTotalMobile = () => (
         <ChartTotalContainer>
             <ChartTotalContent>
-                <Totals labels={props.labels} values={props.values}/>
+                <Totals labels={props.labels} values={props.values} numberFormat={props.numberFormat}/>
             </ChartTotalContent>
         </ChartTotalContainer>
     )

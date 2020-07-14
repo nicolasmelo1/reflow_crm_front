@@ -11,4 +11,5 @@ styled.div`
 `
 :
 styled(ScrollView)`
+    margin: 0 0 40px 0;
 `

@@ -10,4 +10,6 @@ styled.div`
 :
 styled(View)`
     padding: 0;
+    border-bottom-width: .3px;
+    border-bottom-color: #bfbfbf;
 `
