@@ -52,7 +52,7 @@ const DashboardConfiguration = (props) => {
         if (props.types?.defaults?.aggregation_type && props.types.defaults.aggregation_type.length > 0) {
             aggregationTypeId = props.types.defaults.aggregation_type[Math.floor(Math.random() * props.types.defaults.aggregation_type.length)].id
         }
-        dashboardSettingsData.push({
+        dashboardSettingsData.splice(0, 0, {
             id: null,
             name: '',
             for_company: false,
@@ -70,7 +70,7 @@ const DashboardConfiguration = (props) => {
         // Load dashboard settings data directly in the component
         props.onGetDashboardSettings(sourceRef.current, props.formName).then(response=> {
             if (response && response.status === 200 && response.data.data) {
-                setDashboardSettingsData(response.data.data)
+                setDashboardSettingsData(response.data.data.reverse())
             }
         })
         props.onGetFieldOptions(sourceRef.current, props.formName).then(response => {
@@ -86,14 +86,13 @@ const DashboardConfiguration = (props) => {
     }, [])
 
     const renderMobile = () => {
-        if (!dashboardSettingsData[0] || Object.keys(dashboardSettingsData[0]).length !== 0) {
-            dashboardSettingsData.splice(0, 0, {})
-        }
+        const newDashboardSettingsData = JSON.parse(JSON.stringify(dashboardSettingsData))
+        newDashboardSettingsData.splice(0, 0, {})
         return (
             <DashboardConfigurationCardsContainer>
                 <FlatList
                 keyboardShouldPersistTaps={'handled'}
-                data={dashboardSettingsData}
+                data={newDashboardSettingsData}
                 keyExtractor={(__, index) => index.toString()}
                 contentContainerStyle={{justifyContent: 'center', alignItems: 'center'}}
                 renderItem={({ item, index, __ }) => {
@@ -111,8 +110,8 @@ const DashboardConfiguration = (props) => {
                             types={props.types}
                             getChartTypeNameById={props.getChartTypeNameById}
                             fieldOptions={fieldOptions}
-                            onUpdateDashboardSettings={(data) => (onUpdateDashboardSettings(index, data))}
-                            onRemoveDashboardSettings={() => (onRemoveDashboardSettings(index))}
+                            onUpdateDashboardSettings={(data) => (onUpdateDashboardSettings(index-1, data))}
+                            onRemoveDashboardSettings={() => (onRemoveDashboardSettings(index-1))}
                             dashboardConfigurationData={dashboardSettingsData[index]}
                             />
                         )

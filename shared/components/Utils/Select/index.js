@@ -32,6 +32,7 @@ const Select = (props) => {
     let isOpen = props.isOpen
     let _setIsOpen = props.setIsOpen
     const [selectedOptions, setSelectedOptions] = useState([])
+    const [maximumHeight, _setMaximumHeight] = useState(null)
 
     if (props.isOpen === undefined && props.setIsOpen === undefined) {
         [isOpen, _setIsOpen] = useState(false)
@@ -39,19 +40,39 @@ const Select = (props) => {
     const [searchValue, setSearchValue] = useState('')
     const [options, setOptions] = useState(props.options)
     const inputRef = React.useRef(null)
+    const selectOptionsContainerRef = React.useRef(null)
     const selectRef = React.useRef()
     const selectedItemColors = ['#98A0A6']
     //const selectedItemColors = ['#0dbf7e', '#0BAB71', '#0A9864', '#098558', '#07724B']
     
+    // this is for always be inside the container height and not overflow
+    // with this the content overflow and we have a scrollbar.
+    const maximumHeightRef = React.useRef(maximumHeight)
+    const setMaximumHeight = () => {
+        if (process.env['APP'] === 'web' && selectOptionsContainerRef.current) {
+            const selectHeightIsBiggerThanViewport = selectOptionsContainerRef.current.getBoundingClientRect().bottom > (window.innerHeight || document.documentElement.clientHeight)
+            const selectHeightToFitViewport = selectOptionsContainerRef.current.getBoundingClientRect().height - selectOptionsContainerRef.current.getBoundingClientRect().bottom + (window.innerHeight || selectOptionsContainerRef.current.clientHeight)
+            if (selectHeightIsBiggerThanViewport) {
+                maximumHeightRef.current = selectHeightToFitViewport
+                _setMaximumHeight(maximumHeightRef.current)
+            } else if (maximumHeightRef.current !== null && maximumHeightRef.current !== selectHeightToFitViewport) {
+                maximumHeightRef.current = null
+                _setMaximumHeight(maximumHeightRef.current)
+            }
+        }
+    }
+
+
     // creating a ref to the state is the only way we can get the state changes in the eventHandler function,
     // so we can use it for the mousedown eventListenet function
     // NOTE: THIS IS ONLY FOR CLASS BASED COMPONENTS THAT USE HOOKS, class based might
     // work normally
-    const setIsOpenRef = React.useRef(isOpen);
+    const setIsOpenRef = React.useRef(isOpen)
     const setIsOpen = data => {
-        setIsOpenRef.current = data;
-        _setIsOpen(data);
-    };
+        setIsOpenRef.current = data
+        _setIsOpen(data)
+        defineHeight()
+    }
 
     const updateOptions = (value, selectedOptions) => {
         let filteredOptions = props.options.filter(option=> selectedOptions.find(selectedOption=> selectedOption.value === option.value) === undefined);
@@ -62,7 +83,6 @@ const Select = (props) => {
                 filteredOptions = filteredOptions.filter(option=> option.label.toLowerCase().includes(value.toLowerCase()))
             }
         }
-        //
         setSearchValue(value)
         setOptions(filteredOptions)
     }
@@ -145,6 +165,9 @@ const Select = (props) => {
         }
     }
 
+    const defineHeight = () => {
+        setMaximumHeight()
+    }
 
     useEffect(() => {
         if (isOpen) {
@@ -165,10 +188,12 @@ const Select = (props) => {
     useEffect(() => {
         if (process.env['APP'] === 'web') {
             document.addEventListener("mousedown", onSelectClick)
+            window.addEventListener('resize', defineHeight)
         }
         return () => {
             if (process.env['APP'] === 'web') {
                 document.removeEventListener("mousedown", onSelectClick);
+                window.removeEventListener('resize', defineHeight)
             }
         };
     }, [onSelectClick]);
@@ -309,6 +334,8 @@ const Select = (props) => {
                 <Utils.Select.OptionsHolder>
                     {(isOpen) ? (
                         <Utils.Select.OptionsContainer 
+                        ref={selectOptionsContainerRef}
+                        maximumHeight={maximumHeight}
                         optionBackgroundColor={props.optionBackgroundColor}
                         optionColor={props.optionColor}
                         >

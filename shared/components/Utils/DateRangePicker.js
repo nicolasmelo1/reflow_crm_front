@@ -49,7 +49,8 @@ const DateRangePicker = (props) => {
     const dateRangePickerContainerRef = React.useRef(null)
     const dateRangePickerRef = React.useRef(null);
 
-    // this is for always be inside the container height
+    // this is for always be inside the container height and not overflow
+    // with this the content overflow and we have a scrollbar.
     const maximumHeightRef = React.useRef(maximumHeight)
     const setMaximumHeight = () => {
         if (dateRangePickerRef.current) {
@@ -169,7 +170,7 @@ const DateRangePicker = (props) => {
         document.addEventListener("mousedown", onInputClick)
         document.addEventListener("scroll", topOrDown, true)
         return () => {
-            window.addEventListener('resize', defineHeight)
+            window.removeEventListener('resize', defineHeight)
             document.removeEventListener("mousedown", onInputClick)
             document.removeEventListener("scroll", topOrDown, true)
         }

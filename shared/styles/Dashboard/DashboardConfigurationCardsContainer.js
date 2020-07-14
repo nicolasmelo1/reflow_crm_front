@@ -8,8 +8,19 @@ styled.div`
     flex-direction: row;
     justify-content: flex-start;
     flex-wrap: wrap;
-    max-height: calc(var(--app-height) - 190px);
     overflow-y: auto;
+    
+    @media(min-width: 640px) {
+        flex-direction: row;
+        justify-content: flex-start;
+        height: calc(var(--app-height) - 180px);
+    }
+
+    @media(max-width: 640px) {
+        justify-content: center;
+        align-items: center;
+        height: calc(var(--app-height) - 240px);
+    }
 `
 :
 styled(View)`

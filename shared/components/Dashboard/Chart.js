@@ -10,6 +10,7 @@ import {
     ChartTotalLabel,
     ChartTotalLabelContainer
 } from '../../styles/Dashboard'
+import PopoverContent from '../../styles/PopoverContent'
 import chart from '../../utils/charts'
 import formatNumber from '../../utils/formatNumber'
 
@@ -76,9 +77,9 @@ const Totals = (props) => {
 const PopoverWithTotals = React.forwardRef((props, ref) => {
     return (
         <Popover ref={ref} {...props}>
-            <Popover.Content>
-                {props.labels && props.values ? (<Totals labels={props.labels} values={props.values}/>): ''}
-            </Popover.Content>
+            <PopoverContent>
+                {props.labels && props.values ? (<Totals labels={props.labels} values={props.values} numberFormat={props.numberFormat}/>): ''}
+            </PopoverContent>
         </Popover>
     )
 })
@@ -208,10 +209,10 @@ const Chart = (props) => {
         <ChartTotalContainer>
             <OverlayTrigger 
             trigger="click" 
-            placement="bottom" 
+            placement="auto" 
             rootClose={true}
             delay={{ show: 250, hide: 100 }} 
-            overlay={<PopoverWithTotals labels={props.labels} values={props.values}/>}
+            overlay={<PopoverWithTotals labels={props.labels} values={props.values} numberFormat={props.numberFormat}/>}
             popperConfig={{
                 modifiers: {
                     preventOverflow: {
