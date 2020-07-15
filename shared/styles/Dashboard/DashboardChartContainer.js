@@ -9,7 +9,7 @@ styled.div`
     overflow: auto; 
     
     &:last-child {
-        margin-bottom: 50px
+        margin-bottom: 110px
     }
 
     &:not(:last-child) {

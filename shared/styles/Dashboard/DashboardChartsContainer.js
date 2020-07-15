@@ -14,7 +14,7 @@ styled.div`
     }
 
     @media(max-width: 640px) {
-        height: calc(var(--app-height) - 300px);
+        height: calc(var(--app-height) - 200px);
     }
     `
 :

@@ -37,8 +37,10 @@ class Dashboard extends React.Component {
         super(props)
         this.CancelToken = axios.CancelToken
         this.source = null
+        this.chartContainerRef = React.createRef()
         this.updateDateRangeInputRef = React.createRef()
         this.state = {
+            hideTopButtons: false,
             fieldOptions: [],
             isEditing: false,
             isLoadingData: false
@@ -137,8 +139,28 @@ class Dashboard extends React.Component {
         })
     }
 
+    hideMenuOnScroll = () => {
+        if (!this.state.isEditing) {
+            const currentScrollPos = this.chartContainerRef.current.scrollTop
+            if (this.prevScrollpos > currentScrollPos) {
+                this.setState(state=> ({
+                    ...state,
+                    hideTopButtons: false
+                }))
+            } else {
+                this.setState(state=> ({
+                    ...state,
+                    hideTopButtons: true
+                }))        
+            }
+            this.prevScrollpos = currentScrollPos
+        }
+    }
+
     componentDidMount = () => {
         this.onLoadDashboard()
+        this.prevScrollpos = this.chartContainerRef.current.scrollTop
+        this.chartContainerRef.current.addEventListener('scroll', this.hideMenuOnScroll)
     }
 
     componentDidUpdate = (prevProps) => {
@@ -149,11 +171,15 @@ class Dashboard extends React.Component {
             this.source = this.CancelToken.source()
             this.onLoadDashboard()
         }
+        if (this.chartContainerRef.current) {
+            this.chartContainerRef.current.addEventListener('scroll', this.hideMenuOnScroll)
+        }
     }
     componentWillUnmount = () => {
         if (this.source) {
             this.source.cancel()
         }
+        this.chartContainerRef.current.removeEventListener('scroll', this.hideMenuOnScroll)
     }
 
     renderMobile = () => {
@@ -220,7 +246,6 @@ class Dashboard extends React.Component {
                                     </DashboardChartContainer>
                                 ))}
                             </ScrollView>
-
                         )}
                     </DashboardChartsContainer>
 
@@ -232,7 +257,7 @@ class Dashboard extends React.Component {
     renderWeb = () => {
         return (
             <div>
-                <DashboardTopButtonsContainer>
+                <DashboardTopButtonsContainer hideTopButtons={this.state.hideTopButtons}>
                     <DashboardConfigurationButtonHolder>
                         <DashboardConfigurationButton onClick={e=> {this.setIsEditing()}}>
                             {this.state.isEditing ?  strings['pt-br']['dashboardConfigurationButtonLabelOpen'] : strings['pt-br']['dashboardConfigurationButtonLabelClosed']}
@@ -280,7 +305,7 @@ class Dashboard extends React.Component {
                     onGetDashboardSettings={this.props.onGetDashboardSettings}
                     />
                 ): (
-                    <DashboardChartsContainer>
+                    <DashboardChartsContainer ref={this.chartContainerRef}>
                         {this.props.dashboard.charts.length === 0 ? (
                             <p>{strings['pt-br']['dashboardNoChartsMessageLabel']}</p>
                         ) : (
