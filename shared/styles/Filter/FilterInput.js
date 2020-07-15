@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Form } from 'react-bootstrap'
+import { View } from 'react-native'
 
 export default styled(Form.Control)`
     min-width: 100px;

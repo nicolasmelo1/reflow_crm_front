@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Button } from 'react-bootstrap'
+import { TouchableOpacity } from 'react-native'
 
 const StyledButton = styled(Button)`
     background-color: #0dbf7e;
