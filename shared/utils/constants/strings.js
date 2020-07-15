@@ -222,6 +222,8 @@ const strings = {
         templateFormularyTitleLabel: 'Formulário',
         templatePreviewTitleLabel: 'Preview',
         filterButtonLabel: 'Filtrar',
+        filterButtonLabelOneFilter: '1 filtro ativo',
+        filterButtonLabelNFilters: '{} filtros ativos',
         filterFieldsDropdownButttonLabel: 'Filtrar por...',
         filterInputPlaceholder: 'Palavra-chave',
         filterSearchButtonLabel: 'Pesquisar',

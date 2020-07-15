@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { View } from 'react-native'
 import { useSelector } from 'react-redux'
 import { FilterInputGroup, FilterInputDropdownButton, FilterInput, FilterDeleteButton, FilterDropdownMenu } from '../../styles/Filter'
 import DateRangePicker from '../Utils/DateRangePicker'
@@ -70,35 +71,45 @@ const FilterInstance = (props) => {
         }
     }, [props.filter.value])
 
-    return (
-        <FilterInputGroup>
-            {props.index !== 0 || searchValue !== '' || searchField !== '' ? (
-                <FilterDeleteButton onClick={e=> {props.removeFilter(props.index)}}>
-                    <FontAwesomeIcon icon="trash"/>
-                </FilterDeleteButton>
-            ) : ''}
-            <Dropdown>
-                <Dropdown.Toggle as={FilterInputDropdownButton}>
-                    {searchFieldTitle}
-                </Dropdown.Toggle>
-                <FilterDropdownMenu>
-                    {props.fields.map((field, index) => (
-                        <Dropdown.Item as="button" key={index} onClick={e => onSelectField(field)}>
-                            {field.label}
-                        </Dropdown.Item>
-                    ))}
-                </FilterDropdownMenu>
-            </Dropdown>
-            <FilterInput ref={inputRef} placeholder={strings['pt-br']['filterInputPlaceholder']} value={searchValue} onChange={e => onChangeFilterValue(e.target.value)}/>
-            {searchFieldType === 'date' ? (
-                <DateRangePicker input={inputRef} 
-                closeWhenSelected={true}
-                onChange={onChangeFilterValue} 
-                initialDays={![null, undefined, ''].includes(searchValue) ? [stringToJsDateFormat(searchValue.split(' - ')[0], dateFormat), stringToJsDateFormat(searchValue.split(' - ')[1], dateFormat)] : ['', '']}
-                />
-            ) : ''}
-        </FilterInputGroup>
-    )
+    const renderMobile = () => {
+        return (
+            <View></View>
+        )
+    }
+
+    const renderWeb = () => {
+        return (
+            <FilterInputGroup>
+                {props.index !== 0 || searchValue !== '' || searchField !== '' ? (
+                    <FilterDeleteButton onClick={e=> {props.removeFilter(props.index)}}>
+                        <FontAwesomeIcon icon="trash"/>
+                    </FilterDeleteButton>
+                ) : ''}
+                <Dropdown>
+                    <Dropdown.Toggle as={FilterInputDropdownButton}>
+                        {searchFieldTitle}
+                    </Dropdown.Toggle>
+                    <FilterDropdownMenu>
+                        {props.fields.map((field, index) => (
+                            <Dropdown.Item as="button" key={index} onClick={e => onSelectField(field)}>
+                                {field.label}
+                            </Dropdown.Item>
+                        ))}
+                    </FilterDropdownMenu>
+                </Dropdown>
+                <FilterInput ref={inputRef} placeholder={strings['pt-br']['filterInputPlaceholder']} value={searchValue} onChange={e => onChangeFilterValue(e.target.value)}/>
+                {searchFieldType === 'date' ? (
+                    <DateRangePicker input={inputRef} 
+                    closeWhenSelected={true}
+                    onChange={onChangeFilterValue} 
+                    initialDays={![null, undefined, ''].includes(searchValue) ? [stringToJsDateFormat(searchValue.split(' - ')[0], dateFormat), stringToJsDateFormat(searchValue.split(' - ')[1], dateFormat)] : ['', '']}
+                    />
+                ) : ''}
+            </FilterInputGroup>
+        )
+    }
+    
+    return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 
 export default FilterInstance

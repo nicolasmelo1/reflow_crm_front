@@ -5,7 +5,7 @@ import axios from 'axios'
 import DashboardConfiguration from './DashboardConfiguration'
 import actions from '../../redux/actions'
 import Filter from '../Filter'
-import DateRangePicker from '../Utils/DateRangePicker'
+//import DateRangePicker from '../Utils/DateRangePicker'
 import Chart from './Chart'
 import { strings } from '../../utils/constants'
 import { stringToJsDateFormat } from '../../utils/dates'
@@ -188,12 +188,25 @@ class Dashboard extends React.Component {
 
     renderMobile = () => {
         return (
-            <View style={{ width:'100%', height: '79%'}}>
-                <DashboardConfigurationButton onPress={e=> {this.setIsEditing()}}>
-                    <Text style={{ color:'#fff' }}>
-                        {this.state.isEditing ?  strings['pt-br']['dashboardConfigurationButtonLabelOpen'] : strings['pt-br']['dashboardConfigurationButtonLabelClosed']}
-                    </Text>
-                </DashboardConfigurationButton>
+            <ScrollView 
+            style={{ width:'100%', height: '79%'}}
+            keyboardShouldPersistTaps={'handled'}
+            >
+                <DashboardTopButtonsContainer>
+                    <DashboardConfigurationButton onPress={e=> {this.setIsEditing()}} isEditing={this.state.isEditing}>
+                        <Text style={{ color:'#fff' }}>
+                            {this.state.isEditing ?  strings['pt-br']['dashboardConfigurationButtonLabelOpen'] : strings['pt-br']['dashboardConfigurationButtonLabelClosed']}
+                        </Text>
+                    </DashboardConfigurationButton>
+                    {!this.state.isEditing ? (
+                        <Filter
+                        fields={this.state.fieldOptions.map(fieldOption => ({ name: fieldOption.name, label: fieldOption.label_name, type: fieldOption.type }))}
+                        params={this.getParams()} 
+                        onFilter={this.onFilter}
+                        types={this.props.login.types}
+                        />
+                    ) : null}
+                </DashboardTopButtonsContainer>
                 {this.state.isEditing ? (
                     <DashboardConfiguration
                     onRemoveDashboardSettings={this.props.onRemoveDashboardSettings}
@@ -211,9 +224,7 @@ class Dashboard extends React.Component {
                         {this.props.dashboard.charts.length === 0 ? (
                             <Text>{strings['pt-br']['dashboardNoChartsMessageLabel']}</Text>
                         ) : (
-                            <ScrollView 
-                            keyboardShouldPersistTaps={'handled'}
-                            >
+                            <View>
                                 {this.props.dashboard.charts.filter(chart => this.getChartTypeNameById(chart.chart_type) === 'card').length !== 0 ? (
                                     <DashboardTotalContainer>
                                         <FlatList
@@ -249,12 +260,11 @@ class Dashboard extends React.Component {
                                         /> 
                                     </DashboardChartContainer>
                                 ))}
-                            </ScrollView>
+                            </View>
                         )}
                     </DashboardChartsContainer>
-
                 )}
-            </View>
+            </ScrollView>
         )
     }
 

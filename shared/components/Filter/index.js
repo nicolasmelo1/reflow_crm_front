@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import FilterInstance from './FilterInstance'
-import { FilterAddNewFilterButton, FilterSearchButton, FilterSpinner } from '../../styles/Filter';
+import { View, TouchableOpacity, Modal, Text } from 'react-native'
+//import FilterInstance from './FilterInstance'
+//import { FilterAddNewFilterButton, FilterSearchButton, FilterSpinner } from '../../styles/Filter';
 import { strings } from '../../utils/constants'
 
 /**
@@ -98,9 +99,9 @@ const Filter = (props) => {
 
     const pluralOrSingularButtonLabel = (instancesLength) => {
         if (instancesLength === 1) {
-            return '1 filtro ativo'
+            return strings['pt-br']['filterButtonLabelOneFilter']
         } else {
-            return instancesLength.toString() + ' filtros ativos'
+            return strings['pt-br']['filterButtonLabelNFilters'].replace('{}', instancesLength.toString())
         }
     }
 
@@ -125,50 +126,70 @@ const Filter = (props) => {
     }, [props.isLoading])
 
     useEffect(() => {
-        document.addEventListener("mousedown", onToggleFilterOnClickOutside)
+        if (process.env['APP'] === 'web') {
+            document.addEventListener("mousedown", onToggleFilterOnClickOutside)
+        }
         return () => {
-            document.removeEventListener("mousedown", onToggleFilterOnClickOutside)
+            if (process.env['APP'] === 'web') {
+                document.removeEventListener("mousedown", onToggleFilterOnClickOutside)
+            }
         }
     }, [onToggleFilterOnClickOutside])
 
-    const ContainerComponent = props.container ? props.container : `div`
-    const FilterContainerComponent = props.filterContainer ? props.filterContainer: `div`
-    const FilterButton = props.filterButton ? props.filterButton : `button`
+    const ContainerComponent = props.container ? props.container : process.env['APP'] === 'web' ? `div` : View
+    const FilterContainerComponent = props.filterContainer ? props.filterContainer: process.env['APP'] === 'web' ? `div` : Modal
+    const FilterButton = props.filterButton ? props.filterButton : process.env['APP'] === 'web' ? `button` : TouchableOpacity
     const fiterButtonLabel = props.params.search_value.length === 0 ? strings['pt-br']['filterButtonLabel'] : pluralOrSingularButtonLabel(props.params.search_value.length)
-    return (
-        <ContainerComponent ref={dropdownRef}>
-            <FilterButton onClick={e => {onToggleFilter(e)}}>
-                {props.filterButtonIcon ? (
-                    <span>
-                        {props.filterButtonIcon}&nbsp;{fiterButtonLabel}
-                    </span>
-                ) : (
-                    <span>
-                        {fiterButtonLabel}
-                    </span>)
-                }
-            </FilterButton>
-            {isOpen ? (
-                <FilterContainerComponent>
-                    {searchInstances.map((filter, index) => (
-                        <FilterInstance
-                        key={index}
-                        index={index}
-                        filter={filter}
-                        onChangeFilter={onChangeFilter}
-                        removeFilter={removeFilter}
-                        types={props.types}
-                        fields={fields}
-                        />
-                    ))}
-                    <FilterSearchButton onClick={e => {props.isLoading ? null : sendFilterData(e)}}>
-                        {props.isLoading ? (<FilterSpinner animation="border" size="sm"/>) : (strings['pt-br']['filterSearchButtonLabel'])}
-                    </FilterSearchButton>
-                    <FilterAddNewFilterButton onClick={e => {addNewFilter(e)}}>{strings['pt-br']['filterAddNewFilterButtonLabel']}</FilterAddNewFilterButton>
-                </FilterContainerComponent>
-            ) : ''}
-        </ContainerComponent>
-    )
+
+    const renderMobile = () => {
+        return (
+            <View>
+                <FilterButton>
+                    <Text>Filtrar</Text>
+                </FilterButton>
+            </View>
+        )
+    }
+
+    const renderWeb = () => {
+        return (
+            <ContainerComponent ref={dropdownRef}>
+                <FilterButton onClick={e => {onToggleFilter(e)}}>
+                    {props.filterButtonIcon ? (
+                        <span>
+                            {props.filterButtonIcon}&nbsp;{fiterButtonLabel}
+                        </span>
+                    ) : (
+                        <span>
+                            {fiterButtonLabel}
+                        </span>)
+                    }
+                </FilterButton>
+                {isOpen ? (
+                    <FilterContainerComponent>
+                        {searchInstances.map((filter, index) => (
+                            <FilterInstance
+                            key={index}
+                            index={index}
+                            filter={filter}
+                            onChangeFilter={onChangeFilter}
+                            removeFilter={removeFilter}
+                            types={props.types}
+                            fields={fields}
+                            />
+                        ))}
+                        <FilterSearchButton onClick={e => {props.isLoading ? null : sendFilterData(e)}}>
+                            {props.isLoading ? (<FilterSpinner animation="border" size="sm"/>) : (strings['pt-br']['filterSearchButtonLabel'])}
+                        </FilterSearchButton>
+                        <FilterAddNewFilterButton onClick={e => {addNewFilter(e)}}>{strings['pt-br']['filterAddNewFilterButtonLabel']}</FilterAddNewFilterButton>
+                    </FilterContainerComponent>
+                ) : ''}
+            </ContainerComponent>
+        )
+    }
+
+    return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
+
 }
 
 export default Filter;

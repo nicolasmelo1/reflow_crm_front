@@ -25,4 +25,5 @@ styled.div`
 :
 styled(View)`
     height: 100%;
+    align-items: center;
 `

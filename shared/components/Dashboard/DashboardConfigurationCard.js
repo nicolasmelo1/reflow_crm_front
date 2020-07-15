@@ -17,7 +17,16 @@ import { strings } from '../../utils/constants'
  * When you click on the dashboard configuration, every chart that the user has becomes a `card`
  * in the system. So this is actually each of those cards.
  * 
- * @param {Type} props - {go in detail about every prop it recieves}
+ * @param {Object} types - the types state, this types are usually the required data from this system to work. 
+ * Types defines all of the field types, form types, format of numbers and dates and many other stuff * @param {Function} getChartTypeNameById -
+ * @param {Array<Object>} fieldOptions - To build charts we actually need 2 fields: 1 is the label field, the other
+ * is the value field. fieldOptions is just an array with objects, with each object being a field the user can select. 
+ * @param {Function} onUpdateDashboardSettings - Generally only used when we hit `save` in the DashboardFormulary, 
+ * this calls a Redux action from the parent component to update the data. The parent component function actually holds the functions to make
+ * API calls when updating or when creating a new chart.
+ * @param {Function} onRemoveDashboardSettings - Same as onUpdateDashboardSettings except it is only used insied of this
+ * component and is used for removing a chart.
+ * @param {Function} dashboardConfigurationData - The data of this dashboard chart setting.
  */
 const DashboardConfigurationCard = (props) => {
     const [formIsOpen, setFormIsOpen] = useState(false)

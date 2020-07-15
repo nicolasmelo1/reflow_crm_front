@@ -20,4 +20,6 @@ styled.div`
     }
 `
 :
-styled(View)``
+styled(View)`
+    flex-direction: column;
+`

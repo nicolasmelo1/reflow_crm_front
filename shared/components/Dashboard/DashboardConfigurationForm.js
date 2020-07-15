@@ -31,8 +31,9 @@ import {
  * the chart while the user is editing the chart configuration.
  * 
  * @param {Function} onUpdateDashboardSettings - Generally only used when we hit `save`, this calls a function
- * from the parent component to update the data. The parent component function actually holds the functions to make
- * API calls when updating or when creatind a new chart. After saving we close this form and unmounts this component
+ * from the DashboardConfiguration component to update the data. The parent component function actually holds the 
+ * functions to make API calls when updating or when creating a new chart. After saving we close this form and 
+ * unmounts this component
  * @param {Function} setFormIsOpen - could recieve either true or false, when recieving false, unmounts this component
  * and closes the formulary. 
  * @param {Array<Object>} fieldOptions - To build charts we actually need 2 fields: 1 is the label field, the other

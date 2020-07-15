@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { FlatList } from 'react-native'
+import { View } from 'react-native'
 import DashboardConfigurationCard from './DashboardConfigurationCard'
 import { 
     DashboardConfigurationAddNewCard, 
@@ -11,7 +11,8 @@ import { strings } from '../../utils/constants'
 
 
 /**
- * {Description of your component, what does it do}
+ * This component is responsible for holding all of the dashboard configuration cards.
+ * 
  * @param {Type} props - {go in detail about every prop it recieves}
  */
 const DashboardConfiguration = (props) => {
@@ -90,34 +91,21 @@ const DashboardConfiguration = (props) => {
         newDashboardSettingsData.splice(0, 0, {})
         return (
             <DashboardConfigurationCardsContainer>
-                <FlatList
-                keyboardShouldPersistTaps={'handled'}
-                data={newDashboardSettingsData}
-                keyExtractor={(__, index) => index.toString()}
-                contentContainerStyle={{justifyContent: 'center', alignItems: 'center'}}
-                renderItem={({ item, index, __ }) => {
-                    if (index === 0) {
-                        return (
-                            <DashboardConfigurationAddNewCard key={index} onPress={e=>{addDashboardSettings()}}>
-                                <DashboardConfigurationAddNewIcon icon="plus-circle"/>
-                                <DashboardConfigurationAddNewText>{strings['pt-br']['dashboardConfigurationAddNewCardLabel']}</DashboardConfigurationAddNewText>
-                            </DashboardConfigurationAddNewCard>
-                        )
-                    } else {
-                        return (
-                            <DashboardConfigurationCard
-                            key={index}
-                            types={props.types}
-                            getChartTypeNameById={props.getChartTypeNameById}
-                            fieldOptions={fieldOptions}
-                            onUpdateDashboardSettings={(data) => (onUpdateDashboardSettings(index-1, data))}
-                            onRemoveDashboardSettings={() => (onRemoveDashboardSettings(index-1))}
-                            dashboardConfigurationData={dashboardSettingsData[index]}
-                            />
-                        )
-                    }
-                }}
-                />
+                <DashboardConfigurationAddNewCard onPress={e=>{addDashboardSettings()}}>
+                    <DashboardConfigurationAddNewIcon icon="plus-circle"/>
+                    <DashboardConfigurationAddNewText>{strings['pt-br']['dashboardConfigurationAddNewCardLabel']}</DashboardConfigurationAddNewText>
+                </DashboardConfigurationAddNewCard>
+                {dashboardSettingsData.map((dashboardSetting, index) => (
+                    <DashboardConfigurationCard
+                    key={index}
+                    types={props.types}
+                    getChartTypeNameById={props.getChartTypeNameById}
+                    fieldOptions={fieldOptions}
+                    onUpdateDashboardSettings={(data) => (onUpdateDashboardSettings(index, data))}
+                    onRemoveDashboardSettings={() => (onRemoveDashboardSettings(index))}
+                    dashboardConfigurationData={dashboardSetting}
+                    />
+                ))}
             </DashboardConfigurationCardsContainer>
         )
     }

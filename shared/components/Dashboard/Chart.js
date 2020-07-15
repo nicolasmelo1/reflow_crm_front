@@ -108,7 +108,9 @@ const Chart = (props) => {
             const maintainAspectRatio = (typeof props.maintainAspectRatio !== 'undefined') ? props.maintainAspectRatio : true
             const numberFormat = (props.numberFormat) ? props.numberFormat : null
             return `
-                eval(atob("${require('../../../mobile/assets/js/Chart.min.js').default}"));
+                if (typeof Chart === 'undefined') {
+                    eval(atob("${require('../../../mobile/assets/js/Chart.min.js').default}"));
+                }
                 ${formatNumber.toString()}
                 ${chart.toString()
                     .replace(/_formatNumber\.default/g, 'formatNumber')
