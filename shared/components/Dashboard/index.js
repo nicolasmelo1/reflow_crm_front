@@ -159,8 +159,10 @@ class Dashboard extends React.Component {
 
     componentDidMount = () => {
         this.onLoadDashboard()
-        this.prevScrollpos = this.chartContainerRef.current.scrollTop
-        this.chartContainerRef.current.addEventListener('scroll', this.hideMenuOnScroll)
+        if (process.env['APP'] === 'web') {
+            this.prevScrollpos = this.chartContainerRef.current.scrollTop
+            this.chartContainerRef.current.addEventListener('scroll', this.hideMenuOnScroll)
+        }
     }
 
     componentDidUpdate = (prevProps) => {
@@ -171,7 +173,7 @@ class Dashboard extends React.Component {
             this.source = this.CancelToken.source()
             this.onLoadDashboard()
         }
-        if (this.chartContainerRef.current) {
+        if (process.env['APP'] === 'web' && this.chartContainerRef.current) {
             this.chartContainerRef.current.addEventListener('scroll', this.hideMenuOnScroll)
         }
     }
@@ -179,7 +181,9 @@ class Dashboard extends React.Component {
         if (this.source) {
             this.source.cancel()
         }
-        this.chartContainerRef.current.removeEventListener('scroll', this.hideMenuOnScroll)
+        if (process.env['APP'] === 'web') {
+            this.chartContainerRef.current.removeEventListener('scroll', this.hideMenuOnScroll)
+        }
     }
 
     renderMobile = () => {
