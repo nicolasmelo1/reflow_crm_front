@@ -14,7 +14,7 @@ styled.div`
     }
     @media(max-width: 640px) {
         width: 100%;
-        margin: 5px 0 0 0;
+        margin: 0;
         order: 1;
     }
 `
