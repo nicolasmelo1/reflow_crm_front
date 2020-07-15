@@ -11,6 +11,10 @@ styled.input`
     text-align: center; 
     background-color: transparent;
     cursor: pointer;
+
+    @media(max-width: 640px) {
+        width: 100%;
+    }
 `
 :
 styled(Text)``
