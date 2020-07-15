@@ -5,7 +5,7 @@ import axios from 'axios'
 import DashboardConfiguration from './DashboardConfiguration'
 import actions from '../../redux/actions'
 import Filter from '../Filter'
-//import DateRangePicker from '../Utils/DateRangePicker'
+import DateRangePicker from '../Utils/DateRangePicker'
 import Chart from './Chart'
 import { strings } from '../../utils/constants'
 import { stringToJsDateFormat } from '../../utils/dates'
@@ -16,6 +16,7 @@ import {
     DashboardTopButtonsContainer,
     DashboardConfigurationButton,
     DashboardConfigurationButtonHolder,
+    DashboardFilterButtonLabel,
     DashboardFilterButton,
     DashboardFilterContainer,
     DashboardFilterHolder,
@@ -94,7 +95,7 @@ class Dashboard extends React.Component {
             })
         ))
 
-        this.props.onGetDashboardCharts(source, this.props.formName, {...searchParams}).then(__ => {
+        this.props.onGetDashboardCharts(this.source, this.props.formName, {...searchParams}).then(__ => {
             this.setIsLoadingData(false)
         })
     }
@@ -142,18 +143,21 @@ class Dashboard extends React.Component {
     hideMenuOnScroll = () => {
         if (!this.state.isEditing) {
             const currentScrollPos = this.chartContainerRef.current.scrollTop
+            const maxScrollTop = this.chartContainerRef.current.scrollHeight - this.chartContainerRef.current.clientHeight;
             if (this.prevScrollpos > currentScrollPos) {
                 this.setState(state=> ({
                     ...state,
                     hideTopButtons: false
                 }))
-            } else {
+            } else if (this.prevScrollpos > 0) {
                 this.setState(state=> ({
                     ...state,
                     hideTopButtons: true
                 }))        
             }
-            this.prevScrollpos = currentScrollPos
+            if (currentScrollPos < maxScrollTop) {
+                this.prevScrollpos = currentScrollPos
+            }
         }
     }
 
@@ -204,6 +208,9 @@ class Dashboard extends React.Component {
                         params={this.getParams()} 
                         onFilter={this.onFilter}
                         types={this.props.login.types}
+                        filterButton={DashboardFilterButton}
+                        filterButtonLabel={DashboardFilterButtonLabel}
+                        filterButtonIcon={<DashboardFilterIcon icon="filter"/>}
                         />
                     ) : null}
                 </DashboardTopButtonsContainer>

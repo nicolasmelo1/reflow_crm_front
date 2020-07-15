@@ -4,41 +4,35 @@ import formatNumber from './formatNumber'
 
 const chart = (context, type, labels, values, numberFormat=null, maintainAspectRatio=true) => {
     let possibleColors = [
-        '#0dbf52', 
-        '#0dbf60', 
-        '#0dbfb9',
-        '#0db6bf',
-        '#0dbf43',
-        '#0d98bf',
-        '#0d89bf',
-        '#0d7bbf',
-        '#0dbf7f',
-        '#0dbf6f', 
-        '#0dbf7e', 
-        '#0dbf8d', 
-        '#0dbf9c',
-        '#0dbfab',
-        '#0db5bf',
-        '#0da7bf',
-        '#0dbfba', 
-        '#0dbf61',
-        '#0dbf26',
-        '#0dbf34',
-        '#21bf0d',
-        '#12bf0d',
-        '#0dbf17',
-        '#0dbf35'
+        '#f2f2f2',
+        '#0DBF7E',
+        '#17242D',
+        '#bfbfbf', 
+        '#856A5D', 
+        '#CCC9E7', 
+        '#D8CBC7',
+        '#33673B',
+        '#FCDDBC',
+        '#FFE6A7',
+        '#DCEDFF',
+        '#94B0DA', 
+        '#127475', 
+        '#F2542D',
+        '#B95F89',
+        '#414288',
+        '#F038FF',
+        '#643A71'
     ]
+
     let colors = Array.from(possibleColors)
     const defineColors = () => {
         let colors = Array.from(possibleColors)
-        return values.map(__=> {
-            const indexToRemove = Math.floor(Math.random() * colors.length)
-            if (!colors[indexToRemove]) {
+        return values.map((__, index)=> {
+            //const indexToRemove = Math.floor(Math.random() * colors.length)
+            if (!colors[index]) {
                 colors = Array.from(possibleColors)
             }
-            const color = colors[indexToRemove].toString().slice(0)
-            colors.splice(indexToRemove, 1)
+            const color = colors[index].toString().slice(0)
             return color
         })
     } 

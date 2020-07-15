@@ -9,7 +9,7 @@ styled.div`
     justify-content: flex-start;
     flex-wrap: wrap;
     overflow-y: auto;
-    
+
     @media(min-width: 640px) {
         flex-direction: row;
         justify-content: flex-start;

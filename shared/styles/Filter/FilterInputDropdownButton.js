@@ -17,7 +17,8 @@ const StyledButton = styled(Button)`
         color: black !important;
     }
 `
-export default React.forwardRef(({ children, onClick }, ref) => (
+export default process.env['APP'] === 'web' ?
+React.forwardRef(({ children, onClick }, ref) => (
     <StyledButton
     ref={ref}
     onClick={e => {
@@ -29,3 +30,5 @@ export default React.forwardRef(({ children, onClick }, ref) => (
         &nbsp;&#x25bc;
     </StyledButton>
 ))
+:
+styled(TouchableOpacity)``

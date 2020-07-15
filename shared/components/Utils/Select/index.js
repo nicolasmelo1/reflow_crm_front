@@ -221,8 +221,6 @@ const Select = (props) => {
                     <Utils.Select.SelectedOptionsContainer isOpen={isOpen}>
                         {(isOpen) ? (
                         <TouchableOpacity style={{ padding: 15 }} onPress={e=> {
-                            e.preventDefault()
-                            e.stopPropagation()
                             setIsOpen(false)
                         }}>
                             <Utils.Select.GoBackArrow icon="arrow-left"/>

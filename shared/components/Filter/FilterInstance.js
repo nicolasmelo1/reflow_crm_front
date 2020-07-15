@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { View } from 'react-native'
+import { Dropdown } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import { FilterInputGroup, FilterInputDropdownButton, FilterInput, FilterDeleteButton, FilterDropdownMenu } from '../../styles/Filter'
 import DateRangePicker from '../Utils/DateRangePicker'
+import { Select } from '../Utils'
 import { stringToJsDateFormat, jsDateToStringFormat } from '../../utils/dates'
 import { strings } from '../../utils/constants'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { Dropdown } from 'react-bootstrap'
 
 /**
  * Holds the data of a single filter, we can have multiple filters, but this holds just one filter
@@ -73,7 +74,29 @@ const FilterInstance = (props) => {
 
     const renderMobile = () => {
         return (
-            <View></View>
+            <FilterInputGroup>
+                <View style={{ flexDirection: 'row'}}>
+                    <FilterDropdownMenu>
+                        <Select
+                        placeholder={searchFieldTitle}
+                        options={props.fields.map(field => ({value: field.name, label: field.label}))}
+                        initialValues={props.fields.map(field => ({value: field.name, label: field.label})).filter(field => field.value === searchField)}
+                        onChange={(data) => {
+                            const selectedField = props.fields.filter(field => field.name === data[0])
+                            if (selectedField.length > 0) {
+                                onSelectField(selectedField[0])
+                            }
+                        }}
+                        />
+                    </FilterDropdownMenu>
+                    {props.index !== 0 || searchValue !== '' || searchField !== '' ? (
+                        <FilterDeleteButton onPress={e=> {props.removeFilter(props.index)}}>
+                            <FontAwesomeIcon style={{ color: '#fff'}} icon="trash"/>
+                        </FilterDeleteButton>
+                    ) : null}
+                </View> 
+                <FilterInput ref={inputRef} placeholder={strings['pt-br']['filterInputPlaceholder']} value={searchValue} onChange={e => onChangeFilterValue(e.nativeEvent.text)}/>
+            </FilterInputGroup>
         )
     }
 

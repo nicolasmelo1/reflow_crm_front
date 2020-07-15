@@ -36,6 +36,7 @@ import DashboardFilterIcon from './DashboardFilterIcon'
 import DashboardFilterHolder from './DashboardFilterHolder'
 import DashboardFilterContainer from './DashboardFilterContainer'
 import DashboardFilterButton from './DashboardFilterButton'
+import DashboardFilterButtonLabel from './DashboardFilterButtonLabel'
 import DashboardUpdateDateHolder from './DashboardUpdateDateHolder'
 import DashboardUpdateDateDateRangeContainer from './DashboardUpdateDateDateRangeContainer'
 import DashboardUpdateDateInput from './DashboardUpdateDateInput'
@@ -45,6 +46,7 @@ export { DashboardUpdateDateLabel }
 export { DashboardUpdateDateInput }
 export { DashboardUpdateDateDateRangeContainer }
 export { DashboardUpdateDateHolder }
+export { DashboardFilterButtonLabel }
 export { DashboardFilterButton }
 export { DashboardFilterContainer }
 export { DashboardFilterHolder }

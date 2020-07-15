@@ -3,7 +3,8 @@ import styled from 'styled-components'
 import { Button } from 'react-bootstrap'
 import { TouchableOpacity } from 'react-native'
 
-export default styled(Button)`
+export default process.env['APP'] === 'web' ?
+ styled(Button)`
     background-color: #fff;
     margin: 5px 5px 0 0;
     border: 0;
@@ -18,4 +19,17 @@ export default styled(Button)`
         border: 0;
         color: #0dbf7e
     }
+`
+:
+styled(TouchableOpacity)`
+    background-color: #0dbf7e;
+    bottom: 0;
+    margin-top: auto;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    margin-left: 10px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    padding: 10px
 `
