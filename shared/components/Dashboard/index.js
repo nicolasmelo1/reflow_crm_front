@@ -2,6 +2,7 @@ import React from 'react'
 import { View, Text, FlatList, ScrollView } from 'react-native'
 import { connect } from 'react-redux'
 import axios from 'axios'
+import moment from 'moment'
 import DashboardConfiguration from './DashboardConfiguration'
 import actions from '../../redux/actions'
 import Filter from '../Filter'
@@ -115,7 +116,7 @@ class Dashboard extends React.Component {
             this.source.cancel()
         }
         this.source = this.CancelToken.source()
-        this.props.onGetDashboardCharts(this.source, this.props.formName, this.getParams())
+        this.onChangeUpdateDates([moment().subtract(59, 'days').toDate(), moment().toDate()])
         this.props.onGetFieldOptions(this.source, this.props.formName).then(response => {
             if (response && response.status === 200) {
                 this.setFieldOptions(response.data.data)
