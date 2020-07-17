@@ -7,7 +7,9 @@ styled.h2`
     text-align: center;
     position: absolute;
     width: 100%;
-    color: #0dbf7e
+    color: #0dbf7e;
+    overflow: auto;
+    white-space: nowrap;
 `
 :
 styled(Text)`

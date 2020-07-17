@@ -4,7 +4,7 @@ import { Row, Col } from 'react-bootstrap';
 import Router, { withRouter } from 'next/router'
 import actions from '@shared/redux/actions';
 import { Layout, Formulary, Listing, Kanban, Error404, Dashboard } from '@shared/components';
-import { DataTypeHeaderAnchor } from '@shared/styles/Data'
+import { DataTypeHeaderAnchor, DataTypeHeaderContainer } from '@shared/styles/Data'
 import { strings, types, paths } from '@shared/utils/constants';
 
 
@@ -160,15 +160,17 @@ class Data extends React.Component {
                     <div>
                         <Row>
                             <Col>
-                                {this.props.types && this.props.types.defaults && this.props.types.defaults.data_type ? this.props.types.defaults.data_type.map(dataType => (
-                                    <DataTypeHeaderAnchor 
-                                    key={dataType.id}
-                                    onClick={e=> {this.setVisualization(dataType.id)}} 
-                                    isSelected={this.props.user && this.props.user.data_type ? this.props.user.data_type === dataType.id: false}
-                                    >
-                                        {types('pt-br','data_type', dataType.name)}    
-                                    </DataTypeHeaderAnchor> 
-                                )) : ''}
+                                <DataTypeHeaderContainer>
+                                    {this.props.types && this.props.types.defaults && this.props.types.defaults.data_type ? this.props.types.defaults.data_type.map(dataType => (
+                                        <DataTypeHeaderAnchor 
+                                        key={dataType.id}
+                                        onClick={e=> {this.setVisualization(dataType.id)}} 
+                                        isSelected={this.props.user && this.props.user.data_type ? this.props.user.data_type === dataType.id: false}
+                                        >
+                                            {types('pt-br','data_type', dataType.name)}    
+                                        </DataTypeHeaderAnchor> 
+                                    )) : ''}
+                                </DataTypeHeaderContainer>
                             </Col>
                         </Row>
                         <Formulary 
