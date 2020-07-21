@@ -9,5 +9,4 @@ export default styled.div`
     padding: 5px;
     border-radius: 0 0 10px 10px;
     transition: height 0.3s ease-in-out;
-    overflow: hidden
 `

@@ -1,11 +1,11 @@
 import styled from 'styled-components'
 
-export default styled(({isInitial, numberOfItems, ...rest}) => <div {...rest}/>)`
+export default styled(({isInitial, numberOfItems, isSectionConditional,...rest}) => <div {...rest}/>)`
     ${props=> props.isInitial ? `
         position: sticky;
         ${props.numberOfItems !== 1 ? 'left: 0;': ''}
         height: 100%;
-        background-color: #fff;
+        background-color: ${props.isSectionConditional ? '#17242D' : '#fff'};
         border-right: 1px solid #f2f2f2;
         z-index: 1;
     ` : ''}

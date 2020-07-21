@@ -37,7 +37,7 @@ class Navbar extends React.Component {
 
     handleBilling = (e) => {
         e.preventDefault()
-        Object.assign(document.createElement('a'), { target: '_blank', href: `${process.env['OLD_APP_HOST']}${this.props.login.companyId}/settings/billing/`}).click();
+        Router.push(paths.billing(), paths.billing(), { shallow: true })
     }
 
     handleUsers = (e) => {

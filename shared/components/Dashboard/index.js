@@ -31,7 +31,9 @@ import {
 
 
 /**
- * Main function for Dashboards visualization
+ * Main component for Dashboards. This component is responsible for loading charts and displaying the values to the user
+ * and also for creating each chart individually.
+ * 
  * @param {Type} props - {go in detail about every prop it recieves}
  */
 class Dashboard extends React.Component {

@@ -18,10 +18,12 @@ import { strings } from '../../utils/constants'
  * in the system. So this is actually each of those cards.
  * 
  * @param {Object} types - the types state, this types are usually the required data from this system to work. 
- * Types defines all of the field types, form types, format of numbers and dates and many other stuff * @param {Function} getChartTypeNameById -
+ * Types defines all of the field types, form types, format of numbers and dates and many other stuff 
+ * @param {Function} getChartTypeNameById - Handy function that is used to retrieve the chart name label (so `pie`, `card` and others) 
+ * using the chart id as parameter.
  * @param {Array<Object>} fieldOptions - To build charts we actually need 2 fields: 1 is the label field, the other
  * is the value field. fieldOptions is just an array with objects, with each object being a field the user can select. 
- * @param {Function} onUpdateDashboardSettings - Generally only used when we hit `save` in the DashboardFormulary, 
+ * @param {Function} onSubmitDashboardSettings - Generally only used when we hit `save` in the DashboardFormulary, 
  * this calls a Redux action from the parent component to update the data. The parent component function actually holds the functions to make
  * API calls when updating or when creating a new chart.
  * @param {Function} onRemoveDashboardSettings - Same as onUpdateDashboardSettings except it is only used insied of this
@@ -60,7 +62,7 @@ const DashboardConfigurationCard = (props) => {
                         getChartTypeNameById={props.getChartTypeNameById}
                         fieldOptions={props.fieldOptions}
                         dashboardConfigurationData={props.dashboardConfigurationData}
-                        onUpdateDashboardSettings={props.onUpdateDashboardSettings}
+                        onSubmitDashboardSettings={props.onSubmitDashboardSettings}
                         />
                     </DashboardConfigurationFullFormContainer>
                 ) : null}
@@ -95,7 +97,7 @@ const DashboardConfigurationCard = (props) => {
                         getChartTypeNameById={props.getChartTypeNameById}
                         fieldOptions={props.fieldOptions}
                         dashboardConfigurationData={props.dashboardConfigurationData}
-                        onUpdateDashboardSettings={props.onUpdateDashboardSettings}
+                        onSubmitDashboardSettings={props.onSubmitDashboardSettings}
                         />
                     ) : null}
                 </DashboardConfigurationFullFormContainer>

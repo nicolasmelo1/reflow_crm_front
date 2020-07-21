@@ -19,6 +19,8 @@ let WebView;
 if(process.env['APP'] !== 'web') {
     WebView = require('react-native-webview').WebView
 }
+
+
 /**
  * Since we render the totals the same way on the card and on the popover
  * we created this handy component, so you don't have to repeat code.
@@ -86,10 +88,24 @@ const PopoverWithTotals = React.forwardRef((props, ref) => {
 
 
 /**
- * {Description of your component, what does it do}
- * @param {String} labels - {go in detail about every prop it recieves}
- * @param {String} values - {go in detail about every prop it recieves}
- * @param {String} chartType - {go in detail about every prop it recieves}
+ * This component is responsible for rendering everything about charts and totals.
+ * For Totals this component render a total component created here, for charts this component renders
+ * the graphical interface inside a canvas element using Charts.js library.
+ * 
+ * You might see that we don't use any lib to interface between charts.js and react. We handle it with 
+ * a function in `utils` folder to make this interface. Since this function can grow in the near future it's 
+ * important to make the function separate of the component.
+ * 
+ * Read for further explanation: https://www.chartjs.org/docs/latest/
+ * @param {Array<String>} labels - The labels of the charts, usually this is an array with string elements.
+ * with each element being the label. This array must be the same size of `values` props.
+ * @param {Array<Float/Interger>} values - The values for each label, must be the same size of `label` props. For position
+ * 0 of the `labels` we use element on the position 0 of `values` props array and so on.
+ * @param {Enum{'card', 'pie', 'bar', 'line'}} chartType - The type of the chart, for `pie`, `bar` and `line` we render the chart using
+ * charts.js library. For `card` we render a simple card of totals, and don't use any lib.
+ * @param {Boolean} maintainAspectRatio - Maintain aspect ratio of the chart. You might want to read this for reference:
+ * https://www.chartjs.org/docs/latest/general/responsive.html
+ * @param {Object} numberFormat - The object of the number format, that's how we will format numbers in the chart.
  */
 const Chart = (props) => {
     //const [jsToInject, setJsToInject] = useState('')
@@ -105,7 +121,7 @@ const Chart = (props) => {
 
     const getJsToInjectInWebview = (gettingOnRender=false) => {
         if ((gettingOnRender && !hasRenderedChartJSRef.current) || !gettingOnRender) {
-            const maintainAspectRatio = (typeof props.maintainAspectRatio !== 'undefined') ? props.maintainAspectRatio : true
+            //const maintainAspectRatio = (typeof props.maintainAspectRatio !== 'undefined') ? props.maintainAspectRatio : true
             const numberFormat = (props.numberFormat) ? props.numberFormat : null
             return `
                 if (typeof Chart === 'undefined') {

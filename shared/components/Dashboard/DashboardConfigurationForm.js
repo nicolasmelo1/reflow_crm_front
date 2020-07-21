@@ -30,7 +30,7 @@ import {
  * Besides that it's just a simple formulary actually, nothing much. The only difference is that we render
  * the chart while the user is editing the chart configuration.
  * 
- * @param {Function} onUpdateDashboardSettings - Generally only used when we hit `save`, this calls a function
+ * @param {Function} onSubmitDashboardSettings - Generally only used when we hit `save`, this calls a function
  * from the DashboardConfiguration component to update the data. The parent component function actually holds the 
  * functions to make API calls when updating or when creating a new chart. After saving we close this form and 
  * unmounts this component
@@ -104,7 +104,7 @@ const DashboardConfigurationForm = (props) => {
     }
 
     const onSubmit = () => {
-        props.onUpdateDashboardSettings(dashboardConfigurationData).then(response=> {
+        props.onSubmitDashboardSettings(dashboardConfigurationData).then(response=> {
             if (response && response.status === 400) {
                 if (Object.keys(response.data.error).every(error=> Object.keys(dashboardConfigurationData).includes(error))) {
                     // its a error with one of the fields

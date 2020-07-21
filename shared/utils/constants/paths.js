@@ -1,3 +1,5 @@
+import { Billing } from "../../components"
+
 const paths = {
     empty() {
         return '/'
@@ -16,6 +18,9 @@ const paths = {
     },
     notifications() {
         return '/notifications'
+    },
+    billing() {
+        return '/settings/billing'
     }
 }
 
