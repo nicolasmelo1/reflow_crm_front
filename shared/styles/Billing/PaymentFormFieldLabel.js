@@ -3,12 +3,10 @@ import styled from 'styled-components'
 import { Text } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
-styled.input`
-    display: none;
-
-    &:focus {
-        outline: none;
-    }
+styled.label`
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-weight: bold;
 `
 :
-styled(Text)
+styled(Text)``

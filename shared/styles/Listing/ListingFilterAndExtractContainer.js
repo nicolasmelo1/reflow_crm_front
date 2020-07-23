@@ -1,6 +1,9 @@
+import React from 'react'
 import styled from 'styled-components'
+import { View } from 'react-native'
 
-export default styled.div`
+export default process.env['APP'] === 'web' ?
+styled.div`
     position: relative;
     display: inline-block;
     
@@ -13,3 +16,5 @@ export default styled.div`
         ${props=> props.hasLeftMargin ? 'margin: 0 0 0 1%;': 'margin: 0 1% 0 0;' }
     }
 `
+:
+styled(View)``

@@ -1,9 +1,13 @@
+import React from 'react'
 import styled from 'styled-components'
-import { Button } from 'react-bootstrap'
+import { TouchableOpacity } from 'react-native'
 
-export default styled.button`
+export default process.env['APP'] === 'web' ? 
+styled.button`
     float: right;
     background-color: transparet;
     color: red;
     border: 0;
 `
+:
+styled(TouchableOpacity)``

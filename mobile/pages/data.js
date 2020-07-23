@@ -1,10 +1,13 @@
 import React from 'react'
 import Layout from '@shared/components/Layout'
-import { Button, Linking } from 'react-native'
+import { Button } from 'react-native'
 import { connect } from 'react-redux'
 import actions from '@shared/redux/actions'
 import { withAuthenticationContext } from '../contexts'
 import Dashboard from '@shared/components/Dashboard'
+import { paths } from '@shared/utils/constants'
+
+import { Linking } from 'expo'
 
 class Data extends React.Component {
     constructor (props) {
@@ -13,7 +16,7 @@ class Data extends React.Component {
 
 
     render() {
-
+        console.log(Linking.makeUrl(paths.login()))
         return (
             <Layout setIsAuthenticated={this.props.authenticationContext.setIsAuthenticated} showSideBar={true}>
                 <Button onPress={e=> {

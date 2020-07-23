@@ -24,6 +24,9 @@ import {
     TemplatesTemplateFilterTypeButtons
 } from '../../styles/Templates'
 
+/**
+ * This compnent is responsible for showing the templates to a user.
+ */
 class Templates extends React.Component {
     constructor(props) {
         super(props)

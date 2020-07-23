@@ -1,6 +1,9 @@
+import React from 'react'
 import styled from 'styled-components'
+import { View } from 'react-native'
 
-export default styled.div`
+export default process.env['APP'] === 'web' ?
+styled.div`
     position: absolute;
     z-index: 10;
     background-color: #17242D;
@@ -14,3 +17,5 @@ export default styled.div`
        width: calc(var(--app-width) - 40px);
     }
 `
+:
+styled(View)``

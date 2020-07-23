@@ -9,8 +9,8 @@ import { connect } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import isAdmin from '../../utils/isAdmin'
 
-// On the browser this component is called inside of the Layout component, but since React Navigation works differently, on mobile we need to call it on the App.js component
-// since it needs to be on the root of the page.
+// On the browser this component is called inside of the Layout component, but since React Navigation works differently, on mobile 
+// we need to call it on the App.js component since it needs to be on the root of the page.
 class Navbar extends React.Component {
     constructor(props) {
         super(props)

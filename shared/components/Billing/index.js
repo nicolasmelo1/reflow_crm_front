@@ -12,6 +12,8 @@ import PaymentForm from './PaymentForm'
 class Billing extends React.Component {
     constructor(props) {
         super(props)
+        this.cancelToken = axios.CancelToken
+        this.source = null
         this.state = {
             isEditingPaymentData: true
         }
@@ -30,6 +32,8 @@ class Billing extends React.Component {
             <div>
                 {this.state.isEditingPaymentData ? (
                     <PaymentForm
+                    cancelToken={this.cancelToken}
+                    onGetAddressOptions={this.props.onGetAddressOptions}
                     setIsEditingPayment={this.setIsEditingPayment}
                     />
                 ): (

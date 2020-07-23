@@ -5,6 +5,7 @@ import notification from './notification'
 import templates from './templates'
 import onboarding from './onboarding'
 import changepassword from './changepassword'
+import billing from './billing'
 
 export default {
     ...home,
@@ -13,5 +14,6 @@ export default {
     ...notification,
     ...templates,
     ...onboarding,
+    ...billing,
     ...changepassword
 }

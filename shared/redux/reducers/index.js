@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux'
+import types from './types'
 import login from './login'
 import home from './home'
 import notify from './notify'
@@ -8,6 +9,7 @@ import { DEAUTHENTICATE } from '../types'
 
 
 const appReducer = combineReducers({
+    types,
     login,
     home,
     notify,

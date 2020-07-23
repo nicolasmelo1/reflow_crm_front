@@ -1,13 +1,20 @@
+import React from 'react'
 import styled from 'styled-components'
+import { TouchableOpacity, View, Text } from 'react-native'
 
-const StyledContainer = styled.div`
+const StyledContainer = 
+process.env['APP'] === 'web' ?
+styled.div`
     padding: 15px; 
     margin-bottom: 10px;
     background-color: #17242D;
     margin: -10px -10px 10px -10px;
 `
+:
+styled(View)``
 
-const StyledButton = styled.button`
+const StyledButton = process.env['APP'] === 'web' ?
+styled.button`
     background-color: #0dbf7e;
     border: 0;
     border-radius: 5px;
@@ -20,13 +27,19 @@ const StyledButton = styled.button`
         background-color: #0dbf7e90;
     }
 `
+:
+styled(TouchableOpacity)``
 
-const StyledParagraph = styled.p`
+const StyledParagraph = process.env['APP'] === 'web' ?
+styled.p`
     display: inline-block;
     margin: 0;
     color: #f2f2f2;
     margin: 0 5px;
 `
+:
+styled(Text)``
+
 /**
  * 
  * @param {function} onClick - function to be called when user clicks button

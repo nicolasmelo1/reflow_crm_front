@@ -93,7 +93,7 @@ class Data extends React.Component {
     }
 
     getDataType = (dataTypeId) => {
-        return  this.props.types ? this.props.types.defaults.data_type.filter(dataType => dataType.id === dataTypeId) : 'listing'
+        return  this.props.types && this.props.types.defaults ? this.props.types.defaults.data_type.filter(dataType => dataType.id === dataTypeId) : 'listing'
     }
 
 

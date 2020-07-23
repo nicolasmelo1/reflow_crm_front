@@ -6,9 +6,15 @@ import PaymentFormPaymentHorizontalButtonsContainer from './PaymentFormPaymentHo
 import PaymentFormPaymentMethodButton from './PaymentFormPaymentMethodButton'
 import PaymentFormTitleLabel from './PaymentFormTitleLabel'
 import PaymentFormPaymentInvoiceDateButton from './PaymentFormPaymentInvoiceDateButton'
+import PaymentFormFieldContainer from './PaymentFormFieldContainer'
 import PaymentFormInput from './PaymentFormInput'
+import PaymentFormFieldSelectContainer from './PaymentFormFieldSelectContainer'
+import PaymentFormFieldLabel from './PaymentFormFieldLabel'
 
+export { PaymentFormFieldLabel }
+export { PaymentFormFieldSelectContainer }
 export { PaymentFormInput }
+export { PaymentFormFieldContainer }
 export { PaymentFormPaymentInvoiceDateButton }
 export { PaymentFormTitleLabel }
 export { PaymentFormPaymentMethodButton }

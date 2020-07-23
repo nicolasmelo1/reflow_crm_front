@@ -1,6 +1,9 @@
+import React from 'react'
 import styled from 'styled-components'
+import { View } from 'react-native'
 
-export default styled.div`
+export default process.env['APP'] === 'web' ?
+styled.div`
     color: ${props=> props.isTableButton ? '#0dbf7e': '#f2f2f2'} !important;
     border: 1px solid #bfbfbf;
     height: ${props=> props.isTableButton ? '': '100%'};
@@ -9,3 +12,5 @@ export default styled.div`
     position: relative;
     user-select: none;
 `
+:
+styled(View)``

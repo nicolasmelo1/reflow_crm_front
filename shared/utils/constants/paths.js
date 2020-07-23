@@ -1,5 +1,3 @@
-import { Billing } from "../../components"
-
 const paths = {
     empty() {
         return '/'

@@ -87,19 +87,22 @@ class Login extends React.Component {
             } else if (response.status !== 200) {
                 this.props.onAddNotification(errors('pt-br', 'incorrect_pass_or_user'), 'error')
             } else {
-
-                // we set it here because of react, Next.js always constructs the Layout component, so it always pass on the constructor part, React Native on the other hand don't.
-                agent.setCompanyId(this.props.login.companyId)
-                
-                if (!['', null, undefined].includes(this.props.login.primaryForm)) {
-                    if (process.env['APP'] === 'web') {
-                        Router.push(paths.home(), paths.home(this.props.login.primaryForm), { shallow: true })
+                // force types to be defines when logging in.
+                this.props.getDataTypes().then(_ => {
+                    // we set it here because of react, Next.js always constructs the Layout component, so 
+                    // it always pass on the constructor part, React Native on the other hand don't.
+                    agent.setCompanyId(this.props.login.companyId)
+                    
+                    if (!['', null, undefined].includes(this.props.login.primaryForm)) {
+                        if (process.env['APP'] === 'web') {
+                            Router.push(paths.home(), paths.home(this.props.login.primaryForm), { shallow: true })
+                        } else {
+                            this.props.setIsAuthenticated(true)
+                        }
                     } else {
-                        this.props.setIsAuthenticated(true)
-                    }
-                } else {
-                    this.props.setAddTemplates(true)
-                }
+                        this.props.setAddTemplates(true)
+                    }  
+                })
             }
         })
     }

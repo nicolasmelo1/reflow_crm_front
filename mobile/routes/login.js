@@ -8,8 +8,6 @@ import OnboardingPage from '../pages/onboarding'
 const LoginRoutes = (props) => {
     const Stack = createStackNavigator()
 
-    
-
     return (
         <Stack.Navigator>
             <Stack.Screen name={'login'} component={LoginPage} options={{headerShown: false, title: 'Login'}}/>

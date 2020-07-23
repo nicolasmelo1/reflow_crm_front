@@ -7,9 +7,8 @@ styled.div`
     overflow: auto;
     display: flex;
     flex-direction: column;
-    justify-content: center; 
-    align-items: center;
     width: 100%;
+    height: calc(var(--app-height) - 200px);
 `
 :
 styled(View)``

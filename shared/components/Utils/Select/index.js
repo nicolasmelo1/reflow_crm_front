@@ -15,6 +15,10 @@ import { SafeAreaView, Text, Keyboard, TouchableOpacity } from 'react-native';
  * @param {Function} onChange - a onChange function to be called when the user changes the value
  * @param {Boolean} isOpen - (optional) - state to show if the options are opened or closed, this way you can style this outside of the component.
  * @param {Function} setIsOpen = (optional) - set isOpenState to true so you know outside of this component that this is on an open state
+ * @param {Boolean} fixedHeight - (optional) - As default the height of the items never pass the bottom of the page, this means that
+ * when you open the select, the height of the select automatically adjusts itself so it never pass the bottom of the viewport. Setting this
+ * to true stick the size of the options container to a default maximum height. This is usually useful if the select is inside an overflow 
+ * container.
  * @param {string} searchValueColor - (optional) - set color to search value, that the user types to search
  * @param {String} optionColor - (optional) - default to #f2f2f2
  * @param {String} optionBackgroundColor - (optional) - default to #17242D
@@ -49,7 +53,7 @@ const Select = (props) => {
     // with this the content overflow and we have a scrollbar.
     const maximumHeightRef = React.useRef(maximumHeight)
     const setMaximumHeight = () => {
-        if (process.env['APP'] === 'web' && selectOptionsContainerRef.current) {
+        if (process.env['APP'] === 'web' && selectOptionsContainerRef.current && !props.fixedHeight) {
             const selectHeightIsBiggerThanViewport = selectOptionsContainerRef.current.getBoundingClientRect().bottom > (window.innerHeight || document.documentElement.clientHeight)
             const selectHeightToFitViewport = selectOptionsContainerRef.current.getBoundingClientRect().height - selectOptionsContainerRef.current.getBoundingClientRect().bottom + (window.innerHeight || selectOptionsContainerRef.current.clientHeight)
             if (selectHeightIsBiggerThanViewport) {
