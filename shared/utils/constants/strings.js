@@ -215,6 +215,24 @@ const strings = {
         dashboardConfigurationFormNumberFormatSelectorLabel: 'Formatação de número',
         dashboardConfigurationFormPreviewTitleLabel: 'Preview',
         dashboardConfigurationFormSaveButtonLabel: 'Salvar',
+        billingGoBackButtonLabel: 'Voltar',
+        billingPaymentFormBillingDateTitleLabel: 'Data de cobrança',
+        billingPaymentFormInvoiceEmailsTitleLabel: 'E-mail de cobrança',
+        billingPaymentFormAddAnotherEmailButtonLabel: 'Adicionar outro e-mail',
+        billingPaymentFormPaymentDataTitleLabel: 'Dados de pagamento',
+        billingPaymentFormCreditCardNumberFieldLabel: 'Número do cartão',
+        billingPaymentFormCreditCardValidDateFieldLabel: 'Validade',
+        billingPaymentFormCreditCardCVVFieldLabel: 'CVV',
+        billingPaymentFormCreditCardHolderNameFieldLabel: 'Nome do titular',
+        billingPaymentFormCNPJFieldLabel: 'CNPJ',
+        billingPaymentFormInvoiceAddressTitleLabel: 'Endereço de Cobrança',
+        billingPaymentFormAddressStreetFieldLabel: 'Nome da rua',
+        billingPaymentFormAddressNeighborhoodFieldLabel: 'Bairro',
+        billingPaymentFormAddressNumberFieldLabel: 'Número',
+        billingPaymentFormAddressAdditionalInformationFieldLabel: 'Complemento',
+        billingPaymentFormAddressZipCodeFieldLabel: 'CEP',
+        billingPaymentFormAddressStateFieldLabel: 'Estado',
+        billingPaymentFormAddressCityFieldLabel: 'Cidade',
         templateTypeSelectionTitleLabel: 'Seleção de templates',
         templateGoBackButtonLabel: 'Voltar',
         templateDescriptionTitleLabel: 'Descrição',
@@ -281,7 +299,9 @@ const strings = {
         aggregationTypePercent: 'Porcentagem',
         aggregationTypeMax: 'Máximo',
         aggregationTypeMin: 'Mínimo',
-        aggregationTypeCount: 'Contagem'
+        aggregationTypeCount: 'Contagem',
+        paymentMethodTypeCreditCard: 'Cartão de Crédito',
+        paymentMethodTypeInvoice: 'Boleto'
     }
 }
 

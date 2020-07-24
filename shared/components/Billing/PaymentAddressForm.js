@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { View, ViewPropTypes } from 'react-native'
+import { View } from 'react-native'
 import { Select } from '../Utils'
 import { numberMasker, numberUnmasker } from '../../utils/numberMasker'
+import { strings } from '../../utils/constants'
 import { 
     PaymentFormTitleLabel,
     PaymentFormInput,
@@ -39,7 +40,7 @@ const PaymentAddressForm = (props) => {
     }
 
     const onChangeZipCode = (data) => {
-        props.paymentData.zip_code = numberUnmasker(data)
+        props.paymentData.zip_code = numberUnmasker(data, '00000-000')
         props.setPaymentData({...props.paymentData})
     }
 
@@ -84,30 +85,42 @@ const PaymentAddressForm = (props) => {
         return (
             <div style={{ width: '100%', marginBottom: '50px' }}>
                 <PaymentFormTitleLabel>
-                    Endereço de cobrança
+                    {strings['pt-br']['billingPaymentFormInvoiceAddressTitleLabel']}
                 </PaymentFormTitleLabel>
                 <PaymentFormFieldContainer>
-                    <PaymentFormFieldLabel>Nome da Rua</PaymentFormFieldLabel>
+                    <PaymentFormFieldLabel>
+                        {strings['pt-br']['billingPaymentFormAddressStreetFieldLabel']}
+                    </PaymentFormFieldLabel>
                     <PaymentFormInput type={'text'} value={props.paymentData.street} onChange={e=> onChangeStreet(e.target.value)}/>
                 </PaymentFormFieldContainer>
                 <PaymentFormFieldContainer>
-                    <PaymentFormFieldLabel>Bairro</PaymentFormFieldLabel>
+                    <PaymentFormFieldLabel>
+                        {strings['pt-br']['billingPaymentFormAddressNeighborhoodFieldLabel']}
+                    </PaymentFormFieldLabel>
                     <PaymentFormInput type={'text'} value={props.paymentData.neighborhood} onChange={e=> onChangeNeighborhood(e.target.value)}/>
                 </PaymentFormFieldContainer>
                 <PaymentFormFieldContainer>
-                    <PaymentFormFieldLabel>Número</PaymentFormFieldLabel>
+                    <PaymentFormFieldLabel>
+                        {strings['pt-br']['billingPaymentFormAddressNumberFieldLabel']}
+                    </PaymentFormFieldLabel>
                     <PaymentFormInput type={'number'} placeholder={'Número'} value={props.paymentData.number} onChange={e=> onChangeNumber(e.target.value)}/>
                 </PaymentFormFieldContainer>
                 <PaymentFormFieldContainer>
-                    <PaymentFormFieldLabel>Complemento</PaymentFormFieldLabel>
+                    <PaymentFormFieldLabel>
+                        {strings['pt-br']['billingPaymentFormAddressAdditionalInformationFieldLabel']}
+                    </PaymentFormFieldLabel>
                     <PaymentFormInput type={'text'} placeholder={'Complemento'} value={props.paymentData.additional_details} onChange={e=> onChangeAdditionalDetails(e.target.value)}/>
                 </PaymentFormFieldContainer>
                 <PaymentFormFieldContainer>
-                    <PaymentFormFieldLabel>CEP</PaymentFormFieldLabel>
+                    <PaymentFormFieldLabel>
+                        {strings['pt-br']['billingPaymentFormAddressZipCodeFieldLabel']}
+                    </PaymentFormFieldLabel>
                     <PaymentFormInput type={'text'} placeholder={'CEP'} value={numberMasker(props.paymentData.zip_code, '00000-000')} onChange={e=> onChangeZipCode(e.target.value)}/>
                 </PaymentFormFieldContainer>
                 <PaymentFormFieldContainer>
-                    <PaymentFormFieldLabel>Estado</PaymentFormFieldLabel>
+                    <PaymentFormFieldLabel>
+                        {strings['pt-br']['billingPaymentFormAddressStateFieldLabel']}
+                    </PaymentFormFieldLabel>
                     <PaymentFormFieldSelectContainer>
                         <Select
                         fixedHeight={true}
@@ -118,7 +131,9 @@ const PaymentAddressForm = (props) => {
                     </PaymentFormFieldSelectContainer>
                 </PaymentFormFieldContainer>
                 <PaymentFormFieldContainer>
-                    <PaymentFormFieldLabel>Cidade</PaymentFormFieldLabel>
+                    <PaymentFormFieldLabel>
+                        {strings['pt-br']['billingPaymentFormAddressCityFieldLabel']}
+                    </PaymentFormFieldLabel>
                     <PaymentFormFieldSelectContainer>
                         <Select
                         fixedHeight={true}

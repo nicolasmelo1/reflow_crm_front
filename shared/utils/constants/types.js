@@ -88,6 +88,10 @@ const types = (lang, type, key) => {
             operations: strings[lang]['groupTypeOperations'],
             projects: strings[lang]['groupTypeProjects'],
             finance: strings[lang]['groupTypeFinance']
+        },
+        payment_method_type: {
+            credit_card: strings[lang]['paymentMethodTypeCreditCard'],
+            invoice: strings[lang]['paymentMethodTypeInvoice']
         }
     }[type][key]
 }

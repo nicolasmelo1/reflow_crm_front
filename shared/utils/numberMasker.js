@@ -28,7 +28,7 @@ const numberMasker = (number, format) => {
     return result
 }
 
-const numberUnmasker = (number) => number.replace(/\D/g,'')
+const numberUnmasker = (number, format) => number.replace(/\D/g,'').substring(0, (format.match(/0/g) || []).length)
 
 export { numberUnmasker }
 export { numberMasker }

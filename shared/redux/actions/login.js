@@ -1,4 +1,4 @@
-import { DEAUTHENTICATE, AUTHENTICATE, SET_PRIMARY_FORM, DATA_TYPES, SET_USER, SET_TYPES } from '../types';
+import { DEAUTHENTICATE, AUTHENTICATE, SET_PRIMARY_FORM, DATA_TYPES, SET_USER } from '../types';
 import agent from '../../utils/agent'
 import { setStorageToken } from '../../utils/agent/utils'
 import isEqual from '../../utils/isEqual'
@@ -47,7 +47,6 @@ const getDataTypes = () => {
         const response = await agent.http.LOGIN.getDataTypes()
         if (response && response.status === 200 && !isEqual(response.data.data, stateData.types)) {
             dispatch({ type: DATA_TYPES, payload: response.data.data })
-            dispatch({ type: SET_TYPES, payload: response.data.data })
         }
         return response
     }

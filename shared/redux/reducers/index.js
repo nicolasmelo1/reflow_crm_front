@@ -1,20 +1,20 @@
 import { combineReducers } from 'redux'
-import types from './types'
 import login from './login'
 import home from './home'
 import notify from './notify'
 import notification from './notification'
 import templates from './templates'
+import billing from './billing'
 import { DEAUTHENTICATE } from '../types'
 
 
 const appReducer = combineReducers({
-    types,
     login,
     home,
     notify,
     notification,
-    templates
+    templates,
+    billing
 });
 
 const rootReducer = (state, action) => {

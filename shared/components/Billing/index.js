@@ -21,6 +21,18 @@ class Billing extends React.Component {
 
     setIsEditingPayment = (data) => this.setState(state => ({...state, isEditingPaymentData: data}))
 
+    componentDidMount = () => {
+        this.source = this.cancelToken.source()
+        this.props.onGetPaymentData(this.source)
+        this.props.onGetCompanyData(this.source)
+    }
+    
+    componentWillUnmount = () => {
+        if (this.source) {
+            this.source.cancel()
+        }
+    }
+
     renderMobile = () => {
         return (
             <View></View>
@@ -32,6 +44,11 @@ class Billing extends React.Component {
             <div>
                 {this.state.isEditingPaymentData ? (
                     <PaymentForm
+                    onChangePaymentData={this.props.onChangePaymentData}
+                    onChangeCompanyData={this.props.onChangeCompanyData}
+                    companyData={this.props.billing.companyData}
+                    paymentData={this.props.billing.paymentData}
+                    types={this.props.login.types.billing}
                     cancelToken={this.cancelToken}
                     onGetAddressOptions={this.props.onGetAddressOptions}
                     setIsEditingPayment={this.setIsEditingPayment}
@@ -48,4 +65,4 @@ class Billing extends React.Component {
     }
 }
 
-export default connect(state => ({ login: state.login }), actions)(Billing)
+export default connect(state => ({ login: state.login, billing: state.billing }), actions)(Billing)

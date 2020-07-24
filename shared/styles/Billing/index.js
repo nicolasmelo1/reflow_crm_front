@@ -10,7 +10,19 @@ import PaymentFormFieldContainer from './PaymentFormFieldContainer'
 import PaymentFormInput from './PaymentFormInput'
 import PaymentFormFieldSelectContainer from './PaymentFormFieldSelectContainer'
 import PaymentFormFieldLabel from './PaymentFormFieldLabel'
+import PaymentFormCreditCardValidDateContainer from './PaymentFormCreditCardValidDateContainer'
+import PaymentFormCreditCardCVVContainer from './PaymentFormCreditCardCVVContainer'
+import PaymentFormInvoiceMailContainer from './PaymentFormInvoiceMailContainer'
+import PaymentFormInvoiceMailDeleteButton from './PaymentFormInvoiceMailDeleteButton'
+import PaymentFormInvoiceMailDeleteButtonIcon from './PaymentFormInvoiceMailDeleteButtonIcon'
+import PaymentFormInvoiceMailAddNewButton from './PaymentFormInvoiceMailAddNewButton'
 
+export { PaymentFormInvoiceMailAddNewButton }
+export { PaymentFormInvoiceMailDeleteButtonIcon }
+export { PaymentFormInvoiceMailDeleteButton }
+export { PaymentFormInvoiceMailContainer }
+export { PaymentFormCreditCardCVVContainer }
+export { PaymentFormCreditCardValidDateContainer }
 export { PaymentFormFieldLabel }
 export { PaymentFormFieldSelectContainer }
 export { PaymentFormInput }
