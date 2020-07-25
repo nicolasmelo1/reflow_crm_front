@@ -11,7 +11,7 @@ styled.button`
     border-left: 0;
     border-right: 0;
     font-weight: bold;
-    color: ${props => props.isSelected ? '#0dbf7e': '#17242D'};
+    color: ${props => props.isSelected ? '#0dbf7e': '#f2f2f2'};
     border-bottom: ${props => props.isSelected ? '2px solid #0dbf7e': '0'};
     padding: 10px;
 `

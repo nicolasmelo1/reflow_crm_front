@@ -8,6 +8,7 @@
  * 000.000.000-00 and so on, notice that every 0 is where we will insert the numbers
  */
 const numberMasker = (number, format) => {
+    number = (number) ? number : ''
     const numberOfDigits = (format.match(/0/g) || []).length
     const formatedNumber = number.replace(/\D/g,'').substring(0, numberOfDigits)
     let formatedNumberIndex = 0

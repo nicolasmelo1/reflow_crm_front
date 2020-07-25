@@ -7,7 +7,7 @@ styled.h2`
     width: 100%;
     color: #0dbf7e;
     font-weight: bold;
-    text-align: center;
+    text-align: left;
 `
 :
 styled(Text)``

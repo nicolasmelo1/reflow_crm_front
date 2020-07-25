@@ -225,7 +225,7 @@ const strings = {
         billingPaymentFormCreditCardCVVFieldLabel: 'CVV',
         billingPaymentFormCreditCardHolderNameFieldLabel: 'Nome do titular',
         billingPaymentFormCNPJFieldLabel: 'CNPJ',
-        billingPaymentFormInvoiceAddressTitleLabel: 'Endereço de Cobrança',
+        billingPaymentFormInvoiceAddressTitleLabel: 'Endereço',
         billingPaymentFormAddressStreetFieldLabel: 'Nome da rua',
         billingPaymentFormAddressNeighborhoodFieldLabel: 'Bairro',
         billingPaymentFormAddressNumberFieldLabel: 'Número',

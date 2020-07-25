@@ -11,6 +11,9 @@ const BILLING = {
     },
     getCompanyData: async (source) => {
         return await requests.get(`authentication/settings/company/${companyId}/`, {}, {}, source)
+    },
+    updateCompanyData: async (body) => {
+        return await requests.put(`authentication/settings/company/${companyId}/`, body)
     }
 }
 

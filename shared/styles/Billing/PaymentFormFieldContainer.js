@@ -4,7 +4,7 @@ import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
-    margin-bottom: 10px;
+    margin-bottom: ${props => props.isLast ? '0' : '10px'};
 `
 :
 styled(View)``

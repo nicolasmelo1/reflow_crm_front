@@ -33,6 +33,12 @@ const onGetCompanyData = (source) => {
     }
 }
 
+const onUpdateCompanyData = (body) => {
+    return (_) => {
+        return agent.http.BILLING.updateCompanyData(body)
+    }
+}
+
 const onChangeCompanyData = (data) => {
     return (dispatch) => {
         dispatch({ type: SET_BILLING_COMPANY_DATA, payload: data })
@@ -42,6 +48,7 @@ const onChangeCompanyData = (data) => {
 export default {
     onGetCompanyData,
     onChangeCompanyData,
+    onUpdateCompanyData,
     onGetPaymentData,
     onChangePaymentData,
     onGetAddressOptions

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import PaymentAddressForm from './PaymentAddressForm'
+import axios from 'axios'
+import creditCardType from 'credit-card-type'
+import { VINDI_PUBLIC_API, VINDI_PUBLIC_API_KEY } from '../../config'
 import { numberMasker, numberUnmasker } from '../../utils/numberMasker'
 import { types, strings } from '../../utils/constants'
 import { 
@@ -28,30 +29,22 @@ import {
  * @param {Type} props - {go in detail about every prop it recieves}
  */
 const PaymentForm = (props) => {
+    const [creditCardDataErrors, setCreditCardDataErrors] = useState([])
     const [creditCardData, setCreditCardData] = useState({
-        number: '',
+        card_number: '',
         cvv: '',
-        valid_date: '',
-        holder_name: ''
+        card_expiration: '',
+        holder_name: '',
+        payment_method_code: 'credit_card',
+        payment_company_code: ''
     })
-    const [paymentData, setPaymentData] = useState({
-        gateway_token: null,
-        cnpj: '',
-        company_invoice_emails: [{email: ''}],
-        payment_method_type_id: props.types.payment_method_type.filter(paymentMethodType => paymentMethodType.name === 'credit_card').length > 0 ? 
-                                props.types.payment_method_type.filter(paymentMethodType => paymentMethodType.name === 'credit_card')[0].id : null,
-        invoice_date_type_id: props.types.invoice_date_type.filter(invoiceDateType => invoiceDateType.date === 1).length > 0 ? 
-                              props.types.invoice_date_type.filter(invoiceDateType => invoiceDateType.date === 1)[0].id : null,
-        address: '',
-        zip_code: '',
-        street: '',
-        additional_details: '',
-        state: '',
-        number: '',
-        neighborhood: '',
-        country: '',
-        city: ''
-    })
+
+    const removeCreditCardDataErrors = (string) => {
+        if (creditCardDataErrors.includes(string)) {
+            creditCardDataErrors.splice(creditCardDataErrors.indexOf(string), 1)
+            setCreditCardDataErrors([...creditCardDataErrors])
+        }
+    }
 
     const onRemoveCompanyInvoiceEmail = (index) => {
         props.paymentData.company_invoice_emails.splice(index, 1)
@@ -60,7 +53,7 @@ const PaymentForm = (props) => {
 
     const onAddNewCompanyInvoiceEmail = () => {
         props.paymentData.company_invoice_emails.push({email: ''})
-        props.onChangePaymentData({...props.props.paymentData})
+        props.onChangePaymentData({...props.paymentData})
     }
 
     const onChangeCompanyInvoiceEmail = (index, value) => {
@@ -78,31 +71,70 @@ const PaymentForm = (props) => {
         props.onChangePaymentData({...props.paymentData})
     }
 
-    const onChangeCNPJ = (data) => {
-        props.paymentData.cnpj = data
-        props.onChangePaymentData({...props.paymentData})
-    }
-
     const onChangeHolderName = (data) => {
+        removeCreditCardDataErrors('holder_name')
         creditCardData.holder_name = data
         setCreditCardData({...creditCardData})
     }
 
     const onChangeCreditCardValidDate = (data) => {
-        creditCardData.valid_date = numberUnmasker(data, "00/00")
+        removeCreditCardDataErrors('card_expiration')
+        creditCardData.card_expiration = data
         setCreditCardData({...creditCardData})
     }
 
     const onChangeCreditCardCVV = (data) => {
+        removeCreditCardDataErrors('cvv')
         creditCardData.cvv = numberUnmasker(data, "000")
         setCreditCardData({...creditCardData})
     }
 
+    const getCreditCardNumberFormatting = (string) => {
+        let length = 0
+        const stringWithOnlyNumbers = string.replace(/\D/g,'')
+        const stringLength = stringWithOnlyNumbers.length
+        const creditCardNumberLengths = creditCardType(stringWithOnlyNumbers)[0]?.lengths || []
+        for (let i = 0; i<creditCardNumberLengths.length; i++) {
+            if (creditCardNumberLengths[i] >= stringLength) {
+                length = creditCardNumberLengths[i]
+                break
+            }
+        }
+        return [...Array(length)].map((_, index) => (creditCardType(stringWithOnlyNumbers)[0]?.gaps || []).includes(index) ? " 0" : "0").join('')
+    }
+
     const onChangeCreditCardNumber = (data) => {
-        creditCardData.number = numberUnmasker(data, "0000 0000 0000 0000")
+        removeCreditCardDataErrors('card_number')
+        creditCardData.card_number = numberUnmasker(data, getCreditCardNumberFormatting(data))
         setCreditCardData({...creditCardData})
     }
 
+    const isToShowCreditCardForm = () => {
+        return [...Object.entries(props.paymentData.payment_data)].some(value => ['', null].includes(value[1]))
+    }
+
+    const isToSubmitCreditCardInfo = () => {
+        return [...Object.entries(creditCardData)].some(value => !['', null].includes(value[1]))
+    }
+
+    const onSubmit = () => {
+        if (isToSubmitCreditCardInfo()) {
+            axios.post(VINDI_PUBLIC_API, {...creditCardData, payment_company_code: creditCardType(creditCardData.card_number)[0].type}, {
+                auth: {
+                    username: VINDI_PUBLIC_API_KEY,
+                    password: ''
+                }
+            }).then(response => {
+                console.log(response.data.payment_profile.gateway_token)
+            }).catch(error => {
+                if (!creditCardDataErrors.includes(error.response.data.errors[0].parameter)) {
+                    creditCardDataErrors.push(error.response.data.errors[0].parameter)
+                    console.log(error.response.data.errors[0].parameter)
+                    setCreditCardDataErrors([...creditCardDataErrors])
+                }
+            })
+        }
+    }
 
     const renderMobile = () => {
         return (
@@ -113,9 +145,6 @@ const PaymentForm = (props) => {
     const renderWeb = () => {
         return (
             <PaymentFormContainer>
-                <PaymentFormGoBackButton onClick={e => {props.setIsEditingPayment(false)}}>
-        <FontAwesomeIcon icon={'chevron-left'}/>&nbsp;{strings['pt-br']['billingGoBackButtonLabel']}
-                </PaymentFormGoBackButton>
                 <PaymentFormPaymentHorizontalButtonsContainer>
                     {props.types.payment_method_type.map(paymentMethodType => (
                         <PaymentFormPaymentMethodButton 
@@ -127,47 +156,47 @@ const PaymentForm = (props) => {
                         </PaymentFormPaymentMethodButton> 
                     ))}
                 </PaymentFormPaymentHorizontalButtonsContainer>
-                <PaymentFormFormularyContainer>
-                    <div style={{ width: '100%', marginBottom: '10px' }}>
-                        <PaymentFormTitleLabel>
-                            {strings['pt-br']['billingPaymentFormBillingDateTitleLabel']}
-                        </PaymentFormTitleLabel>
-                        <PaymentFormPaymentHorizontalButtonsContainer>
-                            {props.types.invoice_date_type.map(invoiceDateType => (
-                                <PaymentFormPaymentInvoiceDateButton 
-                                key={invoiceDateType.id}
-                                isSelected={invoiceDateType.id === props.paymentData.invoice_date_type_id} 
-                                onClick={e=> onChangeInvoiceDateType(invoiceDateType.id)}
-                                >
-                                    {(invoiceDateType.date < 10) ? '0' + invoiceDateType.date.toString() : invoiceDateType.date.toString()}
-                                </PaymentFormPaymentInvoiceDateButton>
-                            ))}
-                        </PaymentFormPaymentHorizontalButtonsContainer>
-                    </div>
-                    <div style={{ width: '100%', marginBottom: '10px' }}>
-                        <PaymentFormTitleLabel>
-                            {strings['pt-br']['billingPaymentFormInvoiceEmailsTitleLabel']}
-                        </PaymentFormTitleLabel>
-                        <PaymentFormInvoiceMailAddNewButton onClick={e=>{onAddNewCompanyInvoiceEmail()}}>
-                            {strings['pt-br']['billingPaymentFormAddAnotherEmailButtonLabel']}
-                        </PaymentFormInvoiceMailAddNewButton>
-                        {props.paymentData.company_invoice_emails.map((companyInvoiceMail, index) => (
-                            <PaymentFormInvoiceMailContainer key={index}>
-                                <PaymentFormInput 
-                                type={'text'} 
-                                value={companyInvoiceMail.email} 
-                                onChange={e=>onChangeCompanyInvoiceEmail(index, e.target.value)}
-                                />
-                                {index !== 0 ? (
-                                    <PaymentFormInvoiceMailDeleteButton 
-                                    onClick={e=>{onRemoveCompanyInvoiceEmail(index)}}>
-                                        <PaymentFormInvoiceMailDeleteButtonIcon icon={'trash'}/>
-                                    </PaymentFormInvoiceMailDeleteButton>
-                                ) : ''}
-                            </PaymentFormInvoiceMailContainer>
-                        ))}     
-                    </div>
-                    <div style={{ width: '100%', marginBottom: '10px' }}>
+                <div style={{ width: '100%', marginBottom: '10px', backgroundColor: '#fff', borderRadius: '5px', padding: '10px' }}>
+                    <PaymentFormTitleLabel>
+                        {strings['pt-br']['billingPaymentFormBillingDateTitleLabel']}
+                    </PaymentFormTitleLabel>
+                    <PaymentFormPaymentHorizontalButtonsContainer>
+                        {props.types.invoice_date_type.map(invoiceDateType => (
+                            <PaymentFormPaymentInvoiceDateButton 
+                            key={invoiceDateType.id}
+                            isSelected={invoiceDateType.id === props.paymentData.invoice_date_type_id} 
+                            onClick={e=> onChangeInvoiceDateType(invoiceDateType.id)}
+                            >
+                                {(invoiceDateType.date < 10) ? '0' + invoiceDateType.date.toString() : invoiceDateType.date.toString()}
+                            </PaymentFormPaymentInvoiceDateButton>
+                        ))}
+                    </PaymentFormPaymentHorizontalButtonsContainer>
+                </div>
+                <div style={{ width: '100%', marginBottom: '10px', backgroundColor: '#fff', borderRadius: '5px', padding: '10px' }}>
+                    <PaymentFormTitleLabel>
+                        {strings['pt-br']['billingPaymentFormInvoiceEmailsTitleLabel']}
+                    </PaymentFormTitleLabel>
+                    <PaymentFormInvoiceMailAddNewButton onClick={e=>{onAddNewCompanyInvoiceEmail()}}>
+                        {strings['pt-br']['billingPaymentFormAddAnotherEmailButtonLabel']}
+                    </PaymentFormInvoiceMailAddNewButton>
+                    {props.paymentData.company_invoice_emails.map((companyInvoiceMail, index) => (
+                        <PaymentFormInvoiceMailContainer key={index}>
+                            <PaymentFormInput 
+                            type={'text'} 
+                            value={companyInvoiceMail.email} 
+                            onChange={e=>onChangeCompanyInvoiceEmail(index, e.target.value)}
+                            />
+                            {index !== 0 ? (
+                                <PaymentFormInvoiceMailDeleteButton 
+                                onClick={e=>{onRemoveCompanyInvoiceEmail(index)}}>
+                                    <PaymentFormInvoiceMailDeleteButtonIcon icon={'trash'}/>
+                                </PaymentFormInvoiceMailDeleteButton>
+                            ) : ''}
+                        </PaymentFormInvoiceMailContainer>
+                    ))}     
+                </div>
+                {isToShowCreditCardForm() ? (
+                    <div style={{ width: '100%',  backgroundColor: '#fff', borderRadius: '5px', padding: '10px' }}>
                         <PaymentFormTitleLabel>
                             {strings['pt-br']['billingPaymentFormPaymentDataTitleLabel']}
                         </PaymentFormTitleLabel>
@@ -177,9 +206,18 @@ const PaymentForm = (props) => {
                             </PaymentFormFieldLabel>
                             <PaymentFormInput 
                             type={'text'}
+                            errors={creditCardDataErrors.includes('card_number')}
                             onChange={e=> onChangeCreditCardNumber(e.target.value)} 
-                            value={numberMasker(creditCardData.number, "0000 0000 0000 0000")}
+                            value={numberMasker(
+                                creditCardData.card_number, 
+                                getCreditCardNumberFormatting(creditCardData.card_number)
+                            )}
                             />
+                            {creditCardDataErrors.includes('card_number') ? (
+                                <small style={{color: 'red'}}>
+                                    Valor inválido
+                                </small>
+                            ) : ''}
                         </PaymentFormFieldContainer>
                         <div style={{display: 'flex', flexDirection:'row', marginBottom: '10px'}}>
                             <PaymentFormCreditCardValidDateContainer>
@@ -189,9 +227,15 @@ const PaymentForm = (props) => {
                                 <PaymentFormInput 
                                 type={'text'} 
                                 placeholder="MM/AA"
+                                errors={creditCardDataErrors.includes('card_expiration')}
                                 onChange={e=> onChangeCreditCardValidDate(e.target.value)} 
-                                value={numberMasker(creditCardData.valid_date, "00/00")}
+                                value={numberMasker(creditCardData.card_expiration, "00/00")}
                                 />
+                                {creditCardDataErrors.includes('card_expiration') ? (
+                                    <small style={{color: 'red'}}>
+                                        Valor inválido
+                                    </small>
+                                ) : ''}
                             </PaymentFormCreditCardValidDateContainer>
                             <PaymentFormCreditCardCVVContainer>
                                 <PaymentFormFieldLabel>
@@ -199,31 +243,47 @@ const PaymentForm = (props) => {
                                 </PaymentFormFieldLabel>
                                 <PaymentFormInput 
                                 type={'text'} 
+                                errors={creditCardDataErrors.includes('cvv')}
                                 onChange={e=> onChangeCreditCardCVV(e.target.value)} 
-                                value={numberMasker(creditCardData.cvv, "000")}
+                                value={numberMasker(creditCardData.cvv, [...Array(creditCardType(creditCardData.card_number)[0].code.size)].map(_ => "0").join(''))}
                                 />
+                                {creditCardDataErrors.includes('cvv') ? (
+                                    <small style={{color: 'red'}}>
+                                        Valor inválido
+                                    </small>
+                                ) : ''}
                             </PaymentFormCreditCardCVVContainer>
                         </div>
                         <PaymentFormFieldContainer>
                             <PaymentFormFieldLabel>
                                 {strings['pt-br']['billingPaymentFormCreditCardHolderNameFieldLabel']}
                             </PaymentFormFieldLabel>
-                            <PaymentFormInput type={'text'} onChange={e=>onChangeHolderName(e.target.value)} value={creditCardData.holder_name}/>
-                        </PaymentFormFieldContainer>
-                        <PaymentFormFieldContainer>
-                            <PaymentFormFieldLabel>
-                                {strings['pt-br']['billingPaymentFormCNPJFieldLabel']}
-                            </PaymentFormFieldLabel>
-                            <PaymentFormInput type={'text'} onChange={e=>onChangeCNPJ(e.target.value)} value={props.paymentData.cnpj}/>
+                            <PaymentFormInput 
+                            type={'text'} 
+                            errors={creditCardDataErrors.includes('holder_name')}
+                            onChange={e=>onChangeHolderName(e.target.value)} 
+                            value={creditCardData.holder_name}/>
+                            {creditCardDataErrors.includes('holder_name') ? (
+                                <small style={{color: 'red'}}>
+                                    Valor inválido
+                                </small>
+                            ) : ''}
                         </PaymentFormFieldContainer>
                     </div>
-                    <PaymentAddressForm
-                    cancelToken={props.cancelToken}
-                    onGetAddressOptions={props.onGetAddressOptions}
-                    paymentData={paymentData}
-                    setPaymentData={setPaymentData}
-                    />
-                </PaymentFormFormularyContainer>
+                ) : (
+                    <div style={{ width: '100%',  backgroundColor: '#fff', borderRadius: '5px', padding: '10px' }}>
+                        <div style={{ width: '100%',  backgroundColor: '#fff', borderRadius: '5px', padding: '10px', border: '1px solid #17242D', display: 'flex', flexDirection: 'row', justifyContent:'space-between' }}>
+                            {props.paymentData.payment_data.payment_company_name + '● ● ● ●  ' + props.paymentData.payment_data.card_number_last_four} 
+                            <img style={{ maxHeight: '25px' }} src={`/credit_card_logos/${props.paymentData.payment_data.credit_card_code}.png`}></img>
+                        </div>
+                    </div>
+                )}
+                <button 
+                onClick={e => {onSubmit()}}
+                style={{ border: 0, backgroundColor: '#0dbf7e', borderRadius: '20px', width: '100%', padding: '10px', marginTop: '10px' }}
+                >
+                    Salvar
+                </button>
             </PaymentFormContainer>
         )
     }
