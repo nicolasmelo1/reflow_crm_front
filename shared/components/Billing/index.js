@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import actions from '../../redux/actions'
 import PaymentForm from './PaymentForm'
+import ChargeForm from './ChargeForm'
 import CompanyForm from './CompanyForm'
 
 /**
@@ -18,11 +19,14 @@ class Billing extends React.Component {
         this.state = {
             addressOptions: [],
             isCompanyFormOpen: false,
+            isChargeFormOpen: false, 
             isPaymentFormOpen: false
         }
     }
 
-    setIsPaymentFormOpen = () => this.setState(state => ({...state, isPaymentFormOpen: !state.isPaymentFormOpen}))
+    setIsChargeFormOpen = () => this.setState(state => ({ ...state, isChargeFormOpen: !state.isChargeFormOpen }))
+
+    setIsPaymentFormOpen = () => this.setState(state => ({...state, isPaymentFormOpen: !state.isPaymentFormOpen }))
 
     setIsCompanyFormOpen = () => this.setState(state => ({...state, isCompanyFormOpen: !state.isCompanyFormOpen }))
 
@@ -31,7 +35,6 @@ class Billing extends React.Component {
     componentDidMount = () => {
         this.source = this.cancelToken.source()
         this.props.onGetPaymentData(this.source)
-        this.props.onGetCompanyData(this.source)
         this.props.onGetAddressOptions(this.source).then(response => {
             if (response && response.status === 200) {
                 this.setAddressOptions(response.data.data)
@@ -70,13 +73,22 @@ class Billing extends React.Component {
                     onGetAddressOptions={this.props.onGetAddressOptions}
                     setIsCompanyFormOpen={this.setIsCompanyFormOpen}
                     onChangeCompanyData={this.props.onChangeCompanyData}
-                    onUpdateCompanyData={this.props.onUpdateCompanyData}
                     />
                 ): ''}
                 <div style={{ borderTop: '20px solid #17242D', borderBottom: '20px solid transparent', borderRight: '20px solid transparent', borderLeft: '20px solid transparent', width: '4px', height: '4px', margin: '0 auto'}}/>
-                <button style={{ borderTop: '1px solid #17242D', borderRight: '1px solid #17242D', borderLeft: '1px solid #17242D', borderBottom: '4px solid #17242D', backgroundColor: '#fff', width: '100%', borderRadius: '5px'}}>
+                <button 
+                style={{ borderTop: '1px solid #17242D', borderRight: '1px solid #17242D', borderLeft: '1px solid #17242D', borderBottom: '4px solid #17242D', backgroundColor: '#fff', width: '100%', borderRadius: '5px'}}
+                onClick={e => this.setIsChargeFormOpen()}
+                >
                     <h2 style={{ margin: '10px 0 10px 0'}}>Detalhes da Compra</h2>
                 </button>
+                {this.state.isChargeFormOpen ? (
+                    <ChargeForm
+                    onGetTotals={this.props.onGetTotals}
+                    chargesData={this.props.billing.chargesData}
+                    types={this.props.login.types.billing}
+                    />
+                ) : ''}
                 <div style={{ borderTop: '20px solid #17242D', borderBottom: '20px solid transparent', borderRight: '20px solid transparent', borderLeft: '20px solid transparent', width: '4px', height: '4px', margin: '0 auto'}}/>
                 <button 
                 style={{ borderTop: '1px solid #17242D', borderRight: '1px solid #17242D', borderLeft: '1px solid #17242D', borderBottom: '4px solid #17242D', backgroundColor: '#fff', width: '100%', borderRadius: '5px'}}
@@ -86,9 +98,9 @@ class Billing extends React.Component {
                 </button>
                 {this.state.isPaymentFormOpen ? (
                     <PaymentForm
+                    onUpdatePaymentData={this.props.onUpdatePaymentData}
+                    onRemoveCreditCardData={this.props.onRemoveCreditCardData}
                     onChangePaymentData={this.props.onChangePaymentData}
-                    onChangeCompanyData={this.props.onChangeCompanyData}
-                    companyData={this.props.billing.companyData}
                     paymentData={this.props.billing.paymentData}
                     types={this.props.login.types.billing}
                     cancelToken={this.cancelToken}

@@ -1,22 +1,22 @@
-import { SET_BILLING_COMPANY_DATA, SET_BILLING_DATA } from '../types'
+import { SET_BILLING_COMPANY_DATA, SET_BILLING_PAYMENT_DATA, SET_BILLING_CHARGES_DATA } from '../types'
 
 
 const initialState = {
+    chargesData: [],
     paymentData: {
         gateway_token: '',
         company_invoice_emails: [{email: ''}],
         payment_method_type_id: null,
         invoice_date_type_id: null,
-        payment_data: {
+        credit_card_data: {
             card_number_last_four: '',
             card_expiration: '',
-            credit_card_code: ''
+            credit_card_code: '',
+            payment_company_name: ''
         },
-        current_company_charges: []
     },
     companyData: {
         cnpj: '',
-        address: '',
         zip_code: '',
         street: '',
         state: '',
@@ -34,10 +34,18 @@ export default (state = initialState, action) => {
                 ...state,
                 companyData: action.payload
             }
-        case SET_BILLING_DATA:
+        case SET_BILLING_PAYMENT_DATA:
             return {
                 ...state,
-                paymentData: action.payload
+                paymentData: {
+                    ...state.paymentData, 
+                    ...action.payload
+                }
+            }
+        case SET_BILLING_CHARGES_DATA:
+            return {
+                ...state,
+                chargesData: action.payload
             }
         default:
             return state

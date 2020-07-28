@@ -7,7 +7,7 @@ import PaymentFormPaymentMethodButton from './PaymentFormPaymentMethodButton'
 import PaymentFormTitleLabel from './PaymentFormTitleLabel'
 import PaymentFormPaymentInvoiceDateButton from './PaymentFormPaymentInvoiceDateButton'
 import PaymentFormFieldContainer from './PaymentFormFieldContainer'
-import PaymentFormInput from './PaymentFormInput'
+import BillingInput from './BillingInput'
 import PaymentFormFieldSelectContainer from './PaymentFormFieldSelectContainer'
 import PaymentFormFieldLabel from './PaymentFormFieldLabel'
 import PaymentFormCreditCardValidDateContainer from './PaymentFormCreditCardValidDateContainer'
@@ -25,7 +25,7 @@ export { PaymentFormCreditCardCVVContainer }
 export { PaymentFormCreditCardValidDateContainer }
 export { PaymentFormFieldLabel }
 export { PaymentFormFieldSelectContainer }
-export { PaymentFormInput }
+export { BillingInput }
 export { PaymentFormFieldContainer }
 export { PaymentFormPaymentInvoiceDateButton }
 export { PaymentFormTitleLabel }

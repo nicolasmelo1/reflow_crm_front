@@ -5,7 +5,7 @@ import { numberMasker, numberUnmasker } from '../../utils/numberMasker'
 import { strings } from '../../utils/constants'
 import { 
     PaymentFormTitleLabel,
-    PaymentFormInput,
+    BillingInput,
     PaymentFormFieldSelectContainer,
     PaymentFormFieldLabel,
     PaymentFormFieldContainer
@@ -18,11 +18,6 @@ import {
 const PaymentAddressForm = (props) => {
     const sourceRef = React.useRef(null)
     const [addressOptions, setAddressOptions] = useState([])
-
-    const onChangeCompanyName = (data) => {
-        props.companyData.name = data
-        props.onChangeCompanyData({...props.companyData})
-    }
 
     const onChangeCompanyDocumentNumber = (data) => {
         props.companyData.cnpj = data
@@ -64,14 +59,6 @@ const PaymentAddressForm = (props) => {
         props.onChangeCompanyData({...props.companyData})
     }
 
-    const onSubmit = () => {
-        props.onUpdateCompanyData(props.companyData).then(response => {
-            if (response && response.status === 200) {
-                props.setIsCompanyFormOpen()
-            }
-        })
-    }
-
     const stateOptions = addressOptions.filter((addressOption, index, array) => array.findIndex(temp => temp.state === addressOption.state) === index)
                          .map(addressOption => ({ value: addressOption.state_code, label: addressOption.state }))
     const cityOptions = (!['', null].includes(props.companyData.state)) ? addressOptions.filter(addressOption=> addressOption.state_code === props.companyData.state)
@@ -105,15 +92,9 @@ const PaymentAddressForm = (props) => {
                 <div style={{ width: '100%', marginBottom: '10px', borderRadius: '5px', backgroundColor:'#fff', padding: '10px' }}>
                     <PaymentFormFieldContainer>
                         <PaymentFormFieldLabel>
-                            {'Nome'}
-                        </PaymentFormFieldLabel>
-                        <PaymentFormInput type={'text'} value={props.companyData.name} onChange={e=> onChangeCompanyName(e.target.value)}/>
-                    </PaymentFormFieldContainer>
-                    <PaymentFormFieldContainer>
-                        <PaymentFormFieldLabel>
                             {'CNPJ'}
                         </PaymentFormFieldLabel>
-                        <PaymentFormInput type={'text'} value={props.companyData.cnpj} onChange={e=> onChangeCompanyDocumentNumber(e.target.value)}/>
+                        <BillingInput type={'text'} value={props.companyData.cnpj} onChange={e=> onChangeCompanyDocumentNumber(e.target.value)}/>
                     </PaymentFormFieldContainer>
                 </div>
                 <div style={{ width: '100%', borderRadius: '5px', backgroundColor:'#fff', padding: '10px' }}>
@@ -124,31 +105,31 @@ const PaymentAddressForm = (props) => {
                         <PaymentFormFieldLabel>
                             {strings['pt-br']['billingPaymentFormAddressStreetFieldLabel']}
                         </PaymentFormFieldLabel>
-                        <PaymentFormInput type={'text'} value={props.companyData.street} onChange={e=> onChangeStreet(e.target.value)}/>
+                        <BillingInput type={'text'} value={props.companyData.street} onChange={e=> onChangeStreet(e.target.value)}/>
                     </PaymentFormFieldContainer>
                     <PaymentFormFieldContainer>
                         <PaymentFormFieldLabel>
                             {strings['pt-br']['billingPaymentFormAddressNeighborhoodFieldLabel']}
                         </PaymentFormFieldLabel>
-                        <PaymentFormInput type={'text'} value={props.companyData.neighborhood} onChange={e=> onChangeNeighborhood(e.target.value)}/>
+                        <BillingInput type={'text'} value={props.companyData.neighborhood} onChange={e=> onChangeNeighborhood(e.target.value)}/>
                     </PaymentFormFieldContainer>
                     <PaymentFormFieldContainer>
                         <PaymentFormFieldLabel>
                             {strings['pt-br']['billingPaymentFormAddressNumberFieldLabel']}
                         </PaymentFormFieldLabel>
-                        <PaymentFormInput type={'number'} placeholder={'Número'} value={props.companyData.number} onChange={e=> onChangeNumber(e.target.value)}/>
+                        <BillingInput type={'number'} placeholder={'Número'} value={props.companyData.number} onChange={e=> onChangeNumber(e.target.value)}/>
                     </PaymentFormFieldContainer>
                     <PaymentFormFieldContainer>
                         <PaymentFormFieldLabel>
                             {strings['pt-br']['billingPaymentFormAddressAdditionalInformationFieldLabel']}
                         </PaymentFormFieldLabel>
-                        <PaymentFormInput type={'text'} placeholder={'Complemento'} value={props.companyData.additional_details} onChange={e=> onChangeAdditionalDetails(e.target.value)}/>
+                        <BillingInput type={'text'} placeholder={'Complemento'} value={props.companyData.additional_details} onChange={e=> onChangeAdditionalDetails(e.target.value)}/>
                     </PaymentFormFieldContainer>
                     <PaymentFormFieldContainer>
                         <PaymentFormFieldLabel>
                             {strings['pt-br']['billingPaymentFormAddressZipCodeFieldLabel']}
                         </PaymentFormFieldLabel>
-                        <PaymentFormInput type={'text'} placeholder={'CEP'} value={numberMasker(props.companyData.zip_code, '00000-000')} onChange={e=> onChangeZipCode(e.target.value)}/>
+                        <BillingInput type={'text'} placeholder={'CEP'} value={numberMasker(props.companyData.zip_code, '00000-000')} onChange={e=> onChangeZipCode(e.target.value)}/>
                     </PaymentFormFieldContainer>
                     <PaymentFormFieldContainer>
                         <PaymentFormFieldLabel>
@@ -177,12 +158,6 @@ const PaymentAddressForm = (props) => {
                         </PaymentFormFieldSelectContainer>
                     </PaymentFormFieldContainer>
                 </div>  
-                <button 
-                onClick={e=> {onSubmit()}}
-                style={{ border: 0, backgroundColor: '#0dbf7e', borderRadius: '20px', width: '100%', padding: '10px', marginTop: '10px' }}
-                >
-                    Salvar
-                </button>
             </div>
         )
     }

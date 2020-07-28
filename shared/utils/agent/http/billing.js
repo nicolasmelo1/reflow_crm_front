@@ -6,14 +6,17 @@ const BILLING = {
     getAddressOptions: async (source) => {
         return await requests.get(`billing/${companyId}/settings/address_options/`, {}, {}, source)
     },
+    updatePaymentData: async (body) => {
+        return await requests.put(`billing/${companyId}/settings/`, body)
+    },
+    removeCreditCard: async () => {
+        return await requests.delete(`billing/${companyId}/settings/credit_card/`)
+    },
     getPaymentData: async (source) => {
         return await requests.get(`billing/${companyId}/settings/`, {}, {}, source)
     },
-    getCompanyData: async (source) => {
-        return await requests.get(`authentication/settings/company/${companyId}/`, {}, {}, source)
-    },
-    updateCompanyData: async (body) => {
-        return await requests.put(`authentication/settings/company/${companyId}/`, body)
+    getTotals: async (body) => {
+        return await requests.post(`billing/${companyId}/settings/totals/`, body)
     }
 }
 
