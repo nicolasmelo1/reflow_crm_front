@@ -1,28 +1,30 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { View } from 'react-native'
-import axios from 'axios'
 import creditCardType from 'credit-card-type'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { VINDI_PUBLIC_API, VINDI_PUBLIC_API_KEY } from '../../config'
 import { numberMasker, numberUnmasker } from '../../utils/numberMasker'
 import { types, strings } from '../../utils/constants'
 import { 
-    PaymentFormContainer,
-    PaymentFormGoBackButton,
-    PaymentFormFormularyContainer,
+    BillingFormularyContainer,
+    BillingFormularyFieldLabel,
+    BillingFormularySectionContainer,
+    BillingFormularyFieldContainer,
+    BillingFormularySectionTitleLabel,
+    BillingInput,
     PaymentFormPaymentHorizontalButtonsContainer,
     PaymentFormPaymentMethodButton,
-    PaymentFormTitleLabel,
-    PaymentFormFieldContainer,
-    PaymentFormFieldLabel,
     PaymentFormPaymentInvoiceDateButton,
-    BillingInput,
     PaymentFormCreditCardCVVContainer,
     PaymentFormCreditCardValidDateContainer,
     PaymentFormInvoiceMailContainer,
     PaymentFormInvoiceMailDeleteButton,
     PaymentFormInvoiceMailDeleteButtonIcon,
-    PaymentFormInvoiceMailAddNewButton
+    PaymentFormInvoiceMailAddNewButton,
+    PaymentFormCreditCardInfoCardContainer,
+    PaymentFormCreditCardInfoContainer,
+    PaymentFormCreditCardInfoDeleteButtonIcon,
+    PaymentFormCreditCardInfoDeleteButton,
+    PaymentFormCreditCardInfoCreditCardFlagLogo
  } from '../../styles/Billing'
 
 /**
@@ -30,20 +32,10 @@ import {
  * @param {Type} props - {go in detail about every prop it recieves}
  */
 const PaymentForm = (props) => {
-    const [creditCardDataErrors, setCreditCardDataErrors] = useState([])
-    const [creditCardData, setCreditCardData] = useState({
-        card_number: '',
-        cvv: '',
-        card_expiration: '',
-        holder_name: '',
-        payment_method_code: 'credit_card',
-        payment_company_code: ''
-    })
-
     const removeCreditCardDataErrors = (string) => {
-        if (creditCardDataErrors.includes(string)) {
-            creditCardDataErrors.splice(creditCardDataErrors.indexOf(string), 1)
-            setCreditCardDataErrors([...creditCardDataErrors])
+        if (props.creditCardDataErrors.includes(string)) {
+            props.creditCardDataErrors.splice(props.creditCardDataErrors.indexOf(string), 1)
+            setCreditCardDataErrors([...props.creditCardDataErrors])
         }
     }
 
@@ -74,20 +66,20 @@ const PaymentForm = (props) => {
 
     const onChangeHolderName = (data) => {
         removeCreditCardDataErrors('holder_name')
-        creditCardData.holder_name = data
-        setCreditCardData({...creditCardData})
+        props.creditCardData.holder_name = data
+        props.setCreditCardData({...props.creditCardData})
     }
 
     const onChangeCreditCardValidDate = (data) => {
         removeCreditCardDataErrors('card_expiration')
-        creditCardData.card_expiration = data
-        setCreditCardData({...creditCardData})
+        props.creditCardData.card_expiration = data
+        props.setCreditCardData({...props.creditCardData})
     }
 
     const onChangeCreditCardCVV = (data) => {
         removeCreditCardDataErrors('cvv')
-        creditCardData.cvv = numberUnmasker(data, "000")
-        setCreditCardData({...creditCardData})
+        props.creditCardData.cvv = numberUnmasker(data, "000")
+        props.setCreditCardData({...props.creditCardData})
     }
 
     const getCreditCardNumberFormatting = (string) => {
@@ -106,44 +98,8 @@ const PaymentForm = (props) => {
 
     const onChangeCreditCardNumber = (data) => {
         removeCreditCardDataErrors('card_number')
-        creditCardData.card_number = numberUnmasker(data, getCreditCardNumberFormatting(data))
-        setCreditCardData({...creditCardData})
-    }
-
-    const isToShowCreditCardForm = () => {
-        if (props.paymentData.credit_card_data){
-            return [...Object.entries(props.paymentData.credit_card_data)].some(value => ['', null].includes(value[1]))
-        } else {
-            return true
-        }
-    }
-
-    const onSubmitPayment = (gatewayToken=null) => {
-        if (gatewayToken) {
-            props.paymentData.gateway_token = gatewayToken
-        }
-        props.onUpdatePaymentData(props.paymentData)
-    }
-
-    const onSubmit = () => {
-        if (isToShowCreditCardForm()) {
-            axios.post(VINDI_PUBLIC_API, {...creditCardData, payment_company_code: creditCardType(creditCardData.card_number)[0].type}, {
-                auth: {
-                    username: VINDI_PUBLIC_API_KEY,
-                    password: ''
-                }
-            }).then(response => {
-                onSubmitPayment(response.data.payment_profile.gateway_token)
-            }).catch(error => {
-                if (!creditCardDataErrors.includes(error.response.data.errors[0].parameter)) {
-                    creditCardDataErrors.push(error.response.data.errors[0].parameter)
-                    console.log(error.response.data.errors[0].parameter)
-                    setCreditCardDataErrors([...creditCardDataErrors])
-                }
-            })
-        } else {
-            onSubmitPayment()
-        }
+        props.creditCardData.card_number = numberUnmasker(data, getCreditCardNumberFormatting(data))
+        props.setCreditCardData({...props.creditCardData})
     }
 
     const renderMobile = () => {
@@ -154,7 +110,7 @@ const PaymentForm = (props) => {
 
     const renderWeb = () => {
         return (
-            <PaymentFormContainer>
+            <BillingFormularyContainer>
                 <PaymentFormPaymentHorizontalButtonsContainer>
                     {props.types.payment_method_type.map(paymentMethodType => (
                         <PaymentFormPaymentMethodButton 
@@ -166,10 +122,10 @@ const PaymentForm = (props) => {
                         </PaymentFormPaymentMethodButton> 
                     ))}
                 </PaymentFormPaymentHorizontalButtonsContainer>
-                <div style={{ width: '100%', marginBottom: '10px', backgroundColor: '#fff', borderRadius: '5px', padding: '10px' }}>
-                    <PaymentFormTitleLabel>
+                <BillingFormularySectionContainer>
+                    <BillingFormularySectionTitleLabel>
                         {strings['pt-br']['billingPaymentFormBillingDateTitleLabel']}
-                    </PaymentFormTitleLabel>
+                    </BillingFormularySectionTitleLabel>
                     <PaymentFormPaymentHorizontalButtonsContainer>
                         {props.types.invoice_date_type.map(invoiceDateType => (
                             <PaymentFormPaymentInvoiceDateButton 
@@ -181,11 +137,11 @@ const PaymentForm = (props) => {
                             </PaymentFormPaymentInvoiceDateButton>
                         ))}
                     </PaymentFormPaymentHorizontalButtonsContainer>
-                </div>
-                <div style={{ width: '100%', marginBottom: '10px', backgroundColor: '#fff', borderRadius: '5px', padding: '10px' }}>
-                    <PaymentFormTitleLabel>
+                </BillingFormularySectionContainer>
+                <BillingFormularySectionContainer>
+                    <BillingFormularySectionTitleLabel>
                         {strings['pt-br']['billingPaymentFormInvoiceEmailsTitleLabel']}
-                    </PaymentFormTitleLabel>
+                    </BillingFormularySectionTitleLabel>
                     <PaymentFormInvoiceMailAddNewButton onClick={e=>{onAddNewCompanyInvoiceEmail()}}>
                         {strings['pt-br']['billingPaymentFormAddAnotherEmailButtonLabel']}
                     </PaymentFormInvoiceMailAddNewButton>
@@ -204,100 +160,94 @@ const PaymentForm = (props) => {
                             ) : ''}
                         </PaymentFormInvoiceMailContainer>
                     ))}     
-                </div>
-                {isToShowCreditCardForm() ? (
-                    <div style={{ width: '100%',  backgroundColor: '#fff', borderRadius: '5px', padding: '10px' }}>
-                        <PaymentFormTitleLabel>
+                </BillingFormularySectionContainer>
+                {props.isToShowCreditCardForm() ? (
+                    <BillingFormularySectionContainer>
+                        <BillingFormularySectionTitleLabel>
                             {strings['pt-br']['billingPaymentFormPaymentDataTitleLabel']}
-                        </PaymentFormTitleLabel>
-                        <PaymentFormFieldContainer>
-                            <PaymentFormFieldLabel>
+                        </BillingFormularySectionTitleLabel>
+                        <BillingFormularyFieldContainer>
+                            <BillingFormularyFieldLabel>
                                 {strings['pt-br']['billingPaymentFormCreditCardNumberFieldLabel']}
-                            </PaymentFormFieldLabel>
+                            </BillingFormularyFieldLabel>
                             <BillingInput 
                             type={'text'}
-                            errors={creditCardDataErrors.includes('card_number')}
+                            errors={props.creditCardDataErrors.includes('card_number')}
                             onChange={e=> onChangeCreditCardNumber(e.target.value)} 
                             value={numberMasker(
-                                creditCardData.card_number, 
-                                getCreditCardNumberFormatting(creditCardData.card_number)
+                                props.creditCardData.card_number, 
+                                getCreditCardNumberFormatting(props.creditCardData.card_number)
                             )}
                             />
-                            {creditCardDataErrors.includes('card_number') ? (
+                            {props.creditCardDataErrors.includes('card_number') ? (
                                 <small style={{color: 'red'}}>
                                     Valor inválido
                                 </small>
                             ) : ''}
-                        </PaymentFormFieldContainer>
+                        </BillingFormularyFieldContainer>
                         <div style={{display: 'flex', flexDirection:'row', marginBottom: '10px'}}>
                             <PaymentFormCreditCardValidDateContainer>
-                                <PaymentFormFieldLabel>
+                                <BillingFormularyFieldLabel>
                                     {strings['pt-br']['billingPaymentFormCreditCardNumberFieldLabel']}
-                                </PaymentFormFieldLabel>
+                                </BillingFormularyFieldLabel>
                                 <BillingInput 
                                 type={'text'} 
                                 placeholder="MM/AA"
-                                errors={creditCardDataErrors.includes('card_expiration')}
+                                errors={props.creditCardDataErrors.includes('card_expiration')}
                                 onChange={e=> onChangeCreditCardValidDate(e.target.value)} 
-                                value={numberMasker(creditCardData.card_expiration, "00/00")}
+                                value={numberMasker(props.creditCardData.card_expiration, "00/00")}
                                 />
-                                {creditCardDataErrors.includes('card_expiration') ? (
+                                {props.creditCardDataErrors.includes('card_expiration') ? (
                                     <small style={{color: 'red'}}>
                                         Valor inválido
                                     </small>
                                 ) : ''}
                             </PaymentFormCreditCardValidDateContainer>
                             <PaymentFormCreditCardCVVContainer>
-                                <PaymentFormFieldLabel>
+                                <BillingFormularyFieldLabel>
                                     {strings['pt-br']['billingPaymentFormCreditCardCVVFieldLabel']}
-                                </PaymentFormFieldLabel>
+                                </BillingFormularyFieldLabel>
                                 <BillingInput 
                                 type={'text'} 
-                                errors={creditCardDataErrors.includes('cvv')}
+                                errors={props.creditCardDataErrors.includes('cvv')}
                                 onChange={e=> onChangeCreditCardCVV(e.target.value)} 
-                                value={numberMasker(creditCardData.cvv, [...Array(creditCardType(creditCardData.card_number)[0].code.size)].map(_ => "0").join(''))}
+                                value={numberMasker(props.creditCardData.cvv, [...Array(creditCardType(props.creditCardData.card_number)[0].code.size)].map(_ => "0").join(''))}
                                 />
-                                {creditCardDataErrors.includes('cvv') ? (
+                                {props.creditCardDataErrors.includes('cvv') ? (
                                     <small style={{color: 'red'}}>
                                         Valor inválido
                                     </small>
                                 ) : ''}
                             </PaymentFormCreditCardCVVContainer>
                         </div>
-                        <PaymentFormFieldContainer>
-                            <PaymentFormFieldLabel>
+                        <BillingFormularyFieldContainer>
+                            <BillingFormularyFieldLabel>
                                 {strings['pt-br']['billingPaymentFormCreditCardHolderNameFieldLabel']}
-                            </PaymentFormFieldLabel>
+                            </BillingFormularyFieldLabel>
                             <BillingInput 
                             type={'text'} 
-                            errors={creditCardDataErrors.includes('holder_name')}
+                            errors={props.creditCardDataErrors.includes('holder_name')}
                             onChange={e=>onChangeHolderName(e.target.value)} 
-                            value={creditCardData.holder_name}/>
-                            {creditCardDataErrors.includes('holder_name') ? (
+                            value={props.creditCardData.holder_name}/>
+                            {props.creditCardDataErrors.includes('holder_name') ? (
                                 <small style={{color: 'red'}}>
                                     Valor inválido
                                 </small>
                             ) : ''}
-                        </PaymentFormFieldContainer>
-                    </div>
+                        </BillingFormularyFieldContainer>
+                    </BillingFormularySectionContainer>
                 ) : (
-                    <div style={{ width: '100%',  backgroundColor: '#fff', borderRadius: '5px', padding: '10px', display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                        <div style={{ width: '100%',  backgroundColor: '#fff', borderRadius: '5px', padding: '10px', border: '1px solid #17242D', display: 'flex', flexDirection: 'row', justifyContent:'space-between' }}>
+                    <PaymentFormCreditCardInfoCardContainer>
+                        <PaymentFormCreditCardInfoContainer>
                             {props.paymentData.credit_card_data.payment_company_name + '● ● ● ●  ' + props.paymentData.credit_card_data.card_number_last_four} 
-                            <img style={{ maxHeight: '25px' }} src={`/credit_card_logos/${props.paymentData.credit_card_data.credit_card_code}.png`}></img>
-                        </div>
-                        <button style={{ border: 0, backgroundColor: 'transparent', padding: '10px', marginLeft: '10px' }} onClick={e=>{props.onRemoveCreditCardData()}}>
-                            <FontAwesomeIcon style={{ color: 'red' }} icon={'trash'}/>
-                        </button>
-                    </div>
+                            <PaymentFormCreditCardInfoCreditCardFlagLogo src={`/credit_card_logos/${props.paymentData.credit_card_data.credit_card_code}.png`}/>
+                        </PaymentFormCreditCardInfoContainer>
+                        <PaymentFormCreditCardInfoDeleteButton onClick={e=>{props.onRemoveCreditCardData()}}>
+                            <PaymentFormCreditCardInfoDeleteButtonIcon icon={'trash'}/>
+                        </PaymentFormCreditCardInfoDeleteButton>
+                    </PaymentFormCreditCardInfoCardContainer>
                 )}
-                <button 
-                onClick={e => {onSubmit()}}
-                style={{ border: 0, backgroundColor: '#0dbf7e', borderRadius: '20px', width: '100%', padding: '10px', marginTop: '10px' }}
-                >
-                    Salvar
-                </button>
-            </PaymentFormContainer>
+            </BillingFormularyContainer>
         )
     }
 

@@ -2,10 +2,20 @@ import React from 'react'
 import { View } from 'react-native'
 import { connect } from 'react-redux'
 import axios from 'axios'
+import creditCardType from 'credit-card-type'
+import { VINDI_PUBLIC_API, VINDI_PUBLIC_API_KEY } from '../../config'
+import { strings } from '../../utils/constants'
 import actions from '../../redux/actions'
 import PaymentForm from './PaymentForm'
 import ChargeForm from './ChargeForm'
 import CompanyForm from './CompanyForm'
+import {
+    BillingContainer,
+    BillingExpandableCardButtons,
+    BillingExpandableCardText,
+    BillingExpandableCardArrowDown,
+    BillingSaveButton
+} from '../../styles/Billing'
 
 /**
  * {Description of your component, what does it do}
@@ -20,7 +30,19 @@ class Billing extends React.Component {
             addressOptions: [],
             isCompanyFormOpen: false,
             isChargeFormOpen: false, 
-            isPaymentFormOpen: false
+            isPaymentFormOpen: false,
+            companyDataFormErrors: [],
+            chargeDataFormErrors: [],
+            paymentDataFormErrors: [],
+            creditCardDataErrors: [],
+            creditCardData: {
+                card_number: '',
+                cvv: '',
+                card_expiration: '',
+                holder_name: '',
+                payment_method_code: 'credit_card',
+                payment_company_code: ''
+            }
         }
     }
 
@@ -30,8 +52,83 @@ class Billing extends React.Component {
 
     setIsCompanyFormOpen = () => this.setState(state => ({...state, isCompanyFormOpen: !state.isCompanyFormOpen }))
 
-    setAddressOptions = (data) => this.setState(state => ({...state, addressOptions: data}))
+    setAddressOptions = (data) => this.setState(state => ({...state, addressOptions: data }))
+    
+    setCompanyDataFormErrors = (data) => this.setState(state => ({...state, companyDataFormErrors: data }))
 
+    setChargeDataFormErrors = (data) => this.setState(state => ({...state, chargeDataFormErrors: data }))
+
+    setPaymentDataFormErrors = (data) => this.setState(state => ({...state, paymentDataFormErrors: data }))
+
+    setCreditCardDataErrors = (data) => this.setState(state => ({...state, creditCardDataErrors: data}))
+    
+    setCreditCardData = (data) => this.setState(state => ({...state, creditCardData: data}))
+
+    isToShowCreditCardForm = () => {
+        if (this.props.billing.paymentData.credit_card_data){
+            return [...Object.entries(this.props.billing.paymentData.credit_card_data)].some(value => ['', null].includes(value[1]))
+        } else {
+            return true
+        }
+    }
+
+    setError = (field, type) => ({[field]: type})
+    
+    onSetError = (error) => {
+        if (error.reason) {
+            if (error.reason.includes('invalid_registry_code')) {
+                this.setCompanyDataFormErrors({ ...this.state.companyDataFormErrors, ...this.setError('cnpj', 'invalid')})
+            }
+        }
+        if ([...Object.entries(error)].some(value => [...Object.entries(this.props.billing.paymentData)].map(value=> value[0]).includes(value[0]))) {
+            let paymentDataFormErrors = {}
+            Object.entries(error).forEach(([key, value]) => {
+                paymentDataFormErrors = {...paymentDataFormErrors, ...this.setError(key, value[0])}
+            })
+            this.setPaymentDataFormErrors({ ...this.state.paymentDataFormErrors, ...paymentDataFormErrors})
+
+        } else if ([...Object.entries(error)].some(value => [...Object.entries(this.props.billing.companyData).map(value=> value[0])].includes(value[0]))) {
+            let companyDataFormErrors = {}
+            Object.entries(error).forEach(([key, value]) => {
+                companyDataFormErrors = {...companyDataFormErrors, ...this.setError(key, value[0])}
+            })
+            this.setCompanyDataFormErrors({ ...this.state.companyDataFormErrors, ...companyDataFormErrors})
+        }
+    }
+
+    onSubmitPayment = (gatewayToken = null) => {
+        this.props.onUpdatePaymentData(gatewayToken).then(response=>{
+            if (response && response.status !== 200 && response.data.error) {
+                this.onSetError(response.data.error)
+            }
+        })
+    }
+
+    onSubmit = () => {
+        if (this.isToShowCreditCardForm()) {
+            axios.post(VINDI_PUBLIC_API, {
+                ...this.state.creditCardData, 
+                payment_company_code: creditCardType(this.state.creditCardData.card_number)[0].type
+            }, {
+                auth: {
+                    username: VINDI_PUBLIC_API_KEY,
+                    password: ''
+                }
+            }).then(response => {
+                if (response && response.status === 200) {
+                    this.onSubmitPayment(response.data.payment_profile.gateway_token)
+                }
+            }).catch(error => {
+                if (error && error.response && !this.state.creditCardDataErrors.includes(error.response.data.errors[0].parameter)) {
+                    this.state.creditCardDataErrors.push(error.response.data.errors[0].parameter)
+                    this.setCreditCardDataErrors([...this.state.creditCardDataErrors])
+                }
+            })
+        } else {
+            this.onSubmitPayment()
+        }
+    }
+    
     componentDidMount = () => {
         this.source = this.cancelToken.source()
         this.props.onGetPaymentData(this.source)
@@ -51,78 +148,69 @@ class Billing extends React.Component {
 
     renderMobile = () => {
         return (
-            <View></View>
+            <View/>
         )
     }
 
     renderWeb = () => {
         return (
-            <div style={{ overflowY: 'auto', height: 'calc(var(--app-height) - 100px)' }}>
-                <button 
-                style={{ borderTop: '1px solid #17242D', borderRight: '1px solid #17242D', borderLeft: '1px solid #17242D', borderBottom: '4px solid #17242D', backgroundColor: '#fff', width: '100%', borderRadius: '5px'}} 
-                onClick={e=> {this.setIsCompanyFormOpen()}}
-                >
-                    <h2 style={{ margin: '10px 0 10px 0'}}>
-                        Configurações da Empresa
-                    </h2>
-                </button>
+            <BillingContainer>
+                <BillingExpandableCardButtons errors={Array.from(Object.keys(this.state.companyDataFormErrors)).length > 0} onClick={e=> {this.setIsCompanyFormOpen()}}>
+                    <BillingExpandableCardText>
+                        {strings['pt-br']['billingExpandableCardCompanyConfigurationLabel']}
+                    </BillingExpandableCardText>
+                </BillingExpandableCardButtons>
                 {this.state.isCompanyFormOpen ? (
-                    <CompanyForm
+                    <CompanyForm 
+                    companyDataFormErrors={this.state.companyDataFormErrors}
+                    setCompanyDataFormErrors={this.setCompanyDataFormErrors}
                     cancelToken={this.cancelToken}
                     companyData={this.props.billing.companyData}
-                    onGetAddressOptions={this.props.onGetAddressOptions}
+                    addressOptions={this.state.addressOptions}
                     setIsCompanyFormOpen={this.setIsCompanyFormOpen}
                     onChangeCompanyData={this.props.onChangeCompanyData}
                     />
                 ): ''}
-                <div style={{ borderTop: '20px solid #17242D', borderBottom: '20px solid transparent', borderRight: '20px solid transparent', borderLeft: '20px solid transparent', width: '4px', height: '4px', margin: '0 auto'}}/>
-                <button 
-                style={{ borderTop: '1px solid #17242D', borderRight: '1px solid #17242D', borderLeft: '1px solid #17242D', borderBottom: '4px solid #17242D', backgroundColor: '#fff', width: '100%', borderRadius: '5px'}}
-                onClick={e => this.setIsChargeFormOpen()}
-                >
-                    <h2 style={{ margin: '10px 0 10px 0'}}>Detalhes da Compra</h2>
-                </button>
+                <BillingExpandableCardArrowDown/>
+                <BillingExpandableCardButtons onClick={e => this.setIsChargeFormOpen()}>
+                    <BillingExpandableCardText>
+                        {strings['pt-br']['billingExpandableCardChargeConfigurationLabel']}
+                    </BillingExpandableCardText>
+                </BillingExpandableCardButtons>
                 {this.state.isChargeFormOpen ? (
                     <ChargeForm
+                    chargeDataFormErrors={this.state.chargeDataFormErrors}
+                    setChargeDataFormErrors={this.setChargeDataFormErrors}
                     onGetTotals={this.props.onGetTotals}
                     chargesData={this.props.billing.chargesData}
                     types={this.props.login.types.billing}
                     />
                 ) : ''}
-                <div style={{ borderTop: '20px solid #17242D', borderBottom: '20px solid transparent', borderRight: '20px solid transparent', borderLeft: '20px solid transparent', width: '4px', height: '4px', margin: '0 auto'}}/>
-                <button 
-                style={{ borderTop: '1px solid #17242D', borderRight: '1px solid #17242D', borderLeft: '1px solid #17242D', borderBottom: '4px solid #17242D', backgroundColor: '#fff', width: '100%', borderRadius: '5px'}}
-                onClick={e=> this.setIsPaymentFormOpen()}
-                >
-                    <h2 style={{ margin: '10px 0 10px 0'}}>Configurações de Pagamento</h2>
-                </button>
+                <BillingExpandableCardArrowDown/>
+                <BillingExpandableCardButtons onClick={e=> this.setIsPaymentFormOpen()}>
+                    <BillingExpandableCardText>
+                        {strings['pt-br']['billingExpandableCardPaymentConfigurationLabel']}
+                    </BillingExpandableCardText>
+                </BillingExpandableCardButtons>
                 {this.state.isPaymentFormOpen ? (
                     <PaymentForm
-                    onUpdatePaymentData={this.props.onUpdatePaymentData}
+                    setPaymentDataFormErrors={this.setPaymentDataFormErrors}
+                    paymentDataFormErrors={this.state.paymentDataFormErrors}
+                    setCreditCardData={this.setCreditCardData}
+                    creditCardData={this.state.creditCardData}
+                    creditCardDataErrors={this.state.creditCardDataErrors}
+                    isToShowCreditCardForm={this.isToShowCreditCardForm}
                     onRemoveCreditCardData={this.props.onRemoveCreditCardData}
                     onChangePaymentData={this.props.onChangePaymentData}
                     paymentData={this.props.billing.paymentData}
                     types={this.props.login.types.billing}
-                    cancelToken={this.cancelToken}
-                    onGetAddressOptions={this.props.onGetAddressOptions}
-                    setIsEditingPayment={this.setIsEditingPayment}
                     />
                 ): ''}
-                {/*this.state.isEditingPaymentData ? (
-                    <PaymentForm
-                    onChangePaymentData={this.props.onChangePaymentData}
-                    onChangeCompanyData={this.props.onChangeCompanyData}
-                    companyData={this.props.billing.companyData}
-                    paymentData={this.props.billing.paymentData}
-                    types={this.props.login.types.billing}
-                    cancelToken={this.cancelToken}
-                    onGetAddressOptions={this.props.onGetAddressOptions}
-                    setIsEditingPayment={this.setIsEditingPayment}
-                    />
-                ): (
-                    <button onClick={e=> this.setIsEditingPayment(true)}>Configurar pagamento</button>
-                )*/}
-            </div>
+                
+                <BillingSaveButton onClick={e => {this.onSubmit()}}>
+                    {strings['pt-br']['billingSaveButtonLabel']}
+                </BillingSaveButton>
+            </BillingContainer>
         )
     }
 

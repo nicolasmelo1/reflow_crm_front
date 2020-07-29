@@ -4,11 +4,13 @@ import { Select } from '../Utils'
 import { numberMasker, numberUnmasker } from '../../utils/numberMasker'
 import { strings } from '../../utils/constants'
 import { 
-    PaymentFormTitleLabel,
+    BillingFormularyContainer,
+    BillingFormularySectionContainer,
+    BillingFormularySectionTitleLabel,
     BillingInput,
-    PaymentFormFieldSelectContainer,
-    PaymentFormFieldLabel,
-    PaymentFormFieldContainer
+    BillingFormularyFieldSelectContainer,
+    BillingFormularyFieldLabel,
+    BillingFormularyFieldContainer
  } from '../../styles/Billing'
 
 /**
@@ -16,26 +18,31 @@ import {
  * @param {Type} props - {go in detail about every prop it recieves}
  */
 const PaymentAddressForm = (props) => {
-    const sourceRef = React.useRef(null)
-    const [addressOptions, setAddressOptions] = useState([])
-
     const onChangeCompanyDocumentNumber = (data) => {
+        delete props.companyDataFormErrors.cnpj
         props.companyData.cnpj = data
+        props.setCompanyDataFormErrors({...props.companyDataFormErrors })
         props.onChangeCompanyData({...props.companyData})
     }
 
     const onChangeStreet = (data) => {
+        delete props.companyDataFormErrors.street
         props.companyData.street = data
+        props.setCompanyDataFormErrors({...props.companyDataFormErrors })
         props.onChangeCompanyData({...props.companyData})
     }
 
     const onChangeNeighborhood = (data) => {
+        delete props.companyDataFormErrors.neighborhood
         props.companyData.neighborhood = data
+        props.setCompanyDataFormErrors({...props.companyDataFormErrors })
         props.onChangeCompanyData({...props.companyData})
     }
 
     const onChangeNumber = (data) => {
+        delete props.companyDataFormErrors.number
         props.companyData.number = data
+        props.setCompanyDataFormErrors({...props.companyDataFormErrors })
         props.onChangeCompanyData({...props.companyData})
     }
 
@@ -45,120 +52,147 @@ const PaymentAddressForm = (props) => {
     }
 
     const onChangeZipCode = (data) => {
+        delete props.companyDataFormErrors.zip_code
         props.companyData.zip_code = numberUnmasker(data, '00000-000')
+        props.setCompanyDataFormErrors({...props.companyDataFormErrors })
         props.onChangeCompanyData({...props.companyData})
     }
 
     const onChangeState = (data) => {
-        props.companyData.state = data[0]
+        delete props.companyDataFormErrors.state
+        data = (data[0]) ? data[0] : null
+        props.companyData.state = data
+        props.setCompanyDataFormErrors({...props.companyDataFormErrors })
         props.onChangeCompanyData({...props.companyData})
     }
 
     const onChangeCity = (data) => {
-        props.companyData.city = data[0]
+        delete props.companyDataFormErrors.city
+        data = (data[0]) ? data[0] : null
+        props.companyData.city = data
+        props.setCompanyDataFormErrors({...props.companyDataFormErrors })
         props.onChangeCompanyData({...props.companyData})
     }
 
-    const stateOptions = addressOptions.filter((addressOption, index, array) => array.findIndex(temp => temp.state === addressOption.state) === index)
+    const stateOptions = props.addressOptions.filter((addressOption, index, array) => array.findIndex(temp => temp.state === addressOption.state) === index)
                          .map(addressOption => ({ value: addressOption.state_code, label: addressOption.state }))
-    const cityOptions = (!['', null].includes(props.companyData.state)) ? addressOptions.filter(addressOption=> addressOption.state_code === props.companyData.state)
+    const cityOptions = (!['', null].includes(props.companyData.state)) ? props.addressOptions.filter(addressOption=> addressOption.state_code === props.companyData.state)
                         .map(addressOption => ({ value: addressOption.city, label: addressOption.city })) : []
 
-    useEffect(() => {
-        sourceRef.current = props.cancelToken.source()
-
-        props.onGetAddressOptions(sourceRef.current).then(response => {
-            if (response && response.status === 200) {
-                setAddressOptions(response.data.data)
-            }
-        })
-
-        return () => {
-            if (sourceRef.current) {
-                sourceRef.current.cancel()
-            }
-        }
-    }, [])
 
     const renderMobile = () => {
         return (
-            <View></View>
+            <View/>
         )
     }
     
     const renderWeb = () => {
         return (
-            <div style={{ backgroundColor:'#17242D', padding: '10px 10px 10px 10px', margin: '0 3px'}}>
-                <div style={{ width: '100%', marginBottom: '10px', borderRadius: '5px', backgroundColor:'#fff', padding: '10px' }}>
-                    <PaymentFormFieldContainer>
-                        <PaymentFormFieldLabel>
-                            {'CNPJ'}
-                        </PaymentFormFieldLabel>
-                        <BillingInput type={'text'} value={props.companyData.cnpj} onChange={e=> onChangeCompanyDocumentNumber(e.target.value)}/>
-                    </PaymentFormFieldContainer>
-                </div>
-                <div style={{ width: '100%', borderRadius: '5px', backgroundColor:'#fff', padding: '10px' }}>
-                    <PaymentFormTitleLabel>
-                        {strings['pt-br']['billingPaymentFormInvoiceAddressTitleLabel']}
-                    </PaymentFormTitleLabel>
-                    <PaymentFormFieldContainer>
-                        <PaymentFormFieldLabel>
-                            {strings['pt-br']['billingPaymentFormAddressStreetFieldLabel']}
-                        </PaymentFormFieldLabel>
-                        <BillingInput type={'text'} value={props.companyData.street} onChange={e=> onChangeStreet(e.target.value)}/>
-                    </PaymentFormFieldContainer>
-                    <PaymentFormFieldContainer>
-                        <PaymentFormFieldLabel>
-                            {strings['pt-br']['billingPaymentFormAddressNeighborhoodFieldLabel']}
-                        </PaymentFormFieldLabel>
-                        <BillingInput type={'text'} value={props.companyData.neighborhood} onChange={e=> onChangeNeighborhood(e.target.value)}/>
-                    </PaymentFormFieldContainer>
-                    <PaymentFormFieldContainer>
-                        <PaymentFormFieldLabel>
-                            {strings['pt-br']['billingPaymentFormAddressNumberFieldLabel']}
-                        </PaymentFormFieldLabel>
-                        <BillingInput type={'number'} placeholder={'Número'} value={props.companyData.number} onChange={e=> onChangeNumber(e.target.value)}/>
-                    </PaymentFormFieldContainer>
-                    <PaymentFormFieldContainer>
-                        <PaymentFormFieldLabel>
-                            {strings['pt-br']['billingPaymentFormAddressAdditionalInformationFieldLabel']}
-                        </PaymentFormFieldLabel>
-                        <BillingInput type={'text'} placeholder={'Complemento'} value={props.companyData.additional_details} onChange={e=> onChangeAdditionalDetails(e.target.value)}/>
-                    </PaymentFormFieldContainer>
-                    <PaymentFormFieldContainer>
-                        <PaymentFormFieldLabel>
-                            {strings['pt-br']['billingPaymentFormAddressZipCodeFieldLabel']}
-                        </PaymentFormFieldLabel>
-                        <BillingInput type={'text'} placeholder={'CEP'} value={numberMasker(props.companyData.zip_code, '00000-000')} onChange={e=> onChangeZipCode(e.target.value)}/>
-                    </PaymentFormFieldContainer>
-                    <PaymentFormFieldContainer>
-                        <PaymentFormFieldLabel>
-                            {strings['pt-br']['billingPaymentFormAddressStateFieldLabel']}
-                        </PaymentFormFieldLabel>
-                        <PaymentFormFieldSelectContainer>
+            <BillingFormularyContainer>
+                <BillingFormularySectionContainer>
+                    <BillingFormularyFieldContainer>
+                        <BillingFormularyFieldLabel>
+                            {strings['pt-br']['billingCompanyFormularyCNPJAndCPFFieldLabel']}
+                        </BillingFormularyFieldLabel>
+                        <BillingInput 
+                        errors={Array.from(Object.keys(props.companyDataFormErrors)).includes('cnpj')}
+                        type={'text'} 
+                        value={props.companyData.cnpj} 
+                        onChange={e=> onChangeCompanyDocumentNumber(e.target.value)}
+                        />
+                    </BillingFormularyFieldContainer>
+                </BillingFormularySectionContainer>
+                <BillingFormularySectionContainer>
+                    <BillingFormularySectionTitleLabel>
+                        {strings['pt-br']['billingCompanyFormularyAddressSectionTitleLabel']}
+                    </BillingFormularySectionTitleLabel>
+                    <BillingFormularyFieldContainer>
+                        <BillingFormularyFieldLabel>
+                            {strings['pt-br']['billingCompanyFormularyStreetFieldLabel']}
+                        </BillingFormularyFieldLabel>
+                        <BillingInput                         
+                        errors={Array.from(Object.keys(props.companyDataFormErrors)).includes('street')}
+                        type={'text'} 
+                        value={props.companyData.street} 
+                        onChange={e=> onChangeStreet(e.target.value)}
+                        />
+                    </BillingFormularyFieldContainer>
+                    <BillingFormularyFieldContainer>
+                        <BillingFormularyFieldLabel>
+                            {strings['pt-br']['billingCompanyFormularyNeighborhoodFieldLabel']}
+                        </BillingFormularyFieldLabel>
+                        <BillingInput                         
+                        errors={Array.from(Object.keys(props.companyDataFormErrors)).includes('neighborhood')}
+                        type={'text'} 
+                        value={props.companyData.neighborhood} 
+                        onChange={e=> onChangeNeighborhood(e.target.value)}
+                        />
+                    </BillingFormularyFieldContainer>
+                    <BillingFormularyFieldContainer>
+                        <BillingFormularyFieldLabel>
+                            {strings['pt-br']['billingCompanyFormularyNumberFieldLabel']}
+                        </BillingFormularyFieldLabel>
+                        <BillingInput 
+                        errors={Array.from(Object.keys(props.companyDataFormErrors)).includes('number')}
+                        type={'number'} 
+                        value={props.companyData.number} 
+                        onChange={e=> onChangeNumber(e.target.value)}
+                        />
+                    </BillingFormularyFieldContainer>
+                    <BillingFormularyFieldContainer>
+                        <BillingFormularyFieldLabel>
+                            {strings['pt-br']['billingCompanyFormularyAdditionalInformationFieldLabel']}
+                        </BillingFormularyFieldLabel>
+                        <BillingInput
+                        type={'text'} 
+                        value={props.companyData.additional_details} 
+                        onChange={e=> onChangeAdditionalDetails(e.target.value)}
+                        />
+                    </BillingFormularyFieldContainer>
+                    <BillingFormularyFieldContainer>
+                        <BillingFormularyFieldLabel>
+                            {strings['pt-br']['billingCompanyFormularyZipCodeFieldLabel']}
+                        </BillingFormularyFieldLabel>
+                        <BillingInput 
+                        errors={Array.from(Object.keys(props.companyDataFormErrors)).includes('zip_code')}
+                        type={'text'} 
+                        placeholder={'00000-000'} 
+                        value={numberMasker(props.companyData.zip_code, '00000-000')} 
+                        onChange={e=> onChangeZipCode(e.target.value)}
+                        />
+                    </BillingFormularyFieldContainer>
+                    <BillingFormularyFieldContainer>
+                        <BillingFormularyFieldLabel>
+                            {strings['pt-br']['billingCompanyFormularyStateFieldLabel']}
+                        </BillingFormularyFieldLabel>
+                        <BillingFormularyFieldSelectContainer
+                        errors={Array.from(Object.keys(props.companyDataFormErrors)).includes('state')}
+                        >
                             <Select
                             fixedHeight={true}
                             options={stateOptions}
                             initialValues={stateOptions.filter(stateOption => stateOption.value === props.companyData.state)}
                             onChange={onChangeState}
                             />
-                        </PaymentFormFieldSelectContainer>
-                    </PaymentFormFieldContainer>
-                    <PaymentFormFieldContainer>
-                        <PaymentFormFieldLabel>
-                            {strings['pt-br']['billingPaymentFormAddressCityFieldLabel']}
-                        </PaymentFormFieldLabel>
-                        <PaymentFormFieldSelectContainer>
+                        </BillingFormularyFieldSelectContainer>
+                    </BillingFormularyFieldContainer>
+                    <BillingFormularyFieldContainer>
+                        <BillingFormularyFieldLabel>
+                            {strings['pt-br']['billingCompanyFormularyCityFieldLabel']}
+                        </BillingFormularyFieldLabel>
+                        <BillingFormularyFieldSelectContainer
+                        errors={Array.from(Object.keys(props.companyDataFormErrors)).includes('city')}
+                        >
                             <Select
                             fixedHeight={true}
                             options={cityOptions}
                             initialValues={cityOptions.filter(cityOption => cityOption.value === props.companyData.city)}
                             onChange={onChangeCity}
                             />
-                        </PaymentFormFieldSelectContainer>
-                    </PaymentFormFieldContainer>
-                </div>  
-            </div>
+                        </BillingFormularyFieldSelectContainer>
+                    </BillingFormularyFieldContainer>
+                </BillingFormularySectionContainer>  
+            </BillingFormularyContainer>
         )
     }
 

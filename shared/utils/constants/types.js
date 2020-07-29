@@ -92,6 +92,10 @@ const types = (lang, type, key) => {
         payment_method_type: {
             credit_card: strings[lang]['paymentMethodTypeCreditCard'],
             invoice: strings[lang]['paymentMethodTypeInvoice']
+        },
+        individual_charge_value_type: {
+            per_gb: strings[lang]['individualChargeValueTypePerGB'],
+            per_user: strings[lang]['individualChargeValueTypePerUser']
         }
     }[type][key]
 }
