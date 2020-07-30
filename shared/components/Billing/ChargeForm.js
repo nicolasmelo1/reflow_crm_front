@@ -65,7 +65,6 @@ const ChargeForm = (props) => {
     const getCompanyIndividualChargeValueQuantityByName = (name) => {
         const chargeData = props.chargesData.filter(chargeData => chargeData.name === name)
         if (chargeData.length > 0) {
-            console.log(chargeData.reduce((acumulator, value) => parseInt(acumulator) + parseInt(value.quantity), 0))
             return chargeData.reduce((acumulator, value) => parseInt(acumulator) + parseInt(value.quantity), 0).toString()
         } else {
             return ''
