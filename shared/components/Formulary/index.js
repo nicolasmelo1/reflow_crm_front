@@ -277,6 +277,13 @@ class Formulary extends React.Component {
                 this.source.cancel()
             }
             if (this.state.isEditing) this.setIsEditing()
+            // need to set hasBuiltInitial to false in order to update in the sections
+            this.onFullResetFormulary(this.state.buildData, {
+                hasBuiltInitial: false,
+                isAuxOriginalInitial: false,
+                data: { ...this.state.filled.data},
+                files: []
+            })
             this.onLoadFormulary(this.props.formName, null)
         } 
         // formulary id has changed, it was null and is not null anymore
