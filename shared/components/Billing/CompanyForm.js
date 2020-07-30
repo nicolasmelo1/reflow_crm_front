@@ -10,7 +10,8 @@ import {
     BillingInput,
     BillingFormularyFieldSelectContainer,
     BillingFormularyFieldLabel,
-    BillingFormularyFieldContainer
+    BillingFormularyFieldContainer,
+    BillingFormularyRequiredField
  } from '../../styles/Billing'
 
 /**
@@ -18,11 +19,23 @@ import {
  * @param {Type} props - {go in detail about every prop it recieves}
  */
 const PaymentAddressForm = (props) => {
+
+    const getCPForCNPJMask = (text) => {
+        if (!text || text.length <= 11) {
+            return '000.000.000-00'
+        } else {
+            return '00.000.000/0000-00'
+        }
+    }
+
     const onChangeCompanyDocumentNumber = (data) => {
-        delete props.companyDataFormErrors.cnpj
-        props.companyData.cnpj = data
-        props.setCompanyDataFormErrors({...props.companyDataFormErrors })
-        props.onChangeCompanyData({...props.companyData})
+        const unmasked = numberUnmasker(data, getCPForCNPJMask(data))
+        if (unmasked.length <= 14) {
+            delete props.companyDataFormErrors.cnpj
+            props.companyData.cnpj = unmasked
+            props.setCompanyDataFormErrors({...props.companyDataFormErrors })
+            props.onChangeCompanyData({...props.companyData})
+        }
     }
 
     const onChangeStreet = (data) => {
@@ -93,11 +106,12 @@ const PaymentAddressForm = (props) => {
                     <BillingFormularyFieldContainer>
                         <BillingFormularyFieldLabel>
                             {strings['pt-br']['billingCompanyFormularyCNPJAndCPFFieldLabel']}
+                            <BillingFormularyRequiredField>*</BillingFormularyRequiredField>
                         </BillingFormularyFieldLabel>
                         <BillingInput 
                         errors={Array.from(Object.keys(props.companyDataFormErrors)).includes('cnpj')}
                         type={'text'} 
-                        value={props.companyData.cnpj} 
+                        value={numberMasker(props.companyData.cnpj, getCPForCNPJMask(props.companyData.cnpj))} 
                         onChange={e=> onChangeCompanyDocumentNumber(e.target.value)}
                         />
                     </BillingFormularyFieldContainer>
@@ -109,6 +123,7 @@ const PaymentAddressForm = (props) => {
                     <BillingFormularyFieldContainer>
                         <BillingFormularyFieldLabel>
                             {strings['pt-br']['billingCompanyFormularyStreetFieldLabel']}
+                            <BillingFormularyRequiredField>*</BillingFormularyRequiredField>
                         </BillingFormularyFieldLabel>
                         <BillingInput                         
                         errors={Array.from(Object.keys(props.companyDataFormErrors)).includes('street')}
@@ -120,6 +135,7 @@ const PaymentAddressForm = (props) => {
                     <BillingFormularyFieldContainer>
                         <BillingFormularyFieldLabel>
                             {strings['pt-br']['billingCompanyFormularyNeighborhoodFieldLabel']}
+                            <BillingFormularyRequiredField>*</BillingFormularyRequiredField>
                         </BillingFormularyFieldLabel>
                         <BillingInput                         
                         errors={Array.from(Object.keys(props.companyDataFormErrors)).includes('neighborhood')}
@@ -131,6 +147,7 @@ const PaymentAddressForm = (props) => {
                     <BillingFormularyFieldContainer>
                         <BillingFormularyFieldLabel>
                             {strings['pt-br']['billingCompanyFormularyNumberFieldLabel']}
+                            <BillingFormularyRequiredField>*</BillingFormularyRequiredField>
                         </BillingFormularyFieldLabel>
                         <BillingInput 
                         errors={Array.from(Object.keys(props.companyDataFormErrors)).includes('number')}
@@ -152,6 +169,7 @@ const PaymentAddressForm = (props) => {
                     <BillingFormularyFieldContainer>
                         <BillingFormularyFieldLabel>
                             {strings['pt-br']['billingCompanyFormularyZipCodeFieldLabel']}
+                            <BillingFormularyRequiredField>*</BillingFormularyRequiredField>
                         </BillingFormularyFieldLabel>
                         <BillingInput 
                         errors={Array.from(Object.keys(props.companyDataFormErrors)).includes('zip_code')}
@@ -164,6 +182,7 @@ const PaymentAddressForm = (props) => {
                     <BillingFormularyFieldContainer>
                         <BillingFormularyFieldLabel>
                             {strings['pt-br']['billingCompanyFormularyStateFieldLabel']}
+                            <BillingFormularyRequiredField>*</BillingFormularyRequiredField>
                         </BillingFormularyFieldLabel>
                         <BillingFormularyFieldSelectContainer
                         errors={Array.from(Object.keys(props.companyDataFormErrors)).includes('state')}
@@ -179,6 +198,7 @@ const PaymentAddressForm = (props) => {
                     <BillingFormularyFieldContainer>
                         <BillingFormularyFieldLabel>
                             {strings['pt-br']['billingCompanyFormularyCityFieldLabel']}
+                            <BillingFormularyRequiredField>*</BillingFormularyRequiredField>
                         </BillingFormularyFieldLabel>
                         <BillingFormularyFieldSelectContainer
                         errors={Array.from(Object.keys(props.companyDataFormErrors)).includes('city')}

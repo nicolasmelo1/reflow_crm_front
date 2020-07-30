@@ -5,11 +5,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { numberMasker, numberUnmasker } from '../../utils/numberMasker'
 import { types, strings } from '../../utils/constants'
 import { 
+    BillingFormularyRequiredField,
     BillingFormularyContainer,
     BillingFormularyFieldLabel,
     BillingFormularySectionContainer,
     BillingFormularyFieldContainer,
     BillingFormularySectionTitleLabel,
+    BillingFormularyErrorMessage,
     BillingInput,
     PaymentFormPaymentHorizontalButtonsContainer,
     PaymentFormPaymentMethodButton,
@@ -35,7 +37,7 @@ const PaymentForm = (props) => {
     const removeCreditCardDataErrors = (string) => {
         if (props.creditCardDataErrors.includes(string)) {
             props.creditCardDataErrors.splice(props.creditCardDataErrors.indexOf(string), 1)
-            setCreditCardDataErrors([...props.creditCardDataErrors])
+            props.setCreditCardDataErrors([...props.creditCardDataErrors])
         }
     }
 
@@ -169,6 +171,7 @@ const PaymentForm = (props) => {
                         <BillingFormularyFieldContainer>
                             <BillingFormularyFieldLabel>
                                 {strings['pt-br']['billingPaymentFormCreditCardNumberFieldLabel']}
+                                <BillingFormularyRequiredField>*</BillingFormularyRequiredField>
                             </BillingFormularyFieldLabel>
                             <BillingInput 
                             type={'text'}
@@ -180,15 +183,16 @@ const PaymentForm = (props) => {
                             )}
                             />
                             {props.creditCardDataErrors.includes('card_number') ? (
-                                <small style={{color: 'red'}}>
-                                    Valor inválido
-                                </small>
+                                <BillingFormularyErrorMessage>
+                                    {strings['pt-br']['billingPaymentFormCreditCardErrorMessageLabel']}
+                                </BillingFormularyErrorMessage>
                             ) : ''}
                         </BillingFormularyFieldContainer>
                         <div style={{display: 'flex', flexDirection:'row', marginBottom: '10px'}}>
                             <PaymentFormCreditCardValidDateContainer>
                                 <BillingFormularyFieldLabel>
                                     {strings['pt-br']['billingPaymentFormCreditCardNumberFieldLabel']}
+                                    <BillingFormularyRequiredField>*</BillingFormularyRequiredField>
                                 </BillingFormularyFieldLabel>
                                 <BillingInput 
                                 type={'text'} 
@@ -198,14 +202,15 @@ const PaymentForm = (props) => {
                                 value={numberMasker(props.creditCardData.card_expiration, "00/00")}
                                 />
                                 {props.creditCardDataErrors.includes('card_expiration') ? (
-                                    <small style={{color: 'red'}}>
-                                        Valor inválido
-                                    </small>
+                                    <BillingFormularyErrorMessage>
+                                        {strings['pt-br']['billingPaymentFormCreditCardErrorMessageLabel']}
+                                    </BillingFormularyErrorMessage>
                                 ) : ''}
                             </PaymentFormCreditCardValidDateContainer>
                             <PaymentFormCreditCardCVVContainer>
                                 <BillingFormularyFieldLabel>
                                     {strings['pt-br']['billingPaymentFormCreditCardCVVFieldLabel']}
+                                    <BillingFormularyRequiredField>*</BillingFormularyRequiredField>
                                 </BillingFormularyFieldLabel>
                                 <BillingInput 
                                 type={'text'} 
@@ -214,15 +219,16 @@ const PaymentForm = (props) => {
                                 value={numberMasker(props.creditCardData.cvv, [...Array(creditCardType(props.creditCardData.card_number)[0].code.size)].map(_ => "0").join(''))}
                                 />
                                 {props.creditCardDataErrors.includes('cvv') ? (
-                                    <small style={{color: 'red'}}>
-                                        Valor inválido
-                                    </small>
+                                    <BillingFormularyErrorMessage>
+                                        {strings['pt-br']['billingPaymentFormCreditCardErrorMessageLabel']}
+                                    </BillingFormularyErrorMessage>
                                 ) : ''}
                             </PaymentFormCreditCardCVVContainer>
                         </div>
                         <BillingFormularyFieldContainer>
                             <BillingFormularyFieldLabel>
                                 {strings['pt-br']['billingPaymentFormCreditCardHolderNameFieldLabel']}
+                                <BillingFormularyRequiredField>*</BillingFormularyRequiredField>
                             </BillingFormularyFieldLabel>
                             <BillingInput 
                             type={'text'} 
@@ -230,9 +236,9 @@ const PaymentForm = (props) => {
                             onChange={e=>onChangeHolderName(e.target.value)} 
                             value={props.creditCardData.holder_name}/>
                             {props.creditCardDataErrors.includes('holder_name') ? (
-                                <small style={{color: 'red'}}>
-                                    Valor inválido
-                                </small>
+                                <BillingFormularyErrorMessage>
+                                    {strings['pt-br']['billingPaymentFormCreditCardErrorMessageLabel']}
+                                </BillingFormularyErrorMessage>
                             ) : ''}
                         </BillingFormularyFieldContainer>
                     </BillingFormularySectionContainer>

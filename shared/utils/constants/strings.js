@@ -230,6 +230,7 @@ const strings = {
         billingPaymentFormCreditCardValidDateFieldLabel: 'Validade',
         billingPaymentFormCreditCardCVVFieldLabel: 'CVV',
         billingPaymentFormCreditCardHolderNameFieldLabel: 'Nome do titular',
+        billingPaymentFormCreditCardErrorMessageLabel: 'Valor inválido',
         billingCompanyFormularyCNPJAndCPFFieldLabel: 'CNPJ/CPF',
         billingCompanyFormularyAddressSectionTitleLabel: 'Endereço',
         billingCompanyFormularyStreetFieldLabel: 'Nome da rua',

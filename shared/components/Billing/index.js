@@ -14,7 +14,8 @@ import {
     BillingExpandableCardButtons,
     BillingExpandableCardText,
     BillingExpandableCardArrowDown,
-    BillingSaveButton
+    BillingSaveButton,
+    BillingExpandableCardIcon
 } from '../../styles/Billing'
 
 /**
@@ -31,9 +32,9 @@ class Billing extends React.Component {
             isCompanyFormOpen: false,
             isChargeFormOpen: false, 
             isPaymentFormOpen: false,
-            companyDataFormErrors: [],
-            chargeDataFormErrors: [],
-            paymentDataFormErrors: [],
+            companyDataFormErrors: {},
+            chargeDataFormErrors: {},
+            paymentDataFormErrors: {},
             creditCardDataErrors: [],
             creditCardData: {
                 card_number: '',
@@ -157,7 +158,7 @@ class Billing extends React.Component {
             <BillingContainer>
                 <BillingExpandableCardButtons errors={Array.from(Object.keys(this.state.companyDataFormErrors)).length > 0} onClick={e=> {this.setIsCompanyFormOpen()}}>
                     <BillingExpandableCardText>
-                        {strings['pt-br']['billingExpandableCardCompanyConfigurationLabel']}
+                        {strings['pt-br']['billingExpandableCardCompanyConfigurationLabel']}&nbsp;<BillingExpandableCardIcon icon={this.state.isCompanyFormOpen ? 'chevron-up' : 'chevron-down'}/>
                     </BillingExpandableCardText>
                 </BillingExpandableCardButtons>
                 {this.state.isCompanyFormOpen ? (
@@ -174,22 +175,26 @@ class Billing extends React.Component {
                 <BillingExpandableCardArrowDown/>
                 <BillingExpandableCardButtons onClick={e => this.setIsChargeFormOpen()}>
                     <BillingExpandableCardText>
-                        {strings['pt-br']['billingExpandableCardChargeConfigurationLabel']}
+                        {strings['pt-br']['billingExpandableCardChargeConfigurationLabel']}&nbsp;<BillingExpandableCardIcon icon={this.state.isChargeFormOpen ? 'chevron-up' : 'chevron-down'}/>
                     </BillingExpandableCardText>
                 </BillingExpandableCardButtons>
                 {this.state.isChargeFormOpen ? (
                     <ChargeForm
                     chargeDataFormErrors={this.state.chargeDataFormErrors}
                     setChargeDataFormErrors={this.setChargeDataFormErrors}
+                    onChangeChargeData={this.props.onChangeChargeData}
                     onGetTotals={this.props.onGetTotals}
                     chargesData={this.props.billing.chargesData}
                     types={this.props.login.types.billing}
                     />
                 ) : ''}
                 <BillingExpandableCardArrowDown/>
-                <BillingExpandableCardButtons onClick={e=> this.setIsPaymentFormOpen()}>
+                <BillingExpandableCardButtons 
+                errors={Array.from(Object.keys(this.state.paymentDataFormErrors)).length > 0 || this.state.creditCardDataErrors.length > 0} 
+                onClick={e=> this.setIsPaymentFormOpen()}
+                >
                     <BillingExpandableCardText>
-                        {strings['pt-br']['billingExpandableCardPaymentConfigurationLabel']}
+                        {strings['pt-br']['billingExpandableCardPaymentConfigurationLabel']}&nbsp;<BillingExpandableCardIcon icon={this.state.isPaymentFormOpen ? 'chevron-up' : 'chevron-down'}/>
                     </BillingExpandableCardText>
                 </BillingExpandableCardButtons>
                 {this.state.isPaymentFormOpen ? (
@@ -199,6 +204,7 @@ class Billing extends React.Component {
                     setCreditCardData={this.setCreditCardData}
                     creditCardData={this.state.creditCardData}
                     creditCardDataErrors={this.state.creditCardDataErrors}
+                    setCreditCardDataErrors={this.setCreditCardDataErrors}
                     isToShowCreditCardForm={this.isToShowCreditCardForm}
                     onRemoveCreditCardData={this.props.onRemoveCreditCardData}
                     onChangePaymentData={this.props.onChangePaymentData}

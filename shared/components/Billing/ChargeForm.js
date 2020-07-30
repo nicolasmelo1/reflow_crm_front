@@ -6,7 +6,9 @@ import {
     BillingFormularySectionContainer,
     BillingChargeTableRow,
     BillingChargeTableHeaderElement,
-    BillingChargeTableContentElement
+    BillingChargeTableContentElement,
+    BillingChargeTotalContainer,
+    BillingChargeTotalValueLabel,
 } from '../../styles/Billing'
 
 /**
@@ -15,7 +17,42 @@ import {
  */
 const ChargeForm = (props) => {
     const currencyPrefix = '$'
+    const optionsForIndividualChargeTypes = {
+        per_gb: [
+            {
+                label: '5', value: '5'
+            },
+            {
+                label: '10', value: '10'
+            },
+            {
+                label: '15', value: '15'
+            }
+        ]
+    }
     const [totals, setTotals] = useState([])
+
+    const getDecimals = (number) => {
+        if (number.toString().includes('.')) {
+            return number.toString().split('.')[0] + ',' + number.toString().split('.')[1].substring(0, 2)
+        } else {
+            return number.toString() + ',00' 
+        }
+    }
+
+    const getTotal = () => {
+        return `${currencyPrefix} ${getDecimals((totals.length > 0) ? totals.reduce((acumulator, value) => acumulator + value.total, 0) : '0')}`
+    }
+
+    const onChangeQuantity = (value, name) => {
+        console.log(name)
+        const chargeIndex = props.chargesData.findIndex(chargeData => chargeData.name === name)
+        console.log(value)
+        if (chargeIndex !== -1) {
+            props.chargesData[chargeIndex].quantity = value
+            props.onChangeChargeData([...props.chargesData])
+        }
+    }
 
     const getChargeTypeByChargeTypeId = (id) => {
         const chargeType = props.types.charge_type.filter(chargeType => chargeType.id === id)
@@ -28,7 +65,8 @@ const ChargeForm = (props) => {
     const getCompanyIndividualChargeValueQuantityByName = (name) => {
         const chargeData = props.chargesData.filter(chargeData => chargeData.name === name)
         if (chargeData.length > 0) {
-            return chargeData.reduce((acumulator, value) => acumulator + value.quantity, 0)
+            console.log(chargeData.reduce((acumulator, value) => parseInt(acumulator) + parseInt(value.quantity), 0))
+            return chargeData.reduce((acumulator, value) => parseInt(acumulator) + parseInt(value.quantity), 0).toString()
         } else {
             return ''
         }
@@ -37,9 +75,9 @@ const ChargeForm = (props) => {
     const getTotalByName = (name) => {
         const total = totals.filter(total => total.name === name)
         if (total.length > 0) {
-            return `${currencyPrefix} ${total[0].total.toString().replace('.', ',')}`
+            return `${currencyPrefix} ${getDecimals(total[0].total)}`
         } else {
-            return ''
+            return `${currencyPrefix} ${getDecimals('0')}`
         }
     }
 
@@ -73,13 +111,17 @@ const ChargeForm = (props) => {
                         </BillingChargeTableHeaderElement>
                     </BillingChargeTableRow>
                     {props.types.individual_charge_value_type.map((individualChargeValueType, index) => (
-                        <BillingChargeTableRow>
-                            { getChargeTypeByChargeTypeId(individualChargeValueType.charge_type_id) === 'company' ? (
-                                 <input 
-                                 style={{ width: '100%', textAlign: 'center', border: '0', backgroundColor: 'transparent', userSelect: 'none', marginBottom: '1rem', borderBottom: '1px solid #0dbf7e' }}
-                                 value={getCompanyIndividualChargeValueQuantityByName(individualChargeValueType.name)}
-                                 onChange={e => onChangeQuantity()}
-                                 />
+                        <BillingChargeTableRow key={index}>
+                            {getChargeTypeByChargeTypeId(individualChargeValueType.charge_type_id) === 'company' ? (
+                                <select 
+                                style={{ width: '100%', textAlign: 'center', border: '0', backgroundColor: 'transparent', userSelect: 'none', marginBottom: '1rem', borderBottom: '1px solid #0dbf7e' }}
+                                value={getCompanyIndividualChargeValueQuantityByName(individualChargeValueType.name)}
+                                onChange={e => onChangeQuantity(e.target.value, individualChargeValueType.name)}
+                                >
+                                    {optionsForIndividualChargeTypes[individualChargeValueType.name].map((option, index)=> (
+                                        <option key={index} value={option.value}>{option.label}</option>
+                                    ))}
+                                </select>
                             ) : (
                                 <BillingChargeTableContentElement>
                                     {getCompanyIndividualChargeValueQuantityByName(individualChargeValueType.name)}
@@ -93,6 +135,12 @@ const ChargeForm = (props) => {
                             </BillingChargeTableContentElement>
                         </BillingChargeTableRow>
                     )) }
+                </BillingFormularySectionContainer>
+                <BillingFormularySectionContainer>
+                    <BillingChargeTotalContainer>
+                        Total
+                        <BillingChargeTotalValueLabel>{getTotal()}</BillingChargeTotalValueLabel>
+                    </BillingChargeTotalContainer>
                 </BillingFormularySectionContainer>
             </BillingFormularyContainer>
         )

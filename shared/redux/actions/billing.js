@@ -88,7 +88,16 @@ const onChangeCompanyData = (data) => {
     }
 }
 
+
+const onChangeChargeData = (data) => {
+    return (dispatch) => {
+        dispatch({ type: SET_BILLING_CHARGES_DATA, payload: data })
+    }
+}
+
+
 export default {
+    onChangeChargeData,
     onChangeCompanyData,
     onGetPaymentData,
     onRemoveCreditCardData,
