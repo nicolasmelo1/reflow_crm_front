@@ -45,9 +45,7 @@ const ChargeForm = (props) => {
     }
 
     const onChangeQuantity = (value, name) => {
-        console.log(name)
         const chargeIndex = props.chargesData.findIndex(chargeData => chargeData.name === name)
-        console.log(value)
         if (chargeIndex !== -1) {
             props.chargesData[chargeIndex].quantity = value
             props.onChangeChargeData([...props.chargesData])

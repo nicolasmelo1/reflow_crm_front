@@ -66,10 +66,15 @@ class Billing extends React.Component {
     setCreditCardData = (data) => this.setState(state => ({...state, creditCardData: data}))
 
     isToShowCreditCardForm = () => {
-        if (this.props.billing.paymentData.credit_card_data){
-            return [...Object.entries(this.props.billing.paymentData.credit_card_data)].some(value => ['', null].includes(value[1]))
+        const paymentMethodType = this.props.login.types.billing.payment_method_type.filter(paymentMethodType => paymentMethodType.id === this.props.billing.paymentData.payment_method_type_id)
+        if (paymentMethodType.length > 0 && paymentMethodType[0].name === 'credit_card') {
+            if (this.props.billing.paymentData.credit_card_data){
+                return [...Object.entries(this.props.billing.paymentData.credit_card_data)].some(value => ['', null].includes(value[1]))
+            } else {
+                return true
+            }
         } else {
-            return true
+            return false
         }
     }
 

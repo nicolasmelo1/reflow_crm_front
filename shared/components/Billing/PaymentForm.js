@@ -34,6 +34,30 @@ import {
  * @param {Type} props - {go in detail about every prop it recieves}
  */
 const PaymentForm = (props) => {
+    const getPaymentMethodTypeName = () => {
+        const paymentMethodType = props.types.payment_method_type.filter(paymentMethodType => paymentMethodType.id === props.paymentData.payment_method_type_id)
+        console.log(paymentMethodType[0])
+        if (paymentMethodType.length > 0) {
+            return paymentMethodType[0].name
+        } else {
+            return 'credit_card'
+        }
+    }
+
+    const getCreditCardNumberFormatting = (string) => {
+        let length = 0
+        const stringWithOnlyNumbers = string.replace(/\D/g,'')
+        const stringLength = stringWithOnlyNumbers.length
+        const creditCardNumberLengths = creditCardType(stringWithOnlyNumbers)[0]?.lengths || []
+        for (let i = 0; i<creditCardNumberLengths.length; i++) {
+            if (creditCardNumberLengths[i] >= stringLength) {
+                length = creditCardNumberLengths[i]
+                break
+            }
+        }
+        return [...Array(length)].map((_, index) => (creditCardType(stringWithOnlyNumbers)[0]?.gaps || []).includes(index) ? " 0" : "0").join('')
+    }
+
     const removeCreditCardDataErrors = (string) => {
         if (props.creditCardDataErrors.includes(string)) {
             props.creditCardDataErrors.splice(props.creditCardDataErrors.indexOf(string), 1)
@@ -58,6 +82,7 @@ const PaymentForm = (props) => {
 
     const onChangePaymentMethodType = (id) => {
         props.paymentData.payment_method_type_id = id
+        props.setCreditCardDataErrors([])
         props.onChangePaymentData({...props.paymentData})
     }
 
@@ -82,20 +107,6 @@ const PaymentForm = (props) => {
         removeCreditCardDataErrors('cvv')
         props.creditCardData.cvv = numberUnmasker(data, "000")
         props.setCreditCardData({...props.creditCardData})
-    }
-
-    const getCreditCardNumberFormatting = (string) => {
-        let length = 0
-        const stringWithOnlyNumbers = string.replace(/\D/g,'')
-        const stringLength = stringWithOnlyNumbers.length
-        const creditCardNumberLengths = creditCardType(stringWithOnlyNumbers)[0]?.lengths || []
-        for (let i = 0; i<creditCardNumberLengths.length; i++) {
-            if (creditCardNumberLengths[i] >= stringLength) {
-                length = creditCardNumberLengths[i]
-                break
-            }
-        }
-        return [...Array(length)].map((_, index) => (creditCardType(stringWithOnlyNumbers)[0]?.gaps || []).includes(index) ? " 0" : "0").join('')
     }
 
     const onChangeCreditCardNumber = (data) => {
@@ -243,15 +254,26 @@ const PaymentForm = (props) => {
                         </BillingFormularyFieldContainer>
                     </BillingFormularySectionContainer>
                 ) : (
-                    <PaymentFormCreditCardInfoCardContainer>
-                        <PaymentFormCreditCardInfoContainer>
-                            {props.paymentData.credit_card_data.payment_company_name + '● ● ● ●  ' + props.paymentData.credit_card_data.card_number_last_four} 
-                            <PaymentFormCreditCardInfoCreditCardFlagLogo src={`/credit_card_logos/${props.paymentData.credit_card_data.credit_card_code}.png`}/>
-                        </PaymentFormCreditCardInfoContainer>
-                        <PaymentFormCreditCardInfoDeleteButton onClick={e=>{props.onRemoveCreditCardData()}}>
-                            <PaymentFormCreditCardInfoDeleteButtonIcon icon={'trash'}/>
-                        </PaymentFormCreditCardInfoDeleteButton>
-                    </PaymentFormCreditCardInfoCardContainer>
+                    <div>
+                        {getPaymentMethodTypeName() === 'credit_card' ? (
+                            <PaymentFormCreditCardInfoCardContainer>
+                                <PaymentFormCreditCardInfoContainer>
+                                    {props.paymentData.credit_card_data.payment_company_name + '● ● ● ●  ' + props.paymentData.credit_card_data.card_number_last_four} 
+                                    <PaymentFormCreditCardInfoCreditCardFlagLogo src={`/credit_card_logos/${props.paymentData.credit_card_data.credit_card_code}.png`}/>
+                                </PaymentFormCreditCardInfoContainer>
+                                <PaymentFormCreditCardInfoDeleteButton onClick={e=>{props.onRemoveCreditCardData()}}>
+                                    <PaymentFormCreditCardInfoDeleteButtonIcon icon={'trash'}/>
+                                </PaymentFormCreditCardInfoDeleteButton>
+                            </PaymentFormCreditCardInfoCardContainer>
+                        ) : (
+                            <BillingFormularySectionContainer>
+                                <p style={{ margin: '0' }}>
+                                    A Reflow realiza uma cobrança mensal pelo uso da plataforma. 
+                                    A cobrança será contabilizada no dia selecinado. O prazo de pagamento é 3 dias após o envio de boleto. O boleto será enviado nos e-mails de cobrança definidos, todo mês.
+                                </p>
+                            </BillingFormularySectionContainer>
+                        )}
+                    </div>
                 )}
             </BillingFormularyContainer>
         )
