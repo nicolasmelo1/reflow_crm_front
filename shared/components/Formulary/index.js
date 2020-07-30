@@ -105,9 +105,12 @@ class Formulary extends React.Component {
                     depends_on_dynamic_form: [...filledSectionsData]
                 }
             }, 
-            buildData: buildData 
+            buildData: buildData,
+            auxOriginalInitial: {}
         })) : null
     
+    resetAuxOriginalInitial = () => (this._ismounted) ? this.setState(state => ({...state, auxOriginalInitial: {}})) : null
+
     setAuxOriginalInitial = () => (this._ismounted) ? this.setState(state => {
         state.auxOriginalInitial = {
             buildData: JSON.parse(JSON.stringify(this.state.buildData)),
@@ -214,15 +217,7 @@ class Formulary extends React.Component {
                         this.setFilledDataAndBuildData(id, false, false, sectionsData, [], formularyBuildData)
                     })
                 } else {
-                    this.onFullResetFormulary(formularyBuildData, {
-                        hasBuiltInitial: false,
-                        isAuxOriginalInitial: false,
-                        data: {
-                            id: null,
-                            depends_on_dynamic_form: []
-                        },
-                        files: []
-                    })
+                    this.onFullResetFormulary(formularyBuildData)
                 }
             })
         }
@@ -285,6 +280,7 @@ class Formulary extends React.Component {
                 this.source.cancel()
             }
             if (this.state.isEditing) this.setIsEditing()
+            this.resetAuxOriginalInitial()
             this.onLoadFormulary(this.props.formName, null)
         } 
         // formulary id has changed, it was null and is not null anymore
