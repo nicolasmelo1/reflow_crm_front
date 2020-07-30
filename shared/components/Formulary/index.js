@@ -105,7 +105,7 @@ class Formulary extends React.Component {
                     depends_on_dynamic_form: [...filledSectionsData]
                 }
             }, 
-            buildData: buildData,
+            buildData: buildData
         })) : null
     
     resetAuxOriginalInitial = () => (this._ismounted) ? this.setState(state => ({...state, auxOriginalInitial: {}})) : null
