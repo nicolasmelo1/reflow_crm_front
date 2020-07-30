@@ -106,7 +106,6 @@ class Formulary extends React.Component {
                 }
             }, 
             buildData: buildData,
-            auxOriginalInitial: {}
         })) : null
     
     resetAuxOriginalInitial = () => (this._ismounted) ? this.setState(state => ({...state, auxOriginalInitial: {}})) : null
