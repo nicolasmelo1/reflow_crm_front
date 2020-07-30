@@ -278,10 +278,13 @@ class Formulary extends React.Component {
             }
             if (this.state.isEditing) this.setIsEditing()
             // need to set hasBuiltInitial to false in order to update in the sections
-            this.onFullResetFormulary(this.state.buildData, {
+            this.onFullResetFormulary({}, {
                 hasBuiltInitial: false,
                 isAuxOriginalInitial: false,
-                data: { ...this.state.filled.data},
+                data: {
+                    id: null,
+                    depends_on_dynamic_form: []
+                },
                 files: []
             })
             this.onLoadFormulary(this.props.formName, null)
