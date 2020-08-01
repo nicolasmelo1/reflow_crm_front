@@ -1,7 +1,9 @@
 import { SET_DASHBOARD_CHARTS, SET_DASHBOARD_UPDATE_DATES } from '../../types';
 import agent from '../../../utils/agent'
 import { jsDateToStringFormat } from '../../../utils/dates'
+import delay from '../../../utils/delay'
 
+const makeDelay = delay(10000)
 
 const getAndDispatchDashboardCharts = (dispatch, source, formName, params) => {
     return agent.http.DASHBOARD.getDashboardCharts(source, formName).then(async response=> {
@@ -24,16 +26,18 @@ const onGetDashboardCharts = (source, formName, params) => {
         agent.websocket.DASHBOARD.recieveDataUpdated({
             formName: formName,
             callback: (data) => {
-                const filterParams = getState().home.filter
-                const updateDateParams = getState().home.dashboard.updateDates
-                const params = {
-                    to_date: updateDateParams.endDate,
-                    from_date: updateDateParams.startDate,
-                    search_field: filterParams.search_field,
-                    search_value: filterParams.search_value,
-                    search_exact: filterParams.search_exact
-                }
-                getAndDispatchDashboardCharts(dispatch, source, formName, params)
+                makeDelay(() => {
+                    const filterParams = getState().home.filter
+                    const updateDateParams = getState().home.dashboard.updateDates
+                    const params = {
+                        to_date: updateDateParams.endDate,
+                        from_date: updateDateParams.startDate,
+                        search_field: filterParams.search_field,
+                        search_value: filterParams.search_value,
+                        search_exact: filterParams.search_exact
+                    }
+                    getAndDispatchDashboardCharts(dispatch, source, formName, params)
+                })
             }
         })
         return getAndDispatchDashboardCharts(dispatch, source, formName, params)

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { TouchableOpacity, Text } from 'react-native'
 import { strings } from '../../utils/constants'
+import { numberMasker } from '../../utils/numberMasker'
 import { 
     OnboardingLabel,
     OnboardingRequiredLabel,
@@ -21,6 +22,7 @@ import {
  * @param {Type} props - {go in detail about every prop it recieves}
  */
 const FirstStepForm = (props) => {
+    const [phoneIsFocused, setPhoneIsFocused] = useState(false)
     const [nameAndLastNameIsFocused, setNameAndLastNameIsFocused] = useState(false)
     const [emailIsFocused, setEmailIsFocused] = useState(false)
     const [confirmEmailIsFocused, setConfirmEmailIsFocused] = useState(false)
@@ -28,7 +30,8 @@ const FirstStepForm = (props) => {
 
     const continueButtonDisabled = () => {
         return !props.declarationChecked || props.errors.hasOwnProperty('name') || props.errors.hasOwnProperty('email') || 
-                props.errors.hasOwnProperty('confirmEmail') || props.name === '' || props.email === '' || props.confirmEmail === ''
+                props.errors.hasOwnProperty('phone') || props.errors.hasOwnProperty('confirmEmail') || props.name === '' || 
+                props.email === '' || props.confirmEmail === ''
     }
 
     const renderMobile = () => {
@@ -51,6 +54,23 @@ const FirstStepForm = (props) => {
                     }}
                 />
                 <OnboardingError>{props.errors.hasOwnProperty('name') ? props.errors['name'] : ''}</OnboardingError>
+                <OnboardingLabel>{strings['pt-br']['onboardingPhoneLabel']}<OnboardingRequiredLabel>*</OnboardingRequiredLabel></OnboardingLabel>
+                <OnboardingInput 
+                    error={props.errors.hasOwnProperty('phone')} 
+                    type='text' 
+                    keyboardType={'number-pad'}
+                    value={numberMasker(props.phone, props.getPhoneNumberMask(props.phone))} 
+                    isFocused={phoneIsFocused}
+                    onChange={e=> {
+                        props.onValidate('phone', e.nativeEvent.text)
+                        props.setPhone(e.nativeEvent.text)
+                    }}
+                    onBlur={e => {
+                        setPhoneIsFocused(false)
+                        props.onValidate('phone', e.nativeEvent.text)
+                    }}
+                />
+                <OnboardingError>{props.errors.hasOwnProperty('phone') ? props.errors['phone'] : ''}</OnboardingError>
                 <OnboardingLabel>{strings['pt-br']['onboardingEmailLabel']}<OnboardingRequiredLabel>*</OnboardingRequiredLabel></OnboardingLabel>
                 <OnboardingInput 
                     keyboardType={'email-address'}
@@ -148,6 +168,18 @@ const FirstStepForm = (props) => {
                     onBlur={e => {props.onValidate('name', e.target.value)}}
                 />
                 <OnboardingError>{props.errors.hasOwnProperty('name') ? props.errors['name'] : ''}</OnboardingError>
+                <OnboardingLabel>{strings['pt-br']['onboardingPhoneLabel']}<OnboardingRequiredLabel>*</OnboardingRequiredLabel></OnboardingLabel>
+                <OnboardingInput 
+                    error={props.errors.hasOwnProperty('phone')} 
+                    type='text' 
+                    value={numberMasker(props.phone, props.getPhoneNumberMask(props.phone))} 
+                    onChange={e=> {
+                        props.onValidate('phone', e.target.value)
+                        props.setPhone(e.target.value)
+                    }}
+                    onBlur={e => {props.onValidate('phone', e.target.value)}}
+                />
+                <OnboardingError>{props.errors.hasOwnProperty('phone') ? props.errors['phone'] : ''}</OnboardingError>
                 <OnboardingLabel>{strings['pt-br']['onboardingEmailLabel']}<OnboardingRequiredLabel>*</OnboardingRequiredLabel></OnboardingLabel>
                 <OnboardingInput 
                     error={props.errors.hasOwnProperty('email')} 

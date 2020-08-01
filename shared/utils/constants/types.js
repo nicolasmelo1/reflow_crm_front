@@ -95,7 +95,9 @@ const types = (lang, type, key) => {
         },
         individual_charge_value_type: {
             per_gb: strings[lang]['individualChargeValueTypePerGB'],
-            per_user: strings[lang]['individualChargeValueTypePerUser']
+            per_user: strings[lang]['individualChargeValueTypePerUser'],
+            per_chart_company: strings[lang]['individualChargeValueTypePerChartCompany'],
+            per_chart_user: strings[lang]['individualChargeValueTypePerChartUser']
         }
     }[type][key]
 }

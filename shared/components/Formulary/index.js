@@ -279,6 +279,8 @@ class Formulary extends React.Component {
                 this.source.cancel()
             }
             if (this.state.isEditing) this.setIsEditing()
+            // reset the Original initial, because we don't need it anymore since we are loading a new formulary
+            // not reseting can cause a bug if the user is in a connected formulary and changes the page.
             this.resetAuxOriginalInitial()
             this.onLoadFormulary(this.props.formName, null)
         } 

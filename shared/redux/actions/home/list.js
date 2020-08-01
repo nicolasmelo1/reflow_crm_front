@@ -4,6 +4,11 @@ import {
     SET_TOTALS
 } from '../../types';
 import agent from '../../../utils/agent'
+import delay from '../../../utils/delay'
+
+
+const makeDelay = delay(10000)
+
 
 const getListingData = async (dispatch, source, state, params, formName) => {
     let stateData = state.home.list.data
@@ -33,14 +38,16 @@ const onGetListingData = (source, params, formName) => {
         agent.websocket.LISTING.recieveDataUpdated({
             formName: formName,
             callback: (data) => {
-                const filterParams = getState().home.filter
-                const params = {
-                    ...filterParams,
-                    page: 1
-                }
-                try {
-                    getListingData(dispatch, source, getState(), params, formName)
-                } catch {}
+                makeDelay(() => {
+                    const filterParams = getState().home.filter
+                    const params = {
+                        ...filterParams,
+                        page: 1
+                    }
+                    try {
+                        getListingData(dispatch, source, getState(), params, formName)
+                    } catch {}
+                })
             }
         })
         return await getListingData(dispatch, source, getState(), params, formName)

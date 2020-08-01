@@ -36,7 +36,6 @@ import {
 const PaymentForm = (props) => {
     const getPaymentMethodTypeName = () => {
         const paymentMethodType = props.types.payment_method_type.filter(paymentMethodType => paymentMethodType.id === props.paymentData.payment_method_type_id)
-        console.log(paymentMethodType[0])
         if (paymentMethodType.length > 0) {
             return paymentMethodType[0].name
         } else {
@@ -58,6 +57,23 @@ const PaymentForm = (props) => {
         return [...Array(length)].map((_, index) => (creditCardType(stringWithOnlyNumbers)[0]?.gaps || []).includes(index) ? " 0" : "0").join('')
     }
 
+    const isToShowErrorOnEmailField = (email) => {
+        const hasCompanyInvoiceEmailsInErrorObj = Array.from(Object.keys(props.paymentDataFormErrors)).includes('company_invoice_emails')
+        if (hasCompanyInvoiceEmailsInErrorObj) {
+            const errorMessagesArray = props.paymentDataFormErrors.company_invoice_emails.map(companyInvoiceMail => (companyInvoiceMail?.email) ? companyInvoiceMail.email[0]: '')
+            console.log(errorMessagesArray)
+            if (props.paymentDataFormErrors.company_invoice_emails.includes('invalid')) {
+                return true
+            } else if (errorMessagesArray.includes('blank') && email===''){
+                return true
+            } else {
+                return false
+            }
+        } else {
+            return false
+        }
+    }
+
     const removeCreditCardDataErrors = (string) => {
         if (props.creditCardDataErrors.includes(string)) {
             props.creditCardDataErrors.splice(props.creditCardDataErrors.indexOf(string), 1)
@@ -66,17 +82,23 @@ const PaymentForm = (props) => {
     }
 
     const onRemoveCompanyInvoiceEmail = (index) => {
+        delete props.paymentDataFormErrors.company_invoice_emails
         props.paymentData.company_invoice_emails.splice(index, 1)
+        props.setPaymentDataFormErrors({...props.paymentDataFormErrors})
         props.onChangePaymentData({...props.paymentData})
     }
 
     const onAddNewCompanyInvoiceEmail = () => {
+        delete props.paymentDataFormErrors.company_invoice_emails
         props.paymentData.company_invoice_emails.push({email: ''})
+        props.setPaymentDataFormErrors({...props.paymentDataFormErrors})
         props.onChangePaymentData({...props.paymentData})
     }
 
     const onChangeCompanyInvoiceEmail = (index, value) => {
-        props.paymentData.company_invoice_emails[index] = value
+        delete props.paymentDataFormErrors.company_invoice_emails
+        props.paymentData.company_invoice_emails[index] = {email: value}
+        props.setPaymentDataFormErrors({...props.paymentDataFormErrors})
         props.onChangePaymentData({...props.paymentData})
     }
 
@@ -162,6 +184,7 @@ const PaymentForm = (props) => {
                         <PaymentFormInvoiceMailContainer key={index}>
                             <BillingInput 
                             type={'text'} 
+                            errors={isToShowErrorOnEmailField(companyInvoiceMail.email)}
                             value={companyInvoiceMail.email} 
                             onChange={e=>onChangeCompanyInvoiceEmail(index, e.target.value)}
                             />
@@ -172,7 +195,12 @@ const PaymentForm = (props) => {
                                 </PaymentFormInvoiceMailDeleteButton>
                             ) : ''}
                         </PaymentFormInvoiceMailContainer>
-                    ))}     
+                    ))}
+                    {props.paymentDataFormErrors.company_invoice_emails && props.paymentDataFormErrors.company_invoice_emails.includes('invalid') ? (
+                        <BillingFormularyErrorMessage>
+                            {strings['pt-br']['billingPaymentFormMaximumInvoiceEmailNumberErrorMessageLabel']}
+                        </BillingFormularyErrorMessage>
+                    ) : ''}
                 </BillingFormularySectionContainer>
                 {props.isToShowCreditCardForm() ? (
                     <BillingFormularySectionContainer>
@@ -199,7 +227,7 @@ const PaymentForm = (props) => {
                                 </BillingFormularyErrorMessage>
                             ) : ''}
                         </BillingFormularyFieldContainer>
-                        <div style={{display: 'flex', flexDirection:'row', marginBottom: '10px'}}>
+                        <div style={{display: 'flex', flexDirection:'row', marginBottom: '10px', alignItems: 'flex-end'}}>
                             <PaymentFormCreditCardValidDateContainer>
                                 <BillingFormularyFieldLabel>
                                     {strings['pt-br']['billingPaymentFormCreditCardNumberFieldLabel']}
@@ -268,8 +296,7 @@ const PaymentForm = (props) => {
                         ) : (
                             <BillingFormularySectionContainer>
                                 <p style={{ margin: '0' }}>
-                                    A Reflow realiza uma cobrança mensal pelo uso da plataforma. 
-                                    A cobrança será contabilizada no dia selecinado. O prazo de pagamento é 3 dias após o envio de boleto. O boleto será enviado nos e-mails de cobrança definidos, todo mês.
+                                    {strings['pt-br']['billingPaymentFormInvoiceMessage']}
                                 </p>
                             </BillingFormularySectionContainer>
                         )}

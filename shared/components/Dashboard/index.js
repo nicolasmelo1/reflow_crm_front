@@ -188,7 +188,7 @@ class Dashboard extends React.Component {
         if (this.source) {
             this.source.cancel()
         }
-        if (process.env['APP'] === 'web') {
+        if (process.env['APP'] === 'web' && this.chartContainerRef.current) {
             this.chartContainerRef.current.removeEventListener('scroll', this.hideMenuOnScroll)
         }
     }

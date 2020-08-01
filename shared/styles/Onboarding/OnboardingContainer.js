@@ -10,7 +10,7 @@ styled.div`
     align-items: center;
     text-align: center;
     min-height: var(--app-height);
-
+    
     @media(min-height: 580px) {
         justify-content: center;
 

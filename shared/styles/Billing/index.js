@@ -6,6 +6,7 @@ import BillingExpandableCardButtons from './BillingExpandableCardButtons'
 import BillingExpandableCardText from './BillingExpandableCardText'
 import BillingExpandableCardArrowDown from './BillingExpandableCardArrowDown'
 import BillingExpandableCardIcon from './BillingExpandableCardIcon'
+import BillingExpandableCardError from './BillingExpandableCardError'
 import BillingSaveButton from './BillingSaveButton'
 import BillingContainer from './BillingContainer'
 import BillingFormularyContainer from './BillingFormularyContainer'
@@ -46,6 +47,7 @@ export { BillingFormularySectionContainer }
 export { BillingFormularyContainer }
 export { BillingSaveButton }
 export { BillingContainer }
+export { BillingExpandableCardError }
 export { BillingExpandableCardArrowDown }
 export { BillingExpandableCardIcon }
 export { BillingExpandableCardText }

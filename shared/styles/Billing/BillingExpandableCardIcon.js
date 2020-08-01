@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 
 export default styled(FontAwesomeIcon)`
-    height: 100%;
+    height: 25px;
     align-self: center;
     color: #17242D;
     font-size: 20px;

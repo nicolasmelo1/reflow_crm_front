@@ -15,7 +15,8 @@ import {
     BillingExpandableCardText,
     BillingExpandableCardArrowDown,
     BillingSaveButton,
-    BillingExpandableCardIcon
+    BillingExpandableCardIcon,
+    BillingExpandableCardError
 } from '../../styles/Billing'
 
 /**
@@ -83,20 +84,23 @@ class Billing extends React.Component {
     onSetError = (error) => {
         if (error.reason) {
             if (error.reason.includes('invalid_registry_code')) {
-                this.setCompanyDataFormErrors({ ...this.state.companyDataFormErrors, ...this.setError('cnpj', 'invalid')})
+                this.setCompanyDataFormErrors({ ...this.state.companyDataFormErrors, ...this.setError('cnpj', ['invalid'])})
+            } 
+            if (error.reason.includes('cannot_be_bigger_than_three')) {
+                this.setPaymentDataFormErrors({ ...this.state.paymentDataFormErrors, ...this.setError('company_invoice_emails', ['invalid'])})
             }
         }
         if ([...Object.entries(error)].some(value => [...Object.entries(this.props.billing.paymentData)].map(value=> value[0]).includes(value[0]))) {
             let paymentDataFormErrors = {}
             Object.entries(error).forEach(([key, value]) => {
-                paymentDataFormErrors = {...paymentDataFormErrors, ...this.setError(key, value[0])}
+                paymentDataFormErrors = {...paymentDataFormErrors, ...this.setError(key, value)}
             })
             this.setPaymentDataFormErrors({ ...this.state.paymentDataFormErrors, ...paymentDataFormErrors})
 
         } else if ([...Object.entries(error)].some(value => [...Object.entries(this.props.billing.companyData).map(value=> value[0])].includes(value[0]))) {
             let companyDataFormErrors = {}
             Object.entries(error).forEach(([key, value]) => {
-                companyDataFormErrors = {...companyDataFormErrors, ...this.setError(key, value[0])}
+                companyDataFormErrors = {...companyDataFormErrors, ...this.setError(key, value)}
             })
             this.setCompanyDataFormErrors({ ...this.state.companyDataFormErrors, ...companyDataFormErrors})
         }
@@ -143,7 +147,6 @@ class Billing extends React.Component {
                 this.setAddressOptions(response.data.data)
             }
         })
-
     }
     
     componentWillUnmount = () => {
@@ -163,7 +166,18 @@ class Billing extends React.Component {
             <BillingContainer>
                 <BillingExpandableCardButtons errors={Array.from(Object.keys(this.state.companyDataFormErrors)).length > 0} onClick={e=> {this.setIsCompanyFormOpen()}}>
                     <BillingExpandableCardText>
-                        {strings['pt-br']['billingExpandableCardCompanyConfigurationLabel']}&nbsp;<BillingExpandableCardIcon icon={this.state.isCompanyFormOpen ? 'chevron-up' : 'chevron-down'}/>
+                        {strings['pt-br']['billingExpandableCardCompanyConfigurationLabel']}&nbsp;
+                        {Object.keys(this.state.companyDataFormErrors).length > 0 ? (
+                            <BillingExpandableCardError>
+                                <BillingExpandableCardIcon style={{color: 'red'}} icon={'times-circle'}/>
+                                &nbsp;
+                                <small style={{color: 'red', fontSize: '10px' }}>
+                                    {strings['pt-br']['billingExpandableCardErrorMessage']}{this.state.isPaymentFormOpen ? '' : strings['pt-br']['billingExpandableCardErrorMessageIfFormClosed']}
+                                </small>
+                            </BillingExpandableCardError>
+                        ) : (
+                            <BillingExpandableCardIcon icon={this.state.isCompanyFormOpen ? 'chevron-up' : 'chevron-down'}/>
+                        )}
                     </BillingExpandableCardText>
                 </BillingExpandableCardButtons>
                 {this.state.isCompanyFormOpen ? (
@@ -199,7 +213,18 @@ class Billing extends React.Component {
                 onClick={e=> this.setIsPaymentFormOpen()}
                 >
                     <BillingExpandableCardText>
-                        {strings['pt-br']['billingExpandableCardPaymentConfigurationLabel']}&nbsp;<BillingExpandableCardIcon icon={this.state.isPaymentFormOpen ? 'chevron-up' : 'chevron-down'}/>
+                        {strings['pt-br']['billingExpandableCardPaymentConfigurationLabel']}&nbsp;
+                        {Object.keys(this.state.paymentDataFormErrors).length > 0 ? (
+                            <BillingExpandableCardError>
+                                <BillingExpandableCardIcon style={{color: 'red'}} icon={'times-circle'}/>
+                                &nbsp;
+                                <small style={{color: 'red', fontSize: '10px' }}>
+                                    {strings['pt-br']['billingExpandableCardErrorMessage']}{this.state.isPaymentFormOpen ? '' : strings['pt-br']['billingExpandableCardErrorMessageIfFormClosed']}
+                                </small>
+                            </BillingExpandableCardError>
+                        ) : (
+                            <BillingExpandableCardIcon icon={this.state.isPaymentFormOpen ? 'chevron-up' : 'chevron-down'}/>
+                        )}
                     </BillingExpandableCardText>
                 </BillingExpandableCardButtons>
                 {this.state.isPaymentFormOpen ? (

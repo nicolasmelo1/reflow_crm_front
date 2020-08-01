@@ -15,28 +15,16 @@ import Body from '../styles/Body'
 import isAdmin from '../utils/isAdmin'
 import { AsyncStorage, TouchableWithoutFeedback, Keyboard, SafeAreaView, Platform, View } from 'react-native'
 import { 
+    faInfoCircle,
+    faTasks,
     faArrowDown, 
-    faPlusSquare, 
-    faEnvelope, 
-    faCalendarAlt, 
-    faSquareRootAlt, 
-    faPhone, 
-    faAlignLeft, 
+    faCalendarAlt,  
     faPencilAlt, 
-    faLink, 
-    faCheckSquare, 
-    faClipboardList, 
-    faParagraph,
-    faRulerHorizontal, 
     faClock, 
     faTrash, 
-    faCircle, 
-    faTasks, 
-    faChartBar, 
     faCog, 
     faBell, 
     faArrowsAlt, 
-    faEdit, 
     faArrowLeft,
     faBars,
     faPen, 
@@ -50,11 +38,38 @@ import {
     faChevronDown, 
     faPlusCircle,
     faFileUpload,
-    faTimes
+    faTimes,
+    faTimesCircle
 } from '@fortawesome/free-solid-svg-icons'
 
 
-library.add(faTimes, faPlusCircle, faEyeSlash, faPlusSquare, faEnvelope, faCalendarAlt, faSquareRootAlt, faPhone, faAlignLeft, faLink, faCheckSquare, faClipboardList, faParagraph, faArrowLeft, faRulerHorizontal, faClock, faTrash, faBell, faChartBar, faCircle, faCog, faTasks, faArrowsAlt, faEdit, faBars, faPen, faFilter, faSortAmountDown, faEye, faArrowsAlt, faChevronLeft, faChevronRight, faChevronUp, faChevronDown, faFileUpload, faPencilAlt, faArrowDown)
+library.add(
+    faInfoCircle,
+    faTasks,
+    faArrowDown, 
+    faCalendarAlt,  
+    faPencilAlt, 
+    faClock, 
+    faTrash, 
+    faCog, 
+    faBell, 
+    faArrowsAlt, 
+    faArrowLeft,
+    faBars,
+    faPen, 
+    faFilter, 
+    faSortAmountDown, 
+    faEye, 
+    faEyeSlash,
+    faChevronLeft, 
+    faChevronRight, 
+    faChevronUp, 
+    faChevronDown, 
+    faPlusCircle,
+    faFileUpload,
+    faTimes,
+    faTimesCircle
+)
 
 /*** 
  * This is the main component of the page, we use this custom layout component so pages can override from this.

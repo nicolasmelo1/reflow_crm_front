@@ -5,6 +5,11 @@ import {
     SET_CARDS
 } from '../../types';
 import agent from '../../../utils/agent'
+import delay from '../../../utils/delay'
+
+
+const makeDelay = delay(10000)
+
 
 const getKanbanData = async (dispatch, source, state, params, formName, columnName) => {
     const initial = state.home.kanban.initial
@@ -167,15 +172,17 @@ const onGetKanbanData = (source, params, formName, columnName = null) => {
         agent.websocket.KANBAN.recieveDataUpdated({
             formName: formName,
             callback: (data) => {
-                const filterParams = getState().home.filter
-                const params = {
-                    search_field: filterParams.search_field,
-                    search_value: filterParams.search_value,
-                    search_exact: filterParams.search_exact
-                }
-                try{ 
-                    getKanbanData(dispatch, source, getState(), params, formName, null)
-                } catch {}
+                makeDelay(() => {
+                    const filterParams = getState().home.filter
+                    const params = {
+                        search_field: filterParams.search_field,
+                        search_value: filterParams.search_value,
+                        search_exact: filterParams.search_exact
+                    }
+                    try{ 
+                        getKanbanData(dispatch, source, getState(), params, formName, null)
+                    } catch {}
+                })
             }
         })
         return getKanbanData(dispatch, source, getState(), params, formName, columnName)

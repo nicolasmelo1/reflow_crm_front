@@ -3,6 +3,7 @@ import Router from 'next/router'
 import { connect } from 'react-redux';
 import { Linking } from 'expo'
 import actions from '../../redux/actions'
+import { numberUnmasker } from '../../utils/numberMasker'
 import { strings, paths, errors } from '../../utils/constants'
 import FirstStepForm from './FirstStepForm'
 import SecondStepForm from './SecondStepForm'
@@ -28,6 +29,7 @@ class Onboarding extends React.Component {
         this.formularySteps = ['set-email', 'set-password']
         this.errorMessages = {
             name: strings['pt-br']['onboardingNameAndLastNameError'],
+            phone: strings['pt-br']['onboardingPhoneError'],
             email: strings['pt-br']['onboardingEmailError'],
             confirmEmail: strings['pt-br']['onboardingConfirmEmailError'],
             confirmPassword: strings['pt-br']['onboardingConfirmPasswordError']
@@ -40,6 +42,7 @@ class Onboarding extends React.Component {
             step: 0,
             errors: {},
             name: '',
+            phone: '',
             email: '',
             confirmEmail: '',
             companyName: '',
@@ -57,6 +60,7 @@ class Onboarding extends React.Component {
     setErrors = (data) => this.setState(state => ({...state, errors: data}))
 
     setName = (data) => this.setState(state => ({...state, name: data}))
+    setPhone = (data) => this.setState(state => ({...state, phone: numberUnmasker(data, this.getPhoneNumberMask(data)).length <= 11 ? numberUnmasker(data, this.getPhoneNumberMask(data)) : this.state.phone}))
     setEmail = (data) => this.setState(state => ({...state, email: data}))
     setConfirmEmail = (data) => this.setState(state => ({...state, confirmEmail: data}))
     setCompanyName = (data) => this.setState(state => ({...state, companyName: data}))
@@ -65,10 +69,20 @@ class Onboarding extends React.Component {
     setPassword = (data) => this.setState(state => ({...state, password: data}))
     setConfirmPassword = (data) => this.setState(state => ({...state, confirmPassword: data}))
 
+    getPhoneNumberMask = (text) => {
+        if (!text || text.length <= 10) {
+            return '(00) 0000-0000'
+        } else {
+            return '(00) 00000-0000'
+        }
+    }
+
     isValid = (name, value) => {
         switch (name) {
             case 'name':
                 return ![null, undefined, ''].includes(value) && value.split(' ').length > 1 && value.split(' ')[1] !== ''
+            case 'phone':
+                return ![null, undefined, ''].includes(value) && numberUnmasker(value, this.getPhoneNumberMask(value)).length >= 10
             case 'email':
                 return ![null, undefined, ''].includes(value) && /@\w+\./g.test(value)
             case 'confirmEmail':
@@ -95,6 +109,7 @@ class Onboarding extends React.Component {
             partner: this.props.partner ? this.props.partner : null,
             shared_by: this.props.sharedBy ? this.props.sharedBy : null,
             company_name: this.state.companyName,
+            user_phone: this.state.phone,
             user_first_name: this.state.name.split(' ')[0],
             user_last_name: this.state.name.split(' ').slice(1).join(' '),
             user_email: this.state.email,
@@ -156,6 +171,9 @@ class Onboarding extends React.Component {
                     errors={this.state.errors}
                     name={this.state.name}
                     setName={this.setName}
+                    phone={this.state.phone}
+                    setPhone={this.setPhone}
+                    getPhoneNumberMask={this.getPhoneNumberMask}
                     email={this.state.email}
                     setEmail={this.setEmail}
                     confirmEmail={this.state.confirmEmail}
@@ -195,6 +213,9 @@ class Onboarding extends React.Component {
                     errors={this.state.errors}
                     name={this.state.name}
                     setName={this.setName}
+                    phone={this.state.phone}
+                    setPhone={this.setPhone}
+                    getPhoneNumberMask={this.getPhoneNumberMask}
                     email={this.state.email}
                     setEmail={this.setEmail}
                     confirmEmail={this.state.confirmEmail}

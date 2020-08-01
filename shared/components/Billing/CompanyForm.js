@@ -31,7 +31,9 @@ const PaymentAddressForm = (props) => {
     const onChangeCompanyDocumentNumber = (data) => {
         const unmasked = numberUnmasker(data, getCPForCNPJMask(data))
         if (unmasked.length <= 14) {
-            delete props.companyDataFormErrors.cnpj
+            if (unmasked !== '') {
+                delete props.companyDataFormErrors.cnpj
+            }
             props.companyData.cnpj = unmasked
             props.setCompanyDataFormErrors({...props.companyDataFormErrors })
             props.onChangeCompanyData({...props.companyData})
