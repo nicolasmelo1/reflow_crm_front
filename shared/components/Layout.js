@@ -105,17 +105,19 @@ class Layout extends React.Component {
     }
 
     checkIfUserInAdminUrl = () => {
-        let currentUrl = ''
-        if (process.env['APP'] === 'web') {
-            currentUrl = Router.pathname
-        } else {
-            // TODO: HANDLE MOBILE
-        }
-        if (pathsAsArray.filter(path => path.adminOnly === true).map(path => path.asUrl).includes(currentUrl)) {
+        if (isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user)) {
+            let currentUrl = ''
             if (process.env['APP'] === 'web') {
-                Router.push(paths.empty().asUrl, paths.empty().asUrl,{ shallow: true })
+                currentUrl = Router.pathname
             } else {
                 // TODO: HANDLE MOBILE
+            }
+            if (pathsAsArray.filter(path => path.adminOnly === true).map(path => path.asUrl).includes(currentUrl)) {
+                if (process.env['APP'] === 'web') {
+                    Router.push(paths.empty().asUrl, paths.empty().asUrl,{ shallow: true })
+                } else {
+                    // TODO: HANDLE MOBILE
+                }
             }
         }
     }
