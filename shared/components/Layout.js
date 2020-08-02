@@ -105,7 +105,7 @@ class Layout extends React.Component {
     }
 
     checkIfUserInAdminUrl = () => {
-        if (isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user)) {
+        if (!isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user)) {
             let currentUrl = ''
             if (process.env['APP'] === 'web') {
                 currentUrl = Router.pathname
