@@ -31,9 +31,9 @@ const PopoverWithAditionalInformation = React.forwardRef(({additionalInformation
 const ChargeForm = (props) => {
     const currencyPrefix = '$'
     const additionalInformationByIndividualChargeName = {
-        per_gb: 'Esse valor é relativo a toda a companhia. Portanto independente do número de usuários ou páginas.',
-        per_chart_user: `Essa é a quantidade de gráficos que cada usuário da sua companhia pode criar por página.\n\nEsse valor não inclui gráficos com a opção PARA TODA A COMPANHIA setada.\n\nEsse valor varia em relação à quantidade de usuários.`,
-        per_chart_company: `Essa é a quantidade de gráficos apenas admins podem criar pode criar por página.\n\nEsse valor inclui APENAS gráficos com a opção PARA TODA A COMPANHIA setada.\n\nEsse valor varia em relação à quantidade de usuários.`
+        per_gb: strings['pt-br']['billingChargePerGbAdditionalInformation'],
+        per_chart_user: strings['pt-br']['billingChargePerChartUserAdditionalInformation'],
+        per_chart_company: strings['pt-br']['billingChargePerChartCompanyAdditionalInformation']
     }
 
     const optionsForIndividualChargeTypes = {

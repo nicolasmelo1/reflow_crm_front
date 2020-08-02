@@ -13,7 +13,7 @@ const SidebarForm = (props) => {
                     <SidebarFormItem key={index}>
                         <Row>
                             <Col>
-                                <Link href={paths.home()} as={paths.home(form.form_name)}>
+                                <Link href={paths.home().asUrl} as={paths.home(form.form_name).asUrl}>
                                     <SidebarLink>{form.label_name}</SidebarLink>
                                 </Link>
                             </Col>

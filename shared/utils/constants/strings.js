@@ -6,6 +6,9 @@
 const strings = {
     'pt-br': {
         indexPageTitle: 'Reflow',
+        permissionNotPermittedError: 'EI! Você não deveria ter acesso a isso! Se quiser acessar esse conteúdo peça para o administrador da sua empresa.',
+        permissionInvalidBillingError: 'Parece que você não tem permissão para realizar essa ação, peça ao administrador para alterar as configurações de pagamento.',
+        permissionFreeTrialEndedError: 'Como tudo na vida, seu período de testes chegou ao fim. Contate o administrador para alterar as informações de pagamento e continuar usando a Reflow.',
         loginPageTitle: 'Login - Reflow',
         loginEmailLabel: 'E-mail',
         loginPassLabel: 'Senha',
@@ -227,6 +230,9 @@ const strings = {
         billingChargeTableHeaderDescriptionLabel: 'Descrição',
         billingChargeTableHeaderValueLabel: 'Valor',
         billingChargeTotalHeaderLabel: 'Total',
+        billingChargePerGbAdditionalInformation: 'Esse valor é relativo a toda a companhia. Portanto independente do número de usuários ou páginas.',
+        billingChargePerChartUserAdditionalInformation: `Essa é a quantidade de gráficos que cada usuário da sua companhia pode criar por página.\n\nEsse valor não inclui gráficos com a opção PARA TODA A COMPANHIA setada.\n\nEsse valor varia em relação à quantidade de usuários.`,
+        billingChargePerChartCompanyAdditionalInformation: `Essa é a quantidade de gráficos apenas admins podem criar pode criar por página.\n\nEsse valor inclui APENAS gráficos com a opção PARA TODA A COMPANHIA setada.\n\nEsse valor varia em relação à quantidade de usuários.`,
         billingPaymentFormBillingDateTitleLabel: 'Data de cobrança',
         billingPaymentFormInvoiceEmailsTitleLabel: 'E-mail de cobrança',
         billingPaymentFormAddAnotherEmailButtonLabel: 'Adicionar outro e-mail',

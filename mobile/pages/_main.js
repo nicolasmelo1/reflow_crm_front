@@ -11,7 +11,13 @@ import { useEffect } from 'react'
 
 
 const Main = (props) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false)
+    const [isAuthenticated, _setIsAuthenticated] = useState(false)
+    const isAuthenticatedRef = React.useRef(false)
+
+    const setIsAuthenticated = data => {
+        isAuthenticatedRef.current = data
+        _setIsAuthenticated(data)
+    }
 
     const registerForPushNotificationsAsync = async () => {
         const { status: existingStatus } = await getAsync(NOTIFICATIONS)
@@ -67,16 +73,16 @@ const Main = (props) => {
 
     useEffect(() => {
         Linking.addEventListener('url', (e) => {
-            handleNavigation(e.url)
+            handleNavigation(e.url, isAuthenticatedRef.current)
         })
         Linking.getInitialURL().then(response => {
-            handleNavigation(response)
+            handleNavigation(response, isAuthenticatedRef.current)
         })
         return () => {
             Linking.removeEventListener('url')
         }
     }, [])
-
+    
     return (
         <AuthenticationContext.Provider value={{
             isAuthenticated: isAuthenticated,

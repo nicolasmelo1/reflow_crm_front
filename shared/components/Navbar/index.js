@@ -26,7 +26,7 @@ class Navbar extends React.Component {
 
     handleLogout = (e) => {
         e.preventDefault()
-        Router.push(paths.login(), paths.login(),{ shallow: true })
+        Router.push(paths.login().asUrl, paths.login().asUrl,{ shallow: true })
         this.props.onDeauthenticate()
     }
 
@@ -37,7 +37,7 @@ class Navbar extends React.Component {
 
     handleBilling = (e) => {
         e.preventDefault()
-        Router.push(paths.billing(), paths.billing(), { shallow: true })
+        Router.push(paths.billing().asUrl, paths.billing().asUrl, { shallow: true })
     }
 
     handleUsers = (e) => {
@@ -119,8 +119,8 @@ class Navbar extends React.Component {
                     <FontAwesomeIcon icon={this.state.isOpen ? 'times' : 'bars'}/>
                 </NavbarToggleButton>
                 <NavbarItemsContainer isOpen={this.state.isOpen}>
-                    <NavbarLink link={paths.home(this.props.login.primaryForm)} slug={paths.home()} icon='tasks' label={strings['pt-br']['headerGestaoLabel']}/>
-                    <NavbarLink badge={this.props.notificationBadge > 0 ? this.props.notificationBadge : null} link={paths.notifications()} slug={paths.notifications()} icon='bell' label={strings['pt-br']['headerNotificationLabel']}/>
+                    <NavbarLink link={paths.home(this.props.login.primaryForm).asUrl} slug={paths.home().asUrl} icon='tasks' label={strings['pt-br']['headerGestaoLabel']}/>
+                    <NavbarLink badge={this.props.notificationBadge > 0 ? this.props.notificationBadge : null} link={paths.notifications().asUrl} slug={paths.notifications().asUrl} icon='bell' label={strings['pt-br']['headerNotificationLabel']}/>
                     <NavbarDropdown icon='cog' label={strings['pt-br']['headerSettingsLabel']} items={this.configDropdown}/>
                 </NavbarItemsContainer>
             </NavbarContainer>
@@ -133,7 +133,7 @@ class Navbar extends React.Component {
         return (
             <Tab.Navigator>
                 <Tab.Screen name="home" component={this.props.HomeComponent} initialParams={{setIsAuthenticated: this.props.setIsAuthenticated}}/>
-                <Tab.Screen name="notifications" component={this.props.NotificationComponent} params={{setIsAuthenticated: this.handleLogout}}/>
+                <Tab.Screen name="notifications" component={this.props.NotificationComponent} params={{setIsAuthenticated: this.props.setIsAuthenticated}}/>
             </Tab.Navigator>
         )
     }

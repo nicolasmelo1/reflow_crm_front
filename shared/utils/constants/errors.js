@@ -10,7 +10,10 @@ const errors = (lang, key) => {
         blank_field: strings[lang]['notificationConfigurationFormFieldBlankError'],
         unknown_field: strings[lang]['notificationConfigurationFormFieldUnknownError'],
         existing_user: strings[lang]['onboardingExistingUserError'],
-        invalid_data: strings[lang]['onboardingUnknownError']
+        invalid_data: strings[lang]['onboardingUnknownError'],
+        free_trial_ended: strings[lang]['permissionFreeTrialEndedError'],
+        invalid_billing: strings[lang]['permissionInvalidBillingError'],
+        not_permitted: strings[lang]['permissionNotPermittedError']
     }[key]
 }
 

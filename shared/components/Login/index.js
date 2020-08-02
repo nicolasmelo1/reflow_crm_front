@@ -49,7 +49,7 @@ class Login extends React.Component {
     }
 
     onClickForgotPassword = () => {
-        const changePasswordUrl = (process.env['APP']=== 'web') ? window.location.origin + paths.changepassword() + '?temp_pass={}' : ''
+        const changePasswordUrl = (process.env['APP']=== 'web') ? window.location.origin + paths.changepassword().asUrl + '?temp_pass={}' : ''
         const email = (this.emailRef.current?.value) ? this.emailRef.current.value : this.state.email
 
         if (![null, undefined, ''].includes(email) && /@\w+\./g.test(email)) {
@@ -68,9 +68,9 @@ class Login extends React.Component {
     redirectToOnboarding = () => {
         if (this._ismounted) {
             if (process.env['APP'] === 'web') {
-                Router.push(paths.onboarding(), paths.onboarding(), { shallow: true })
+                Router.push(paths.onboarding(), paths.onboarding().asUrl, { shallow: true })
             } else {
-                Linking.openURL(Linking.makeUrl(paths.onboarding()))
+                Linking.openURL(Linking.makeUrl(paths.onboarding().asUrl))
             }
         }
     }
@@ -95,7 +95,7 @@ class Login extends React.Component {
                     
                     if (!['', null, undefined].includes(this.props.login.primaryForm)) {
                         if (process.env['APP'] === 'web') {
-                            Router.push(paths.home(), paths.home(this.props.login.primaryForm), { shallow: true })
+                            Router.push(paths.home().asUrl, paths.home(this.props.login.primaryForm).asUrl, { shallow: true })
                         } else {
                             this.props.setIsAuthenticated(true)
                         }

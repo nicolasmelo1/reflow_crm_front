@@ -131,13 +131,13 @@ class Onboarding extends React.Component {
         if (process.env['APP'] === 'web') {
             if (window.location !== window.parent.location) { 
                 // The page is in an iFrames 
-                window.parent.location.replace(window.location.origin + paths.login());
+                window.parent.location.replace(window.location.origin + paths.login().asUrl);
             } else { 
                 // The page is not in an iFrame 
-                Router.push(paths.login(), paths.login(), { shallow: true })
+                Router.push(paths.login().asUrl, paths.login().asUrl, { shallow: true })
             } 
         } else {
-            Linking.openURL(Linking.makeUrl(paths.login()))
+            Linking.openURL(Linking.makeUrl(paths.login().asUrl))
         }
     }
 

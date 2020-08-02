@@ -32,18 +32,18 @@ const NotificationRecieved = (props) => {
         
         if (process.env['APP'] === 'web') {
             Router.push({
-                pathname: paths.home(),
+                pathname: paths.home().asUrl,
                 query: {
                     formId: formId
                 }
             }, {
-                pathname: paths.home(formName),
+                pathname: paths.home(formName).asUrl,
                 query: {
                     formId: formId
                 }
             }, {shallow: true})
         } else{
-            Linking.openURL(Linking.makeUrl(paths.home(formName), { formId: formId }))
+            Linking.openURL(Linking.makeUrl(paths.home(formName).asUrl, { formId: formId }))
         }
     }
 

@@ -76,7 +76,7 @@ const TemplatePreview = (props) => {
                 props.setAddTemplates(false)
                 if (props.groups.length === 0) {
                     if (process.env['APP'] === 'web') {
-                        Router.push(paths.home(), paths.home(response.data.data.last_form_name), { shallow: true })
+                        Router.push(paths.home().asUrl, paths.home(response.data.data.last_form_name).asUrl, { shallow: true })
                     } else {
                         // navigate to screen on mobile
                     }

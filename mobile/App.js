@@ -21,8 +21,6 @@ class App extends React.Component {
     }
 
 
-    //const { Component, pageProps, store } = this.props
-    //const [isAuthenticated, setIsAuthenticated] = useState(false)
     componentDidMount = () => {
         loadAsync({
             'Roboto-Black': require('./assets/font/Roboto-Black.ttf'),
