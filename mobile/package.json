@@ -24,6 +24,7 @@
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "babel-preset-expo": "~8.1.0",
     "bootstrap": "^4.5.0",
+    "chart.js": "^2.9.3",
     "expo": "^37.0.12",
     "expo-linking": "^1.0.1",
     "moment": "^2.25.3",

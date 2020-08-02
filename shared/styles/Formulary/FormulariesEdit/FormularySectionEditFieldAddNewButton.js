@@ -1,6 +1,10 @@
+import React from 'react'
 import styled from 'styled-components'
+import { TouchableOpacity, Text } from 'react-native'
 
-const StyledButtonContainer = styled.button`
+
+const StyledButtonContainer = process.env['APP'] === 'web' ?
+styled.button`
     text-align: center;
     border: 0;
     background-color: #0dbf7e;
@@ -8,19 +12,31 @@ const StyledButtonContainer = styled.button`
     padding: 5px;
     width: 100%
 `
+:
+styled(TouchableOpacity)
 
-const StyledButtonText = styled.p`
+const StyledButtonText = process.env['APP'] === 'web' ? 
+styled.p`
     margin: 0;
     padding: 0;
     color: #fff
 `
+:
+styled(Text)``
 
-const StyledPlusIcon = styled.svg`
+const StyledPlusIcon = process.env['APP'] === 'web' ?
+styled.svg`
     fill: #fff
 `
+:
+null
 
 const FormularySectionEditFieldAddNewButton = (props) => {
-    return (
+    const renderMobile = () => (
+        <View></View>
+    )
+
+    const renderWeb = () => (
         <StyledButtonContainer onClick={props.onClick}>
             <StyledButtonText>{props.text}</StyledButtonText>
             <div>
@@ -31,6 +47,8 @@ const FormularySectionEditFieldAddNewButton = (props) => {
             </div>
         </StyledButtonContainer>
     )
+
+    return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 
 export default FormularySectionEditFieldAddNewButton

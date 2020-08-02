@@ -13,7 +13,7 @@ const SidebarGroupEdit = (props) => {
         const formNames =  [].concat.apply([], groups.map(group => group.form_group.map(form => form.form_name)))
         const formName = (formNames.length > 0) ? formNames[0] : null
         if (!formNames.includes(router.query.form)) {
-            Router.push(paths.home(), paths.home(formName), { shallow: true })
+            Router.push(paths.home().asUrl, paths.home(formName).asUrl, { shallow: true })
         }
 
     }

@@ -20,8 +20,6 @@ import { KanbanFilterIcon, KanbanFilterHolder, KanbanFilterContainer, KanbanFilt
  * @param {Function} setFormularyDefaultData - the function to define a default data when the user changes 
  * the kanban card to a status with required field data. When the formulary data is loaded we change with this 
  * default data.
- * @param {Boolean} formularyHasBeenUpdated - this boolean is explained in the data page. This Boolean works like 
- * a signal, the value is not important.
  * @param {Function} setSearch - this function is to set search data, the search data is shared between visualization
  * types, that's why we use this.
  * @param {Object} search - object that is used to share between search data between search data.
@@ -33,13 +31,7 @@ class Kanban extends React.Component {
         this.source = null
         this.state = {
             configurationIsOpen: false,
-            isLoadingData: false,
-            params: {
-                page: 1,
-                search_value: this.props.search.value,
-                search_exact: this.props.search.exact,
-                search_field: this.props.search.field
-            }
+            isLoadingData: false
         }
     }
 
@@ -53,17 +45,19 @@ class Kanban extends React.Component {
         })
     }
 
-    setParams = async (params) => {
+    getParams = () => {
+        return {
+            search_value: this.props.filter.search_value,
+            search_field: this.props.filter.search_field,
+            search_exact: this.props.filter.search_exact
+        }
+    }
+
+    getNewDataFromUpdatedParams = async (params) => {
         if (this.props.kanban.initial.default_dimension_field_id && this.props.kanban.initial.default_kanban_card_id) {
             if (this.source){
                 this.source.cancel()
             }
-            this.setState(state => {
-                return {
-                    ...state,
-                    params: params
-                }
-            })
             this.source = this.CancelToken.source()
             return this.props.onGetKanbanData(this.source, params ,this.props.router.form)
         }
@@ -72,21 +66,14 @@ class Kanban extends React.Component {
 
     onFilter = (searchInstances) => {
         this.setIsLoadingData(true)
-        const params = {
-            ...this.state.params,
-            search_value: [],
-            search_exact: [],
-            search_field: []
-        }
-        searchInstances.forEach(searchInstance => {
-            if (searchInstance.value !== '' && searchInstance.field_name !== '') {
-                params.search_value.push(searchInstance.value)
-                params.search_field.push(searchInstance.field_name)
-                params.search_exact.push(0)
-            }
-        })
-        this.props.setSearch(params.search_field, params.search_value, params.search_exact)
-        this.setParams({...params}).then(response=> {
+        const searchParams = this.props.onSetSearch(searchInstances.map(
+            searchInstance => ({
+                searchField: searchInstance.field_name,
+                searchValue: searchInstance.value,
+            })
+        ))
+
+        this.getNewDataFromUpdatedParams({...searchParams}).then(__ => {
             this.setIsLoadingData(false)
         })
     }
@@ -98,10 +85,6 @@ class Kanban extends React.Component {
                 configurationIsOpen: configurationIsOpen
             }
         })
-    }
-
-    canUpdateKanbanData = (oldProps) => {
-        return this.props.formularyHasBeenUpdated !== oldProps.formularyHasBeenUpdated && this.props.kanban.initial && this.props.kanban.initial.default_kanban_card_id && this.props.kanban.initial.default_dimension_field_id
     }
     
     componentDidMount() {
@@ -122,13 +105,6 @@ class Kanban extends React.Component {
         }
         if (this.props.formularySettingsHasBeenUpdated !== prevProps.formularySettingsHasBeenUpdated) {
             this.props.onRenderKanban(this.source, this.props.router.form)
-        }
-        if (this.canUpdateKanbanData(prevProps)) {
-            if (this.source) {
-                this.source.cancel()
-            }
-            this.source = this.CancelToken.source()
-            this.props.onGetKanbanData(this.source, this.state.params, this.props.router.form)
         }
     }
 
@@ -160,7 +136,7 @@ class Kanban extends React.Component {
                                             <Filter
                                             isLoading={this.state.isLoadingData}
                                             fields={(this.props.kanban.initial.fields) ? this.props.kanban.initial.fields.map(field=> ({ name: field.name, label: field.label_name, type: field.type })) : []}
-                                            params={this.state.params} 
+                                            params={this.getParams()} 
                                             onFilter={this.onFilter}
                                             types={this.props.types}
                                             container={KanbanFilterHolder}
@@ -191,7 +167,7 @@ class Kanban extends React.Component {
                                             formName={this.props.router.form}
                                             formularySettingsHasBeenUpdated={this.props.formularySettingsHasBeenUpdated}
                                             cancelToken={this.CancelToken}
-                                            params={this.state.params}
+                                            params={this.getParams()}
                                             dimensionOrders={this.props.kanban.dimension_order}
                                             defaultFormName={this.props.kanban.initial.formName}
                                             defaultDimensionId={this.props.kanban.initial.default_dimension_field_id}
@@ -218,4 +194,4 @@ class Kanban extends React.Component {
     }
 }
 
-export default connect(state => ({ kanban: state.home.kanban, types: state.login.types }), actions)(Kanban)
+export default connect(state => ({ filter: state.home.filter, kanban: state.home.kanban, types: state.login.types }), actions)(Kanban)

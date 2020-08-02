@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import Utils from '../../../styles/Utils'
 import Option from './Option'
-import { SafeAreaView, Text } from 'react-native';
+import { SafeAreaView, Text, Keyboard, TouchableOpacity } from 'react-native';
 
 /**
  * Custom select component used in our formulary, if you need to change something in the select, change this component.
@@ -16,6 +15,10 @@ import { SafeAreaView, Text } from 'react-native';
  * @param {Function} onChange - a onChange function to be called when the user changes the value
  * @param {Boolean} isOpen - (optional) - state to show if the options are opened or closed, this way you can style this outside of the component.
  * @param {Function} setIsOpen = (optional) - set isOpenState to true so you know outside of this component that this is on an open state
+ * @param {Boolean} fixedHeight - (optional) - As default the height of the items never pass the bottom of the page, this means that
+ * when you open the select, the height of the select automatically adjusts itself so it never pass the bottom of the viewport. Setting this
+ * to true stick the size of the options container to a default maximum height. This is usually useful if the select is inside an overflow 
+ * container.
  * @param {string} searchValueColor - (optional) - set color to search value, that the user types to search
  * @param {String} optionColor - (optional) - default to #f2f2f2
  * @param {String} optionBackgroundColor - (optional) - default to #17242D
@@ -33,6 +36,7 @@ const Select = (props) => {
     let isOpen = props.isOpen
     let _setIsOpen = props.setIsOpen
     const [selectedOptions, setSelectedOptions] = useState([])
+    const [maximumHeight, _setMaximumHeight] = useState(null)
 
     if (props.isOpen === undefined && props.setIsOpen === undefined) {
         [isOpen, _setIsOpen] = useState(false)
@@ -40,19 +44,39 @@ const Select = (props) => {
     const [searchValue, setSearchValue] = useState('')
     const [options, setOptions] = useState(props.options)
     const inputRef = React.useRef(null)
+    const selectOptionsContainerRef = React.useRef(null)
     const selectRef = React.useRef()
     const selectedItemColors = ['#98A0A6']
     //const selectedItemColors = ['#0dbf7e', '#0BAB71', '#0A9864', '#098558', '#07724B']
     
+    // this is for always be inside the container height and not overflow
+    // with this the content overflow and we have a scrollbar.
+    const maximumHeightRef = React.useRef(maximumHeight)
+    const setMaximumHeight = () => {
+        if (process.env['APP'] === 'web' && selectOptionsContainerRef.current && !props.fixedHeight) {
+            const selectHeightIsBiggerThanViewport = selectOptionsContainerRef.current.getBoundingClientRect().bottom > (window.innerHeight || document.documentElement.clientHeight)
+            const selectHeightToFitViewport = selectOptionsContainerRef.current.getBoundingClientRect().height - selectOptionsContainerRef.current.getBoundingClientRect().bottom + (window.innerHeight || selectOptionsContainerRef.current.clientHeight)
+            if (selectHeightIsBiggerThanViewport) {
+                maximumHeightRef.current = selectHeightToFitViewport
+                _setMaximumHeight(maximumHeightRef.current)
+            } else if (maximumHeightRef.current !== null && maximumHeightRef.current !== selectHeightToFitViewport) {
+                maximumHeightRef.current = null
+                _setMaximumHeight(maximumHeightRef.current)
+            }
+        }
+    }
+
+
     // creating a ref to the state is the only way we can get the state changes in the eventHandler function,
     // so we can use it for the mousedown eventListenet function
     // NOTE: THIS IS ONLY FOR CLASS BASED COMPONENTS THAT USE HOOKS, class based might
     // work normally
-    const setIsOpenRef = React.useRef(isOpen);
+    const setIsOpenRef = React.useRef(isOpen)
     const setIsOpen = data => {
-        setIsOpenRef.current = data;
-        _setIsOpen(data);
-    };
+        setIsOpenRef.current = data
+        _setIsOpen(data)
+        defineHeight()
+    }
 
     const updateOptions = (value, selectedOptions) => {
         let filteredOptions = props.options.filter(option=> selectedOptions.find(selectedOption=> selectedOption.value === option.value) === undefined);
@@ -63,7 +87,6 @@ const Select = (props) => {
                 filteredOptions = filteredOptions.filter(option=> option.label.toLowerCase().includes(value.toLowerCase()))
             }
         }
-        //
         setSearchValue(value)
         setOptions(filteredOptions)
     }
@@ -146,6 +169,9 @@ const Select = (props) => {
         }
     }
 
+    const defineHeight = () => {
+        setMaximumHeight()
+    }
 
     useEffect(() => {
         if (isOpen) {
@@ -166,10 +192,12 @@ const Select = (props) => {
     useEffect(() => {
         if (process.env['APP'] === 'web') {
             document.addEventListener("mousedown", onSelectClick)
+            window.addEventListener('resize', defineHeight)
         }
         return () => {
             if (process.env['APP'] === 'web') {
                 document.removeEventListener("mousedown", onSelectClick);
+                window.removeEventListener('resize', defineHeight)
             }
         };
     }, [onSelectClick]);
@@ -195,11 +223,13 @@ const Select = (props) => {
             <Utils.Select.Select isOpen={isOpen} ref={selectRef} onPress={e=> {onSelectClick()}} animationType={'slide'}>
                 <SafeAreaView>
                     <Utils.Select.SelectedOptionsContainer isOpen={isOpen}>
-                        {(isOpen) ? (<Utils.Select.GoBackArrow title={'<'} color={'#17242D'} onPress={e=> {
-                            e.preventDefault()
-                            e.stopPropagation()
+                        {(isOpen) ? (
+                        <TouchableOpacity style={{ padding: 15 }} onPress={e=> {
                             setIsOpen(false)
-                        }}/>) : null}
+                        }}>
+                            <Utils.Select.GoBackArrow icon="arrow-left"/>
+                        </TouchableOpacity>
+                        ) : null}
                         {selectedOptions.map((selectedOption, index)=> (
                         <Utils.Select.SelectedOption 
                         key={selectedOption.value} 
@@ -229,6 +259,8 @@ const Select = (props) => {
                         {(isOpen) ? (
                             <Utils.Select.OptionsContainer 
                             //keyboardDismissMode={'on-drag'}
+                            onScroll={e=> {Keyboard.dismiss()}}
+                            scrollEventThrottle={32}
                             keyboardShouldPersistTaps={'handled'}
                             optionBackgroundColor={props.optionBackgroundColor}
                             optionColor={props.optionColor}
@@ -304,6 +336,8 @@ const Select = (props) => {
                 <Utils.Select.OptionsHolder>
                     {(isOpen) ? (
                         <Utils.Select.OptionsContainer 
+                        ref={selectOptionsContainerRef}
+                        maximumHeight={maximumHeight}
                         optionBackgroundColor={props.optionBackgroundColor}
                         optionColor={props.optionColor}
                         >

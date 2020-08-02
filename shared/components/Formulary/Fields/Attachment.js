@@ -18,16 +18,16 @@ const AttachmentItem = (props) => {
     const fileFormat = splittedFullName[splittedFullName.length-1]
 
     return (
-        <Field.Attachment.ItemContainer isInitial={props.isInitial} numberOfItems={props.numberOfItems}>
+        <Field.Attachment.ItemContainer isInitial={props.isInitial} numberOfItems={props.numberOfItems} isSectionConditional={props.isSectionConditional}>
             {(props.addFile) ? (
-                <Field.Attachment.Label isInitial={props.isInitial}>
-                    <Field.Attachment.Image isInitial={props.isInitial} src={(props.isInitial) ? "/add_icon.png" : `/${fileFormat}_icon.png`}/>
+                <Field.Attachment.Label isInitial={props.isInitial} isSectionConditional={props.isSectionConditional}>
+                    <Field.Attachment.Image isInitial={props.isInitial} src={(props.isInitial) ? "/add_icon.png" : `/${fileFormat}_icon.png`} isSectionConditional={props.isSectionConditional}/>
                     <Field.Attachment.Text isInitial={props.isInitial}>{(props.isInitial) ? strings['pt-br']['formularyFieldAttachmentDefaultLabel']: props.value.value}</Field.Attachment.Text>
                     <Field.Attachment.Input type="file" onChange={e => { props.addFile(e) }}/>
                 </Field.Attachment.Label>
             ) : (
-                <Field.Attachment.Label isInitial={props.isInitial} onClick={e=> {onClick()}}>
-                    <Field.Attachment.Image isInitial={props.isInitial} src={(props.isInitial) ? "/add_icon.png" : `/${fileFormat}_icon.png`}/>
+                <Field.Attachment.Label isInitial={props.isInitial} onClick={e=> {onClick()}} isSectionConditional={props.isSectionConditional}>
+                    <Field.Attachment.Image isInitial={props.isInitial} src={(props.isInitial) ? "/add_icon.png" : `/${fileFormat}_icon.png`} isSectionConditional={props.isSectionConditional}/>
                     <Field.Attachment.Text isInitial={props.isInitial}>{(props.isInitial) ? strings['pt-br']['formularyFieldAttachmentDefaultLabel']: props.value.value}</Field.Attachment.Text>
                 </Field.Attachment.Label>
             )}
@@ -75,7 +75,9 @@ const Attachment = (props) => {
 
         const formValues = props.multipleValueFieldHelper(attachmentValues)
         _setValues([...formValues])
-        props.addFieldFile(props.field.name, e.target.files[0])
+        if (props.addFieldFile) {
+            props.addFieldFile(props.field.name, e.target.files[0])
+        }
     }
 
     function removeFile(e, value) {
@@ -103,7 +105,7 @@ const Attachment = (props) => {
         <Field.Attachment.Container>
             <Field.Attachment.ScrollContainer>
                 {inputsProps.map((inputProps, index)=> {
-                    return (<AttachmentItem key={index} numberOfItems={inputsProps.length} {...inputProps}/>)
+                    return (<AttachmentItem key={index} numberOfItems={inputsProps.length} isSectionConditional={props.isSectionConditional} {...inputProps}/>)
                 })}
             </Field.Attachment.ScrollContainer>
         </Field.Attachment.Container>

@@ -6,7 +6,9 @@ import Kanban from './Kanban'
 import Notification from './Notification'
 import Error404 from './Error404'
 import Dashboard from './Dashboard'
+import Billing from './Billing'
 
+export { Billing }
 export { Dashboard }
 export { Notification }
 export { Error404 }

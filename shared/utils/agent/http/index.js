@@ -8,6 +8,7 @@ import TEMPLATES from './templates'
 import ONBOARDING from './onboarding'
 import CHANGE_PASSWORD from './changepassword'
 import DASHBOARD from './dashboard'
+import BILLING from './billing'
 
 export default {
     CHANGE_PASSWORD,
@@ -19,5 +20,6 @@ export default {
     NOTIFICATION,
     SIDEBAR,
     TEMPLATES,
-    DASHBOARD
+    DASHBOARD,
+    BILLING
 }

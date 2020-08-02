@@ -1,6 +1,9 @@
+import React from 'react'
 import styled from 'styled-components'
+import { View } from 'react-native'
 
-export default styled.div`
+export default process.env['APP'] === 'web' ?
+styled.div`
     position: relative;
     display: inline-block;
     float: right;
@@ -15,3 +18,5 @@ export default styled.div`
         margin: 5px 0 0 0;
     }
 `
+:
+styled(View)``

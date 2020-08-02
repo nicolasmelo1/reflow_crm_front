@@ -53,6 +53,43 @@ class Sidebar extends React.Component {
             }
         })
     }
+    
+    renderMobile() {
+        return (
+            <SidebarContainer sidebarIsOpen={this.props.sidebarIsOpen}>
+                <SidebarMenu>
+                    <View style={{ height: 40 }}>
+                        <SidebarTopButtonsContainer horizontal={true}>
+                            <TouchableOpacity onPress={e => this.enterEditMode(e)} style={{padding: 10}}>
+                                <SidebarEditTemplateButton>
+                                    {(this.state.isEditing) ? strings['pt-br']['goBack']: strings['pt-br']['sidebarEditTemplateButtonLabel']}
+                                </SidebarEditTemplateButton>
+                            </TouchableOpacity>
+                            {(this.state.isEditing) ? 
+                            null : (
+                                <TouchableOpacity onPress={e => this.props.setAddTemplates(true)} style={{padding: 10}}>
+                                    <SidebarAddNewTemplateButton>
+                                        {strings['pt-br']['sidebarAddNewTemplateButtonLabel']}
+                                    </SidebarAddNewTemplateButton>
+                                </TouchableOpacity>
+                            )}
+                        </SidebarTopButtonsContainer>
+                    </View>
+                    <SidebarGroup elements={this.props.sidebar.initial}/>
+                </SidebarMenu>
+                <SidebarToggleContainer>
+                    <View style={{ flexDirection: 'row', width:'100%', justifyContent:'space-between'}}>
+                        <SidebarToggle activeOpacity={0.8} onPress={e=> {
+                            this.props.setSidebarIsOpen(e)
+                        }}>
+                            <Text style={{color: '#0dbf7e', alignSelf:'center'}}>{(this.props.sidebarIsOpen) ? '<<<': '>>>'}</Text>
+                        </SidebarToggle>
+                    </View>
+                    {this.props.children}
+                </SidebarToggleContainer>
+            </SidebarContainer> 
+        )
+    }
 
     renderWeb() {
         return (
@@ -89,43 +126,6 @@ class Sidebar extends React.Component {
             </Row>
         )
     }
-
-    
-    renderMobile() {
-        return (
-            <SidebarContainer sidebarIsOpen={this.props.sidebarIsOpen}>
-                <SidebarMenu>
-                    <View style={{ height: 40 }}>
-                        <SidebarTopButtonsContainer horizontal={true}>
-                            <TouchableOpacity onPress={e => this.enterEditMode(e)} style={{padding: 10}}>
-                                <SidebarEditTemplateButton>
-                                    {(this.state.isEditing) ? strings['pt-br']['goBack']: strings['pt-br']['sidebarEditTemplateButtonLabel']}
-                                </SidebarEditTemplateButton>
-                            </TouchableOpacity>
-                            {(this.state.isEditing) ? 
-                            null : (
-                                <TouchableOpacity onPress={e => this.props.setAddTemplates(true)} style={{padding: 10}}>
-                                    <SidebarAddNewTemplateButton>
-                                        {strings['pt-br']['sidebarAddNewTemplateButtonLabel']}
-                                    </SidebarAddNewTemplateButton>
-                                </TouchableOpacity>
-                            )}
-                        </SidebarTopButtonsContainer>
-                    </View>
-                    <SidebarGroup elements={this.props.sidebar.initial}/>
-                </SidebarMenu>
-                <SidebarToggleContainer>
-                    <SidebarToggle activeOpacity={0.8} onPress={e=> {
-                        this.props.setSidebarIsOpen(e)
-                    }}>
-                        <Text style={{color: '#0dbf7e', alignSelf:'center'}}>{(this.props.sidebarIsOpen) ? '<<<': '>>>'}</Text>
-                    </SidebarToggle>
-                    {this.props.children}
-                </SidebarToggleContainer>
-            </SidebarContainer> 
-        )
-    }
-
 
     render () {  
         if (process.env['APP'] === 'web') {

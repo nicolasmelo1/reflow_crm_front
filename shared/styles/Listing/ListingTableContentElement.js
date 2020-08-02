@@ -1,6 +1,8 @@
+import React from 'react'
 import styled from 'styled-components'
 
-export default styled.td`
+export default process.env['APP'] === 'web' ?  
+styled.td`
     text-align: ${props=> props.isTableButton ? 'center': ' left'} !important;
     ${props=> props.isTableButton ? '': 'cursor: pointer;'}
     max-height: 20px;
@@ -12,3 +14,5 @@ export default styled.td`
     text-overflow: ellipsis; 
     white-space: nowrap
 `
+:
+null

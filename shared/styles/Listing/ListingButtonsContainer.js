@@ -1,6 +1,9 @@
+import React from 'react'
 import styled from 'styled-components'
+import { View } from 'react-native'
 
-export default styled.div`
+export default process.env['APP'] === 'web' ?
+styled.div`
     padding: 0 15px;
     @media(min-width: 640px) {
         width: 50%;
@@ -9,3 +12,5 @@ export default styled.div`
         width: 100%;
     }
 `
+:
+styled(View)``

@@ -174,6 +174,7 @@ const FormularySections = (props) => {
                     ): ''} 
                     {props.data.depends_on_dynamic_form.filter(sectionData=> section.id.toString() === sectionData.form_id.toString()).map((sectionData, index) => (
                         <FormularySection 
+                        isSectionConditional={section.conditional_value !== null}
                         type={props.type}
                         types={props.types}
                         errors={props.errors}

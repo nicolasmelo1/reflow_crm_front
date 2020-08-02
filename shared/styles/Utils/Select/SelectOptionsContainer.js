@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { ScrollView } from 'react-native'
 
 export default process.env['APP'] === 'web' ? 
-styled(React.forwardRef(({optionBackgroundColor, optionColor, ...rest}, ref) => <div {...rest} ref={ref}/>))`
+styled(React.forwardRef(({optionBackgroundColor, maximumHeight, optionColor, ...rest}, ref) => <div {...rest} ref={ref}/>))`
     width: 100%; 
     background-color: ${props => props.optionBackgroundColor ? props.optionBackgroundColor: '#17242D'};
     color: ${props => props.optionColor ? props.optionColor: '#f2f2f2'};
@@ -14,7 +14,7 @@ styled(React.forwardRef(({optionBackgroundColor, optionColor, ...rest}, ref) => 
         float: bottom;
     }
     @media(min-width: 420px) {
-        max-height: 300px;
+        max-height: ${props => props.maximumHeight ? `${props.maximumHeight}px` : '300px'};
         position: absolute;
         z-index: 5;
     }
@@ -24,5 +24,5 @@ styled(React.forwardRef(({optionBackgroundColor, optionColor, ...rest}, ref) => 
     width: 100%; 
     background-color: ${props => props.optionBackgroundColor ? props.optionBackgroundColor: '#17242D'};
     color: ${props => props.optionColor ? props.optionColor: '#f2f2f2'};
-    height: 100%;
+    height: 93%;
 `

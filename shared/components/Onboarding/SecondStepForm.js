@@ -30,13 +30,13 @@ const SecondStepForm = (props) => {
 
     const renderMobile = () => {
         return (
-            <OnboardingFormContainer showForm={props.showForm}>
+            <OnboardingFormContainer showForm={props.showForm} contentContainerStyle={{ alignItems: 'center' }}>
                 <OnboardingLabel>{strings['pt-br']['onboardingPasswordLabel']}<OnboardingRequiredLabel>*</OnboardingRequiredLabel></OnboardingLabel>
                 <OnboardingInput
                     isFocused={passwordIsFocused}
                     secureTextEntry={!visiblePassword} 
                     error={props.errors.hasOwnProperty('password')} 
-                    value={props.password} 
+                    value={props.password}
                     onChange={e=> {
                         props.onValidate('password', e.nativeEvent.text)
                         props.setPassword(e.nativeEvent.text)

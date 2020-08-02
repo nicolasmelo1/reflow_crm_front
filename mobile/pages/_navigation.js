@@ -1,6 +1,6 @@
 import React from 'react';
 import * as Linking from 'expo-linking'
-import { paths } from '@shared/utils/constants'
+import { paths, pathsAsArray } from '@shared/utils/constants/paths'
 
 export const navigationRef = React.createRef();
 
@@ -8,7 +8,8 @@ const checkUrl = (url) => {
     if (url) {
         for (let i =0; i<Object.getOwnPropertyNames(paths).length; i++) {
             const slugUrl = paths[Object.getOwnPropertyNames(paths)[i]]().replace(/^\//g, '')
-            if (url === '' && url === slugUrl) {
+            if (url === '' || url === slugUrl) {
+                console.log(Object.getOwnPropertyNames(paths))
                 return {isValid: true, params: {}, urlName: Object.getOwnPropertyNames(paths)[i]}
             }
             if (slugUrl !== '') {
@@ -37,16 +38,18 @@ const checkUrl = (url) => {
 // With this your Screens NEED to be on lowercase, with this we can easily navigate between screens. The name
 // of the screen you want to open when the user access a certain url must be conformed and defined in apps.
 // you can send parameters if you want to the url. See next.js documentation for details. But anyway, parameters
-// in the url MUST be between `[]` with the web version of the app.
-export const handleNavigation = (links) => {
+// in the url MUST be between `[]` like the web version of the app.
+export const handleNavigation = (links, isAuthenticated) => {
     if (links) {
         const parsedLink = Linking.parse(links)
         const { isValid, params, urlName } = checkUrl(parsedLink.path)
+        console.log(links)
+        console.log(parsedLink)
         if (isValid) {
             const parameters = Object.assign(params, parsedLink.queryParams)
-            try {
+            /*if((isAuthenticated && loginOnlyPaths.includes('/' + parsedLink.path)) || (!isAuthenticated && !loginOnlyPaths.includes('/' + parsedLink.path))) {
                 navigationRef.current?.navigate(urlName, parameters)
-            } catch {}
+            }*/
         }
     }
 }

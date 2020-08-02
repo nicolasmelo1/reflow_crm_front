@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from 'react'
+import { View, TouchableOpacity, Modal, Text, SafeAreaView, ScrollView, KeyboardAvoidingView } from 'react-native'
 import FilterInstance from './FilterInstance'
-import { FilterAddNewFilterButton, FilterSearchButton, FilterSpinner } from '../../styles/Filter';
+import { 
+    FilterAddNewFilterButton, 
+    FilterHeaderContainer,
+    FilterSearchButton, 
+    FilterSpinner 
+} from '../../styles/Filter';
 import { strings } from '../../utils/constants'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 
 /**
  * This component controls all of the filters, when filtering the user can add or remove how many filters he wants
@@ -58,6 +65,7 @@ const Filter = (props) => {
         if (index === 0) {
             searchInstances.splice(index, 1, newEmptyFilter())
             if (searchInstances.length === 1) {
+                onToggleFilter()
                 props.onFilter(searchInstances)
             }
         } else {
@@ -79,8 +87,6 @@ const Filter = (props) => {
     }
 
     const onToggleFilter = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
         setIsOpen(!isOpen)
     }
 
@@ -98,9 +104,9 @@ const Filter = (props) => {
 
     const pluralOrSingularButtonLabel = (instancesLength) => {
         if (instancesLength === 1) {
-            return '1 filtro ativo'
+            return strings['pt-br']['filterButtonLabelOneFilter']
         } else {
-            return instancesLength.toString() + ' filtros ativos'
+            return strings['pt-br']['filterButtonLabelNFilters'].replace('{}', instancesLength.toString())
         }
     }
 
@@ -125,50 +131,123 @@ const Filter = (props) => {
     }, [props.isLoading])
 
     useEffect(() => {
-        document.addEventListener("mousedown", onToggleFilterOnClickOutside); 
+        if (process.env['APP'] === 'web') {
+            document.addEventListener("mousedown", onToggleFilterOnClickOutside)
+        }
         return () => {
-            document.removeEventListener("mousedown", onToggleFilterOnClickOutside);
-        };
+            if (process.env['APP'] === 'web') {
+                document.removeEventListener("mousedown", onToggleFilterOnClickOutside)
+            }
+        }
     }, [onToggleFilterOnClickOutside])
 
-    const ContainerComponent = props.container ? props.container : `div`
-    const FilterContainerComponent = props.filterContainer ? props.filterContainer: `div`
-    const FilterButton = props.filterButton ? props.filterButton : `button`
+    const ContainerComponent = props.container ? props.container : process.env['APP'] === 'web' ? `div` : View
+    const FilterContainerComponent = props.filterContainer ? props.filterContainer: process.env['APP'] === 'web' ? `div` : Modal
+    const FilterButton = props.filterButton ? props.filterButton : process.env['APP'] === 'web' ? `button` : TouchableOpacity
+    const FilterButtonLabel = props.filterButtonLabel ? props.filterButtonLabel : process.env['APP'] === 'web' ? `p` : Text
     const fiterButtonLabel = props.params.search_value.length === 0 ? strings['pt-br']['filterButtonLabel'] : pluralOrSingularButtonLabel(props.params.search_value.length)
-    return (
-        <ContainerComponent ref={dropdownRef}>
-            <FilterButton onClick={e => {onToggleFilter(e)}}>
-                {props.filterButtonIcon ? (
-                    <span>
-                        {props.filterButtonIcon}&nbsp;{fiterButtonLabel}
-                    </span>
-                ) : (
-                    <span>
-                        {fiterButtonLabel}
-                    </span>)
-                }
-            </FilterButton>
-            {isOpen ? (
-                <FilterContainerComponent>
-                    {searchInstances.map((filter, index) => (
-                        <FilterInstance
-                        key={index}
-                        index={index}
-                        filter={filter}
-                        onChangeFilter={onChangeFilter}
-                        removeFilter={removeFilter}
-                        types={props.types}
-                        fields={fields}
-                        />
-                    ))}
-                    <FilterSearchButton onClick={e => {props.isLoading ? null : sendFilterData(e)}}>
-                        {props.isLoading ? (<FilterSpinner animation="border" size="sm"/>) : (strings['pt-br']['filterSearchButtonLabel'])}
-                    </FilterSearchButton>
-                    <FilterAddNewFilterButton onClick={e => {addNewFilter(e)}}>{strings['pt-br']['filterAddNewFilterButtonLabel']}</FilterAddNewFilterButton>
-                </FilterContainerComponent>
-            ) : ''}
-        </ContainerComponent>
-    )
+
+    const renderMobile = () => {
+        return (
+            <View>
+                <FilterButton onPress={e => onToggleFilter()}>
+                    {props.filterButtonIcon}<FilterButtonLabel>&nbsp;{fiterButtonLabel}</FilterButtonLabel>
+                </FilterButton>
+                {isOpen ? (
+                    <FilterContainerComponent animationType={'slide'}>
+                        <SafeAreaView style={{ height: '100%' }}>
+                            <KeyboardAvoidingView
+                            style={{ flex: 1, flexDirection: 'column',justifyContent: 'center'}} 
+                            behavior="padding" 
+                            enabled  
+                            >
+                                <FilterHeaderContainer>
+                                    <TouchableOpacity 
+                                    style={{padding: 10}}
+                                    onPress={e=>onToggleFilter()}>
+                                        <FontAwesomeIcon icon={'times'}/>
+                                    </TouchableOpacity>
+                                </FilterHeaderContainer>
+                                <FilterAddNewFilterButton onPress={e => {addNewFilter(e)}}>
+                                    <Text>
+                                        {strings['pt-br']['filterAddNewFilterButtonLabel']}
+                                    </Text>
+                                </FilterAddNewFilterButton>
+                                <ScrollView
+                                style={{ height: '100%'}}
+                                keyboardShouldPersistTaps={'handled'}
+                                >
+                                    {searchInstances.map((filter, index) => (
+                                        <FilterInstance
+                                        key={index}
+                                        index={index}
+                                        filter={filter}
+                                        onChangeFilter={onChangeFilter}
+                                        removeFilter={removeFilter}
+                                        types={props.types}
+                                        fields={fields}
+                                        />
+                                    ))}
+                                </ScrollView>
+                                <FilterSearchButton onPress={e => {
+                                    sendFilterData(e)
+                                    setIsOpen(false)
+                                }}>
+                                    <Text>
+                                        {strings['pt-br']['filterSearchButtonLabel']}
+                                    </Text>
+                                </FilterSearchButton>
+                            </KeyboardAvoidingView>
+                        </SafeAreaView>
+                    </FilterContainerComponent>
+                ) : null}
+            </View>
+        )
+    }
+
+    const renderWeb = () => {
+        return (
+            <ContainerComponent ref={dropdownRef}>
+                <FilterButton onClick={e => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    onToggleFilter()
+                }}>
+                    {props.filterButtonIcon ? (
+                        <span>
+                            {props.filterButtonIcon}&nbsp;{fiterButtonLabel}
+                        </span>
+                    ) : (
+                        <span>
+                            {fiterButtonLabel}
+                        </span>)
+                    }
+                </FilterButton>
+                {isOpen ? (
+                    <FilterContainerComponent>
+                        {searchInstances.map((filter, index) => (
+                            <FilterInstance
+                            key={index}
+                            index={index}
+                            filter={filter}
+                            onChangeFilter={onChangeFilter}
+                            removeFilter={removeFilter}
+                            types={props.types}
+                            fields={fields}
+                            />
+                        ))}
+                        <FilterSearchButton onClick={e => {props.isLoading ? null : sendFilterData(e)}}>
+                            {props.isLoading ? (<FilterSpinner animation="border" size="sm"/>) : (strings['pt-br']['filterSearchButtonLabel'])}
+                        </FilterSearchButton>
+                        <FilterAddNewFilterButton onClick={e => {addNewFilter(e)}}>{strings['pt-br']['filterAddNewFilterButtonLabel']}</FilterAddNewFilterButton>
+                    </FilterContainerComponent>
+                ) : ''}
+            </ContainerComponent>
+        )
+    }
+
+    return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
+
 }
 
 export default Filter;

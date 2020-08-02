@@ -1,6 +1,9 @@
+import React from 'react'
 import styled from 'styled-components'
+import { View } from 'react-native'
 
-export default styled.div`
+export default process.env['APP'] === 'web' ?
+styled.div`
     width: 280px;
     overflow-y: ${props => props.forceScroll ? 'scroll': 'auto'};
 
@@ -18,3 +21,5 @@ export default styled.div`
         max-height: calc(100vh - 254px)
     }
 `
+:
+styled(View)``

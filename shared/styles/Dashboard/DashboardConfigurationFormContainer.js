@@ -1,22 +1,22 @@
 import React from 'react'
 import styled from 'styled-components'
-import { SafeAreaView } from 'react-native'
+import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
-    position: absolute;
-    padding: ${props => props.isOpen ? '10px' : '0' };
-    bottom: ${props => props.isOpen ? '0' : 'calc(0px - var(--app-height))' };
-    left: 0;
-    height: var(--app-height);
-    width: var(--app-width);
-    overflow: hidden;
-    background-color: #fff;
-    transition: bottom 0.3s ease-in-out, padding 0.3s ease-in-out;
-    transform: translate3d(0,0,0);
-    z-index: 11;
+    box-shadow: 0 3px 6px #17242D;
+    border-radius: 10px;
+    padding: 10px;
+
+    @media(max-width: 640px) {
+        width: 100%;
+        margin-bottom: 10px
+    }
+
+    @media(min-width: 640px) {
+        width: 50%;
+        display: inline-block;
+    }
 `
 :
-styled(SafeAreaView)`
-    padding: 10px;
-`
+styled(View)``

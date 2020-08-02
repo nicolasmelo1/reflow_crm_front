@@ -88,6 +88,16 @@ const types = (lang, type, key) => {
             operations: strings[lang]['groupTypeOperations'],
             projects: strings[lang]['groupTypeProjects'],
             finance: strings[lang]['groupTypeFinance']
+        },
+        payment_method_type: {
+            credit_card: strings[lang]['paymentMethodTypeCreditCard'],
+            invoice: strings[lang]['paymentMethodTypeInvoice']
+        },
+        individual_charge_value_type: {
+            per_gb: strings[lang]['individualChargeValueTypePerGB'],
+            per_user: strings[lang]['individualChargeValueTypePerUser'],
+            per_chart_company: strings[lang]['individualChargeValueTypePerChartCompany'],
+            per_chart_user: strings[lang]['individualChargeValueTypePerChartUser']
         }
     }[type][key]
 }

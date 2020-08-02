@@ -20,7 +20,7 @@ styled(TouchableOpacity)`
     justify-content: center;
     align-items: center;
     background-color: ${props => props.selected ? '#bfbfbf' : props.color};
-    border-radius: 20px;
+    border-radius: 10px;
     border: 0;
     color: ${props => props.selected ? '#17242D' : '#fff'};
 `

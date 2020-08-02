@@ -4,7 +4,7 @@ import { Row, Col } from 'react-bootstrap';
 import Router, { withRouter } from 'next/router'
 import actions from '@shared/redux/actions';
 import { Layout, Formulary, Listing, Kanban, Error404, Dashboard } from '@shared/components';
-import { DataTypeHeaderAnchor } from '@shared/styles/Data'
+import { DataTypeHeaderAnchor, DataTypeHeaderContainer } from '@shared/styles/Data'
 import { strings, types, paths } from '@shared/utils/constants';
 
 
@@ -16,7 +16,7 @@ class Data extends React.Component {
     constructor(props) {
         super(props)
 
-        // the `formularyHasBeenUpdated` and `formularySettingsHasBeenUpdated` variable works like a signal. It doesn't matter if it's true or false
+        // the  `formularySettingsHasBeenUpdated` variable works like a signal. It doesn't matter if it's true or false
         // what it metters for us is if it has changed it's value. If the value has changed it means the formulary
         // has been updated, we use this to get new data on listing, kanban or whataver visualization the user is in.
         this.state = {
@@ -24,7 +24,6 @@ class Data extends React.Component {
             formularyId: null,
             formularyDefaultData: [],
             formularySettingsHasBeenUpdated: false,
-            formularyHasBeenUpdated: false,
             search: {
                 value: [],
                 exact: [],
@@ -55,15 +54,6 @@ class Data extends React.Component {
             return {
                 ...state,
                 formularySettingsHasBeenUpdated: !this.state.formularySettingsHasBeenUpdated
-            }
-        })
-    }
-
-    setFormularyHasBeenUpdated = () => {
-        this.setState(state => {
-            return {
-                ...state,
-                formularyHasBeenUpdated: !this.state.formularyHasBeenUpdated
             }
         })
     }
@@ -103,7 +93,7 @@ class Data extends React.Component {
     }
 
     getDataType = (dataTypeId) => {
-        return  this.props.types ? this.props.types.defaults.data_type.filter(dataType => dataType.id === dataTypeId) : 'listing'
+        return  this.props.types && this.props.types.defaults ? this.props.types.defaults.data_type.filter(dataType => dataType.id === dataTypeId) : 'listing'
     }
 
 
@@ -118,17 +108,12 @@ class Data extends React.Component {
             case 'dashboard':
                 return <Dashboard
                         formName={this.props.router.query.form}
-                        search={this.state.search}
-                        setSearch={this.setSearch} 
                         />
             case 'listing': 
                 return <Listing 
                         router={this.props.router.query} 
                         setFormularyId={this.openFormularyId} 
-                        setSearch={this.setSearch} 
                         formularySettingsHasBeenUpdated={this.state.formularySettingsHasBeenUpdated}
-                        formularyHasBeenUpdated={this.state.formularyHasBeenUpdated}
-                        search={this.state.search}
                         />
             case 'kanban':
                 return <Kanban 
@@ -136,18 +121,12 @@ class Data extends React.Component {
                         setFormularyId={this.openFormularyId}
                         setFormularyDefaultData={this.setFormularyDefaultData}
                         formularySettingsHasBeenUpdated={this.state.formularySettingsHasBeenUpdated}
-                        formularyHasBeenUpdated={this.state.formularyHasBeenUpdated}
-                        setSearch={this.setSearch} 
-                        search={this.state.search}
                         />
             default:
                 return <Listing 
                         router={this.props.router.query} 
                         setFormularyId={this.openFormularyId} 
-                        setSearch={this.setSearch} 
                         formularySettingsHasBeenUpdated={this.state.formularySettingsHasBeenUpdated}
-                        formularyHasBeenUpdated={this.state.formularyHasBeenUpdated}
-                        search={this.state.search}
                         />
         }
     }
@@ -157,7 +136,7 @@ class Data extends React.Component {
         if (this.props.router.query.formId) {
             // we take out the formId parameter of the url because it can cause some weird and non wanted
             // behaviour to the user if it is defined
-            Router.push(paths.home(), paths.home(this.props.router.query.form), {shallow: true})            
+            Router.push(paths.home().asUrl, paths.home(this.props.router.query.form).asUrl, {shallow: true})            
             this.openFormularyId(this.props.router.query.formId)
         }
     }
@@ -181,15 +160,17 @@ class Data extends React.Component {
                     <div>
                         <Row>
                             <Col>
-                                {this.props.types && this.props.types.defaults && this.props.types.defaults.data_type ? this.props.types.defaults.data_type.map(dataType => (
-                                    <DataTypeHeaderAnchor 
-                                    key={dataType.id}
-                                    onClick={e=> {this.setVisualization(dataType.id)}} 
-                                    isSelected={this.props.user && this.props.user.data_type ? this.props.user.data_type === dataType.id: false}
-                                    >
-                                        {types('pt-br','data_type', dataType.name)}    
-                                    </DataTypeHeaderAnchor> 
-                                )) : ''}
+                                <DataTypeHeaderContainer>
+                                    {this.props.types && this.props.types.defaults && this.props.types.defaults.data_type ? this.props.types.defaults.data_type.map(dataType => (
+                                        <DataTypeHeaderAnchor 
+                                        key={dataType.id}
+                                        onClick={e=> {this.setVisualization(dataType.id)}} 
+                                        isSelected={this.props.user && this.props.user.data_type ? this.props.user.data_type === dataType.id: false}
+                                        >
+                                            {types('pt-br','data_type', dataType.name)}    
+                                        </DataTypeHeaderAnchor> 
+                                    )) : ''}
+                                </DataTypeHeaderContainer>
                             </Col>
                         </Row>
                         <Formulary 
@@ -199,7 +180,6 @@ class Data extends React.Component {
                         formularyId={this.state.formularyId} 
                         setFormularyId={this.setFormularyId} 
                         setFormularySettingsHasBeenUpdated={this.setFormularySettingsHasBeenUpdated}
-                        setFormularyHasBeenUpdated={this.setFormularyHasBeenUpdated}
                         setFormularyDefaultData={this.setFormularyDefaultData}
                         formularyDefaultData={this.state.formularyDefaultData}
                         onOpenOrCloseFormulary={this.props.onOpenFormulary}

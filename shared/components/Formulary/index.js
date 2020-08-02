@@ -41,8 +41,6 @@ import { Formularies } from '../../styles/Formulary'
  * the 'open and close' type of formulary. It is used to reset the form to a default state.
  * @param {Function} setFormularySettingsHasBeenUpdated - (optional) - works like a signal, if the settings of the formulary have been
  * updated we notify using this function, usually used to update the kanban dimension order or the fields headers in the listing.
- * @param {Function} setFormularyHasBeenUpdated - (optional) - same as above, the difference is to notify a data have been inserted. 
- * A formulary have been saved.
  * @param {Function} setFormularyDefaultData - (optional) - REQUIRED IF `formularyDefaultData` is set. Sets the `formularyDefaultData` to 
  * null when the user closes the 'open and close' type of formulary. It is used to reset the form to a default state.
  * @param {Array<Object>} formularyDefaultData - (optional) - check components/Kanban/KanbanDimension.js to check how this data is defined. The default
@@ -107,9 +105,11 @@ class Formulary extends React.Component {
                     depends_on_dynamic_form: [...filledSectionsData]
                 }
             }, 
-            buildData: buildData 
+            buildData: buildData
         })) : null
     
+    resetAuxOriginalInitial = () => (this._ismounted) ? this.setState(state => ({...state, auxOriginalInitial: {}})) : null
+
     setAuxOriginalInitial = () => (this._ismounted) ? this.setState(state => {
         state.auxOriginalInitial = {
             buildData: JSON.parse(JSON.stringify(this.state.buildData)),
@@ -168,7 +168,6 @@ class Formulary extends React.Component {
                 } else if (this.state.buildData.form_name !== this.props.formName) {
                     this.onFullResetFormulary(this.state.auxOriginalInitial.buildData, this.state.auxOriginalInitial.filled)
                 } else {
-                    this.props.setFormularyHasBeenUpdated()
                     this.setIsOpen()
                 }
             })
@@ -280,6 +279,9 @@ class Formulary extends React.Component {
                 this.source.cancel()
             }
             if (this.state.isEditing) this.setIsEditing()
+            // reset the Original initial, because we don't need it anymore since we are loading a new formulary
+            // not reseting can cause a bug if the user is in a connected formulary and changes the page.
+            this.resetAuxOriginalInitial()
             this.onLoadFormulary(this.props.formName, null)
         } 
         // formulary id has changed, it was null and is not null anymore
@@ -293,8 +295,15 @@ class Formulary extends React.Component {
                 const id = data.id ? data.id : null
                 const sectionsData = data.depends_on_dynamic_form ? data.depends_on_dynamic_form : []
                 // need to set hasBuiltInitial to false in order to update in the sections
-                this.setFilledHasBuiltInitial(false)
-                this.setFilledData(id, sectionsData)
+                this.onFullResetFormulary(this.state.buildData, {
+                    hasBuiltInitial: false,
+                    isAuxOriginalInitial: false,
+                    data: {
+                        id: id,
+                        depends_on_dynamic_form: sectionsData
+                    },
+                    files: []
+                })
             })
         }
         // The formulary is closing

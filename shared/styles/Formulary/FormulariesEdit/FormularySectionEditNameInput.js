@@ -1,6 +1,9 @@
+import React from 'react'
 import styled from 'styled-components'
+import { Text } from 'react-native'
 
-export default styled.input`
+export default process.env['APP'] === 'web' ?
+styled.input`
     border: 0;
     border-bottom: 2px solid ${props => props.isConditional ? '#0dbf7e': '#17242D'};
     color: #f2f2f2;
@@ -16,3 +19,5 @@ export default styled.input`
         outline: none;
     }
 `
+:
+styled(Text)``

@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { View } from 'react-native'
+import { ScrollView } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
@@ -14,4 +14,7 @@ styled.div`
     max-height: 130px;
 `
 :
-styled(View)``
+styled(ScrollView)`
+    margin: 5px;
+    padding: 0 10px;
+`

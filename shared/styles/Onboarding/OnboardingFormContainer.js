@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { View } from 'react-native'
+import { ScrollView } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
@@ -11,12 +11,14 @@ styled.div`
     flex-direction: column;
     opacity: ${props => props.showForm ? '1': '0'};
     transition: opacity 1s ease-in-out; 
+    max-height: calc(var(--app-height) - 30px);
+    overflow: auto;
 `
 :
-styled(View)`
+styled(ScrollView)`
     border-radius: 20px;
-    padding: 20px;
-    align-items: center;
+    padding: 0 20px 0 20px;
     width: 100%;
+    height: 95%;
     flex-direction: column;
 `

@@ -7,6 +7,7 @@ export default process.env['APP'] === 'web' ?
 styled.div``
 :
 styled(View)`
+    width: 100%;
     flex-direction: column;
     flex-wrap: nowrap;
     justify-content: flex-start;

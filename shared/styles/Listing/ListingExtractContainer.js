@@ -1,8 +1,10 @@
+import React from 'react'
 import styled from 'styled-components'
+import { View } from 'react-native'
 
-export default styled.div`
+export default process.env['APP'] === 'web' ?
+styled.div`
     position: absolute;
-    max-width: 600px;
     z-index: 10;
     background-color: #17242D;
     border-radius: 5px; 
@@ -12,5 +14,8 @@ export default styled.div`
 
     @media(max-width: 640px) {
        right:0;
+       width: calc(var(--app-width) - 40px);
     }
 `
+:
+styled(View)``

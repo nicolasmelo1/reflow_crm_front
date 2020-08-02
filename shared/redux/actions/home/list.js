@@ -1,33 +1,56 @@
 import {
-    GET_DATA,
+    GET_LISTING_DATA,
     SET_HEADERS,
     SET_TOTALS
 } from '../../types';
 import agent from '../../../utils/agent'
+import delay from '../../../utils/delay'
+
+
+const makeDelay = delay(10000)
+
+
+const getListingData = async (dispatch, source, state, params, formName) => {
+    let stateData = state.home.list.data
+    let payload = {
+        pagination: stateData.pagination,
+        data: stateData.data
+    }
+
+    let response = await agent.http.LISTING.getData(source, params, formName)
+    if (response && response.status === 200) {
+        payload.pagination = response.data.pagination
+
+        if (params.page === 1) {
+            payload.data = response.data.data
+        } else {
+            payload.data = payload.data.concat(response.data.data)
+        }
+
+        dispatch({ type: GET_LISTING_DATA, payload: payload })
+    }
+    return response
+}
 
 
 const onGetListingData = (source, params, formName) => {
     return async (dispatch, getState) => {
-        let stateData = getState().home.list.data
-        let payload = {
-            pagination: stateData.pagination,
-            data: stateData.data
-        }
-
-        try {
-            let response = await agent.http.LISTING.getData(source, params, formName)
-            payload.pagination = response.data.pagination
-            if (params.page === 1) {
-                payload.data = response.data.data
-            } else {
-                payload.data = payload.data.concat(response.data.data)
+        agent.websocket.LISTING.recieveDataUpdated({
+            formName: formName,
+            callback: (data) => {
+                makeDelay(() => {
+                    const filterParams = getState().home.filter
+                    const params = {
+                        ...filterParams,
+                        page: 1
+                    }
+                    try {
+                        getListingData(dispatch, source, getState(), params, formName)
+                    } catch {}
+                })
             }
-            dispatch({ type: GET_DATA, payload: payload })
-            return response
-
-        } catch {
-            return null
-        }
+        })
+        return await getListingData(dispatch, source, getState(), params, formName)
     }
 }
 
@@ -49,7 +72,7 @@ const onRemoveData = (data, formName, formId) => {
             data: data
         }
         agent.http.LISTING.removeData(formName, formId)
-        dispatch({ type: GET_DATA, payload: payload })
+        dispatch({ type: GET_LISTING_DATA, payload: payload })
     }
 }
 

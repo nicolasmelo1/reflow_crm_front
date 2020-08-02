@@ -21,9 +21,9 @@ styled(React.forwardRef(({searchValueColor, ...rest}, ref) => <input {...rest} r
 :
 styled(React.forwardRef(({searchValueColor, ...rest}, ref) => <TextInput {...rest} ref={ref}/>))`
     color: ${props=>props.searchValueColor ? props.searchValueColor : 'black'};
+    flex: 1;
     border: 0;
     padding: 4px;
     margin: 1px 2px;
-    width: 50%;
-
+    min-width: 80px
 `

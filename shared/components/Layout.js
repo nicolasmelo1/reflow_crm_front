@@ -1,42 +1,32 @@
 import React from 'react'
+import Router from 'next/router';
+import { connect } from 'react-redux';
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { AsyncStorage, TouchableWithoutFeedback, Keyboard, SafeAreaView, Platform, View } from 'react-native'
 import Header from './Header'
 import Sidebar from './Sidebar'
 import Navbar from './Navbar'
 import Notify from './Notify'
 import Templates from './Templates'
-import { connect } from 'react-redux';
 import actions from '../redux/actions';
-import { library } from '@fortawesome/fontawesome-svg-core'
-import Router from 'next/router';
-import { paths } from '../utils/constants'
 import agent from '../utils/agent'
+import { pathsAsArray } from '../utils/constants/paths'
+import { paths, errors } from '../utils/constants'
+import { setStorageToken } from '../utils/agent/utils'
 import ContentContainer from '../styles/ContentContainer'
 import Body from '../styles/Body'
 import isAdmin from '../utils/isAdmin'
-import { AsyncStorage, TouchableWithoutFeedback, Keyboard, SafeAreaView, Platform, View } from 'react-native'
 import { 
+    faInfoCircle,
+    faTasks,
     faArrowDown, 
-    faPlusSquare, 
-    faEnvelope, 
-    faCalendarAlt, 
-    faSquareRootAlt, 
-    faPhone, 
-    faAlignLeft, 
+    faCalendarAlt,  
     faPencilAlt, 
-    faLink, 
-    faCheckSquare, 
-    faClipboardList, 
-    faParagraph,
-    faRulerHorizontal, 
     faClock, 
     faTrash, 
-    faCircle, 
-    faTasks, 
-    faChartBar, 
     faCog, 
     faBell, 
     faArrowsAlt, 
-    faEdit, 
     faArrowLeft,
     faBars,
     faPen, 
@@ -50,18 +40,47 @@ import {
     faChevronDown, 
     faPlusCircle,
     faFileUpload,
-    faTimes
+    faTimes,
+    faTimesCircle
 } from '@fortawesome/free-solid-svg-icons'
 
 
-library.add(faTimes, faPlusCircle, faEyeSlash, faPlusSquare, faEnvelope, faCalendarAlt, faSquareRootAlt, faPhone, faAlignLeft, faLink, faCheckSquare, faClipboardList, faParagraph, faArrowLeft, faRulerHorizontal, faClock, faTrash, faBell, faChartBar, faCircle, faCog, faTasks, faArrowsAlt, faEdit, faBars, faPen, faFilter, faSortAmountDown, faEye, faArrowsAlt, faChevronLeft, faChevronRight, faChevronUp, faChevronDown, faFileUpload, faPencilAlt, faArrowDown)
+library.add(
+    faInfoCircle,
+    faTasks,
+    faArrowDown, 
+    faCalendarAlt,  
+    faPencilAlt, 
+    faClock, 
+    faTrash, 
+    faCog, 
+    faBell, 
+    faArrowsAlt, 
+    faArrowLeft,
+    faBars,
+    faPen, 
+    faFilter, 
+    faSortAmountDown, 
+    faEye, 
+    faEyeSlash,
+    faChevronLeft, 
+    faChevronRight, 
+    faChevronUp, 
+    faChevronDown, 
+    faPlusCircle,
+    faFileUpload,
+    faTimes,
+    faTimesCircle
+)
 
 /*** 
  * This is the main component of the page, we use this custom layout component so pages can override from this.
  * IMPORTANT: When you create a new Page, PLEASE use this component as the first tag of your page.
  * 
  * PROPS:
- * title (String) - Defines the title tag of the page
+ * @param {String} title - (ONLY WEB) - Defines the title tag of the page
+ * @param {Boolean} isNotLogged - (ONLY MOBILE) - Defines that the user is not logged in.
+ * @param {Boolean} addTemplates - If set to true we will load a modal for the user to select the templates, otherwise we show the contents normally.
  * */
 class Layout extends React.Component {
     constructor(props) {
@@ -85,10 +104,42 @@ class Layout extends React.Component {
         }
     }
 
+    checkIfUserInAdminUrl = () => {
+        let currentUrl = ''
+        if (process.env['APP'] === 'web') {
+            currentUrl = Router.pathname
+        } else {
+            // TODO: HANDLE MOBILE
+        }
+        if (pathsAsArray.filter(path => path.adminOnly === true).map(path => path.asUrl).includes(currentUrl)) {
+            if (process.env['APP'] === 'web') {
+                Router.push(paths.empty().asUrl, paths.empty().asUrl,{ shallow: true })
+            } else {
+                // TODO: HANDLE MOBILE
+            }
+        }
+    }
+
+    permissionsHandler = async (requestStatusCode, reason) => {
+        if (['not_permitted', 'invalid_billing'].includes(reason)) {
+            this.props.onAddNotification(errors('pt-br', reason), 'error')
+        } else if (requestStatusCode === 403 && reason === 'free_trial_ended') {
+            // we just redirect the user if he is on the web, otherwise we just redirect him to the login page.
+            if (isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user) && process.env['APP'] === 'web') {
+                Router.push(paths.billing().asUrl, paths.billing().asUrl,{ shallow: true })
+            } else {
+                await setStorageToken('token', '')
+                await setStorageToken('refreshToken', '')
+                this.props.onAddNotification(errors('pt-br', reason), 'error')
+                this.setLogout(true)
+            }
+        }
+    }
+
     setLogout = (data) => {
         if (data && !this.props.isNotLogged) {
             if (process.env['APP'] === 'web') {
-                Router.push(paths.login(), paths.login(),{ shallow: true })
+                Router.push(paths.login().asUrl, paths.login().asUrl,{ shallow: true })
             } else {
                 this.props.setIsAuthenticated(false)
             }
@@ -106,8 +157,10 @@ class Layout extends React.Component {
 
     componentDidMount = () => {
         this._ismounted = true
+        this.checkIfUserInAdminUrl()
         agent.setCompanyId(this.props.login.companyId)
         agent.setLogout(this.setLogout)
+        agent.setPermissionsHandler(this.permissionsHandler)
         this.props.getDataTypes()
         this.setToken()
     }

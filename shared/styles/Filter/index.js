@@ -9,7 +9,9 @@ import FilterInputDropdownButton from './FilterInputDropdownButton'
 import FilterInputGroup from './FilterInputGroup'
 import FilterSearchButton from './FilterSearchButton'
 import FilterDropdownMenu from './FilterDropdownMenu'
+import FilterHeaderContainer from './FilterHeaderContainer'
 
+export { FilterHeaderContainer }
 export { FilterDropdownMenu }
 export { FilterAddNewFilterButton }
 export { FilterAndExtractButton }

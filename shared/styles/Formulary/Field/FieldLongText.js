@@ -1,6 +1,9 @@
+import React from 'react'
 import styled from 'styled-components'
+import { TextInput } from 'react-native'
 
-export default styled.textarea`
+export default process.env['APP'] === 'web' ?
+styled.textarea`
     border: 0;
     background-color: white !important;
     color: #17242D;
@@ -14,3 +17,5 @@ export default styled.textarea`
         outline: 0;
     }
 `
+:
+styled(TextInput)``

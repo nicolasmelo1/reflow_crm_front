@@ -45,6 +45,7 @@ import isEqual from '../../../utils/isEqual'
  * @param {Function} updateFieldFormValue - Function to add formValue from the parent state.
  * @param {Function} addFieldFile - Function to add new file, this function was defined in Formulary component and is used here
  * to add new files.
+ * @param {Boolean} isSectionConditional - True or false if the section is conditional or not, usually used for styling.
  * @param {Function} removeFieldFile - Function to remove a file from the files array in `index.js` in `shared/components/Formulary`.
  * @param {String} type - The type of the formulary, check `index.js` in `shared/components/Formulary`.
  * @param {Array<Object>} types - Array of objects about types. I think by now you might understand what it is, but anyway.

@@ -9,6 +9,7 @@ import { NotificationButton, NotificationTitle, NotificationHeader } from '../..
 import NotificationsConfiguration from './NotificationsConfiguration'
 import { strings } from '../../utils/constants'
 
+
 class Notification extends React.Component {
     constructor(props) {
         super(props)
@@ -37,8 +38,6 @@ class Notification extends React.Component {
     }
 
     renderMobile = () => {
-        const Stack = this.props.stack
-
         return ( 
             <View>
                 {this.state.isEditing ? (

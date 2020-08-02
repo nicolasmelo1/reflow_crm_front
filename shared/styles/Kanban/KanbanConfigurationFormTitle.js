@@ -1,6 +1,11 @@
+import React from 'react'
 import styled from 'styled-components'
+import { Text } from 'react-native'
 
-export default styled.h2`
+export default process.env['APP'] === 'web' ?
+styled.h2`
     margin: 0;
     color: #17242D
 `
+:
+styled(Text)``

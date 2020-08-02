@@ -5,7 +5,7 @@ import isEqual from '../isEqual'
 
 let registeredSocket = null
 let callbacks = []  
-
+let registering = false
 /**
  * This function works like a singleton for the websocket, you can have just ONE websocket running 
  * in your browser at a time.
@@ -19,7 +19,7 @@ let callbacks = []
  * 
  * This exposes 3 methods: addCallback, getSocket, send
  */
-const socket = async () => {
+const socket = () => {
     const domain = API_ROOT.replace('http://', 'ws://').replace('https://', 'wss://')
 
     async function getUrl() {
@@ -36,7 +36,7 @@ const socket = async () => {
     function callbacksArrayContainsCallback(callbackObject) {
         for (let i = 0; i < callbacks.length; i++) {
             if (isEqual(callbacks[i], callbackObject)) {
-                return true
+                return i
             }
         }
         return false
@@ -62,11 +62,13 @@ const socket = async () => {
             callback,
             argument
         }
-        if (!callbacksArrayContainsCallback(callbackObject)) {
-            callbacks.push(callbackObject)
-            if (registeredSocket) {
-                registeredSocket.addEventListener("message", (e) => callback({ data: JSON.parse(e.data), ...argument}))
-            }
+        const callbackIndex = callbacksArrayContainsCallback(callbackObject)
+        if (callbackIndex !== false) {
+            callbacks.splice(callbackIndex, 1)
+        }
+        callbacks.push(callbackObject)
+        if (registeredSocket) {
+            registeredSocket.addEventListener("message", (e) => callback({ data: JSON.parse(e.data), ...argument}))
         }
     }
 
@@ -110,7 +112,8 @@ const socket = async () => {
     }
 
     
-    if (!registeredSocket) {
+    if (!registeredSocket && !registering) {
+        registering = true
         connect()
     }
 

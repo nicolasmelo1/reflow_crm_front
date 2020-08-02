@@ -24,6 +24,9 @@ import {
     TemplatesTemplateFilterTypeButtons
 } from '../../styles/Templates'
 
+/**
+ * This compnent is responsible for showing the templates to a user.
+ */
 class Templates extends React.Component {
     constructor(props) {
         super(props)
@@ -163,7 +166,7 @@ class Templates extends React.Component {
                 <TemplatesHeader>
                     {this.props.groups.length > 0 ? (
                         <TemplatesGoBackButton onClick={e=>this.props.setAddTemplates(false)}>
-                            <FontAwesomeIcon icon={'chevron-left'} /> Voltar
+                            <FontAwesomeIcon icon={'chevron-left'} />&nbsp;{strings['pt-br']['templateGoBackButtonLabel']}
                         </TemplatesGoBackButton>
                     ) : ''}
                 </TemplatesHeader>

@@ -4,13 +4,10 @@ import { Row, Col } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import ListingTable from './ListingTable'
 import ListingExtract from './ListingExtract'
-import ListingTotals from './ListingTotals'
-import ListingTotalsForm from './ListingTotalsForm'
 import ListingColumnSelect from './ListingColumnSelect'
 import Filter from '../Filter'
 import actions from '../../redux/actions'
-import { ListingFilterAndExtractContainer, ListingFilterContainer, ListingFilterIcon, ListingFilterAndExtractButton, ListingTotalLabel, ListingTotalAddNewButton, ListingButtonsContainer } from '../../styles/Listing'
-import { strings } from '../../utils/constants'
+import { ListingFilterAndExtractContainer, ListingFilterContainer, ListingFilterIcon, ListingFilterAndExtractButton, ListingButtonsContainer } from '../../styles/Listing'
 
 /**
  * This component render all of the listing logic, like the table, the totals, filters and extract
@@ -28,12 +25,7 @@ class Listing extends React.Component {
             isOpenedTotalsForm: false,
             isLoadingData: false,
             params: {
-                page: 1,
-                sort_value: [],
-                sort_field: [],
-                search_value: this.props.search.value,
-                search_exact: this.props.search.exact,
-                search_field: this.props.search.field
+                page: 1
             }
         }
     }
@@ -57,80 +49,72 @@ class Listing extends React.Component {
         })
     }
 
-    setParams = (params) => {
+    getParams = (page) => {
+        return {
+            ...this.props.filter,
+            page: page
+        }
+    }
+
+    setPageParam = (page) => {
+        this.setState(state => (
+            state.params.page = page
+        ))
+        return this.getNewDataFromUpdatedParams(this.getParams(page))
+    }
+
+    getNewDataFromUpdatedParams = (params) => {
         if (this.source) {
             this.source.cancel()
         }
-        this.source = this.CancelToken.source();
-        this.setState(state => {
-            return {
-                ...state,
-                params: params
-            }
-        })
+        this.source = this.CancelToken.source()
         return this.props.onGetListingData(this.source, params, this.props.router.form)
     }
     
     onFilter = (searchInstances) => {
         this.setIsLoadingData(true)
-        const params = {
-            ...this.state.params,
-            page: 1,
-            search_value: [],
-            search_exact: [],
-            search_field: []
+
+        const searchParams = this.props.onSetSearch(searchInstances.map(
+            searchInstance => ({
+                searchField: searchInstance.field_name,
+                searchValue: searchInstance.value,
+            })
+        ))
+
+        let params = {
+            ...searchParams,
+            sort_field: this.props.filter.sort_field,
+            sort_value: this.props.filter.sort_value,
+            page: 1
         }
-        searchInstances.forEach(searchInstance => {
-            if (searchInstance.value !== '' && searchInstance.field_name !== '') {
-                params.search_value.push(searchInstance.value)
-                params.search_field.push(searchInstance.field_name)
-                params.search_exact.push(0)
-            }
-        })
-        //this.props.onGetTotals(this.state.params, this.props.router.form)
-        this.props.setSearch(params.search_field, params.search_value, params.search_exact)
-        this.setParams({...params}).then(__ => {
+
+        this.getNewDataFromUpdatedParams({...params}).then(__ => {
             this.setIsLoadingData(false)
         })
     }
 
     onSort = (fieldName, value) => {
         this.setIsLoadingData(true)
-        const params = {
-            ...this.state.params,
+
+        const searchParams = this.props.onSetSort(fieldName, value)
+
+        let params = {
+            ...searchParams,
+            search_field: this.props.filter.search_field,
+            search_value: this.props.filter.search_value,
+            search_exact: this.props.filter.search_exact,
             page: 1
         }
-        if (!fieldName || !value) {
-            throw new SyntaxError("onSort() function should recieve a fieldName and a value")
-        } 
-        if (value && !['down', 'upper', 'none'].includes(value)) {
-            throw new SyntaxError("value parameter MUST be one of the both: `upper`, `down` or `none` ")
-        }
-        if (value === '' || value === 'none') {
-            const indexToRemove = this.state.params.sort_field.findIndex(sortField=> sortField === fieldName)
-            params.sort_value.splice(indexToRemove, 1)
-            params.sort_field.splice(indexToRemove, 1)
-        } else {
-            const indexToUpdate = this.state.params.sort_field.findIndex(sortField=> sortField === fieldName)
-            if (indexToUpdate !== -1) {
-                params.sort_value[indexToUpdate] = value
-                params.sort_field[indexToUpdate] = fieldName
-            } else {
-                params.sort_value.push(value)
-                params.sort_field.push(fieldName)
-            }
-        }
-        this.setParams({...params}).then(__ => {
+       
+        this.getNewDataFromUpdatedParams({...params}).then(__ => {
             this.setIsLoadingData(false)
         })
     }
 
     componentDidMount = () => {
         this.source = this.CancelToken.source()
-
         this.props.onRenderListing(this.source, this.props.router.form)
-        this.props.onGetListingData(this.source, this.state.params, this.props.router.form)
-        //this.props.onGetTotals(this.state.params, this.props.router.form)
+        this.props.onGetListingData(this.source, this.getParams(this.state.params.page), this.props.router.form)
     }
 
     componentDidUpdate = (prevProps) => {
@@ -140,19 +124,11 @@ class Listing extends React.Component {
             }
             this.source = this.CancelToken.source()
             this.props.onRenderListing(this.source, this.props.router.form)
-            this.props.onGetListingData(this.source, this.state.params, this.props.router.form)
-            //this.props.onGetTotals(this.state.params, this.props.router.form)
+            this.props.onGetListingData(this.source, this.getParams(this.state.params.page), this.props.router.form)
         }
         if ( this.props.formularySettingsHasBeenUpdated !== prevProps.formularySettingsHasBeenUpdated) {
             this.source = this.CancelToken.source()
             this.props.onRenderListing(this.source, this.props.router.form)
-        }
-        if (this.props.formularyHasBeenUpdated !== prevProps.formularyHasBeenUpdated) {
-            this.setParams({
-                ...this.state.params,
-                page: 1
-            })
-            //this.props.onGetTotals(this.state.params, this.props.router.form)    
         }
     }
 
@@ -164,41 +140,13 @@ class Listing extends React.Component {
     render() {
         return (
             <div>
-                {/*<Row>
-                    <Col>
-                        <ListingTotalLabel>
-                            {strings['pt-br']['listingTotalTitleLabel']}
-                            {this.state.isOpenedTotalsForm ? '' : (
-                                <ListingTotalAddNewButton onClick={e => {this.setIsOpenedTotalsForm(true)}}/>
-                            )}
-                        </ListingTotalLabel>
-                        {this.state.isOpenedTotalsForm ? (
-                            <ListingTotalsForm
-                            formName={this.props.router.form} 
-                            params={this.state.params}
-                            headers={this.props.list.header} 
-                            onGetTotals={this.props.onGetTotals}
-                            onCreateTotal={this.props.onCreateTotal}
-                            setIsOpenedTotalsForm={this.setIsOpenedTotalsForm}
-                            types={this.props.types}
-                            />
-                        ): (
-                            <ListingTotals 
-                            onRemoveTotal={this.props.onRemoveTotal}
-                            onUpdateTotals={this.props.onUpdateTotals}
-                            totals={this.props.list.totals} 
-                            formName={this.props.router.form} 
-                            />
-                        )}
-                    </Col>
-                </Row>*/}
                 <Row style={{margin: '5px -15px'}}>
                     <ListingButtonsContainer>
                         <Filter
                         isLoading={this.state.isLoadingData}
                         fields={(this.props.list.field_headers && this.props.list.field_headers) ? 
                                 this.props.list.field_headers.map(field=> ({name: field.field.name, label: field.field.label_name, type: field.field.type})) : []} 
-                        params={this.state.params} 
+                        params={this.getParams(this.state.params.page)} 
                         onFilter={this.onFilter}
                         types={this.props.types}
                         container={ListingFilterAndExtractContainer}
@@ -207,7 +155,8 @@ class Listing extends React.Component {
                         filterButtonIcon={<ListingFilterIcon icon="filter"/>}
                         />
                         <ListingExtract 
-                        params={this.state.params} 
+                        params={this.getParams(this.state.params.page)} 
+                        dateFormat={this.props.dateFormat}
                         onExportData={this.props.onExportData} 
                         onGetExportedData={this.props.onGetExportedData} 
                         formName={this.props.router.form}
@@ -215,7 +164,7 @@ class Listing extends React.Component {
                     </ListingButtonsContainer>
                     <ListingButtonsContainer>
                         <ListingColumnSelect
-                        field_headers={this.props.list.field_headers} 
+                        fieldHeaders={this.props.list.field_headers} 
                         onUpdateHeader={this.props.onUpdateHeader}
                         onUpdateSelected={this.props.onUpdateSelected}
                         formName={this.props.router.form}
@@ -227,11 +176,12 @@ class Listing extends React.Component {
                         <ListingTable 
                         isLoadingData={this.state.isLoadingData}
                         setIsLoadingData={this.setIsLoadingData}
-                        params={this.state.params} 
+                        page={this.state.params.page} 
                         onRemoveData={this.props.onRemoveData}
                         onSort={this.onSort} 
-                        setParams={this.setParams}
-                        field_headers={this.props.list.field_headers} 
+                        setPageParam={this.setPageParam}
+                        getParams={this.getParams}
+                        fieldHeaders={this.props.list.field_headers} 
                         data={this.props.list.data.data}
                         pagination={this.props.list.data.pagination} 
                         setFormularyId={this.props.setFormularyId}
@@ -243,4 +193,4 @@ class Listing extends React.Component {
     }
 }
 
-export default connect(state => ({ list: state.home.list, types: state.login.types }), actions)(Listing)
+export default connect(state => ({ filter: state.home.filter, list: state.home.list, dateFormat: state.login.dateFormat, types: state.login.types }), actions)(Listing)

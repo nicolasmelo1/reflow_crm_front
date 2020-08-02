@@ -12,7 +12,7 @@ class ChangePasswordPage extends React.Component {
 
     goBack = () => {
         if (this.props.authenticationContext) {
-            Linking.openURL(Linking.makeUrl(paths.login()))
+            Linking.openURL(Linking.makeUrl(paths.login().asUrl))
         }
     }
 

@@ -1,9 +1,14 @@
+import React from 'react'
 import styled from 'styled-components'
+import { Text } from 'react-native'
 
-export default styled.input`
+export default process.env['APP'] === 'web' ?
+styled.input`
     display: none;
 
     &:focus {
         outline: none;
     }
 `
+:
+styled(Text)

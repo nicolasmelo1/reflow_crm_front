@@ -1,6 +1,9 @@
+import React from 'react'
 import styled from 'styled-components'
+import { Text } from 'react-native'
 
-export default styled.p`
+export default process.env['APP'] === 'web' ?
+styled.p`
     margin: ${props => props.isTitle ? '0 0 10px 0' : '0'};
     text-overflow: ellipsis;
     overflow: hidden;
@@ -10,3 +13,5 @@ export default styled.p`
     color: ${props => props.isTitle ? '#0dbf7e' : '#6a7074'};
     font-weight: ${props => props.isTitle ? 'bold': 'normal'};
 `
+:
+styled(Text)``

@@ -14,6 +14,16 @@ styled.div`
     overflow: hidden;
     box-shadow: 0 3px 6px #17242D;
     display: inline-block;
+    background-color: #fff;
 `
 :
-styled(View)``
+styled(View)`
+    width: 150px;
+    height: 150px;
+    margin: 5px;
+    top: 0;
+    right: 0;
+    border-radius: 10px;
+    border: #17242D;
+    background-color: #fff;
+`

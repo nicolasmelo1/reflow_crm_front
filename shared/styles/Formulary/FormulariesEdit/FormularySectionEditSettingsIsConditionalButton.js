@@ -1,6 +1,9 @@
+import React from 'react'
 import styled from 'styled-components'
+import { Text } from 'react-native'
 
-export default styled.label`
+export default process.env['APP'] === 'web' ?
+styled.label`
     background-color: #17242D;
     color: #f2f2f2; 
     font-weight: bold; 
@@ -8,3 +11,5 @@ export default styled.label`
     padding: 5px; 
     margin: 0
 `
+:
+styled(Text)``

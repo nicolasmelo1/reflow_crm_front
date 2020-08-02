@@ -16,7 +16,7 @@ import {
     ChangePasswordVisualizePasswordLabel,
     ChangePasswordHeader,
     ChangePasswordGoBackButton
- } from '../../styles/ChangePassword'
+} from '../../styles/ChangePassword'
 
 
 /**
@@ -94,7 +94,7 @@ class ChangePassword extends React.Component {
 
     redirectToLogin = () => {
         if (process.env['APP'] === 'web') {
-            Router.push(paths.login(), paths.login(), { shallow: true })
+            Router.push(paths.login().asUrl, paths.login().asUrl, { shallow: true })
         }
     }
 

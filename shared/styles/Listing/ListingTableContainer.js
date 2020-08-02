@@ -1,6 +1,9 @@
+import React from 'react'
 import styled from 'styled-components'
+import { View } from 'react-native'
 
-export default styled.div`
+export default process.env['APP'] === 'web' ?
+styled.div`
     text-align: center;
     overflow-x: auto;
     overflow-y: auto;
@@ -13,3 +16,5 @@ export default styled.div`
         max-height: calc(var(--app-height) - ${props=> props.isMobile ? '195px' : '215px'})
     }
 `
+:
+styled(View)``
