@@ -155,6 +155,7 @@ class Listing extends React.Component {
                         filterButtonIcon={<ListingFilterIcon icon="filter"/>}
                         />
                         <ListingExtract 
+                        onAddNotification={this.props.onAddNotification}
                         params={this.getParams(this.state.params.page)} 
                         dateFormat={this.props.dateFormat}
                         onExportData={this.props.onExportData} 

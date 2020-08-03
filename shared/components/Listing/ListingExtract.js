@@ -19,6 +19,8 @@ import { stringToJsDateFormat, jsDateToStringFormat } from '../../utils/dates'
  * 
  * ATENTION: Be aware of the dateFormat, we are using right now 'DD/MM/YYYY' but we want in the near future for 
  * the user to be able to select a default date format for his system.
+ * @param {Function} onAddNotification - This is a redux action to add notifications to the top of the page, here
+ * we use to display if everything went wrong or right. 
  * @param {String} formName - the name of the formulary the user is in, we can get this from the url parameters.
  * @param {Object} params - the parameters of the listing, parameters define the filter, the sort, the date range
  * and many other stuff. This way we can extract the exact same data that is being displayed to the user.
@@ -56,6 +58,9 @@ const ListingExtract = (props) => {
             await sleep(2000);
             response = await props.onGetExportedData(fileId)
             counter = (response.data.status !== 'empty') ? 61 : counter + 1
+            if (counter === 60) {
+                props.onAddNotification(strings['pt-br']['listingExtractTimeoutError'], 'error')
+            }
         }
         setIsExtracting(false)
     }

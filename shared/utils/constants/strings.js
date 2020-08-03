@@ -162,6 +162,7 @@ const strings = {
         listingExtractUpdateDateLabel: 'Data de atualização',
         listingExtractCSVButtonLabel: '.csv',
         listingExtractXLSXButtonLabel: '.xlsx',
+        listingExtractTimeoutError: 'Não foi possível extrair os dados selecionados. Tente colocar um período menor na Data de Atualização',
         listingColumnSelectButtonLabel: 'Selecionar colunas exibidas',
         listingTotalTitleLabel:'Totais',
         listingTotalFormTitleLabel:'Construir card de totais',
