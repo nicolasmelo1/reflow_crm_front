@@ -232,7 +232,7 @@ const strings = {
         billingChargeTotalHeaderLabel: 'Total',
         billingChargePerGbAdditionalInformation: 'Esse valor é relativo a toda a companhia. Portanto independente do número de usuários ou páginas.',
         billingChargePerChartUserAdditionalInformation: `Essa é a quantidade de gráficos que cada usuário da sua companhia pode criar por página.\n\nEsse valor não inclui gráficos com a opção PARA TODA A COMPANHIA setada.\n\nEsse valor varia em relação à quantidade de usuários.`,
-        billingChargePerChartCompanyAdditionalInformation: `Essa é a quantidade de gráficos apenas admins podem criar pode criar por página.\n\nEsse valor inclui APENAS gráficos com a opção PARA TODA A COMPANHIA setada.\n\nEsse valor varia em relação à quantidade de usuários.`,
+        billingChargePerChartCompanyAdditionalInformation: `Esse valor inclui APENAS gráficos COMPARTILHADOS entre todos os usuários do sistema.\n\nEsse valor inclui APENAS gráficos com a opção PARA TODA A COMPANHIA setada.\n\nEsse valor varia em relação à quantidade de usuários.`,
         billingPaymentFormBillingDateTitleLabel: 'Data de cobrança',
         billingPaymentFormInvoiceEmailsTitleLabel: 'E-mail de cobrança',
         billingPaymentFormAddAnotherEmailButtonLabel: 'Adicionar outro e-mail',
