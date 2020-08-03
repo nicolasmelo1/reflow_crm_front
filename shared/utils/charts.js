@@ -27,12 +27,14 @@ const chart = (context, type, labels, values, numberFormat=null, maintainAspectR
     let colors = Array.from(possibleColors)
     const defineColors = () => {
         let colors = Array.from(possibleColors)
-        return values.map((__, index)=> {
+        let count = 0
+        return values.map(__=> {
             //const indexToRemove = Math.floor(Math.random() * colors.length)
-            if (!colors[index]) {
-                colors = Array.from(possibleColors)
+            if (typeof(colors[count]) === 'undefined') {
+                count = 0
             }
-            const color = colors[index].toString().slice(0)
+            const color = colors[count].toString().slice(0)
+            count++
             return color
         })
     } 

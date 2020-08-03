@@ -29,6 +29,7 @@ class Billing extends React.Component {
         this.cancelToken = axios.CancelToken
         this.source = null
         this.state = {
+            isSubmitting: false,
             addressOptions: [],
             isCompanyFormOpen: false,
             isChargeFormOpen: false, 
@@ -47,6 +48,8 @@ class Billing extends React.Component {
             }
         }
     }
+
+    setIsSubmitting = () => this.setState(state => ({ ...state, isSubmitting: !state.isSubmitting }))
 
     setIsChargeFormOpen = () => this.setState(state => ({ ...state, isChargeFormOpen: !state.isChargeFormOpen }))
 
@@ -110,6 +113,8 @@ class Billing extends React.Component {
         this.props.onUpdatePaymentData(gatewayToken).then(response=>{
             if (response && response.status !== 200 && response.data.error) {
                 this.onSetError(response.data.error)
+            } else {
+                this.props.onGetPaymentData(this.source)
             }
         })
     }
