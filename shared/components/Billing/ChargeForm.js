@@ -71,7 +71,11 @@ const ChargeForm = (props) => {
             }
         ]
     }
-    const [totals, setTotals] = useState([])
+    const [totals, setTotals] = useState({
+        total: 0,
+        discounts: 0,
+        total_by_name: []
+    })
 
     const getDecimals = (number) => {
         if (number.toString().includes('.')) {
@@ -79,10 +83,6 @@ const ChargeForm = (props) => {
         } else {
             return number.toString() + ',00' 
         }
-    }
-
-    const getTotal = () => {
-        return `${currencyPrefix} ${getDecimals((totals.length > 0) ? totals.reduce((acumulator, value) => acumulator + value.total, 0) : '0')}`
     }
 
     const onChangeQuantity = (value, name) => {
@@ -104,7 +104,7 @@ const ChargeForm = (props) => {
     }
 
     const getTotalByName = (name) => {
-        const total = totals.filter(total => total.name === name)
+        const total = totals.total_by_name.filter(total => total.name === name)
         if (total.length > 0) {
             return `${currencyPrefix} ${getDecimals(total[0].total)}`
         } else {
@@ -203,10 +203,17 @@ const ChargeForm = (props) => {
                         </BillingChargeTableRow>
                     )) }
                 </BillingFormularySectionContainer>
+                {totals.discounts != 0 ? (
+                    <BillingFormularySectionContainer>
+                        <BillingChargeTotalContainer style={{ color: '#0dbf7e'}}>
+                            {strings['pt-br']['billingChargeDiscountLabel'].replace('{}', `${currencyPrefix} ${getDecimals(totals.discounts)}`)}
+                        </BillingChargeTotalContainer>
+                    </BillingFormularySectionContainer>
+                ) : ''}
                 <BillingFormularySectionContainer>
                     <BillingChargeTotalContainer>
                         {strings['pt-br']['billingChargeTotalHeaderLabel']}
-                        <BillingChargeTotalValueLabel>{getTotal()}</BillingChargeTotalValueLabel>
+                        <BillingChargeTotalValueLabel>{`${currencyPrefix} ${getDecimals(totals.total)}`}</BillingChargeTotalValueLabel>
                     </BillingChargeTotalContainer>
                 </BillingFormularySectionContainer>
             </BillingFormularyContainer>

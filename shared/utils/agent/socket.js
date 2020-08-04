@@ -92,6 +92,7 @@ const socket = () => {
         setTimeout(() => {
             if (registeredSocket.readyState !== 1) {
                 if (process.env.NODE_ENV !== 'production') console.log('Could not connect to server, trying again...')
+                registeredSocket.close()
                 reconnect()
             } else {
                 if (process.env.NODE_ENV !== 'production') console.log('Reconnected.')

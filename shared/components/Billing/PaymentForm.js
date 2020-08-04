@@ -61,7 +61,6 @@ const PaymentForm = (props) => {
         const hasCompanyInvoiceEmailsInErrorObj = Array.from(Object.keys(props.paymentDataFormErrors)).includes('company_invoice_emails')
         if (hasCompanyInvoiceEmailsInErrorObj) {
             const errorMessagesArray = props.paymentDataFormErrors.company_invoice_emails.map(companyInvoiceMail => (companyInvoiceMail?.email) ? companyInvoiceMail.email[0]: '')
-            console.log(errorMessagesArray)
             if (props.paymentDataFormErrors.company_invoice_emails.includes('invalid')) {
                 return true
             } else if (errorMessagesArray.includes('blank') && email===''){

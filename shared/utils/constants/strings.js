@@ -230,6 +230,7 @@ const strings = {
         billingChargeTableHeaderQuantityLabel: 'Quantidade',
         billingChargeTableHeaderDescriptionLabel: 'Descrição',
         billingChargeTableHeaderValueLabel: 'Valor',
+        billingChargeDiscountLabel: 'Você tem {} em cupons de desconto',
         billingChargeTotalHeaderLabel: 'Total',
         billingChargePerGbAdditionalInformation: 'Esse valor é relativo a toda a companhia. Portanto independente do número de usuários ou páginas.',
         billingChargePerChartUserAdditionalInformation: `Essa é a quantidade de gráficos que cada usuário da sua companhia pode criar por página.\n\nEsse valor não inclui gráficos com a opção PARA TODA A COMPANHIA setada.\n\nEsse valor varia em relação à quantidade de usuários.`,

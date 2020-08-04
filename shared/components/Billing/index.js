@@ -130,7 +130,8 @@ class Billing extends React.Component {
                     password: ''
                 }
             }).then(response => {
-                if (response && response.status === 200) {
+                console.log(response)
+                if (response && [200, 201].includes(response.status)) {
                     this.onSubmitPayment(response.data.payment_profile.gateway_token)
                 }
             }).catch(error => {
