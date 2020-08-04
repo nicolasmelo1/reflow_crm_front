@@ -44,6 +44,15 @@ const DashboardConfiguration = (props) => {
     const [fieldOptions, setFieldOptions] = useState([])
     const sourceRef = React.useRef(null)
 
+    const onGetDashboardSettingsData = () => {
+        // Load dashboard settings data directly in the component
+        props.onGetDashboardSettings(sourceRef.current, props.formName).then(response=> {
+            if (response && response.status === 200 && response.data.data) {
+                setDashboardSettingsData(response.data.data)
+            }
+        })
+    }
+
     const onSubmitDashboardSettings = async (index, newData) => {
         let response = null
         if (newData.id) {
@@ -92,12 +101,8 @@ const DashboardConfiguration = (props) => {
 
     useEffect(() => {
         sourceRef.current = props.cancelToken.source()
-        // Load dashboard settings data directly in the component
-        props.onGetDashboardSettings(sourceRef.current, props.formName).then(response=> {
-            if (response && response.status === 200 && response.data.data) {
-                setDashboardSettingsData(response.data.data.reverse())
-            }
-        })
+
+        onGetDashboardSettingsData()
         props.onGetFieldOptions(sourceRef.current, props.formName).then(response => {
             if (response && response.status === 200) {
                 setFieldOptions(response.data.data)
@@ -123,6 +128,7 @@ const DashboardConfiguration = (props) => {
                     <DashboardConfigurationCard
                     key={index}
                     types={props.types}
+                    onGetDashboardSettingsData={onGetDashboardSettingsData}
                     getChartTypeNameById={props.getChartTypeNameById}
                     fieldOptions={fieldOptions}
                     onSubmitDashboardSettings={(data) => (onSubmitDashboardSettings(index, data))}
@@ -145,6 +151,7 @@ const DashboardConfiguration = (props) => {
                     <DashboardConfigurationCard
                     key={index}
                     types={props.types}
+                    onGetDashboardSettingsData={onGetDashboardSettingsData}
                     getChartTypeNameById={props.getChartTypeNameById}
                     fieldOptions={fieldOptions}
                     onSubmitDashboardSettings={(data) => (onSubmitDashboardSettings(index, data))}

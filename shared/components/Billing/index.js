@@ -1,5 +1,7 @@
 import React from 'react'
 import { View } from 'react-native'
+import { Spinner } from 'react-bootstrap'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import creditCardType from 'credit-card-type'
@@ -29,6 +31,7 @@ class Billing extends React.Component {
         this.cancelToken = axios.CancelToken
         this.source = null
         this.state = {
+            showAllGoodIcon: false,
             isSubmitting: false,
             addressOptions: [],
             isCompanyFormOpen: false,
@@ -48,7 +51,7 @@ class Billing extends React.Component {
             }
         }
     }
-
+    setShowAllGoodIcon = () => this.setState(state => ({...state, showAllGoodIcon: !state.showAllGoodIcon }))
     setIsSubmitting = () => this.setState(state => ({ ...state, isSubmitting: !state.isSubmitting }))
 
     setIsChargeFormOpen = () => this.setState(state => ({ ...state, isChargeFormOpen: !state.isChargeFormOpen }))
@@ -82,6 +85,16 @@ class Billing extends React.Component {
         }
     }
 
+    getWhatToRenderInsideSaveButton = () => {
+        if (this.state.isSubmitting) {
+            return (<Spinner animation="border" size="sm"/>)
+        } else if (this.state.showAllGoodIcon) {
+            return (<FontAwesomeIcon icon="check"/>)
+        } else {
+            return strings['pt-br']['billingSaveButtonLabel']
+        }
+    }
+
     setError = (field, type) => ({[field]: type})
     
     onSetError = (error) => {
@@ -111,15 +124,23 @@ class Billing extends React.Component {
 
     onSubmitPayment = (gatewayToken = null) => {
         this.props.onUpdatePaymentData(gatewayToken).then(response=>{
+            this.setIsSubmitting(false)
             if (response && response.status !== 200 && response.data.error) {
                 this.onSetError(response.data.error)
             } else {
                 this.props.onGetPaymentData(this.source)
+                this.setShowAllGoodIcon(true)
+                setTimeout(() => {
+                    if (this._ismounted) {
+                        this.setShowAllGoodIcon(false)
+                    }
+                }, 1000)
             }
         })
     }
 
     onSubmit = () => {
+        this.setIsSubmitting(true)
         if (this.isToShowCreditCardForm()) {
             axios.post(VINDI_PUBLIC_API, {
                 ...this.state.creditCardData, 
@@ -130,11 +151,13 @@ class Billing extends React.Component {
                     password: ''
                 }
             }).then(response => {
-                console.log(response)
                 if (response && [200, 201].includes(response.status)) {
                     this.onSubmitPayment(response.data.payment_profile.gateway_token)
+                } else {
+                    this.setIsSubmitting(false)
                 }
             }).catch(error => {
+                this.setIsSubmitting(false)
                 if (error && error.response && !this.state.creditCardDataErrors.includes(error.response.data.errors[0].parameter)) {
                     this.state.creditCardDataErrors.push(error.response.data.errors[0].parameter)
                     this.setCreditCardDataErrors([...this.state.creditCardDataErrors])
@@ -146,6 +169,7 @@ class Billing extends React.Component {
     }
     
     componentDidMount = () => {
+        this._ismounted = true
         this.source = this.cancelToken.source()
         this.props.onGetPaymentData(this.source)
         this.props.onGetAddressOptions(this.source).then(response => {
@@ -156,6 +180,7 @@ class Billing extends React.Component {
     }
     
     componentWillUnmount = () => {
+        this._ismounted = false
         if (this.source) {
             this.source.cancel()
         }
@@ -249,8 +274,8 @@ class Billing extends React.Component {
                     />
                 ): ''}
                 
-                <BillingSaveButton onClick={e => {this.onSubmit()}}>
-                    {strings['pt-br']['billingSaveButtonLabel']}
+                <BillingSaveButton onClick={e => {(!this.state.isSubmitting) ? this.onSubmit() : null}}>
+                    {this.getWhatToRenderInsideSaveButton()}
                 </BillingSaveButton>
             </BillingContainer>
         )

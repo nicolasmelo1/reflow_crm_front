@@ -9,7 +9,6 @@ const checkUrl = (url) => {
         for (let i =0; i<Object.getOwnPropertyNames(paths).length; i++) {
             const slugUrl = paths[Object.getOwnPropertyNames(paths)[i]]().replace(/^\//g, '')
             if (url === '' || url === slugUrl) {
-                console.log(Object.getOwnPropertyNames(paths))
                 return {isValid: true, params: {}, urlName: Object.getOwnPropertyNames(paths)[i]}
             }
             if (slugUrl !== '') {

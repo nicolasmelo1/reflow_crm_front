@@ -14,10 +14,6 @@ class Data extends React.Component {
         super(props)
     }
 
-    componentDidCatch(error, info) {
-        console.log('teste1')
-    }
-
     render() {
         console.log(Linking.makeUrl(paths.login().asUrl))
         return (

@@ -28,7 +28,9 @@ import { strings } from '../../utils/constants'
  * API calls when updating or when creating a new chart.
  * @param {Function} onRemoveDashboardSettings - Same as onUpdateDashboardSettings except it is only used insied of this
  * component and is used for removing a chart.
- * @param {Function} dashboardConfigurationData - The data of this dashboard chart setting.
+ * @param {Object} dashboardConfigurationData - The data of this dashboard chart setting.
+ * @param {Function} onGetDashboardSettingsData - this function is from the DashboardConfiguration component and is used
+ * to load the data of the dashboardSettings configuration again when we save a new chart or edit a chart.
  */
 const DashboardConfigurationCard = (props) => {
     const [formIsOpen, setFormIsOpen] = useState(false)
@@ -57,6 +59,7 @@ const DashboardConfigurationCard = (props) => {
                 {formIsOpen ? (
                     <DashboardConfigurationFullFormContainer>
                         <DashboardConfigurationForm
+                        onGetDashboardSettingsData={props.onGetDashboardSettingsData}
                         setFormIsOpen={setFormIsOpen}
                         types={props.types}
                         getChartTypeNameById={props.getChartTypeNameById}
@@ -92,6 +95,7 @@ const DashboardConfigurationCard = (props) => {
                 <DashboardConfigurationFullFormContainer isOpen={formIsOpen}>
                     {formIsOpen ? (
                         <DashboardConfigurationForm
+                        onGetDashboardSettingsData={props.onGetDashboardSettingsData}
                         setFormIsOpen={setFormIsOpen}
                         types={props.types}
                         getChartTypeNameById={props.getChartTypeNameById}

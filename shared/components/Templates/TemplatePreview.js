@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Modal, Text } from 'react-native'
+import { Spinner } from 'react-bootstrap'
+import { ActivityIndicator, Modal, Text } from 'react-native'
 import Router from 'next/router'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import Formulary from '../Formulary'
@@ -52,6 +53,8 @@ import {
  */
 const TemplatePreview = (props) => {
     const sourceRef = React.useRef(null)
+    const isMountedRef = React.useRef(null)
+    const [isSubmitting, setIsSubmitting] = useState(false)
     const [formData, setFormData] = useState({
         formId: null, 
         templateId: null,
@@ -71,6 +74,7 @@ const TemplatePreview = (props) => {
     }
 
     const onClickUseButton = () => {
+        setIsSubmitting(true)
         props.onSelectTemplate(props.data.id).then(response => {
             if (response && response.status === 200) {
                 props.setAddTemplates(false)
@@ -82,13 +86,18 @@ const TemplatePreview = (props) => {
                     }
                 }
             }
+            if (isMountedRef.current) {
+                setIsSubmitting(false)
+            }
         })
     }
 
 
     useEffect(() => {
+        isMountedRef.current = true
         sourceRef.current = props.cancelToken.source()
         return () => {
+            isMountedRef.current = false
             if (sourceRef.current) {
                 sourceRef.current.cancel()
             }
@@ -127,10 +136,14 @@ const TemplatePreview = (props) => {
                             <TemplatesPreviewDescriptionText>
                                 {props.data.description}
                             </TemplatesPreviewDescriptionText>
-                            <TemplatesPreviewDescriptionUseButton onPress={e=> onClickUseButton()}>
-                                <Text>
-                                    {strings['pt-br']['templateUseButtonLabel']}
-                                </Text>
+                            <TemplatesPreviewDescriptionUseButton onPress={e=> {(!isSubmitting) ? onClickUseButton() : null}}>
+                                {(isSubmitting) ? (
+                                    <ActivityIndicator color="#17242D"/>
+                                ) : (
+                                    <Text>
+                                        {strings['pt-br']['templateUseButtonLabel']}
+                                    </Text>
+                                )}
                             </TemplatesPreviewDescriptionUseButton>
                         </TemplatesPreviewDescriptionContainer>
                         <TemplatesPreviewFormularyOptionsContainer>
@@ -175,8 +188,8 @@ const TemplatePreview = (props) => {
                         <TemplatesPreviewDescriptionText>
                             {props.data.description}
                         </TemplatesPreviewDescriptionText>
-                        <TemplatesPreviewDescriptionUseButton onClick={e=> onClickUseButton()}>
-                            {strings['pt-br']['templateUseButtonLabel']}
+                        <TemplatesPreviewDescriptionUseButton onClick={e=> {(!isSubmitting) ? onClickUseButton() : null}}>
+                            {(isSubmitting) ? (<Spinner animation="border" size="sm"/>) : strings['pt-br']['templateUseButtonLabel']}
                         </TemplatesPreviewDescriptionUseButton>
                     </TemplatesPreviewDescriptionContainer>
                     <TemplatesPreviewFormularyOptionsContainer>

@@ -44,6 +44,8 @@ import {
  * actually come from this prop. So the contents of this prop is actually copied to a state inside of this component.
  * @param {Function} getChartTypeNameById - Function for retrieving the chartName by the id of the chart, that's because Chart.js
  * component recieves only the name of the type of the chart and not the id.
+ * @param {Function} onGetDashboardSettingsData - this function is from the DashboardConfiguration component and is used
+ * to load the data of the dashboardSettings configuration again when we save a new chart or edit a chart.
  */
 const DashboardConfigurationForm = (props) => {
     const [formErrors, setFormErrors] = useState({})
@@ -117,6 +119,7 @@ const DashboardConfigurationForm = (props) => {
                 }
             } else {
                 setFormErrors({})
+                props.onGetDashboardSettingsData()
                 props.setFormIsOpen(false)
             }
         })

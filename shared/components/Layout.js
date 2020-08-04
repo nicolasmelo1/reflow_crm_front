@@ -41,7 +41,8 @@ import {
     faPlusCircle,
     faFileUpload,
     faTimes,
-    faTimesCircle
+    faTimesCircle,
+    faCheck
 } from '@fortawesome/free-solid-svg-icons'
 
 
@@ -70,7 +71,8 @@ library.add(
     faPlusCircle,
     faFileUpload,
     faTimes,
-    faTimesCircle
+    faTimesCircle,
+    faCheck
 )
 
 /*** 
@@ -95,7 +97,9 @@ class Layout extends React.Component {
     async setToken() {
         let token = process.env['APP'] === 'web' ? window.localStorage.getItem('token') : await AsyncStorage.getItem('token')
         if (!token || token === '') {
-            this.setLogout(true)
+            if (this._ismounted) {
+                this.setLogout(true)
+            }
         }
 
         // this is probably an anti-pattern, read here: https://reactjs.org/blog/2015/12/16/ismounted-antipattern.html
@@ -124,7 +128,9 @@ class Layout extends React.Component {
 
     permissionsHandler = async (requestStatusCode, reason) => {
         if (['not_permitted', 'invalid_billing'].includes(reason)) {
-            this.props.onAddNotification(errors('pt-br', reason), 'error')
+            if (this._ismounted){
+                this.props.onAddNotification(errors('pt-br', reason), 'error')
+            }
         } else if (requestStatusCode === 403 && reason === 'free_trial_ended') {
             // we just redirect the user if he is on the web, otherwise we just redirect him to the login page.
             if (isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user) && process.env['APP'] === 'web') {
@@ -132,7 +138,9 @@ class Layout extends React.Component {
             } else {
                 await setStorageToken('token', '')
                 await setStorageToken('refreshToken', '')
-                this.props.onAddNotification(errors('pt-br', reason), 'error')
+                if (this._ismounted){
+                    this.props.onAddNotification(errors('pt-br', reason), 'error')
+                }
                 this.setLogout(true)
             }
         }
@@ -149,9 +157,9 @@ class Layout extends React.Component {
         this.props.onDeauthenticate()
     }
     
-    setSidebarIsOpen = () => this.setState(state => state.sidebarIsOpen=!state.sidebarIsOpen)
+    setSidebarIsOpen = () => (this._ismounted) ? this.setState(state => state.sidebarIsOpen=!state.sidebarIsOpen) : null
 
-    setAddTemplates = (data) => this.setState(state => state.addTemplates = data)
+    setAddTemplates = (data) => (this._ismounted) ? this.setState(state => state.addTemplates = data) : null
 
     componentDidUpdate = () => {
         agent.setCompanyId(this.props.login.companyId)
