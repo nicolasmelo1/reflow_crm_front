@@ -102,10 +102,7 @@ class Billing extends React.Component {
             if (error.reason.includes('invalid_registry_code')) {
                 this.setCompanyDataFormErrors({ ...this.state.companyDataFormErrors, ...this.setError('cnpj', ['invalid'])})
             } 
-            if (error.reason.includes('cannot_be_bigger_than_three')) {
-                this.setPaymentDataFormErrors({ ...this.state.paymentDataFormErrors, ...this.setError('company_invoice_emails', ['invalid'])})
-            }
-            if (error.reason.includes('cannot_be_less_than_one')) {
+            if (error.reason.includes('cannot_be_bigger_than_three_or_less_than_one')) {
                 this.setPaymentDataFormErrors({ ...this.state.paymentDataFormErrors, ...this.setError('company_invoice_emails', ['invalid'])})
             }
         }
