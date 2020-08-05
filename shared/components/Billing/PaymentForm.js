@@ -197,7 +197,7 @@ const PaymentForm = (props) => {
                     ))}
                     {props.paymentDataFormErrors.company_invoice_emails && props.paymentDataFormErrors.company_invoice_emails.includes('invalid') ? (
                         <BillingFormularyErrorMessage>
-                            {strings['pt-br']['billingPaymentFormMaximumInvoiceEmailNumberErrorMessageLabel']}
+                            {strings['pt-br']['billingPaymentFormMaximumOrNoneInvoiceEmailNumberErrorMessageLabel']}
                         </BillingFormularyErrorMessage>
                     ) : ''}
                 </BillingFormularySectionContainer>

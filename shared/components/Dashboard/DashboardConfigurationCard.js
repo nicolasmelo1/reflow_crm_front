@@ -19,6 +19,7 @@ import { strings } from '../../utils/constants'
  * 
  * @param {Object} types - the types state, this types are usually the required data from this system to work. 
  * Types defines all of the field types, form types, format of numbers and dates and many other stuff 
+ * @param {Object} user - The user object so we can render specific stuff for admins.
  * @param {Function} getChartTypeNameById - Handy function that is used to retrieve the chart name label (so `pie`, `card` and others) 
  * using the chart id as parameter.
  * @param {Array<Object>} fieldOptions - To build charts we actually need 2 fields: 1 is the label field, the other
@@ -62,6 +63,7 @@ const DashboardConfigurationCard = (props) => {
                         onGetDashboardSettingsData={props.onGetDashboardSettingsData}
                         setFormIsOpen={setFormIsOpen}
                         types={props.types}
+                        user={props.user}
                         getChartTypeNameById={props.getChartTypeNameById}
                         fieldOptions={props.fieldOptions}
                         dashboardConfigurationData={props.dashboardConfigurationData}
@@ -98,6 +100,7 @@ const DashboardConfigurationCard = (props) => {
                         onGetDashboardSettingsData={props.onGetDashboardSettingsData}
                         setFormIsOpen={setFormIsOpen}
                         types={props.types}
+                        user={props.user}
                         getChartTypeNameById={props.getChartTypeNameById}
                         fieldOptions={props.fieldOptions}
                         dashboardConfigurationData={props.dashboardConfigurationData}

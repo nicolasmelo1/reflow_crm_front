@@ -39,14 +39,8 @@ class App extends React.Component {
             this.setFontIsLoaded(true)
         })
     }
-    static getDerivedStateFromError(error) {   
-         // Atualiza o state para que a próxima renderização mostre a UI alternativa.   
-    }
-    
-    componentDidCatch(error, errorInfo) {    
-        // Você também pode registrar o erro em um serviço de relatórios de erro    
-        //logErrorToMyService(error, errorInfo);  
-    }
+
+
     render() {
         return (
             <Provider store={this.store}>

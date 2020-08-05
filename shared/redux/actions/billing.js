@@ -13,7 +13,7 @@ const onGetPaymentData = (source) => {
         return agent.http.BILLING.getPaymentData(source).then(response => {
             if (response && response.status === 200) {
                 const paymentPayload = {
-                    company_invoice_emails: response.data.data.company_invoice_emails,
+                    company_invoice_emails: response.data.data.company_invoice_emails.length > 0 ? response.data.data.company_invoice_emails : [{ email: ''}],
                     payment_method_type_id: (response.data.data.payment_method_type_id) ? response.data.data.payment_method_type_id: types.payment_method_type[0].id,
                     invoice_date_type_id: (response.data.data.invoice_date_type_id) ? response.data.data.invoice_date_type_id: types.invoice_date_type[0].id,
                     credit_card_data: response.data.data.credit_card_data

@@ -13,7 +13,8 @@ import {
     NotificationConfigurationFormFieldContainer,
     NotificationConfigurationFormSelectContainer,
     NotificationConfigurationFormVariableContainer,
-    NotificationConfigurationFormSaveButton
+    NotificationConfigurationFormSaveButton,
+    NotificationConfigurationForCompanyExplanation
 } from '../../styles/Notification'
 import { errors, strings } from '../../utils/constants'
 import isAdmin from '../../utils/isAdmin'
@@ -229,6 +230,9 @@ const NotificationConfigurationForm = (props) => {
                         <NotificationConfigurationFormCheckboxesContainer>
                             <Switch value={props.notificationConfiguration.for_company} onValueChange={value => {onChangeForCompany(value)}}/>
                             <NotificationConfigurationFormCheckboxText> {strings['pt-br']['notificationConfigurationFormForCompanyLabel']}</NotificationConfigurationFormCheckboxText>
+                            <NotificationConfigurationForCompanyExplanation>
+                                {strings['pt-br']['notificationConfigurationFormForCompanyExplanation']}
+                            </NotificationConfigurationForCompanyExplanation>
                         </NotificationConfigurationFormCheckboxesContainer>
                     </NotificationConfigurationFormFieldContainer>
                 ) : null}
@@ -364,6 +368,9 @@ const NotificationConfigurationForm = (props) => {
                         <NotificationConfigurationFormCheckboxesContainer>
                             <input type="checkbox" checked={props.notificationConfiguration.for_company} onChange={e => {onChangeForCompany(e.target.checked)}}/>
                             <NotificationConfigurationFormCheckboxText> {strings['pt-br']['notificationConfigurationFormForCompanyLabel']}</NotificationConfigurationFormCheckboxText>
+                            <NotificationConfigurationForCompanyExplanation>
+                                {strings['pt-br']['notificationConfigurationFormForCompanyExplanation']}
+                            </NotificationConfigurationForCompanyExplanation>
                         </NotificationConfigurationFormCheckboxesContainer>
                     </NotificationConfigurationFormFieldContainer>
                 ) : null}

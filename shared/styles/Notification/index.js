@@ -12,6 +12,7 @@ import NotificationConfigurationCardIcon from './NotificationConfigurationCardIc
 import NotificationConfigurationCardText from './NotificationConfigurationCardText'
 import NotificationConfigurationFormContainer from './NotificationConfigurationFormContainer'
 import NotificationConfigurationFormCheckbox from './NotificationConfigurationFormCheckbox'
+import NotificationConfigurationForCompanyExplanation from './NotificationConfigurationForCompanyExplanation'
 import NotificationConfigurationFormCheckboxesContainer from './NotificationConfigurationFormCheckboxesContainer'
 import NotificationConfigurationFormCheckboxText from './NotificationConfigurationFormCheckboxText'
 import NotificationConfigurationFormFieldLabel from './NotificationConfigurationFormFieldLabel'
@@ -41,6 +42,7 @@ export { NotificationConfigurationFormFieldLabelRequired }
 export { NotificationConfigurationFormFieldLabel }
 export { NotificationConfigurationFormCheckboxText }
 export { NotificationConfigurationFormCheckboxesContainer }
+export { NotificationConfigurationForCompanyExplanation }
 export { NotificationConfigurationFormCheckbox }
 export { NotificationConfigurationFormContainer }
 export { NotificationConfigurationGoBackButton }

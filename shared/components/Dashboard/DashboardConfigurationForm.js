@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Modal, Switch, Text, View, SafeAreaView } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import isAdmin from '../../utils/isAdmin'
 import { Select } from '../Utils'
 import Chart from './Chart'
 import { strings, types, errors } from '../../utils/constants'
@@ -17,6 +18,7 @@ import {
     DashboardConfigurationChartContainer,
     DashboardConfigurationPreviewTitleLabel,
     DashboardConfigurationSaveButton,
+    DashboardConfigurationForCompanyExplanation
 } from '../../styles/Dashboard'
 
 
@@ -40,6 +42,7 @@ import {
  * is the value field. fieldOptions is just an array with objects, with each object being a field the user can select.
  * @param {Object} types - the types state, this types are usually the required data from this system to work. 
  * Types defines all of the field types, form types, format of numbers and dates and many other stuff
+ * @param {Object} user - The user object so we can render specific stuff for admins.
  * @param {Object} dashboardConfigurationData - Remember when we said that this contains the data of the chart? This data
  * actually come from this prop. So the contents of this prop is actually copied to a state inside of this component.
  * @param {Function} getChartTypeNameById - Function for retrieving the chartName by the id of the chart, that's because Chart.js
@@ -186,12 +189,17 @@ const DashboardConfigurationForm = (props) => {
                     </DashboardConfigurationFormHeader>
                     <DashboardConfigurationChartAndFormContainer keyboardShouldPersistTaps={'handled'}>
                         <DashboardConfigurationFormContainer>
-                            <DashboardConfigurationFormFieldContainer>
-                                <View style={{ flexDirection: 'row'}}>
-                                    <Switch value={dashboardConfigurationData.for_company ? dashboardConfigurationData.for_company : false} onValueChange={value => {onChangeForCompany(value)}}/> 
-                                    <Text style={{ alignSelf: 'center' }}>&nbsp;{strings['pt-br']['dashboardConfigurationFormForCompanyLabel']}</Text>
-                                </View>
-                            </DashboardConfigurationFormFieldContainer>
+                            {isAdmin(props.types?.defaults?.profile_type, props.user) ? (
+                                <DashboardConfigurationFormFieldContainer>
+                                    <View style={{ flexDirection: 'row'}}>
+                                        <Switch value={dashboardConfigurationData.for_company ? dashboardConfigurationData.for_company : false} onValueChange={value => {onChangeForCompany(value)}}/> 
+                                        <Text style={{ alignSelf: 'center' }}>&nbsp;{strings['pt-br']['dashboardConfigurationFormForCompanyLabel']}</Text>
+                                    </View>
+                                    <DashboardConfigurationForCompanyExplanation>
+                                        {strings['pt-br']['dashboardConfigurationFormForCompanyExplanation']}
+                                    </DashboardConfigurationForCompanyExplanation>
+                                </DashboardConfigurationFormFieldContainer>
+                            ) : null}
                             <DashboardConfigurationFormFieldContainer>
                                 <DashboardConfigurationFormFieldLabel>
                                     {strings['pt-br']['dashboardConfigurationFormChartNameLabel']}
@@ -310,12 +318,17 @@ const DashboardConfigurationForm = (props) => {
                 </DashboardConfigurationFormHeader>
                 <DashboardConfigurationChartAndFormContainer>
                     <DashboardConfigurationFormContainer>
-                        <DashboardConfigurationFormFieldContainer>
-                            <DashboardConfigurationFormFieldLabel>
-                                <input type="checkbox" checked={dashboardConfigurationData.for_company ? dashboardConfigurationData.for_company : false} onChange={e => {onChangeForCompany(e.target.checked)}}/> 
-                                &nbsp;{strings['pt-br']['dashboardConfigurationFormForCompanyLabel']}
-                            </DashboardConfigurationFormFieldLabel>
-                        </DashboardConfigurationFormFieldContainer>
+                        {isAdmin(props.types?.defaults?.profile_type, props.user) ? (
+                            <DashboardConfigurationFormFieldContainer>
+                                <DashboardConfigurationFormFieldLabel>
+                                    <input type="checkbox" checked={dashboardConfigurationData.for_company ? dashboardConfigurationData.for_company : false} onChange={e => {onChangeForCompany(e.target.checked)}}/> 
+                                    &nbsp;{strings['pt-br']['dashboardConfigurationFormForCompanyLabel']}
+                                </DashboardConfigurationFormFieldLabel>
+                                <DashboardConfigurationForCompanyExplanation>
+                                    {strings['pt-br']['dashboardConfigurationFormForCompanyExplanation']}
+                                </DashboardConfigurationForCompanyExplanation>
+                            </DashboardConfigurationFormFieldContainer>
+                        ) : ''}
                         <DashboardConfigurationFormFieldContainer>
                             <DashboardConfigurationFormFieldLabel>
                                 {strings['pt-br']['dashboardConfigurationFormChartNameLabel']}

@@ -127,7 +127,7 @@ class Dashboard extends React.Component {
     }
 
     getChartTypeNameById = (id) => {
-        const chartType =  this.props.login.types.defaults.chart_type.filter(chartType => chartType.id === id)
+        const chartType = this.props.login?.types?.defaults?.chart_type ? this.props.login.types.defaults.chart_type.filter(chartType => chartType.id === id) : []
         return (chartType.length > 0) ? chartType[0].name : null
     }
 
@@ -224,6 +224,7 @@ class Dashboard extends React.Component {
                     onCreateDashboardSettings={this.props.onCreateDashboardSettings}
                     getChartTypeNameById={this.getChartTypeNameById}
                     cancelToken={this.CancelToken}
+                    user={this.props.login.user}
                     types={this.props.login.types}
                     formName={this.props.formName}
                     onGetFieldOptions={this.props.onGetFieldOptions}
@@ -324,6 +325,7 @@ class Dashboard extends React.Component {
                     getChartTypeNameById={this.getChartTypeNameById}
                     cancelToken={this.CancelToken}
                     types={this.props.login.types}
+                    user={this.props.login.user}
                     formName={this.props.formName}
                     onGetFieldOptions={this.props.onGetFieldOptions}
                     onGetDashboardSettings={this.props.onGetDashboardSettings}

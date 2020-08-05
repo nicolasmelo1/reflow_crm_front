@@ -141,7 +141,7 @@ const Fields = (props) => {
     
     // checks in the field level if any error has occurred
     const checkErrors = () => {
-        if (Object.keys(props.errors).length !== 0 && props.errors.detail.includes(props.field.name)) {
+        if (props.errors && Object.keys(props.errors).length !== 0 && props.errors.detail.includes(props.field.name)) {
             switch (props.errors.reason[0]) {
                 case 'required_field':
                     return values.length === 0 || values.filter(value => value.value === '').length !== 0

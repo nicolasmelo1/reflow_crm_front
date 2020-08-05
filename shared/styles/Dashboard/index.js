@@ -4,6 +4,7 @@ import DashboardConfigurationAddNewText from './DashboardConfigurationAddNewText
 import DashboardConfigurationCardContainer from './DashboardConfigurationCardContainer'
 import DashboardConfigurationCardTitle from './DashboardConfigurationCardTitle'
 import DashboardConfigurationCardIcon from './DashboardConfigurationCardIcon'
+import DashboardConfigurationForCompanyExplanation from './DashboardConfigurationForCompanyExplanation'
 import DashboardConfigurationCardChartAndTitleContainer from './DashboardConfigurationCardChartAndTitleContainer'
 import DashboardConfigurationCardButtonsContainer from './DashboardConfigurationCardButtonsContainer'
 import DashboardConfigurationFullFormContainer from './DashboardConfigurationFullFormContainer'
@@ -63,6 +64,7 @@ export { ChartTotalLabel }
 export { ChartTotalContent }
 export { ChartTotalContainer }
 export { ChartContainer }
+export { DashboardConfigurationForCompanyExplanation }
 export { DashboardConfigurationCardsContainer }
 export { DashboardConfigurationFormFieldInput }
 export { DashboardConfigurationFormFieldRequiredLabel }

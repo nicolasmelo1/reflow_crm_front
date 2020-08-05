@@ -105,6 +105,9 @@ class Billing extends React.Component {
             if (error.reason.includes('cannot_be_bigger_than_three')) {
                 this.setPaymentDataFormErrors({ ...this.state.paymentDataFormErrors, ...this.setError('company_invoice_emails', ['invalid'])})
             }
+            if (error.reason.includes('cannot_be_less_than_one')) {
+                this.setPaymentDataFormErrors({ ...this.state.paymentDataFormErrors, ...this.setError('company_invoice_emails', ['invalid'])})
+            }
         }
         if ([...Object.entries(error)].some(value => [...Object.entries(this.props.billing.paymentData)].map(value=> value[0]).includes(value[0]))) {
             let paymentDataFormErrors = {}

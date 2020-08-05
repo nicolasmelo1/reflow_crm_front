@@ -37,7 +37,7 @@ import { strings } from '../../utils/constants'
  * the data be retrieved.
  * @param {Object} types - the types state, this types are usually the required data from this system to work. 
  * Types defines all of the field types, form types, format of numbers and dates and many other stuff 
- * 
+ * @param {Object} user - The user object so we can render specific stuff for admins.
  */
 const DashboardConfiguration = (props) => {
     const [dashboardSettingsData, setDashboardSettingsData] = useState([])
@@ -127,6 +127,7 @@ const DashboardConfiguration = (props) => {
                 {dashboardSettingsData.map((dashboardSetting, index) => (
                     <DashboardConfigurationCard
                     key={index}
+                    user={props.user}
                     types={props.types}
                     onGetDashboardSettingsData={onGetDashboardSettingsData}
                     getChartTypeNameById={props.getChartTypeNameById}
@@ -150,6 +151,7 @@ const DashboardConfiguration = (props) => {
                 {dashboardSettingsData.map((dashboardSetting, index) => (
                     <DashboardConfigurationCard
                     key={index}
+                    user={props.user}
                     types={props.types}
                     onGetDashboardSettingsData={onGetDashboardSettingsData}
                     getChartTypeNameById={props.getChartTypeNameById}
