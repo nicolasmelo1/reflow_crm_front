@@ -7,7 +7,7 @@ styled.div`
     position: relative;
     ${props => props.maintainAspectRatio === false ? `
         min-width: 500px;
-        min-height: 300px;
+        min-height: 450px;
     ` : `
         width: 100%;
     `}

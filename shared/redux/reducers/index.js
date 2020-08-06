@@ -5,6 +5,7 @@ import notify from './notify'
 import notification from './notification'
 import templates from './templates'
 import billing from './billing'
+import company from './company'
 import { DEAUTHENTICATE } from '../types'
 
 
@@ -14,7 +15,8 @@ const appReducer = combineReducers({
     notify,
     notification,
     templates,
-    billing
+    billing,
+    company
 });
 
 const rootReducer = (state, action) => {

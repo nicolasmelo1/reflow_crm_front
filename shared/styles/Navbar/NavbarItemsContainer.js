@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 export default process.env['APP'] === 'web' ? 
 styled.div`
-    @media(max-width: 564px) {
+    @media(max-width: 723px) {
         position: fixed;
         bottom: 0;
         left: 0;
@@ -16,7 +16,7 @@ styled.div`
         height: ${props=> props.isOpen ? 'calc(var(--app-height) - 65px)': '0'};
         transition: height 0.3s ease-in-out;
     }
-    @media(min-width: 565px) {
+    @media(min-width: 724px) {
         float: right;
     }
 `

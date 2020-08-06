@@ -93,8 +93,11 @@ class Layout extends React.Component {
             sidebarIsOpen: false,
         }
     }
+    setSidebarIsOpen = () => (this._ismounted) ? this.setState(state => state.sidebarIsOpen=!state.sidebarIsOpen) : null
 
-    async setToken() {
+    setAddTemplates = (data) => (this._ismounted) ? this.setState(state => state.addTemplates = data) : null
+
+    setToken = async () => {
         let token = process.env['APP'] === 'web' ? window.localStorage.getItem('token') : await AsyncStorage.getItem('token')
         if (!token || token === '') {
             if (this._ismounted) {
@@ -102,7 +105,7 @@ class Layout extends React.Component {
             }
         }
 
-        // this is probably an anti-pattern, read here: https://reactjs.org/blog/2015/12/16/ismounted-antipattern.html
+        // this is probably an anti-pattern, i don't know actually, read here: https://reactjs.org/blog/2015/12/16/ismounted-antipattern.html
         if (this._ismounted) {
             this.setState(state => state.tokenLoaded = true)
         }
@@ -156,10 +159,6 @@ class Layout extends React.Component {
         }
         this.props.onDeauthenticate()
     }
-    
-    setSidebarIsOpen = () => (this._ismounted) ? this.setState(state => state.sidebarIsOpen=!state.sidebarIsOpen) : null
-
-    setAddTemplates = (data) => (this._ismounted) ? this.setState(state => state.addTemplates = data) : null
 
     componentDidUpdate = () => {
         agent.setCompanyId(this.props.login.companyId)

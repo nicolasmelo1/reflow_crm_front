@@ -34,9 +34,9 @@ const onReadNotifications = (stateData, notificationId) => {
     }
 }
 
-const onGetNewNotifications = () => {
+const onGetNewNotifications = (source) => {
     return async (dispatch) => {
-        const response = await agent.http.NOTIFICATION.getNewNotifications()
+        const response = await agent.http.NOTIFICATION.getNewNotifications(source)
         if (response && response.status === 200) {
             dispatch({ type: SET_NOTIFICATION_BADGE, payload: response.data.data })
 

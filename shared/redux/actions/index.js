@@ -6,6 +6,7 @@ import templates from './templates'
 import onboarding from './onboarding'
 import changepassword from './changepassword'
 import billing from './billing'
+import company from './company'
 
 export default {
     ...home,
@@ -15,5 +16,6 @@ export default {
     ...templates,
     ...onboarding,
     ...billing,
+    ...company,
     ...changepassword
 }

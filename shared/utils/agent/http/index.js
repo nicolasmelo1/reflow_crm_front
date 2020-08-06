@@ -9,6 +9,7 @@ import ONBOARDING from './onboarding'
 import CHANGE_PASSWORD from './changepassword'
 import DASHBOARD from './dashboard'
 import BILLING from './billing'
+import COMPANY from './company'
 
 export default {
     CHANGE_PASSWORD,
@@ -19,6 +20,7 @@ export default {
     ONBOARDING,
     NOTIFICATION,
     SIDEBAR,
+    COMPANY,
     TEMPLATES,
     DASHBOARD,
     BILLING

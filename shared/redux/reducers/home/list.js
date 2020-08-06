@@ -1,7 +1,6 @@
 import {
     GET_LISTING_DATA,
     SET_HEADERS,
-    SET_TOTALS,
     UPDATE_HEAD_SELECT
 } from '../../types'
 
@@ -13,8 +12,7 @@ let initialState = {
         },
         data: []
     },
-    field_headers: [],
-    totals: []
+    field_headers: []
 }
 
 export default (state = initialState, action) => {
@@ -29,12 +27,7 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 field_headers: action.payload
-            }
-        case SET_TOTALS:
-            return {
-                ...state,
-                totals: action.payload
-            }            
+            }   
         case UPDATE_HEAD_SELECT:
             return {
                 ...state,

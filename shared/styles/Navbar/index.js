@@ -11,7 +11,11 @@ import NavbarLinkLabel from './NavbarLinkLabel'
 import NavbarLinkIconContainer from './NavbarLinkIconContainer'
 import NavbarItemsContainer from './NavbarItemsContainer'
 import NavbarContainer from './NavbarContainer'
+import NavbarFreeTrialAlertButton from './NavbarFreeTrialAlertButton'
+import NavbarFreeTrialAlertText from './NavbarFreeTrialAlertText'
 
+export { NavbarFreeTrialAlertText }
+export { NavbarFreeTrialAlertButton }
 export { NavbarContainer }
 export { NavbarItemsContainer }
 export { NavbarToggleButton }

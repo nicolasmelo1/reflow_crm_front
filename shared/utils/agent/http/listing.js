@@ -24,15 +24,6 @@ const LISTING = {
     getData: async (source, params, formName) => {
         return await requests.get(`data/${companyId}/${formName}/all/`, params, {}, source)
     },
-    getTotals: async (params, formName) => {
-        return await requests.get(`listing/${companyId}/${formName}/total/`, params)
-    },
-    createTotal: async (body, formName) => {
-        return await requests.post(`${companyId}/data/api/listing/${formName}/total/`, body)
-    },
-    removeTotal: async (formName, totalId) => {
-        return await requests.delete(`${companyId}/data/api/listing/${formName}/total/${totalId}`)
-    },
     updateSelectedFields: async (body, formName) => {
         return await requests.put(`listing/${companyId}/${formName}/`, body)
     }

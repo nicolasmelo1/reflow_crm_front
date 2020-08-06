@@ -87,6 +87,8 @@ const strings = {
         headerGestaoLabel: 'Gestão',
         headerDashboardLabel: 'Dashboard',
         headerSettingsLabel: 'Configurações',
+        headerFreeTrialAlertDaysLabel: ' dias restantes de avaliação gratuita. ',
+        headerFreeTrialUpdateNowLabel: 'Atualize agora',
         headerRefferalLabel: 'Indicar usuários',
         headerCompanyLabel: 'Empresa',
         headerChangeDataLabel: 'Alterar Dados',

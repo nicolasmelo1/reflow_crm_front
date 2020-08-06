@@ -1,8 +1,5 @@
 import React, { useState } from 'react'
-import { NavDropdown } from 'react-bootstrap'
-import NavbarLink from './NavbarLink'
 import { NavbarDropdownContentContainer, NavbarLinkIcon, NavbarLinkLabel, NavbarDropdownContainer, NavbarDropdownItem, NavbarDropdownButton, NavbarDropdownArrowIcon , NavbarLinkIconContainer} from '../../styles/Navbar'
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 
 const NavbarDropdown = (props) => {
     const [isOpen, setIsOpen] = useState(false)
@@ -22,7 +19,7 @@ const NavbarDropdown = (props) => {
             {isOpen ? (
                 <NavbarDropdownContentContainer>
                     {props.items.map((item, index)=> (
-                        <NavbarDropdownItem key={index} href={item.href} onClick={e => { (item.onClick) ? item.onClick(e): null }}>
+                        <NavbarDropdownItem key={index} href={item.href} onClick={e => { (item.onClick) ? item.onClick(): null }}>
                             {item.label}
                         </NavbarDropdownItem>
                     ))}

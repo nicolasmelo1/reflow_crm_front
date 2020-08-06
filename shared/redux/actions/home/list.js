@@ -1,7 +1,6 @@
 import {
     GET_LISTING_DATA,
     SET_HEADERS,
-    SET_TOTALS
 } from '../../types';
 import agent from '../../../utils/agent'
 import delay from '../../../utils/delay'
@@ -97,34 +96,7 @@ const onUpdateHeader = (header) => {
     }
 }
 
-const onGetTotals = (params, formName) => {
-    return async (dispatch) => {
-        try {
-            let response = await agent.http.LISTING.getTotals(params, formName)
-            if (response.status === 200) {
-                dispatch({ type: SET_TOTALS, payload: response.data.totals })
-            }
-        } catch {}
-    }
-}
 
-const onUpdateTotals = (totalsData) => {
-    return async (dispatch) => {
-        dispatch({type: SET_TOTALS, payload: totalsData})
-    }
-}
-
-const onCreateTotal = (body, formName) => {
-    return async (_) => {
-        agent.http.LISTING.createTotal(body, formName)
-    }
-}
-
-const onRemoveTotal = (formName, totalId) => {
-    return (_) => {
-        agent.http.LISTING.removeTotal(formName, totalId)
-    }
-}
 
 const onUpdateSelected = (body, formName) => {
     return async (_) => {
@@ -139,9 +111,5 @@ export default {
     onGetExportedData,
     onRenderListing,
     onUpdateHeader,
-    onGetTotals,
-    onUpdateTotals,
-    onRemoveTotal,
-    onCreateTotal,
     onUpdateSelected
 };

@@ -1,19 +1,34 @@
-import React, { useState } from 'react'
-import NavbarLink from './NavbarLink' // not implemented in RN
-import NavbarDropdown from './NavbarDropdown' // not implemented in RN
-import { strings, paths } from '../../utils/constants'
-import actions from '../../redux/actions'
-import { NavbarLogo, NavbarToggleButton, NavbarItemsContainer, NavbarContainer } from '../../styles/Navbar' // not implemented in RN
+import React from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import axios from 'axios'
+import NavbarLink from './NavbarLink' 
+import NavbarDropdown from './NavbarDropdown'
+import { strings, paths } from '../../utils/constants'
+import actions from '../../redux/actions'
 import isAdmin from '../../utils/isAdmin'
+import { 
+    NavbarFreeTrialAlertButton, 
+    NavbarFreeTrialAlertText,
+    NavbarLogo, 
+    NavbarToggleButton, 
+    NavbarItemsContainer, 
+    NavbarContainer 
+} from '../../styles/Navbar'
 
-// On the browser this component is called inside of the Layout component, but since React Navigation works differently, on mobile 
-// we need to call it on the App.js component since it needs to be on the root of the page.
+/** 
+ * On the browser this component is called inside of the Layout component, but since React Navigation works differently, on mobile 
+ * we need to call it on the App.js component since it needs to be on the root of the page.
+ * 
+ * Since this component is called everytime the user is logged in you can make requests here to retrieve specific data from logged 
+ * users
+ */
 class Navbar extends React.Component {
     constructor(props) {
         super(props)
+        this.CancelToken = axios.CancelToken
+        this.source = null
         this.state = {
             isOpen: false,
             notifications: null
@@ -25,31 +40,42 @@ class Navbar extends React.Component {
     }
 
     handleLogout = (e) => {
-        e.preventDefault()
         Router.push(paths.login().asUrl, paths.login().asUrl,{ shallow: true })
         this.props.onDeauthenticate()
     }
 
-    handleOldVersion = (e) => {
-        e.preventDefault()
+    handleOldVersion = () => {
         Object.assign(document.createElement('a'), { target: '_blank', href: `${process.env['OLD_APP_HOST']}`}).click();
     }
 
-    handleBilling = (e) => {
-        e.preventDefault()
+    handleBilling = () => {
         Router.push(paths.billing().asUrl, paths.billing().asUrl, { shallow: true })
     }
 
-    handleUsers = (e) => {
-        e.preventDefault()
+    handleUsers = () => {
         Object.assign(document.createElement('a'), { target: '_blank', href: `${process.env['OLD_APP_HOST']}${this.props.login.companyId}/settings/employee/`}).click();
     }
 
-    handleCompany = (e) => {
-        e.preventDefault()
+    handleCompany = () => {
         Object.assign(document.createElement('a'), { target: '_blank', href: `${process.env['OLD_APP_HOST']}${this.props.login.companyId}/settings/company/`}).click();
     }
 
+    freeTrialRemainingDays = () => {
+        const createdAt = new Date(this.props.company.created_at)
+        const freeTrialDueDate = new Date(createdAt.getFullYear(), createdAt.getMonth(), createdAt.getDate() + this.props.company.free_trial_days)
+        const today = new Date()
+        return Math.ceil((freeTrialDueDate - today) / (1000 * 60 * 60 * 24))
+    }
+
+    isFreeTrial = () => {
+        if (this.props.company.created_at && !this.props.company.is_paying_company) {
+            const freeDaysLeft = this.freeTrialRemainingDays()
+            if (0 <= freeDaysLeft) {
+                return true
+            }
+        }
+        return false
+    }
 
     configDropdown = isAdmin(this.props.login.types?.defaults?.profile_type, this.props.login.user) ? 
     [
@@ -108,13 +134,34 @@ class Navbar extends React.Component {
     ]
 
     componentDidMount = () => {
-        this.props.onGetNewNotifications()
+        this.source = this.CancelToken.source()
+        this.props.onGetNewNotifications(this.source)
+        this.props.onGetCompanyData(this.source)
+    }
+    
+    componentWillUnmount = () => {
+        if (this.source) {
+            this.source.cancel()
+        }
     }
 
     renderWeb = () => {
         return (
             <NavbarContainer>
                 <NavbarLogo src="/complete_logo.png"/>
+                {this.isFreeTrial() && isAdmin(this.props.login.types?.defaults?.profile_type, this.props.login.user) ? (
+                    <NavbarFreeTrialAlertButton onClick={e=> {this.handleBilling()}}>
+                        <NavbarFreeTrialAlertText isBold={true}>
+                            {`${this.freeTrialRemainingDays()}`}
+                        </NavbarFreeTrialAlertText>
+                        <NavbarFreeTrialAlertText>
+                            {strings['pt-br']['headerFreeTrialAlertDaysLabel']}
+                        </NavbarFreeTrialAlertText>
+                        <NavbarFreeTrialAlertText isBold={true}>
+                            {strings['pt-br']['headerFreeTrialUpdateNowLabel']}
+                        </NavbarFreeTrialAlertText>
+                    </NavbarFreeTrialAlertButton>
+                ) : ''}
                 <NavbarToggleButton onClick={e=> {this.setIsOpen(!this.state.isOpen)}}>
                     <FontAwesomeIcon icon={this.state.isOpen ? 'times' : 'bars'}/>
                 </NavbarToggleButton>
@@ -143,4 +190,4 @@ class Navbar extends React.Component {
     }
 };
 
-export default connect(store => ({login: store.login, notificationBadge: store.notification.notification.badge }), actions)(Navbar)
+export default connect(store => ({login: store.login, company: store.company, notificationBadge: store.notification.notification.badge }), actions)(Navbar)

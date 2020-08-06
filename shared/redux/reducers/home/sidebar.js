@@ -1,4 +1,4 @@
-import { GET_FORMS, UPDATE_GROUPS } from '../../types'
+import { SET_GROUPS, UPDATE_GROUPS } from '../../types'
 
 let initialState = {
     initial: [],
@@ -7,7 +7,7 @@ let initialState = {
 
 export default (state=initialState, action) => {
     switch (action.type) {
-        case GET_FORMS:
+        case SET_GROUPS:
             return {
                 ...state,
                 initial: action.payload

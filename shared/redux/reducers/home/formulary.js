@@ -3,11 +3,6 @@ import { OPEN_FORMULARY, SET_FORMULARY_SETTINGS_DATA } from '../../types';
 
 let initialState = {
     isOpen: false,
-    buildData: {},
-    filled: {
-        data: {},
-        files: []
-    },
     update: {}
 }
 

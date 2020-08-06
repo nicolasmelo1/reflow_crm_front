@@ -1,5 +1,5 @@
 import { 
-    GET_FORMS,
+    SET_GROUPS,
     UPDATE_GROUPS,
     ERROR 
 } from '../../types';
@@ -10,7 +10,7 @@ const onGetForms = (source) => {
     return async (dispatch) => {
         let response = await agent.http.SIDEBAR.getForms(source)
         if (response && response.status === 200) {
-            dispatch({type: GET_FORMS, payload: response.data.data })
+            dispatch({type: SET_GROUPS, payload: response.data.data })
         }
         return response
     }

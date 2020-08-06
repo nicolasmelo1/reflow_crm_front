@@ -1,4 +1,4 @@
-import { DEAUTHENTICATE, AUTHENTICATE, SET_PRIMARY_FORM, DATA_TYPES, SET_USER } from '../types';
+import { DEAUTHENTICATE, AUTHENTICATE, SET_PRIMARY_FORM, DATA_TYPES, SET_USER } from '../types'
 import agent from '../../utils/agent'
 import { setStorageToken } from '../../utils/agent/utils'
 import isEqual from '../../utils/isEqual'
@@ -12,8 +12,8 @@ const onAuthenticate = (body) => {
             dispatch({ type: AUTHENTICATE, payload: response.data });
         }
         return response
-    };
-};
+    }
+}
 
 const onDeauthenticate = () => {
     return async (dispatch) => {

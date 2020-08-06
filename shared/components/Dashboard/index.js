@@ -341,7 +341,7 @@ class Dashboard extends React.Component {
                                         {this.props.dashboard.charts.filter(chart => this.getChartTypeNameById(chart.chart_type) === 'card').map((chart, index) => (
                                             <Chart
                                             key={index}
-                                            maintainAspectRatio={false}
+                                            maintainAspectRatio={true}
                                             numberFormat={this.props.login.types?.data?.field_number_format_type.filter(numberFormatType => numberFormatType.id === chart.number_format_type)[0]}
                                             chartType={this.getChartTypeNameById(chart.chart_type)}
                                             labels={chart.data.labels}

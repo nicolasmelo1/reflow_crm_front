@@ -3,8 +3,8 @@ import { companyId } from '../utils'
 
 
 const NOTIFICATION = {
-    getNewNotifications: async () => {
-        return await requests.get(`notification/${companyId}/read/`, {}, {}, {})
+    getNewNotifications: async (source) => {
+        return await requests.get(`notification/${companyId}/read/`, {}, {}, source)
     },
     getNotification: async (source, params) => {
         return await requests.get(`notification/${companyId}/`, params, {}, source)
