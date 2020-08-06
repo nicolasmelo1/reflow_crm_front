@@ -69,23 +69,20 @@ class Formulary extends React.Component {
             isLoading: false,
             isLoadingEditing: false,
             isSubmitting: false,
-            auxOriginalInitial: {}
+            auxOriginalInitialIndex: -1,
+            auxOriginalInitial: []
         }
     }
-
-
+    
+    setIsOpen = () => (this._ismounted) ? this.props.onOpenOrCloseFormulary(!this.props.formulary.isOpen) : null
+    
+    setAuxOriginalInitialIndex = (data) => (this._ismounted) ? this.setState(state => state.auxOriginalInitialIndex = data) : null
     setIsSubmitting = (data) => (this._ismounted) ? this.setState(state => state.isSubmitting = data) : null
-
     setIsLoading = (data) => (this._ismounted) ? this.setState(state => state.isLoading = data): null
-
     setErrors = (errors) => (this._ismounted) ? this.setState(state => state.errors = errors) : null
-
     setBuildData = (data) => (this._ismounted) ? this.setState(state => state.buildData = data) : null
-
     setFilledHasBuiltInitial = (data) => (this._ismounted) ? this.setState(state => state.filled.hasBuiltInitial = data) : null
-
     setFilledIsAuxOriginalInitial = (data) => (this._ismounted) ? this.setState(state => state.filled.isAuxOriginalInitial = data) : null
-
     setFilledFiles = (data) => (this._ismounted) ? this.setState(state => state.filled.files = data) : null
 
     setFilledData = (id, sectionsData) => (this._ismounted) ? this.setState(state => 
@@ -108,31 +105,28 @@ class Formulary extends React.Component {
             buildData: buildData
         })) : null
     
-    resetAuxOriginalInitial = () => (this._ismounted) ? this.setState(state => ({...state, auxOriginalInitial: {}})) : null
-
-    setAuxOriginalInitial = () => (this._ismounted) ? this.setState(state => {
-        state.auxOriginalInitial = {
-            buildData: JSON.parse(JSON.stringify(this.state.buildData)),
-            filled: {
-                hasBuiltInitial: true,
-                isAuxOriginalInitial: true, 
-                files: this.state.filled.files.map(file=> {
-                    // reference here: https://stackoverflow.com/a/55741583/13158385
-                    let newFile = new Blob([file.file], {type: file.type})
-                    newFile.name = file.file.name
-                    return {
-                        ...file,
-                        file: newFile
-                    }
-                }),
-                data: JSON.parse(JSON.stringify(this.state.filled.data))
-            }
-        }
-    }) : null
     
+    resetAuxOriginalInitial = (newAuxOriginalInitial, newAuxOriginalInitialIndex) => (this._ismounted) ? this.setState(state => ({
+        ...state, 
+        auxOriginalInitial: newAuxOriginalInitial, 
+        auxOriginalInitialIndex: newAuxOriginalInitialIndex
+    })) : null
 
-    setIsOpen = () => (this._ismounted) ? this.props.onOpenOrCloseFormulary(!this.props.formulary.isOpen) : null
+    /**
+     * Set index and updates the array of `auxOriginalInitial`. The index holds an interger 
+     * that representes to what index we want to go back to when we leave this conected form.
+     * 
+     * `auxOriginalInitial` is just a list with the content of each formulary we have passed.
+     */
+    setAuxOriginalInitial = () => (this._ismounted) ? this.setState(state => ({
+        ...state,
+        auxOriginalInitialIndex: state.auxOriginalInitialIndex + 1,
+        auxOriginalInitial: state.auxOriginalInitial.concat(this.deepCopyFormularyData(this.state.buildData, this.state.filled, true, true))
+    })) : null
 
+    /**
+     * Goes to editing mode only, nothing much. When we go back from the editing mode we load the formulary again.
+     */
     setIsEditing = () => {
         if (!this.state.isEditing) {
             this.source = this.CancelToken.source()
@@ -150,7 +144,39 @@ class Formulary extends React.Component {
         })
     }
 
+    /**
+     * Handy function to make a deepCopy of the formulary data, we use this for going forward and going back
+     * the list of connected formularies.
+     * 
+     * @param {Object} buildData - The data to build the formulary
+     * @param {Object} filled - The filled data of formularies.
+     * @param {Boolean} isAuxOriginalInitial - Set to true if it is an `auxOriginalInitial`, so if this formulary is from the list of connected formularies.
+     * @param {Boolean} hasBuiltInitial - Set to false if you want to build the formulary again with all it's conditions and so on.
+     */
+    deepCopyFormularyData = (buildData, filled, isAuxOriginalInitial, hasBuiltInitial) => {
+        return {
+            buildData: JSON.parse(JSON.stringify(buildData)),
+            filled: {
+                hasBuiltInitial: hasBuiltInitial,
+                isAuxOriginalInitial: isAuxOriginalInitial, 
+                files: filled.files.map(file=> {
+                    // reference here: https://stackoverflow.com/a/55741583/13158385
+                    let newFile = new Blob([file.file], {type: file.type})
+                    newFile.name = file.file.name
+                    return {
+                        ...file,
+                        file: newFile
+                    }
+                }),
+                data: JSON.parse(JSON.stringify(filled.data))
+            }
+        }
+    }
 
+    /**
+     * Submits the formulary, might be really straight forward. It's only important to understand that
+     * when we save and have any `auxOriginalInitial` we go back to the previous formulary.
+     */
     onSubmit = (duplicate=null) => {
         this.setIsSubmitting(true)
         let request = null
@@ -165,15 +191,22 @@ class Formulary extends React.Component {
                 this.setIsSubmitting(false)
                 if (response && response.status !== 200) {
                     this.setErrors(response.data.error)
-                } else if (this.state.buildData.form_name !== this.props.formName) {
-                    this.onFullResetFormulary(this.state.auxOriginalInitial.buildData, this.state.auxOriginalInitial.filled)
+                } else if (this.isInConnectedFormulary()) {
+                    this.onGoBackFromConnectedForm()
                 } else {
                     this.setIsOpen()
                 }
             })
         }
     }
-
+    
+    /**
+     * Full reset of the formulary is reset the errors and set `buildData` and `filled` with new data. 
+     * That's it. super simple, but we do this all in one go.
+     * 
+     * @param {Object} buildData - The data to build the formulary
+     * @param {Object} filled - The filled data of formularies.
+     */
     onFullResetFormulary = (buildData, filled=null) => {
         if (typeof(filled) === 'undefined' || filled === null){
             filled = {
@@ -185,7 +218,7 @@ class Formulary extends React.Component {
                 files: []
             }
         }
-        // reset the errors as the data, obviously
+        // reset the errors of the formulary, obviously
         this.setErrors({})
 
         this.setFilledDataAndBuildData(
@@ -198,6 +231,35 @@ class Formulary extends React.Component {
         )
     }
 
+    /**
+     * When we are in a connected formulary we load it directly on the form we are working on. On the exact same component.
+     * Because of this we actually need to save the reference from the data we are working on. We save it in a list so the user can walk
+     * through many conected pages.
+     * 
+     * When we go back we actually do many state changes, one is a full reset of the formulary, the other is to `resetAuxOriginalInitial,` 
+     * the last is used so we change the index and the array from `auxOriginalInitial`.
+     */
+    onGoBackFromConnectedForm = () => {
+        const auxOriginalInitialCopy = this.state.auxOriginalInitial.map(originalInitial =>
+            this.deepCopyFormularyData(originalInitial.buildData, originalInitial.filled, originalInitial.filled.isAuxOriginalInitial, originalInitial.filled.hasBuiltInitial)
+        )
+        auxOriginalInitialCopy.splice(auxOriginalInitialCopy.length-1, 1)
+        const indexToGoBackTo = JSON.parse(JSON.stringify(this.state.auxOriginalInitialIndex))
+        this.onFullResetFormulary(
+            this.state.auxOriginalInitial[indexToGoBackTo].buildData, 
+            this.state.auxOriginalInitial[indexToGoBackTo].filled
+        )
+        
+        this.resetAuxOriginalInitial(auxOriginalInitialCopy, this.state.auxOriginalInitialIndex-1)
+    }
+
+    /**
+     * This function is responsible to load the formulary data inside of the formulary, sometimes you can load the data externally, usually when displaying
+     * as a preview or some sort.
+     * 
+     * @param {String} formName - The name of the form to load
+     * @param {Interger} formId - If you are loading from an already existing data and not a new. Set this argument.
+     */
     onLoadFormulary = async (formName, formId=null) => {
         this.source = this.CancelToken.source()
 
@@ -224,13 +286,17 @@ class Formulary extends React.Component {
 
     /**
      * When the user clicks "add new" or "edit" on the connection field, a new form is loaded in this component without losing 
-     * the data of the previous form component loaded
+     * the data of the previous form component loaded. For this to work we save the current data of the form he is in a list. So 
+     * when he go back he doesn't loses the data.
      */
     onChangeFormulary = (formName, formId=null) => { 
         this.setAuxOriginalInitial()
         this.onLoadFormulary(formName, formId)
     }
 
+    /**
+     * Handy function just used for rendering stuff in the big green button of the page.
+     */
     getFormularyButtonTitle = () => {
         if (this.state.isLoading){
             return strings['pt-br']['formularyLoadingButtonLabel']
@@ -244,14 +310,16 @@ class Formulary extends React.Component {
 
     showToEdit = () => {
         // we can only edit the form if the form you are in is not an embbeded or in preview, 
-        // and the formName is the same you are int
-        return this.state.buildData && this.state.buildData.group_id && this.state.buildData.id && 
-               this.props.type === 'full' && this.state.buildData.form_name === this.props.formName &&
-               isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user)
+        // and if it is not a connected formulary.
+        return this.state.buildData && this.state.buildData.group_id && this.state.buildData.id &&
+               !this.isInConnectedFormulary() && isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user)
     }
 
-    showNavigator = () => {
-        return this.state.buildData && this.state.buildData.form_name !== this.props.formName && this.props.type === 'full'
+    /**
+     * This function is used to tell us if we are in a connected formulary.
+     */
+    isInConnectedFormulary = () => {
+        return this.state.auxOriginalInitialIndex !== -1 && this.props.type === 'full'
     }
 
     componentDidMount = () => {
@@ -281,7 +349,7 @@ class Formulary extends React.Component {
             if (this.state.isEditing) this.setIsEditing()
             // reset the Original initial, because we don't need it anymore since we are loading a new formulary
             // not reseting can cause a bug if the user is in a connected formulary and changes the page.
-            this.resetAuxOriginalInitial()
+            this.resetAuxOriginalInitial([], -1)
             this.onLoadFormulary(this.props.formName, null)
         } 
         // formulary id has changed, it was null and is not null anymore
@@ -308,8 +376,11 @@ class Formulary extends React.Component {
         }
         // The formulary is closing
         if (oldProps.formulary.isOpen !== this.props.formulary.isOpen && oldProps.formulary.isOpen) {
-            const buildData = (this.state.auxOriginalInitial.filled && this.state.auxOriginalInitial.buildData) ? this.state.auxOriginalInitial.buildData : this.state.buildData
+            const buildData = (this.state.auxOriginalInitial[0] && 
+                                this.state.auxOriginalInitial[0].filled && 
+                                this.state.auxOriginalInitial[0].buildData) ? this.state.auxOriginalInitial[0].buildData : this.state.buildData
             this.onFullResetFormulary(buildData)
+            this.resetAuxOriginalInitial([], -1)
             this.props.setFormularyId(null)
             this.props.setFormularyDefaultData([])
         }
@@ -350,11 +421,14 @@ class Formulary extends React.Component {
                                     {this.showToEdit() ? (
                                         <Formularies.EditButton onClick={e => this.setIsEditing()} label={strings['pt-br']['formularyEditButtonLabel']} description={strings['pt-br']['formularyEditButtonDescription']}/>
                                     ) : ''}
-                                    {this.showNavigator() ? (
+                                    {this.isInConnectedFormulary() ? (
                                         <Formularies.Navigator 
-                                        onClick={e => {this.onFullResetFormulary(this.state.auxOriginalInitial.buildData, this.state.auxOriginalInitial.filled)}}
+                                        onClick={e => {
+                                            this.onGoBackFromConnectedForm()
+                                        }}
                                         >
-                                            &lt;&nbsp;{(this.state.auxOriginalInitial.buildData) ? this.state.auxOriginalInitial.buildData.label_name : ''}
+                                            &lt;&nbsp;{(this.state.auxOriginalInitial[this.state.auxOriginalInitialIndex].buildData) ? 
+                                                        this.state.auxOriginalInitial[this.state.auxOriginalInitialIndex].buildData.label_name : ''}
                                         </Formularies.Navigator>
                                     ) : ''}   
                                     <FormularySections 
