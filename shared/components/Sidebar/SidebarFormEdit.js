@@ -1,11 +1,22 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { strings } from '../../utils/constants'
-import { SidebarCardBody, SidebarAddButton, SidebarFormItem, SidebarFormInput, SidebarIconsContainer, SidebarIcons, SidebarDisabledFormLabel } from '../../styles/Sidebar'
+import Alert from '../Alert'
+import { 
+    SidebarCardBody, 
+    SidebarAddButton, 
+    SidebarFormItem,
+    SidebarFormInput, 
+    SidebarIconsContainer, 
+    SidebarIcons, 
+    SidebarDisabledFormLabel 
+} from '../../styles/Sidebar'
 
 
 const SidebarFormEdit = (props) => {
-    const onAddNewForm = (e) => {
-        e.preventDefault()
+    const [formularyIndexToRemove, setFormularyIndexToRemove] = useState(null)
+    const [showAlert, setShowAlert] = useState(false)
+
+    const onAddNewForm = () => {
         const groups = JSON.parse(JSON.stringify(props.groups))
         groups[props.groupIndex].form_group.splice(0, 0, {
             id: null,
@@ -29,20 +40,17 @@ const SidebarFormEdit = (props) => {
         }
     }
 
-    const onChangeFormName = (e, index) => {
-        e.preventDefault()
-        props.groups[props.groupIndex].form_group[index].label_name = e.target.value
+    const onChangeFormName = (index, value) => {
+        props.groups[props.groupIndex].form_group[index].label_name = value
         onChangeForm(index, props.groups[props.groupIndex].form_group[index])
     }
 
-    const onDisableForm = (e, index) => {
-        e.preventDefault()
+    const onDisableForm = (index) => {
         props.groups[props.groupIndex].form_group[index].enabled = !props.groups[props.groupIndex].form_group[index].enabled
         onChangeForm(index, props.groups[props.groupIndex].form_group[index])
     }
 
-    const onRemoveForm = (e, index) => {
-        e.preventDefault()
+    const onRemoveForm = (index) => {
         const groups = JSON.parse(JSON.stringify(props.groups))
         const formToRemove = groups[props.groupIndex].form_group[index]
         if (formToRemove.id) {
@@ -99,19 +107,35 @@ const SidebarFormEdit = (props) => {
 
     return (
         <SidebarCardBody>
-            <SidebarAddButton text={strings['pt-br']['addNewFormButtonLabel']} onClick={e => { onAddNewForm(e) }} />
+            <Alert 
+            alertTitle={'Alerta'} 
+            alertMessage={'Você tem certeza? Você não pode voltar atrás.'} 
+            show={showAlert} 
+            onHide={() => {
+                setFormularyIndexToRemove(null)
+                setShowAlert(false)
+            }} 
+            onAccept={() => {
+                setShowAlert(false)
+                onRemoveForm(formularyIndexToRemove)
+            }}
+            />
+            <SidebarAddButton text={strings['pt-br']['addNewFormButtonLabel']} onClick={e => { onAddNewForm() }} />
             {props.forms.map((form, index) => {
                 return (
                     <SidebarFormItem key={index} className="form-container" onDragOver={e => { onDragOver(e) }} onDrop={e => { onDrop(e, index) }}>
                         <SidebarIconsContainer>
-                            <SidebarIcons size="sm" type="form" icon="eye" onClick={e=>{onDisableForm(e, index)}}/>
-                            <SidebarIcons size="sm" type="form" icon="trash" onClick={e=>{onRemoveForm(e, index)}}/>
+                            <SidebarIcons size="sm" type="form" icon="eye" onClick={e=>{onDisableForm(index)}}/>
+                            <SidebarIcons size="sm" type="form" icon="trash" onClick={e=>{
+                                setFormularyIndexToRemove(index)
+                                setShowAlert(true)                                
+                            }}/>
                             <div draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveForm(e, index)}} onDragEnd={e=>{onDragEnd(e)}}  >
                                 <SidebarIcons size="sm" type="form" icon="arrows-alt" />
                             </div>
                         </SidebarIconsContainer>
                         {(form.enabled) ?
-                            (<SidebarFormInput value={form.label_name} onChange={e => { onChangeFormName(e, index) }} />) :
+                            (<SidebarFormInput value={form.label_name} onChange={e => { onChangeFormName(index,  e.target.value) }} />) :
                             (<SidebarDisabledFormLabel eventKey="0">{strings['pt-br']['disabledFormLabel']}</SidebarDisabledFormLabel>)
                         }
                     </SidebarFormItem>

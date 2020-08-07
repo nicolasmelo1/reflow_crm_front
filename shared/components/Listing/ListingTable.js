@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Table, Spinner } from 'react-bootstrap'
 import ListingTableContent from './ListingTableContent'
 import ListingTableHeader from './ListingTableHeader'
-import { ListingTableContainer, ListingTableLoaderContainer, ListingTableLoaderWrapper } from '../../styles/Listing'
+import { ListingTableContainer, ListingTableLoaderContainer } from '../../styles/Listing'
 import mobilecheck from '../../utils/mobilecheck'
 
 /**
@@ -20,9 +20,9 @@ import mobilecheck from '../../utils/mobilecheck'
 const ListingTable = (props) => {
     const isMobile = mobilecheck()
     const [hasFiredRequestForNewPage, _setHasFiredRequestForNewPage] = useState(false)
-    const tableRef = React.useRef()
-    const scrollWrapperRef = React.useRef()
-    const scrollRef = React.useRef()
+    const tableRef = React.useRef(null)
+    const scrollWrapperRef = React.useRef(null)
+    const scrollRef = React.useRef(null)
     const data = (props.data) ? props.data: []
 
     // Check Components/Utils/Select for reference and explanation
@@ -33,11 +33,13 @@ const ListingTable = (props) => {
     }
 
     const defineScrollWidth = (e) => {
-        if (tableRef.current.scrollWidth > tableRef.current.clientWidth) {
-            scrollWrapperRef.current.style.display = 'block'
-            if (scrollRef.current) scrollRef.current.style.width = tableRef.current.scrollWidth + 8 + 'px'
-        } else {
-            scrollWrapperRef.current.style.display = 'none'
+        if (tableRef && tableRef.current) {
+            if (tableRef.current.scrollWidth > tableRef.current.clientWidth) {
+                scrollWrapperRef.current.style.display = 'block'
+                if (scrollRef.current) scrollRef.current.style.width = tableRef.current.scrollWidth + 8 + 'px'
+            } else {
+                scrollWrapperRef.current.style.display = 'none'
+            }
         }
     }
 

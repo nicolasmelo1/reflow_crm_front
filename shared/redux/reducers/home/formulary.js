@@ -6,7 +6,7 @@ let initialState = {
     update: {}
 }
 
-export default (state = initialState, action) => {
+const formularyReducer = (state = initialState, action) => {
     switch (action.type) {
         case OPEN_FORMULARY:
             return {
@@ -22,3 +22,5 @@ export default (state = initialState, action) => {
             return state;
     }
 }
+
+export default formularyReducer

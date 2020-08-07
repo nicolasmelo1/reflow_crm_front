@@ -15,7 +15,7 @@ let initialState = {
     }
 }
 
-export default (state = initialState, action) => {
+const dashboardReducer = (state = initialState, action) => {
     switch (action.type) {
         case SET_DASHBOARD_CHARTS:
             return {
@@ -31,3 +31,5 @@ export default (state = initialState, action) => {
             return state
     }
 }
+
+export default dashboardReducer

@@ -5,7 +5,7 @@ let initialState = {
     update: []
 }
 
-export default (state=initialState, action) => {
+const sidebarReducer = (state=initialState, action) => {
     switch (action.type) {
         case SET_GROUPS:
             return {
@@ -20,4 +20,6 @@ export default (state=initialState, action) => {
         default:
             return state;
     }
-};
+}
+
+export default sidebarReducer

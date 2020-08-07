@@ -4,7 +4,7 @@ const initialState = {
     notification: []
 }
 
-export default (state = initialState, action) => {
+const notifyReducer = (state = initialState, action) => {
     switch (action.type) {
         case SET_NOTIFY:
             return {
@@ -14,4 +14,6 @@ export default (state = initialState, action) => {
         default:
             return state;
     }
-};
+}
+
+export default notifyReducer

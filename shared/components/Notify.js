@@ -1,5 +1,5 @@
 import React from 'react'
-import StyledAlert from '../styles/Alert'
+import NotifyNotification from '../styles/NotifyNotification'
 import actions from '../redux/actions'
 import { connect } from 'react-redux'
 import { Text, View } from 'react-native'
@@ -32,9 +32,9 @@ class Notify extends React.Component {
                 zIndex: 1000
             }}>
                 {this.props.notify.notification.map((notification, index) => (
-                    <StyledAlert key={index} variant={notification.variant}>
+                    <NotifyNotification key={index} variant={notification.variant}>
                         {notification.message}
-                    </StyledAlert>
+                    </NotifyNotification>
                 ))}
             </div>
         )
@@ -49,11 +49,11 @@ class Notify extends React.Component {
                 zIndex: 1000
             }}>
                 {this.props.notify.notification ? this.props.notify.notification.map((notification, index) => (
-                    <StyledAlert key={index} variant={notification.variant}>
+                    <NotifyNotification key={index} variant={notification.variant}>
                         <Text>
                             {notification.message}
                         </Text>
-                    </StyledAlert>
+                    </NotifyNotification>
                 )): null }
             </View>
         )

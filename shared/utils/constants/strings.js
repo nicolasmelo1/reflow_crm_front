@@ -272,6 +272,8 @@ const strings = {
         filterInputPlaceholder: 'Palavra-chave',
         filterSearchButtonLabel: 'Pesquisar',
         filterAddNewFilterButtonLabel: 'Adicionar outro filtro',
+        alertCancelButtonLabel: 'Cancelar',
+        alertOkButtonLabel: 'Ok',
         groupTypeEmpty: 'Outros',
         groupTypeSales: 'Vendas',
         groupTypeDevelopment: 'T.I.',

@@ -15,7 +15,7 @@ let initialState = {
     field_headers: []
 }
 
-export default (state = initialState, action) => {
+const listReducer = (state = initialState, action) => {
     switch (action.type) {
         case GET_LISTING_DATA:
             return {
@@ -39,4 +39,6 @@ export default (state = initialState, action) => {
         default:
             return state;
     }
-};
+}
+
+export default listReducer

@@ -19,7 +19,7 @@ let initialState = {
 
 }
 
-export default (state = initialState, action) => {
+const kanbanReducer = (state = initialState, action) => {
     switch (action.type) {
         case SET_KANBAN_INITIAL:
             return {
@@ -45,4 +45,6 @@ export default (state = initialState, action) => {
         default:
             return state;
     }
-};
+}
+
+export default kanbanReducer

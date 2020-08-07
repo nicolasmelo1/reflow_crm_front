@@ -1,7 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
 import { useRouter } from 'next/router'
-import { ListingEditButtonIcon, ListingDeleteButtonIcon, ListingTableContentElement, ListingTableContentPopoverElement } from '../../styles/Listing'
+import Alert from '../Alert'
+import { 
+    ListingEditButtonIcon, 
+    ListingDeleteButtonIcon, 
+    ListingTableContentElement, 
+    ListingTableContentPopoverElement 
+} from '../../styles/Listing'
 
 const PopoverWithContent = React.forwardRef((props, ref) => {
     return (
@@ -62,13 +68,30 @@ const TableContentElement = (props) => {
  */
 const ListingTableContent = (props) => {
     const router = useRouter()
+    const [formularyIdToRemove, setFormularyIdToRemove] = useState(null)
+    const [showAlert, setShowAlert] = useState(false)
+
     const removeForm = (formId) => {
         const data = JSON.parse(JSON.stringify(props.data.filter(form=> form.id !== formId)))
         props.onRemoveData(data, router.query.form, formId)
+        setFormularyIdToRemove(null)
     }
 
     return (
         <tbody>
+            <Alert 
+            alertTitle={'Alerta'} 
+            alertMessage={'Você tem certeza? Você não pode voltar atrás.'} 
+            show={showAlert} 
+            onHide={() => {
+                setFormularyIdToRemove(null)
+                setShowAlert(false)
+            }} 
+            onAccept={() => {
+                setShowAlert(false)
+                removeForm(formularyIdToRemove)
+            }}
+            />
             {props.data.map((data, dataIndex) => (
                 <tr key={data.id}>
                     {props.fieldHeaders.filter(head => head.is_selected).map((head, headIndex) => {
@@ -81,7 +104,10 @@ const ListingTableContent = (props) => {
                         <ListingEditButtonIcon icon="pencil-alt" onClick={e=> {props.setFormularyId(data.id)}}/>
                     </ListingTableContentElement>
                     <ListingTableContentElement isTableButton={true}>
-                        <ListingDeleteButtonIcon icon="trash" onClick={e=> {removeForm(data.id)}}/>
+                        <ListingDeleteButtonIcon icon="trash" onClick={e=> {
+                            setFormularyIdToRemove(data.id)
+                            setShowAlert(true)
+                        }}/>
                     </ListingTableContentElement>
                 </tr>
             ))}

@@ -27,7 +27,7 @@ const initialState = {
     }
 }
 
-export default (state = initialState, action) => {
+const billingReducer = (state = initialState, action) => {
     switch (action?.type) {
         case SET_BILLING_COMPANY_DATA:
             return {
@@ -51,3 +51,5 @@ export default (state = initialState, action) => {
             return state
     }
 }
+
+export default billingReducer

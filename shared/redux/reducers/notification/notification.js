@@ -15,7 +15,7 @@ let initialState = {
     },
 }
 
-export default (state = initialState, action) => {
+const notificationReducer = (state = initialState, action) => {
     switch (action.type) {
         case SET_NOTIFICATION:
             return {
@@ -39,3 +39,5 @@ export default (state = initialState, action) => {
             return state;
     }
 }
+
+export default notificationReducer

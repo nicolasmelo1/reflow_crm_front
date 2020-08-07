@@ -1,12 +1,25 @@
 import React, { useState } from 'react'
 import Router, { useRouter } from 'next/router'
 import SidebarFormEdit from './SidebarFormEdit'
-import { SidebarDisabledGroupLabel, SidebarGroupInput, SidebarIconsContainer, SidebarIcons, SidebarCardHeader, SidebarAccordion, SidebarCard } from '../../styles/Sidebar'
+import Alert from '../Alert'
 import { paths, strings } from '../../utils/constants'
+import { 
+    SidebarDisabledGroupLabel, 
+    SidebarGroupInput, 
+    SidebarIconsContainer, 
+    SidebarIcons, 
+    SidebarCardHeader, 
+    SidebarAccordion, 
+    SidebarCard 
+} from '../../styles/Sidebar'
 
 const SidebarGroupEdit = (props) => {
     const isMoving = React.useRef(false)
+
+    const [formularyIndexToRemove, setFormularyIndexToRemove] = useState(null)
+    const [showAlert, setShowAlert] = useState(false)
     const [isDragging,  setIsDragging] = useState(false)
+
     const router = useRouter()
 
     const checkIfCurrentHasBeenDeleted = (groups) => {
@@ -15,7 +28,6 @@ const SidebarGroupEdit = (props) => {
         if (!formNames.includes(router.query.form)) {
             Router.push(paths.home().asUrl, paths.home(formName).asUrl, { shallow: true })
         }
-
     }
 
     const reorder = (groups) => {
@@ -29,9 +41,8 @@ const SidebarGroupEdit = (props) => {
         })
     }
 
-    const onChangeGroupName = (e, index) => {
-        e.preventDefault()
-        props.groups[index].name = e.target.value
+    const onChangeGroupName = (index, value) => {
+        props.groups[index].name = value
         const data = JSON.parse(JSON.stringify(props.groups[index]))
         const groups = JSON.parse(JSON.stringify(props.groups))
         props.onUpdateGroup(data)
@@ -47,8 +58,7 @@ const SidebarGroupEdit = (props) => {
         props.onChangeGroupState(groups)
     }
 
-    const onDisableGroup = (e, index) => {
-        e.preventDefault()
+    const onDisableGroup = (index) => {
         props.groups[index].enabled = !props.groups[index].enabled
         const data = JSON.parse(JSON.stringify(props.groups[index]))
         const groups = JSON.parse(JSON.stringify(props.groups))
@@ -110,19 +120,35 @@ const SidebarGroupEdit = (props) => {
 
     return (
         <div>
+            <Alert 
+            alertTitle={'Alerta'} 
+            alertMessage={'Você tem certeza? Você não pode voltar atrás.'} 
+            show={showAlert} 
+            onHide={() => {
+                setFormularyIndexToRemove(null)
+                setShowAlert(false)
+            }} 
+            onAccept={() => {
+                setShowAlert(false)
+                onRemoveGroup(formularyIndexToRemove)
+            }}
+            />
             { props.groups.map((group, index) => (
                 <SidebarAccordion key={index}>
                     <SidebarCard onDragOver={e=> {onDragOver(e)}} onDrop={e=> {onDrop(e, index)}}>
                         <SidebarCardHeader className="group-container">
                             <SidebarIconsContainer>
-                                <SidebarIcons icon="eye" onClick={e=> onDisableGroup(e, index)}/>
-                                <SidebarIcons icon="trash" onClick={e=> onRemoveGroup(index)}/>
+                                <SidebarIcons icon="eye" onClick={e=> onDisableGroup(index)}/>
+                                <SidebarIcons icon="trash" onClick={e=> {
+                                    setFormularyIndexToRemove(index)
+                                    setShowAlert(true) 
+                                }}/>
                                 <div draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveGroup(e, index)}} onDragEnd={e=>{onDragEnd(e)}}  >
                                     <SidebarIcons icon="arrows-alt" />
                                 </div>
                             </SidebarIconsContainer> 
                             { (group.enabled) ? 
-                                (<SidebarGroupInput value={group.name} onChange={e=>{onChangeGroupName(e, index)}}/>) :
+                                (<SidebarGroupInput value={group.name} onChange={e=>{onChangeGroupName(index, e.target.value)}}/>) :
                                 (<SidebarDisabledGroupLabel eventKey="0">{strings['pt-br']['disabledGroupLabel']}</SidebarDisabledGroupLabel>)
                             }                           
                         </SidebarCardHeader>

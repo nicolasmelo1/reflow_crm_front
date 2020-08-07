@@ -11,7 +11,7 @@ const initialState = {
     created_at: null
 }
 
-export default (state=initialState, action) => {
+const companyReducer = (state=initialState, action) => {
     switch (action.type) {
         case SET_COMPANY:
             return {
@@ -28,3 +28,5 @@ export default (state=initialState, action) => {
             return state
     }
 }
+
+export default companyReducer

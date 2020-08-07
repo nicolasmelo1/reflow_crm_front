@@ -28,7 +28,7 @@ let initialState = {
     }
 }
 
-export default (state = initialState, action) => {
+const templatesReducer = (state = initialState, action) => {
     switch (action.type) {
         case SET_SELECT_TEMPLATES:
             return {
@@ -52,3 +52,5 @@ export default (state = initialState, action) => {
             return state;
     }
 }
+
+export default templatesReducer

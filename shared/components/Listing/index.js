@@ -6,8 +6,15 @@ import ListingTable from './ListingTable'
 import ListingExtract from './ListingExtract'
 import ListingColumnSelect from './ListingColumnSelect'
 import Filter from '../Filter'
+import Alert from '../Alert'
 import actions from '../../redux/actions'
-import { ListingFilterAndExtractContainer, ListingFilterContainer, ListingFilterIcon, ListingFilterAndExtractButton, ListingButtonsContainer } from '../../styles/Listing'
+import { 
+    ListingFilterAndExtractContainer, 
+    ListingFilterContainer, 
+    ListingFilterIcon, 
+    ListingFilterAndExtractButton, 
+    ListingButtonsContainer 
+} from '../../styles/Listing'
 
 /**
  * This component render all of the listing logic, like the table, the totals, filters and extract
@@ -22,6 +29,7 @@ class Listing extends React.Component {
         this.CancelToken = axios.CancelToken
         this.source = null
         this.state = {
+            showAlert: false,
             isOpenedTotalsForm: false,
             isLoadingData: false,
             params: {
@@ -118,13 +126,15 @@ class Listing extends React.Component {
     }
 
     componentDidUpdate = (prevProps) => {
+        // we changed the formulary name, so this means we are changing between pages.
         if (prevProps.router.form !== this.props.router.form) {
             if (this.source) {
                 this.source.cancel()
             }
             this.source = this.CancelToken.source()
+            this.state
             this.props.onRenderListing(this.source, this.props.router.form)
-            this.props.onGetListingData(this.source, this.getParams(this.state.params.page), this.props.router.form)
+            this.props.onGetListingData(this.source, this.getParams(1), this.props.router.form)
         }
         if ( this.props.formularySettingsHasBeenUpdated !== prevProps.formularySettingsHasBeenUpdated) {
             this.source = this.CancelToken.source()
