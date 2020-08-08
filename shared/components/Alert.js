@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View } from 'react-native'
+import { View, Alert } from 'react-native'
 import { strings } from '../utils/constants'
 import { 
     AlertContainer,
@@ -28,11 +28,15 @@ import {
  * @param {String} alertTitle - The title of your alert.
  * @param {String} alertMessage - The message, or content of your alert.
  * @param {Function} onAccept - (optional) - If it is set we are gonna display a "OK" button, so the user can accept this alert.
+ * @param {String} onAcceptButtonLabel - (optional) - if `onAccept` is defined, you can edit the `ok` button with a new label.
  */
 const Alerts = (props) => {
     const _isMounted = React.useRef(null)
     const [isOpen, setIsOpen] = useState(props.show)
 
+    /**
+     * When we close the alert, we call onHide after 3 miliseconds so it shows a nice animation. of it fading and going up.
+     */
     const onClose = () => {
         setTimeout(() => {
             if (_isMounted.current) {
@@ -42,8 +46,36 @@ const Alerts = (props) => {
         setIsOpen(false)
     }
 
+    const onCreateReactNativeAlert = () => {
+        let buttonsArray = [
+            {
+                text: strings['pt-br']['alertCancelButtonLabel'],
+                onPress: () =>  props.onHide(),
+                style: "cancel"
+            },
+            
+        ]
+        if (props.onAccept) {
+            buttonsArray.push({
+                text: props.onAcceptButtonLabel ? props.onAcceptButtonLabel : strings['pt-br']['alertOkButtonLabel'],
+                onPress: () => props.onAccept()
+            })
+        }
+        Alert.alert(
+            props.alertTitle,
+            props.alertMessage,
+            buttonsArray,
+            { 
+                cancelable: false 
+            }
+        )
+    }
+
     useEffect(() => {
         if (props.show) {
+            if (process.env['APP'] !== 'web') {
+                onCreateReactNativeAlert()
+            }
             setIsOpen(props.show)
         }
     }, [props.show])
@@ -57,7 +89,7 @@ const Alerts = (props) => {
 
     const renderMobile = () => {
         return (
-            <View></View>
+            <View/>
         )
     }
 
@@ -71,7 +103,9 @@ const Alerts = (props) => {
                         </h2>
                     </AlertTitleContainer>
                     <AlertBoxContentContainer>
-                        <p>{props.alertMessage}</p>
+                        <p style={{ margin: '0' }}>
+                            {props.alertMessage}
+                        </p>
                         <AlertButtonsContainer>
                             <AlertCancelButton onClick={e=> {onClose()}}>
                                 <AlertCancelText>
@@ -84,7 +118,7 @@ const Alerts = (props) => {
                                     props.onAccept()
                                 }}>
                                     <AlertOkText>
-                                        {strings['pt-br']['alertOkButtonLabel']}
+                                        {props.onAcceptButtonLabel ? props.onAcceptButtonLabel : strings['pt-br']['alertOkButtonLabel']}
                                     </AlertOkText>
                                 </AlertOkButton>
                             ) : ''}

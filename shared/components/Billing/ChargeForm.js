@@ -25,8 +25,26 @@ const PopoverWithAditionalInformation = React.forwardRef(({additionalInformation
 })
 
 /**
- * {Description of your component, what does it do}
- * @param {Type} props - {go in detail about every prop it recieves}
+ * This component is responsible for the Charge Form of the hole billing formulary. This is actually one of the most important component
+ * looking at the business side, because this component is where the user can select each stuff he wants to use. This is like the permissions
+ * he can have, these permissions are like: How many charts he can have in the dashboard? How many notifications he can create? And so on.
+ * 
+ * @param {Object} chargeDataFormErrors - This object holds all the errors data where each field_name (where field name is each key of the object we send in the
+ * PUT request to the server) so we can display holds a list with all the errors of this particular list.
+ * @param {Function} setChargeDataFormErrors - This is a function for the Billing component. This is to change the state of the 
+ * `chargeDataFormErrors` object in the billing component. We use this for everytime we write in the formulary, this way we dismiss the error after he types.
+ * @param {Function} onChangeChargeData - This is a redux action to change the reducer redux state of the chargeData. This change the complete array of
+ * the chargeData.
+ * @param {Function} onGetTotals - This a redux action used to get the totals data. Totals are never calculated here, they are calculated on the backend
+ * because the formula can change often
+ * @param {Array<Object>} chargesData - An array with objects where each object is the specific charge data. Each object is like the following:
+ * > {
+ *      name: "per_user"
+ *      quantity: 1
+ *      user_id: 19
+ * }
+ * @param {Object} types - the types state, this types are usually the required data from this system to work. 
+ * Types defines all of the field types, form types, format of numbers and dates and many other stuff 
  */
 const ChargeForm = (props) => {
     const currencyPrefix = '$'
@@ -77,6 +95,12 @@ const ChargeForm = (props) => {
         total_by_name: []
     })
 
+    /**
+     * This function is used to format the number of the total, for pt-br for example the decimals should be separated by ', ' and not by '.'
+     * If you want to display a currency value, use this function.
+     * 
+     * @param {BigInteger} number - The number, usually as float so we can change the format to display to the user.
+     */
     const getDecimals = (number) => {
         if (number.toString().includes('.')) {
             return number.toString().split('.')[0] + ',' + number.toString().split('.')[1].substring(0, 2)
@@ -85,6 +109,17 @@ const ChargeForm = (props) => {
         }
     }
 
+    /**
+     * Changes the quantity of a particular ChargeName. This quantity is used a select, check `optionsForIndividualChargeTypes` variable
+     * for details of the options the user can select. Each key on this object are also the names that we can update the quantity.
+     * 
+     * Sometimes a chargeType can be not for the hole company but for each user, so you have to make sure that when you update the quantity you
+     * actually updates the quantity for each user.
+     * 
+     * @param {String} value - The value recieved is String, but should be a digit so it can be parsed as INT
+     * @param {String} name - Check the redux login.types for details or `optionsForIndividualChargeTypes` variable for the possible names you can
+     * accept here.
+     */
     const onChangeQuantity = (value, name) => {
         props.chargesData.forEach((chargeData, index) => {
             if (chargeData.name === name) {

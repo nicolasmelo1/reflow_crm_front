@@ -23,6 +23,7 @@ import {
  * This component is just used for the user to change the password, the user don't
  * enter here from by any links inside of our platform, but from external links that 
  * he recieve on his email.
+ * 
  * @param {String} temporaryPassword - Used for automatically setting the temporaryPassword
  * on the currentPassword input.
  * @param {Function} onUpdateUserPassword - This is a react redux action function used for
@@ -48,7 +49,6 @@ class ChangePassword extends React.Component {
     setCurrentPasswordIsFocused = (data) => this.setState(state => ({...state, currentPasswordIsFocused: data}))
     setNewPasswordIsFocused = (data) => this.setState(state => ({...state, newPasswordIsFocused: data}))
     setConfirmNewPasswordIsFocused = (data) => this.setState(state => ({...state, confirmNewPasswordIsFocused: data}))
-
 
     setVisiblePassword = (data) => this.setState(state => ({...state, visiblePassword: data}))
 

@@ -22,24 +22,6 @@ class Notify extends React.Component {
         }
     }
 
-    renderWeb() {
-        return (
-            <div style={{
-                position: 'absolute',
-                top:0,
-                left: 0,
-                width: '100%',
-                zIndex: 1000
-            }}>
-                {this.props.notify.notification.map((notification, index) => (
-                    <NotifyNotification key={index} variant={notification.variant}>
-                        {notification.message}
-                    </NotifyNotification>
-                ))}
-            </div>
-        )
-    }
-
     renderMobile() {
         return (
             <View styled={{
@@ -56,6 +38,24 @@ class Notify extends React.Component {
                     </NotifyNotification>
                 )): null }
             </View>
+        )
+    }
+
+    renderWeb() {
+        return (
+            <div style={{
+                position: 'absolute',
+                top:0,
+                left: 0,
+                width: '100%',
+                zIndex: 1000
+            }}>
+                {this.props.notify.notification.map((notification, index) => (
+                    <NotifyNotification key={index} variant={notification.variant}>
+                        {notification.message}
+                    </NotifyNotification>
+                ))}
+            </div>
         )
     }
 

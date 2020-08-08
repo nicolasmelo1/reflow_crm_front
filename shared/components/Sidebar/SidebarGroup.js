@@ -5,7 +5,17 @@ import { Text } from 'react-native'
 import SidebarForm from './SidebarForm' // not implemented in RN
 import { SidebarAccordionToggle, SidebarCardHeader, SidebarAccordion, SidebarCard } from '../../styles/Sidebar' // not implemented in RN
 
+
 const SidebarGroup = (props) => {
+    const renderMobile = () => {
+        return (
+            <SidebarGroupsContainer>
+                { props.elements.map((element, index) => (
+                    <Text style={{ color: '#f2f2f2', margin: 10}} key={index}>{element.name}</Text>
+                ))}
+            </SidebarGroupsContainer>
+        )
+    }
 
     const renderWeb = () => {
         return (
@@ -25,16 +35,6 @@ const SidebarGroup = (props) => {
                     </SidebarAccordion>
                 )): ''}
             </div>
-        )
-    }
-
-    const renderMobile = () => {
-        return (
-            <SidebarGroupsContainer>
-                { props.elements.map((element, index) => (
-                    <Text style={{ color: '#f2f2f2', margin: 10}} key={index}>{element.name}</Text>
-                ))}
-            </SidebarGroupsContainer>
         )
     }
 

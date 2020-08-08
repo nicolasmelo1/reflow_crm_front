@@ -94,7 +94,8 @@ const PopoverWithTotals = React.forwardRef((props, ref) => {
  * 
  * You might see that we don't use any lib to interface between charts.js and react. We handle it with 
  * a function in `utils` folder to make this interface. Since this function can grow in the near future it's 
- * important to make the function separate of the component.
+ * important to make the function separate of the component. Also, make both things separate is exactly how we can inject the
+ * charts.js in the webview on mobile.
  * 
  * Read for further explanation: https://www.chartjs.org/docs/latest/
  * @param {Array<String>} labels - The labels of the charts, usually this is an array with string elements.
@@ -116,36 +117,40 @@ const Chart = (props) => {
     const numberFormatRef = React.useRef(null)
     const canvasRef = React.useRef(null)
     const chartRef = React.useRef(null)
-    const hasRenderedChartJSRef = React.useRef(false)
 
+    const isToAddChartJs = () => {
+        return chartTypeRef.current !== props.chartType || 
+        numberFormatRef.current !== props.numberFormat ||
+        !isEqual(labelsRef.current, props.labels) ||
+        !isEqual(valuesRef.current, props.values)
+    }
 
     const getJsToInjectInWebview = (gettingOnRender=false) => {
-        if ((gettingOnRender && !hasRenderedChartJSRef.current) || !gettingOnRender) {
             //const maintainAspectRatio = (typeof props.maintainAspectRatio !== 'undefined') ? props.maintainAspectRatio : true
-            const numberFormat = (props.numberFormat) ? props.numberFormat : null
-            return `
-                if (typeof Chart === 'undefined') {
-                    eval(atob("${require('../../../mobile/assets/js/Chart.min.js').default}"));
-                }
-                ${formatNumber.toString()}
-                ${chart.toString()
-                    .replace(/_formatNumber\.default/g, 'formatNumber')
-                    .replace(/_chart\.default/g, 'Chart')
-                    .replace(/_objectSpread/g, 'Object.assign')}
-                var ctx = document.getElementById('chart');
-                if (myChart) {
-                    myChart.destroy()
-                }
-                var myChart = chart(ctx, '${props.chartType}',  [${props.labels.map(label=> `'${label}'`)}],  [${props.values}], ${JSON.stringify(numberFormat)}, false)
-            `
-        }
+        const numberFormat = (props.numberFormat) ? props.numberFormat : null
+        return `
+            if (typeof Chart === 'undefined') {
+                eval(atob("${require('../../../mobile/assets/js/Chart.min.js').default}"));
+            }
+            ${formatNumber.toString()}
+            ${chart.toString()
+                .replace(/_formatNumber\.default/g, 'formatNumber')
+                .replace(/_chart\.default/g, 'Chart')
+                .replace(/_objectSpread/g, 'Object.assign')}
+            var ctx = document.getElementById('chart');
+            if (myChart) {
+                myChart.destroy()
+            }
+            var myChart = chart(ctx, '${props.chartType}',  [${props.labels.map(label=> `'${label}'`)}],  [${props.values}], ${JSON.stringify(numberFormat)}, false)
+        `
     }
+
     const addChartJs = () => {
+        chartTypeRef.current = props.chartType
+        numberFormatRef.current = props.numberFormat
+        labelsRef.current = props.labels
+        valuesRef.current = props.values
         if(process.env['APP'] === 'web') {
-            chartTypeRef.current = props.chartType
-            numberFormatRef.current = props.numberFormat
-            labelsRef.current = props.labels
-            valuesRef.current = props.values
             if (chartRef.current) {
                 chartRef.current.destroy()
                 chartRef.current = null
@@ -167,12 +172,7 @@ const Chart = (props) => {
     }, [])
 
     useEffect(() => {
-        if (
-            chartTypeRef.current !== props.chartType || 
-            numberFormatRef.current !== props.numberFormat ||
-            !isEqual(labelsRef.current, props.labels) ||
-            !isEqual(valuesRef.current, props.values)
-        ) {
+        if (isToAddChartJs()) {
             addChartJs()
         }
     }, [props.chartType, props.numberFormat, props.labels, props.values])
@@ -189,7 +189,7 @@ const Chart = (props) => {
             originWhitelist={['*']}
             scrollEnabled={typeof props.maintainAspectRatio !== 'undefined'}
             javaScriptEnabled={true}
-            injectedJavaScript={getJsToInjectInWebview(true)}
+            injectedJavaScript={getJsToInjectInWebview()}
             source={{html: `
             <html>
                 <head>

@@ -121,8 +121,8 @@ const SidebarGroupEdit = (props) => {
     return (
         <div>
             <Alert 
-            alertTitle={'Alerta'} 
-            alertMessage={'Você tem certeza? Você não pode voltar atrás.'} 
+            alertTitle={strings['pt-br']['sidebarDeleteGroupAlertTitle']} 
+            alertMessage={strings['pt-br']['sidebarDeleteGroupAlertContent']} 
             show={showAlert} 
             onHide={() => {
                 setFormularyIndexToRemove(null)
@@ -132,6 +132,7 @@ const SidebarGroupEdit = (props) => {
                 setShowAlert(false)
                 onRemoveGroup(formularyIndexToRemove)
             }}
+            onAcceptButtonLabel={strings['pt-br']['sidebarDeleteGroupAlertAcceptButtonLabel']}
             />
             { props.groups.map((group, index) => (
                 <SidebarAccordion key={index}>

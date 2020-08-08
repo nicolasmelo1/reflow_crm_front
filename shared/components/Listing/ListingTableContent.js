@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
 import { useRouter } from 'next/router'
+import { strings } from '../../utils/constants'
 import Alert from '../Alert'
 import { 
     ListingEditButtonIcon, 
@@ -22,6 +23,7 @@ const PopoverWithContent = React.forwardRef((props, ref) => {
         </Popover>
     )
 })
+
 /**
  * Component that renders each element of the table. We need this especially because
  * each element of the table has a popover, since each element has a fixed height, 
@@ -80,8 +82,8 @@ const ListingTableContent = (props) => {
     return (
         <tbody>
             <Alert 
-            alertTitle={'Alerta'} 
-            alertMessage={'Você tem certeza? Você não pode voltar atrás.'} 
+            alertTitle={strings['pt-br']['listingDeleteAlertTitle']}
+            alertMessage={strings['pt-br']['listingDeleteAlertContent']} 
             show={showAlert} 
             onHide={() => {
                 setFormularyIdToRemove(null)
@@ -91,6 +93,7 @@ const ListingTableContent = (props) => {
                 setShowAlert(false)
                 removeForm(formularyIdToRemove)
             }}
+            onAcceptButtonLabel={strings['pt-br']['listingDeleteAlertAcceptButtonLabel']}
             />
             {props.data.map((data, dataIndex) => (
                 <tr key={data.id}>

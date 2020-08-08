@@ -12,6 +12,7 @@ styled.div`
     justify-content: space-between;
     height: 80%;
     text-align: left !important;
+    border-radius: 5px;
 `
 :
 styled(View)``

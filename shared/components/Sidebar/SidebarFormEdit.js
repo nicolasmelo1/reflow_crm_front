@@ -108,8 +108,8 @@ const SidebarFormEdit = (props) => {
     return (
         <SidebarCardBody>
             <Alert 
-            alertTitle={'Alerta'} 
-            alertMessage={'Você tem certeza? Você não pode voltar atrás.'} 
+            alertTitle={strings['pt-br']['sidebarDeleteFormularyAlertTitle']} 
+            alertMessage={strings['pt-br']['sidebarDeleteFormularyAlertContent']} 
             show={showAlert} 
             onHide={() => {
                 setFormularyIndexToRemove(null)
@@ -119,6 +119,7 @@ const SidebarFormEdit = (props) => {
                 setShowAlert(false)
                 onRemoveForm(formularyIndexToRemove)
             }}
+            onAcceptButtonLabel={strings['pt-br']['sidebarDeleteFormularyAlertAcceptButtonLabel']}
             />
             <SidebarAddButton text={strings['pt-br']['addNewFormButtonLabel']} onClick={e => { onAddNewForm() }} />
             {props.forms.map((form, index) => {

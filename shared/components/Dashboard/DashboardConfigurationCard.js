@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { TouchableOpacity } from 'react-native'
 import Chart from './Chart'
 import DashboardConfigurationForm from './DashboardConfigurationForm'
+import Alert from '../Alert'
+import { strings } from '../../utils/constants'
 import { 
     DashboardConfigurationCardContainer,
     DashboardConfigurationCardButtonsContainer,
@@ -10,7 +12,6 @@ import {
     DashboardConfigurationCardIcon,
     DashboardConfigurationFullFormContainer
 } from '../../styles/Dashboard'
-import { strings } from '../../utils/constants'
 
 /**
  * This component is actully just a single card of the dashboard configuration.
@@ -35,15 +36,29 @@ import { strings } from '../../utils/constants'
  */
 const DashboardConfigurationCard = (props) => {
     const [formIsOpen, setFormIsOpen] = useState(false)
+    const [showAlert, setShowAlert] = useState(false)
 
     const renderMobile = () => {
         return (
             <DashboardConfigurationCardContainer>
+                <Alert 
+                alertTitle={strings['pt-br']['dashboardConfigurationDeleteChartAlertTitle']} 
+                alertMessage={strings['pt-br']['dashboardConfigurationDeleteChartAlertContent']} 
+                show={showAlert} 
+                onHide={() => {
+                    setShowAlert(false)
+                }} 
+                onAccept={() => {
+                    setShowAlert(false)
+                    props.onRemoveDashboardSettings()
+                }}
+                onAcceptButtonLabel={strings['pt-br']['dashboardConfigurationDeleteChartAlertAcceptButton']}
+                />
                 <DashboardConfigurationCardButtonsContainer>
                     <TouchableOpacity onPress={e => {setFormIsOpen(true)}}>
                         <DashboardConfigurationCardIcon icon={'pencil-alt'}/>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={e => {props.onRemoveDashboardSettings()}}>
+                    <TouchableOpacity onPress={e => {setShowAlert(true)}}>
                         <DashboardConfigurationCardIcon icon={'trash'}/>
                     </TouchableOpacity>
                 </DashboardConfigurationCardButtonsContainer>
@@ -78,10 +93,23 @@ const DashboardConfigurationCard = (props) => {
     const renderWeb = () => {
         return (
             <div>
+                <Alert 
+                alertTitle={strings['pt-br']['dashboardConfigurationDeleteChartAlertTitle']} 
+                alertMessage={strings['pt-br']['dashboardConfigurationDeleteChartAlertContent']} 
+                show={showAlert} 
+                onHide={() => {
+                    setShowAlert(false)
+                }} 
+                onAccept={() => {
+                    setShowAlert(false)
+                    props.onRemoveDashboardSettings()
+                }}
+                onAcceptButtonLabel={strings['pt-br']['dashboardConfigurationDeleteChartAlertAcceptButton']}
+                />
                 <DashboardConfigurationCardContainer isOpen={formIsOpen}>
                     <DashboardConfigurationCardButtonsContainer>
                         <DashboardConfigurationCardIcon icon={'pencil-alt'} onClick={e=>{setFormIsOpen(true)}}/>
-                        <DashboardConfigurationCardIcon icon={'trash'} onClick={e=>{props.onRemoveDashboardSettings()}}/>
+                        <DashboardConfigurationCardIcon icon={'trash'} onClick={e=>{setShowAlert(true)}}/>
                     </DashboardConfigurationCardButtonsContainer>
                     <DashboardConfigurationCardChartAndTitleContainer>
                         <DashboardConfigurationCardTitle isOpen={formIsOpen}>

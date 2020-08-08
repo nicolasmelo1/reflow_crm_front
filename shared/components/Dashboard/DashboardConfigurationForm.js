@@ -27,7 +27,7 @@ import {
  * it is important to understand one thing: the data used here must be from this component
  * that's because the data comes from a list, but the data from this list is just updated when we hit 
  * `save`. That means the data that you modify here must be contained inside of this component only
- * and when this component is unmounted we loose all of the data of the form because we didn't hit save.breadcrumb
+ * and when this component is unmounted we lose all of the data of the form because we didn't hit save.
  * 
  * Besides that it's just a simple formulary actually, nothing much. The only difference is that we render
  * the chart while the user is editing the chart configuration.

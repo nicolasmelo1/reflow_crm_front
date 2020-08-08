@@ -9,7 +9,8 @@ import Select from '../../Utils/Select'
 import { FormulariesEdit }  from '../../../styles/Formulary'
 import { types, strings } from '../../../utils/constants'
 import Overlay from '../../../styles/Overlay'
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import Alert from '../../Alert'
+
 /**
  * We created this component because probably each selection item will be styled
  * 
@@ -47,6 +48,7 @@ const FormularyFieldEdit = (props) => {
     const [isEditing, setIsEditing] = useState(false)
     const [fieldTypes, setFieldTypes] = useState([])
     const [initialFieldType, setInitialFieldType] = useState([])
+    const [showAlert, setShowAlert] = useState(false)
 
     const onMoveField = (e) => {
         let fieldContainer = e.currentTarget.closest('.field-container')
@@ -57,9 +59,7 @@ const FormularyFieldEdit = (props) => {
         props.setFieldIsMoving(true)
     }
 
-    const onRemoveField = (e) => {
-        e.preventDefault()
-        e.stopPropagation()
+    const onRemoveField = () => {
         props.removeField(props.sectionIndex, props.fieldIndex)
     }
 
@@ -230,9 +230,22 @@ const FormularyFieldEdit = (props) => {
 
     return (
         <FormulariesEdit.FieldContainer className="field-container" onDragOver={e=>{onDragOver(e)}} onDrop={e=>{onDrop(e)}}>
+            <Alert 
+            alertTitle={strings['pt-br']['formularyEditRemoveFieldAlertTitle']} 
+            alertMessage={strings['pt-br']['formularuEditRemoveFieldAlertContent']} 
+            show={showAlert} 
+            onHide={() => {
+                setShowAlert(false)
+            }} 
+            onAccept={() => {
+                setShowAlert(false)
+                onRemoveField()
+            }}
+            onAcceptButtonLabel={strings['pt-br']['formularuEditRemoveFieldAlertAcceptButtonLabel']}
+            />
             <div style={{height: '1em', margin: '5px'}}>
                 <Overlay text={strings['pt-br']['formularyEditFieldTrashIconPopover']}>
-                    <FormulariesEdit.Icon.FieldIcon size="sm" icon="trash" onClick={e=> {onRemoveField(e)}}/>
+                    <FormulariesEdit.Icon.FieldIcon size="sm" icon="trash" onClick={e=> {setShowAlert(true)}}/>
                 </Overlay>
                 <Overlay text={strings['pt-br']['formularyEditFieldEyeIconPopover']}>
                     <FormulariesEdit.Icon.FieldIcon size="sm" icon="eye" onClick={e=> {onDisableField(e)}}/>

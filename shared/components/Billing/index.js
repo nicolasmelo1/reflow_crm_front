@@ -22,8 +22,15 @@ import {
 } from '../../styles/Billing'
 
 /**
- * {Description of your component, what does it do}
- * @param {Type} props - {go in detail about every prop it recieves}
+ * This component is responsible for holding the billing formulary.
+ * 
+ * The billing formulary as you might see in this folder is composed with 3 main parts:
+ * 
+ * - The first - Specific data about the company like the cpf/cnpj and also the address.
+ * - The second - The charge data. In Reflow the user is free, he is not bound to plans but instead
+ * he can add what he wishes for his plan whenever he needs.
+ * - The third - Payment data. This information is: when he wants to be charged (what date), on what e-mail we are going to send
+ * invoice, and the credit card information if he is paying with a credit card.
  */
 class Billing extends React.Component {
     constructor(props) {
@@ -55,23 +62,33 @@ class Billing extends React.Component {
     setIsSubmitting = () => this.setState(state => ({ ...state, isSubmitting: !state.isSubmitting }))
 
     setIsChargeFormOpen = () => this.setState(state => ({ ...state, isChargeFormOpen: !state.isChargeFormOpen }))
-
     setIsPaymentFormOpen = () => this.setState(state => ({...state, isPaymentFormOpen: !state.isPaymentFormOpen }))
-
     setIsCompanyFormOpen = () => this.setState(state => ({...state, isCompanyFormOpen: !state.isCompanyFormOpen }))
 
     setAddressOptions = (data) => this.setState(state => ({...state, addressOptions: data }))
-    
+
     setCompanyDataFormErrors = (data) => this.setState(state => ({...state, companyDataFormErrors: data }))
-
     setChargeDataFormErrors = (data) => this.setState(state => ({...state, chargeDataFormErrors: data }))
-
     setPaymentDataFormErrors = (data) => this.setState(state => ({...state, paymentDataFormErrors: data }))
-
     setCreditCardDataErrors = (data) => this.setState(state => ({...state, creditCardDataErrors: data}))
     
     setCreditCardData = (data) => this.setState(state => ({...state, creditCardData: data}))
+    
+    /**
+     * Retrieves an object where the key is the field name and the type is an array containing the errors for this particular field.
+     * IMPORTANT: FIELD NAME HERE IS EACH KEY FROM THE JSON WE SEND TO THE SERVER AND RECIEVES FROM THE SERVER TO LOAD THE BILLING DATA.
+     * 
+     * @param {String} field - The name of the field that contains an error
+     * @param {Array<String>} type - An array containing all of the errors that have happened for this field name 
+     */
+    addError = (field, type) => ({[field]: type})
 
+    /**
+     * This function is just a boolean function that returns true or false. If the user is NOT paying by credit card you don't
+     * have to show the credit card form. The other condition is if he has a credit_card_data defined. `credit_card_data` holds
+     * the data that we use to display the credit card saved for the user, if it is null or the keys are empty we assume no credit
+     * card was saved so we need to display it for the user.
+     */
     isToShowCreditCardForm = () => {
         const paymentMethodType = this.props.login.types.billing.payment_method_type.filter(paymentMethodType => paymentMethodType.id === this.props.billing.paymentData.payment_method_type_id)
         if (paymentMethodType.length > 0 && paymentMethodType[0].name === 'credit_card') {
@@ -84,44 +101,72 @@ class Billing extends React.Component {
             return false
         }
     }
-
+    
+    /**
+     * As the name suggests this is for retrieving something. This function is for retriving what to render inside of the Save button.
+     * 
+     * We actually have 3 states when we save: `not saving at all`, `processing the save`, `all good icon to show everything went fine`
+     * When we are submitting we show a spinner to show that it is loading. After is saved, for a short period of time, shows a "check" 
+     * icon to give it a nice UX touch. After that, shows a simple text inside the save button.
+     */
     getWhatToRenderInsideSaveButton = () => {
         if (this.state.isSubmitting) {
             return (<Spinner animation="border" size="sm"/>)
         } else if (this.state.showAllGoodIcon) {
             return (<FontAwesomeIcon icon="check"/>)
         } else {
-            return strings['pt-br']['billingSaveButtonLabel']
+            return (<span>{strings['pt-br']['billingSaveButtonLabel']}</span>)
         }
     }
 
-    setError = (field, type) => ({[field]: type})
-    
+    /**
+     * Sets the error on the formulary, this is not anything like the formulary in `Notification/NotificationConfigurationForm.js` or `Onboarding/index.js`
+     * because this is a lot more complex than both formularies.
+     * 
+     * This is actually simple, there are some special errors that we validate first and set them by hand. Otherwise we send the errors to each specific 
+     * formulary part. If there are any error in the paymentData fields we set the errors on `paymentDataFormErrors` state. Otherwise it is probably an error
+     * in the companyData field so we set the errors in the state `companyDataFormErrors`. Separating the errors this way, we can show easily a red card and alert
+     * to the user that a error have happened in each specific separate part of the formulary.
+     * 
+     * @param {Object} error - This is the data that was recieved from the backend response when an error happened (so when the request haven't returned status 200)
+     */
     onSetError = (error) => {
         if (error.reason) {
             if (error.reason.includes('invalid_registry_code')) {
-                this.setCompanyDataFormErrors({ ...this.state.companyDataFormErrors, ...this.setError('cnpj', ['invalid'])})
+                this.setCompanyDataFormErrors({ ...this.state.companyDataFormErrors, ...this.addError('cnpj', ['invalid'])})
             } 
             if (error.reason.includes('cannot_be_bigger_than_three_or_less_than_one')) {
-                this.setPaymentDataFormErrors({ ...this.state.paymentDataFormErrors, ...this.setError('company_invoice_emails', ['invalid'])})
+                this.setPaymentDataFormErrors({ ...this.state.paymentDataFormErrors, ...this.addError('company_invoice_emails', ['invalid'])})
             }
         }
         if ([...Object.entries(error)].some(value => [...Object.entries(this.props.billing.paymentData)].map(value=> value[0]).includes(value[0]))) {
             let paymentDataFormErrors = {}
             Object.entries(error).forEach(([key, value]) => {
-                paymentDataFormErrors = {...paymentDataFormErrors, ...this.setError(key, value)}
+                paymentDataFormErrors = {...paymentDataFormErrors, ...this.addError(key, value)}
             })
             this.setPaymentDataFormErrors({ ...this.state.paymentDataFormErrors, ...paymentDataFormErrors})
 
         } else if ([...Object.entries(error)].some(value => [...Object.entries(this.props.billing.companyData).map(value=> value[0])].includes(value[0]))) {
             let companyDataFormErrors = {}
             Object.entries(error).forEach(([key, value]) => {
-                companyDataFormErrors = {...companyDataFormErrors, ...this.setError(key, value)}
+                companyDataFormErrors = {...companyDataFormErrors, ...this.addError(key, value)}
             })
             this.setCompanyDataFormErrors({ ...this.state.companyDataFormErrors, ...companyDataFormErrors})
         }
     }
 
+    /**
+     * This is actually the "real" submit function. This effectively submits the formulary data to the backend.
+     * It's important to understand that this actually merges the data from each part of the formulary.
+     * 
+     * If an error happens we send the error data to `onSetError` function so it can handle the errors, otherwise
+     * we retrive the payment data again to refresh the data of the formulary. (this is actually usefull because of credit_card formulary,
+     * when the user fills the credit_card info, if we don't refresh the billingData the formulary will stay filled, but what we actually want
+     * is display some parts of the credit card so he can delete it. Check `isToShowCreditCardForm` function for details)
+     * 
+     * @param {String} gatewayToken - (optional) - The gateway token recieved by VINDI (our payment gateway) public API.
+     * Check here for further reference: https://vindi.github.io/api-docs/dist/#/public/postV1PublicPaymentProfiles
+     */
     onSubmitPayment = (gatewayToken = null) => {
         this.props.onUpdatePaymentData(gatewayToken).then(response=>{
             this.setIsSubmitting(false)
@@ -138,7 +183,16 @@ class Billing extends React.Component {
             }
         })
     }
-
+    /**
+     * This method is called when the user clicks `save` in the button. With this we actually check if the user has selected the credit_card
+     * paymentType or not.
+     * 
+     * If the user has selected the credit card payment type we need to first send the credit card data to VINDI (so the credit card data are 
+     * not runed inside our servers) and then get a gatewayToken, that we need to send to our server so we can save it.
+     * 
+     * Last but not least, any errors that happens while trying to save the credit card data is updated in the `creditCardDataErrors` state
+     * array, so we can show it in the formulary.
+     */
     onSubmit = () => {
         this.setIsSubmitting(true)
         if (this.isToShowCreditCardForm()) {
@@ -169,6 +223,8 @@ class Billing extends React.Component {
     }
     
     componentDidMount = () => {
+        // when we mount the component we get the addressOptions that the user can select in the CompanyForm and
+        // the hole payment data. Nothing much actually.
         this._ismounted = true
         this.source = this.cancelToken.source()
         this.props.onGetPaymentData(this.source)
@@ -273,7 +329,6 @@ class Billing extends React.Component {
                     types={this.props.login.types.billing}
                     />
                 ): ''}
-                
                 <BillingSaveButton onClick={e => {(!this.state.isSubmitting) ? this.onSubmit() : null}}>
                     {this.getWhatToRenderInsideSaveButton()}
                 </BillingSaveButton>

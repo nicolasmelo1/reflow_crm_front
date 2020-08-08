@@ -5,11 +5,26 @@ import axios from 'axios'
 import { View, Text } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import NotificationRecieved from './NotificationRecieved'
-import { NotificationButton, NotificationTitle, NotificationHeader } from '../../styles/Notification'
 import NotificationsConfiguration from './NotificationsConfiguration'
 import { strings } from '../../utils/constants'
+import { 
+    NotificationButton,
+    NotificationTitle, 
+    NotificationHeader 
+} from '../../styles/Notification'
 
-
+/**
+ * This component is responsible for loading the notifications on the screen for the user.
+ * 
+ * Notifications in reflow are different from other companies, here it works more like a reminder that the user sets
+ * with a custom text. 
+ * 
+ * Notifications are always bound to a specific formulary and a specific field. 
+ * 
+ * This component controls 2 things: The creation of these notifications and show the notifications generated to the user.
+ * 
+ * The props it recieves are only from redux actions and reducers.
+ */
 class Notification extends React.Component {
     constructor(props) {
         super(props)
@@ -20,15 +35,12 @@ class Notification extends React.Component {
         }
     }
 
-    setIsEditing = (data) => {
-        this.setState(state => state.isEditing = data)
-    }
+    setIsEditing = (data) => this.setState(state => state.isEditing = data)
 
     componentDidMount = () => {
         // we use the source so we can cancel requests if the component is unmounted
         this.source = this.CancelToken.source()
         this.props.onGetNotifications(this.source, {})
-        this.props.onGetForms(this.source)
     }
 
     componentWillUnmount = () => {
@@ -45,6 +57,7 @@ class Notification extends React.Component {
                     types={this.props.login.types}
                     user={this.props.login.user}
                     formularies={this.props.formularies}
+                    onGetForms={this.props.onGetForms}
                     notificationConfiguration={this.props.notificationConfiguration}
                     cancelToken={this.CancelToken}
                     setIsEditing={this.setIsEditing}
@@ -53,6 +66,7 @@ class Notification extends React.Component {
                     onUpdateNotificationConfigurationState={this.props.onUpdateNotificationConfigurationState}
                     onUpdateNotificationConfiguration={this.props.onUpdateNotificationConfiguration}
                     onCreateNotificationConfiguration={this.props.onCreateNotificationConfiguration}
+                    onRemoveNotificationConfiguration={this.props.onRemoveNotificationConfiguration}
                     />
                 ) : (
                     <View>
@@ -84,6 +98,7 @@ class Notification extends React.Component {
                     types={this.props.login.types}
                     user={this.props.login.user}
                     formularies={this.props.formularies}
+                    onGetForms={this.props.onGetForms}
                     notificationConfiguration={this.props.notificationConfiguration}
                     cancelToken={this.CancelToken}
                     setIsEditing={this.setIsEditing}
