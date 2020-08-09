@@ -33,11 +33,6 @@ const checkUrl = (url) => {
     return { isValid: false, params: {}}
 }
 
-// okay, so this might be kinda tricky, but this conforms with your paths in @shared/utils/constants/paths
-// With this your Screens NEED to be on lowercase, with this we can easily navigate between screens. The name
-// of the screen you want to open when the user access a certain url must be conformed and defined in apps.
-// you can send parameters if you want to the url. See next.js documentation for details. But anyway, parameters
-// in the url MUST be between `[]` like the web version of the app.
 export const handleNavigation = (links, isAuthenticated) => {
     if (links) {
         const parsedLink = Linking.parse(links)

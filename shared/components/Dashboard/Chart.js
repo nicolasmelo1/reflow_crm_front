@@ -97,12 +97,13 @@ const PopoverWithTotals = React.forwardRef((props, ref) => {
  * important to make the function separate of the component. Also, make both things separate is exactly how we can inject the
  * charts.js in the webview on mobile.
  * 
- * Read for further explanation: https://www.chartjs.org/docs/latest/
+ * Read for further explanation on the graphing library: https://www.chartjs.org/docs/latest/
+ * 
  * @param {Array<String>} labels - The labels of the charts, usually this is an array with string elements.
  * with each element being the label. This array must be the same size of `values` props.
- * @param {Array<Float/Interger>} values - The values for each label, must be the same size of `label` props. For position
+ * @param {Array<Float>|Array<BigInteger>} values - The values for each label, must be the same size of `label` props. For position
  * 0 of the `labels` we use element on the position 0 of `values` props array and so on.
- * @param {Enum{'card', 'pie', 'bar', 'line'}} chartType - The type of the chart, for `pie`, `bar` and `line` we render the chart using
+ * @param {('card'|'pie'|'bar'|'line')} chartType - The type of the chart, for `pie`, `bar` and `line` we render the chart using
  * charts.js library. For `card` we render a simple card of totals, and don't use any lib.
  * @param {Boolean} maintainAspectRatio - Maintain aspect ratio of the chart. You might want to read this for reference:
  * https://www.chartjs.org/docs/latest/general/responsive.html

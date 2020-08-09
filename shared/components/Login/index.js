@@ -23,12 +23,24 @@ import {
     LoginVisualizePasswordIcon
 } from '../../styles/Login'
 
+
 /**
- * This component handles the login of a user on the platform, it is important to understand a condition on the user onboarding.
+ * This component handles the login of a user on the platform, it is important to understand a condition on the user onboarding
+ * 
  * WHEN THE USER DOESN'T HAVE ANY FORMULARY DEFINED WE DON'T REDIRECT THE USER, WE OPEN THE COMPONENT FOR HIM TO ADD A NEW TEMPLATE IF HE IS AN ADMIN.
  * 
- * Otherwise this is a simple login formulary, it just handles a simple user login.
+ * When the user logs in we get the types because sometimes can have issues that the types become undefined. If the types are undefined we cannot
+ * validate if he is an admin or not. Retriving the types after the login prevents this from happening and the user can be safelly validated
+ * if he's an admin or not.
  * 
+ * Besides that is a simple login formulary, it just handles a simple user login.
+ * 
+ * (on development just set the default reflow email and password so you don't have to type everytime)
+ * 
+ * @param {Function} setIsAuthenticated - (ONLY MOBILE) - Function to set if the user is authenticated or not. This way we can use React navigation safely,
+ * if you want any further explanation, read: https://reactnavigation.org/docs/auth-flow/ 
+ * @param {Function} setAddTemplates - This is just a bridge function, it works for us to notify the Layout element that we want to open the 
+ * Templates component
  */
 class Login extends React.Component {
     constructor(props) {
@@ -48,6 +60,16 @@ class Login extends React.Component {
         }
     }
 
+    /**
+     * We don't have any special screen to send the reset password email to the user, we do this directly in the login screen.
+     * 
+     * Everytime the user requests a new password we say everything went fine (this way we prevent hackers trying to find e-mails so they can
+     * brute force)
+     * 
+     * We just send an error message on two occasions: 
+     * - The first is when we could not connect to the server or some server error.
+     * - The second is that the email supplied is not a valid email (like, it doesn't contain '@' keyword)
+     */
     onClickForgotPassword = () => {
         const changePasswordUrl = (process.env['APP']=== 'web') ? window.location.origin + paths.changepassword().asUrl + '?temp_pass={}' : ''
         const email = (this.emailRef.current?.value) ? this.emailRef.current.value : this.state.email
@@ -65,6 +87,9 @@ class Login extends React.Component {
         }
     }
 
+    /**
+     * Just a handy function to redirect the user from the login page to the onboarding page.
+     */
     redirectToOnboarding = () => {
         if (this._ismounted) {
             if (process.env['APP'] === 'web') {
@@ -75,7 +100,17 @@ class Login extends React.Component {
         }
     }
 
-    handleLogin() { 
+    /**
+     * Most of this function is explained inside but anyway.
+     * 
+     * The login cycle is:
+     * - We first verify if the password and the email are valid. You will notice that we get both the email and password 
+     * from the reference of the field and not always of the state. This is because some browsers store the login username and password.
+     * - After veryfing we get the data types so we can use it to validate if the user is an admin or not.
+     * - If he has no primaryForm and is a admin, Redirects him to add the templates.
+     * - Otherwise set that he's authenticated on mobile, or redirects him directly to the home page in the browser.
+     */
+    handleLogin = () => { 
         // we use the reference because most browser saves the credentials on the client side, when
         // if this applies, if the user press `enter` it does not enter because the state will not be set
         // since he will not have written anything
@@ -89,8 +124,8 @@ class Login extends React.Component {
             } else {
                 // force types to be defines when logging in.
                 this.props.getDataTypes().then(_ => {
-                    // we set it here because of react, Next.js always constructs the Layout component, so 
-                    // it always pass on the constructor part, React Native on the other hand don't.
+                    // we set it here because of React: Next.js always constructs the Layout component, so 
+                    // it always pass on the constructor part, React Native on the other hand usually don't.
                     agent.setCompanyId(this.props.login.companyId)
                     
                     if (!['', null, undefined].includes(this.props.login.primaryForm)) {
@@ -109,7 +144,7 @@ class Login extends React.Component {
 
     componentDidMount = () => {
         this._ismounted = true
-        // Used for anymating, it's better to use key frames, but i don't actually care.
+        // Used for animating, it's better to use key frames, but i don't actually care.
         // (it'll be better if you change it)
         if (process.env['APP'] === 'web') {
             setTimeout(() => {
@@ -134,11 +169,11 @@ class Login extends React.Component {
                 <LoginLogo src="/complete_logo.png" showLogo={this.state.showLogo} slideLogo={this.state.slideLogo }/>
                 <LoginFormContainer showForm={this.state.showForm}>
                     <LoginLabel>{strings['pt-br']['loginEmailLabel']}</LoginLabel>
-                    <LoginInput type={'text'} ref={this.emailRef} value={this.state.email} onChange={e => this.setState({ email: e.target.value, emailError: '' })} error={![null, undefined, ''].includes(this.state.emailError)}/>
+                    <LoginInput type={'text'} name={'email'} ref={this.emailRef} value={this.state.email} onChange={e => this.setState({ email: e.target.value, emailError: '' })} error={![null, undefined, ''].includes(this.state.emailError)}/>
                     <LoginFieldError>{![null, undefined, ''].includes(this.state.emailError) ? this.state.emailError : ''}</LoginFieldError>
                     <LoginLabel>{strings['pt-br']['loginPassLabel']}</LoginLabel>
                     <LoginInputContainer>
-                        <LoginInput ref={this.passwordRef} type={this.state.visualizePassword ? 'text' : 'password'} value={this.state.password} onChange={e => this.setState({ password: e.target.value })}/>
+                        <LoginInput ref={this.passwordRef} name={'password'} type={this.state.visualizePassword ? 'text' : 'password'} value={this.state.password} onChange={e => this.setState({ password: e.target.value })}/>
                         <LoginVisualizePasswordIcon icon={this.state.visualizePassword ? 'eye-slash' : 'eye'} onClick={e=> this.setState(state => ({...state, visualizePassword: !state.visualizePassword}))}/>
                     </LoginInputContainer>
                     <LoginForgotPassword onClick={e=> this.onClickForgotPassword()}>{strings['pt-br']['loginRedefinePasswordButtonLabel']}</LoginForgotPassword>

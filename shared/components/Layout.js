@@ -79,7 +79,6 @@ library.add(
  * This is the main component of the page, we use this custom layout component so pages can override from this.
  * IMPORTANT: When you create a new Page, PLEASE use this component as the first tag of your page.
  * 
- * PROPS:
  * @param {String} title - (ONLY WEB) - Defines the title tag of the page
  * @param {Boolean} isNotLogged - (ONLY MOBILE) - Defines that the user is not logged in.
  * @param {Boolean} addTemplates - If set to true we will load a modal for the user to select the templates, otherwise we show the contents normally.

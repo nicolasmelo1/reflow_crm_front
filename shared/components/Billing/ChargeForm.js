@@ -30,9 +30,10 @@ const PopoverWithAditionalInformation = React.forwardRef(({additionalInformation
  * he can have, these permissions are like: How many charts he can have in the dashboard? How many notifications he can create? And so on.
  * 
  * @param {Object} chargeDataFormErrors - This object holds all the errors data where each field_name (where field name is each key of the object we send in the
- * PUT request to the server) so we can display holds a list with all the errors of this particular list.
+ * PUT request to the server) so we can display the errors of the chargeData state for the user.
  * @param {Function} setChargeDataFormErrors - This is a function for the Billing component. This is to change the state of the 
- * `chargeDataFormErrors` object in the billing component. We use this for everytime we write in the formulary, this way we dismiss the error after he types.
+ * `chargeDataFormErrors` object in the billing component. We use this for everytime we write in a field of the in this component formulary, 
+ * this way we can dismiss the error alert on the field after he types.
  * @param {Function} onChangeChargeData - This is a redux action to change the reducer redux state of the chargeData. This change the complete array of
  * the chargeData.
  * @param {Function} onGetTotals - This a redux action used to get the totals data. Totals are never calculated here, they are calculated on the backend
@@ -110,11 +111,11 @@ const ChargeForm = (props) => {
     }
 
     /**
-     * Changes the quantity of a particular ChargeName. This quantity is used a select, check `optionsForIndividualChargeTypes` variable
+     * Changes the quantity of a particular ChargeName. This quantity is used is from a Select component, check `optionsForIndividualChargeTypes` variable
      * for details of the options the user can select. Each key on this object are also the names that we can update the quantity.
      * 
      * Sometimes a chargeType can be not for the hole company but for each user, so you have to make sure that when you update the quantity you
-     * actually updates the quantity for each user.
+     * actually update the quantity for each user.
      * 
      * @param {String} value - The value recieved is String, but should be a digit so it can be parsed as INT
      * @param {String} name - Check the redux login.types for details or `optionsForIndividualChargeTypes` variable for the possible names you can
@@ -129,6 +130,22 @@ const ChargeForm = (props) => {
         props.onChangeChargeData([...props.chargesData])
     }
 
+    /**
+     * A function to get the total value of quantity based on a specific charge name. As you might see, we actually get the quantitiy of this name using 
+     * reduce function, that is because some values are bound to each user and not the hole company. This means that EACH item in the array sometimes 
+     * are the quantity for each user. So we have to sum the values for each item with the following name. 
+     * 
+     * For example we can have something like [{ name: "per_gb", quantity: 5, user_id: null }, { name: "per_chart_user", quantity: 5, user_id: 1 },
+     * { name: "per_chart_user", quantity: 5, user_id: 2 }]
+     * 
+     * If you see closely, the per_gb have the user_id set to null, so this value is default for the hole company. On the other hand we have `per_chart_user`
+     * with user_id as 1 and 2, so we have to sum the quantities for each user. 
+     * 
+     * Why don't you just multiply instead of using sum? Because the quantities might not be always the same. It's safer to always sum.
+     * 
+     * @param {String} name - Check the redux login.types for details or `optionsForIndividualChargeTypes` variable for the possible names you can
+     * accept here.
+     */
     const getCompanyIndividualChargeValueQuantityByName = (name) => {
         const chargeData = props.chargesData.filter(chargeData => chargeData.name === name)
         if (chargeData.length > 0) {
@@ -138,6 +155,16 @@ const ChargeForm = (props) => {
         }
     }
 
+    /**
+     * This gets the total values by the charge name. The totals by each name are actually retrieved from the backend
+     * so we don't do any calculation of totals on our side. This way we prevent any data being displayed wrongly for the user.
+     * 
+     * It's important to notice that we use the `getDecimals` function so we can display the total to the user formatted 
+     * right for the user.
+     * 
+     * @param {String} name - Check the redux login.types for details or `optionsForIndividualChargeTypes` variable for the possible names you can
+     * accept here.
+     */
     const getTotalByName = (name) => {
         const total = totals.total_by_name.filter(total => total.name === name)
         if (total.length > 0) {
@@ -147,8 +174,9 @@ const ChargeForm = (props) => {
         }
     }
 
-
     useEffect(() => {
+        // This effect is fired everytime the user changes the chargesData array of objects. 
+        // This effect is used to get the new totals based on his current data selected.
         props.onGetTotals(props.chargesData).then(response => {
             if (response && response.status === 200) {
                 setTotals(response.data.data)
@@ -157,6 +185,15 @@ const ChargeForm = (props) => {
     }, [props.chargesData])
 
     useEffect(() => {
+        // This effect is for syncing the data from the server and the client side.
+        // Imagine that we have added a new individual_charge_value_type in the backend, if this new type is for each user, we need to create it
+        // for each user and make this new charge type in sync with the number of users. That's exactly what we do here.
+
+        // Since the user cannot edit the individual_charge_value_type we need to handle it on our side. This is something that might not
+        // happen very ofter, but since this could happen it's important that we prevent.
+
+        // TL;DR: we are creating new charge_data for the company if they haven't been created before. This is used on created individual_charge_value_type
+        // that were not assigned for the company.
         const individualValueChargeNames = props.types.individual_charge_value_type.map(individualChargeValueType => individualChargeValueType.name)
         const individualValueChargeNamesOfTheCompany = Array.from(new Set(props.chargesData.map(chargeData => chargeData.name)))
         const chargesPerUser = props.chargesData.filter(chargeData => chargeData.name === 'per_user')

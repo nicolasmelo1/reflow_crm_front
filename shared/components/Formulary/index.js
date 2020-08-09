@@ -24,10 +24,10 @@ import { Formularies } from '../../styles/Formulary'
  * - as a preview (on templates)
  * - embbed in an external website or custom url (similar as a standalone component, but without some functionalites)
  * 
- * @param {Enum['bottom', 'standalone']} display - how you want to display the formulary:
+ * @param {('bottom'|'standalone')} display - how you want to display the formulary:
  * - standalone - display the form relative to the page layout
  * - bottom - adds a widget on the bottom of the page to open or close the formulary
- * @param {Enum['full', 'preview', 'embbed']} type - this have some differeces on what is shown to the user,
+ * @param {('full'|'preview'|'embbed')} type - this have some differeces on what is shown to the user,
  * - embbed - is the formulary that is used to embed in external websites and urls, so, for the external world. 
  * it deactivates funcionalities like: add new or edit connection field is not available, cannot edit.
  * - preview - the formulary is fully functional, except it doesn't have a save button

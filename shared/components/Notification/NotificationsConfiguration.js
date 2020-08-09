@@ -14,7 +14,8 @@ import { strings } from '../../utils/constants'
  * @param {Array<Object>} formularies - These are the formularies loaded from the sidebar, 
  * @param {Array<Object>} notificationConfiguration - The redux state
  * @param {Object} notificationConfiguration - basically the 'update' part of the notification reducer. See `redux/reducers/notification/notification` for reference.
- * @param {Object} cancelToken - A axios cancel token, we use this so we can cancel a request when a user unmounts a component before the data be retrieved
+ * @param {Object} cancelToken - A axios cancel token. We use this so we can cancel a request and the promise when the user unmounts a component,
+ * before the data is retrieved
  * @param {Function} setIsEditing - Function responsible for changing `isEditing` stage in the parent component. This state is responsible to mount and unmount
  * this component
  * @param {Function} onGetNotificationConfigurationFields - Redux action used for retrieving the fields the user can select as variables and the 

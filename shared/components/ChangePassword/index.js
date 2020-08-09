@@ -63,6 +63,12 @@ class ChangePassword extends React.Component {
         confirmNewPassword: strings['pt-br']['changePasswordConfirmNewPasswordError']
     }
 
+    /**
+     * Checks if a value that you are inserting on a name (name is a key from the state) is valid or not.
+     * 
+     * @param {('currentPassword'|'newPassword'|'confirmNewPassword')} name - You will see that those are keys of the state
+     * @param {String} value - The value that you want to check if it is valid or not.
+     */
     isValid = (name, value) => {
         switch (name) {
             case 'currentPassword':
@@ -76,7 +82,13 @@ class ChangePassword extends React.Component {
         }
     }
 
-     // the field must be a string with one of the states
+     /**
+      * Function that checks for errors when you type using the `isValid` function.
+      * The field are actually some keys of the state of this component as string.
+      * 
+      * @param {('currentPassword'|'newPassword'|'confirmNewPassword')} field -  keys of the state of this component as string.
+      * @param {String} value - The value that you want to insert in this attribute of the state. 
+      */
      onValidate = (field, value) => {
         if (!this.isValid(field, value)) {
             this.state.errors[field] = this.errorMessages[field]
@@ -86,18 +98,34 @@ class ChangePassword extends React.Component {
         this.setErrors({...this.state.errors})
     }
 
+    /**
+     * If the data is not valid, the button is disabled so you can't submit anything to the server.
+     * When it is valid the button becomes pressable/clickable.
+     */
     submitButtonDisabled = () => {
         return this.state.errors.hasOwnProperty('confirmPassword') || this.state.errors.hasOwnProperty('newPassword') || 
                this.state.errors.hasOwnProperty('currentPassword') || this.state.confirmNewPassword === '' || this.state.newPassword === '' || 
                this.state.confirmNewPassword === ''
     }
-
+    
+    /**
+     * Redirects the user to the login page, since on mobile we use React Navigation we don't need to use anything like this.
+     */
     redirectToLogin = () => {
         if (process.env['APP'] === 'web') {
             Router.push(paths.login().asUrl, paths.login().asUrl, { shallow: true })
         }
     }
 
+    /**
+     * This function is fired when the user clicks/presses the `save` button in the screen.
+     * 
+     * Usually no errors should happen since we do many validations here so we don't check for any of those.
+     * 
+     * So when a error happens it's because the temporary password generated for him is actually not valid.
+     * Because of this we redirect him to the login page again and if he wants he does the hole process of requesting for a new password
+     * and so on.
+     */
     onSubmit = () => {
         const data = {
             temporary_password: this.state.currentPassword,

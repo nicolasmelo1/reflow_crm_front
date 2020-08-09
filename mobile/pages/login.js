@@ -9,7 +9,7 @@ const LoginPage = (props) => {
 
     return (
         <Layout setIsAuthenticated={authentication.setIsAuthenticated} isNotLogged={true} addTemplates={addTemplates}>
-            <Login setIsAuthenticated={authentication.setIsAuthenticated} navigation={props.navigation} setAddTemplates={setAddTemplates}/>
+            <Login setIsAuthenticated={authentication.setIsAuthenticated} setAddTemplates={setAddTemplates}/>
         </Layout>
     )
 }

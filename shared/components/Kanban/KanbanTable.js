@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import KanbanDimension from './KanbanDimension'
 
 /**
- * This is a simple component that is used to control the dimensions.
+ * This is a component that is used to control the dimensions.
  * 
  * @param {String} formName - the form name of the current formulary
  * @param {Array<Object>} dimensionOrders - The dimension orders loaded on the redux state, this dimension order
