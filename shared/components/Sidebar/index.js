@@ -23,7 +23,21 @@ class Sidebar extends React.Component {
             isEditing: false
         }
     }
-    
+
+    enterEditMode = (e) => {
+        e.preventDefault()
+        this.setState(state => {
+            if (!state.isEditing){
+                this.props.onGetUpdateForms()
+            } else {
+                this.props.onGetForms()
+            }
+            return {
+                isEditing: !state.isEditing
+            }
+        })
+    }
+
     componentDidMount() {
         this.source = this.CancelToken.source()
         // force to load templates if the user is logged and doesn't have any template
@@ -38,20 +52,6 @@ class Sidebar extends React.Component {
         if (this.source) {
             this.source.cancel()
         }
-    }
-
-    enterEditMode = (e) => {
-        e.preventDefault()
-        this.setState(state => {
-            if (!state.isEditing){
-                this.props.onGetUpdateForms()
-            } else {
-                this.props.onGetForms()
-            }
-            return {
-                isEditing: !state.isEditing
-            }
-        })
     }
     
     renderMobile() {
@@ -128,11 +128,7 @@ class Sidebar extends React.Component {
     }
 
     render () {  
-        if (process.env['APP'] === 'web') {
-            return this.renderWeb()
-        } else {
-            return this.renderMobile()
-        }
+        return (process.env['APP'] === 'web') ? this.renderWeb(): this.renderMobile()
     }
 }
 
