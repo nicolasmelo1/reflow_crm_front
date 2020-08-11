@@ -14,7 +14,9 @@ const SidebarForm = (props) => {
                         <Row>
                             <Col>
                                 <Link href={paths.home().asUrl} as={paths.home(form.form_name).asUrl}>
-                                    <SidebarLink>{form.label_name}</SidebarLink>
+                                    <SidebarLink isSelected={form.form_name === props.selectedFormulary}>
+                                        {form.label_name}
+                                    </SidebarLink>
                                 </Link>
                             </Col>
                         </Row>

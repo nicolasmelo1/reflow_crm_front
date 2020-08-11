@@ -7,11 +7,15 @@ import { SidebarAccordionToggle, SidebarCardHeader, SidebarAccordion, SidebarCar
 
 
 const SidebarGroup = (props) => {
+    const doesGroupContainsSelectedFormulary = (formGroup) => {
+        return formGroup.filter(formulary => formulary.form_name === props.selectedFormulary).length > 0
+    }
+
     const renderMobile = () => {
         return (
             <SidebarGroupsContainer>
-                { props.elements.map((element, index) => (
-                    <Text style={{ color: '#f2f2f2', margin: 10}} key={index}>{element.name}</Text>
+                { props.groups.map((group, index) => (
+                    <Text style={{ color: '#f2f2f2', margin: 10}} key={index}>{group.name}</Text>
                 ))}
             </SidebarGroupsContainer>
         )
@@ -20,16 +24,16 @@ const SidebarGroup = (props) => {
     const renderWeb = () => {
         return (
             <div>
-                {(props.elements) ? props.elements.map((element, index) => (
+                {(props.groups) ? props.groups.map((group, index) => (
                     <SidebarAccordion key={index}>
                         <SidebarCard>
                             <SidebarCardHeader>
-                                <SidebarAccordionToggle eventKey="0">
-                                    {element.name}
+                                <SidebarAccordionToggle eventKey="0" isSelected={doesGroupContainsSelectedFormulary(group.form_group)}>
+                                    {group.name}
                                 </SidebarAccordionToggle>
                             </SidebarCardHeader>
                             <Accordion.Collapse eventKey="0">
-                                <SidebarForm forms={element.form_group}/>
+                                <SidebarForm forms={group.form_group} selectedFormulary={props.selectedFormulary}/>
                             </Accordion.Collapse>
                         </SidebarCard>
                     </SidebarAccordion>

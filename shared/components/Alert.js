@@ -106,10 +106,10 @@ const Alerts = (props) => {
                         <p style={{ margin: '0' }}>
                             {props.alertMessage}
                         </p>
-                        <AlertButtonsContainer>
+                        <AlertButtonsContainer withAccept={props.onAccept}>
                             <AlertCancelButton onClick={e=> {onClose()}}>
                                 <AlertCancelText>
-                                    {strings['pt-br']['alertCancelButtonLabel']}
+                                    {props.onAccept ? strings['pt-br']['alertCancelButtonLabel'] : strings['pt-br']['alertOkButtonLabel']}
                                 </AlertCancelText>
                             </AlertCancelButton>
                             {props.onAccept ? (

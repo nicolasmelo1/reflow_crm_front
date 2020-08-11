@@ -8,7 +8,7 @@ styled(Accordion)`
     background-color: transparent;
     border-radius: 0;
     border: 0;
-    color: #ffffff
+    color: #fff
 `
 :
 null

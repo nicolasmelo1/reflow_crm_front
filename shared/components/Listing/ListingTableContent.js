@@ -3,6 +3,7 @@ import { OverlayTrigger, Popover } from 'react-bootstrap'
 import { useRouter } from 'next/router'
 import { strings } from '../../utils/constants'
 import Alert from '../Alert'
+import PopoverContent from '../../styles/PopoverContent'
 import { 
     ListingEditButtonIcon, 
     ListingDeleteButtonIcon, 
@@ -13,13 +14,13 @@ import {
 const PopoverWithContent = React.forwardRef((props, ref) => {
     return (
         <Popover ref={ref} {...props}>
-            <Popover.Content>
+            <PopoverContent>
                 {props.elements ? props.elements.map((element, index) => (
                     <ListingTableContentPopoverElement key={index} hasBorderBottom={index < props.elements.length-1}>
                         {element.value}
                     </ListingTableContentPopoverElement>
                 )): ''}
-            </Popover.Content>
+            </PopoverContent>
         </Popover>
     )
 })
@@ -47,7 +48,7 @@ const TableContentElement = (props) => {
     return (
         <OverlayTrigger 
         trigger="click"
-        placement="bottom"
+        placement="auto"
         rootClose={true}
         delay={{ show: 250, hide: 100 }}
         overlay={<PopoverWithContent elements={props.elements}/>}

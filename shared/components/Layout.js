@@ -83,6 +83,8 @@ library.add(
  * @param {String} title - (ONLY WEB) - Defines the title tag of the page
  * @param {Boolean} isNotLogged - (ONLY MOBILE) - Defines that the user is not logged in.
  * @param {Boolean} addTemplates - If set to true we will load a modal for the user to select the templates, otherwise we show the contents normally.
+ * @param {Boolean} hideNavBar - (optional) (ONLY WEB) - Hides the navbar header
+ * @param {Boolean} showSideBar - (optional) - Shows the sidebar with groups and formularies
  * */
 class Layout extends React.Component {
     constructor(props) {

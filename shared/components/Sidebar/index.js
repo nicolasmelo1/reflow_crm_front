@@ -119,7 +119,10 @@ class Sidebar extends React.Component {
                             onRemoveFormulary={this.props.onRemoveFormulary}
                             />
                         ): (
-                            <SidebarGroup elements={this.props.sidebar.initial}/>
+                            <SidebarGroup 
+                            groups={this.props.sidebar.initial}
+                            selectedFormulary={this.props.login.primaryForm}
+                            />
                         )}
                     </SidebarMenu>
                 </Col>

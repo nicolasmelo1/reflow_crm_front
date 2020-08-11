@@ -41,6 +41,8 @@ export default styled(({isInitial, isSectionConditional, ...rest}) => <label {..
     box-shadow: ${props=> getBoxShadow(props)};
     background-color: ${props => getBackgroundColor(props)};
     border: ${props=> getBorder(props)};
+    text-align: center;
+    height: 100%;
     padding:5px;
     cursor: pointer;
     border-radius: 10px;

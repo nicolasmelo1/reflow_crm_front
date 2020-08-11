@@ -35,10 +35,12 @@ const FormularySection = (props) => {
         props.updateSection(props.sectionData, props.section.id, props.sectionDataIndex)
     }
 
-    const addFieldFile = (fieldName, file) => {
-        props.files.push({
-            file: file,
-            name: fieldName
+    const addFieldFile = (fieldName, files) => {
+        files.forEach(file => {
+            props.files.push({
+                file: file,
+                name: fieldName
+            })
         })
         props.setFilledFiles([...props.files])
     }
