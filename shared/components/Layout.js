@@ -8,6 +8,7 @@ import Sidebar from './Sidebar'
 import Navbar from './Navbar'
 import Notify from './Notify'
 import Templates from './Templates'
+import Alert from './Alert'
 import actions from '../redux/actions';
 import agent from '../utils/agent'
 import { pathsAsArray } from '../utils/constants/paths'
@@ -89,11 +90,11 @@ class Layout extends React.Component {
         this.state = {
             addTemplates: (this.props.addTemplates) ? this.props.addTemplates : false,
             tokenLoaded: false,
-            sidebarIsOpen: false,
+            sidebarIsOpen: false
         }
     }
-    setSidebarIsOpen = () => (this._ismounted) ? this.setState(state => state.sidebarIsOpen=!state.sidebarIsOpen) : null
 
+    setSidebarIsOpen = () => (this._ismounted) ? this.setState(state => state.sidebarIsOpen = !state.sidebarIsOpen) : null
     setAddTemplates = (data) => (this._ismounted) ? this.setState(state => state.addTemplates = data) : null
 
     setToken = async () => {
@@ -108,6 +109,7 @@ class Layout extends React.Component {
         if (this._ismounted) {
             this.setState(state => state.tokenLoaded = true)
         }
+        return token
     }
 
     checkIfUserInAdminUrl = () => {
@@ -127,7 +129,7 @@ class Layout extends React.Component {
             }
         }
     }
-
+    
     permissionsHandler = async (requestStatusCode, reason) => {
         if (['not_permitted', 'invalid_billing'].includes(reason)) {
             if (this._ismounted){
@@ -177,33 +179,7 @@ class Layout extends React.Component {
         this._ismounted = false
     }
 
-    renderWeb() {
-        return (
-            <div>
-                <Header title={this.props.title}/>
-                {this.state.tokenLoaded ? (
-                    <Body>
-                        <Notify/> 
-                        {(this.state.addTemplates || this.props.addTemplates) && isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user) ? (
-                            <Templates setAddTemplates={this.setAddTemplates}/>
-                        ) : (
-                            <div id="main-container">
-                                {this.props.hideNavBar ? '' : <Navbar onDeauthenticate={this.props.onDeauthenticate} />}
-                                {this.props.showSideBar ? <Sidebar sidebarIsOpen={this.state.sidebarIsOpen} setSidebarIsOpen={this.setSidebarIsOpen} setAddTemplates={this.setAddTemplates}/> : ''}
-                                <ContentContainer sidebarIsOpen={this.state.sidebarIsOpen} showSideBar={this.props.showSideBar} isNotLogged={this.props.isNotLogged}>
-                                    {this.props.children}
-                                </ContentContainer>
-                            </div>
-                        )}
-                        
-                    </Body>
-                ): ''}
-            </div>
-        )
-    }
-
-
-    renderMobile() {
+    renderMobile = () => {
         const Content = () => (
             <View>
                 <Notify/> 
@@ -246,13 +222,34 @@ class Layout extends React.Component {
         )
     }
 
+    renderWeb = () => {
+        return (
+            <div>
+                <Header title={this.props.title}/>
+                {this.state.tokenLoaded ? (
+                    <Body>
+                        
+                        <Notify/> 
+                        {(this.state.addTemplates || this.props.addTemplates) && isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user) ? (
+                            <Templates setAddTemplates={this.setAddTemplates}/>
+                        ) : (
+                            <div id="main-container">
+                                {this.props.hideNavBar ? '' : <Navbar onDeauthenticate={this.props.onDeauthenticate} />}
+                                {this.props.showSideBar ? <Sidebar sidebarIsOpen={this.state.sidebarIsOpen} setSidebarIsOpen={this.setSidebarIsOpen} setAddTemplates={this.setAddTemplates}/> : ''}
+                                <ContentContainer sidebarIsOpen={this.state.sidebarIsOpen} showSideBar={this.props.showSideBar} isNotLogged={this.props.isNotLogged}>
+                                    {this.props.children}
+                                </ContentContainer>
+                            </div>
+                        )}
+                        
+                    </Body>
+                ): ''}
+            </div>
+        )
+    }
 
     render() {
-        if (process.env['APP'] === 'web') {
-            return this.renderWeb()
-        } else {
-            return this.renderMobile()
-        }
+        return process.env['APP'] === 'web' ? this.renderWeb() : this.renderMobile()
     }
 }
 

@@ -6,9 +6,10 @@ import { persistStore } from 'redux-persist'
 import { PersistGate } from 'redux-persist/integration/react'
 import { initStore } from '@shared/redux/store';
 import agent from '@shared/utils/agent';
+import strings from '@shared/utils/constants/strings'
+import Alert from '@shared/components/Alert'
 import SplashScreen from '../components/styles/SplashScreen'
 import SplashLogo from '../components/styles/SplashLogo'
-
 
 class MyApp extends App {
 
@@ -16,7 +17,8 @@ class MyApp extends App {
         super(props)
         this.state = {
             showLogo: false,
-            showSplashScreen: true
+            showSplashScreen: true,
+            showSetPushNotificationAlert: false
         }
     }
 
@@ -25,6 +27,8 @@ class MyApp extends App {
     appHeight = () => document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`)
     appWidth = () => document.documentElement.style.setProperty('--app-width', `${window.innerWidth}px`)
     
+    setShowSetPushNotificationAlert = (data) => (this._ismounted) ? this.setState(state => state.showSetPushNotificationAlert = data) : null
+
     setAppDefaults = () => {
         this.appHeight()
         this.appWidth()
@@ -32,14 +36,6 @@ class MyApp extends App {
 
     userIsLogged = () => {
         return window.localStorage.getItem('token') && window.localStorage.getItem('token') !== ''
-    }
-
-    createSubscriptionBodyToServer = (subscriptionData) => {
-        return {
-            endpoint: subscriptionData.endpoint,
-            token: JSON.stringify(subscriptionData),
-            push_notification_tag_type: 'web'
-        }
     }
 
     registerServiceWorker = () => {
@@ -60,39 +56,50 @@ class MyApp extends App {
         }
     }
 
-    subscribePushManager = (serviceWorker) => {
-        return serviceWorker.pushManager.subscribe({userVisibleOnly: true, applicationServerKey: 'BGw7hx-ChfbFYuxBAsfAVaABLtzX93bdjMLIy7l2XYZO-jOofoIOvicKfXvhpM0K9TTDCOmBCRZYGyG5p42tcAg'})
-    }
+    canAskForNotification = () => window.Notification && Notification.permission !== "denied" && Notification.permission !== 'granted'
 
     askUserPermissionForNotification = async () => {
-        if (typeof Notification !== 'undefined') {
-            try {
-                return Notification.requestPermission().then(async consent=> {
-                    if (consent !== "granted") {
-                        console.log('consent not granted')
-                    } else {
-                        const serviceWorker = await navigator.serviceWorker.ready
-                        const subscription = await serviceWorker.pushManager.getSubscription()
-                        
-                        // subscribe and return the subscription, if the user has a subscription, unsubscribe
-                        this.subscribePushManager(serviceWorker).then(subscription=> {
-                            agent.http.LOGIN.registerPushNotification(this.createSubscriptionBodyToServer(subscription.toJSON()))
-                        }).catch(_=> {
-                            // TODO: delete subscription based on endpoint
-                            subscription.unsubscribe().then(_ => {
-                                this.subscribePushManager(serviceWorker).then(subscription=> {
-                                    agent.http.LOGIN.registerPushNotification(this.createSubscriptionBodyToServer(subscription.toJSON()))
-                                })
-                            }).catch({})
-                        })
-                    }
-                })
-            } catch {
-                // probably is safari
+        const subscribePushManager = (serviceWorker) => serviceWorker.pushManager.subscribe({userVisibleOnly: true, applicationServerKey: 'BGw7hx-ChfbFYuxBAsfAVaABLtzX93bdjMLIy7l2XYZO-jOofoIOvicKfXvhpM0K9TTDCOmBCRZYGyG5p42tcAg'})
+        const createSubscriptionBodyToServer = (subscriptionData) => {
+            return {
+                endpoint: subscriptionData.endpoint,
+                token: JSON.stringify(subscriptionData),
+                push_notification_tag_type_name: 'web'
             }
         }
+
+        if (typeof Notification !== 'undefined' && this.canAskForNotification()) {
+            Notification.requestPermission().then(async consent=> {
+                if (consent !== "granted") {
+                    console.log('consent not granted')
+                } else {
+                    const serviceWorker = await navigator.serviceWorker.ready
+                    const subscription = await serviceWorker.pushManager.getSubscription()
+
+                    // subscribe and return the subscription, if the user has a subscription, unsubscribe
+                    subscribePushManager(serviceWorker).then(subscription=> {
+                        agent.http.LOGIN.registerPushNotification(createSubscriptionBodyToServer(subscription.toJSON())).then(response => {
+                            if (response && response.status !== 200) {
+                                subscription.unsubscribe()
+                            }
+                        })
+                    }).catch(_=> {
+                        // TODO: delete subscription based on endpoint
+                        subscription.unsubscribe().then(_ => {
+                            subscribePushManager(serviceWorker).then(subscription=> {
+                                agent.http.LOGIN.registerPushNotification(createSubscriptionBodyToServer(subscription.toJSON())).then(response => {
+                                    if (response && response.status !== 200) {
+                                        subscription.unsubscribe()
+                                    }
+                                })
+                            })
+                        }).catch({})
+                    })
+                }
+            })
+        }
     }
-    
+
     componentDidMount() {
         this._ismounted = true
         if (typeof window !== 'undefined') {
@@ -100,9 +107,11 @@ class MyApp extends App {
             this.setAppDefaults()
             this.registerServiceWorker()
             if (this.userIsLogged()) {
-                window.addEventListener('load', this.askUserPermissionForNotification)
                 setTimeout(() => {
-                    if (this._ismounted) this.setState(state => state.showLogo = true)
+                    if (this._ismounted) {
+                        this.setState(state => state.showLogo = true)
+                        if (this.canAskForNotification()) this.setShowSetPushNotificationAlert(true)
+                    }
                 }, 100)
         
                 setTimeout(() => {
@@ -130,6 +139,17 @@ class MyApp extends App {
                             <SplashLogo src="/complete_logo.png" showLogo={this.state.showLogo}/>
                         </SplashScreen>
                     ) : ''}
+                    <Alert 
+                    alertTitle={strings['pt-br']['notificationBrowserPermissionAlertTitle']}
+                    alertMessage={strings['pt-br']['notificationBrowserPermissionAlertMessage']} 
+                    show={this.state.showSetPushNotificationAlert} 
+                    onHide={() => this.setShowSetPushNotificationAlert(false)} 
+                    onAccept={() => {
+                        this.setShowSetPushNotificationAlert(false)
+                        this.askUserPermissionForNotification()
+                    }}
+                    onAcceptButtonLabel={strings['pt-br']['notificationBrowserPermissionAlertOkButton']}
+                    />
                     <Component {...pageProps} />
                 </PersistGate>
             </Provider>

@@ -81,20 +81,24 @@ const ListingTableContent = (props) => {
 
     return (
         <tbody>
-            <Alert 
-            alertTitle={strings['pt-br']['listingDeleteAlertTitle']}
-            alertMessage={strings['pt-br']['listingDeleteAlertContent']} 
-            show={showAlert} 
-            onHide={() => {
-                setFormularyIdToRemove(null)
-                setShowAlert(false)
-            }} 
-            onAccept={() => {
-                setShowAlert(false)
-                removeForm(formularyIdToRemove)
-            }}
-            onAcceptButtonLabel={strings['pt-br']['listingDeleteAlertAcceptButtonLabel']}
-            />
+            <tr>
+                <td style={{ padding: 0}}>
+                    <Alert 
+                    alertTitle={strings['pt-br']['listingDeleteAlertTitle']}
+                    alertMessage={strings['pt-br']['listingDeleteAlertContent']} 
+                    show={showAlert} 
+                    onHide={() => {
+                        setFormularyIdToRemove(null)
+                        setShowAlert(false)
+                    }} 
+                    onAccept={() => {
+                        setShowAlert(false)
+                        removeForm(formularyIdToRemove)
+                    }}
+                    onAcceptButtonLabel={strings['pt-br']['listingDeleteAlertAcceptButtonLabel']}
+                    />
+                </td>
+            </tr>
             {props.data.map((data, dataIndex) => (
                 <tr key={data.id}>
                     {props.fieldHeaders.filter(head => head.is_selected).map((head, headIndex) => {

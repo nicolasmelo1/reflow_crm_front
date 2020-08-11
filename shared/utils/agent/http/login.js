@@ -14,7 +14,7 @@ const LOGIN = {
         return await requests.get('core/types/')
     },
     registerPushNotification: async (body) => {
-        return await requests.post('login/push_notification/', body)
+        return await requests.post('notify/push_notification/', body)
     }
 }
 
