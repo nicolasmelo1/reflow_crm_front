@@ -3,7 +3,7 @@ import { companyId } from '../utils'
 
 const COMPANY = {
     getCompanyData: async (source) => {
-        return await requests.get(`authentication/company/${companyId}/`, {}, {}, source)
+        return await requests.get(`authentication/${companyId}/company/`, {}, {}, source)
     }
 }
 
