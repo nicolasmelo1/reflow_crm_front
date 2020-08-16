@@ -118,6 +118,18 @@ const paths = {
                 nested: {}
             }
         }
+    },
+    users() {
+        return { 
+            asUrl: '/settings/users',
+            adminOnly: true,
+            webOnly: false,
+            loginOnly: true,
+            asReactNavigationPath: {
+                root: '',
+                nested: {}
+            }
+        }
     }
 }
 

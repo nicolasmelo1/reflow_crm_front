@@ -9,7 +9,7 @@ import Select from '../../Utils/Select'
 import { FormulariesEdit }  from '../../../styles/Formulary'
 import { types, strings } from '../../../utils/constants'
 import Overlay from '../../../styles/Overlay'
-import Alert from '../../Alert'
+import Alert from '../../Utils/Alert'
 
 /**
  * We created this component because probably each selection item will be styled

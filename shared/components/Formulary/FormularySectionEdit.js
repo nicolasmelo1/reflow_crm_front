@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import FormularyFieldsEdit from './FormularyFieldsEdit'
 import FormularySectionEditForm from './FormularySectionEditForm'
 import Overlay from '../../styles/Overlay'
-import Alert from '../Alert'
+import Alert from '../Utils/Alert'
 import { strings } from '../../utils/constants'
 import { FormulariesEdit } from '../../styles/Formulary'
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
 import { useRouter } from 'next/router'
 import { strings } from '../../utils/constants'
-import Alert from '../Alert'
+import Alert from '../Utils/Alert'
 import PopoverContent from '../../styles/PopoverContent'
 import { 
     ListingEditButtonIcon, 

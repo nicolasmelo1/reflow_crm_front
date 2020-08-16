@@ -7,7 +7,7 @@ import { PersistGate } from 'redux-persist/integration/react'
 import { initStore } from '@shared/redux/store';
 import agent from '@shared/utils/agent';
 import strings from '@shared/utils/constants/strings'
-import Alert from '@shared/components/Alert'
+import Alert from '@shared/components/Utils/Alert'
 import SplashScreen from '../components/styles/SplashScreen'
 import SplashLogo from '../components/styles/SplashLogo'
 

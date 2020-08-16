@@ -17,7 +17,9 @@ const NativePicker = ({style,...props}) => {
     const Component = (Platform.OS === 'ios') ? TouchableOpacity : View
     
 
-    const renderWeb = () => ''
+    const renderWeb = () => {
+        return null
+    }
 
     const renderMobile = () => {
         const selectedItem = props.children.filter(itemComponent => itemComponent.props.value === props.selectedValue)

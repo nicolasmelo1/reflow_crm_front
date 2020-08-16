@@ -19,7 +19,13 @@ const NavbarDropdown = (props) => {
             {isOpen ? (
                 <NavbarDropdownContentContainer>
                     {props.items.map((item, index)=> (
-                        <NavbarDropdownItem key={index} href={item.href} onClick={e => { (item.onClick) ? item.onClick(): null }}>
+                        <NavbarDropdownItem 
+                        key={index} 
+                        href={item.href} 
+                        onClick={e => { 
+                            e.preventDefault();
+                            (item.onClick) ? item.onClick(): null 
+                        }}>
                             {item.label}
                         </NavbarDropdownItem>
                     ))}

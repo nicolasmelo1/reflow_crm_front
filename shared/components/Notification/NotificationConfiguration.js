@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { TouchableWithoutFeedback, TouchableOpacity , View, Keyboard } from 'react-native'
 import NotificationConfigurationForm from  './NotificationConfigurationForm'
-import Alert from '../Alert'
+import Alert from '../Utils/Alert'
 import { strings } from '../../utils/constants'
 import { 
     NotificationConfigurationCard, 

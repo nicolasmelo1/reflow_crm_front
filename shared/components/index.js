@@ -7,7 +7,9 @@ import Notification from './Notification'
 import Error404 from './Error404'
 import Dashboard from './Dashboard'
 import Billing from './Billing'
+import Users from './Users'
 
+export { Users }
 export { Billing }
 export { Dashboard }
 export { Notification }

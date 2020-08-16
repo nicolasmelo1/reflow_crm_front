@@ -363,7 +363,10 @@ const strings = {
         individualChargeValueTypePerGB: 'GBs de Armazenamento',
         individualChargeValueTypePerUser: 'Usuários',
         individualChargeValueTypePerChartCompany: 'Gráficos no Dashboard para toda a empresa por página',
-        individualChargeValueTypePerChartUser: 'Gráficos no Dashboard para cada usuário por página'
+        individualChargeValueTypePerChartUser: 'Gráficos no Dashboard para cada usuário por página',
+        profileTypeAdmin: 'Administrador',
+        profileTypeCoordinator: 'Coordenador',
+        profileTypeSimpleUser: 'Analista'
     }
 }
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Router, { useRouter } from 'next/router'
 import SidebarFormEdit from './SidebarFormEdit'
-import Alert from '../Alert'
+import Alert from '../Utils/Alert'
 import { paths, strings } from '../../utils/constants'
 import { 
     SidebarDisabledGroupLabel, 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { strings } from '../../utils/constants'
-import Alert from '../Alert'
+import Alert from '../Utils/Alert'
 import { 
     SidebarCardBody, 
     SidebarAddButton, 

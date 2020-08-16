@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { View, Alert } from 'react-native'
-import { strings } from '../utils/constants'
+import { strings } from '../../utils/constants'
 import { 
     AlertContainer,
     AlertBoxContainer,
@@ -11,7 +11,7 @@ import {
     AlertOkButton,
     AlertOkText,
     AlertTitleContainer
-} from '../styles/Alert'
+} from '../../styles/Alert'
 
 /**
  * Component responsible for showing alerts to the users when they do a risky action.

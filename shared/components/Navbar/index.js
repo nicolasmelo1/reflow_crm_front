@@ -53,7 +53,7 @@ class Navbar extends React.Component {
     }
 
     handleUsers = () => {
-        Object.assign(document.createElement('a'), { target: '_blank', href: `${process.env['OLD_APP_HOST']}${this.props.login.companyId}/settings/employee/`}).click();
+        Router.push(paths.users().asUrl, paths.users().asUrl, { shallow: true })
     }
 
     handleCompany = () => {
@@ -104,7 +104,7 @@ class Navbar extends React.Component {
         },
         {
             label: strings['pt-br']['headerUsersLabel'],
-            href: '#',
+            href:'#',
             onClick: this.handleUsers
         },
         {

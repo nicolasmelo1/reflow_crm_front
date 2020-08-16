@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 import { strings } from '../../utils/constants'
-import Alert from '../Alert'
+import Alert from '../Utils/Alert'
 import { 
     KanbanConfigurationFormCardsContainer, 
     KanbanConfigurationFormCardContainer, 

@@ -10,6 +10,7 @@ import CHANGE_PASSWORD from './changepassword'
 import DASHBOARD from './dashboard'
 import BILLING from './billing'
 import COMPANY from './company'
+import USERS from './users'
 
 export default {
     CHANGE_PASSWORD,
@@ -23,5 +24,6 @@ export default {
     COMPANY,
     TEMPLATES,
     DASHBOARD,
-    BILLING
+    BILLING,
+    USERS
 }

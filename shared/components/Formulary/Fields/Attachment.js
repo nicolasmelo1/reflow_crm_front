@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import Field from '../../../styles/Formulary/Field'
-import Alert from '../../Alert'
+import Alert from '../../Utils/Alert'
 import { strings } from '../../../utils/constants'
 import agent from '../../../utils/agent'
 

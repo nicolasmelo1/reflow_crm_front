@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { TouchableOpacity } from 'react-native'
 import Chart from './Chart'
 import DashboardConfigurationForm from './DashboardConfigurationForm'
-import Alert from '../Alert'
+import Alert from '../Utils/Alert'
 import { strings } from '../../utils/constants'
 import { 
     DashboardConfigurationCardContainer,

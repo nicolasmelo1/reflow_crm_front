@@ -98,6 +98,11 @@ const types = (lang, type, key) => {
             per_user: strings[lang]['individualChargeValueTypePerUser'],
             per_chart_company: strings[lang]['individualChargeValueTypePerChartCompany'],
             per_chart_user: strings[lang]['individualChargeValueTypePerChartUser']
+        },
+        profile_type: {
+            admin: strings[lang]['profileTypeAdmin'],
+            coordinator: strings[lang]['profileTypeCoordinator'],
+            simple_user: strings[lang]['profileTypeSimpleUser']
         }
     }[type][key]
 }

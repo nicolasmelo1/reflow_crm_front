@@ -1,23 +1,23 @@
 import React from 'react'
 import { View } from 'react-native'
-import { Layout, Billing } from '@shared/components'
+import { Layout, Users } from '@shared/components'
 
 /**
  * {Description of your component, what does it do}
  * @param {Type} props - {go in detail about every prop it recieves}
  */
-class BillingPage extends React.Component {
+class UsersPage extends React.Component {
     constructor(props) {
         super(props)
     }
 
     render = () => {
         return (
-            <Layout title={'Pagamento'}>
-                <Billing/>
+            <Layout title={'Usuários'}>
+                <Users/>
             </Layout>
         )
     }
 }
 
-export default BillingPage
+export default UsersPage

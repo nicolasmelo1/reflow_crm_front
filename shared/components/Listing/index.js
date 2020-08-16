@@ -6,7 +6,7 @@ import ListingTable from './ListingTable'
 import ListingExtract from './ListingExtract'
 import ListingColumnSelect from './ListingColumnSelect'
 import Filter from '../Filter'
-import Alert from '../Alert'
+import Alert from '../Utils/Alert'
 import actions from '../../redux/actions'
 import { 
     ListingFilterAndExtractContainer, 
