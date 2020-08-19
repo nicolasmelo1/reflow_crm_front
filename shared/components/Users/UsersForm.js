@@ -40,7 +40,24 @@ import {
  * Permissions is HOW we filter the information for the user. So can he access this formulary, what data can he access on this formulary?
  * And so on.
  * 
- * @param {Type} props - {go in detail about every prop it recieves}
+ * @param {Object} cancelToken - A axios cancel token. We use this so we can cancel a request and the promise when the user unmounts a component,
+ * before the data is retrieved
+ * @param {Function} onAddNotification - Redux action for adding a new notification to the top of the page. This is more of an alert but it doesn't
+ * stop the user from doing wathever he's doing
+ * @param {Function} onGetUsersConfiguration - Redux action used for retriving the list of users so we can mount the table. We use this data to edit
+ * so we don't need to make any api call here in this template.
+ * @param {Array<Object>} formulariesAndFieldPermissionsOptions - This is an array of objects containing an array of objects.
+ * This follow the hyerarchy in our system. So it is an array of options, WHITHIN (inside) and array of fields, WITHIN an array of formularies
+ * and lastly an array of tempalates. Yep many arrays, but this is what we use to mount the hyerarchy structure. 
+ * This is used to show the options the user can select in the permissions.
+ * @param {Boolean} isOpen - if True then the formulary is open, if false then it is closed
+ * @param {Function} onSubmitForm - A simple function from the parent component that effectively handles if we need to 
+ * update or create a new user.
+ * @param {Object} types - the types state, this types are usually the required data from this system to work. 
+ * Types defines all of the field types, form types, format of numbers and dates and many other stuff 
+ * @param {Object} userData - The user data, nothing much to say here. Check `onAddNewUser` function in the parent component to see how
+ * it should look like
+ * @param {Function} onCloseFormulary - Function from the parent component used to close the user formulary.
  */
 const UsersForm = (props) => {
     // Instead of updating the userData recieved directly we actually separate in different states in this component, this way we keep things
@@ -106,24 +123,43 @@ const UsersForm = (props) => {
     }
     
     /**
+     * Changes the name of the user and validates if the name he has typed is valid in real time while he's typing
      * 
-     * @param {*} value 
+     * @param {String} value - The name of the user
      */
     const onChangeName = (value) => {
         onValidate('name', value)
         setName(value)
     }
 
+    /**
+     * Changes the email of the user and validates if the email he has typed is valid in real time while he's typing
+     * 
+     * @param {String} value - The email of the user
+     */
     const onChangeEmail = (value) => {
         onValidate('email', value)
         setEmail(value)
     }
 
+    /**
+     * Used for changing the profile of the user and also validating if the profile selected is valid or not
+     * 
+     * @param {Array<BigInteger>} data - Array containing the selected profile id
+     */
     const onChangeProfile = (data) => {
         onValidate('profile', data)
         setProfileId(data.length > 0 ? data[0]: null)
     }
 
+    /**
+     * This just adds a new option accessed by the user or removes it from the list.
+     * 
+     * It does not have any case similar to `onSelectFormularyPermission` and `onSelectTemplatePermission` when the
+     * user diselect an option because this is actually the leaf of the permission hierarchy (if you think it like a tree)
+     * 
+     * @param {BigInteger} id - The option id to add to the list or to remove from the list
+     */
     const onSelectOptionPermission = (id) => {
         if (optionsUserHaveAccess.includes(id)) {
             const indexToRemove = optionsUserHaveAccess.indexOf(id)
@@ -134,6 +170,15 @@ const UsersForm = (props) => {
         setOptionsUserHaveAccess([...optionsUserHaveAccess])
     }
 
+    /**
+     * This function is used to add the formulary to the list of permitted pages the user can access.
+     * This list is used to build the `form_accessed_by_user` key on the request when saving or editing a user.
+     * 
+     * Similar on what happens on `onSelectTemplatePermission`, when we unselect a formulary we actually remove all 
+     * of the options of this formulary.
+     * 
+     * @param {BigInteger} id - The id of the formulary.
+     */
     const onSelectFormularyPermission = (id) => {
         if (formulariesUserHaveAccess.includes(id)) {
             const indexToRemove = formulariesUserHaveAccess.indexOf(id)
@@ -160,11 +205,25 @@ const UsersForm = (props) => {
         setFormulariesUserHaveAccess([...formulariesUserHaveAccess])
     }
 
+    /**
+     * This function is used to select a template in the permission. This actually doesn't change
+     * anything it's just for visualization. When the user selects a template we collapse a list of 
+     * formularies/pages he can see inside of this template. If he doesn't have any template selected we show a message
+     * for him to select the template. When he selects his first template than we change the message to show him to select a
+     * page/formulary.
+     * 
+     * Besides that, when the user diselects a template we actually reset the visualization. So if he diselects a template 
+     * we remove all of the optionIds contained inside of this template and all of the options in this template. With this
+     * it becomes easier for the user and easier for the backend to manage and handle
+     * 
+     * @param {BigInteger} id - The template id that the user is selecting or unselecting 
+     */
     const onSelectTemplatePermission = (id) => {
         if (templatesUserHaveAccess.includes(id)) {
             const indexToRemove = templatesUserHaveAccess.indexOf(id)
             const templateToRemove = props.formulariesAndFieldPermissionsOptions.filter(template=> template.id === id)
             const formIdsToRemove = templateToRemove[0].form_group.map(form => form.id)
+            // reference on why i do [].concat.apply https://stackoverflow.com/questions/10865025/merge-flatten-an-array-of-arrays
             const optionsToRemove = [].concat.apply(
                 [], 
                 templateToRemove[0].form_group.map(form => 
@@ -187,15 +246,14 @@ const UsersForm = (props) => {
             
             templatesUserHaveAccess.splice(indexToRemove, 1)
         } else {
-            //changeFormularyIdsUserHaveAccessTo([].concat.apply([], props.formulariesAndFieldPermissionsOptions.filter(template=> template.id === id).map(template => template.form_group.map(form => form.id))))
             templatesUserHaveAccess.push(id)
         }
         setTemplatesUserHaveAccess([...templatesUserHaveAccess])
     }
 
     /**
-     * This component is used to submit the user data to the backend. First things first. When we submit we acually
-     * mounts the body object inside here. Yep this might duplicate some code and you need to be aware of future object changes.
+     * This function is used to submit the user data to the backend. First things first. When we submit we acually
+     * mounts the body object inside here. Yep this might duplicate some code and you need to be aware of future object changes
      * that the backend expect.
      * 
      * But this actually make it easier for us to manage most stuff in this formulary.
@@ -275,6 +333,7 @@ const UsersForm = (props) => {
     }, [props.isOpen, props.userData])
 
     useEffect(() => {
+        // set the profileType options for the select component
         setProfileTypeOptions(
             props.types.defaults.profile_type.map(profileType => ({ 
                 value: profileType.id, 
