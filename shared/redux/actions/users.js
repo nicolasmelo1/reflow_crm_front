@@ -12,12 +12,12 @@ const onGetFormularyAndFieldOptions = (source) => {
 }
 
 const onGetUsersConfiguration = (source) => {
-    return (dispatch) => {
-        return agent.http.USERS.getUsersConfiguration(source).then(response => {
-            if (response && response.status === 200) {
-                dispatch({ type: SET_USER_UPDATE_DATA, payload: response.data.data })
-            }
-        })
+    return async (dispatch) => {
+        const response = await agent.http.USERS.getUsersConfiguration(source)
+        if (response && response.status === 200) {
+            dispatch({ type: SET_USER_UPDATE_DATA, payload: response.data.data })
+        }
+        return response
     }
 }
 
@@ -27,9 +27,29 @@ const onChangeUsersConfiguration = (data) => {
     }
 }
 
+const onUpdateUsersConfiguration = (body, userId) => {
+    return (_) => {
+        return agent.http.USERS.updateUsersConfiguration(body, userId)
+    }
+}
+
+const onCreateUsersConfiguration = (body) => {
+    return (_) => {
+        return agent.http.USERS.createUsersConfiguration(body)
+    }
+}
+
+const onRemoveUsersConfiguration = (userId) => {
+    return (_) => {
+        return agent.http.USERS.removeUsersConfiguration(userId)
+    }
+}
 
 export default {
     onGetFormularyAndFieldOptions,
     onGetUsersConfiguration,
-    onChangeUsersConfiguration
+    onChangeUsersConfiguration,
+    onUpdateUsersConfiguration,
+    onCreateUsersConfiguration,
+    onRemoveUsersConfiguration
 }

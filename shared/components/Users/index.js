@@ -2,13 +2,24 @@ import React from 'react'
 import { View } from 'react-native'
 import axios from 'axios'
 import { connect } from 'react-redux'
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import actions from '../../redux/actions'
 import UsersForm from './UsersForm'
+import { types, strings } from '../../utils/constants'
+import actions from '../../redux/actions'
+import Alert from '../Utils/Alert'
+import {
+    UsersTable,
+    UsersEditIcon,
+    UsersTrashIcon,
+    UsersTableContent,
+    UsersTableHeadItem,
+    UsersAddNewUserButton
+} from '../../styles/Users'
+
 
 /**
- * {Description of your component, what does it do}
- * @param {Type} props - {go in detail about every prop it recieves}
+ * This component is responsible for configuring users in the reflow software. It's important to understand
+ * this users are the ones that the admin of the company define. The user can also edit his own information if he wants
+ * BUT he can't update it's own permissions, only admins can update permissions.
  */
 class Users extends React.Component {
     constructor(props) {
@@ -16,23 +27,56 @@ class Users extends React.Component {
         this.cancelToken = axios.CancelToken
         this.source = null
         this.state = {
+            userIdToDelete: null,
+            showAlert: false,
             isOpenForm: false,
             userDataToEdit: null
         }
     }
 
+    setShowAlert = (data) => this.setState(state => ({...state, showAlert: data}))
+    setUserIdToDelete = (userId) => this.setState(state => ({...state, userIdToDelete: userId}))
+    
+    /**
+     * This function handles when the user clicks to remove a user. When he clicks we show an alert
+     * so we can prevent miss click and also set the user id to delete.
+     * 
+     * @param {BigInteger} userId - The userId you want to delete, it'll be available `on userIdToDelete` state variable.
+     */
+    onClickRemove = (userId) => {
+        this.setState(state => ({
+                ...state, 
+                showAlert: true,
+                userIdToDelete: userId
+            })
+        )
+    }
+
+    /**
+     * This is the skeleton of the user data needed to create a new user. We use this to pass this data to the UsersForm.
+     */
     onAddNewUser = () => {
         return {
             id: null,
-            username: '',
+            email: '',
             first_name: '',
             last_name: '',
-            profile_id: 3,
+            profile: null,
             option_accessed_by_user: [],
             form_accessed_by_user: []
         }
     }
 
+    /**
+     * The formulary is rendered when this component renders because with this we can show an simple animation
+     * of it opening from the bottom. Because of this when we open the formulary we need to set the data on this component
+     * If no userData is supplied we understand that you are trying to add a new user so we use the `onAddNewUser` function
+     * 
+     * This state is responsible for opening the formulary and setting the data to edit. 
+     * 
+     * @param {Object} userData - The user data to edit, if none is supplied we automatically create a new. Usually this data is recieved
+     * from the backend for you to load the table.
+     */
     onOpenFormulary = (userData=null) => {
         userData = userData ? userData : this.onAddNewUser()
         this.setState(state => ({
@@ -42,6 +86,10 @@ class Users extends React.Component {
         }))
     }
 
+    /**
+     * Sets the userDataToEdit to null and sets `isOpenForm` state to false. This way we close the formulary and also 
+     * reset the data of the formulary.
+     */
     onCloseFormulary = () => {
         this.setState(state => ({
             ...state,
@@ -50,23 +98,71 @@ class Users extends React.Component {
         }))
     }
 
+    /**
+     * This effectively removes the user. If everything goes fine we load the users data again from the backend to repopulate
+     * the table of users. 
+     * 
+     * The exception we handle here is when the user tries to remove himself, obviously this is kinda dumb so we prevent the
+     * user from doing this.
+     * 
+     * @param {BigInteger} userId - The userId to remove.
+     */
+    onRemoveUser = (userId) => {
+        this.props.onRemoveUsersConfiguration(userId).then(response => {
+            if (response && response.status === 200) {
+                this.props.onGetUsersConfiguration(this.source)
+            } else {
+                const errorKeys = Array.from(Object.keys(response.data.error))
+                if (errorKeys.includes('detail') && response.data.error['detail'].includes('cannot_edit_itself')) {
+                    this.props.onAddNotification(strings['pt-br']['userConfigurationCannotEditItselfError'], 'error')
+                }
+            }
+        })
+    }
+
+    /**
+     * If an id is defined then we are updating the user, if no id is defined for the data we are creating a new user.
+     * 
+     * This is actually a pretty dumb function, most of the logic for submiting resides on UsersForm component.
+     * 
+     * @param {Object} data - The body of the request, usually it follows the same
+     * structure defined in `onAddNewUser()` function.
+     */
     onSubmitForm = (data) => {
         if (data.id) {
-
+            return this.props.onUpdateUsersConfiguration(data, data.id)
         } else {
-            
+            return this.props.onCreateUsersConfiguration(data)
         }
     }
 
+    /**
+     * Helper function for retriving the profile name from a profileid. This is handy because profile_type is a type data this means
+     * it is a list, this prevents us from doing this code everytime we want the name of the profile based on an profileId
+     * 
+     * @param {BigInteger} profileId - Usually a profile.id, check the possible options on `types.defaults.profile_type`
+     */
     getProfileNameFromId = (profileId) => {
         const filteredProfile = this.props.types.defaults.profile_type.filter(profileType => profileType.id === profileId)
         return filteredProfile.length > 0 ? filteredProfile[0].name : ''
     }
 
+    /**
+     * Django is kinda dumb so it forces us to create a firstName and a lastName for the user.
+     * The user actually don't know this, instead we show his complete name. This is handy for loading the users in the listing table.
+     * 
+     * @param {String} firstName - The first name of the user
+     * @param {String} lastName - The last name of the user
+     */
     getFullName = (firstName, lastName) => {
         return [firstName, lastName].join(' ')
     }
 
+    /**
+     * When we mount the component we get two things: 
+     * 1 - The Formulary and Field options, this is what we use so we can build the permissions formulary
+     * 2 - The user data as an array. This user data is used to populate the table and also used when editing.
+     */
     componentDidMount = () => {
         this.source = this.cancelToken.source()
         this.props.onGetFormularyAndFieldOptions(this.source)
@@ -88,41 +184,74 @@ class Users extends React.Component {
     renderWeb = () => {
         return (
             <div>
-                <table style={{ width: '100%'}}>
+                <Alert 
+                alertTitle={strings['pt-br']['userConfigurationDeleteUserAlertTitle']} 
+                alertMessage={strings['pt-br']['userConfigurationDeleteUserAlertContent']} 
+                show={this.state.showAlert} 
+                onHide={() => {
+                    this.setShowAlert(false)
+                }} 
+                onAccept={() => {
+                    this.setShowAlert(false)
+                    this.onRemoveUser(this.state.userIdToDelete)
+                }}
+                onAcceptButtonLabel={strings['pt-br']['userConfigurationDeleteUserAlertAcceptButton']}
+                />
+
+                <UsersAddNewUserButton 
+                onClick={e=> this.onOpenFormulary()}
+                >
+                    {strings['pt-br']['userConfigurationAddNewUserButtonLabel']}
+                </UsersAddNewUserButton>
+                <UsersTable>
                     <thead>
                         <tr>
-                            <th>E-mail</th>
-                            <th>Nome</th>
-                            <th>Perfil</th>
-                            <th>Editar</th>
-                            <th>Deletar</th>
+                            <UsersTableHeadItem isFirstColumn={true}>
+                                {strings['pt-br']['userConfigurationTableEmailColumnHeaderLabel']}
+                            </UsersTableHeadItem>
+                            <UsersTableHeadItem>
+                                {strings['pt-br']['userConfigurationTableNameColumnHeaderLabel']}
+                            </UsersTableHeadItem>
+                            <UsersTableHeadItem>
+                                {strings['pt-br']['userConfigurationTableProfileColumnHeaderLabel']}
+                            </UsersTableHeadItem>
+                            <UsersTableHeadItem isEditOrDeleteColumn={true}>
+                                {strings['pt-br']['userConfigurationTableEditColumnHeaderLabel']}
+                            </UsersTableHeadItem>
+                            <UsersTableHeadItem isEditOrDeleteColumn={true} isLastColumn={true}>
+                                {strings['pt-br']['userConfigurationTableDeleteColumnHeaderLabel']}
+                            </UsersTableHeadItem>
                         </tr>
                     </thead>
                     <tbody>
                         {this.props.users.update.map((user, index) => (
                             <tr key={index}>
-                                <td>
-                                    {user.username}
-                                </td>
-                                <td>
+                                <UsersTableContent>
+                                    {user.email}
+                                </UsersTableContent>
+                                <UsersTableContent>
                                     {this.getFullName(user.first_name, user.last_name)}
-                                </td>
-                                <td>
-                                    {this.getProfileNameFromId(user.profile_id)}
-                                </td>
-                                <td>
-                                    <FontAwesomeIcon icon={'pencil-alt'} onClick={e => this.onOpenFormulary(user)}/>
-                                </td>
-                                <td>
-                                    <FontAwesomeIcon icon={'trash'}/>
-                                </td>
+                                </UsersTableContent>
+                                <UsersTableContent>
+                                    {types('pt-br', 'profile_type', this.getProfileNameFromId(user.profile))}
+                                </UsersTableContent>
+                                <UsersTableContent>
+                                    <UsersEditIcon icon={'pencil-alt'} onClick={e => this.onOpenFormulary(user)}/>
+                                </UsersTableContent>
+                                <UsersTableContent>
+                                    <UsersTrashIcon icon={'trash'} onClick={e=> this.onClickRemove(user.id)}/>
+                                </UsersTableContent>
                             </tr>
                         ))}
                     </tbody>
-                </table>
+                </UsersTable>
                 <UsersForm 
+                cancelToken={this.cancelToken}
+                onAddNotification={this.props.onAddNotification}
+                onGetUsersConfiguration={this.props.onGetUsersConfiguration}
                 formulariesAndFieldPermissionsOptions={this.props.users.formulariesAndFieldPermissionsOptions}
                 isOpen={this.state.isOpenForm}
+                onSubmitForm={this.onSubmitForm}
                 types={this.props.types}
                 userData={this.state.userDataToEdit}
                 onCloseFormulary={this.onCloseFormulary}

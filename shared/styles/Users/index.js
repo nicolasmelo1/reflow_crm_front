@@ -6,6 +6,9 @@ import UsersFormularyFieldSelectContainer from './UsersFormularyFieldSelectConta
 import UsersFormularyFieldLabel from './UsersFormularyFieldLabel'
 import UsersFormularyFieldContainer from './UsersFormularyFieldContainer'
 import UsersFormularyGoBackButton from './UsersFormularyGoBackButton'
+import UsersFormularySaveButton from './UsersFormularySaveButton'
+import UsersFormularyDuplicateButton from './UsersFormularyDuplicateButton'
+import UsersFormularyFieldError from './UsersFormularyFieldError'
 import UsersFormularyFieldsAndPermissionContainer from './UsersFormularyFieldsAndPermissionContainer'
 import UsersFormularyPermissionFormularyTitle from './UsersFormularyPermissionFormularyTitle'
 import UsersFormularyPermissionFormularyContainer from './UsersFormularyPermissionFormularyContainer'
@@ -14,7 +17,19 @@ import UsersFormularyPermissionFieldTitle from './UsersFormularyPermissionFieldT
 import UsersFormularyPermissionFieldContainer from './UsersFormularyPermissionFieldContainer'
 import UsersFormularyPermissionOptionTitle from './UsersFormularyPermissionOptionTitle'
 import UsersFormularyPermissionOptionContainer from './UsersFormularyPermissionOptionContainer'
+import UsersAddNewUserButton from './UsersAddNewUserButton'
+import UsersTable from './UsersTable'
+import UsersTableHeadItem from './UsersTableHeadItem'
+import UsersTableContent from './UsersTableContent'
+import UsersTrashIcon from './UsersTrashIcon'
+import UsersEditIcon from './UsersEditIcon'
 
+export { UsersEditIcon }
+export { UsersTrashIcon }
+export { UsersTableContent }
+export { UsersTableHeadItem }
+export { UsersTable }
+export { UsersAddNewUserButton }
 export { UsersFormularyPermissionOptionContainer }
 export { UsersFormularyPermissionOptionTitle }
 export { UsersFormularyPermissionFieldContainer }
@@ -23,7 +38,10 @@ export { UsersFormularyPermissionTemplateTitle }
 export { UsersFormularyPermissionFormularyContainer }
 export { UsersFormularyPermissionFormularyTitle }
 export { UsersFormularyFieldsAndPermissionContainer }
+export { UsersFormularySaveButton }
+export { UsersFormularyDuplicateButton }
 export { UsersFormularyGoBackButton }
+export { UsersFormularyFieldError }
 export { UsersFormularyFieldContainer }
 export { UsersFormularyFieldLabel }
 export { UsersFormularyFieldSelectContainer }
