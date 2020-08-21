@@ -25,6 +25,7 @@
     "babel-preset-expo": "~8.1.0",
     "bootstrap": "^4.5.2",
     "chart.js": "^2.9.3",
+    "credit-card-type": "^9.0.1",
     "expo": "^37.0.12",
     "expo-linking": "^1.0.3",
     "moment": "^2.27.0",

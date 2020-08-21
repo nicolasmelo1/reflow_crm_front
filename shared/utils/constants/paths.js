@@ -126,8 +126,10 @@ const paths = {
             webOnly: false,
             loginOnly: true,
             asReactNavigationPath: {
-                root: '',
-                nested: {}
+                root: 'configurations',
+                nested: {
+                    screen: 'users'
+                }
             }
         }
     }

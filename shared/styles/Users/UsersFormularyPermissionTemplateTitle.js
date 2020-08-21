@@ -8,4 +8,9 @@ styled.h2`
     font-weight: 900
 `
 :
-styled(Text)``
+styled(Text)`
+    margin: 0 0 0 10px;
+    font-weight: 900;
+    font-size: 25px;
+    color: ${props => props.isSelected ? '#0dbf7e' : '#6a7074'};
+`

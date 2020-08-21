@@ -3,13 +3,11 @@ import styled from 'styled-components'
 import { Text } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
-styled.label`
+styled.p`
     margin: 0;
-    padding: 0; 
-    font-weight: bold
+    color: ${props => props.isEditOrDeleteColumn ? '#f2f2f2' : '#0dbf7e'};
 `
 :
 styled(Text)`
-    margin-bottom: 5px;
-    font-weight: bold;
+    color: ${props => props.isEditOrDeleteColumn ? '#f2f2f2' : '#0dbf7e'};
 `

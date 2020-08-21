@@ -7,7 +7,10 @@ import UsersFormularyFieldLabel from './UsersFormularyFieldLabel'
 import UsersFormularyFieldContainer from './UsersFormularyFieldContainer'
 import UsersFormularyGoBackButton from './UsersFormularyGoBackButton'
 import UsersFormularySaveButton from './UsersFormularySaveButton'
+import UsersFormularySaveButtonText from './UsersFormularySaveButtonText'
 import UsersFormularyDuplicateButton from './UsersFormularyDuplicateButton'
+import UsersFormularyDuplicateButtonText from './UsersFormularyDuplicateButtonText'
+
 import UsersFormularyFieldError from './UsersFormularyFieldError'
 import UsersFormularyFieldsAndPermissionContainer from './UsersFormularyFieldsAndPermissionContainer'
 import UsersFormularyPermissionFormularyTitle from './UsersFormularyPermissionFormularyTitle'
@@ -20,6 +23,7 @@ import UsersFormularyPermissionOptionContainer from './UsersFormularyPermissionO
 import UsersAddNewUserButton from './UsersAddNewUserButton'
 import UsersTable from './UsersTable'
 import UsersTableHeadItem from './UsersTableHeadItem'
+import UsersTableHeadText from './UsersTableHeadText'
 import UsersTableContent from './UsersTableContent'
 import UsersTrashIcon from './UsersTrashIcon'
 import UsersEditIcon from './UsersEditIcon'
@@ -28,6 +32,7 @@ export { UsersEditIcon }
 export { UsersTrashIcon }
 export { UsersTableContent }
 export { UsersTableHeadItem }
+export { UsersTableHeadText }
 export { UsersTable }
 export { UsersAddNewUserButton }
 export { UsersFormularyPermissionOptionContainer }
@@ -38,7 +43,9 @@ export { UsersFormularyPermissionTemplateTitle }
 export { UsersFormularyPermissionFormularyContainer }
 export { UsersFormularyPermissionFormularyTitle }
 export { UsersFormularyFieldsAndPermissionContainer }
+export { UsersFormularySaveButtonText }
 export { UsersFormularySaveButton }
+export { UsersFormularyDuplicateButtonText }
 export { UsersFormularyDuplicateButton }
 export { UsersFormularyGoBackButton }
 export { UsersFormularyFieldError }

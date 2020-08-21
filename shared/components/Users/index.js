@@ -1,5 +1,5 @@
 import React from 'react'
-import { View } from 'react-native'
+import { View, Text, ScrollView, FlatList, TouchableOpacity, } from 'react-native'
 import axios from 'axios'
 import { connect } from 'react-redux'
 import UsersForm from './UsersForm'
@@ -12,6 +12,7 @@ import {
     UsersTrashIcon,
     UsersTableContent,
     UsersTableHeadItem,
+    UsersTableHeadText,
     UsersAddNewUserButton
 } from '../../styles/Users'
 
@@ -26,6 +27,8 @@ class Users extends React.Component {
         super(props)
         this.cancelToken = axios.CancelToken
         this.source = null
+        this.scrollHeader = null
+        this.scrollElements = []
         this.state = {
             userIdToDelete: null,
             showAlert: false,
@@ -159,6 +162,21 @@ class Users extends React.Component {
     }
 
     /**
+     * ONLY FOR MOBILE. This is used so we can scroll on the table horizontally and vertically.
+     * @param {Object} e - The REACT NATIVE scroll event object
+     */
+    onScrollRow = (e) => {
+        let scrollX = e.nativeEvent.contentOffset.x
+        this.scrollHeader.scrollTo({ x: scrollX, animated: false })
+        this.scrollElements.forEach(element => {
+            if (element) {
+                element.scrollTo({ x: scrollX, animated: false })
+            }
+        })
+    }
+
+
+    /**
      * When we mount the component we get two things: 
      * 1 - The Formulary and Field options, this is what we use so we can build the permissions formulary
      * 2 - The user data as an array. This user data is used to populate the table and also used when editing.
@@ -177,7 +195,117 @@ class Users extends React.Component {
     
     renderMobile = () => {
         return (
-            <View></View>
+            <View style={{ height: '100%'}}>
+                <Alert 
+                alertTitle={strings['pt-br']['userConfigurationDeleteUserAlertTitle']} 
+                alertMessage={strings['pt-br']['userConfigurationDeleteUserAlertContent']} 
+                show={this.state.showAlert} 
+                onHide={() => {
+                    this.setShowAlert(false)
+                }} 
+                onAccept={() => {
+                    this.setShowAlert(false)
+                    this.onRemoveUser(this.state.userIdToDelete)
+                }}
+                onAcceptButtonLabel={strings['pt-br']['userConfigurationDeleteUserAlertAcceptButton']}
+                />
+                <UsersAddNewUserButton 
+                onPress={e=> this.onOpenFormulary()}
+                >
+                    <Text style={{ fontSize: 37, color: '#fff', textAlign: 'center', height: '100%', width: '100%'}}>
+                        {'+'}
+                    </Text>
+                </UsersAddNewUserButton>
+                <UsersTable keyboardShouldPersistTaps={'handled'}>
+                    <View style={{ flexDirection: "row", borderTopWidth: 1 }}>
+                        <ScrollView horizontal={true} scrollEnabled={false} scrollEventThrottle={16} ref={ref => (this.scrollHeader = ref)}>
+                            <UsersTableHeadItem isFirstColumn={true}>
+                                <UsersTableHeadText>
+                                    {strings['pt-br']['userConfigurationTableEmailColumnHeaderLabel']}
+                                </UsersTableHeadText>
+                            </UsersTableHeadItem>
+                            <UsersTableHeadItem>
+                                <UsersTableHeadText>
+                                    {strings['pt-br']['userConfigurationTableNameColumnHeaderLabel']}
+                                </UsersTableHeadText>
+                            </UsersTableHeadItem>
+                            <UsersTableHeadItem>
+                                <UsersTableHeadText>
+                                    {strings['pt-br']['userConfigurationTableProfileColumnHeaderLabel']}
+                                </UsersTableHeadText>
+                            </UsersTableHeadItem>
+                            <UsersTableHeadItem isEditOrDeleteColumn={true}>
+                                <UsersTableHeadText isEditOrDeleteColumn={true}>
+                                    {strings['pt-br']['userConfigurationTableEditColumnHeaderLabel']}
+                                </UsersTableHeadText>
+                            </UsersTableHeadItem>
+                            <UsersTableHeadItem isEditOrDeleteColumn={true} isLastColumn={true}>
+                                <UsersTableHeadText isEditOrDeleteColumn={true}>
+                                    {strings['pt-br']['userConfigurationTableDeleteColumnHeaderLabel']}
+                                </UsersTableHeadText>
+                            </UsersTableHeadItem>
+                        </ScrollView>
+                    </View>
+                    <FlatList
+                    keyExtractor={(user) => user.id.toString()}
+                    data={this.props.users.update}
+                    renderItem={({ item, index, __ }) => (
+                        <View>
+                            <ScrollView
+                            ref={ref=> this.scrollElements[index] = ref}
+                            alwaysBounceHorizontal={false}
+                            bounces={false}
+                            horizontal={true}
+                            scrollEventThrottle={16}
+                            onScroll={this.onScrollRow}
+                            >
+                                <View key={index} style={{flexDirection: "row"}}>
+                                    <UsersTableContent>
+                                        <Text>
+                                            {item.email}
+                                        </Text>
+                                    </UsersTableContent>
+                                    <UsersTableContent>
+                                        <Text>
+                                            {this.getFullName(item.first_name, item.last_name)}
+                                        </Text>
+                                    </UsersTableContent>
+                                    <UsersTableContent>
+                                        <Text>
+                                            {types('pt-br', 'profile_type', this.getProfileNameFromId(item.profile))}
+                                        </Text>
+                                    </UsersTableContent>
+                                    <UsersTableContent isEditOrDeleteColumn={true}>
+                                        <TouchableOpacity onPress={e => this.onOpenFormulary(item)}>
+                                            <UsersEditIcon icon={'pencil-alt'}/>
+                                        </TouchableOpacity>
+                                    </UsersTableContent>
+                                    <UsersTableContent isEditOrDeleteColumn={true}>
+                                        <TouchableOpacity onPress={e=> this.onClickRemove(item.id)}>
+                                            <UsersTrashIcon icon={'trash'}/>
+                                        </TouchableOpacity>
+
+                                    </UsersTableContent>
+                                </View>
+
+
+                            </ScrollView>
+                        </View>
+                    )}
+                    />
+                </UsersTable>
+                <UsersForm
+                cancelToken={this.cancelToken}
+                onAddNotification={this.props.onAddNotification}
+                onGetUsersConfiguration={this.props.onGetUsersConfiguration}
+                formulariesAndFieldPermissionsOptions={this.props.users.formulariesAndFieldPermissionsOptions}
+                isOpen={this.state.isOpenForm}
+                onSubmitForm={this.onSubmitForm}
+                types={this.props.types}
+                userData={this.state.userDataToEdit}
+                onCloseFormulary={this.onCloseFormulary}
+                />
+            </View>
         )
     }
 
@@ -207,19 +335,29 @@ class Users extends React.Component {
                     <thead>
                         <tr>
                             <UsersTableHeadItem isFirstColumn={true}>
-                                {strings['pt-br']['userConfigurationTableEmailColumnHeaderLabel']}
+                                <UsersTableHeadText>
+                                    {strings['pt-br']['userConfigurationTableEmailColumnHeaderLabel']}
+                                </UsersTableHeadText>
                             </UsersTableHeadItem>
                             <UsersTableHeadItem>
-                                {strings['pt-br']['userConfigurationTableNameColumnHeaderLabel']}
+                                <UsersTableHeadText>
+                                    {strings['pt-br']['userConfigurationTableNameColumnHeaderLabel']}
+                                </UsersTableHeadText>
                             </UsersTableHeadItem>
                             <UsersTableHeadItem>
-                                {strings['pt-br']['userConfigurationTableProfileColumnHeaderLabel']}
+                                <UsersTableHeadText>
+                                    {strings['pt-br']['userConfigurationTableProfileColumnHeaderLabel']}
+                                </UsersTableHeadText>
                             </UsersTableHeadItem>
-                            <UsersTableHeadItem isEditOrDeleteColumn={true}>
-                                {strings['pt-br']['userConfigurationTableEditColumnHeaderLabel']}
+                            <UsersTableHeadItem>
+                                <UsersTableHeadText isEditOrDeleteColumn={true}>
+                                    {strings['pt-br']['userConfigurationTableEditColumnHeaderLabel']}
+                                </UsersTableHeadText>
                             </UsersTableHeadItem>
-                            <UsersTableHeadItem isEditOrDeleteColumn={true} isLastColumn={true}>
-                                {strings['pt-br']['userConfigurationTableDeleteColumnHeaderLabel']}
+                            <UsersTableHeadItem isLastColumn={true}>
+                                <UsersTableHeadText isEditOrDeleteColumn={true}>
+                                    {strings['pt-br']['userConfigurationTableDeleteColumnHeaderLabel']}
+                                </UsersTableHeadText>
                             </UsersTableHeadItem>
                         </tr>
                     </thead>

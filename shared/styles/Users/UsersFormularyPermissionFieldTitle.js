@@ -8,4 +8,7 @@ styled.h6`
     font-weight: bold
 `
 :
-styled(Text)``
+styled(Text)`
+    margin-bottom: 10px;
+    font-weight: bold
+`

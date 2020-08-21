@@ -12,4 +12,14 @@ styled.button`
     margin-bottom: 10px
 `
 :
-styled(TouchableOpacity)``
+styled(TouchableOpacity)`
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    padding: 15px 0;
+    align-items: center;
+    background-color: #0dbf7e;
+    border-radius: 5px;
+    border-width: 1px;
+    border-color: #0dbf7e
+`

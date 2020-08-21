@@ -21,4 +21,10 @@ styled.div`
     }
 `
 :
-styled(TouchableOpacity)``
+styled(TouchableOpacity)`
+    margin-bottom: 15px; 
+    margin-left: 10px;
+    margin-right: 10px;
+    flex-direction: row;
+    align-items: center;
+`

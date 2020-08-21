@@ -15,7 +15,6 @@ class Data extends React.Component {
     }
 
     render() {
-        console.log(Linking.makeUrl(paths.login().asUrl))
         return (
             <Layout setIsAuthenticated={this.props.authenticationContext.setIsAuthenticated} showSideBar={true}>
                 <Button onPress={e=> {

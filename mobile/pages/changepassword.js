@@ -18,7 +18,7 @@ class ChangePasswordPage extends React.Component {
 
     render() {
         return (
-            < setIsAuthenticated={this.props.authenticationContext.setIsAuthenticated} hideNavBar={true} isNotLogged={true}>
+            <Layout setIsAuthenticated={this.props.authenticationContext.setIsAuthenticated} hideNavBar={true} isNotLogged={true}>
                 <ChangePassword temporaryPassword={this.props.route?.params?.temp_pass} goBack={this.goBack}/>
             </Layout>
         )

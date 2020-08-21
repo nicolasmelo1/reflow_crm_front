@@ -8,4 +8,8 @@ styled.div`
     padding: 10px 0
 `
 :
-styled(View)``
+styled(View)`
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 15px;
+`

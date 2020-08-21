@@ -10,4 +10,12 @@ styled.th`
     border-radius: ${props => props.isFirstColumn ? '10px 0 0 0' : props.isLastColumn ? '0 10px 0 0' : '0'}
 `
 :
-styled(View)``
+styled(View)`
+    color: ${props => props.isEditOrDeleteColumn ? '#f2f2f2' : '#0dbf7e'};
+    padding: 10px;
+    background-color: #17242D;
+    align-self: stretch;
+    width:  ${props => props.isEditOrDeleteColumn ? '100px' : '200px'};
+    border-top-left-radius: ${props => props.isFirstColumn ? '10px': '0'};
+    border-top-right-radius: ${props => props.isLastColumn ? '10px': '0'};
+`

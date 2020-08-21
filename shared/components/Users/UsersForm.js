@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { View } from 'react-native'
+import { View, Modal, SafeAreaView, Text } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { Select } from '../Utils'
 import { types, paths, strings } from '../../utils/constants'
 import {
     UsersFormularyDuplicateButton,
+    UsersFormularyDuplicateButtonText,
     UsersFormularyContainer,
     UsersFormularyPermissionSelectionButton,
     UsersFormularyPermissionsIcon,
@@ -15,6 +16,7 @@ import {
     UsersFormularyFieldError,
     UsersFormularyGoBackButton,
     UsersFormularySaveButton,
+    UsersFormularySaveButtonText,
     UsersFormularyFieldsAndPermissionContainer,
     UsersFormularyPermissionTemplateTitle,
     UsersFormularyPermissionFormularyTitle,
@@ -275,7 +277,7 @@ const UsersForm = (props) => {
             profile: profileId,
             option_accessed_by_user: optionsUserHaveAccess.map(optionAccessedBy => ({field_option_id: optionAccessedBy})),
             form_accessed_by_user: formulariesUserHaveAccess.map(formularyAccessedBy => ({form_id: formularyAccessedBy})),
-            change_password_url: (process.env['APP']=== 'web') ? window.location.origin + paths.changepassword().asUrl + '?temp_pass={}' : ''
+            change_password_url: (process.env['APP']=== 'web') ? window.location.origin + paths.changepassword().asUrl + '?temp_pass={}' : 'https://app-beta.reflow.com.br' + paths.changepassword().asUrl + '?temp_pass={}'
         }
         props.onSubmitForm(data).then(response => {
             if (response && response.status === 200) {
@@ -354,7 +356,153 @@ const UsersForm = (props) => {
 
     const renderMobile = () => {
         return (
-            <View></View>
+            <Modal animationType={'slide'} visible={props.isOpen}>
+                <SafeAreaView>
+                    <View style={{ direction: 'rtl' }}>
+                        <UsersFormularyGoBackButton onPress={e=> {props.onCloseFormulary()}}>
+                            <FontAwesomeIcon icon={'times'}/>
+                        </UsersFormularyGoBackButton>
+                    </View>
+                    <UsersFormularyFieldsAndPermissionContainer>
+                        <UsersFormularyFieldContainer>
+                            <UsersFormularyFieldLabel>
+                                {strings['pt-br']['userConfigurationFormularyNameLabel']}
+                            </UsersFormularyFieldLabel>
+                            <UsersFormularyFieldInput 
+                            errors={errors.hasOwnProperty('name')} 
+                            type={'text'} 
+                            onChange={e => {onChangeName(e.nativeEvent.text)}}
+                            value={name}
+                            />
+                            {errors.hasOwnProperty('name') ? (
+                                <UsersFormularyFieldError>
+                                    {errors.name}
+                                </UsersFormularyFieldError>
+                            ) : null}
+                        </UsersFormularyFieldContainer>
+                        <UsersFormularyFieldContainer>
+                            <UsersFormularyFieldLabel>
+                                {strings['pt-br']['userConfigurationFormularyEmailLabel']}
+                            </UsersFormularyFieldLabel>
+                            <UsersFormularyFieldInput 
+                            type={'text'} 
+                            autoCapitalize='none'
+                            errors={errors.hasOwnProperty('email')} 
+                            onChange={e => {onChangeEmail(e.nativeEvent.text)}}
+                            value={email}
+                            />
+                            {errors.hasOwnProperty('email') ? (
+                                <UsersFormularyFieldError>
+                                    {errors.email}
+                                </UsersFormularyFieldError>
+                            ) : null}
+                        </UsersFormularyFieldContainer>
+                        <UsersFormularyFieldContainer>
+                            <UsersFormularyFieldLabel>
+                                {strings['pt-br']['userConfigurationFormularyProfileLabel']}
+                            </UsersFormularyFieldLabel>
+                            <UsersFormularyFieldSelectContainer isOpen={profileSelectorIsOpen} errors={errors.hasOwnProperty('profile')}>
+                                <Select 
+                                options={profileTypeOptions}
+                                initialValues={profileTypeOptions.filter(profileTypeOption => profileTypeOption.value === profileId)} 
+                                onChange={onChangeProfile}
+                                isOpen={profileSelectorIsOpen}
+                                setIsOpen={setProfileSelectorIsOpen}
+                                />
+                            </UsersFormularyFieldSelectContainer>
+                            {errors.hasOwnProperty('profile') ? (
+                                <UsersFormularyFieldError>
+                                    {errors.profile}
+                                </UsersFormularyFieldError>
+                            ) : null}
+                        </UsersFormularyFieldContainer>
+                        <Text style={{ fontSize: 30, marginLeft: 10, marginRight: 10, marginBottom: 15 }}>
+                        {formulariesUserHaveAccess.length > 0 ? 
+                            strings['pt-br']['userConfigurationFormularyPermissionOptionSelectLabel'] : 
+                            templatesUserHaveAccess.length > 0 ? 
+                                strings['pt-br']['userConfigurationFormularyPermissionPageSelectLabel'] : 
+                                strings['pt-br']['userConfigurationFormularyPermissionTemplateSelectLabel']
+                        }
+                        </Text>
+                        {props.formulariesAndFieldPermissionsOptions.map(template => (
+                            <View key={template.id}>
+                                <UsersFormularyPermissionSelectionButton 
+                                onPress={e=> onSelectTemplatePermission(template.id)}
+                                >
+                                    {templatesUserHaveAccess.includes(template.id)}
+                                    <UsersFormularyPermissionsIcon 
+                                    icon={(templatesUserHaveAccess.includes(template.id)) ? 'check' : 'times'}
+                                    isSelected={templatesUserHaveAccess.includes(template.id)}
+                                    />
+                                    <UsersFormularyPermissionTemplateTitle
+                                    isSelected={templatesUserHaveAccess.includes(template.id)}
+                                    >
+                                        {template.name}
+                                    </UsersFormularyPermissionTemplateTitle>
+                                </UsersFormularyPermissionSelectionButton>
+                                {templatesUserHaveAccess.includes(template.id) ? template.form_group.map(formulary => (
+                                    <View key={formulary.id}>
+                                        <UsersFormularyPermissionSelectionButton
+                                        onPress={e => onSelectFormularyPermission(formulary.id)}
+                                        >
+                                            <UsersFormularyPermissionFormularyContainer>
+                                                <UsersFormularyPermissionsIcon 
+                                                icon={(formulariesUserHaveAccess.includes(formulary.id)) ? 'check' : 'times'}
+                                                isSelected={formulariesUserHaveAccess.includes(formulary.id)}
+                                                />
+                                                <UsersFormularyPermissionFormularyTitle
+                                                isSelected={formulariesUserHaveAccess.includes(formulary.id)}
+                                                >
+                                                    {formulary.label_name}
+                                                </UsersFormularyPermissionFormularyTitle>
+                                            </UsersFormularyPermissionFormularyContainer>
+                                        </UsersFormularyPermissionSelectionButton>
+                                        {formulariesUserHaveAccess.includes(formulary.id) ? formulary.form_fields.map((field, index) => (
+                                            <View key={index}>
+                                                <UsersFormularyPermissionFieldContainer>
+                                                    <UsersFormularyPermissionFieldTitle>
+                                                        {field.label_name}
+                                                    </UsersFormularyPermissionFieldTitle>
+                                                </UsersFormularyPermissionFieldContainer>
+                                                {field.field_option.map(option => (
+                                                    <UsersFormularyPermissionSelectionButton 
+                                                    key={option.id} 
+                                                    onPress={e => onSelectOptionPermission(option.id)}
+                                                    >
+                                                        <UsersFormularyPermissionOptionContainer>
+                                                            <UsersFormularyPermissionsIcon 
+                                                            icon={(optionsUserHaveAccess.includes(option.id)) ? 'check' : 'times'}
+                                                            isSelected={optionsUserHaveAccess.includes(option.id)}
+                                                            />
+                                                            <UsersFormularyPermissionOptionTitle
+                                                            isSelected={optionsUserHaveAccess.includes(option.id)}
+                                                            >
+                                                                {option.option}
+                                                            </UsersFormularyPermissionOptionTitle>
+                                                        </UsersFormularyPermissionOptionContainer>
+                                                    </UsersFormularyPermissionSelectionButton>
+                                                ))}
+                                            </View>
+                                        )) : null}
+                                    </View>
+                                )) : null}
+                            </View>
+                        ))}
+                        <UsersFormularySaveButton onPress={e=> onSubmit(userId)}>
+                            <UsersFormularySaveButtonText>
+                                {strings['pt-br']['userConfigurationFormularySaveButtonLabel']}
+                            </UsersFormularySaveButtonText>
+                        </UsersFormularySaveButton>
+                        {userId ? (
+                            <UsersFormularyDuplicateButton onPress={e=> onSubmit(null)}>
+                                <UsersFormularyDuplicateButtonText>
+                                    {strings['pt-br']['userConfigurationFormularyDuplicateButtonLabel']}
+                                </UsersFormularyDuplicateButtonText>
+                            </UsersFormularyDuplicateButton>
+                        ) : null}
+                    </UsersFormularyFieldsAndPermissionContainer>
+                </SafeAreaView>
+            </Modal>
         )
     }
 
@@ -489,11 +637,15 @@ const UsersForm = (props) => {
                         </div>
                     ))}
                     <UsersFormularySaveButton onClick={e=> onSubmit(userId)}>
-                        {strings['pt-br']['userConfigurationFormularySaveButtonLabel']}
+                        <UsersFormularySaveButtonText>
+                            {strings['pt-br']['userConfigurationFormularySaveButtonLabel']}
+                        </UsersFormularySaveButtonText>
                     </UsersFormularySaveButton>
                     {userId ? (
                         <UsersFormularyDuplicateButton onClick={e=> onSubmit(null)}>
-                            {strings['pt-br']['userConfigurationFormularyDuplicateButtonLabel']}
+                            <UsersFormularyDuplicateButton>
+                                {strings['pt-br']['userConfigurationFormularyDuplicateButtonLabel']}
+                            </UsersFormularyDuplicateButton>
                         </UsersFormularyDuplicateButton>
                     ) : ''}
                 </UsersFormularyFieldsAndPermissionContainer>

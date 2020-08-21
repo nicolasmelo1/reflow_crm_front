@@ -9,4 +9,8 @@ styled.td`
     padding: 10px;
 `
 :
-styled(View)``
+styled(View)`
+    align-self: stretch;
+    padding: 10px;
+    width:  ${props => props.isEditOrDeleteColumn ? '100px' : '200px'};
+`

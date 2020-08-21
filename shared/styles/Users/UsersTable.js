@@ -9,4 +9,6 @@ styled.table`
     max-height: calc(var(--app-height) - 120px)
 `
 :
-styled(View)``
+styled(View)`
+    height: 100%;
+`

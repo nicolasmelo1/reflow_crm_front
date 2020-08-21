@@ -11,4 +11,8 @@ styled.div`
     margin-bottom: 5px;
 `
 :
-styled(View)``
+styled(View)`
+    padding: 0 60px;
+    flex-direction: row;
+    align-items: center;
+`

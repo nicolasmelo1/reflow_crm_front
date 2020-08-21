@@ -10,4 +10,8 @@ styled.div`
     align-items: center
 `
 :
-styled(View)``
+styled(View)`
+    padding: 0 80px;
+    flex-direction: row;
+    align-items: center
+`

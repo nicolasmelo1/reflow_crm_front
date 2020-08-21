@@ -3,11 +3,13 @@ import styled from 'styled-components'
 import { Text } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
-styled.small`
-    color: red
+styled.p`
+    margin: 0;
+    color: #0dbf7e;
+    width: 100%;
+    text-align: center;
 `
 :
 styled(Text)`
-    color: red;
-    font-size: 10px;
+    color: #0dbf7e;
 `

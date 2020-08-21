@@ -35,5 +35,5 @@ styled(TextInput)`
     padding: 5px;
     min-height: 30px;
     color: #17242D;
-    border: 1px solid #0dbf7e;
+    border: 1px solid ${props=> props.errors ? 'red': '#0dbf7e'};
 `

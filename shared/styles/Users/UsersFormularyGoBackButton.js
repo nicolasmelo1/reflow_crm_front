@@ -9,4 +9,10 @@ styled.button`
     border: 0;
 `
 :
-styled(TouchableOpacity)``
+styled(TouchableOpacity)`
+    height: 50px;
+    flex-direction: row;
+    alignItems: center;
+    justify-content: center;
+    width: 50px;
+`

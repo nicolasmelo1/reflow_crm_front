@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { TouchableContent } from 'react-native'
+import { TouchableOpacity } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.button`
@@ -13,4 +13,4 @@ styled.button`
     border-radius: 5px
 `
 :
-styled(TouchableContent)``
+styled(TouchableOpacity)``
