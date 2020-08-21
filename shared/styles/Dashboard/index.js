@@ -24,6 +24,7 @@ import DashboardConfigurationCardsContainer from './DashboardConfigurationCardsC
 import ChartContainer from './ChartContainer'
 import ChartTotalContainer from './ChartTotalContainer'
 import ChartTotalContent from './ChartTotalContent'
+import ChartTotalTitleLabel from './ChartTotalTitleLabel'
 import ChartTotalLabel from './ChartTotalLabel'
 import ChartTotalLabelContainer from './ChartTotalLabelContainer'
 import DashboardChartContainer from './DashboardChartContainer'
@@ -60,6 +61,7 @@ export { DashboardChartTitle }
 export { DashboardChartContainer }
 export { DashboardChartsContainer }
 export { ChartTotalLabelContainer }
+export { ChartTotalTitleLabel }
 export { ChartTotalLabel }
 export { ChartTotalContent }
 export { ChartTotalContainer }

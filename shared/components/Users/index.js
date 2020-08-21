@@ -1,5 +1,6 @@
 import React from 'react'
-import { View, Text, ScrollView, FlatList, TouchableOpacity, } from 'react-native'
+import { View, Text, ScrollView, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { Spinner } from 'react-bootstrap'
 import axios from 'axios'
 import { connect } from 'react-redux'
 import UsersForm from './UsersForm'
@@ -30,6 +31,7 @@ class Users extends React.Component {
         this.scrollHeader = null
         this.scrollElements = []
         this.state = {
+            isLoading: false,
             userIdToDelete: null,
             showAlert: false,
             isOpenForm: false,
@@ -37,6 +39,7 @@ class Users extends React.Component {
         }
     }
 
+    setIsLoading = (data) => this.setState(state => ({...state, isLoading: data}))
     setShowAlert = (data) => this.setState(state => ({...state, showAlert: data}))
     setUserIdToDelete = (userId) => this.setState(state => ({...state, userIdToDelete: userId}))
     
@@ -99,6 +102,10 @@ class Users extends React.Component {
             isOpenForm: false,
             userDataToEdit: null
         }))
+        // when we close the formulary set the scroll to the initial position
+        if (process.env['APP'] !== 'web') {
+            this.onScrollRow(0)
+        }
     }
 
     /**
@@ -111,15 +118,19 @@ class Users extends React.Component {
      * @param {BigInteger} userId - The userId to remove.
      */
     onRemoveUser = (userId) => {
+        this.setIsLoading(true)
         this.props.onRemoveUsersConfiguration(userId).then(response => {
             if (response && response.status === 200) {
-                this.props.onGetUsersConfiguration(this.source)
+                this.props.onGetUsersConfiguration(this.source).then(response=> {
+                    this.setIsLoading(false)
+                })
             } else {
                 const errorKeys = Array.from(Object.keys(response.data.error))
                 if (errorKeys.includes('detail') && response.data.error['detail'].includes('cannot_edit_itself')) {
                     this.props.onAddNotification(strings['pt-br']['userConfigurationCannotEditItselfError'], 'error')
                 }
             }
+            this.setIsLoading(false)
         })
     }
 
@@ -165,8 +176,7 @@ class Users extends React.Component {
      * ONLY FOR MOBILE. This is used so we can scroll on the table horizontally and vertically.
      * @param {Object} e - The REACT NATIVE scroll event object
      */
-    onScrollRow = (e) => {
-        let scrollX = e.nativeEvent.contentOffset.x
+    onScrollRow = (scrollX) => {
         this.scrollHeader.scrollTo({ x: scrollX, animated: false })
         this.scrollElements.forEach(element => {
             if (element) {
@@ -219,7 +229,7 @@ class Users extends React.Component {
                 <UsersTable keyboardShouldPersistTaps={'handled'}>
                     <View style={{ flexDirection: "row", borderTopWidth: 1 }}>
                         <ScrollView horizontal={true} scrollEnabled={false} scrollEventThrottle={16} ref={ref => (this.scrollHeader = ref)}>
-                            <UsersTableHeadItem isFirstColumn={true}>
+                            <UsersTableHeadItem>
                                 <UsersTableHeadText>
                                     {strings['pt-br']['userConfigurationTableEmailColumnHeaderLabel']}
                                 </UsersTableHeadText>
@@ -239,7 +249,7 @@ class Users extends React.Component {
                                     {strings['pt-br']['userConfigurationTableEditColumnHeaderLabel']}
                                 </UsersTableHeadText>
                             </UsersTableHeadItem>
-                            <UsersTableHeadItem isEditOrDeleteColumn={true} isLastColumn={true}>
+                            <UsersTableHeadItem isEditOrDeleteColumn={true}>
                                 <UsersTableHeadText isEditOrDeleteColumn={true}>
                                     {strings['pt-br']['userConfigurationTableDeleteColumnHeaderLabel']}
                                 </UsersTableHeadText>
@@ -257,7 +267,7 @@ class Users extends React.Component {
                             bounces={false}
                             horizontal={true}
                             scrollEventThrottle={16}
-                            onScroll={this.onScrollRow}
+                            onScroll={ e=> this.onScrollRow(e.nativeEvent.contentOffset.x)}
                             >
                                 <View key={index} style={{flexDirection: "row"}}>
                                     <UsersTableContent>
@@ -276,13 +286,21 @@ class Users extends React.Component {
                                         </Text>
                                     </UsersTableContent>
                                     <UsersTableContent isEditOrDeleteColumn={true}>
-                                        <TouchableOpacity onPress={e => this.onOpenFormulary(item)}>
-                                            <UsersEditIcon icon={'pencil-alt'}/>
+                                        <TouchableOpacity onPress={e => this.state.isLoading ? null : this.onOpenFormulary(item)}>
+                                            {this.state.isLoading ? (
+                                                <ActivityIndicator/>
+                                            ) : (
+                                                <UsersEditIcon icon={'pencil-alt'}/>
+                                            )}
                                         </TouchableOpacity>
                                     </UsersTableContent>
                                     <UsersTableContent isEditOrDeleteColumn={true}>
-                                        <TouchableOpacity onPress={e=> this.onClickRemove(item.id)}>
-                                            <UsersTrashIcon icon={'trash'}/>
+                                        <TouchableOpacity onPress={e=> this.state.isLoading ? null : this.onClickRemove(item.id)}>
+                                            {this.state.isLoading ? (
+                                                <ActivityIndicator/>
+                                            ) : (
+                                                <UsersTrashIcon icon={'trash'}/>
+                                            )}
                                         </TouchableOpacity>
 
                                     </UsersTableContent>
@@ -374,10 +392,18 @@ class Users extends React.Component {
                                     {types('pt-br', 'profile_type', this.getProfileNameFromId(user.profile))}
                                 </UsersTableContent>
                                 <UsersTableContent>
-                                    <UsersEditIcon icon={'pencil-alt'} onClick={e => this.onOpenFormulary(user)}/>
+                                    {this.state.isLoading ? (
+                                        <Spinner animation="border" size="sm"/>
+                                    ) : (
+                                        <UsersEditIcon icon={'pencil-alt'} onClick={e => this.onOpenFormulary(user)}/>
+                                    )}
                                 </UsersTableContent>
                                 <UsersTableContent>
-                                    <UsersTrashIcon icon={'trash'} onClick={e=> this.onClickRemove(user.id)}/>
+                                    {this.state.isLoading ? (
+                                        <Spinner animation="border" size="sm"/>
+                                    ) : (
+                                        <UsersTrashIcon icon={'trash'} onClick={e=> this.onClickRemove(user.id)}/>
+                                    )}
                                 </UsersTableContent>
                             </tr>
                         ))}

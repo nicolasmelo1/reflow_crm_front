@@ -33,8 +33,6 @@ import {
 /**
  * Main component for Dashboards. This component is responsible for loading charts and displaying the values to the user
  * and also for creating each chart individually.
- * 
- * @param {Type} props - {go in detail about every prop it recieves}
  */
 class Dashboard extends React.Component {
     constructor(props) {
@@ -51,6 +49,12 @@ class Dashboard extends React.Component {
         }
     }
 
+    /**
+     * This is to setFieldOptions, usually fieldOptions are used by the Filter component to know which fields from the formulary 
+     * can be filtered.
+     * 
+     * @param {Array<Object>} data 
+     */
     setFieldOptions = (data) => {
         this.setState(state => {
             return {
@@ -251,6 +255,7 @@ class Dashboard extends React.Component {
                                                 chartType={this.getChartTypeNameById(item.chart_type)}
                                                 labels={item.data.labels}
                                                 values={item.data.values}
+                                                chartName={item.name}
                                                 /> 
                                             )
                                         }}
@@ -341,6 +346,7 @@ class Dashboard extends React.Component {
                                         {this.props.dashboard.charts.filter(chart => this.getChartTypeNameById(chart.chart_type) === 'card').map((chart, index) => (
                                             <Chart
                                             key={index}
+                                            chartName={chart.name}
                                             maintainAspectRatio={true}
                                             numberFormat={this.props.login.types?.data?.field_number_format_type.filter(numberFormatType => numberFormatType.id === chart.number_format_type)[0]}
                                             chartType={this.getChartTypeNameById(chart.chart_type)}

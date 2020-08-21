@@ -7,6 +7,7 @@ import {
     ChartContainer,
     ChartTotalContainer,
     ChartTotalContent,
+    ChartTotalTitleLabel,
     ChartTotalLabel,
     ChartTotalLabelContainer
 } from '../../styles/Dashboard'
@@ -76,11 +77,11 @@ const Totals = (props) => {
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 
-const PopoverWithTotals = React.forwardRef((props, ref) => {
+const PopoverWithTotals = React.forwardRef(({labels, values, numberFormat, ...rest}, ref) => {
     return (
-        <Popover ref={ref} {...props}>
+        <Popover ref={ref} {...rest}>
             <PopoverContent>
-                {props.labels && props.values ? (<Totals labels={props.labels} values={props.values} numberFormat={props.numberFormat}/>): ''}
+                {labels && values ? (<Totals labels={labels} values={values} numberFormat={numberFormat}/>): ''}
             </PopoverContent>
         </Popover>
     )
@@ -108,6 +109,7 @@ const PopoverWithTotals = React.forwardRef((props, ref) => {
  * @param {Boolean} maintainAspectRatio - Maintain aspect ratio of the chart. You might want to read this for reference:
  * https://www.chartjs.org/docs/latest/general/responsive.html
  * @param {Object} numberFormat - The object of the number format, that's how we will format numbers in the chart.
+ * @param {String} chartName - (OPTIONAL) - This is only used in `card` chartType. This loads the title of the card inside of the card.
  */
 const Chart = (props) => {
     //const [jsToInject, setJsToInject] = useState('')
@@ -126,6 +128,7 @@ const Chart = (props) => {
         !isEqual(valuesRef.current, props.values)
     }
 
+    // ONLY MOBILE.
     const getJsToInjectInWebview = (gettingOnRender=false) => {
             //const maintainAspectRatio = (typeof props.maintainAspectRatio !== 'undefined') ? props.maintainAspectRatio : true
         const numberFormat = (props.numberFormat) ? props.numberFormat : null
@@ -151,6 +154,7 @@ const Chart = (props) => {
         numberFormatRef.current = props.numberFormat
         labelsRef.current = props.labels
         valuesRef.current = props.values
+        // web
         if(process.env['APP'] === 'web') {
             if (chartRef.current) {
                 chartRef.current.destroy()
@@ -161,6 +165,7 @@ const Chart = (props) => {
                 const numberFormat = (props.numberFormat) ? props.numberFormat : null
                 chartRef.current = charts(canvasRef.current, props.chartType, props.labels, props.values, numberFormat, maintainAspectRatio)
             }
+        // mobile
         } else {
             if (chartRef.current) {
                 chartRef.current.injectJavaScript(getJsToInjectInWebview())
@@ -233,14 +238,22 @@ const Chart = (props) => {
             delay={{ show: 250, hide: 100 }} 
             overlay={<PopoverWithTotals labels={props.labels} values={props.values} numberFormat={props.numberFormat}/>}
             popperConfig={{
-                modifiers: {
-                    preventOverflow: {
-                        boundariesElement: 'offsetParent'
+                modifiers: [
+                    {
+                        name: 'preventOverflow',
+                        options: {
+                            altBoundary: true,
+                        }
                     }
-                }
+                ]
             }} 
             >
                 <ChartTotalContent>
+                    {props.chartName ? (
+                        <ChartTotalTitleLabel>
+                            {props.chartName}
+                        </ChartTotalTitleLabel>
+                    ) : ''}
                     <Totals labels={props.labels} values={props.values} numberFormat={props.numberFormat}/>
                 </ChartTotalContent>
             </OverlayTrigger>
@@ -250,6 +263,11 @@ const Chart = (props) => {
     const renderTotalMobile = () => (
         <ChartTotalContainer>
             <ChartTotalContent>
+                {props.chartName ? (
+                    <ChartTotalTitleLabel>
+                        {props.chartName}
+                    </ChartTotalTitleLabel>
+                ) : null}
                 <Totals labels={props.labels} values={props.values} numberFormat={props.numberFormat}/>
             </ChartTotalContent>
         </ChartTotalContainer>

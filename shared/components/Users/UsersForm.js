@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { View, Modal, SafeAreaView, Text } from 'react-native'
+import { View, Modal, SafeAreaView, Text, ActivityIndicator } from 'react-native'
+import { Spinner } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { Select } from '../Utils'
+import { FRONT_END_URL } from '../../config'
 import { types, paths, strings } from '../../utils/constants'
 import {
     UsersFormularyDuplicateButton,
@@ -75,6 +77,7 @@ const UsersForm = (props) => {
     const [profileId, setProfileId] = useState(null)
     const [profileSelectorIsOpen, setProfileSelectorIsOpen] = useState(false)
     const [errors, setErrors] = useState({})
+    const [isLoading, setIsLoading] = useState(false)
     
     // The error messages we show to the user when he is updating a users information.
     const errorMessages = {
@@ -269,6 +272,7 @@ const UsersForm = (props) => {
      * That's how we can easily duplicate the data from a user to another.
      */
     const onSubmit = (userId=null) => {
+        setIsLoading(true)
         const data = {
             id: userId,
             email: email,
@@ -277,12 +281,14 @@ const UsersForm = (props) => {
             profile: profileId,
             option_accessed_by_user: optionsUserHaveAccess.map(optionAccessedBy => ({field_option_id: optionAccessedBy})),
             form_accessed_by_user: formulariesUserHaveAccess.map(formularyAccessedBy => ({form_id: formularyAccessedBy})),
-            change_password_url: (process.env['APP']=== 'web') ? window.location.origin + paths.changepassword().asUrl + '?temp_pass={}' : 'https://app-beta.reflow.com.br' + paths.changepassword().asUrl + '?temp_pass={}'
+            change_password_url: (process.env['APP']=== 'web') ? window.location.origin + paths.changepassword().asUrl + '?temp_pass={}' : 
+                                                                 FRONT_END_URL + paths.changepassword().asUrl + '?temp_pass={}'
         }
         props.onSubmitForm(data).then(response => {
             if (response && response.status === 200) {
                 props.onGetUsersConfiguration(sourceRef.current).then(response=> {
                     if (response && response.status === 200) {
+                        setIsLoading(false)
                         props.onCloseFormulary()
                     }
                 })
@@ -302,6 +308,7 @@ const UsersForm = (props) => {
                 }
                 setErrors({...errors})
             }
+            setIsLoading(false)
         })
     }
 
@@ -488,16 +495,24 @@ const UsersForm = (props) => {
                                 )) : null}
                             </View>
                         ))}
-                        <UsersFormularySaveButton onPress={e=> onSubmit(userId)}>
-                            <UsersFormularySaveButtonText>
-                                {strings['pt-br']['userConfigurationFormularySaveButtonLabel']}
-                            </UsersFormularySaveButtonText>
+                        <UsersFormularySaveButton onPress={e => isLoading ? null : onSubmit(userId)}>
+                            {isLoading ? (
+                                <ActivityIndicator/>
+                            ) : (
+                                <UsersFormularySaveButtonText>
+                                    {strings['pt-br']['userConfigurationFormularySaveButtonLabel']}
+                                </UsersFormularySaveButtonText>
+                            )}
                         </UsersFormularySaveButton>
                         {userId ? (
-                            <UsersFormularyDuplicateButton onPress={e=> onSubmit(null)}>
-                                <UsersFormularyDuplicateButtonText>
-                                    {strings['pt-br']['userConfigurationFormularyDuplicateButtonLabel']}
-                                </UsersFormularyDuplicateButtonText>
+                            <UsersFormularyDuplicateButton onPress={e => isLoading ? null : onSubmit(null)}>
+                                {isLoading ? (
+                                    <ActivityIndicator/>
+                                ) : (
+                                    <UsersFormularyDuplicateButtonText>
+                                        {strings['pt-br']['userConfigurationFormularyDuplicateButtonLabel']}
+                                    </UsersFormularyDuplicateButtonText>
+                                )}
                             </UsersFormularyDuplicateButton>
                         ) : null}
                     </UsersFormularyFieldsAndPermissionContainer>
@@ -636,16 +651,24 @@ const UsersForm = (props) => {
                             )) : ''}
                         </div>
                     ))}
-                    <UsersFormularySaveButton onClick={e=> onSubmit(userId)}>
-                        <UsersFormularySaveButtonText>
-                            {strings['pt-br']['userConfigurationFormularySaveButtonLabel']}
-                        </UsersFormularySaveButtonText>
+                    <UsersFormularySaveButton onClick={e=> isLoading ? null : onSubmit(userId)}>
+                        {isLoading ? (
+                            <Spinner animation="border"/>
+                        ) : (
+                            <UsersFormularySaveButtonText>
+                                {strings['pt-br']['userConfigurationFormularySaveButtonLabel']}
+                            </UsersFormularySaveButtonText>
+                        )}
                     </UsersFormularySaveButton>
                     {userId ? (
-                        <UsersFormularyDuplicateButton onClick={e=> onSubmit(null)}>
-                            <UsersFormularyDuplicateButton>
-                                {strings['pt-br']['userConfigurationFormularyDuplicateButtonLabel']}
-                            </UsersFormularyDuplicateButton>
+                        <UsersFormularyDuplicateButton onClick={e=> isLoading ? null : onSubmit(null)}>
+                            {isLoading ? (
+                                <Spinner animation="border"/>
+                            ) : (
+                                <UsersFormularyDuplicateButtonText>
+                                    {strings['pt-br']['userConfigurationFormularyDuplicateButtonLabel']}
+                                </UsersFormularyDuplicateButtonText>
+                            )}
                         </UsersFormularyDuplicateButton>
                     ) : ''}
                 </UsersFormularyFieldsAndPermissionContainer>
