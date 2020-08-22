@@ -64,7 +64,10 @@ class Dashboard extends React.Component {
         })
     }
 
-    // If the data is being loaded by the visualization
+    /**
+     * This is used so we prevent the user from clicking when we make a new filter.
+     * @param {*} isLoading 
+     */
     setIsLoadingData = (isLoading) => {
         this.setState(state => {
             return {

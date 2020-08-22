@@ -7,7 +7,7 @@ styled.p`
     white-space: normal;
     font-weight: bold;
     font-size: 12px;
-    color: #0dbf7e;
+    color: #17242D;
     margin-bottom: 15px;
 `
 :

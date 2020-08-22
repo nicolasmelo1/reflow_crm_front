@@ -47,7 +47,7 @@ const Totals = (props) => {
     const renderMobile = () => (
         <View>
             {props.values.map((__, index) => (
-                <ChartTotalLabelContainer key={index} hasBorderBottom={index < props.values.length-1}>
+                <ChartTotalLabelContainer key={index}>
                     <ChartTotalLabel>
                         {props.labels[index]}
                     </ChartTotalLabel>
@@ -62,7 +62,7 @@ const Totals = (props) => {
     const renderWeb = () => (
         <div>
             {props.values.map((__, index) => (
-                <ChartTotalLabelContainer key={index} hasBorderBottom={index < props.values.length-1}>
+                <ChartTotalLabelContainer key={index}>
                     <ChartTotalLabel>
                         {props.labels[index]}
                     </ChartTotalLabel>

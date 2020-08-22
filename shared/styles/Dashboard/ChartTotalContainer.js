@@ -4,8 +4,8 @@ import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
-    width: 150px;
-    height: 150px;
+    width: 180px;
+    height: 180px;
     margin: 5px;
     top: 0;
     vertical-align:top;
