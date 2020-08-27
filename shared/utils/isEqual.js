@@ -1,6 +1,6 @@
 
 /**
- * Chacks if two objects are equal
+ * Chacks if two objects or arrays are equal
  * Reference: https://gomakethings.com/check-if-two-arrays-or-objects-are-equal-with-javascript/
  */
 const isEqual = (value, other) => {

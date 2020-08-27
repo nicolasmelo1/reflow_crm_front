@@ -53,7 +53,7 @@ class Dashboard extends React.Component {
      * This is to setFieldOptions, usually fieldOptions are used by the Filter component to know which fields from the formulary 
      * can be filtered.
      * 
-     * @param {Array<Object>} data 
+     * @param {Array<Object>} data - The field option data that you recieve from the backend
      */
     setFieldOptions = (data) => {
         this.setState(state => {
@@ -66,7 +66,8 @@ class Dashboard extends React.Component {
 
     /**
      * This is used so we prevent the user from clicking when we make a new filter.
-     * @param {*} isLoading 
+     * 
+     * @param {Boolean} isLoading - Defines if the data is being loaded or not.
      */
     setIsLoadingData = (isLoading) => {
         this.setState(state => {

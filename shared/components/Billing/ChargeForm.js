@@ -3,6 +3,7 @@ import { View } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
 import { types, strings } from '../../utils/constants'
+import isEqual from '../../utils/isEqual'
 import {
     BillingFormularyContainer,
     BillingFormularySectionContainer,
@@ -48,6 +49,7 @@ const PopoverWithAditionalInformation = React.forwardRef(({additionalInformation
  * Types defines all of the field types, form types, format of numbers and dates and many other stuff 
  */
 const ChargeForm = (props) => {
+    const chargesDataRef = React.useRef(null)
     const currencyPrefix = '$'
     const additionalInformationByIndividualChargeName = {
         per_gb: strings['pt-br']['billingChargePerGbAdditionalInformation'],
@@ -177,11 +179,16 @@ const ChargeForm = (props) => {
     useEffect(() => {
         // This effect is fired everytime the user changes the chargesData array of objects. 
         // This effect is used to get the new totals based on his current data selected.
-        props.onGetTotals(props.chargesData).then(response => {
-            if (response && response.status === 200) {
-                setTotals(response.data.data)
-            }
-        })
+        // There was a bug that was firing the requests nonstop, with a reference we can prevent an infinite loop
+        if (!isEqual(chargesDataRef.current, props.chargesData)) {
+            props.onGetTotals(props.chargesData).then(response => {
+                if (response && response.status === 200) {
+                    setTotals(response.data.data)
+                }
+            })
+            chargesDataRef.current = JSON.parse(JSON.stringify(props.chargesData))
+        }
+
     }, [props.chargesData])
 
     useEffect(() => {
