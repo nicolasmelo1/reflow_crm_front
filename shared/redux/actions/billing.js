@@ -31,7 +31,10 @@ const onGetPaymentData = (source) => {
                 }
     
                 const chargesPayload = response.data.data.company.current_company_charges
-
+                
+                console.log(paymentPayload)
+                console.log(companyPayload)
+                console.log(chargesPayload)
                 dispatch({ type: SET_BILLING_PAYMENT_DATA, payload: paymentPayload })
                 dispatch({ type: SET_BILLING_COMPANY_DATA, payload: companyPayload })
                 dispatch({ type: SET_BILLING_CHARGES_DATA, payload: chargesPayload })
