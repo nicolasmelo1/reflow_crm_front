@@ -13,7 +13,7 @@ const onGetPaymentData = (source) => {
         return agent.http.BILLING.getPaymentData(source).then(response => {
             if (response && response.status === 200) {
                 const paymentPayload = {
-                    company_invoice_emails: response.data.data.company_invoice_emails.length > 0 ? response.data.data.company_invoice_emails : [{ email: ''}],
+                    company_invoice_emails: response.data.data.company.company_invoice_emails.length > 0 ? response.data.data.company.company_invoice_emails : [{ email: ''}],
                     payment_method_type_id: (response.data.data.payment_method_type_id) ? response.data.data.payment_method_type_id: types.payment_method_type[0].id,
                     invoice_date_type_id: (response.data.data.invoice_date_type_id) ? response.data.data.invoice_date_type_id: types.invoice_date_type[0].id,
                     credit_card_data: response.data.data.credit_card_data
@@ -30,7 +30,7 @@ const onGetPaymentData = (source) => {
                     city: response.data.data.city
                 }
     
-                const chargesPayload = response.data.data.current_company_charges
+                const chargesPayload = response.data.data.company.current_company_charges
 
                 dispatch({ type: SET_BILLING_PAYMENT_DATA, payload: paymentPayload })
                 dispatch({ type: SET_BILLING_COMPANY_DATA, payload: companyPayload })
@@ -54,11 +54,15 @@ const onGetTotals = (body) => {
 
 const onUpdatePaymentData = (gatewayToken=null) => {
     return (_, getState) => {
+        const { company_invoice_emails,...paymentData } = getState().billing.paymentData
         const body = {
-            ...getState().billing.paymentData,
+            ...paymentData,
             ...getState().billing.companyData,
             gateway_token: gatewayToken,
-            current_company_charges: getState().billing.chargesData
+            company: {
+                company_invoice_emails: company_invoice_emails,
+                current_company_charges: getState().billing.chargesData
+            }
         }
         return agent.http.BILLING.updatePaymentData(body)
     }

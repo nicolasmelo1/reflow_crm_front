@@ -10,8 +10,8 @@ const getAndDispatchCompanyData = (dispatch, source) => {
                 endpoint: response.data.data.endpoint,
                 name: response.data.data.name,
                 is_active: response.data.data.is_active, 
-                is_supercompany: response.data.data.is_supercompany, 
-                is_paying_company: response.data.data.is_paying_company,
+                is_supercompany: response.data.data.billing_company.is_supercompany, 
+                is_paying_company: response.data.data.billing_company.is_paying_company,
                 free_trial_days: response.data.data.free_trial_days,
                 created_at: response.data.data.created_at
             }
