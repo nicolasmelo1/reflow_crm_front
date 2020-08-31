@@ -93,7 +93,7 @@ class Login extends React.Component {
     redirectToOnboarding = () => {
         if (this._ismounted) {
             if (process.env['APP'] === 'web') {
-                Router.push(paths.onboarding(), paths.onboarding().asUrl, { shallow: true })
+                Router.push(paths.onboarding().asUrl, paths.onboarding().asUrl, { shallow: true })
             } else {
                 Linking.openURL(Linking.makeUrl(paths.onboarding().asUrl))
             }
@@ -182,7 +182,6 @@ class Login extends React.Component {
                         this.handleLogin()
                     }}>{strings['pt-br']['loginSubmitButtonLabel']}</LoginButton>
                     <LoginOnboardingButton onClick={e => {
-                        e.preventDefault(); 
                         this.redirectToOnboarding()
                     }}>
                         {strings['pt-br']['loginOboardingButtonLabel']}
