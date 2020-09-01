@@ -172,7 +172,7 @@ const onGetKanbanData = (source, params, formName, columnName = null) => {
         agent.websocket.KANBAN.recieveDataUpdated({
             formName: formName,
             callback: (data) => {
-                if (data && data.user_id) {
+                if (data && data.user_id === getState().login.user.id) {
                     const filterParams = getState().home.filter
                     const params = {
                         search_field: filterParams.search_field,

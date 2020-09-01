@@ -26,7 +26,7 @@ const onGetDashboardCharts = (source, formName, params) => {
         agent.websocket.DASHBOARD.recieveDataUpdated({
             formName: formName,
             callback: (data) => {
-                if (data && data.user_id) {
+                if (data && data.user_id === getState().login.user.id) {
                     const filterParams = getState().home.filter
                     const updateDateParams = getState().home.dashboard.updateDates
                     const params = {
