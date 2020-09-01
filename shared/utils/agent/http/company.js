@@ -1,6 +1,5 @@
 import requests from '../requests'
 import { companyId } from '../utils'
-import company from '../../../redux/actions/company'
 
 const COMPANY = {
     getCompanyData: async (source) => {

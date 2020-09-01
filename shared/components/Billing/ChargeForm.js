@@ -49,7 +49,13 @@ const PopoverWithAditionalInformation = React.forwardRef(({additionalInformation
  * Types defines all of the field types, form types, format of numbers and dates and many other stuff 
  */
 const ChargeForm = (props) => {
-    const chargesDataRef = React.useRef(null)
+    const [isGettingChargeData, _setIsGettingChargeData] = useState(false)
+    const [totals, setTotals] = useState({
+        total: 0,
+        discounts: 0,
+        total_by_name: []
+    })
+    const isGettingChargeDataRef = React.useRef(isGettingChargeData)
     const currencyPrefix = '$'
     const additionalInformationByIndividualChargeName = {
         per_gb: strings['pt-br']['billingChargePerGbAdditionalInformation'],
@@ -92,11 +98,15 @@ const ChargeForm = (props) => {
             }
         ]
     }
-    const [totals, setTotals] = useState({
-        total: 0,
-        discounts: 0,
-        total_by_name: []
-    })
+
+    // creating a ref to the state is the only way we can get the state changes in the eventHandler function,
+    // so we can use it for the mousedown eventListenet function
+    // NOTE: THIS IS ONLY FOR CLASS BASED COMPONENTS THAT USE HOOKS, class based might
+    // work normally
+    const setIsGettingChargeData = (data) => {
+        isGettingChargeDataRef.current = data
+        _setIsGettingChargeData(data)
+    }
 
     /**
      * This function is used to format the number of the total, for pt-br for example the decimals should be separated by ', ' and not by '.'
@@ -180,13 +190,14 @@ const ChargeForm = (props) => {
         // This effect is fired everytime the user changes the chargesData array of objects. 
         // This effect is used to get the new totals based on his current data selected.
         // There was a bug that was firing the requests nonstop, with a reference we can prevent an infinite loop
-        if (!isEqual(chargesDataRef.current, props.chargesData)) {
+        if (!isGettingChargeDataRef.current) {
+            setIsGettingChargeData(true)
             props.onGetTotals(props.chargesData).then(response => {
                 if (response && response.status === 200) {
                     setTotals(response.data.data)
                 }
+                setIsGettingChargeData(false)
             })
-            chargesDataRef.current = JSON.parse(JSON.stringify(props.chargesData))
         }
 
     }, [props.chargesData])

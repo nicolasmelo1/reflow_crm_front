@@ -31,7 +31,6 @@ import { SafeAreaView, Text, Keyboard, TouchableOpacity } from 'react-native';
  * objects filtered
  * @param {Boolean} multiple - (optional) use this to inform if you want multiple objects to be selected.
  */
-
 const Select = (props) => {
     let isOpen = props.isOpen
     let _setIsOpen = props.setIsOpen

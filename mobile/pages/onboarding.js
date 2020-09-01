@@ -14,7 +14,7 @@ const OnboardingPage = (props) => {
 
     return (
         <Layout setIsAuthenticated={authentication.setIsAuthenticated} isNotLogged={true}>
-            <Onboarding openLinks={openLinks} navigation={props.navigation}/>
+            <Onboarding openLinks={openLinks}/>
         </Layout>
     )
 }

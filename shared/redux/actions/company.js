@@ -46,7 +46,21 @@ const onGetCompanyUpdateData = (source) => {
     }
 }
 
+const onChangeCompanyUpdateDataState = (data) => {
+    return (dispatch) => {
+        dispatch({ type:SET_UPDATE_COMPANY, payload: data })
+    }
+}
+
+const onUpdateCompanyUpdateData = (body) => {
+    return (_) => {
+        return agent.http.COMPANY.updateCompanySettingsData(body)
+    } 
+}
+
 export default {
     onGetCompanyData,
-    onGetCompanyUpdateData
+    onGetCompanyUpdateData,
+    onUpdateCompanyUpdateData,
+    onChangeCompanyUpdateDataState
 }

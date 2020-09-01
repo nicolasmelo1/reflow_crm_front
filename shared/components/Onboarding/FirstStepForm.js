@@ -18,8 +18,38 @@ import {
 
 
 /**
- * {Description of your component, what does it do}
- * @param {Type} props - {go in detail about every prop it recieves}
+ * This is the first step of the formulary. It is explained in the Onboarding component.
+ * 
+ * This step of the onboarding is responsible for handling and holding information about the user (It's name, e-mail, phone) and data related about the company
+ * (The name).
+ * 
+ * @param {Function} openLinks - (MOBILE ONLY) - This is a function that will be used when the user tries to open the privacy policy and the terms of usage
+ * @param {Boolean} showForm - Used just for animating when loading the formulary, when set to True we set the opacity to 1, otherwise the opacity will be 0.
+ * @param {Function} onValidate - This does two things:
+ * - Checks if a field is valid and 
+ * - Sets an error key with its message if the value of the field is invalid.
+ * @param {Object} errors - This object holds all of the errors on the hole formulary. Each key of the object is the name of a field on this formulary
+ * and the value of the key is error message.
+ * @param {String} name - The full name of the user. For the backend we actually separate the first_name and the last_name but we do this separation
+ * when submitting the name
+ * @param {Function} setName - Function for changing the `name` in the state of the parent component.
+ * @param {String} phone - I think you know why phone numbers should be string (because no int can start with 0, with string we can actually store phone
+ * numbers with 0 as the first character). This holds the phone number of the user UNFORMATTED (this is important) It's just the raw string, we format 
+ * when displaying the value to the user
+ * @param {Function} setPhone - Function for changing the `phone` state.
+ * @param {Function} getPhoneNumberMask - In Brazil the phone number can have 8 digits (besides the DDD (a 2 digit number of the region)) or 9 digits. With this
+ * we can mask it dynamically.
+ * @param {String} email - The email of the user. Since the user can type it wrong we need to actually confirm the email to prevent typos
+ * @param {Function} setEmail - Function for changing the `email` state.
+ * @param {String} confirmEmail - Similar to `email` props, this one is just for confirmation.
+ * @param {Function} setConfirmEmail - Function for changing the `confirmEmail` state.
+ * @param {String} companyName - This is the company name state, it is not obligatory since our user sometimes are not company or don't want to type the company name
+ * @param {Function} setCompanyName - Function for changing the `companyName` state.
+ * @param {Boolean} declarationChecked - This is just for showing if the declaration of terms of usage and privacy policy has been read and checked. This
+ * firms with the user a legal contract.
+ * @param {Function} setDeclarationChecked - Function for changing the `declarationChecked` state.
+ * @param {Function} redirectToLogin - if the user wants he can go back to the login at anytime while filling the formulary.
+ * @param {Function} setStep - This changes the state of the current step, if on step 1 renders this formulary, otherwise renders the second step.
  */
 const FirstStepForm = (props) => {
     const [phoneIsFocused, setPhoneIsFocused] = useState(false)
@@ -28,6 +58,12 @@ const FirstStepForm = (props) => {
     const [confirmEmailIsFocused, setConfirmEmailIsFocused] = useState(false)
     const [companyNameIsFocused, setCompanyNameIsFocused] = useState(false)
 
+    /**
+     * If we encountered any errors while filling the formulary we prevent the user from continuing to the next step
+     * of the onboarding. 
+     * 
+     * So this function is used to disable the continue button to advance to another step.
+     */ 
     const continueButtonDisabled = () => {
         return !props.declarationChecked || props.errors.hasOwnProperty('name') || props.errors.hasOwnProperty('email') || 
                 props.errors.hasOwnProperty('phone') || props.errors.hasOwnProperty('confirmEmail') || props.name === '' || 

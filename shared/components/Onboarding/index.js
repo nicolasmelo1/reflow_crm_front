@@ -7,20 +7,24 @@ import { numberUnmasker } from '../../utils/numberMasker'
 import { strings, paths, errors } from '../../utils/constants'
 import FirstStepForm from './FirstStepForm'
 import SecondStepForm from './SecondStepForm'
-
 import { 
     OnboardingLogo,
     OnboardingContainer
 } from '../../styles/Onboarding'
-import { View } from 'react-native'
 
 /**
  * This component handles the onboarding of a new user. It is important to understand that right now the onboarding formulary consists of 2 simple steps: 
- * 1-All of the basic information we need for the user to start using reflow
- * 2-Set password
+ * First Step Formulary - All of the basic information we need for the user to start using reflow (name of the user, name of the company, phone number and etc.)
+ * Second Step Formulary - Set password
  * 
- * @param {String} partner - The partner name, usually recieved from the url as a parameter with the ?partner= tag
- * @param {String} shared_by - The company endpoint, used for referral, usually recieved from the url as a query parameter with the ?shared_by= tag
+ * Most of the logic of both steps is handled here since we upload the data from here after we finish both steps, also the data of one steps affects the other step.
+ * If we made something bad in the first step and tries to save, we will handle it here.
+ * 
+ * @param {String} partner - The partner name, usually recieved from the url as a parameter with the ?partner= tag. This is something we can define as we want.
+ * @param {String} shared_by - The company endpoint, used for referral, usually recieved from the url as a query parameter with the ?shared_by= tag. The shared_by
+ * is something that usually we set for the user. The user can't set this parameter
+ * @param {Function} openLinks - (MOBILE ONLY) - This is used to open the terms of usage and privacy policy links. With this we can open the browser directly inside
+ * of the app.
  */
 class Onboarding extends React.Component {
     constructor(props) {
@@ -69,6 +73,12 @@ class Onboarding extends React.Component {
     setPassword = (data) => this.setState(state => ({...state, password: data}))
     setConfirmPassword = (data) => this.setState(state => ({...state, confirmPassword: data}))
 
+    /**
+     * In Brazil the phone number can have 8 digits (besides the DDD (a 2 digit number of the region)) or 9 digits. With this
+     * we can mask it dynamically.
+     * 
+     * @param {String} text - The phone number as string.
+     */
     getPhoneNumberMask = (text) => {
         if (!text || text.length <= 10) {
             return '(00) 0000-0000'
@@ -77,6 +87,15 @@ class Onboarding extends React.Component {
         }
     }
 
+    /**
+     * This function is used for validating if the data the user inserted in a field name is valid or not. You will notice that this is a switch
+     * with a set of statements. Each return case is a different condition to check if the data is valid.
+     * 
+     * @param {String} name - The name is actually a key that we use to reference on what the field you are validating is.
+     * If you insert more fields in the formulary, then we will probably have more keys. exept from 'name', all of the keys are
+     * based on the keys from the `userData` object.
+     * @param {String} value - The value the user inserted in this field to validate.
+     */
     isValid = (name, value) => {
         switch (name) {
             case 'name':
@@ -94,7 +113,15 @@ class Onboarding extends React.Component {
         }
     }
 
-    // the field must be a string with one of the states
+    /**
+     * This does two things:
+     * - Checks if a field is valid and 
+     * - Sets an error key with its message if the value of the field is invalid.
+     * @param {String} field - The field is actually a key that we use to reference on what the field you are validating is.
+     * If you insert more fields in the formulary, then we will probably have more keys. exept from 'name', all of the keys are
+     * based on the keys from the `userData` object.
+     * @param {String} value - The value the user inserted in this field to validate.
+     */
     onValidate = (field, value) => {
         if (!this.isValid(field, value)) {
             this.state.errors[field] = this.errorMessages[field]
@@ -103,7 +130,13 @@ class Onboarding extends React.Component {
         }
         this.setErrors({...this.state.errors})
     }
-
+    
+    /**
+     * Submits the data of all of the steps to the backend. This is actually why we need most logic inside of this component.
+     * 
+     * This function effectively constructs and builds the data before sending. When everything wents fine it redirects the user back to the login page
+     * otherwise it shows an error to the user.
+     */
     onSubmitForm = async () => {
         const data = {
             partner: this.props.partner ? this.props.partner : null,
@@ -127,6 +160,14 @@ class Onboarding extends React.Component {
         })
     }
 
+    /**
+     * Function used for redirection the user back to the login page.
+     * 
+     * It's nice to see that if the page is inside an iframe it redirects the user outside of the the iframe
+     * this way we can actually embed this formulary on landing pages and other stuff.
+     * 
+     * On mobile it just redirects the user back to the login using urls instead of direct navigation.
+     */
     redirectToLogin = () => {
         if (process.env['APP'] === 'web') {
             if (window.location !== window.parent.location) { 
@@ -141,6 +182,7 @@ class Onboarding extends React.Component {
         }
     }
 
+    // most of the logic here is just for showing a simple but nice animation when the user first opens the formulary.
     componentDidMount = () => {
         this._ismounted = true
         if (process.env['APP'] === 'web') {

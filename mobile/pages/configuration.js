@@ -20,6 +20,14 @@ class ConfigurationPage extends React.Component {
                 <SafeAreaView>
                     <TouchableOpacity 
                     style={{ width: '100%', textAlign:'center', backgroundColor:'#0dbf7e', padding: 10}} 
+                    onPress={e => this.props.navigation.navigate('company')}
+                    >
+                        <Text>
+                            Empresa
+                        </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity 
+                    style={{ width: '100%', textAlign:'center', backgroundColor:'#0dbf7e', padding: 10}} 
                     onPress={e => this.props.navigation.navigate('users')}
                     >
                         <Text>

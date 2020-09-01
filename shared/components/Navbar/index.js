@@ -44,10 +44,6 @@ class Navbar extends React.Component {
         this.props.onDeauthenticate()
     }
 
-    handleOldVersion = () => {
-        Object.assign(document.createElement('a'), { target: '_blank', href: `${process.env['OLD_APP_HOST']}`}).click();
-    }
-
     handleBilling = () => {
         Router.push(paths.billing().asUrl, paths.billing().asUrl, { shallow: true })
     }
@@ -84,11 +80,6 @@ class Navbar extends React.Component {
             href: '#'
         },*/
         {
-            label: 'Versão antiga',
-            href: '#',
-            onClick: this.handleOldVersion
-        },
-        {
             label: strings['pt-br']['headerCompanyLabel'],
             href: '#',
             onClick: this.handleCompany
@@ -117,11 +108,6 @@ class Navbar extends React.Component {
             label: strings['pt-br']['headerRefferalLabel'],
             href: '#'
         },*/
-        {
-            label: 'Versão antiga',
-            href: '#',
-            onClick: this.handleOldVersion
-        },
         /*{
             label: strings['pt-br']['headerChangeDataLabel'],
             href: '#'

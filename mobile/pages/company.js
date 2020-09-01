@@ -1,4 +1,6 @@
 import React from 'react'
+import { View } from 'react-native'
+import { withAuthenticationContext } from '../contexts'
 import { Layout, Company } from '@shared/components'
 
 /**
@@ -12,13 +14,11 @@ class CompanyPage extends React.Component {
 
     render = () => {
         return (
-            <Layout title={'Empresa'}>
+            <Layout setIsAuthenticated={this.props.authenticationContext.setIsAuthenticated}>
                 <Company/>
             </Layout>
         )
     }
-
-    
 }
 
-export default CompanyPage
+export default withAuthenticationContext(CompanyPage)

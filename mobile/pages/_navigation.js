@@ -112,7 +112,6 @@ export const handleNavigation = (links, isAuthenticated) => {
             const parameters = Object.assign(params, parsedLink.queryParams)
             const root = pathData.asReactNavigationPath.root
             const nested = destructureNestedAndConstructAppendingParams(pathData.asReactNavigationPath.nested || {}, parameters)
-            console.log(parameters)
             if (pathData.loginOnly && isAuthenticated || !pathData.loginOnly && !isAuthenticated) {
                 navigationRef.current.navigate(root)
                 // we actually use this to prevent a small bug from happening

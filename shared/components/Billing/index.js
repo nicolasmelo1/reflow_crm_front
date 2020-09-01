@@ -183,6 +183,7 @@ class Billing extends React.Component {
             }
         })
     }
+    
     /**
      * This method is called when the user clicks `save` in the button. With this we actually check if the user has selected the credit_card
      * paymentType or not.
