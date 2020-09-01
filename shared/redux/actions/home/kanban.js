@@ -172,7 +172,7 @@ const onGetKanbanData = (source, params, formName, columnName = null) => {
         agent.websocket.KANBAN.recieveDataUpdated({
             formName: formName,
             callback: (data) => {
-                makeDelay(() => {
+                if (data && data.user_id) {
                     const filterParams = getState().home.filter
                     const params = {
                         search_field: filterParams.search_field,
@@ -182,7 +182,19 @@ const onGetKanbanData = (source, params, formName, columnName = null) => {
                     try{ 
                         getKanbanData(dispatch, source, getState(), params, formName, null)
                     } catch {}
-                })
+                } else {
+                    makeDelay(() => {
+                        const filterParams = getState().home.filter
+                        const params = {
+                            search_field: filterParams.search_field,
+                            search_value: filterParams.search_value,
+                            search_exact: filterParams.search_exact
+                        }
+                        try{ 
+                            getKanbanData(dispatch, source, getState(), params, formName, null)
+                        } catch {}
+                    })
+                }
             }
         })
         return getKanbanData(dispatch, source, getState(), params, formName, columnName)

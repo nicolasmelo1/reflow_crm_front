@@ -37,7 +37,7 @@ const onGetListingData = (source, params, formName) => {
         agent.websocket.LISTING.recieveDataUpdated({
             formName: formName,
             callback: (data) => {
-                makeDelay(() => {
+                if (data && data.user_id) {
                     const filterParams = getState().home.filter
                     const params = {
                         ...filterParams,
@@ -46,7 +46,18 @@ const onGetListingData = (source, params, formName) => {
                     try {
                         getListingData(dispatch, source, getState(), params, formName)
                     } catch {}
-                })
+                } else {
+                    makeDelay(() => {
+                        const filterParams = getState().home.filter
+                        const params = {
+                            ...filterParams,
+                            page: 1
+                        }
+                        try {
+                            getListingData(dispatch, source, getState(), params, formName)
+                        } catch {}
+                    })
+                }
             }
         })
         return await getListingData(dispatch, source, getState(), params, formName)

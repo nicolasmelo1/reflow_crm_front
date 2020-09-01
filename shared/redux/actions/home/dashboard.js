@@ -26,7 +26,7 @@ const onGetDashboardCharts = (source, formName, params) => {
         agent.websocket.DASHBOARD.recieveDataUpdated({
             formName: formName,
             callback: (data) => {
-                makeDelay(() => {
+                if (data && data.user_id) {
                     const filterParams = getState().home.filter
                     const updateDateParams = getState().home.dashboard.updateDates
                     const params = {
@@ -37,7 +37,20 @@ const onGetDashboardCharts = (source, formName, params) => {
                         search_exact: filterParams.search_exact
                     }
                     getAndDispatchDashboardCharts(dispatch, source, formName, params)
-                })
+                } else {
+                    makeDelay(() => {
+                        const filterParams = getState().home.filter
+                        const updateDateParams = getState().home.dashboard.updateDates
+                        const params = {
+                            to_date: updateDateParams.endDate,
+                            from_date: updateDateParams.startDate,
+                            search_field: filterParams.search_field,
+                            search_value: filterParams.search_value,
+                            search_exact: filterParams.search_exact
+                        }
+                        getAndDispatchDashboardCharts(dispatch, source, formName, params)
+                    })
+                }
             }
         })
         return getAndDispatchDashboardCharts(dispatch, source, formName, params)
