@@ -1,4 +1,4 @@
-import { SET_COMPANY } from '../types'
+import { SET_COMPANY, SET_UPDATE_COMPANY } from '../types'
 import agent from '../../utils/agent'
  
 
@@ -36,6 +36,17 @@ const onGetCompanyData = (source) => {
     }
 }
 
+const onGetCompanyUpdateData = (source) => {
+    return (dispatch) => {
+        return agent.http.COMPANY.getCompanySettingsData(source).then(response => {
+            if (response && response.status === 200) {
+                dispatch({ type:SET_UPDATE_COMPANY, payload: response.data.data })
+            }
+        })
+    }
+}
+
 export default {
-    onGetCompanyData
+    onGetCompanyData,
+    onGetCompanyUpdateData
 }

@@ -4,6 +4,7 @@ const errors = (lang, key) => {
     return {
         incorrect_pass_or_user: strings[lang]['loginIncorrectPassOrUserError'],
         required_field: strings[lang]['formularyRequiredFieldError'],
+        could_not_upload: strings[lang]['formularyCouldNotUploadFieldError'],
         invalid_file: strings[lang]['formularyInvalidFileError'],
         already_exists: strings[lang]['formularyUniqueFieldError'],
         invalid_variable: strings[lang]['notificationConfigurationFormInvalidVariableError'],

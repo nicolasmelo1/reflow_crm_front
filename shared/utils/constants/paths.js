@@ -132,6 +132,20 @@ const paths = {
                 }
             }
         }
+    },
+    company() {
+        return {
+            asUrl: '/settings/company',
+            adminOnly: true,
+            webOnly: false,
+            loginOnly: true,
+            asReactNavigationPath: {
+                root: 'configurations',
+                nested: {
+                    screen: 'company'
+                }
+            }
+        }
     }
 }
 

@@ -149,6 +149,8 @@ const Fields = (props) => {
                     return values.filter(value => props.errors.data.includes(value.value)) !== 0
                 case 'invalid_file':
                     return values.filter(value => props.errors.data.includes(value.value)) !== 0
+                case 'could_not_upload':
+                    return true
                 default:
                     return false
             }

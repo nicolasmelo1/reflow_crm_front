@@ -1,6 +1,7 @@
 export const AUTHENTICATE = 'AUTHENTICATE'
 export const SET_USER = 'SET_USER'
 export const SET_COMPANY = 'SET_COMPANY'
+export const SET_UPDATE_COMPANY = 'SET_UPDATE_COMPANY'
 export const SET_PRIMARY_FORM = 'SET_PRIMARY_FORM'
 export const DATA_TYPES = 'DATA_TYPES'
 export const SET_TYPES = 'SET_TYPES'

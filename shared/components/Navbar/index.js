@@ -57,7 +57,7 @@ class Navbar extends React.Component {
     }
 
     handleCompany = () => {
-        Object.assign(document.createElement('a'), { target: '_blank', href: `${process.env['OLD_APP_HOST']}${this.props.login.companyId}/settings/company/`}).click();
+        Router.push(paths.company().asUrl, paths.company().asUrl, { shallow: true })
     }
 
     freeTrialRemainingDays = () => {

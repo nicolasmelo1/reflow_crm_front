@@ -1,22 +1,24 @@
 import React from 'react'
-import { Layout, Users } from '@shared/components'
+import { Layout, Company } from '@shared/components'
 
 /**
  * {Description of your component, what does it do}
  * @param {Type} props - {go in detail about every prop it recieves}
  */
-class UsersPage extends React.Component {
+class CompanyPage extends React.Component {
     constructor(props) {
         super(props)
     }
 
     render = () => {
         return (
-            <Layout title={'Usuários'}>
-                <Users/>
+            <Layout title={'Companhias'}>
+                <Company/>
             </Layout>
         )
     }
+
+    
 }
 
-export default UsersPage
+export default CompanyPage

@@ -119,6 +119,7 @@ const strings = {
         formularyFieldAttachmentAlertTitle: 'Alerta',
         formularyFieldAttachmentAlertContent: 'Você já adicionou esse arquivo.',
         formularyRequiredFieldError: 'Este campo é obrigatório',
+        formularyCouldNotUploadFieldError: 'Não conseguimos fazer o upload de um dos arquivos, tente novamente mais tarde',
         formularyInvalidFileError: 'O tipo de arquivo não é suportado, aceitamos apenas .doc, .docx, .jpeg, .jpg, .pdf, .png, .wav, .xls, .xlsx, .zip',
         formularyUniqueFieldError: 'Os valores deste campo são unicos, tente inserir outro valor',
         formularyFormFieldAddNewButtonLabel: 'Adicionar novo',
