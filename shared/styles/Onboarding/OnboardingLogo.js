@@ -9,7 +9,8 @@ styled.img`
     margin-bottom: 20px; 
     opacity: ${props => props.showLogo ? '1 !important': '0 !important'};
     transition: top 1s ease-in-out, opacity 0.9s ease-in-out;
-    max-width: 30%;
+    width: 30%;
+    max-width: 200px;
 
     @media(min-height: 711px) {
         top: ${props => props.slideLogo ? '10px': '48%'};

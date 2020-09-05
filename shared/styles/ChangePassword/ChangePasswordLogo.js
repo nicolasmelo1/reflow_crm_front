@@ -7,7 +7,8 @@ styled.img`
     position: absolute;
     display: block;
     margin-bottom: 20px; 
-    max-width: 30%;
+    width: 30%;
+    max-width: 200px;
     top: 10px;
 `
 :
