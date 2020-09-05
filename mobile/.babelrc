@@ -1,5 +1,5 @@
 {
-    "presets": ["babel-preset-expo", "@babel/preset-react"],
+    "presets": ["@expo/next-adapter/babel","babel-preset-expo", "@babel/preset-react"],
     "plugins": [
         [
             "module-resolver", 

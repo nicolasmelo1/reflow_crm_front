@@ -256,6 +256,8 @@ const strings = {
         dashboardConfigurationFormNumberFormatSelectorLabel: 'Formatação de número',
         dashboardConfigurationFormPreviewTitleLabel: 'Preview',
         dashboardConfigurationFormSaveButtonLabel: 'Salvar',
+        companyConfigurationFormularyLogoFieldLabel: 'Logo da Empresa',
+        companyConfigurationFormularyLogoHelperFieldLabel: 'Clique para inserir uma imagem',
         companyConfigurationFormularyNameFieldLabel: 'Nome da empresa',
         companyConfigurationFormularyInvalidNameError: 'O nome da companhia não é válido',
         companyConfigurationFormularySaveButtonLabel: 'Salvar',

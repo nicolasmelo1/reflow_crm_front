@@ -1,11 +1,9 @@
 import { API_ROOT, getToken } from './utils'
 import http from './http'
 import isEqual from '../isEqual'
+import { AsyncStorage, AppState } from 'react-native'
 
-
-let registeredSocket = null
-let callbacks = []  
-let registering = false
+let connections = 0
 
 /**
  * This function works like a singleton for the websocket, you can have just ONE websocket running 
@@ -20,23 +18,51 @@ let registering = false
  * 
  * This exposes 3 methods: addCallback, getSocket, send
  */
-const socket = () => {
-    const domain = API_ROOT.replace('http://', 'ws://').replace('https://', 'wss://')
+class Socket {
+    static instance = null
 
+    domain = API_ROOT.replace('http://', 'ws://').replace('https://', 'wss://')
+    registeredSocket = null
+    callbacks = []  
+    registeredCallbacks = []
+    registering = false
+
+    /*constructor() {
+        if (!this.registeredSocket && !this.registering) {
+            this.registering = true
+            this.connect()
+            console.log(`connections: ${connections}`)
+        }
+    }*/
+
+    static getInstance() {
+        // socket is a function, when you run this function it automatically connects to the server because
+        // `registeredSocket` is null and it is not `registering` anything
+        if (Socket.instance == null) {
+            Socket.instance = new Socket()
+            if (!Socket.instance.registeredSocket && !Socket.instance.registering) {
+                Socket.instance.registering = true
+                Socket.instance.connect()
+            }
+        }
+
+        return this.instance
+    }
+    
     /**
      * Gets the url to connect to the websocket. If the user is logged (so the token is not empty and is defined)
      * the url will contain a query parameter with the token.
      * 
      * Otherwise no query param will be added on the url to make the connection.
      */
-    async function getUrl() {
+    async getUrl() {
         let token = await getToken()
         if (token && token !== '') {
             await http.LOGIN.testToken()
             token = await getToken()
-            return domain + `websocket/?token=${token}`
+            return this.domain + `websocket/?token=${token}`
         } else {
-            return domain + `websocket/`
+            return this.domain + `websocket/`
         }
     }
 
@@ -46,9 +72,9 @@ const socket = () => {
      * 
      * @param {Function} callbackFunction - The function that you want to check if exists in the array of callbacks.
      */
-    function callbacksArrayContainsCallback(callbackFunction) {
-        for (let i = 0; i < callbacks.length; i++) {
-            if (isEqual(callbacks[i], callbackFunction)) {
+    callbacksArrayContainsCallback(callbackFunction) {
+        for (let i = 0; i < this.callbacks.length; i++) {
+            if (isEqual(this.callbacks[i], callbackFunction)) {
                 return i
             }
         }
@@ -63,10 +89,20 @@ const socket = () => {
      * It's important to notice that we ALWAYS send `data` as an argument also. And that the argument
      * to the callback function is actually an object.
      */
-    function onRecieve() {
-        callbacks.forEach(({callback, argument }) => {
-            registeredSocket.addEventListener("message", (e) => callback({ data: JSON.parse(e.data), ...argument}))
-        })
+    onRecieve() {
+        if (this.registeredSocket) {
+            this.callbacks.forEach(({ callback, argument }) => {
+                if (process.env['APP'] === 'web') {
+                    this.registeredSocket.addEventListener("message", (e) => {
+                        callback({ data: JSON.parse(e.data), ...argument})
+                    })
+                } else {
+                    this.registeredSocket.onmessage = (e) => {
+                        callback({ data: JSON.parse(e.data), ...argument})
+                    }
+                }
+            })
+        }
     }
 
     /**
@@ -81,83 +117,81 @@ const socket = () => {
      * @param {Function} callback - The function that you want to run when a new message is recieved.
      * @param {Object} argument - The arguments that you will pass to the callback function when a new message is recieved.
      */
-    function addCallback(callback, argument={}) {
+    addCallback(callback, argument={}) {
         const callbackObject = {
             callback,
             argument
         }
-        const callbackIndex = callbacksArrayContainsCallback(callbackObject)
+        const callbackIndex = this.callbacksArrayContainsCallback(callbackObject)
         if (callbackIndex !== -1) {
-            callbacks.splice(callbackIndex, 1)
+            this.callbacks.splice(callbackIndex, 1)
         }
-        callbacks.push(callbackObject)
-        if (registeredSocket) {
-            registeredSocket.addEventListener("message", (e) => callback({ data: JSON.parse(e.data), ...argument}))
-        }
+        this.callbacks.push(callbackObject)
+        this.onRecieve()
     }
 
-    /**
-     * Handy function to get the registered websocket.
-     */
-    function getSocket() {
-        return registeredSocket
-    }
 
     /**
      * Register the onclose event listener on the socket.
      */
-    function onClose() {
-        registeredSocket.onclose = (e) => {
+    onClose() {
+        this.registeredSocket.onclose = (e) => {
             if (process.env.NODE_ENV !== 'production') console.log('Websocket disconnected, retrying...')
             if (e.code === 1000) {
-                callbacks = []
+                this.callbacks = []
             }
-            reconnect()
+            this.reconnect()
         }
     }
 
-    /**
+     /**
      * Tries to reconnect to the server when the connection is closed. It waits 10 seconds for every
      * try.
      */
-    async function reconnect() {
-        registeredSocket = new WebSocket(await getUrl())
+    async reconnect() {
+        this.registeredSocket = new WebSocket(await this.getUrl())
 
         setTimeout(() => {
-            if (registeredSocket.readyState !== 1) {
+            if (this.registeredSocket.readyState !== 1) {
                 if (process.env.NODE_ENV !== 'production') console.log('Could not connect to server, trying again...')
-                registeredSocket.close()
-                reconnect()
+                this.registeredSocket.close()
+                this.reconnect()
             } else {
                 if (process.env.NODE_ENV !== 'production') console.log('Reconnected.')
-                onClose()
-                onRecieve()
+                connections ++
+                this.onClose()
+                this.onRecieve()
+                this.appStateChanged()
             }
         }, 10000);
     }
 
-    async function connect() {
-        registeredSocket = new WebSocket(await getUrl())
-        onClose()
-        onRecieve()
+    async connect() {
+        if (!this.registeredSocket) {
+            this.registeredSocket = new WebSocket(await this.getUrl())
+            this.onClose()
+            this.onRecieve()
+            this.appStateChanged()
+        }
     }
 
-    const send = (data={}) => {
-        registeredSocket.send(JSON.stringify(data))
+    /**
+     * MOBILE ONLY. When the user closes the app on mobile, it disconnects from the 
+     */
+    appStateChanged() {
+        if (process.env['APP'] !== 'web') {
+            AppState.addEventListener("change", (e) => {
+                if (this.registeredSocket) {
+                    this.registeredSocket.close()
+                }
+            })
+        }
     }
 
-    // socket is a function, when you run this function it automatically connects to the server because
-    // `registeredSocket` is null and it is not `registering` anything
-    if (!registeredSocket && !registering) {
-        registering = true
-        connect()
-    }
-
-    return {
-        addCallback,
-        getSocket,
-        send
+    send = (data={}) => {
+        this.registeredSocket.send(JSON.stringify(data))
     }
 }
 
-export default socket
+
+export default Socket

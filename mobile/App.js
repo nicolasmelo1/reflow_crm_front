@@ -1,4 +1,5 @@
 
+import './globals'
 import React, { useState, useEffect } from 'react'
 import { Provider } from 'react-redux'
 import Main from './pages/_main'

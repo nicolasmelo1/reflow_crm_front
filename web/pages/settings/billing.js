@@ -1,6 +1,7 @@
 import React from 'react'
 import { View } from 'react-native'
 import { Layout, Billing } from '@shared/components'
+import Header from '../../components/Header'
 
 /**
  * {Description of your component, what does it do}
@@ -14,6 +15,7 @@ class BillingPage extends React.Component {
     render = () => {
         return (
             <Layout title={'Pagamento'}>
+                <Header title={'Pagamento'}/>
                 <Billing/>
             </Layout>
         )

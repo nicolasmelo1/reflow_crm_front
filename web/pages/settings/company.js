@@ -1,5 +1,6 @@
 import React from 'react'
 import { Layout, Company } from '@shared/components'
+import Header from '../../components/Header'
 
 /**
  * {Description of your component, what does it do}
@@ -12,7 +13,8 @@ class CompanyPage extends React.Component {
 
     render = () => {
         return (
-            <Layout title={'Empresa'}>
+            <Layout>
+                <Header title={'Empresa'}/>
                 <Company/>
             </Layout>
         )

@@ -1,9 +1,10 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { Row, Col } from 'react-bootstrap';
+import { connect } from 'react-redux'
+import { Row, Col } from 'react-bootstrap'
 import Router, { withRouter } from 'next/router'
-import actions from '@shared/redux/actions';
-import { Layout, Formulary, Listing, Kanban, Error404, Dashboard } from '@shared/components';
+import actions from '@shared/redux/actions'
+import Header from '../../components/Header'
+import { Layout, Formulary, Listing, Kanban, Error404, Dashboard } from '@shared/components'
 import { DataTypeHeaderAnchor, DataTypeHeaderContainer } from '@shared/styles/Data'
 import { strings, types, paths } from '@shared/utils/constants';
 
@@ -154,6 +155,7 @@ class Data extends React.Component {
         const title = (currentForm.length > 0) ? strings['pt-br']['managementPageTitle'].replace('{}', currentForm[0].label) : 'Não conseguimos encontrar a página / Reflow'
         return (
             <Layout title={title} showSideBar={true}>
+                <Header title={title}/>
                 {!formNames.map(form=> form.name).includes(this.props.router.query.form) ? (
                     <Error404/>
                 ) : (

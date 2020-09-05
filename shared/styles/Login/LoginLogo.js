@@ -20,7 +20,7 @@ const Logo = (props) => {
                 easing: Easing.ease,
                 useNativeDrive: true
             })
-        ]).start()
+        ], {useNativeDriver: true}).start()
     }, [])
   
     return (
@@ -44,7 +44,8 @@ styled.img`
     position: absolute;
     display: block;
     margin-bottom: 20px; 
-    max-width: 30%;
+    width: 30%;
+    max-width: 200px;
     opacity: ${props => props.showLogo ? '1 !important': '0 !important'};
     transform: ${props => props.slideLogo ? 'translateY(-235px)': 'translateY(0px)'};
     transition: transform 1s ease-in-out, opacity 0.9s ease-in-out;

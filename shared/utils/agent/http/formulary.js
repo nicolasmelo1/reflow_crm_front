@@ -11,14 +11,14 @@ const FORMULARY = {
         return await requests.get(`formulary/${companyId}/${formName}/`, {}, {}, source)
     },
     createFormularyData: async (body, files, formName) => {
-        return await requests.post(`data/${companyId}/${formName}/`, formEncodeData('data', body, files), {'Content-Type': 'multipart/form-data'})
+        return await requests.post(`data/${companyId}/${formName}/`, formEncodeData(`[data]`, body, files), {'Content-Type': 'multipart/form-data'})
     },
     getFormularyData: async (source, formName, formId) => {
         return await requests.get(`data/${companyId}/${formName}/${formId}/`, {}, {}, source)
     },
     updateFormularyData: async (body, files, formName, formId, duplicate=null) => {
         const duplicateUrl = (duplicate) ? '?duplicate=duplicate' : ''
-        return await requests.post(`data/${companyId}/${formName}/${formId}/${duplicateUrl}`, formEncodeData('data', body, files), {'Content-Type': 'multipart/form-data'})
+        return await requests.post(`data/${companyId}/${formName}/${formId}/${duplicateUrl}`, formEncodeData(`[data]`, body, files), {'Content-Type': 'multipart/form-data'})
     },
     getFormularyFormFieldOptions: async (source, formName, fieldId) => {
         return await requests.get(`formulary/${companyId}/${formName}/${fieldId}/form/options/`, {}, {}, source)

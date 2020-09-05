@@ -1,5 +1,6 @@
 import React from 'react'
 import { Layout, Users } from '@shared/components'
+import Header from '../../components/Header'
 
 /**
  * {Description of your component, what does it do}
@@ -12,7 +13,8 @@ class UsersPage extends React.Component {
 
     render = () => {
         return (
-            <Layout title={'Usuários'}>
+            <Layout>
+                <Header title={'Usuários'}/>
                 <Users/>
             </Layout>
         )

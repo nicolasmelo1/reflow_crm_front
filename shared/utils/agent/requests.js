@@ -117,7 +117,7 @@ const requests = {
     post: async (url, body, headers = {}) => {
         try {
             return await axios.post(`${API_ROOT}${url}`, body, { 
-                headers: Object.assign(setHeader(await getToken()), headers) 
+                headers: Object.assign(setHeader(await getToken()), headers),
             })
         }
         catch (exception) {

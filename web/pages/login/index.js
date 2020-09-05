@@ -2,6 +2,7 @@ import React from 'react'
 import Login from '@shared/components/Login'
 import Layout from '@shared/components/Layout'
 import { strings } from '@shared/utils/constants'
+import Header from '../../components/Header'
 
 class LoginPage extends React.Component {
     constructor(props) {
@@ -15,7 +16,8 @@ class LoginPage extends React.Component {
 
     render() {
         return (
-            <Layout addTemplates={this.state.addTemplates} title={strings['pt-br']['loginPageTitle']} hideNavBar={true} isNotLogged={true}>
+            <Layout addTemplates={this.state.addTemplates} hideNavBar={true} isNotLogged={true}>
+                <Header title={strings['pt-br']['loginPageTitle']}/>
                 <Login setAddTemplates={this.setAddTemplates}/>
             </Layout>
         );

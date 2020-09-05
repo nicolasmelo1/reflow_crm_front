@@ -1,4 +1,5 @@
 import React from 'react'
+import Header from '../../components/Header'
 import ChangePassword from '@shared/components/ChangePassword'
 import Layout from '@shared/components/Layout'
 import { withRouter } from 'next/router'
@@ -11,7 +12,8 @@ class ChangePasswordPage extends React.Component {
 
     render() {
         return (
-            <Layout title={strings['pt-br']['changePasswordPageTitle']} hideNavBar={true} isNotLogged={true}>
+            <Layout hideNavBar={true} isNotLogged={true}>
+                <Header title={strings['pt-br']['changePasswordPageTitle']}/>
                 <ChangePassword temporaryPassword={this.props.router?.query?.temp_pass}/>
             </Layout>
         )

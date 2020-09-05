@@ -5,11 +5,11 @@ export default process.env['APP'] === 'web' ?
 styled.div`
     padding: 10px;
     position: relative;
-    @media(max-width: 564px) {
+    @media(max-width: 723px) {
         display: block;
         text-align: center;
     }
-    @media(min-width: 565px) {
+    @media(min-width: 724px) {
         float: left;
     }
 `

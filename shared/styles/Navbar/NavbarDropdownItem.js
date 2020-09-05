@@ -13,7 +13,7 @@ styled.a`
         color: #0dbf7e
     }
 
-    @media(max-width: 564px) {
+    @media(max-width: 723px) {
         display: block;
         width: 100%;
         text-align: center;
@@ -23,7 +23,7 @@ styled.a`
             border-top: 1px solid #fff;
         }
     }
-    @media(min-width: 565px) {
+    @media(min-width: 724px) {
         border-bottom: 1px solid #f2f2f2;
         float: none;
     }

@@ -4,6 +4,7 @@ const initialState = {
     id: null, 
     endpoint: '',
     name: '',
+    logo_url: '',
     is_active: true, 
     is_supercompany: false, 
     is_paying_company: false,
@@ -11,7 +12,8 @@ const initialState = {
     created_at: null,
     update: {
         name: '',
-        endpoint: ''
+        endpoint: '',
+        logo_url: ''
     }
 }
 
@@ -19,15 +21,8 @@ const companyReducer = (state=initialState, action) => {
     switch (action.type) {
         case SET_COMPANY:
             return {
-                id: action.payload.id, 
-                endpoint: action.payload.endpoint,
-                name: action.payload.name,
-                is_active: action.payload.is_active, 
-                is_supercompany: action.payload.is_supercompany, 
-                is_paying_company: action.payload.is_paying_company,
-                free_trial_days: action.payload.free_trial_days,
-                created_at: action.payload.created_at,
-                ...state
+                ...state,
+                ...action.payload
             }
         case SET_UPDATE_COMPANY:
             return {

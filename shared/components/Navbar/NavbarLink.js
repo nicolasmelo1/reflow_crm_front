@@ -2,6 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 import { NavbarLinkIcon, NavbarLinkLabel, NavbarLinkAnchor, NavbarLinkIconContainer } from '../../styles/Navbar'
 
+
 const NavbarLink = (props) => {
     return (
         <Link href={props.slug ? props.slug : props.link} as={props.link} passHref>

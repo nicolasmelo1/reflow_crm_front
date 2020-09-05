@@ -6,12 +6,12 @@ styled.div`
     float: none;
     margin-top: 5px;
 
-    @media(max-width: 564px) {
+    @media(max-width: 723px) {
         display: block;
         text-align: center;
         width: 100%;
     }
-    @media(min-width: 565px) {
+    @media(min-width: 724px) {
         background-color: #fff;
         box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.2);
         margin-left: 5px;

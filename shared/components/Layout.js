@@ -3,7 +3,6 @@ import Router from 'next/router';
 import { connect } from 'react-redux';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { AsyncStorage, TouchableWithoutFeedback, Keyboard, SafeAreaView, Platform, View } from 'react-native'
-import Header from './Header'
 import Sidebar from './Sidebar'
 import Navbar from './Navbar'
 import Notify from './Notify'
@@ -226,10 +225,8 @@ class Layout extends React.Component {
     renderWeb = () => {
         return (
             <div>
-                <Header title={this.props.title}/>
                 {this.state.tokenLoaded ? (
-                    <Body>
-                        
+                    <Body>   
                         <Notify/> 
                         {(this.state.addTemplates || this.props.addTemplates) && isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user) ? (
                             <Templates setAddTemplates={this.setAddTemplates}/>

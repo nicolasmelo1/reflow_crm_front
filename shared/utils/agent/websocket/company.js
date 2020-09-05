@@ -1,12 +1,12 @@
-import socket from '../socket'
+import Socket from '../socket'
 
 const COMPANY = {
-    recieveBillingUpdated: async ({data, callback, companyId}) => {
-        if (data && data.type === 'send_billing_was_updated' && companyId === data.data.company_id) {
+    recieveCompanyUpdated: async ({data, callback, companyId}) => {
+        if (data && ['send_company_was_updated', 'send_billing_was_updated'].includes(data.type) && companyId === data.data.company_id) {
             return callback(data)
         } else {
-            const websocket = socket()
-            websocket.addCallback(COMPANY.recieveBillingUpdated, {callback, companyId})
+            const websocket = Socket.getInstance()
+            websocket.addCallback(COMPANY.recieveCompanyUpdated, {callback, companyId})
         }
     }
 }

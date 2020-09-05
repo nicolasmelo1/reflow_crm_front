@@ -12,6 +12,7 @@ const getAndDispatchCompanyData = (dispatch, source) => {
                 is_active: response.data.data.is_active, 
                 is_supercompany: response.data.data.billing_company.is_supercompany, 
                 is_paying_company: response.data.data.billing_company.is_paying_company,
+                logo_url: response.data.data.logo_url,
                 free_trial_days: response.data.data.free_trial_days,
                 created_at: response.data.data.created_at
             }
@@ -25,7 +26,7 @@ const onGetCompanyData = (source) => {
     return (dispatch) => {
         return getAndDispatchCompanyData(dispatch, source).then(response=> {
             if (response && response.status === 200) {
-                agent.websocket.COMPANY.recieveBillingUpdated({
+                agent.websocket.COMPANY.recieveCompanyUpdated({
                     companyId: response.data.data.id,
                     callback: (data) => {
                         getAndDispatchCompanyData(dispatch, source)                  
@@ -52,9 +53,13 @@ const onChangeCompanyUpdateDataState = (data) => {
     }
 }
 
-const onUpdateCompanyUpdateData = (body) => {
+const onUpdateCompanyUpdateData = (body, logoFile=null) => {
     return (_) => {
-        return agent.http.COMPANY.updateCompanySettingsData(body)
+        let fileToUpload = []
+        if (logoFile) {
+            fileToUpload.push(logoFile)
+        }
+        return agent.http.COMPANY.updateCompanySettingsData(body, fileToUpload)
     } 
 }
 

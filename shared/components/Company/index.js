@@ -1,5 +1,5 @@
 import React from 'react'
-import { ActivityIndicator } from 'react-native'
+import { ActivityIndicator, TouchableOpacity } from 'react-native'
 import axios from 'axios'
 import { Spinner } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
@@ -13,28 +13,36 @@ import {
     CompanyFormularyFieldLabel,
     CompanyFormularyFieldError,
     CompanyFormularySaveButton,
-    CompanyFormularySaveButtonText
+    CompanyFormularySaveButtonText,
+    CompanyFormularyLogoContainer,
+    CompanyFormularyLogoHelperLabel,
+    CompanyFormularyLogo
 } from '../../styles/Company'
 
 /**
  * This component is responsible for editing companies. It's actually really simple right now since
  * we don't have many company related logic and fields.
+ * 
+ * @param {Function} pickImage - (MOBILE ONLY) - Opens the picker so the user can select a image from his device.
  */
 class Company extends React.Component {
     constructor(props) {
         super(props)
         this.cancelToken = axios.CancelToken
         this.source = null
+        this.companyLogoRef = React.createRef()
         this.errorMessages = {
             name: strings['pt-br']['companyConfigurationFormularyInvalidNameError']
         }
         this.state = {
             showAllGoodIcon: false,
             isSubmitting: false,
+            logoFile: null,
             errors: {}
         }
     }
 
+    setLogoFile = (fileName, file) => this.setState(state => ({...state, logoFile: { name: fileName, file: file }}))
     setShowAllGoodIcon = (data) => this.setState(state => ({...state, showAllGoodIcon: data }))
     setErrors = (data) => {this.setState(state => ({...state, errors: data}))}
     setIsSubmitting = (data) => this.setState(state => ({...state, isSubmitting: data}))
@@ -85,10 +93,49 @@ class Company extends React.Component {
      */
     onChangeCompanyName = (name) => {
         this.onValidate('name', name)
-        const data = {
-            name: name
+        this.props.company.name = name
+        this.props.onChangeCompanyUpdateDataState({...this.props.company})
+    }
+
+    /** 
+     * Changes the file of the logo so we can send it to the backend.
+     * 
+     * @param {Array<Blob>} files - Array of files recieved from the input
+     */
+    onChangeCompanyLogo = async (files) => {
+        if (process.env['APP'] === 'web') {
+            const reader = new FileReader()
+        
+            reader.onload = (e) => {
+                this.companyLogoRef.current.src = e.target.result
+            }
+            
+            reader.readAsDataURL(files[0])
+            
+            this.setLogoFile(files[0].name, files[0])
+        } else if (files.length > 0 && files[0] !== null) {
+            const filename = files[0].split('/').pop();
+          
+            // Infer the type of the image
+            const match = /\.(\w+)$/.exec(filename);
+            const type = match ? `image/${match[1]}` : `image`;
+            const file = { uri: files[0], name: filename, type }
+            this.setLogoFile(filename, file)
         }
-        this.props.onChangeCompanyUpdateDataState(data)
+    }
+
+    /**
+     * Gets what image to render in the image field for the user. If he has selected a image, needs to show the preview.
+     * If he has a image saved, renders the url recieved, otherwise render a default image.
+     */
+    getImageToRender = () => {
+        if (this.state.logoFile) {
+            return process.env['APP'] === 'web' ? this.state.logoFile.file : { uri: this.state.logoFile.file.uri }
+        } if (!['', null].includes(this.props.company.logo_url)) {
+            return process.env['APP'] === 'web' ?  this.props.company.logo_url : { uri: this.props.company.logo_url }
+        } else {
+            return process.env['APP'] === 'web' ? '/no_company_logo.png' : require('../../../mobile/assets/no_company_logo.png')
+        }
     }
 
     /**
@@ -97,8 +144,11 @@ class Company extends React.Component {
      * `onSubmit` method works also.
      */
     onSubmit = () => {
+        const data = {
+            name: this.props.company.name
+        }
         this.setIsSubmitting(true)
-        this.props.onUpdateCompanyUpdateData(this.props.company).then(response => {
+        this.props.onUpdateCompanyUpdateData(data, this.state.logoFile).then(response => {
             if (response && response.status === 200) {
                 this.setShowAllGoodIcon(true)
                 setTimeout(() => {
@@ -106,7 +156,7 @@ class Company extends React.Component {
                         this.setShowAllGoodIcon(false)
                     }
                 }, 1000)
-            } else if(response) {
+            } else if(response && response.data?.error) {
                 const errorKeys = Array.from(Object.keys(response.data.error))
                 if (errorKeys.includes('name')) {
                     this.state.errors['name'] = this.errorMessages['name']
@@ -137,6 +187,14 @@ class Company extends React.Component {
             <CompanyFormularyContainer>
                 <CompanyFormularyFieldContainer>
                     <CompanyFormularyFieldLabel>
+                        {strings['pt-br']['companyConfigurationFormularyLogoFieldLabel']}
+                    </CompanyFormularyFieldLabel>
+                    <TouchableOpacity onPress={e=> this.props.pickImage().then(file=> this.onChangeCompanyLogo([file]))}>
+                        <CompanyFormularyLogo source={this.getImageToRender()}/>
+                    </TouchableOpacity>
+                </CompanyFormularyFieldContainer>
+                <CompanyFormularyFieldContainer>
+                    <CompanyFormularyFieldLabel>
                         {strings['pt-br']['companyConfigurationFormularyNameFieldLabel']}
                     </CompanyFormularyFieldLabel>
                     <CompanyFormularyFieldInput 
@@ -151,7 +209,9 @@ class Company extends React.Component {
                         </CompanyFormularyFieldError>
                     ) : null}
                 </CompanyFormularyFieldContainer>
-                <CompanyFormularySaveButton onPress={e=> this.state.isSubmitting ? null: this.onSubmit()}>
+                <CompanyFormularySaveButton onPress={e=> {
+                    this.state.isSubmitting ? null: this.onSubmit()
+                }}>
                     {this.state.isSubmitting ? (
                         <ActivityIndicator color="#17242D"/>
                     ) : this.state.showAllGoodIcon ? (
@@ -169,6 +229,20 @@ class Company extends React.Component {
     renderWeb = () => {
         return (
             <CompanyFormularyContainer>
+                <CompanyFormularyFieldContainer>
+                    <CompanyFormularyFieldLabel>
+                        {strings['pt-br']['companyConfigurationFormularyLogoFieldLabel']}
+                    </CompanyFormularyFieldLabel>
+                    <CompanyFormularyLogoContainer>
+                        {this.state.logoFile || !['', null].includes(this.props.company.logo_url) ? '' : (
+                            <CompanyFormularyLogoHelperLabel>
+                                {strings['pt-br']['companyConfigurationFormularyLogoHelperFieldLabel']}
+                            </CompanyFormularyLogoHelperLabel>
+                        )}
+                        <CompanyFormularyLogo ref={this.companyLogoRef} src={this.getImageToRender()}/>
+                        <input type="file" style={{display: 'none'}} onChange={e=>this.onChangeCompanyLogo(e.target.files)}/>
+                    </CompanyFormularyLogoContainer>
+                </CompanyFormularyFieldContainer>
                 <CompanyFormularyFieldContainer>
                     <CompanyFormularyFieldLabel>
                         {strings['pt-br']['companyConfigurationFormularyNameFieldLabel']}

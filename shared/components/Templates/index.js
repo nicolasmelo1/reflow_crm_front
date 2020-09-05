@@ -25,7 +25,10 @@ import {
 } from '../../styles/Templates'
 
 /**
- * This compnent is responsible for showing the templates to a user.
+ * This component is responsible for showing a list of templates to the user. The user NEVER creates templates from 0, he does not create groups.
+ * He needs to select from one of the already existing templates.
+ * 
+ * So this component is used to show the options of the templates the user can select.
  */
 class Templates extends React.Component {
     constructor(props) {

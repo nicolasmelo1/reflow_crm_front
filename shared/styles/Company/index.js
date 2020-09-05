@@ -5,7 +5,13 @@ import CompanyFormularyFieldLabel from './CompanyFormularyFieldLabel'
 import CompanyFormularyFieldError from './CompanyFormularyFieldError'
 import CompanyFormularySaveButton from './CompanyFormularySaveButton'
 import CompanyFormularySaveButtonText from './CompanyFormularySaveButtonText'
+import CompanyFormularyLogoContainer from './CompanyFormularyLogoContainer'
+import CompanyFormularyLogoHelperLabel from './CompanyFormularyLogoHelperLabel'
+import CompanyFormularyLogo from './CompanyFormularyLogo'
 
+export { CompanyFormularyLogo }
+export { CompanyFormularyLogoHelperLabel }
+export { CompanyFormularyLogoContainer }
 export { CompanyFormularySaveButtonText }
 export { CompanyFormularySaveButton }
 export { CompanyFormularyFieldError }
