@@ -1,7 +1,6 @@
 import { API_ROOT, getToken } from './utils'
 import http from './http'
 import isEqual from '../isEqual'
-import { AsyncStorage, AppState } from 'react-native'
 
 let connections = 0
 
@@ -40,6 +39,7 @@ class Socket {
         // `registeredSocket` is null and it is not `registering` anything
         if (Socket.instance == null) {
             Socket.instance = new Socket()
+    
             if (!Socket.instance.registeredSocket && !Socket.instance.registering) {
                 Socket.instance.registering = true
                 Socket.instance.connect()
@@ -92,14 +92,17 @@ class Socket {
     onRecieve() {
         if (this.registeredSocket) {
             this.callbacks.forEach(({ callback, argument }) => {
-                if (process.env['APP'] === 'web') {
-                    this.registeredSocket.addEventListener("message", (e) => {
-                        callback({ data: JSON.parse(e.data), ...argument})
-                    })
-                } else {
-                    this.registeredSocket.onmessage = (e) => {
-                        callback({ data: JSON.parse(e.data), ...argument})
+                if (!this.registeredCallbacks.includes(callback.toString())) {
+                    if (process.env['APP'] === 'web') {
+                        this.registeredSocket.addEventListener("message", (e) => {
+                            callback({ data: JSON.parse(e.data), ...argument})
+                        })
+                    } else {
+                        this.registeredSocket.onmessage = (e) => {
+                            callback({ data: JSON.parse(e.data), ...argument})
+                        }
                     }
+                    this.registeredCallbacks.push(callback.toString())
                 }
             })
         }
