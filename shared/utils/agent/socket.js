@@ -2,7 +2,6 @@ import { API_ROOT, getToken } from './utils'
 import http from './http'
 import isEqual from '../isEqual'
 
-let connections = 0
 
 /**
  * This function works like a singleton for the websocket, you can have just ONE websocket running 
@@ -142,6 +141,7 @@ class Socket {
             if (process.env.NODE_ENV !== 'production') console.log('Websocket disconnected, retrying...')
             if (e.code === 1000) {
                 this.callbacks = []
+                this.registeredCallbacks = []
             }
             this.reconnect()
         }
@@ -161,8 +161,8 @@ class Socket {
                 this.reconnect()
             } else {
                 if (process.env.NODE_ENV !== 'production') console.log('Reconnected.')
-                connections ++
                 this.onClose()
+                this.registeredCallbacks = []
                 this.onRecieve()
                 this.appStateChanged()
             }
