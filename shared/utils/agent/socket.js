@@ -1,7 +1,7 @@
 import { API_ROOT, getToken } from './utils'
 import http from './http'
 import isEqual from '../isEqual'
-
+import { AppState } from 'react-native'
 
 /**
  * This function works like a singleton for the websocket, you can have just ONE websocket running 
@@ -22,27 +22,18 @@ class Socket {
     domain = API_ROOT.replace('http://', 'ws://').replace('https://', 'wss://')
     registeredSocket = null
     callbacks = []  
-    registeredCallbacks = []
     registering = false
-
-    /*constructor() {
-        if (!this.registeredSocket && !this.registering) {
-            this.registering = true
-            this.connect()
-            console.log(`connections: ${connections}`)
-        }
-    }*/
 
     static getInstance() {
         // socket is a function, when you run this function it automatically connects to the server because
         // `registeredSocket` is null and it is not `registering` anything
         if (Socket.instance == null) {
             Socket.instance = new Socket()
-    
-            if (!Socket.instance.registeredSocket && !Socket.instance.registering) {
-                Socket.instance.registering = true
-                Socket.instance.connect()
-            }
+        }
+
+        if (!this.instance.registeredSocket && !this.instance.registering) {
+            this.instance.registering = true
+            this.instance.connect()
         }
 
         return this.instance
@@ -81,29 +72,25 @@ class Socket {
     }
 
     /**
-     * Adds the "message" event listener to the websocket for each callback registered callback.
+     * Adds the "onmessage" event listener to the websocket. We call each each registered callback
+     * whenever we recieve a messate.
+     * Use event listeners here wont work because we don't have any control of previously registered
+     * event listeners, it can lead to unexpected results. Calling everything once we recieve a new message
+     * makes it easier to debug and know what is happening.
+     * 
      * We need this on a separate function because when we lose the connection, we create a new 
      * websocket and then we need to register all of the event listeners to the websocket again. 
      * 
-     * It's important to notice that we ALWAYS send `data` as an argument also. And that the argument
+     * It's important to notice that we ALWAYS send `data` as an argument. And that the argument
      * to the callback function is actually an object.
      */
     onRecieve() {
-        if (this.registeredSocket) {
-            this.callbacks.forEach(({ callback, argument }) => {
-                if (!this.registeredCallbacks.includes(callback.toString())) {
-                    if (process.env['APP'] === 'web') {
-                        this.registeredSocket.addEventListener("message", (e) => {
-                            callback({ data: JSON.parse(e.data), ...argument})
-                        })
-                    } else {
-                        this.registeredSocket.onmessage = (e) => {
-                            callback({ data: JSON.parse(e.data), ...argument})
-                        }
-                    }
-                    this.registeredCallbacks.push(callback.toString())
-                }
-            })
+        if (this.registeredSocket !== null) {
+            this.registeredSocket.onmessage = (e) => {
+                this.callbacks.forEach(({ callback, argument }) => {
+                    callback({ data: JSON.parse(e.data), ...argument})
+                })
+            }
         }
     }
 
@@ -141,7 +128,6 @@ class Socket {
             if (process.env.NODE_ENV !== 'production') console.log('Websocket disconnected, retrying...')
             if (e.code === 1000) {
                 this.callbacks = []
-                this.registeredCallbacks = []
             }
             this.reconnect()
         }
@@ -162,7 +148,6 @@ class Socket {
             } else {
                 if (process.env.NODE_ENV !== 'production') console.log('Reconnected.')
                 this.onClose()
-                this.registeredCallbacks = []
                 this.onRecieve()
                 this.appStateChanged()
             }
@@ -170,7 +155,7 @@ class Socket {
     }
 
     async connect() {
-        if (!this.registeredSocket) {
+        if (this.registeredSocket === null) {
             this.registeredSocket = new WebSocket(await this.getUrl())
             this.onClose()
             this.onRecieve()

@@ -4,7 +4,7 @@ const initialState = {
     id: null, 
     endpoint: '',
     name: '',
-    logo_url: '',
+    logo_image_url: '',
     is_active: true, 
     is_supercompany: false, 
     is_paying_company: false,
@@ -13,7 +13,7 @@ const initialState = {
     update: {
         name: '',
         endpoint: '',
-        logo_url: ''
+        logo_image_url: ''
     }
 }
 

@@ -131,8 +131,8 @@ class Company extends React.Component {
     getImageToRender = () => {
         if (this.state.logoFile) {
             return process.env['APP'] === 'web' ? this.state.logoFile.file : { uri: this.state.logoFile.file.uri }
-        } if (!['', null].includes(this.props.company.logo_url)) {
-            return process.env['APP'] === 'web' ?  this.props.company.logo_url : { uri: this.props.company.logo_url }
+        } if (!['', null].includes(this.props.company.logo_image_url)) {
+            return process.env['APP'] === 'web' ?  this.props.company.logo_image_url : { uri: this.props.company.logo_image_url }
         } else {
             return process.env['APP'] === 'web' ? '/no_company_logo.png' : require('../../../mobile/assets/no_company_logo.png')
         }
@@ -234,7 +234,7 @@ class Company extends React.Component {
                         {strings['pt-br']['companyConfigurationFormularyLogoFieldLabel']}
                     </CompanyFormularyFieldLabel>
                     <CompanyFormularyLogoContainer>
-                        {this.state.logoFile || !['', null].includes(this.props.company.logo_url) ? '' : (
+                        {this.state.logoFile || !['', null].includes(this.props.company.logo_image_url) ? '' : (
                             <CompanyFormularyLogoHelperLabel>
                                 {strings['pt-br']['companyConfigurationFormularyLogoHelperFieldLabel']}
                             </CompanyFormularyLogoHelperLabel>

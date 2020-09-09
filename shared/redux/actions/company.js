@@ -12,7 +12,7 @@ const getAndDispatchCompanyData = (dispatch, source) => {
                 is_active: response.data.data.is_active, 
                 is_supercompany: response.data.data.billing_company.is_supercompany, 
                 is_paying_company: response.data.data.billing_company.is_paying_company,
-                logo_url: response.data.data.logo_url,
+                logo_image_url: response.data.data.logo_image_url,
                 free_trial_days: response.data.data.free_trial_days,
                 created_at: response.data.data.created_at
             }
@@ -29,6 +29,7 @@ const onGetCompanyData = (source) => {
                 agent.websocket.COMPANY.recieveCompanyUpdated({
                     companyId: response.data.data.id,
                     callback: (data) => {
+                        console.log('called recieveCompanyUpdated')
                         getAndDispatchCompanyData(dispatch, source)                  
                     }
                 })

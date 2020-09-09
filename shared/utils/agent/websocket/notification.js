@@ -4,7 +4,7 @@ const NOTIFICATION = {
     recieveNotificationBadge: async ({data, callback}) => {
         if (data && data.type === 'send_notification') {
             return callback(data)
-        } else {
+        } else if (data === undefined) {
             const websocket = Socket.getInstance()
             websocket.addCallback(NOTIFICATION.recieveNotificationBadge, {callback})
         }

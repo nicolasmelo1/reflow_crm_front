@@ -134,7 +134,7 @@ class Navbar extends React.Component {
     renderWeb = () => {
         return (
             <NavbarContainer>
-                <NavbarLogo src={!['', null].includes(this.props.company.logo_url) ? this.props.company.logo_url : '/complete_logo.png'}/>
+                <NavbarLogo src={!['', null].includes(this.props.company.logo_image_url) ? this.props.company.logo_image_url : '/complete_logo.png'}/>
                 {this.isFreeTrial() && isAdmin(this.props.login.types?.defaults?.profile_type, this.props.login.user) ? (
                     <NavbarFreeTrialAlertButton onClick={e=> {this.handleBilling()}}>
                         <NavbarFreeTrialAlertText isBold={true}>
