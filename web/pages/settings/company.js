@@ -13,8 +13,7 @@ class CompanyPage extends React.Component {
 
     render = () => {
         return (
-            <Layout>
-                <Header title={'Empresa'}/>
+            <Layout header={<Header title={'Empresa'}/>}>
                 <Company/>
             </Layout>
         )

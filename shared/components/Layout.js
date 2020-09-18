@@ -227,6 +227,7 @@ class Layout extends React.Component {
             <div>
                 {this.state.tokenLoaded ? (
                     <Body>   
+                        {this.props.header}
                         <Notify/> 
                         {(this.state.addTemplates || this.props.addTemplates) && isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user) ? (
                             <Templates setAddTemplates={this.setAddTemplates}/>

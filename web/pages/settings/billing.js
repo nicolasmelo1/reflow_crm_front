@@ -14,8 +14,7 @@ class BillingPage extends React.Component {
 
     render = () => {
         return (
-            <Layout title={'Pagamento'}>
-                <Header title={'Pagamento'}/>
+            <Layout header={<Header title={'Pagamento'}/>}>
                 <Billing/>
             </Layout>
         )

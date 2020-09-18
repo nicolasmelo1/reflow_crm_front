@@ -13,8 +13,7 @@ class Notifications extends React.Component {
 
     render() {
         return (
-            <Layout title={'Notificações / Reflow'}>
-                <Header title={'Notificações / Reflow'}/>
+            <Layout header={<Header title={'Notificações / Reflow'}/>}>
                 <Notification/>
             </Layout>
         )

@@ -12,8 +12,8 @@ import Header from '../components/Header'
 class Index extends React.Component {
     constructor(props){
         super(props)
-
     }
+    
     checkIfLogged() {
         return !(!window.localStorage.getItem('token') || window.localStorage.getItem('token') === '')
     }
@@ -26,9 +26,11 @@ class Index extends React.Component {
     
     render (){
         return (
-            <Layout addTemplates={['', null, undefined].includes(this.props.login.primaryForm)} hideNavBar={true}>
-                <Header title={strings['pt-br']['indexPageTitle']}/>
-            </Layout>
+            <Layout 
+            addTemplates={['', null, undefined].includes(this.props.login.primaryForm)} 
+            hideNavBar={true}
+            header={<Header title={strings['pt-br']['indexPageTitle']}/>}
+            />
         )
     }
 }

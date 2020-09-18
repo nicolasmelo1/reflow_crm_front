@@ -154,8 +154,7 @@ class Data extends React.Component {
         const currentForm = formNames.filter(form=> form.name === this.props.router.query.form)
         const title = (currentForm.length > 0) ? strings['pt-br']['managementPageTitle'].replace('{}', currentForm[0].label) : 'Não conseguimos encontrar a página / Reflow'
         return (
-            <Layout title={title} showSideBar={true}>
-                <Header title={title}/>
+            <Layout title={title} showSideBar={true} header={<Header title={title}/>}>
                 {!formNames.map(form=> form.name).includes(this.props.router.query.form) ? (
                     <Error404/>
                 ) : (

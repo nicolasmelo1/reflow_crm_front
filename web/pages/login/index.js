@@ -16,8 +16,12 @@ class LoginPage extends React.Component {
 
     render() {
         return (
-            <Layout addTemplates={this.state.addTemplates} hideNavBar={true} isNotLogged={true}>
-                <Header title={strings['pt-br']['loginPageTitle']}/>
+            <Layout 
+            addTemplates={this.state.addTemplates} 
+            hideNavBar={true} 
+            isNotLogged={true}
+            header={<Header title={strings['pt-br']['loginPageTitle']}/>}
+            >
                 <Login setAddTemplates={this.setAddTemplates}/>
             </Layout>
         );

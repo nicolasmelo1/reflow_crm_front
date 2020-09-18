@@ -12,8 +12,7 @@ class OnboardingPage extends React.Component {
 
     render() {
         return (
-            <Layout hideNavBar={true} isNotLogged={true}>
-                <Header title={strings['pt-br']['onboardingPageTitle']}/>
+            <Layout hideNavBar={true} isNotLogged={true} header={<Header title={strings['pt-br']['onboardingPageTitle']}/>}>
                 <Onboarding partner={this.props.router?.query?.partner} shared_by={this.props.router?.query?.shared_by}/>
             </Layout>
         )

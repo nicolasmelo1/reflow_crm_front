@@ -13,8 +13,7 @@ class UsersPage extends React.Component {
 
     render = () => {
         return (
-            <Layout>
-                <Header title={'Usuários'}/>
+            <Layout header={<Header title={'Usuários'}/>}>
                 <Users/>
             </Layout>
         )

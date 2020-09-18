@@ -12,8 +12,11 @@ class ChangePasswordPage extends React.Component {
 
     render() {
         return (
-            <Layout hideNavBar={true} isNotLogged={true}>
-                <Header title={strings['pt-br']['changePasswordPageTitle']}/>
+            <Layout 
+            hideNavBar={true} 
+            isNotLogged={true} 
+            header={<Header title={strings['pt-br']['changePasswordPageTitle']}/>}
+            >
                 <ChangePassword temporaryPassword={this.props.router?.query?.temp_pass}/>
             </Layout>
         )
