@@ -2,6 +2,7 @@ import { DEAUTHENTICATE, AUTHENTICATE, SET_PRIMARY_FORM, DATA_TYPES, SET_USER } 
 import agent from '../../utils/agent'
 import { setStorageToken } from '../../utils/agent/utils'
 import isEqual from '../../utils/isEqual'
+import initializeConpass from '../../utils/conpass'
 
 // gets token from the api and stores it in the redux store and in cookie
 const onAuthenticate = (body) => {
@@ -9,6 +10,14 @@ const onAuthenticate = (body) => {
         let response = await agent.http.LOGIN.makeLogin(body)
         if (response && response.status === 200) {
             await setStorageToken(response.data.access_token, response.data.refresh_token)
+            initializeConpass(
+                `${response.data.first_name} ${response.data.last_name}`, 
+                response.data.user.email, {
+                    id: response.data.user.id,
+                    is_superuser: response.data.user.is_superuser,
+                    company: response.data.user.company,
+                    profile: response.data.user.profile
+                })
             dispatch({ type: AUTHENTICATE, payload: response.data });
         }
         return response
