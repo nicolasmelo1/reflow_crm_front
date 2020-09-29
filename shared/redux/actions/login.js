@@ -11,7 +11,7 @@ const onAuthenticate = (body) => {
         if (response && response.status === 200) {
             await setStorageToken(response.data.access_token, response.data.refresh_token)
             initializeConpass(
-                `${response.data.first_name} ${response.data.last_name}`, 
+                `${response.data.user.first_name} ${response.data.user.last_name}`, 
                 response.data.user.email, {
                     id: response.data.user.id,
                     is_superuser: response.data.user.is_superuser,
