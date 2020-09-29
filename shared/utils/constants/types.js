@@ -78,7 +78,7 @@ const types = (lang, type, key) => {
             bar: strings[lang]['chartTypeBar'],
             card: strings[lang]['chartTypeCard']
         },
-        group_type: {
+        theme_type: {
             empty: strings[lang]['groupTypeEmpty'],
             sales: strings[lang]['groupTypeSales'],
             development: strings[lang]['groupTypeDevelopment'],
