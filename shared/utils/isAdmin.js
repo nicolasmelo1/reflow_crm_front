@@ -4,7 +4,7 @@ const isAdmin = (profilesType, userObject) => {
         // when i created this line below first i implemented it as profilesType.filter(profile=> profile.id = userObject.profile)
         // without realizing i set a single `=` i was not aware that a .filter() could assign a value, but guess what, it can.
         const userProfile = profilesType.filter(profile=> profile.id === userObject.profile)
-        if (userProfile[0].name === 'admin') {
+        if (userProfile.length > 0 && userProfile[0].name === 'admin') {
             return true
         }
     }

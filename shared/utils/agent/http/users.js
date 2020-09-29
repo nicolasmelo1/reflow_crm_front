@@ -2,6 +2,9 @@ import requests from '../requests'
 import { companyId } from '../utils'
 
 const USERS = {
+    getUserData: async (source) => {
+        return await requests.get(`authentication/user/`, {}, {}, source)
+    },
     getFormularyAndFieldOptions: async (source) => {
         return await requests.get(`authentication/settings/${companyId}/users/formulary_options/`, {}, {}, source)
     },

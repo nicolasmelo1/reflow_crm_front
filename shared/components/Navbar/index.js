@@ -123,6 +123,7 @@ class Navbar extends React.Component {
         this.source = this.CancelToken.source()
         this.props.onGetNewNotifications(this.source)
         this.props.onGetCompanyData(this.source)
+        this.props.onGetUserData(this.source)
     }
     
     componentWillUnmount = () => {
