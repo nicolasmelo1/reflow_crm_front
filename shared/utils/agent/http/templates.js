@@ -13,7 +13,7 @@ const TEMPLATES = {
         return await requests.get(`theme/${companyId}/${templateId}/${templateFormId}/`, {}, {}, source)
     },
     useTemplate: async (templateId) => {
-        return await requests.post(`theme/${companyId}/${templateId}/`, {}, {}, {})
+        return await requests.post(`theme/${companyId}/${templateId}/select/`, {}, {}, {})
     }
 }
 
