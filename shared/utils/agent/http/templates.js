@@ -4,7 +4,7 @@ import { companyId } from '../utils'
 const TEMPLATES = {
     getSelectTemplates: async (source, groupName , page, filter) => {
         const params = { page: page, filter: filter}
-        return await requests.get(`theme/${companyId}/company_type/${groupName}/`, params, {}, source)
+        return await requests.get(`theme/${companyId}/theme_type/${groupName}/`, params, {}, source)
     },
     getSelectTemplate: async (source, templateId) => {
         return await requests.get(`theme/${companyId}/${templateId}/`, {}, {}, source)
