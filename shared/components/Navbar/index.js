@@ -48,6 +48,10 @@ class Navbar extends React.Component {
         Router.push(paths.billing().asUrl, paths.billing().asUrl, { shallow: true })
     }
 
+    handleTemplates = () => {
+        Router.push(paths.templates().asUrl, paths.templates().asUrl, { shallow: true})
+    }
+
     handleUsers = () => {
         Router.push(paths.users().asUrl, paths.users().asUrl, { shallow: true })
     }
@@ -75,10 +79,11 @@ class Navbar extends React.Component {
 
     configDropdown = isAdmin(this.props.login.types?.defaults?.profile_type, this.props.login.user) ? 
     [
-        /*{
-            label: strings['pt-br']['headerRefferalLabel'],
-            href: '#'
-        },*/
+        {
+            label: strings['pt-br']['headerTemplateLabel'],
+            href: '#',
+            onClick: this.handleTemplates
+        },
         {
             label: strings['pt-br']['headerCompanyLabel'],
             href: '#',

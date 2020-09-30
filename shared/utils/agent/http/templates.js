@@ -14,6 +14,12 @@ const TEMPLATES = {
     },
     useTemplate: async (templateId) => {
         return await requests.post(`theme/${companyId}/${templateId}/select/`, {}, {}, {})
+    },
+    getTemplateSettings: async (source) => {
+        return await requests.get(`theme/${companyId}/settings/`, {}, {}, source)
+    },
+    getTemplateDependsOnSettings: async (source) => {
+        return await requests.get(`theme/${companyId}/settings/depends_on/`, {}, {}, source)
     }
 }
 

@@ -1,4 +1,4 @@
-import { SET_SELECT_TEMPLATES, SET_SELECT_TEMPLATE_DATA } from '../../types'
+import { SET_SELECT_TEMPLATES, SET_SELECT_TEMPLATE_DATA, SET_UPDATE_TEMPLATE_DEPENDS_ON, SET_UPDATE_TEMPLATE_DATA } from '../../types'
 import agent from '../../../utils/agent'
 
 const onGetTemplates = (source, groupName, page, filter) => {
@@ -57,10 +57,40 @@ const onSelectTemplate = (templateId) => {
     }
 }
 
+const onGetTemplatesSettings = (source) => {
+    return async (dispatch) => {
+        const response = await agent.http.TEMPLATES.getTemplateSettings(source)
+        if (response && response.status === 200) {
+            const payload = {
+                pagination: response.data.pagination,
+                data: response.data.data
+            }
+            dispatch({ type: SET_UPDATE_TEMPLATE_DATA, payload: payload})
+        }
+    }
+}
+
+const onGetTempalatesDependsOnSettings = (source) => {
+    return async (dispatch) => {
+        const response = await agent.http.TEMPLATES.getTemplateDependsOnSettings(source)
+        if (response && response.status === 200) {
+            dispatch({ type: SET_UPDATE_TEMPLATE_DEPENDS_ON, payload: response.data.data })
+        }
+    }
+}
+
+const onChangeTemplateSettingsStateData = (data) => {
+    return (dispatch) => {
+        dispatch({ type: SET_UPDATE_TEMPLATE_DATA, payload: data})
+    }
+}
 
 export default {
     onSelectTemplate,
     onGetTemplateFormulary,
     onGetTemplates,
-    onGetTemplate
+    onGetTemplate,
+    onGetTemplatesSettings, 
+    onGetTempalatesDependsOnSettings,
+    onChangeTemplateSettingsStateData
 }

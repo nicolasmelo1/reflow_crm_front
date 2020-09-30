@@ -45,7 +45,7 @@ import {
  * @param {Function} setAddTemplates - Usually this is recieved by the Layout component, this function is responsible for showing or not
  * the Template component on the page. When the user clicks to select a template we actually substitute the content that the page is 
  * displaying, for the Templates component that occupies the hole page.
- * @param {Function} setSelectedTemplate - On this component we need the function to go back, but in other words this function is responsible
+ * @param {Function} onChangeSelectedTemplate - On this component we need the function to go back, but in other words this function is responsible
  * for handling the selectedTemplateId, we send a new template id everytime we want to get the details of a new template. When set to null
  * we don't load the preview.
  * @param {Function} onGetTemplateFormulary - Redux action that is responsible for retrieving the formulary data, based on an id.
@@ -124,7 +124,7 @@ const TemplatePreview = (props) => {
             <Modal animationType="slide">
                 <TemplatesPreviewContainer isOpen={props.selectedTemplateId !== -1}>
                     <TemplatesHeader>
-                        <TemplatesGoBackButton onPress={e=>props.setSelectedTemplate(-1)}>
+                        <TemplatesGoBackButton onPress={e=>props.onChangeSelectedTemplate(-1)}>
                             <FontAwesomeIcon icon={'times'} />
                         </TemplatesGoBackButton>
                     </TemplatesHeader>
@@ -177,7 +177,7 @@ const TemplatePreview = (props) => {
     const renderWeb = () => {
         return (
             <TemplatesPreviewContainer isOpen={props.selectedTemplateId !== -1}>
-                <TemplatesGoBackButton onClick={e=>props.setSelectedTemplate(-1)}>
+                <TemplatesGoBackButton onClick={e=>props.onChangeSelectedTemplate(-1)}>
                     <FontAwesomeIcon icon={'chevron-left'} />&nbsp;{strings['pt-br']['templateGoBackButtonLabel']}
                 </TemplatesGoBackButton>
                 <TemplatesPreviewContentsContainer>

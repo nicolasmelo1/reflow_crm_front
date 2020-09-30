@@ -99,6 +99,7 @@ const strings = {
         headerFreeTrialAlertDaysLabel: ' dias restantes de avaliação gratuita. ',
         headerFreeTrialUpdateNowLabel: 'Atualize agora',
         headerRefferalLabel: 'Indicar usuários',
+        headerTemplateLabel: 'Templates',
         headerCompanyLabel: 'Empresa',
         headerChangeDataLabel: 'Alterar Dados',
         headerBillingLabel: 'Pagamento',

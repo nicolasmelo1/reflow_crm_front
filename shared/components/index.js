@@ -9,7 +9,9 @@ import Dashboard from './Dashboard'
 import Billing from './Billing'
 import Users from './Users'
 import Company from './Company'
+import Templates from './Templates'
 
+export { Templates }
 export { Company }
 export { Users }
 export { Billing }

@@ -4,72 +4,34 @@ import { Modal, Text } from 'react-native'
 import axios from 'axios'
 import { connect } from 'react-redux'
 import actions from '../../redux/actions'
-import { types, strings } from '../../utils/constants'
-import TemplatePreview from './TemplatePreview'
-import { 
-    TemplatesContainer, 
-    TemplatesGoBackButton, 
-    TemplatesHeader, 
-    TemplatesSelectionContainer,
-    TemplatesSelectionCard,
-    TemplatesSelectionText,
-    TemplatesContentContainer,
-    TemplatesTemplateTypeSelectionContainer,
-    TemplatesTemplateTypeSelectionTitle,
-    TemplatesTypeSelectionButtonsContainer,
-    TemplatesTypeSelectionButtons,
-    TemplatesTypeSelectionButtonsText,
-    TemplatesTemplateFilterTypeButtonsContainer,
-    TemplatesTemplateFilterTypeButtonsText,
-    TemplatesTemplateFilterTypeButtons
-} from '../../styles/Templates'
+import TemplateSelect from './TemplateSelect'
+import TemplateConfiguration from './TemplateConfiguration'
+
 
 /**
  * This component is responsible for showing a list of templates to the user. The user NEVER creates templates from 0, he does not create groups.
- * He needs to select from one of the already existing templates.
+ * He needs to select from one of the already existing templates. Because of this this component appears on the hole page. Since this component as 
+ * default is used for the user to select from a list of templates we treat it as a model that opens in front of whatever content or component that
+ * is already showing.
+ * 
+ * On the other hand this component can also be used for creation of templates. Creation of templates are not a modal, they are open in a specific
+ * space of a page. Because of this you cannot treat everything as modal
  * 
  * So this component is used to show the options of the templates the user can select.
+ * 
+ * @param {Function} setAddTemplates - Function responsible for closing the template page for choosing the template. When the user
  */
 class Templates extends React.Component {
     constructor(props) {
         super(props)
         this.CancelToken = axios.CancelToken
         this.source = null
-        this.state = {
-            selectedGroupType: null,
-            selectedTemplate: -1,
-        }
-    }
-
-    setSelectedTemplate = (data) => {
-        data = (this.state.selectedTemplate === data) ? -1 : data
-        this.setState(state=> state.selectedTemplate = data)
-    }
-
-    setSelectedGroupType = (data) => {
-        if (this.state.selectedGroupType !== data) {
-            this.props.onGetTemplates(this.source, data, 1, 'reflow')
-            this.setState(state=> state.selectedGroupType = data)
-        }
-    }
-
-    isInitialDefined = () => {
-        return this.props.groups.length > 0 
-    }
-
-    isGroupTypesDefined = () => {
-        return this.props.types && this.props.types.defaults && this.props.types.defaults.theme_type
     }
 
     componentDidMount = () => {
         this.source = this.CancelToken.source()
-        if (this.isGroupTypesDefined() && this.props.types.defaults.theme_type.length > 0) {
-            const selected = this.props.types.defaults.theme_type[0].name
-            this.setSelectedGroupType(selected)
-        }
-        if (!this.isInitialDefined()) {
-            this.props.onGetForms(this.source)
-        }
+        this.props.onGetTemplatesSettings(this.source)
+       
     }
 
     componentWillUnmount = () => {
@@ -80,142 +42,59 @@ class Templates extends React.Component {
 
     renderMobile = () => {
         return (
-            <Modal
-            animationType="slide"
-            >
-                <TemplatesContainer>
-                    {this.state.selectedTemplate !== -1 ? (
-                        <TemplatePreview 
-                        groups={this.props.groups}
-                        data={this.props.loadedTemplate}
-                        cancelToken={this.CancelToken}
-                        onGetTemplate={this.props.onGetTemplate}
-                        selectedTemplateId={this.state.selectedTemplate} 
-                        onSelectTemplate={this.props.onSelectTemplate}
-                        setAddTemplates={this.props.setAddTemplates}
-                        setSelectedTemplate={this.setSelectedTemplate}
-                        onGetTemplateFormulary={this.props.onGetTemplateFormulary}
-                        />
-                    ) : null}
-                    <TemplatesHeader>
-                        {this.props.groups.length > 0 ? (
-                            <TemplatesGoBackButton onPress={e=>this.props.setAddTemplates(false)}>
-                                <FontAwesomeIcon icon={'times'} />
-                            </TemplatesGoBackButton>
-                        ) : null}
-                    </TemplatesHeader>
-                    <TemplatesContentContainer>
-                        <TemplatesTemplateTypeSelectionContainer>
-                            <TemplatesTemplateTypeSelectionTitle>
-                                {strings['pt-br']['templateTypeSelectionTitleLabel']}
-                            </TemplatesTemplateTypeSelectionTitle>
-                            {/*
-                            <TemplatesTemplateFilterTypeButtonsContainer>
-                                {['reflow', 'community', 'company'].map((templateFilterType, index)=> (
-                                    <TemplatesTemplateFilterTypeButtons key={index}>
-                                        <TemplatesTemplateFilterTypeButtonsText>
-                                            {templateFilterType}
-                                        </TemplatesTemplateFilterTypeButtonsText>
-                                    </TemplatesTemplateFilterTypeButtons>
-                                ))}
-                            </TemplatesTemplateFilterTypeButtonsContainer>
-                            */}
-                            <TemplatesTypeSelectionButtonsContainer horizontal={true}>
-                                {this.isGroupTypesDefined() ? 
-                                this.props.types.defaults.theme_type.map((groupType, index) => (
-                                    <TemplatesTypeSelectionButtons key={index} isSelected={groupType.name === this.state.selectedGroupType} onPress={e=> this.setSelectedGroupType(groupType.name)}>
-                                        <TemplatesTypeSelectionButtonsText isSelected={groupType.name === this.state.selectedGroupType}>
-                                            {types('pt-br', 'theme_type', groupType.name)}
-                                        </TemplatesTypeSelectionButtonsText>
-                                    </TemplatesTypeSelectionButtons>
-                                )) : null}
-                            </TemplatesTypeSelectionButtonsContainer>
-                        </TemplatesTemplateTypeSelectionContainer>
-                        <TemplatesSelectionContainer
-                            data={this.props.templates['reflow'].data}
-                            keyExtractor={item => item.id}
-                            numColumns={2}
-                            renderItem={({ item }) => (
-                                <TemplatesSelectionCard
-                                onPress={e=> this.setSelectedTemplate(item.id)}
-                                >
-                                    <TemplatesSelectionText>
-                                        {item.display_name}
-                                    </TemplatesSelectionText>
-                                </TemplatesSelectionCard>
-                            )}
-                        />
-                    </TemplatesContentContainer>
-                </TemplatesContainer>
-            </Modal>
+            <TemplateSelect
+            types={this.props.types}
+            groups={this.props.groups}
+            templates={this.props.templates}
+            loadedTemplate={this.props.loadedTemplate}
+            source={this.source}
+            cancelToken={this.CancelToken}
+            onGetTemplate={this.props.onGetTemplate}
+            onGetTemplateFormulary={this.props.onGetTemplateFormulary}
+            onGetTemplates={this.props.onGetTemplates}
+            onSelectTemplate={this.props.onSelectTemplate}
+            setAddTemplates={this.props.setAddTemplates}
+            />
 
         )
     }
 
     renderWeb = () => {
         return (
-            <TemplatesContainer>
-                <TemplatePreview 
-                groups={this.props.groups}
-                data={this.props.loadedTemplate}
-                cancelToken={this.CancelToken}
-                onGetTemplate={this.props.onGetTemplate}
-                selectedTemplateId={this.state.selectedTemplate} 
-                onSelectTemplate={this.props.onSelectTemplate}
-                setAddTemplates={this.props.setAddTemplates}
-                setSelectedTemplate={this.setSelectedTemplate}
-                onGetTemplateFormulary={this.props.onGetTemplateFormulary}
-                />
-                <TemplatesHeader>
-                    {this.props.groups.length > 0 ? (
-                        <TemplatesGoBackButton onClick={e=>this.props.setAddTemplates(false)}>
-                            <FontAwesomeIcon icon={'chevron-left'} />&nbsp;{strings['pt-br']['templateGoBackButtonLabel']}
-                        </TemplatesGoBackButton>
-                    ) : ''}
-                </TemplatesHeader>
-                <TemplatesContentContainer>
-                    <TemplatesTemplateTypeSelectionContainer>
-                        <TemplatesTemplateTypeSelectionTitle>
-                            {strings['pt-br']['templateTypeSelectionTitleLabel']}
-                        </TemplatesTemplateTypeSelectionTitle>
-                        {/*
-                        <TemplatesTemplateFilterTypeButtonsContainer>
-                            {['reflow', 'community', 'company'].map((templateFilterType, index)=> (
-                                <TemplatesTemplateFilterTypeButtons key={index}>
-                                    <TemplatesTemplateFilterTypeButtonsText>
-                                        {templateFilterType}
-                                    </TemplatesTemplateFilterTypeButtonsText>
-                                </TemplatesTemplateFilterTypeButtons>
-                            ))}
-                        </TemplatesTemplateFilterTypeButtonsContainer>
-                        */}
-                        <TemplatesTypeSelectionButtonsContainer>
-                            {this.isGroupTypesDefined() ? 
-                            this.props.types.defaults.theme_type.map((groupType, index) => (
-                                <TemplatesTypeSelectionButtons key={index} isSelected={groupType.name === this.state.selectedGroupType} onClick={e=> this.setSelectedGroupType(groupType.name)}>
-                                    <TemplatesTypeSelectionButtonsText isSelected={groupType.name === this.state.selectedGroupType}>
-                                        {types('pt-br', 'theme_type', groupType.name)}
-                                    </TemplatesTypeSelectionButtonsText>
-                                </TemplatesTypeSelectionButtons>
-                            )) : null}
-                        </TemplatesTypeSelectionButtonsContainer>
-                    </TemplatesTemplateTypeSelectionContainer>
-                    <TemplatesSelectionContainer>
-                        {this.props.templates['reflow'].data.map((template, index) => (
-                            <TemplatesSelectionCard key={index} 
-                            onClick={e=> this.setSelectedTemplate(template.id)}>
-                                <TemplatesSelectionText>
-                                    {template.display_name}
-                                </TemplatesSelectionText>
-                            </TemplatesSelectionCard>
-                        ))}
-                    </TemplatesSelectionContainer>
-                </TemplatesContentContainer>
-            </TemplatesContainer>
+            <div>
+                {this.props.isEditing ? (
+                    <TemplateConfiguration
+                    source={this.source}
+                    onGetTemplatesSettings={this.props.onGetTemplatesSettings}
+                    templatesConfiguration={this.props.templatesConfiguration}
+                    onChangeTemplateSettingsStateData={this.props.onChangeTemplateSettingsStateData}
+                    />
+                ) : (
+                    <TemplateSelect
+                    types={this.props.types}
+                    groups={this.props.groups}
+                    templates={this.props.templates}
+                    loadedTemplate={this.props.loadedTemplate}
+                    source={this.source}
+                    cancelToken={this.CancelToken}
+                    onGetTemplate={this.props.onGetTemplate}
+                    onGetTemplateFormulary={this.props.onGetTemplateFormulary}
+                    onGetTemplates={this.props.onGetTemplates}
+                    onSelectTemplate={this.props.onSelectTemplate}
+                    setAddTemplates={this.props.setAddTemplates}
+                    />
+                )}
+            </div>
         )
     }
 
     render = () => process.env['APP'] === 'web' ?  this.renderWeb() : this.renderMobile()
 }
 
-export default connect(state=> ({ groups: state.home.sidebar.initial, templates: state.templates.templates.data, loadedTemplate: state.templates.templates.loadedTemplate, types: state.login.types }), actions)(Templates)
+export default connect(state=> ({ 
+    groups: state.home.sidebar.initial, 
+    templates: state.templates.templates.data, 
+    loadedTemplate: state.templates.templates.loadedTemplate, 
+    types: state.login.types,
+    templatesConfiguration: state.templates.templates.update.data,
+}), actions)(Templates)

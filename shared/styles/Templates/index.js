@@ -27,8 +27,13 @@ import TemplatesPreviewFormularyOptionsButton from './TemplatesPreviewFormularyO
 import TemplatesPreviewFormularyPreviewContainer from './TemplatesPreviewFormularyPreviewContainer'
 import TemplatesPreviewFormularyPreviewTitle from './TemplatesPreviewFormularyPreviewTitle'
 import TemplatesPreviewFormularyPreviewFormularyContainer from './TemplatesPreviewFormularyPreviewFormularyContainer'
+import TemplatesConfigurationContainer from './TemplatesConfigurationContainer'
+import TemplatesConfigurationCardContainer from './TemplatesConfigurationCardContainer'
+import TemplatesConfigurationAddNewCardContainer from './TemplatesConfigurationAddNewCardContainer'
 
-
+export { TemplatesConfigurationAddNewCardContainer }
+export { TemplatesConfigurationCardContainer }
+export { TemplatesConfigurationContainer }
 export { TemplatesPreviewFormularyPreviewFormularyContainer }
 export { TemplatesPreviewFormularyPreviewTitle }
 export { TemplatesPreviewFormularyPreviewContainer }

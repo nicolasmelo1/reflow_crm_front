@@ -146,6 +146,20 @@ const paths = {
                 }
             }
         }
+    },
+    templates() {
+        return {
+            asUrl: '/settings/template',
+            adminOnly: true,
+            webOnly: false,
+            loginOnly: true,
+            asReactNavigationPath: {
+                root: 'configurations',
+                nested: {
+                    screen: 'template'
+                }
+            }
+        }
     }
 }
 

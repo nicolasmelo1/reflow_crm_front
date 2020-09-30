@@ -1,4 +1,4 @@
-import { SET_SELECT_TEMPLATES, SET_SELECT_TEMPLATE_DATA } from '../../types';
+import { SET_SELECT_TEMPLATES, SET_SELECT_TEMPLATE_DATA, SET_UPDATE_TEMPLATE_DATA, SET_UPDATE_TEMPLATE_DEPENDS_ON } from '../../types';
 
 let initialState = {
     data: {
@@ -25,6 +25,16 @@ let initialState = {
         display_name: '',
         description: '',
         theme_form: []
+    },
+    update: {
+        data: {
+            pagination: {
+                current: 0,
+                total: 0
+            },
+            data: []
+        },
+        depends_on: {}
     }
 }
 
@@ -47,6 +57,22 @@ const templatesReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loadedTemplate: action.payload
+            }
+        case SET_UPDATE_TEMPLATE_DATA:
+            return {
+                ...state,
+                update: {
+                    ...state.update,
+                    data: action.payload
+                }
+            }
+        case SET_UPDATE_TEMPLATE_DEPENDS_ON:
+            return {
+                ...state,
+                update: {
+                    ...state.update,
+                    depends_on: action.payload
+                }
             }
         default:
             return state;
