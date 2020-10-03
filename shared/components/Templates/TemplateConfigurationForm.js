@@ -175,8 +175,8 @@ const TemplateConfigurationForm = (props) => {
     const renderWeb = () => {
         return (
             <TemplateConfigurationFormContainer isOpen={props.isOpen}>
-                <div style={{ width: '100%' }}>
-                    <button onClick={e => {
+                <div style={{ width: '100%', padding: '10px' }}>
+                    <button style={{ backgroundColor: 'transparent', color: '#17242D', border: 0 }} onClick={e => {
                         setIsOpenAddFormularies(false)
                         setSelectedFormulariesIds([addSelectedFormularyId('', null)])
                         props.setIsOpen(false)
