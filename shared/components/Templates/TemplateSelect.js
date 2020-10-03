@@ -181,7 +181,7 @@ const TemplateSelect = (props) => {
                     <TemplatesSelectionContainer>
                         {props.templates['reflow'].data.map((template, index) => (
                             <TemplatesSelectionCard key={index} 
-                            onClick={e=> onChangeSelectedGroupType(template.id)}>
+                            onClick={e=> onChangeSelectedTemplate(template.id)}>
                                 <TemplatesSelectionText>
                                     {template.display_name}
                                 </TemplatesSelectionText>
