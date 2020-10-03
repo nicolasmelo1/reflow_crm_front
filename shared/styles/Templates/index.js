@@ -42,7 +42,9 @@ import TemplateConfigurationFormSelectContainer from './TemplateConfigurationFor
 import TemplateConfigurationFormFormularySelectContainer from './TemplateConfigurationFormFormularySelectContainer'
 import TemplateConfigurationFormAddFormulariesButton from './TemplateConfigurationFormAddFormulariesButton'
 import TemplateConfigurationFormAddFormulariesButtonLabel from './TemplateConfigurationFormAddFormulariesButtonLabel'
+import TemplateConfigurationFormDependencyLabel from './TemplateConfigurationFormDependencyLabel'
 
+export { TemplateConfigurationFormDependencyLabel }
 export { TemplateConfigurationFormAddFormulariesButtonLabel }
 export { TemplateConfigurationFormAddFormulariesButton }
 export { TemplateConfigurationFormFormularySelectContainer }

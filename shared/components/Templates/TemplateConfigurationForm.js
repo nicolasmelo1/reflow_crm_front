@@ -14,7 +14,8 @@ import {
     TemplateConfigurationFormSelectContainer,
     TemplateConfigurationFormFormularySelectContainer,
     TemplateConfigurationFormAddFormulariesButton,
-    TemplateConfigurationFormAddFormulariesButtonLabel
+    TemplateConfigurationFormAddFormulariesButtonLabel,
+    TemplateConfigurationFormDependencyLabel
 } from '../../styles/Templates'
 
 /**
@@ -100,15 +101,23 @@ const TemplateConfigurationForm = (props) => {
             let formularyIdsToVerifyIfDependent = [selectedFormularyId.value]
             while (formularyIdsToVerifyIfDependent.length > 0) {
                 if (formularyIdsToVerifyIfDependent[0] in props.dependentForms) {
-                    const dependentFormIdsToAdd = props.dependentForms[formularyIdsToVerifyIfDependent[0]].filter(dependentFormularyId => !newSelectedFormulariesIds.map(selectedFormularyId => selectedFormularyId.value).includes(dependentFormularyId))
+                    const dependentFormIdsToAdd = props.dependentForms[formularyIdsToVerifyIfDependent[0]]
                     formularyIdsToVerifyIfDependent = formularyIdsToVerifyIfDependent.concat(dependentFormIdsToAdd)
                     // holds the ids that will be concated on selectedFormulariesIds array.
-                    dependentFormularyIds = dependentFormularyIds.concat(dependentFormIdsToAdd.map(dependentFormIdToAdd => (addSelectedFormularyId(formularyIdsToVerifyIfDependent[0], dependentFormIdToAdd))))
+                    let dependentFormIdsToAddWithoutDuplicates = dependentFormIdsToAdd
+                        .filter(dependentFormIdToAdd => !dependentFormularyIds.map(dependentFormularyId => dependentFormularyId.value).includes(dependentFormIdToAdd))
+                    dependentFormIdsToAddWithoutDuplicates = dependentFormIdsToAddWithoutDuplicates.map(dependentFormIdToAdd => (addSelectedFormularyId(formularyIdsToVerifyIfDependent[0], dependentFormIdToAdd)))
+                    dependentFormularyIds = dependentFormularyIds.concat(dependentFormIdsToAddWithoutDuplicates)
                 }
                 formularyIdsToVerifyIfDependent.shift()
             } 
         })
-        newSelectedFormulariesIds = newSelectedFormulariesIds.concat(dependentFormularyIds)
+        // So what this does is take out the objects from the array that ARE dependent. This way we force the dependency
+        // to always be shown. Otherwise the dependency would not be shown.
+        const onlyDependentFormularyIds = dependentFormularyIds.map(dependentFormularyId => dependentFormularyId.value)
+        newSelectedFormulariesIds = newSelectedFormulariesIds.filter(selectedFormularyId => !onlyDependentFormularyIds.includes(selectedFormularyId.value))
+        newSelectedFormulariesIds = [...newSelectedFormulariesIds, ...dependentFormularyIds]
+
         // adds a null data at the end so we create an empty select at the end.
         if (newSelectedFormulariesIds.length === 0 || newSelectedFormulariesIds[newSelectedFormulariesIds.length - 1].value !== null) {
             newSelectedFormulariesIds.push(addSelectedFormularyId('', null)) 
@@ -242,8 +251,12 @@ const TemplateConfigurationForm = (props) => {
                                 </TemplateConfigurationFormSelectContainer>
                                 {!['', null].includes(selectedFormularyId.isDependentFromFormName) ? (
                                     <span>
-                                        <small>{'É dependência de: '}</small>
-                                        <small style={{ color: '#0dbf7e'}}>{selectedFormularyId.isDependentFromFormName}</small>
+                                        <TemplateConfigurationFormDependencyLabel>
+                                            {'É dependência de: '}
+                                        </TemplateConfigurationFormDependencyLabel>
+                                        <TemplateConfigurationFormDependencyLabel isDependencyLabel={true}>
+                                            {selectedFormularyId.isDependentFromFormName}
+                                        </TemplateConfigurationFormDependencyLabel>
                                     </span>
                                 ): ''}
                             </TemplateConfigurationFormFormularySelectContainer>

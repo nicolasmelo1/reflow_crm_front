@@ -49,6 +49,7 @@ class Templates extends React.Component {
             loadedTemplate={this.props.loadedTemplate}
             source={this.source}
             cancelToken={this.CancelToken}
+            onGetForms={this.props.onGetForms}
             onGetTemplate={this.props.onGetTemplate}
             onGetTemplateFormulary={this.props.onGetTemplateFormulary}
             onGetTemplates={this.props.onGetTemplates}
@@ -80,6 +81,7 @@ class Templates extends React.Component {
                     loadedTemplate={this.props.loadedTemplate}
                     source={this.source}
                     cancelToken={this.CancelToken}
+                    onGetForms={this.props.onGetForms}
                     onGetTemplate={this.props.onGetTemplate}
                     onGetTemplateFormulary={this.props.onGetTemplateFormulary}
                     onGetTemplates={this.props.onGetTemplates}
