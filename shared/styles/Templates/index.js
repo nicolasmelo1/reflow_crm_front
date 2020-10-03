@@ -29,9 +29,33 @@ import TemplatesPreviewFormularyPreviewTitle from './TemplatesPreviewFormularyPr
 import TemplatesPreviewFormularyPreviewFormularyContainer from './TemplatesPreviewFormularyPreviewFormularyContainer'
 import TemplatesConfigurationContainer from './TemplatesConfigurationContainer'
 import TemplatesConfigurationCardContainer from './TemplatesConfigurationCardContainer'
-import TemplatesConfigurationAddNewCardContainer from './TemplatesConfigurationAddNewCardContainer'
+import TemplatesConfigurationCardLabel from './TemplatesConfigurationCardLabel'
+import TemplateConfigurationFormContainer from './TemplateConfigurationFormContainer'
+import TemplateConfigurationFormCheckboxesContainer from './TemplateConfigurationFormCheckboxesContainer'
+import TemplateConfigurationFormCheckboxText from './TemplateConfigurationFormCheckboxText'
+import TemplateConfigurationFormFieldContainer from './TemplateConfigurationFormFieldContainer'
+import TemplateConfigurationFormFieldInput from './TemplateConfigurationFormFieldInput'
+import TemplateConfigurationFormFieldTextArea from './TemplateConfigurationFormFieldTextArea'
+import TemplateConfigurationFormFieldLabel from './TemplateConfigurationFormFieldLabel'
+import TemplateConfigurationFormFieldLabelRequired from './TemplateConfigurationFormFieldLabelRequired'
+import TemplateConfigurationFormSelectContainer from './TemplateConfigurationFormSelectContainer'
+import TemplateConfigurationFormFormularySelectContainer from './TemplateConfigurationFormFormularySelectContainer'
+import TemplateConfigurationFormAddFormulariesButton from './TemplateConfigurationFormAddFormulariesButton'
+import TemplateConfigurationFormAddFormulariesButtonLabel from './TemplateConfigurationFormAddFormulariesButtonLabel'
 
-export { TemplatesConfigurationAddNewCardContainer }
+export { TemplateConfigurationFormAddFormulariesButtonLabel }
+export { TemplateConfigurationFormAddFormulariesButton }
+export { TemplateConfigurationFormFormularySelectContainer }
+export { TemplateConfigurationFormSelectContainer }
+export { TemplateConfigurationFormFieldLabelRequired }
+export { TemplateConfigurationFormFieldLabel }
+export { TemplateConfigurationFormFieldTextArea }
+export { TemplateConfigurationFormFieldInput}
+export { TemplateConfigurationFormFieldContainer }
+export { TemplateConfigurationFormCheckboxText }
+export { TemplateConfigurationFormCheckboxesContainer }
+export { TemplateConfigurationFormContainer }
+export { TemplatesConfigurationCardLabel }
 export { TemplatesConfigurationCardContainer }
 export { TemplatesConfigurationContainer }
 export { TemplatesPreviewFormularyPreviewFormularyContainer }

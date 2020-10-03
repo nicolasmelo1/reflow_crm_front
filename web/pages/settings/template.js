@@ -13,7 +13,7 @@ class TemplatePage extends React.Component {
 
     render = () => {
         return (
-            <Layout header={<Header title={'Empresa'}/>}>
+            <Layout header={<Header title={'Template'}/>}>
                 <Templates isEditing={true}/>
             </Layout>
         )

@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { View } from 'react-native'
+import TemplateConfigurationForm from './TemplateConfigurationForm'
 import {
-    TemplatesConfigurationCardContainer
+    TemplatesConfigurationCardContainer,
+    TemplatesConfigurationCardLabel
 } from '../../styles/Templates'
 
 /**
@@ -9,6 +11,8 @@ import {
  * @param {Type} props - {go in detail about every prop it recieves}
  */
 const TemplateConfigurationCard = (props) => {
+    const [isFormOpen, setIsFormOpen] = useState(false)
+
     const renderMobile = () => {
         return (
             <View></View>
@@ -17,9 +21,23 @@ const TemplateConfigurationCard = (props) => {
 
     const renderWeb = () => {
         return (
-            <TemplatesConfigurationCardContainer>
-                <h2>{props.templateConfiguration.display_name}</h2>
-            </TemplatesConfigurationCardContainer>
+            <div>
+                <TemplatesConfigurationCardContainer onClick={e=> setIsFormOpen(true)}>
+                    <TemplatesConfigurationCardLabel>
+                        {props.templateConfiguration.display_name}
+                    </TemplatesConfigurationCardLabel>
+                    
+                </TemplatesConfigurationCardContainer>
+                <TemplateConfigurationForm 
+                types={props.types}
+                templateConfiguration={props.templateConfiguration}
+                onChangeTemplateConfigurationData={props.onChangeTemplateConfigurationData}
+                dependentForms={props.dependentForms}
+                formulariesOptions={props.formulariesOptions}
+                isOpen={isFormOpen}
+                setIsOpen={setIsFormOpen}
+                />
+            </div>
         )
     }
 

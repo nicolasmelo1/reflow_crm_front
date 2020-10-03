@@ -63,7 +63,7 @@ const NotificationConfigurationForm = (props) => {
     const initialNotificationFieldOptions = notificationFieldOptions.filter(notificationFieldOption => notificationFieldOption.value === props.notificationConfiguration.field)
     const occurrences = props.notificationConfiguration.text.match(/{{(\w+)?}}/g) || []
     const notificationConfigurationData = JSON.parse(JSON.stringify(props.notificationConfiguration))
-    const notificationDays =  Array.apply(null, Array(121)).map((_, i) => i-60)
+    const notificationDays = Array.apply(null, Array(121)).map((_, i) => i-60)
     
     /**
      * This is a handy function to get the date label. The user usually can select to be notified as much as

@@ -33,8 +33,7 @@ let initialState = {
                 total: 0
             },
             data: []
-        },
-        depends_on: {}
+        }
     }
 }
 
@@ -64,14 +63,6 @@ const templatesReducer = (state = initialState, action) => {
                 update: {
                     ...state.update,
                     data: action.payload
-                }
-            }
-        case SET_UPDATE_TEMPLATE_DEPENDS_ON:
-            return {
-                ...state,
-                update: {
-                    ...state.update,
-                    depends_on: action.payload
                 }
             }
         default:

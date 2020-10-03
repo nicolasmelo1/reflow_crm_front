@@ -3,13 +3,18 @@ import { View } from 'react-native'
 import TemplateConfigurationCard from './TemplateConfigurationCard'
 import {
     TemplatesConfigurationContainer,
-    TemplatesConfigurationAddNewCardContainer
+    TemplatesConfigurationCardContainer,
+    TemplatesConfigurationCardLabel
 } from '../../styles/Templates'
+
 /**
  * {Description of your component, what does it do}
  * @param {Type} props - {go in detail about every prop it recieves}
  */
 const TemplateConfiguration = (props) => {
+    const [dependentForms,  setDependentForms] = useState({})
+    const [formulariesOptions, setFormulariesOptions] = useState([])
+
     const getNewTempalteConfigurationData = () => {
         return {
             id: null,
@@ -27,11 +32,22 @@ const TemplateConfiguration = (props) => {
     }
 
     const onChangeTemplateConfigurationData = (index, data) => {
-
+        props.templatesConfiguration.data[index] = data
+        props.onChangeTemplateSettingsStateData({...props.templatesConfiguration})
     }
 
     useEffect(() => {
         props.onGetTemplatesSettings(props.source)
+        props.onGetTempalatesDependsOnSettings(props.source).then(response => {
+            if (response && response.status === 200) {
+                setDependentForms(response.data.data)
+            }
+        })
+        props.onGetTemplatesFormulariesOptionsSettings(props.source).then(response=> {
+            if (response && response.status === 200) {
+                setFormulariesOptions(response.data.data.map(formularyOption => ({ value: formularyOption.id, label: formularyOption.label_name})))
+            }
+        })
     }, [])
 
     const renderMobile = () => {
@@ -41,18 +57,20 @@ const TemplateConfiguration = (props) => {
     }
 
     const renderWeb = () => {
-        console.log(props.templatesConfiguration.data)
         return (
             <TemplatesConfigurationContainer>
-                <TemplatesConfigurationAddNewCardContainer onClick={e=> onAddTemplateConfigurationData()}>
-                    <h2>
-                        Adicionar novo
-                    </h2>
-                </TemplatesConfigurationAddNewCardContainer>
+                <TemplatesConfigurationCardContainer onClick={e=> onAddTemplateConfigurationData()}>
+                    <TemplatesConfigurationCardLabel>
+                        {'Adicionar novo'}
+                    </TemplatesConfigurationCardLabel>
+                </TemplatesConfigurationCardContainer>
                 {props.templatesConfiguration.data.map((templateConfiguration, index) => (
                     <TemplateConfigurationCard
                     key={index}
+                    types={props.types}
                     templateConfiguration={templateConfiguration}
+                    dependentForms={dependentForms}
+                    formulariesOptions={formulariesOptions}
                     onChangeTemplateConfigurationData={(data) => onChangeTemplateConfigurationData(index, data)}
                     />
                 ))}

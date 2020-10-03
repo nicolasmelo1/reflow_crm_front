@@ -65,7 +65,10 @@ class Templates extends React.Component {
                 {this.props.isEditing ? (
                     <TemplateConfiguration
                     source={this.source}
+                    types={this.props.types}
                     onGetTemplatesSettings={this.props.onGetTemplatesSettings}
+                    onGetTemplatesFormulariesOptionsSettings={this.props.onGetTemplatesFormulariesOptionsSettings}
+                    onGetTempalatesDependsOnSettings={this.props.onGetTempalatesDependsOnSettings}
                     templatesConfiguration={this.props.templatesConfiguration}
                     onChangeTemplateSettingsStateData={this.props.onChangeTemplateSettingsStateData}
                     />

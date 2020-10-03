@@ -20,6 +20,9 @@ const TEMPLATES = {
     },
     getTemplateDependsOnSettings: async (source) => {
         return await requests.get(`theme/${companyId}/settings/depends_on/`, {}, {}, source)
+    },
+    getTemplateFormulariesOptions: async (source) => {
+        return await requests.get(`theme/${companyId}/settings/form_options/`, {}, {}, source)
     }
 }
 

@@ -71,11 +71,15 @@ const onGetTemplatesSettings = (source) => {
 }
 
 const onGetTempalatesDependsOnSettings = (source) => {
-    return async (dispatch) => {
-        const response = await agent.http.TEMPLATES.getTemplateDependsOnSettings(source)
-        if (response && response.status === 200) {
-            dispatch({ type: SET_UPDATE_TEMPLATE_DEPENDS_ON, payload: response.data.data })
-        }
+    return async (_) => {
+        return await agent.http.TEMPLATES.getTemplateDependsOnSettings(source)
+    }
+}
+
+const onGetTemplatesFormulariesOptionsSettings = (source) => {
+    return async (_) => {
+        return await agent.http.TEMPLATES.getTemplateFormulariesOptions(source)
+    
     }
 }
 
@@ -92,5 +96,6 @@ export default {
     onGetTemplate,
     onGetTemplatesSettings, 
     onGetTempalatesDependsOnSettings,
+    onGetTemplatesFormulariesOptionsSettings,
     onChangeTemplateSettingsStateData
 }

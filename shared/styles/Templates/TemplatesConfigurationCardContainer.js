@@ -3,9 +3,10 @@ import styled from 'styled-components'
 import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
-styled.div`
+styled.button`
     height: 150px;
     width: 150px;
+    border: 0;
     background-color: #fff;
     border-radius: 5px;
     cursor: pointer;
