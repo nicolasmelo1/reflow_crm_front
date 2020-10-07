@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { View } from 'react-native'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { Select } from '../Utils'
-import { types } from '../../utils/constants'
+import { types, strings } from '../../utils/constants'
 import {
     TemplateConfigurationFormContainer,
     TemplateConfigurationFormCheckboxesContainer,
@@ -15,12 +16,47 @@ import {
     TemplateConfigurationFormFormularySelectContainer,
     TemplateConfigurationFormAddFormulariesButton,
     TemplateConfigurationFormAddFormulariesButtonLabel,
-    TemplateConfigurationFormDependencyLabel
+    TemplateConfigurationFormDependencyLabel, 
+    TemplateConfigurationFormSaveButton,
+    TemplateConfigurationFormSaveLabel,
+    TemplatesHeader,
+    TemplatesGoBackButton
 } from '../../styles/Templates'
 
+
 /**
- * {Description of your component, what does it do}
- * @param {Type} props - {go in detail about every prop it recieves}
+ * This component holds the template configuration formulary. It is mostly a really basic and straight forward formulary.
+ * The problem resides on adding formularies/pages to the template. Our logic is that all of the templates formularies is "written on stone".
+ * 
+ * What this means is, you cannot edit templates formularies UNLESS you add them all again. You can't add new formularies, can't edit formularies.
+ * Template formularies is like a ctrl+c / ctrl+v of the formulary data of the user. You cannot edit it because it becomes easier for us. The user only has
+ * ONE WAY of editing formularies (in the FormularyEdit component). He has only one way of editing notifications, only one way of editing kanban, only one way
+ * of editing dashboards and so on.
+ * 
+ * If it was possible to edit formularies from the theme we should need to create a way for the user to edit everything contained inside of the formulary.
+ * 
+ * There is one requirement for adding formularies/pages though: Formularies that have `form` field type have dependencies. This means that if i add a formulary
+ * that is connected to another we need to add the other formulary to the template also.
+ * 
+ * 
+ * Besides that requirement on formularies, this is just a simple and easy formulary for adding templates.
+ * 
+ * @param {Object} types - the types state, this types are usually the required data from this system to work. 
+ * Types defines all of the field types, form types, format of numbers and dates and many other stuff 
+ * @param {Object} templateConfiguration - The template configuration data object. You might want to see `getNewTempalteConfigurationData` function on
+ * TemplateConfiguration component to see what this looks like.
+ * @param {Function} onChangeTemplateConfigurationData - Used for changing the template configuration state. This changes the object state at a specific index
+ * that is used by this component. So this function only is used to change the state of the data, this does not send the data to the backend or something
+ * like this.
+ * @param {Function} onCreateOrUpdateTemplateConfiguration - Used for creating or updating a template configuration, this is used for SUBMITTING the data
+ * to the backend. This actually doesn't change the state.
+ * @param {Object} dependentForms - This is a object recieved from the backend, it contains the dependent formularies as keys and the dependencies it has
+ * as an array of values on each key. So the keys are formularies ids that have `form` field types, and the ids in the array of each key is the id of
+ * the formulary it depends on.
+ * @param {Array<Object>} formulariesOptions - Recieves an formatted array of objects. This object follows the Select component guidelines. Each object has a
+ * `value` key with ids, and a `label` with the formulary label_name.
+ * @param {Boolean} isOpen - Defines if the formulary is open or closed. So True for open and False for closed.
+ * @param {Function} setIsOpen - sets and changes the isOpen state in the parent component
  */
 const TemplateConfigurationForm = (props) => {
     const descriptionInputRef = React.useRef(null)
@@ -123,7 +159,7 @@ const TemplateConfigurationForm = (props) => {
             newSelectedFormulariesIds.push(addSelectedFormularyId('', null)) 
         }
         setSelectedFormulariesIds(newSelectedFormulariesIds)
-        props.templateConfiguration.form_ids = newSelectedFormulariesIds.filter(selectedFormularyId => selectedFormularyId !== null)
+        props.templateConfiguration.form_ids = newSelectedFormulariesIds.filter(selectedFormularyId => selectedFormularyId !== null).map(selectedFormularyId => selectedFormularyId.value)
         props.onChangeTemplateConfigurationData({...props.templateConfiguration})
     }
 
@@ -138,28 +174,82 @@ const TemplateConfigurationForm = (props) => {
         props.onChangeTemplateConfigurationData({...props.templateConfiguration})
     }
 
+    /**
+     * Changes if the template is public or not. Public templates are shared to the community.
+     * 
+     * @param {Boolean} isPublic - True if the template is public and false if not
+     */
     const onChangeTemplateIsPublic = (isPublic) => {
         props.templateConfiguration.is_public = isPublic
         props.onChangeTemplateConfigurationData({...props.templateConfiguration})
     }
 
+    /**
+     * Changes the description of the template. Description is supposed to be simple.
+     * Most description must be written by topics.
+     * 
+     * @param {String} data - The description of the template. 
+     */
     const onChangeTemplateDescription = (data) => {
         props.templateConfiguration.description = data
         props.onChangeTemplateConfigurationData({...props.templateConfiguration})
     }
 
+    /**
+     * Changes theme type. The themetype is from what group is the theme from. It can be a template for design,
+     * a template for sales, a template for hr.
+     * 
+     * @param {Array<BigInteger>} data - This recieves an array with just a number or an empty array. The number
+     * is an theme_type id. Check types for reference
+     */
     const onChangeThemeType = (data) => {
         const themeTypeId = data.length > 0 ? data[0] : null
         props.templateConfiguration.theme_type = themeTypeId
         props.onChangeTemplateConfigurationData({...props.templateConfiguration})
     }
-        
+
+    /**
+     * Responsible for submitting the data to the backend, you will notice that this call a function on
+     * TemplateConfiguration component. We do this because after we save on the backend we need to all of the templates
+     * data again to be loaded on the grid view.
+     * 
+     * On this function on the other hand we just close the formulary after it has been saved.
+     */
+    const onSubmit = () => {
+        props.onCreateOrUpdateTemplateConfiguration(props.templateConfiguration).then(response => {
+            if (response && response.status === 200) {
+                onCloseFormulary()
+            }
+        })
+    }
+
+    /**
+     * Used for closing the formulary, the most important thing you need to notice is that
+     * when we close the formulary we reset the `selectedFormulariesIds` state inside of this component.
+     * 
+     * If you understand well, this state is responsible for holding all of the formularies/pages this template contains.
+     * It doesn't matter if you are editing a theme or saving a new theme, formularies are always subscribed.
+     */
+    const onCloseFormulary = () => {
+        setIsOpenAddFormularies(false)
+        setSelectedFormulariesIds([addSelectedFormularyId('', null)])
+        props.setIsOpen(false)
+    }
+
+    /**
+     * This is used for WEB only for resizing the text input while the user types.
+     * 
+     * @param {Object} e - The event
+     */
     const resizeDescriptionTextArea = (e) => {
         descriptionInputRef.current.style.height = 'auto';
         descriptionInputRef.current.style.height = (descriptionInputRef.current.scrollHeight) + 'px';
     }
 
     useEffect(() => {
+        // sets the theme options that the user can select from the types we recieve.
+        // with this you can have a further reference on what are theme types. 
+        // On options the id of the theme type is the value and the label is a text e define internally.
         setThemeTypeOptions(props.types.defaults.theme_type.map(themeType => (
             { 
                 value: themeType.id, 
@@ -169,6 +259,7 @@ const TemplateConfigurationForm = (props) => {
     }, [props.types])
 
     useEffect(() => {
+        // This adds an event listener for resizing the text area while the user types on the description text input
         descriptionInputRef.current.addEventListener('input', resizeDescriptionTextArea)
         return () => {
             descriptionInputRef.current.removeEventListener('input', resizeDescriptionTextArea)
@@ -184,26 +275,26 @@ const TemplateConfigurationForm = (props) => {
     const renderWeb = () => {
         return (
             <TemplateConfigurationFormContainer isOpen={props.isOpen}>
-                <div style={{ width: '100%', padding: '10px' }}>
-                    <button style={{ backgroundColor: 'transparent', color: '#17242D', border: 0 }} onClick={e => {
-                        setIsOpenAddFormularies(false)
-                        setSelectedFormulariesIds([addSelectedFormularyId('', null)])
-                        props.setIsOpen(false)
-                    }}>
-                        {'< Voltar'}
-                    </button>
-                </div>
+                <TemplatesHeader>
+                    <TemplatesGoBackButton onClick={e=> onCloseFormulary()}>
+                        <FontAwesomeIcon icon={'chevron-left'} />&nbsp;{strings['pt-br']['templateGoBackButtonLabel']}
+                    </TemplatesGoBackButton>
+                </TemplatesHeader>
                 <TemplateConfigurationFormFieldContainer>
                     <TemplateConfigurationFormCheckboxesContainer>
                         <input type='checkbox' checked={props.templateConfiguration.is_public} onChange={e => onChangeTemplateIsPublic(!props.templateConfiguration.is_public)}/>
                         <TemplateConfigurationFormCheckboxText>
-                            Esse template é publico?
+                            &nbsp;{strings['pt-br']['templateConfigurationFormularyIsPublicFieldLabel']}
                         </TemplateConfigurationFormCheckboxText>
+                        <small style={{ color: '#bfbfbf', display: 'block' }}>
+                            {strings['pt-br']['templateConfigurationFormularyIsPublicTemplateExplanation']}
+                        </small> 
                     </TemplateConfigurationFormCheckboxesContainer>
                 </TemplateConfigurationFormFieldContainer>
                 <TemplateConfigurationFormFieldContainer>
                     <TemplateConfigurationFormFieldLabel>
-                        {'Nome'}
+                        {strings['pt-br']['templateConfigurationFormularyNameFieldLabel']}
+                        <TemplateConfigurationFormFieldLabelRequired>*</TemplateConfigurationFormFieldLabelRequired>
                     </TemplateConfigurationFormFieldLabel>
                     <TemplateConfigurationFormFieldInput
                     type={'text'}
@@ -213,7 +304,8 @@ const TemplateConfigurationForm = (props) => {
                 </TemplateConfigurationFormFieldContainer>
                 <TemplateConfigurationFormFieldContainer>
                     <TemplateConfigurationFormFieldLabel>
-                        {'Descrição'}
+                        {strings['pt-br']['templateConfigurationFormularyDescriptionFieldLabel']}
+                        <TemplateConfigurationFormFieldLabelRequired>*</TemplateConfigurationFormFieldLabelRequired>
                     </TemplateConfigurationFormFieldLabel>
                     <TemplateConfigurationFormFieldTextArea
                     ref={descriptionInputRef}
@@ -223,7 +315,8 @@ const TemplateConfigurationForm = (props) => {
                 </TemplateConfigurationFormFieldContainer>
                 <TemplateConfigurationFormFieldContainer>
                     <TemplateConfigurationFormFieldLabel>
-                        {'A Qual grupo esse template se refere?'}
+                        {strings['pt-br']['templateConfigurationFormularyThemeTypeSelectorFieldLabel']}
+                        <TemplateConfigurationFormFieldLabelRequired>*</TemplateConfigurationFormFieldLabelRequired>
                     </TemplateConfigurationFormFieldLabel>
                     <TemplateConfigurationFormSelectContainer isOpen={isOpenThemeTypeSelect}>
                         <Select
@@ -238,7 +331,7 @@ const TemplateConfigurationForm = (props) => {
                 {isOpenAddFormularies ? (
                     <TemplateConfigurationFormFieldContainer>
                         <TemplateConfigurationFormFieldLabel>
-                            {'Quais páginas esse template irá conter?'}
+                            {strings['pt-br']['templateConfigurationFormularyFormularySelectorFieldLabel']}
                         </TemplateConfigurationFormFieldLabel>
                         {selectedFormulariesIds.map((selectedFormularyId, index) => (
                             <TemplateConfigurationFormFormularySelectContainer key={selectedFormularyId.value ? selectedFormularyId.value: -1}>
@@ -252,7 +345,7 @@ const TemplateConfigurationForm = (props) => {
                                 {!['', null].includes(selectedFormularyId.isDependentFromFormName) ? (
                                     <span>
                                         <TemplateConfigurationFormDependencyLabel>
-                                            {'É dependência de: '}
+                                            {strings['pt-br']['templateConfigurationFormularyDependencyFromAlert']}
                                         </TemplateConfigurationFormDependencyLabel>
                                         <TemplateConfigurationFormDependencyLabel isDependencyLabel={true}>
                                             {selectedFormularyId.isDependentFromFormName}
@@ -263,12 +356,24 @@ const TemplateConfigurationForm = (props) => {
                         ))}
                     </TemplateConfigurationFormFieldContainer>    
                 ) : (
-                    <TemplateConfigurationFormAddFormulariesButton onClick={e=> setIsOpenAddFormularies(true)}>
-                        <TemplateConfigurationFormAddFormulariesButtonLabel>
-                            {'Adicionar paginas'}
-                        </TemplateConfigurationFormAddFormulariesButtonLabel>
-                    </TemplateConfigurationFormAddFormulariesButton>
+                    <div>
+                        {!['', null].includes(props.templateConfiguration.id) ? (
+                           <small style={{ color: '#bfbfbf' }}>
+                               {strings['pt-br']['templateConfigurationFormularyFormulariesWrittenInStoneAlert']}
+                            </small> 
+                        ) : ''}
+                        <TemplateConfigurationFormAddFormulariesButton onClick={e=> setIsOpenAddFormularies(true)}>
+                            <TemplateConfigurationFormAddFormulariesButtonLabel>
+                                {strings['pt-br']['templateConfigurationFormularyAddFormulariesButtonLabel']}
+                            </TemplateConfigurationFormAddFormulariesButtonLabel>
+                        </TemplateConfigurationFormAddFormulariesButton>
+                    </div>
                 )}
+                <TemplateConfigurationFormSaveButton onClick={e => onSubmit()}>
+                    <TemplateConfigurationFormSaveLabel>
+                        {strings['pt-br']['templateConfigurationFormularySaveButtonLabel']}
+                    </TemplateConfigurationFormSaveLabel>
+                </TemplateConfigurationFormSaveButton>
             </TemplateConfigurationFormContainer>
         )
     }

@@ -23,6 +23,15 @@ const TEMPLATES = {
     },
     getTemplateFormulariesOptions: async (source) => {
         return await requests.get(`theme/${companyId}/settings/form_options/`, {}, {}, source)
+    },
+    updateTemplateSettings: async (body, templateId) => {
+        return await requests.put(`theme/${companyId}/settings/${templateId}/`, body)
+    },
+    removeTemplateSettings: async (templateId) => {
+        return await requests.delete(`theme/${companyId}/settings/${templateId}/`, {}, {}, {})
+    },
+    createTemplateSettings: async (body) => {
+        return await requests.post(`theme/${companyId}/settings/`, body)
     }
 }
 

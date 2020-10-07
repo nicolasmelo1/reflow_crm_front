@@ -5,7 +5,7 @@ import { View } from 'react-native'
 export default process.env['APP'] === 'web' ?
 styled.div`
     position: absolute;
-    padding: ${props => props.isOpen ? '10px' : '0' };
+    padding: ${props => props.isOpen ? '0 10px' : '0' };
     bottom: ${props => props.isOpen ? '0' : 'calc(0px - var(--app-height))' };
     left: 0;
     z-index: 5;

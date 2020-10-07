@@ -1,20 +1,20 @@
 import React from 'react'
 import styled from 'styled-components'
-import { View } from 'react-native'
+import { TouchableOpacity } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
     height: 200px;
     width: 200px;
-    border: 1px solid #17242D;
-    background-color: #fff;
+    border: 1px dashed #0dbf7e;
+    background-color: transparent;
     border-radius: 5px;
     cursor: pointer;
     text-align: center;
     display:flex;
     align-items: center;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     user-select: none;
     padding: 10px;
 
@@ -28,4 +28,12 @@ styled.div`
     }
 `
 :
-styled(View)``
+styled(TouchableOpacity)`
+    border-width: 2px;
+    height: 250px;
+    width: 250px;
+    border-radius: 5px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+`

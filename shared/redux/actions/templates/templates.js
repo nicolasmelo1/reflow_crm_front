@@ -89,6 +89,30 @@ const onChangeTemplateSettingsStateData = (data) => {
     }
 }
 
+const onUpdateTemplateSettings = (body, id) => {
+    return (_) => {
+        return agent.http.TEMPLATES.updateTemplateSettings(body, id)
+    }
+}
+
+const onCreateTemplateSettings = (body) => {
+    return (_) => {
+        return agent.http.TEMPLATES.createTemplateSettings(body)
+    }
+}
+
+const onRemoveTemplateSettings = (index) => {
+    return (dispatch, getState) => {
+        const templateData = getState().templates.templates.update
+        console.log(getState())
+        if (templateData.data[index].id !== null) {
+            agent.http.TEMPLATES.removeTemplateSettings(templateData.data[index].id)
+        }
+        templateData.data.splice(index, 1)
+        dispatch({ type: SET_UPDATE_TEMPLATE_DATA, payload: {...templateData}})
+    }
+}
+
 export default {
     onSelectTemplate,
     onGetTemplateFormulary,
@@ -97,5 +121,8 @@ export default {
     onGetTemplatesSettings, 
     onGetTempalatesDependsOnSettings,
     onGetTemplatesFormulariesOptionsSettings,
-    onChangeTemplateSettingsStateData
+    onChangeTemplateSettingsStateData,
+    onUpdateTemplateSettings,
+    onRemoveTemplateSettings,
+    onCreateTemplateSettings
 }

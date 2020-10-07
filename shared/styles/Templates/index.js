@@ -29,6 +29,7 @@ import TemplatesPreviewFormularyPreviewTitle from './TemplatesPreviewFormularyPr
 import TemplatesPreviewFormularyPreviewFormularyContainer from './TemplatesPreviewFormularyPreviewFormularyContainer'
 import TemplatesConfigurationContainer from './TemplatesConfigurationContainer'
 import TemplatesConfigurationCardContainer from './TemplatesConfigurationCardContainer'
+import TemplatesConfigurationCardContainerHeader from './TemplatesConfigurationCardContainerHeader'
 import TemplatesConfigurationCardLabel from './TemplatesConfigurationCardLabel'
 import TemplateConfigurationFormContainer from './TemplateConfigurationFormContainer'
 import TemplateConfigurationFormCheckboxesContainer from './TemplateConfigurationFormCheckboxesContainer'
@@ -43,7 +44,19 @@ import TemplateConfigurationFormFormularySelectContainer from './TemplateConfigu
 import TemplateConfigurationFormAddFormulariesButton from './TemplateConfigurationFormAddFormulariesButton'
 import TemplateConfigurationFormAddFormulariesButtonLabel from './TemplateConfigurationFormAddFormulariesButtonLabel'
 import TemplateConfigurationFormDependencyLabel from './TemplateConfigurationFormDependencyLabel'
+import TemplateConfigurationFormSaveButton from './TemplateConfigurationFormSaveButton'
+import TemplateConfigurationFormSaveLabel from './TemplateConfigurationFormSaveLabel'
+import TemplatesConfigurationCardHeaderButton from './TemplatesConfigurationCardHeaderButton'
+import TemplatesConfigurationAddNewCard from './TemplatesConfigurationAddNewCard'
+import TemplatesConfigurationAddNewIcon from './TemplatesConfigurationAddNewIcon'
+import TemplatesConfigurationAddNewText from './TemplatesConfigurationAddNewText'
 
+export { TemplatesConfigurationAddNewText }
+export { TemplatesConfigurationAddNewIcon }
+export { TemplatesConfigurationAddNewCard }
+export { TemplatesConfigurationCardHeaderButton }
+export { TemplateConfigurationFormSaveLabel }
+export { TemplateConfigurationFormSaveButton }
 export { TemplateConfigurationFormDependencyLabel }
 export { TemplateConfigurationFormAddFormulariesButtonLabel }
 export { TemplateConfigurationFormAddFormulariesButton }
@@ -58,6 +71,7 @@ export { TemplateConfigurationFormCheckboxText }
 export { TemplateConfigurationFormCheckboxesContainer }
 export { TemplateConfigurationFormContainer }
 export { TemplatesConfigurationCardLabel }
+export { TemplatesConfigurationCardContainerHeader }
 export { TemplatesConfigurationCardContainer }
 export { TemplatesConfigurationContainer }
 export { TemplatesPreviewFormularyPreviewFormularyContainer }

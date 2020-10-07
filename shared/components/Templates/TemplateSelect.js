@@ -26,33 +26,62 @@ import {
  * @param {Type} props - {go in detail about every prop it recieves}
  */
 const TemplateSelect = (props) => {
-    const [selectedGroupType, setSelectedGroupType] = useState(null)
+    const [selectedThemeType, setSelectedThemeType] = useState(null)
     const [selectedTemplate, setSelectedTemplate] = useState(-1)
 
-    const onChangeSelectedTemplate = (data) => {
-        data = (selectedTemplate === data) ? -1 : data
-        setSelectedTemplate(data)
+    /**
+     * Function used to change the selected template. selectedTemplate state
+     * holds the id of the template. When the selectedTemplate is -1 there is no template
+     * selected.
+     * 
+     * @param {BigInteger} selectedTemplateId - The id of the selected template or -1 if no template is selected.
+     */
+    const onChangeSelectedTemplate = (selectedTemplateId) => {
+        selectedTemplateId = (selectedTemplate === selectedTemplateId) ? -1 : selectedTemplateId
+        setSelectedTemplate(selectedTemplateId)
     }
 
-    const onChangeSelectedGroupType = (data) => {
-        if (selectedGroupType !== data) {
-            props.onGetTemplates(props.source, data, 1, 'reflow')
-            setSelectedGroupType(data)
+    /**
+     * Function responsible to change the theme_type. Theme types holds the type of the theme.
+     * Can be something like `design`, 'marketing' and so on. So, theme types are groups of themes
+     * that defines for what area or activity this template is for.
+     * 
+     * When the user defines a new theme_type obviosly we get net data from the backend.
+     * 
+     * @param {BigInteger} themeTypeId - The id of the selected theme type.
+     */
+    const onChangeSelectedThemeType = (themeTypeId) => {
+        if (selectedThemeType !== themeTypeId) {
+            props.onGetTemplates(props.source, themeTypeId, 1, 'reflow')
+            setSelectedThemeType(themeTypeId)
         }
     }
 
+    /**
+     * This function is used to check if the sidebar has already been loaded or not.
+     * 
+     * If the sidebar have already been loaded then we don't need to retrieve the templates/sidebar data
+     * otherwise e load all of the formularies the user has access to.
+     */
     const isInitialDefined = () => {
         return props.groups.length > 0 
     }
 
-    const isGroupTypesDefined = () => {
+    /**
+     * Check if theme_type object exists. Since it retrive the types on login and also the templates opens
+     * on login. we need to check if the types was already been retrieved.
+     */
+    const isThemeTypesDefined = () => {
         return props.types && props.types.defaults && props.types.defaults.theme_type
     }
 
     useEffect(() => {
-        if (isGroupTypesDefined() && props.types.defaults.theme_type.length > 0) {
+        // when we mount this component we first select the first theme_type we find
+        // Then if the sidebar hasn't been loaded we retrieve the formularies the user 
+        // has access to again
+        if (isThemeTypesDefined() && props.types.defaults.theme_type.length > 0) {
             const selected = props.types.defaults.theme_type[0].name
-            onChangeSelectedGroupType(selected)
+            onChangeSelectedThemeType(selected)
         }
         if (!isInitialDefined()) {
             props.onGetForms(props.source)
@@ -102,10 +131,10 @@ const TemplateSelect = (props) => {
                             </TemplatesTemplateFilterTypeButtonsContainer>
                             */}
                             <TemplatesTypeSelectionButtonsContainer horizontal={true}>
-                                {isGroupTypesDefined() ? props.types.defaults.theme_type.map((groupType, index) => (
-                                    <TemplatesTypeSelectionButtons key={index} isSelected={groupType.name === selectedGroupType} onPress={e=> onChangeSelectedGroupType(groupType.name)}>
-                                        <TemplatesTypeSelectionButtonsText isSelected={groupType.name === selectedGroupType}>
-                                            {types('pt-br', 'theme_type', groupType.name)}
+                                {isThemeTypesDefined() ? props.types.defaults.theme_type.map((themeType, index) => (
+                                    <TemplatesTypeSelectionButtons key={index} isSelected={themeType.name === selectedThemeType} onPress={e=> onChangeSelectedThemeType(themeType.name)}>
+                                        <TemplatesTypeSelectionButtonsText isSelected={themeType.name === selectedThemeType}>
+                                            {types('pt-br', 'theme_type', themeType.name)}
                                         </TemplatesTypeSelectionButtonsText>
                                     </TemplatesTypeSelectionButtons>
                                 )) : null}
@@ -169,10 +198,10 @@ const TemplateSelect = (props) => {
                         </TemplatesTemplateFilterTypeButtonsContainer>
                         */}
                         <TemplatesTypeSelectionButtonsContainer>
-                            {isGroupTypesDefined() ?  props.types.defaults.theme_type.map((groupType, index) => (
-                                <TemplatesTypeSelectionButtons key={index} isSelected={groupType.name === selectedGroupType} onClick={e=> onChangeSelectedGroupType(groupType.name)}>
-                                    <TemplatesTypeSelectionButtonsText isSelected={groupType.name === selectedGroupType}>
-                                        {types('pt-br', 'theme_type', groupType.name)}
+                            {isThemeTypesDefined() ?  props.types.defaults.theme_type.map((themeType, index) => (
+                                <TemplatesTypeSelectionButtons key={index} isSelected={themeType.name === selectedThemeType} onClick={e=> onChangeSelectedThemeType(themeType.name)}>
+                                    <TemplatesTypeSelectionButtonsText isSelected={themeType.name === selectedThemeType}>
+                                        {types('pt-br', 'theme_type', themeType.name)}
                                     </TemplatesTypeSelectionButtonsText>
                                 </TemplatesTypeSelectionButtons>
                             )) : null}

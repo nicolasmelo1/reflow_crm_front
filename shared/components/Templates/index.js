@@ -27,7 +27,7 @@ class Templates extends React.Component {
         this.CancelToken = axios.CancelToken
         this.source = null
     }
-
+    
     componentDidMount = () => {
         this.source = this.CancelToken.source()
         this.props.onGetTemplatesSettings(this.source)
@@ -72,6 +72,9 @@ class Templates extends React.Component {
                     onGetTempalatesDependsOnSettings={this.props.onGetTempalatesDependsOnSettings}
                     templatesConfiguration={this.props.templatesConfiguration}
                     onChangeTemplateSettingsStateData={this.props.onChangeTemplateSettingsStateData}
+                    onCreateTemplateSettings={this.props.onCreateTemplateSettings}
+                    onUpdateTemplateSettings={this.props.onUpdateTemplateSettings}
+                    onRemoveTemplateSettings={this.props.onRemoveTemplateSettings}
                     />
                 ) : (
                     <TemplateSelect
@@ -101,5 +104,5 @@ export default connect(state=> ({
     templates: state.templates.templates.data, 
     loadedTemplate: state.templates.templates.loadedTemplate, 
     types: state.login.types,
-    templatesConfiguration: state.templates.templates.update.data,
+    templatesConfiguration: state.templates.templates.update,
 }), actions)(Templates)

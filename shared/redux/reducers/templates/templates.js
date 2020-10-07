@@ -27,13 +27,11 @@ let initialState = {
         theme_form: []
     },
     update: {
-        data: {
-            pagination: {
-                current: 0,
-                total: 0
-            },
-            data: []
-        }
+        pagination: {
+            current: 0,
+            total: 0
+        },
+        data: []
     }
 }
 
@@ -60,10 +58,7 @@ const templatesReducer = (state = initialState, action) => {
         case SET_UPDATE_TEMPLATE_DATA:
             return {
                 ...state,
-                update: {
-                    ...state.update,
-                    data: action.payload
-                }
+                update: action.payload
             }
         default:
             return state;
