@@ -97,7 +97,7 @@ const Fields = (props) => {
         if (props.addFieldFormValue && props.removeFieldFormValue && props.updateFieldFormValue && props.getFieldFormValues) {
             values.forEach(value => {
                 if (formValues.find(formValue => formValue.value === value && formValue.field_name === props.field.name) === undefined) {
-                    props.addFieldFormValue(props.field.name, value)
+                    props.addFieldFormValue(props.field.name, props.field.id, value)
                 } 
             }) 
             formValues.forEach(formValue => {
@@ -118,7 +118,7 @@ const Fields = (props) => {
     const singleValueFieldsHelper = (value) => {
         if (props.addFieldFormValue && props.removeFieldFormValue && props.updateFieldFormValue && props.getFieldFormValues) {
             if (props.fieldFormValues.length === 0) {
-                props.addFieldFormValue(props.field.name, value)
+                props.addFieldFormValue(props.field.name, props.field.id, value)
             } else if (value === '') {
                 props.removeFieldFormValue(props.field.name, props.fieldFormValues[0].value)
             } else {
@@ -171,7 +171,7 @@ const Fields = (props) => {
         if (props.addFieldFormValue && props.fieldFormValues && !isEqual(props.fieldFormValues, values)) {
             setValues(props.fieldFormValues)
             if (props.fieldFormValues.length === 0 && props.field.field_is_hidden) {
-                props.addFieldFormValue(props.field.name, '')
+                props.addFieldFormValue(props.field.name, props.field.id, '')
             }
         }
     }, [props.fieldFormValues])

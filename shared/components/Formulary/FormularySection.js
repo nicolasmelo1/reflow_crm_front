@@ -14,10 +14,11 @@ const FormularySection = (props) => {
         return props.sectionData.dynamic_form_value.filter(sectionFormValue=> sectionFormValue.field_name === field_name)
     }
 
-    const addFieldFormValue = (field_name, value) => {
+    const addFieldFormValue = (field_name, field_id, value) => {
         props.sectionData.dynamic_form_value.push({
             'id': null,
             'value': value,
+            'field_id': field_id,
             'field_name': field_name
         })
         props.updateSection(props.sectionData, props.section.id, props.sectionDataIndex)

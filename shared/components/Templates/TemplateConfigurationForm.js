@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { View } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { Select } from '../Utils'
-import { types, strings } from '../../utils/constants'
+import { types, strings, errors } from '../../utils/constants'
 import {
     TemplateConfigurationFormContainer,
     TemplateConfigurationFormCheckboxesContainer,
@@ -60,6 +60,7 @@ import {
  */
 const TemplateConfigurationForm = (props) => {
     const descriptionInputRef = React.useRef(null)
+    const [formErrors, setFormErrors] = useState({})
     const [selectedFormulariesIds, setSelectedFormulariesIds] = useState([addSelectedFormularyId('', null)])
     const [isOpenAddFormularies, setIsOpenAddFormularies] = useState(false)
     const [isOpenThemeTypeSelect, setIsOpenThemeTypeSelect] = useState(false)
@@ -218,7 +219,21 @@ const TemplateConfigurationForm = (props) => {
     const onSubmit = () => {
         props.onCreateOrUpdateTemplateConfiguration(props.templateConfiguration).then(response => {
             if (response && response.status === 200) {
+                setFormErrors({})
                 onCloseFormulary()
+            } else {
+                if (Object.keys(response.data.error).every(error=> Object.keys(props.templateConfiguration).includes(error))) {
+                    // its a error with one of the fields
+                    const error = JSON.parse(JSON.stringify(response.data.error))
+                    Object.keys(response.data.error).forEach(errorKey => {
+                        // might need to add new cases in the future, this only chacks blank fields
+                        error[errorKey] = (error[errorKey][0] === 'blank') ? errors('pt-br', 'blank_field') : errors('pt-br', 'unknown_field')
+                    })
+                    setFormErrors(error)
+                } else if (response.data.error.reason && response.data.error.reason.includes('form_ids_should_be_defined_when_creating')) {
+                    formErrors['form_ids'] = 'Quando você está criando um template, ao menos uma página deve ser adicionada'
+                    setFormErrors({...formErrors})
+                }
             }
         })
     }
@@ -233,6 +248,7 @@ const TemplateConfigurationForm = (props) => {
     const onCloseFormulary = () => {
         setIsOpenAddFormularies(false)
         setSelectedFormulariesIds([addSelectedFormularyId('', null)])
+        setFormErrors({})
         props.setIsOpen(false)
     }
 
@@ -297,6 +313,7 @@ const TemplateConfigurationForm = (props) => {
                         <TemplateConfigurationFormFieldLabelRequired>*</TemplateConfigurationFormFieldLabelRequired>
                     </TemplateConfigurationFormFieldLabel>
                     <TemplateConfigurationFormFieldInput
+                    errors={formErrors.display_name}
                     type={'text'}
                     onChange={e=>onChangeTemplateName(e.target.value)}
                     value={props.templateConfiguration.display_name}
@@ -308,6 +325,7 @@ const TemplateConfigurationForm = (props) => {
                         <TemplateConfigurationFormFieldLabelRequired>*</TemplateConfigurationFormFieldLabelRequired>
                     </TemplateConfigurationFormFieldLabel>
                     <TemplateConfigurationFormFieldTextArea
+                    errors={formErrors.description}
                     ref={descriptionInputRef}
                     onChange={e=>onChangeTemplateDescription(e.target.value)}
                     value={props.templateConfiguration.description}
@@ -318,7 +336,7 @@ const TemplateConfigurationForm = (props) => {
                         {strings['pt-br']['templateConfigurationFormularyThemeTypeSelectorFieldLabel']}
                         <TemplateConfigurationFormFieldLabelRequired>*</TemplateConfigurationFormFieldLabelRequired>
                     </TemplateConfigurationFormFieldLabel>
-                    <TemplateConfigurationFormSelectContainer isOpen={isOpenThemeTypeSelect}>
+                    <TemplateConfigurationFormSelectContainer isOpen={isOpenThemeTypeSelect} errors={formErrors.theme_type}>
                         <Select
                         options={themeTypeOptions}
                         initialValues={themeTypeOptions.filter(themeTypeOption => themeTypeOption.value === props.templateConfiguration.theme_type)}
@@ -328,6 +346,11 @@ const TemplateConfigurationForm = (props) => {
                         />
                     </TemplateConfigurationFormSelectContainer>
                 </TemplateConfigurationFormFieldContainer>
+                {formErrors.form_ids ? (
+                    <small style={{ color: 'red' }}>
+                        {formErrors.form_ids}
+                    </small> 
+                ) : ''}
                 {isOpenAddFormularies ? (
                     <TemplateConfigurationFormFieldContainer>
                         <TemplateConfigurationFormFieldLabel>
