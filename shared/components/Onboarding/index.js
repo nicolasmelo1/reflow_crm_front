@@ -103,9 +103,9 @@ class Onboarding extends React.Component {
             case 'phone':
                 return ![null, undefined, ''].includes(value) && numberUnmasker(value, this.getPhoneNumberMask(value)).length >= 10
             case 'email':
-                return ![null, undefined, ''].includes(value) && /@\w+\./g.test(value)
+                return ![null, undefined, ''].includes(value) && /@[A-z\-]+\./g.test(value)
             case 'confirmEmail':
-                return ![null, undefined, ''].includes(value) && /@\w+\./g.test(value) && this.state.email === value
+                return ![null, undefined, ''].includes(value) && /@[A-z\-]+\./g.test(value) && this.state.email === value
             case 'confirmPassword':
                 return ![null, undefined, ''].includes(value) && this.state.password === value
             default:

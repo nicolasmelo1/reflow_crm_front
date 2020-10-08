@@ -22,7 +22,27 @@ import {
 } from '../../styles/Templates'
 
 /**
- * {Description of your component, what does it do}
+ * This component is responsible for displaying to the user a screen so he can select and preview
+ * templates.
+ * 
+ * To create pages/formularies the user needs to do it inside of a group/template (the ones that show in the sidebar).
+ * 
+ * This component is responsible for showing the user an intuitive interface so he can select the templates
+ * he wants to use. We separate templates by two dimensions: 
+ * 
+ * - First are 3 big groups: `Reflow`, `Community` and `Company`. The first are templates created and mantained by reflow,
+ * so templates that have been created by `reflow@reflow.com.br` account. The second are templates created and mantained by
+ * the users of reflow, those are templates that the user set to be PUBLIC. And the last is templates from and for the company
+ * that are not set to be public.
+ * 
+ * - Second there are the theme_types: `Design`, `HR`, `Marketing`, `Sales` and so on. We separate each template on common cases 
+ * the users might use our platform for.
+ * 
+ * This needs to be really intuitive because it always show on the onboarding, after the user makes his first sign-in, this
+ * component is loaded before he is able to do any action in the platform.
+ * 
+ * 
+ * 
  * @param {Type} props - {go in detail about every prop it recieves}
  */
 const TemplateSelect = (props) => {

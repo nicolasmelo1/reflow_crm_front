@@ -161,6 +161,8 @@ const TemplateConfiguration = (props) => {
         // This is called when the component is mounted.
         // First we get the template settings, then we get the dependent formularies data
         // And lastly we get the formularies options, that the user can select in the template.
+        // This also adds the listeners for scroll events on the template container. With this event
+        // we can load more data when the user reaches the bottom of the page.
         sourceRef.current = props.cancelToken.source()
         setIsLoadingData(true)
         props.onGetTemplatesSettings(sourceRef.current).then(_ => {

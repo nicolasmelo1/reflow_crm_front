@@ -99,7 +99,7 @@ const UsersForm = (props) => {
             case 'name':
                 return ![null, undefined, ''].includes(value) && value.split(' ').length > 1 && value.split(' ')[1] !== ''
             case 'email':
-                return ![null, undefined, ''].includes(value) && /@\w+\./g.test(value)
+                return ![null, undefined, ''].includes(value) && /@[A-z\-]+\./g.test(value)
             case 'profile':
                 return ![null, undefined, ''].includes(value) && value.length > 0
             default:

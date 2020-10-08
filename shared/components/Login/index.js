@@ -74,7 +74,7 @@ class Login extends React.Component {
         const changePasswordUrl = (process.env['APP']=== 'web') ? window.location.origin + paths.changepassword().asUrl + '?temp_pass={}' : ''
         const email = (this.emailRef.current?.value) ? this.emailRef.current.value : this.state.email
 
-        if (![null, undefined, ''].includes(email) && /@\w+\./g.test(email)) {
+        if (![null, undefined, ''].includes(email) && /@[A-z\-]+\./g.test(email)) {
             this.props.onForgotPassword(email, changePasswordUrl).then(response => {
                 if (response && response.status === 200) {
                     this.props.onAddNotification(strings['pt-br']['loginRedefinePasswordEmailSentSuccess'].replace('{}', email), 'success')

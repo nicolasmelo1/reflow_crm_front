@@ -62,6 +62,14 @@ const TemplatePreview = (props) => {
         formData: {}
     })
 
+    /**
+     * This function is used when the user changes the selected preview formulary.
+     * The data that we get here is the template formulary data. So we can preview the formularies of the template
+     * to the user before selecting a template.
+     * 
+     * @param {BigInteger} formId - This is the theme form instance id. We need it to load the theme formulary to the user
+     * so he can preview how the formulary will be.
+     */
     const onChangeFormulary = (formId) => {
         props.onGetTemplateFormulary(sourceRef.current, props.data.id, formId).then(data=> {
             setFormData({ 
@@ -73,6 +81,11 @@ const TemplatePreview = (props) => {
         })
     }
 
+    /**
+     * Function that fires a post request when the user clicks to use a template.
+     * You will notice that we recieve as response the last formulary_name created of the template.
+     * We use this data for redirecting to the user to the newly created formulary page.
+     */
     const onClickUseButton = () => {
         setIsSubmitting(true)
         props.onSelectTemplate(props.data.id).then(response => {
@@ -94,6 +107,8 @@ const TemplatePreview = (props) => {
 
 
     useEffect(() => {
+        // Defines the axios source to cancel requests and also
+        // defines a reference to check if this component is mounted or not.
         isMountedRef.current = true
         sourceRef.current = props.cancelToken.source()
         return () => {
@@ -106,6 +121,9 @@ const TemplatePreview = (props) => {
 
     
     useEffect(() => {
+        // When we change the selectedTemplateId prop (the template id that is currently selected by the user)
+        // we get all of the template data. It's important to notice that when the props is -1 this means no 
+        // template was selected.
         if (props.selectedTemplateId !== -1) {
             props.onGetTemplate(sourceRef.current, props.selectedTemplateId)
         }
@@ -113,6 +131,10 @@ const TemplatePreview = (props) => {
 
 
     useEffect(() => {
+        // When we select a template we recieve the data containing the forms it contains, it's just the most basic 
+        // data of the forms like label_name, id, and so on.
+        // So if a theme is selected what we do is retrieve the first theme_form data is finds using the `onChangeFormulary`.
+        // This way the preview always loads a formulary preview when we select a template.
         if (props.data.theme_form.length > 0) {
             onChangeFormulary(props.data.theme_form[0].id)
         }
