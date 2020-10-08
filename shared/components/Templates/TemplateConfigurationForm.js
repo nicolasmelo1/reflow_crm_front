@@ -313,6 +313,8 @@ const TemplateConfigurationForm = (props) => {
                         <TemplateConfigurationFormFieldLabelRequired>*</TemplateConfigurationFormFieldLabelRequired>
                     </TemplateConfigurationFormFieldLabel>
                     <TemplateConfigurationFormFieldInput
+                    autoComplete="off" 
+                    list="autocompleteOff"
                     errors={formErrors.display_name}
                     type={'text'}
                     onChange={e=>onChangeTemplateName(e.target.value)}

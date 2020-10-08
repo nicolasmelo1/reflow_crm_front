@@ -41,8 +41,20 @@ import {
  * removing it from the templatesConfiguration data array from its index.
  */
 const TemplateConfiguration = (props) => {
+    const sourceRef = React.useRef(null)
+    const paginationRef = React.useRef(props.templatesConfiguration.pagination)
+    const templatesContainerRef = React.useRef()
+    const [isContainerOverflown, setIsContainerOverflown] = useState(false)
     const [dependentForms,  setDependentForms] = useState({})
     const [formulariesOptions, setFormulariesOptions] = useState([])
+    const [isLoadingData, _setIsLoadingData] = useState(false)
+
+    // Check Components/Utils/Select for reference and explanation
+    const isLoadingDataRef = React.useRef(isLoadingData)
+    const setIsLoadingData = data => {
+        isLoadingDataRef.current = data
+        _setIsLoadingData(data)
+    }
 
     /**
      * This function is a handy one for adding template configuration data to the templates array.
@@ -90,7 +102,7 @@ const TemplateConfiguration = (props) => {
             response = await props.onUpdateTemplateSettings(data, data.id)
         }
         if (response && response.status === 200) {
-            props.onGetTemplatesSettings(props.source)
+            props.onGetTemplatesSettings(sourceRef.current)
         }
         return response
     }
@@ -118,23 +130,81 @@ const TemplateConfiguration = (props) => {
         props.templatesConfiguration.data[index] = data
         props.onChangeTemplateSettingsStateData({...props.templatesConfiguration})
     }
+    
+    /**
+     * This is used to get more data, data is appended to the existing data.
+     * Since we can run this function on event handlers, using the state will not give us the latest updated state.
+     * Because of this we need to use references to get the correct values. 
+     */
+    const onGetMoreData = () => {
+        const page = paginationRef.current.current + 1
+        setIsLoadingData(true)
+        props.onGetTemplatesSettings(sourceRef.current, page).then(_ => {
+            setIsLoadingData(false)
+        })
+    }
+
+    /**
+     * Handles when the user scrolls to the bottom of the container. It retrieves new data when it reaches the bottom of the container.
+     * Since on web, we use this inside an event handler, we will not get the updated states here. Because of this we need to use references.
+     */
+    const onScroll = () => {
+        if (process.env['APP'] === 'web') {
+            if (!isLoadingDataRef.current && paginationRef.current.current < paginationRef.current.total && 
+                templatesContainerRef.current.scrollTop >= (templatesContainerRef.current.scrollHeight - templatesContainerRef.current.offsetHeight)) {
+                onGetMoreData()
+            }
+        }
+    }
 
     useEffect(() => {
         // This is called when the component is mounted.
         // First we get the template settings, then we get the dependent formularies data
         // And lastly we get the formularies options, that the user can select in the template.
-        props.onGetTemplatesSettings(props.source)
-        props.onGetTempalatesDependsOnSettings(props.source).then(response => {
+        sourceRef.current = props.cancelToken.source()
+        setIsLoadingData(true)
+        props.onGetTemplatesSettings(sourceRef.current).then(_ => {
+            setIsLoadingData(false)
+        })
+        props.onGetTempalatesDependsOnSettings(sourceRef.current).then(response => {
             if (response && response.status === 200) {
                 setDependentForms(response.data.data)
             }
         })
-        props.onGetTemplatesFormulariesOptionsSettings(props.source).then(response=> {
+        props.onGetTemplatesFormulariesOptionsSettings(sourceRef.current).then(response=> {
             if (response && response.status === 200) {
                 setFormulariesOptions(response.data.data.map(formularyOption => ({ value: formularyOption.id, label: formularyOption.label_name})))
             }
         })
+        
+        if (process.env['APP'] === 'web') templatesContainerRef.current.addEventListener('scroll', onScroll)
+        return () => {
+            if (process.env['APP'] === 'web') templatesContainerRef.current.removeEventListener('scroll', onScroll)
+            if (sourceRef.current) {
+                sourceRef.current.cancel()
+            }
+        }
     }, [])
+
+    useEffect(() => {
+        // This listens for the data, when it changes we run here. First it sets the pagination reference so we can use the most
+        // updated data when the scroll event is fired (event listeners DOES NOT get the state data.)
+        // Second we define if the template container is overflown or not. We do this because on really large screens the scroll might not
+        // appear to the user, because of this we show a button for him to load more data if needed. So is overflown just checks
+        // wheater or not the scroll bar has been show to the user or not. The second part ONLY WORKS ON BROWSERS.
+        paginationRef.current = props.templatesConfiguration.pagination
+
+        if (process.env['APP'] === 'web') {
+            // if the page is to big for the pagination and the scroll is not active we add a 'load more' button in the bottom of the kanban dimension column
+            if (props.templatesConfiguration.data.length > 0 && props.templatesConfiguration.pagination.current < props.templatesConfiguration.pagination.total) {
+                if (templatesContainerRef.current.scrollHeight >= templatesContainerRef.current.clientHeight) {
+                    setIsContainerOverflown(true)
+                } else {
+                    setIsContainerOverflown(false)
+                }
+            }
+        }
+    }, [props.templatesConfiguration.data])
 
     const renderMobile = () => {
         return (
@@ -144,7 +214,7 @@ const TemplateConfiguration = (props) => {
 
     const renderWeb = () => {
         return (
-            <TemplatesConfigurationContainer>
+            <TemplatesConfigurationContainer ref={templatesContainerRef}>
                 <TemplatesConfigurationAddNewCard onClick={e=> onAddTemplateConfigurationData()}>
                     <TemplatesConfigurationAddNewIcon icon="plus-circle"/>
                     <TemplatesConfigurationAddNewText>
@@ -163,6 +233,11 @@ const TemplateConfiguration = (props) => {
                     onChangeTemplateConfigurationData={(data) => onChangeTemplateConfigurationData(index, data)}
                     />
                 ))}
+                {props.templatesConfiguration.pagination && props.templatesConfiguration.pagination.current < props.templatesConfiguration.pagination.total && !isContainerOverflown ? (
+                    <button onClick={e=> {onGetMoreData()}}>
+                        {'Carregar Mais'}
+                    </button>
+                ): ''}
             </TemplatesConfigurationContainer>
         )
     }

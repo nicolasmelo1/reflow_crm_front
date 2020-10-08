@@ -79,11 +79,11 @@ class Navbar extends React.Component {
 
     configDropdown = isAdmin(this.props.login.types?.defaults?.profile_type, this.props.login.user) ? 
     [
-        /*{
+        {
             label: strings['pt-br']['headerTemplateLabel'],
             href: '#',
             onClick: this.handleTemplates
-        }*/,
+        },
         {
             label: strings['pt-br']['headerCompanyLabel'],
             href: '#',

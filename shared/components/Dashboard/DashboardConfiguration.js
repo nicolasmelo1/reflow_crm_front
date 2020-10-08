@@ -100,7 +100,17 @@ const DashboardConfiguration = (props) => {
     }
 
     useEffect(() => {
-        sourceRef.current = props.cancelToken.source()
+        return () => {
+            if (sourceRef.current) {
+                sourceRef.current.cancel()
+            }
+        }
+    }, [])
+
+    useEffect(() => {
+        if (sourceRef.current) {
+            sourceRef.current.cancel()
+        }
 
         onGetDashboardSettingsData()
         props.onGetFieldOptions(sourceRef.current, props.formName).then(response => {
@@ -108,12 +118,8 @@ const DashboardConfiguration = (props) => {
                 setFieldOptions(response.data.data)
             }
         })
-        return () => {
-            if (sourceRef.current) {
-                sourceRef.current.cancel()
-            }
-        }
-    }, [])
+
+    }, [props.formName])
 
     const renderMobile = () => {
         const newDashboardSettingsData = JSON.parse(JSON.stringify(dashboardSettingsData))

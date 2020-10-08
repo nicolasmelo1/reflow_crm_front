@@ -57,13 +57,14 @@ const onSelectTemplate = (templateId) => {
     }
 }
 
-const onGetTemplatesSettings = (source) => {
-    return async (dispatch) => {
-        const response = await agent.http.TEMPLATES.getTemplateSettings(source)
+const onGetTemplatesSettings = (source, page=1) => {
+    return async (dispatch, getState) => {
+        const response = await agent.http.TEMPLATES.getTemplateSettings(source, {page: page})
         if (response && response.status === 200) {
+            console.log(getState().templates.templates.update.data)
             const payload = {
                 pagination: response.data.pagination,
-                data: response.data.data
+                data: (page === 1) ? response.data.data: getState().templates.templates.update.data.concat(response.data.data)
             }
             dispatch({ type: SET_UPDATE_TEMPLATE_DATA, payload: payload})
         }

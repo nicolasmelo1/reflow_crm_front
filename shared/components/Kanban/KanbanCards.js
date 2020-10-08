@@ -32,9 +32,10 @@ const KanbanCards = (props) => {
     // Check Components/Utils/Select for reference and explanation
     const hasFiredRequestForNewPageRef = React.useRef(hasFiredRequestForNewPage);
     const setHasFiredRequestForNewPage = data => {
-        hasFiredRequestForNewPageRef.current = data;
-        _setHasFiredRequestForNewPage(data);
+        hasFiredRequestForNewPageRef.current = data
+        _setHasFiredRequestForNewPage(data)
     }
+    
     const kanbanCardContainerRef = React.useRef()
 
 
