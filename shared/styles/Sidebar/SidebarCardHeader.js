@@ -1,11 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Card } from 'react-bootstrap'
 
 export default process.env['APP'] === 'web' ? 
-styled(Card.Header)`
+styled.div`
     background-color: transparent;
-    display: block
+    display: block;
 `
 :
 null

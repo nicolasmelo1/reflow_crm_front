@@ -1,15 +1,18 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Form } from 'react-bootstrap'
 
 export default process.env['APP'] === 'web' ?
-styled(Form.Control)`
+styled.input`
     background-color: transparent;
     border: 0px solid black;
     transition: all !important;
     border-bottom: 2px solid #fff;
     color: #ffffff;
     font-weight: bold;
+    width: 100%;
+    padding: 5px 10px;
+    margin: 10px 0;
+
     &:focus {
         color: #0dbf7e;
         background-color: transparent;

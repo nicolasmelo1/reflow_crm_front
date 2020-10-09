@@ -12,6 +12,10 @@ styled.button`
     margin: 10px 0;
     cursor: pointer;
 
+    &:hover {
+        background-color: ${props => props.isSelected ? '#0dbf7e': '#fff'};
+    }
+
     @media(max-width: 492px) {
         display: inline;
         overflow: hidden;

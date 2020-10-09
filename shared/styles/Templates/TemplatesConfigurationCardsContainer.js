@@ -8,7 +8,7 @@ styled.div`
     flex-direction: row;
     justify-content: flex-start;
     flex-wrap: wrap;
-
+    
     @media(min-width: 640px) {
         flex-direction: row;
         justify-content: flex-start;

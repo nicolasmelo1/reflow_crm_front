@@ -11,6 +11,7 @@ styled.input`
     text-align: center; 
     background-color: transparent;
     cursor: pointer;
+    min-width: 200px;
 
     @media(max-width: 640px) {
         width: 100%;

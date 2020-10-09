@@ -1,9 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Card } from 'react-bootstrap'
 
 export default process.env['APP'] === 'web' ? 
-styled(Card)`
+styled.div`
+    border: 0;
+    display: block;
+    width: 100%;
+    padding: 0;
+    margin: 0;
     background-color: transparent;
 `
 :

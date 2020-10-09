@@ -1,10 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Card } from 'react-bootstrap'
 
 export default process.env['APP'] === 'web' ? 
-styled(Card.Body)`
+styled.div`
     padding: 0 1.25rem;
+    border-bottom: 1px solid #444;
+    text-align: left;
 `
 :
 null

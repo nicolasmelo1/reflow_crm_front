@@ -100,7 +100,7 @@ class Sidebar extends React.Component {
                     </SidebarToggle>
                     <SidebarMenu sidebarIsOpen={this.props.sidebarIsOpen} >
                         {isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user) ? (
-                            <div>
+                            <div style={{ borderBottom: '1px solid #444' }}>
                                 <SidebarEditTemplateButton onClick={e => this.enterEditMode(e)}>{(this.state.isEditing) ? strings['pt-br']['goBack']: strings['pt-br']['sidebarEditTemplateButtonLabel']}</SidebarEditTemplateButton>
                                 { (this.state.isEditing) ? null: <SidebarAddNewTemplateButton onClick={e => this.props.setAddTemplates(true) }>{strings['pt-br']['sidebarAddNewTemplateButtonLabel']}</SidebarAddNewTemplateButton>}
                             </div>
@@ -119,10 +119,15 @@ class Sidebar extends React.Component {
                             onRemoveFormulary={this.props.onRemoveFormulary}
                             />
                         ): (
-                            <SidebarGroup 
-                            groups={this.props.sidebar.initial}
-                            selectedFormulary={this.props.login.primaryForm}
-                            />
+                            <div>
+                                {(this.props.sidebar.initial) ? this.props.sidebar.initial.map((group, index) => (
+                                    <SidebarGroup
+                                    key={group.id}
+                                    group={group}
+                                    selectedFormulary={this.props.login.primaryForm}
+                                    />
+                                )) : ''}
+                            </div>
                         )}
                     </SidebarMenu>
                 </Col>

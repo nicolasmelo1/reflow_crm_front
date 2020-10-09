@@ -11,7 +11,8 @@ styled(Form.Control)`
     &:focus {
         color: #495057;
         background-color: #fff;
-        border-color: #0dbf7e;
+        border-color: #0dbf7e !important;
+        box-shadow: 0 0 0 0.2rem #0dbf7e25 !important;
         outline: 0;
         box-shadow: none;
     }

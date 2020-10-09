@@ -9,5 +9,5 @@ styled.p`
 `
 :
 styled(Text)`
-color: ${props => props.isSelected ? '#17242d': '#17242d'};
+    color: ${props => props.isSelected ? '#17242d': '#17242d'};
 `

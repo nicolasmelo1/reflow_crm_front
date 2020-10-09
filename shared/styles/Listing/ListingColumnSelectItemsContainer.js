@@ -3,7 +3,7 @@ import { Dropdown } from 'react-bootstrap'
 
 export default styled(Dropdown.Menu)`
     width: 100%;
-    padding: 0;
+    padding: 0 !important;
     overflow: auto;
 
     @media(max-width: 640px) {

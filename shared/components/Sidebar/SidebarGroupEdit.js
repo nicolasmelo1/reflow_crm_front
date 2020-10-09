@@ -138,20 +138,22 @@ const SidebarGroupEdit = (props) => {
                 <SidebarAccordion key={index}>
                     <SidebarCard onDragOver={e=> {onDragOver(e)}} onDrop={e=> {onDrop(e, index)}}>
                         <SidebarCardHeader className="group-container">
-                            <SidebarIconsContainer>
-                                <SidebarIcons icon="eye" onClick={e=> onDisableGroup(index)}/>
-                                <SidebarIcons icon="trash" onClick={e=> {
-                                    setFormularyIndexToRemove(index)
-                                    setShowAlert(true) 
-                                }}/>
-                                <div draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveGroup(e, index)}} onDragEnd={e=>{onDragEnd(e)}}  >
-                                    <SidebarIcons icon="arrows-alt" />
-                                </div>
-                            </SidebarIconsContainer> 
-                            { (group.enabled) ? 
-                                (<SidebarGroupInput value={group.name} onChange={e=>{onChangeGroupName(index, e.target.value)}}/>) :
-                                (<SidebarDisabledGroupLabel eventKey="0">{strings['pt-br']['disabledGroupLabel']}</SidebarDisabledGroupLabel>)
-                            }                           
+                            <div style={{ padding: '10px'}}>
+                                <SidebarIconsContainer>
+                                    <SidebarIcons icon="eye" onClick={e=> onDisableGroup(index)}/>
+                                    <SidebarIcons icon="trash" onClick={e=> {
+                                        setFormularyIndexToRemove(index)
+                                        setShowAlert(true) 
+                                    }}/>
+                                    <div draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveGroup(e, index)}} onDragEnd={e=>{onDragEnd(e)}}  >
+                                        <SidebarIcons icon="arrows-alt" />
+                                    </div>
+                                </SidebarIconsContainer> 
+                                { (group.enabled) ? 
+                                    (<SidebarGroupInput value={group.name} onChange={e=>{onChangeGroupName(index, e.target.value)}}/>) :
+                                    (<SidebarDisabledGroupLabel eventKey="0">{strings['pt-br']['disabledGroupLabel']}</SidebarDisabledGroupLabel>)
+                                }
+                            </div>          
                         </SidebarCardHeader>
                         { (isDragging) ?  '' : (
                             <SidebarFormEdit 

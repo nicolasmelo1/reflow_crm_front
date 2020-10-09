@@ -4,7 +4,7 @@ import { Form } from 'react-bootstrap'
 import { TextInput } from 'react-native'
 
 export default process.env['APP'] === 'web' ? 
-styled(Form.Control)`
+styled.input`
     border: 0;
     background-color: white !important;
     color: #17242D;

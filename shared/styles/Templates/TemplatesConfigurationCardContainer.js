@@ -17,7 +17,8 @@ styled.div`
     justify-content: space-between;
     user-select: none;
     padding: 10px;
-
+    overflow: hidden;
+    
     @media(max-width: 390px) {
         margin: 10px auto;
     }

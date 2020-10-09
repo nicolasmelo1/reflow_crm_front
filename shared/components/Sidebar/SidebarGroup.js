@@ -1,5 +1,5 @@
-import React from 'react'
-import { Accordion } from 'react-bootstrap'
+import React, { useState } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome' 
 import SidebarGroupsContainer from '../../styles/Sidebar/SidebarGroupsContainer'
 import { Text } from 'react-native'
 import SidebarForm from './SidebarForm' // not implemented in RN
@@ -7,6 +7,8 @@ import { SidebarAccordionToggle, SidebarCardHeader, SidebarAccordion, SidebarCar
 
 
 const SidebarGroup = (props) => {
+    const [isFormulariesOpen, setIsFormulariesOpen] = useState(false)
+
     const doesGroupContainsSelectedFormulary = (formGroup) => {
         return formGroup.filter(formulary => formulary.form_name === props.selectedFormulary).length > 0
     }
@@ -24,20 +26,21 @@ const SidebarGroup = (props) => {
     const renderWeb = () => {
         return (
             <div>
-                {(props.groups) ? props.groups.map((group, index) => (
-                    <SidebarAccordion key={index}>
-                        <SidebarCard>
-                            <SidebarCardHeader>
-                                <SidebarAccordionToggle eventKey="0" isSelected={doesGroupContainsSelectedFormulary(group.form_group)}>
-                                    {group.name}
-                                </SidebarAccordionToggle>
-                            </SidebarCardHeader>
-                            <Accordion.Collapse eventKey="0">
-                                <SidebarForm forms={group.form_group} selectedFormulary={props.selectedFormulary}/>
-                            </Accordion.Collapse>
-                        </SidebarCard>
-                    </SidebarAccordion>
-                )): ''}
+                <SidebarCard>
+                    <button 
+                    style={{ border: 0, backgroundColor: 'transparent', width: '100%'}} 
+                    onClick={e => {setIsFormulariesOpen(!isFormulariesOpen)}}
+                    >
+                        <SidebarCardHeader>
+                            <SidebarAccordionToggle isSelected={doesGroupContainsSelectedFormulary(props.group.form_group)}>
+                                {props.group.name}&nbsp;<FontAwesomeIcon icon={isFormulariesOpen ? 'chevron-up' : 'chevron-down' }/>
+                            </SidebarAccordionToggle>
+                        </SidebarCardHeader>
+                    </button>
+                </SidebarCard>
+                {isFormulariesOpen ? (
+                    <SidebarForm forms={props.group.form_group} selectedFormulary={props.selectedFormulary}/>
+                ) : ''}
             </div>
         )
     }

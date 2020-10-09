@@ -250,8 +250,8 @@ class Dashboard extends React.Component {
                                                 maintainAspectRatio={false}
                                                 numberFormat={this.props.login.types?.data?.field_number_format_type.filter(numberFormatType => numberFormatType.id === item.number_format_type)[0]}
                                                 chartType={this.getChartTypeNameById(item.chart_type)}
-                                                labels={item.data.labels}
-                                                values={item.data.values}
+                                                labels={(item.data) ? item.data.labels: []}
+                                                values={(item.data) ? item.data.values: []}
                                                 chartName={item.name}
                                                 /> 
                                             )
@@ -268,8 +268,8 @@ class Dashboard extends React.Component {
                                         maintainAspectRatio={false}
                                         numberFormat={this.props.login.types?.data?.field_number_format_type.filter(numberFormatType => numberFormatType.id === chart.number_format_type)[0]}
                                         chartType={this.getChartTypeNameById(chart.chart_type)}
-                                        labels={chart.data.labels}
-                                        values={chart.data.values}
+                                        labels={(chart.data) ? chart.data.labels: []}
+                                        values={(chart.data) ? chart.data.values: []}
                                         /> 
                                     </DashboardChartContainer>
                                 ))}
@@ -347,8 +347,8 @@ class Dashboard extends React.Component {
                                             maintainAspectRatio={true}
                                             numberFormat={this.props.login.types?.data?.field_number_format_type.filter(numberFormatType => numberFormatType.id === chart.number_format_type)[0]}
                                             chartType={this.getChartTypeNameById(chart.chart_type)}
-                                            labels={chart.data.labels}
-                                            values={chart.data.values}
+                                            labels={(chart.data) ? chart.data.labels: []}
+                                            values={(chart.data) ? chart.data.values: []}
                                             />
                                         ))}
                                     </DashboardTotalContainer>
@@ -363,8 +363,8 @@ class Dashboard extends React.Component {
                                             maintainAspectRatio={false}
                                             numberFormat={this.props.login.types?.data?.field_number_format_type.filter(numberFormatType => numberFormatType.id === chart.number_format_type)[0]}
                                             chartType={this.getChartTypeNameById(chart.chart_type)}
-                                            labels={chart.data.labels}
-                                            values={chart.data.values}
+                                            labels={(chart.data) ? chart.data.labels: []}
+                                            values={(chart.data) ? chart.data.values: []}
                                             /> 
                                         </div>
                                     </DashboardChartContainer>

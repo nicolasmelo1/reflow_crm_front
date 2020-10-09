@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-import { Container } from 'react-bootstrap'
 import { View } from 'react-native'
 
 const getPadding = (props) => {
@@ -13,10 +12,10 @@ const getPadding = (props) => {
 }
 
 export default process.env['APP'] === 'web' ? 
-styled(({ showSideBar, sidebarIsOpen, isNotLogged, ...rest }) => <Container {...rest} />)`
+styled.div`
     padding: ${props => getPadding(props)};
-    left: ${props => (props.sidebarIsOpen ? '310px' : '0')}; 
-    transition: left 0.3s ease-in-out;
+    transform: ${props => (props.sidebarIsOpen ? 'translate(310px, 0)' : 'translate(0, 0)')}; 
+    transition: transform 0.3s ease-in-out;
     max-width: 100%;    
     background-color: ${props => props.isNotLogged ? '#fff': '#f2f2f2'};
     height: calc(var(--app-height) - 70px);

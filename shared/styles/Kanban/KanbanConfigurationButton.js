@@ -1,10 +1,12 @@
 import styled from 'styled-components'
-import Button from 'react-bootstrap/Button'
 
-export default styled(Button)`
+export default styled.button`
+    color: #f2f2f2;
     background-color: #17242D;
     border: 0;
     padding: 5px 10px;
+    border-radius: .25rem;
+
     &:hover {
         background-color: #0dbf7e;
         border: 0;

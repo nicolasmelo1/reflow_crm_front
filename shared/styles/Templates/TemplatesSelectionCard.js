@@ -3,7 +3,8 @@ import styled from 'styled-components'
 import { TouchableOpacity } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
-styled.div`
+styled.button`
+    border: 0;
     height: 150px;
     width: 150px;
     background-color: #fff;
@@ -15,6 +16,10 @@ styled.div`
     justify-content: center;
     user-select: none;
     
+    &:hover {
+        background-color: #17242D !important;
+    };
+
     @media(max-width: 390px) {
         margin: 10px auto;
     }

@@ -1,14 +1,16 @@
 import React from 'react'
 import styled from 'styled-components'
 import { TouchableOpacity } from 'react-native'
-import { Button } from 'react-bootstrap'
 
 export default process.env['APP'] === 'web' ?
-styled(Button)`
+styled.button`
     background-color: transparent;
     border: 1px solid #fff;
     margin: 5px 5px 0 0;
     color: #fff;
+    padding: 5px 10px;
+    border-radius: .25rem;
+
     &:hover {
         background-color: transparent;
         border: 1px solid #0dbf7e;
