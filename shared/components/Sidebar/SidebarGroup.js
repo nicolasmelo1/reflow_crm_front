@@ -28,7 +28,7 @@ const SidebarGroup = (props) => {
             <div>
                 <SidebarCard>
                     <button 
-                    style={{ border: 0, backgroundColor: 'transparent', width: '100%'}} 
+                    style={{ border: 0, backgroundColor: 'transparent', width: '100%', margin: 0, padding: 0}} 
                     onClick={e => {setIsFormulariesOpen(!isFormulariesOpen)}}
                     >
                         <SidebarCardHeader>
