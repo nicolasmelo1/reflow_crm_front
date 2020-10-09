@@ -15,7 +15,7 @@ const LOGIN = {
     },
     registerPushNotification: async (body) => {
         return await requests.post('notify/push_notification/', body)
-    }
+    },
 }
 
 export default LOGIN

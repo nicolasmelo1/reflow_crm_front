@@ -40,6 +40,7 @@ const onForgotPassword = (email, changePasswordUrl) => {
 
 const onUpdateUser = (user) => {
     return (dispatch) => {
+        agent.http.USERS.updateVisualizationType(user.data_type)
         dispatch({ type: SET_USER, payload: user})
     }
 }

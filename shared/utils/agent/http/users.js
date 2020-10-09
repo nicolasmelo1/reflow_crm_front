@@ -19,6 +19,9 @@ const USERS = {
     },
     removeUsersConfiguration: async (userId) => {
         return await requests.delete(`authentication/settings/${companyId}/users/${userId}/`)
+    },
+    updateVisualizationType: async (visualizationTypeId) => {
+        return await requests.put(`authentication/user/visualization_type/${visualizationTypeId}/`, {})
     }
 }
 
