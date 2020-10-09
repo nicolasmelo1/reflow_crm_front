@@ -136,7 +136,10 @@ const TemplateConfigurationForm = (props) => {
         // on another and so on.
         newSelectedFormulariesIds.forEach(selectedFormularyId => {
             let formularyIdsToVerifyIfDependent = [selectedFormularyId.value]
-            while (formularyIdsToVerifyIfDependent.length > 0) {
+            while (
+                formularyIdsToVerifyIfDependent.filter(formularyIdToVerifyIfDependent => 
+                    !dependentFormularyIds.map(dependentFormularyId => dependentFormularyId.value).includes(formularyIdToVerifyIfDependent)).length > 0
+            ) {
                 if (formularyIdsToVerifyIfDependent[0] in props.dependentForms) {
                     const dependentFormIdsToAdd = props.dependentForms[formularyIdsToVerifyIfDependent[0]]
                     formularyIdsToVerifyIfDependent = formularyIdsToVerifyIfDependent.concat(dependentFormIdsToAdd)
