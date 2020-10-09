@@ -61,7 +61,6 @@ const onGetTemplatesSettings = (source, page=1) => {
     return async (dispatch, getState) => {
         const response = await agent.http.TEMPLATES.getTemplateSettings(source, {page: page})
         if (response && response.status === 200) {
-            console.log(getState().templates.templates.update.data)
             const payload = {
                 pagination: response.data.pagination,
                 data: (page === 1) ? response.data.data: getState().templates.templates.update.data.concat(response.data.data)
@@ -105,7 +104,6 @@ const onCreateTemplateSettings = (body) => {
 const onRemoveTemplateSettings = (index) => {
     return (dispatch, getState) => {
         const templateData = getState().templates.templates.update
-        console.log(getState())
         if (templateData.data[index].id !== null) {
             agent.http.TEMPLATES.removeTemplateSettings(templateData.data[index].id)
         }

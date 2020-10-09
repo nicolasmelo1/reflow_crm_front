@@ -8,4 +8,7 @@ styled.p`
     color: #0dbf7e;
 `
 :
-styled(Text)``
+styled(Text)`
+    margin: 0;
+    color: #0dbf7e;
+`

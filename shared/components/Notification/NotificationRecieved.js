@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Linking } from 'expo'
 import moment from 'moment'
 import { strings, paths } from '../../utils/constants'
 import Router from 'next/router'
@@ -73,6 +72,7 @@ const NotificationRecieved = (props) => {
                 }
             }, {shallow: true})
         } else{
+            const Linking = require('expo-linking')
             Linking.openURL(Linking.makeUrl(paths.home(formName).asUrl, { formId: formId }))
         }
     }
@@ -118,15 +118,9 @@ const NotificationRecieved = (props) => {
       }, [refreshing]);
 
     useEffect(() => {
-        // sets source and sets the event listeners for the scroll on the notification cards container.
+        // sets source
         sourceRef.current = props.cancelToken.source()
-        if (notificationContainerRef.current) { 
-            notificationContainerRef.current.addEventListener('scroll', onScroll)
-        }
         return () => {
-            if (notificationContainerRef.current) { 
-                notificationContainerRef.current.removeEventListener('scroll', onScroll)
-            }
             if(sourceRef.current) {
                 sourceRef.current.cancel()
             }
@@ -189,7 +183,7 @@ const NotificationRecieved = (props) => {
         return (
             <div>
                 <NotificationTitle>{strings['pt-br']['notificationRecievedTitleLabel']}</NotificationTitle>
-                <NotificationContainer ref={notificationContainerRef}>
+                <NotificationContainer ref={notificationContainerRef} onScroll={e => onScroll()}>
                     {props.notification.data.map((notification, index)=> {
                         const notificationText = notification.notification
                         const splittedNotificationSentences = notificationText.split(/{(.*?)}(?!})/g)

@@ -176,7 +176,6 @@ class Dashboard extends React.Component {
         this.onLoadDashboard()
         if (process.env['APP'] === 'web') {
             this.prevScrollpos = this.chartContainerRef.current.scrollTop
-            this.chartContainerRef.current.addEventListener('scroll', this.hideMenuOnScroll)
         }
     }
 
@@ -188,16 +187,10 @@ class Dashboard extends React.Component {
             this.source = this.CancelToken.source()
             this.onLoadDashboard()
         }
-        if (process.env['APP'] === 'web' && this.chartContainerRef.current) {
-            this.chartContainerRef.current.addEventListener('scroll', this.hideMenuOnScroll)
-        }
     }
     componentWillUnmount = () => {
         if (this.source) {
             this.source.cancel()
-        }
-        if (process.env['APP'] === 'web' && this.chartContainerRef.current) {
-            this.chartContainerRef.current.removeEventListener('scroll', this.hideMenuOnScroll)
         }
     }
 
@@ -340,7 +333,7 @@ class Dashboard extends React.Component {
                     onGetDashboardSettings={this.props.onGetDashboardSettings}
                     />
                 ): (
-                    <DashboardChartsContainer ref={this.chartContainerRef}>
+                    <DashboardChartsContainer ref={this.chartContainerRef} onScroll={e=> this.hideMenuOnScroll}>
                         {this.props.dashboard.charts.length === 0 ? (
                             <p>{strings['pt-br']['dashboardNoChartsMessageLabel']}</p>
                         ) : (

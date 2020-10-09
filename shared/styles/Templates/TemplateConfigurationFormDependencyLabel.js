@@ -10,5 +10,6 @@ styled.small`
 :
 styled(Text)`
     margin: 0;
+    font-size: 12px;
     color: ${props => props.isDependencyLabel ? '#0dbf7e': '#17242D'}
 `

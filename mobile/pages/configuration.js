@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Text, SafeAreaView, TouchableOpacity } from 'react-native'
 import { Layout } from '@shared/components'
 import { withAuthenticationContext } from '../contexts'
-import { Linking } from 'expo'
+import * as Linking from 'expo-linking'
 import { paths } from '@shared/utils/constants'
 
 /**
@@ -18,6 +18,14 @@ class ConfigurationPage extends React.Component {
         return (
             <Layout setIsAuthenticated={this.props.authenticationContext.setIsAuthenticated}>
                 <SafeAreaView>
+                    <TouchableOpacity 
+                    style={{ width: '100%', textAlign:'center', backgroundColor:'#0dbf7e', padding: 10}} 
+                    onPress={e => this.props.navigation.navigate('template')}
+                    >
+                        <Text>
+                            Template
+                        </Text>
+                    </TouchableOpacity>
                     <TouchableOpacity 
                     style={{ width: '100%', textAlign:'center', backgroundColor:'#0dbf7e', padding: 10}} 
                     onPress={e => this.props.navigation.navigate('company')}

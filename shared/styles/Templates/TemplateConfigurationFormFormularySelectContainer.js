@@ -7,4 +7,6 @@ styled.div`
     padding: 0 0 10px 0;
 `
 :
-styled(View)``
+styled(View)`
+    padding: 0 0 10px 0;
+`

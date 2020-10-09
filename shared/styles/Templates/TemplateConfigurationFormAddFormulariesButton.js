@@ -12,4 +12,12 @@ styled.button`
     padding: 10px;
 `
 :
-styled(TouchableOpacity)``
+styled(TouchableOpacity)`
+    margin: 0 10px;
+    background-color: #17242D;
+    border-radius: 20px;
+    border: 0;
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
+`

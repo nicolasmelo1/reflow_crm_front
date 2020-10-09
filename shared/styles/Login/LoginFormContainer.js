@@ -15,7 +15,7 @@ const Form = (props) => {
                     toValue: 1,
                     duration: 1000,
                     easing: Easing.ease,
-                    useNativeDrive: true
+                    useNativeDriver: true
                 }).start()
             }
         }, 2000)

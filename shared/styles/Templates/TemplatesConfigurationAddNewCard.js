@@ -29,11 +29,16 @@ styled.div`
 `
 :
 styled(TouchableOpacity)`
-    border-width: 2px;
-    height: 250px;
-    width: 250px;
+    height: 200px;
+    width: 200px;
+    border: 1px solid #0dbf7e;
+    background-color: #fff;
     border-radius: 5px;
+    text-align: center;
+    align-self: center;
+    margin: 10px auto;
+    display:flex;
     align-items: center;
+    flex-direction: column;
     justify-content: center;
-    margin-bottom: 10px;
 `

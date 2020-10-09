@@ -2,11 +2,8 @@ import React, { createRef } from 'react'
 import { Text, TouchableOpacity } from 'react-native'
 import Router from 'next/router'
 import { connect } from 'react-redux';
-import { Linking } from 'expo'
 import actions from '../../redux/actions'
 import agent from '../../utils/agent'
-import { setStorageToken } from '../../utils/agent/utils'
-import isAdmin from '../../utils/isAdmin'
 import { strings, errors, paths } from '../../utils/constants'
 import { 
     LoginOnboardingButton,
@@ -95,6 +92,7 @@ class Login extends React.Component {
             if (process.env['APP'] === 'web') {
                 Router.push(paths.onboarding().asUrl, paths.onboarding().asUrl, { shallow: true })
             } else {
+                const Linking = require('expo-linking')
                 Linking.openURL(Linking.makeUrl(paths.onboarding().asUrl))
             }
         }

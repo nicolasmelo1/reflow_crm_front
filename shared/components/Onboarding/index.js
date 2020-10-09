@@ -1,7 +1,6 @@
 import React from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux';
-import { Linking } from 'expo'
 import actions from '../../redux/actions'
 import { numberUnmasker } from '../../utils/numberMasker'
 import { strings, paths, errors } from '../../utils/constants'
@@ -178,6 +177,7 @@ class Onboarding extends React.Component {
                 Router.push(paths.login().asUrl, paths.login().asUrl, { shallow: true })
             } 
         } else {
+            const Linking = require('expo-linking')
             Linking.openURL(Linking.makeUrl(paths.login().asUrl))
         }
     }

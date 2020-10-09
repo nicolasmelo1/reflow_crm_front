@@ -77,52 +77,47 @@ class Navbar extends React.Component {
         return false
     }
 
-    configDropdown = isAdmin(this.props.login.types?.defaults?.profile_type, this.props.login.user) ? 
-    [
-        /*{
-            label: strings['pt-br']['headerTemplateLabel'],
-            href: '#',
-            onClick: this.handleTemplates
-        }*/,
-        {
-            label: strings['pt-br']['headerCompanyLabel'],
-            href: '#',
-            onClick: this.handleCompany
-        },
-        /*{
-            label: strings['pt-br']['headerChangeDataLabel'],
-            href: '#'
-        },*/
-        {
-            label: strings['pt-br']['headerBillingLabel'],
-            href: '#',
-            onClick: this.handleBilling
-        },
-        {
-            label: strings['pt-br']['headerUsersLabel'],
-            href:'#',
-            onClick: this.handleUsers
-        },
-        {
-            label: strings['pt-br']['headerLogoutLabel'],
-            href: '#',
-            onClick: this.handleLogout
-        }
-    ] : [
-        /*{
-            label: strings['pt-br']['headerRefferalLabel'],
-            href: '#'
-        },*/
-        /*{
-            label: strings['pt-br']['headerChangeDataLabel'],
-            href: '#'
-        },*/
-        {
-            label: strings['pt-br']['headerLogoutLabel'],
-            href: '#',
-            onClick: this.handleLogout
-        }
-    ]
+    getConfigDropdown = () => {
+        let configDropdown = [
+            {
+                label: strings['pt-br']['headerLogoutLabel'],
+                href: '#',
+                onClick: this.handleLogout
+            }
+        ]
+        if (isAdmin(this.props.login.types?.defaults?.profile_type, this.props.login.user)) {
+            configDropdown =  [
+                {
+                    label: strings['pt-br']['headerCompanyLabel'],
+                    href: '#',
+                    onClick: this.handleCompany
+                },
+                {
+                    label: strings['pt-br']['headerBillingLabel'],
+                    href: '#',
+                    onClick: this.handleBilling
+                },
+                {
+                    label: strings['pt-br']['headerUsersLabel'],
+                    href:'#',
+                    onClick: this.handleUsers
+                },
+                {
+                    label: strings['pt-br']['headerLogoutLabel'],
+                    href: '#',
+                    onClick: this.handleLogout
+                }
+            ]
+            if (this.props.login.user.username === 'reflow@reflow.com.br') {
+                configDropdown.splice(0, 0, {
+                    label: strings['pt-br']['headerTemplateLabel'],
+                    href: '#',
+                    onClick: this.handleTemplates
+                })
+            }
+        } 
+        return configDropdown
+    }
 
     componentDidMount = () => {
         this.source = this.CancelToken.source()
@@ -160,7 +155,7 @@ class Navbar extends React.Component {
                 <NavbarItemsContainer isOpen={this.state.isOpen}>
                     <NavbarLink link={paths.home(this.props.login.primaryForm).asUrl} slug={paths.home().asUrl} icon='tasks' label={strings['pt-br']['headerGestaoLabel']}/>
                     <NavbarLink badge={this.props.notificationBadge > 0 ? this.props.notificationBadge : null} link={paths.notifications().asUrl} slug={paths.notifications().asUrl} icon='bell' label={strings['pt-br']['headerNotificationLabel']}/>
-                    <NavbarDropdown icon='cog' label={strings['pt-br']['headerSettingsLabel']} items={this.configDropdown}/>
+                    <NavbarDropdown icon='cog' label={strings['pt-br']['headerSettingsLabel']} items={this.getConfigDropdown()}/>
                 </NavbarItemsContainer>
             </NavbarContainer>
         )

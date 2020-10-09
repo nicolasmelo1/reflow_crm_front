@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View } from 'react-native'
+import { Modal, Switch, Text, View, ScrollView } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { Select } from '../Utils'
 import { types, strings, errors } from '../../utils/constants'
@@ -231,7 +231,7 @@ const TemplateConfigurationForm = (props) => {
                     })
                     setFormErrors(error)
                 } else if (response.data.error.reason && response.data.error.reason.includes('form_ids_should_be_defined_when_creating')) {
-                    formErrors['form_ids'] = 'Quando você está criando um template, ao menos uma página deve ser adicionada'
+                    formErrors['form_ids'] = strings['pt-br']['templateConfigurationFormularyFormIdsShouldBeDefinedWhenCreatingError']
                     setFormErrors({...formErrors})
                 }
             }
@@ -253,6 +253,7 @@ const TemplateConfigurationForm = (props) => {
     }
 
     /**
+     * WEB ONLY
      * This is used for WEB only for resizing the text input while the user types.
      * 
      * @param {Object} e - The event
@@ -276,15 +277,128 @@ const TemplateConfigurationForm = (props) => {
 
     useEffect(() => {
         // This adds an event listener for resizing the text area while the user types on the description text input
-        descriptionInputRef.current.addEventListener('input', resizeDescriptionTextArea)
+        if (process.env['APP'] === 'web') descriptionInputRef.current.addEventListener('input', resizeDescriptionTextArea)
         return () => {
-            descriptionInputRef.current.removeEventListener('input', resizeDescriptionTextArea)
+            if (process.env['APP'] === 'web') descriptionInputRef.current.removeEventListener('input', resizeDescriptionTextArea)
         }
     }, [])
 
     const renderMobile = () => {
         return (
-            <View></View>
+            <Modal animationType="slide">
+                <ScrollView keyboardShouldPersistTaps={'handled'}>
+                    <TemplateConfigurationFormContainer>
+                        <TemplatesHeader>
+                            <TemplatesGoBackButton onPress={e=> onCloseFormulary()}>
+                                <FontAwesomeIcon icon={'times'} />
+                            </TemplatesGoBackButton>
+                        </TemplatesHeader>
+                        <TemplateConfigurationFormFieldContainer>
+                            <TemplateConfigurationFormCheckboxesContainer>
+                                <Switch value={props.templateConfiguration.is_public} onValueChange={e => onChangeTemplateIsPublic(!props.templateConfiguration.is_public)}/>
+                                <TemplateConfigurationFormCheckboxText>
+                                    {' ' + strings['pt-br']['templateConfigurationFormularyIsPublicFieldLabel']}
+                                </TemplateConfigurationFormCheckboxText>
+                                <Text style={{ color: '#bfbfbf', fontSize: 12}}>
+                                    {strings['pt-br']['templateConfigurationFormularyIsPublicTemplateExplanation']}
+                                </Text> 
+                            </TemplateConfigurationFormCheckboxesContainer>
+                        </TemplateConfigurationFormFieldContainer>
+                        <TemplateConfigurationFormFieldContainer>
+                            <TemplateConfigurationFormFieldLabel>
+                                {strings['pt-br']['templateConfigurationFormularyNameFieldLabel']}
+                                <TemplateConfigurationFormFieldLabelRequired>*</TemplateConfigurationFormFieldLabelRequired>
+                            </TemplateConfigurationFormFieldLabel>
+                            <TemplateConfigurationFormFieldInput
+                            errors={formErrors.display_name}
+                            type={'text'}
+                            onChange={e=>onChangeTemplateName(e.nativeEvent.text)}
+                            value={props.templateConfiguration.display_name}
+                            />
+                        </TemplateConfigurationFormFieldContainer>
+                        <TemplateConfigurationFormFieldContainer>
+                            <TemplateConfigurationFormFieldLabel>
+                                {strings['pt-br']['templateConfigurationFormularyDescriptionFieldLabel']}
+                                <TemplateConfigurationFormFieldLabelRequired>*</TemplateConfigurationFormFieldLabelRequired>
+                            </TemplateConfigurationFormFieldLabel>
+                            <TemplateConfigurationFormFieldTextArea
+                            errors={formErrors.description}
+                            multiline={true}
+                            numberOfLines={10}
+                            ref={descriptionInputRef}
+                            onChange={e=>onChangeTemplateDescription(e.nativeEvent.text)}
+                            value={props.templateConfiguration.description}
+                            />
+                        </TemplateConfigurationFormFieldContainer>
+                        <TemplateConfigurationFormFieldContainer>
+                            <TemplateConfigurationFormFieldLabel>
+                                {strings['pt-br']['templateConfigurationFormularyThemeTypeSelectorFieldLabel']}
+                                <TemplateConfigurationFormFieldLabelRequired>*</TemplateConfigurationFormFieldLabelRequired>
+                            </TemplateConfigurationFormFieldLabel>
+                            <TemplateConfigurationFormSelectContainer isOpen={isOpenThemeTypeSelect} errors={formErrors.theme_type}>
+                                <Select
+                                options={themeTypeOptions}
+                                initialValues={themeTypeOptions.filter(themeTypeOption => themeTypeOption.value === props.templateConfiguration.theme_type)}
+                                onChange={onChangeThemeType}
+                                setIsOpen={setIsOpenThemeTypeSelect}
+                                isOpen={isOpenThemeTypeSelect}
+                                />
+                            </TemplateConfigurationFormSelectContainer>
+                        </TemplateConfigurationFormFieldContainer>
+                        {formErrors.form_ids ? (
+                            <Text style={{ color: 'red', fontSize: 12 }}>
+                                {formErrors.form_ids}
+                            </Text> 
+                        ) : null}
+                        {isOpenAddFormularies ? (
+                            <TemplateConfigurationFormFieldContainer>
+                                <TemplateConfigurationFormFieldLabel>
+                                    {strings['pt-br']['templateConfigurationFormularyFormularySelectorFieldLabel']}
+                                </TemplateConfigurationFormFieldLabel>
+                                {selectedFormulariesIds.map((selectedFormularyId, index) => (
+                                    <TemplateConfigurationFormFormularySelectContainer key={selectedFormularyId.value ? selectedFormularyId.value: -1}>
+                                        <TemplateConfigurationFormSelectContainer>
+                                            <Select
+                                            options={props.formulariesOptions.filter(formularyOption => !selectedFormulariesIds.map(selectedFormularyId => selectedFormularyId.value).includes(formularyOption.value))}
+                                            initialValues={props.formulariesOptions.filter(formularyOption => formularyOption.value === selectedFormularyId.value)}
+                                            onChange={(data) => onSelectFormularyId(index, data)}
+                                            />
+                                        </TemplateConfigurationFormSelectContainer>
+                                        {!['', null].includes(selectedFormularyId.isDependentFromFormName) ? (
+                                            <View style={{ display: 'flex', flexDirection: 'row'}}>
+                                                <TemplateConfigurationFormDependencyLabel>
+                                                    {strings['pt-br']['templateConfigurationFormularyDependencyFromAlert']}
+                                                </TemplateConfigurationFormDependencyLabel>
+                                                <TemplateConfigurationFormDependencyLabel isDependencyLabel={true}>
+                                                    {selectedFormularyId.isDependentFromFormName}
+                                                </TemplateConfigurationFormDependencyLabel>
+                                            </View>
+                                        ): null}
+                                    </TemplateConfigurationFormFormularySelectContainer>
+                                ))}
+                            </TemplateConfigurationFormFieldContainer>    
+                        ) : (
+                            <View>
+                                {!['', null].includes(props.templateConfiguration.id) ? (
+                                    <Text style={{ fontSize: 12, color: '#bfbfbf', marginTop: 0, marginLeft: 10, marginRight: 10, marginBottom: 5 }}>
+                                        {strings['pt-br']['templateConfigurationFormularyFormulariesWrittenInStoneAlert']}
+                                    </Text> 
+                                ) : null}
+                                <TemplateConfigurationFormAddFormulariesButton onPress={e=> setIsOpenAddFormularies(true)}>
+                                    <TemplateConfigurationFormAddFormulariesButtonLabel>
+                                        {strings['pt-br']['templateConfigurationFormularyAddFormulariesButtonLabel']}
+                                    </TemplateConfigurationFormAddFormulariesButtonLabel>
+                                </TemplateConfigurationFormAddFormulariesButton>
+                            </View>
+                        )}
+                        <TemplateConfigurationFormSaveButton onPress={e => onSubmit()}>
+                            <TemplateConfigurationFormSaveLabel>
+                                {strings['pt-br']['templateConfigurationFormularySaveButtonLabel']}
+                            </TemplateConfigurationFormSaveLabel>
+                        </TemplateConfigurationFormSaveButton>
+                    </TemplateConfigurationFormContainer>
+                </ScrollView>
+            </Modal>
         )
     }
 
@@ -313,8 +427,6 @@ const TemplateConfigurationForm = (props) => {
                         <TemplateConfigurationFormFieldLabelRequired>*</TemplateConfigurationFormFieldLabelRequired>
                     </TemplateConfigurationFormFieldLabel>
                     <TemplateConfigurationFormFieldInput
-                    autoComplete="off" 
-                    list="autocompleteOff"
                     errors={formErrors.display_name}
                     type={'text'}
                     onChange={e=>onChangeTemplateName(e.target.value)}

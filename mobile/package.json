@@ -28,7 +28,7 @@
     "credit-card-type": "^9.0.1",
     "expo": "^38.0.0",
     "expo-image-picker": "~8.3.0",
-    "expo-linking": "^1.0.3",
+    "expo-linking": "^1.0.4",
     "expo-web-browser": "^8.3.1",
     "form-data": "^3.0.0",
     "moment": "^2.27.0",
@@ -48,7 +48,8 @@
     "redux": "^4.0.5",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0",
-    "styled-components": "^5.2.0"
+    "styled-components": "^5.2.0",
+    "update": "^0.7.4"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",

@@ -3,13 +3,12 @@ import styled from 'styled-components'
 import { Text } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
-styled.h2`
-    color: ${props => props.isEmpty ? '#bfbfbf': '#0dbf7e'};
+styled.p`
     margin: 0;
+    color: #17242D;
 `
 :
 styled(Text)`
-    color: ${props => props.isEmpty ? '#bfbfbf': '#0dbf7e'};
-    font-size: 24px;
     margin: 0;
+    color: #17242D;
 `

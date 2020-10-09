@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import { View } from 'react-native'
+import { View, Text } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import TemplateConfigurationForm from './TemplateConfigurationForm'
 import Alert from '../Utils/Alert'
-import { strings } from '../../utils/constants'
+import { types, strings } from '../../utils/constants'
 import {
     TemplatesConfigurationCardContainer,
     TemplatesConfigurationCardLabel,
@@ -40,9 +40,57 @@ const TemplateConfigurationCard = (props) => {
     const [showAlert, setShowAlert] = useState(false)
     const [isFormOpen, setIsFormOpen] = useState(false)
 
+    const templateThemeType = props.types?.defaults?.theme_type ? props.types.defaults.theme_type.filter(themeType => themeType.id === props.templateConfiguration.theme_type) : []
+
     const renderMobile = () => {
         return (
-            <View></View>
+            <View>
+                <Alert 
+                alertTitle={strings['pt-br']['templateConfigurationCardRemoveTemplateAlertTitle']} 
+                alertMessage={strings['pt-br']['templateConfigurationCardRemoveTemplateAlertMessage']} 
+                show={showAlert} 
+                onHide={() => {
+                    setShowAlert(false)
+                }} 
+                onAccept={() => {
+                    setShowAlert(false)
+                    props.onRemoveTemplateConfiguration()
+                }}
+                onAcceptButtonLabel={strings['pt-br']['templateConfigurationCardRemoveTemplateAlertAcceptButton']}
+                />
+                <TemplatesConfigurationCardContainer>
+                    <TemplatesConfigurationCardContainerHeader>
+                        <TemplatesConfigurationCardHeaderButton onPress={e=> setIsFormOpen(true)}>
+                            <FontAwesomeIcon icon={'pencil-alt'}/>
+                        </TemplatesConfigurationCardHeaderButton>
+                        <TemplatesConfigurationCardHeaderButton onPress={e=> setShowAlert(true)}>
+                            <FontAwesomeIcon icon={'trash'}/>
+                        </TemplatesConfigurationCardHeaderButton>
+                    </TemplatesConfigurationCardContainerHeader>
+                    <TemplatesConfigurationCardLabel isEmpty={['', null].includes(props.templateConfiguration.display_name)}>
+                        {['', null].includes(props.templateConfiguration.display_name) ? 
+                        strings['pt-br']['templateConfigurationCardEmptyCardTitleLabel'] : 
+                        props.templateConfiguration.display_name}
+                    </TemplatesConfigurationCardLabel>
+                    {templateThemeType.length > 0 ? (
+                        <Text>
+                            {types('pt-br', 'theme_type', templateThemeType[0].name)}
+                        </Text>
+                    ): null}
+                </TemplatesConfigurationCardContainer>
+                {isFormOpen ? (
+                    <TemplateConfigurationForm 
+                    types={props.types}
+                    templateConfiguration={props.templateConfiguration}
+                    onChangeTemplateConfigurationData={props.onChangeTemplateConfigurationData}
+                    onCreateOrUpdateTemplateConfiguration={props.onCreateOrUpdateTemplateConfiguration}
+                    dependentForms={props.dependentForms}
+                    formulariesOptions={props.formulariesOptions}
+                    isOpen={isFormOpen}
+                    setIsOpen={setIsFormOpen}
+                    />
+                ): null}
+            </View>
         )
     }
 
@@ -76,6 +124,11 @@ const TemplateConfigurationCard = (props) => {
                         strings['pt-br']['templateConfigurationCardEmptyCardTitleLabel'] : 
                         props.templateConfiguration.display_name}
                     </TemplatesConfigurationCardLabel>
+                    {templateThemeType.length > 0 ? (
+                        <small>
+                            {types('pt-br', 'theme_type', templateThemeType[0].name)}
+                        </small>
+                    ): ''}
                 </TemplatesConfigurationCardContainer>
                 <TemplateConfigurationForm 
                 types={props.types}

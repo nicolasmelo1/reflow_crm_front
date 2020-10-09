@@ -8,5 +8,6 @@ styled.div`
 `
 :
 styled(View)`
-    margin: 0 0 15px 0;;
+    margin: 0 0 15px 0;
+    padding: 0 10px;
 `

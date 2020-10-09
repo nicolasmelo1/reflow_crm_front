@@ -12,13 +12,13 @@ const Logo = (props) => {
                 toValue: 1,
                 duration: 1000,
                 easing: Easing.ease,
-                useNativeDrive: true
+                useNativeDriver: true
             }),
             Animated.timing(xAnim, {
                 toValue: -210,
                 duration: 1000,
                 easing: Easing.ease,
-                useNativeDrive: true
+                useNativeDriver: true
             })
         ], {useNativeDriver: true}).start()
     }, [])

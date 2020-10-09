@@ -1,6 +1,5 @@
 import React from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { Modal, Text } from 'react-native'
+import { View } from 'react-native'
 import axios from 'axios'
 import { connect } from 'react-redux'
 import actions from '../../redux/actions'
@@ -42,21 +41,37 @@ class Templates extends React.Component {
 
     renderMobile = () => {
         return (
-            <TemplateSelect
-            types={this.props.types}
-            groups={this.props.groups}
-            templates={this.props.templates}
-            loadedTemplate={this.props.loadedTemplate}
-            source={this.source}
-            cancelToken={this.CancelToken}
-            onGetForms={this.props.onGetForms}
-            onGetTemplate={this.props.onGetTemplate}
-            onGetTemplateFormulary={this.props.onGetTemplateFormulary}
-            onGetTemplates={this.props.onGetTemplates}
-            onSelectTemplate={this.props.onSelectTemplate}
-            setAddTemplates={this.props.setAddTemplates}
-            />
-
+            <View>
+                {this.props.isEditing ? (
+                    <TemplateConfiguration
+                    cancelToken={this.CancelToken}
+                    types={this.props.types}
+                    onGetTemplatesSettings={this.props.onGetTemplatesSettings}
+                    onGetTemplatesFormulariesOptionsSettings={this.props.onGetTemplatesFormulariesOptionsSettings}
+                    onGetTempalatesDependsOnSettings={this.props.onGetTempalatesDependsOnSettings}
+                    templatesConfiguration={this.props.templatesConfiguration}
+                    onChangeTemplateSettingsStateData={this.props.onChangeTemplateSettingsStateData}
+                    onCreateTemplateSettings={this.props.onCreateTemplateSettings}
+                    onUpdateTemplateSettings={this.props.onUpdateTemplateSettings}
+                    onRemoveTemplateSettings={this.props.onRemoveTemplateSettings}
+                    />
+                ) : (
+                    <TemplateSelect
+                    types={this.props.types}
+                    groups={this.props.groups}
+                    templates={this.props.templates}
+                    loadedTemplate={this.props.loadedTemplate}
+                    source={this.source}
+                    cancelToken={this.CancelToken}
+                    onGetForms={this.props.onGetForms}
+                    onGetTemplate={this.props.onGetTemplate}
+                    onGetTemplateFormulary={this.props.onGetTemplateFormulary}
+                    onGetTemplates={this.props.onGetTemplates}
+                    onSelectTemplate={this.props.onSelectTemplate}
+                    setAddTemplates={this.props.setAddTemplates}
+                    />
+                )}
+            </View>
         )
     }
 

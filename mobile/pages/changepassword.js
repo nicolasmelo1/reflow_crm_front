@@ -3,7 +3,7 @@ import ChangePassword from '@shared/components/ChangePassword'
 import Layout from '@shared/components/Layout'
 import { paths } from '@shared/utils/constants'
 import { withAuthenticationContext } from '../contexts'
-import { Linking } from 'expo'
+import * as Linking from 'expo-linking'
 
 class ChangePasswordPage extends React.Component {
     constructor(props) {

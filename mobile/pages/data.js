@@ -7,7 +7,7 @@ import { withAuthenticationContext } from '../contexts'
 import Dashboard from '@shared/components/Dashboard'
 import { paths } from '@shared/utils/constants'
 
-import { Linking } from 'expo'
+import * as Linking from 'expo-linking'
 
 class Data extends React.Component {
     constructor (props) {

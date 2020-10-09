@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { View } from 'react-native'
+import { TouchableOpacity } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.button`
@@ -10,4 +10,12 @@ styled.button`
     background-color: transparent;
 `
 :
-styled(View)``
+styled(TouchableOpacity)`
+    margin: 0;
+    border: 0;
+    padding: 10px 10px 0 10px;
+    align-content: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
+`

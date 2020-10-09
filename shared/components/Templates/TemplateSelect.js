@@ -41,9 +41,29 @@ import {
  * This needs to be really intuitive because it always show on the onboarding, after the user makes his first sign-in, this
  * component is loaded before he is able to do any action in the platform.
  * 
- * 
- * 
- * @param {Type} props - {go in detail about every prop it recieves}
+ * @param {Object} types - the types state, this types are usually the required data from this system to work. 
+ * Types defines all of the field types, form types, format of numbers and dates and many other stuff.
+ * @param {Array<Object>} groups - An array of objects, this is the state data that is used to load the sidebar data.
+ * So each data in the array are the group and inside of each group there are the formularies it contains.
+ * @param {Array<Object>} templates - This array contains each of the templates that we display to the user for selection.
+ * Those templates are the templates of the "Big Groups" and from each theme type.
+ * @param {Object} loadedTemplate - The loaded template data. This data holds stuff like description, the form_ids it contains
+ * and so on.
+ * @param {Object} source - This is actually an axios source that holds a token, every request we make will have this source.
+ * this way we can cancel a request if the user unmounts a company or on other ocasions.
+ * @param {Object} cancelToken - A axios cancel token. We use this so we can cancel a request and the promise when the user unmounts a component,
+ * before the data is retrieved
+ * @param {Function} onGetForms - A redux action function used to retrieve the formularies that is used on the sidebar (this retrieves
+ * the `groups` data)
+ * @param {Function} onGetTemplate - A redux action function used to retrive the `loadedTemplate` data.
+ * @param {Function} onGetTemplateFormulary - A redux action function used to retrieve the data of a theme formulary. This way
+ * we can preview the formulary to the user before selection.
+ * @param {Function} onGetTemplates - A redux action function to retrieve the `templates` data.
+ * @param {Function} onSelectTemplate - A redux action function that does not change the state, instead it just "tells" the backend
+ * which theme has been select so it can begin constructing the data for the user based on the templates.
+ * @param {Function} setAddTemplates - This is not a redux function, this function needs to be set on the parent component that uses 
+ * this component. (not the Template component, the parent of Template component) We need this because we mount this component
+ * on the hole screen, so every other component is unmounted when TemplateSelect is mounted.
  */
 const TemplateSelect = (props) => {
     const [selectedThemeType, setSelectedThemeType] = useState(null)

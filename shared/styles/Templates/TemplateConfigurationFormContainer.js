@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { View } from 'react-native'
+import { SafeAreaView } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
@@ -18,4 +18,6 @@ styled.div`
     overflow: auto;
 `
 :
-styled(View)``
+styled(SafeAreaView)`
+    padding: 10px;
+`
