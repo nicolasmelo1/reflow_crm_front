@@ -7,7 +7,22 @@ import { persistReducer } from 'redux-persist'
 
 let storage = null
 if (process.env['APP'] === 'web' || typeof document !== 'undefined') {
-    storage = require('redux-persist/lib/storage').default
+    const createWebStorage = require('redux-persist/lib/storage/createWebStorage').default
+    const createNoopStorage = () => {
+        return {
+            getItem(_key) {
+                return Promise.resolve(null);
+            },
+            setItem(_key, value) {
+                return Promise.resolve(value);
+            },
+            removeItem(_key) {
+                return Promise.resolve();
+            },
+        }
+    }
+    storage = typeof window !== "undefined" ? createWebStorage("local") : createNoopStorage();
+
 } else {
     storage = require('react-native').AsyncStorage
 }
