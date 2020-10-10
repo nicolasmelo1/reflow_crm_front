@@ -12,8 +12,7 @@ styled.div`
     width: var(--app-width);
     background-color: #fff;
     transition: bottom 0.3s ease-in-out, padding 0.3s ease-in-out;
-    transform: translate3d(0,0,0);
-    z-index: 11;
+    z-index: 20;
 
     @media(max-width: 640px) {
         overflow: auto;

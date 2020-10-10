@@ -14,8 +14,6 @@ const getPadding = (props) => {
 export default process.env['APP'] === 'web' ? 
 styled.div`
     padding: ${props => getPadding(props)};
-    transform: ${props => (props.sidebarIsOpen ? 'translate(310px, 0)' : 'translate(0, 0)')}; 
-    transition: transform 0.3s ease-in-out;
     max-width: 100%;    
     background-color: ${props => props.isNotLogged ? '#fff': '#f2f2f2'};
     height: calc(var(--app-height) - 70px);

@@ -10,6 +10,7 @@ styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    color: #17242D !important;
     height: 80%;
     text-align: left !important;
     border-radius: 5px;
