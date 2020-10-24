@@ -36,7 +36,7 @@ const User = (props) => {
                 }
             } catch {}
         }  
-        if (options.length === 0) {
+        if (options.length === 0 && props.type !== 'preview') {
             fetchUserOptions(source)
         }
         return () => {

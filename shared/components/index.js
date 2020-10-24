@@ -10,7 +10,9 @@ import Billing from './Billing'
 import Users from './Users'
 import Company from './Company'
 import Templates from './Templates'
+import RichText from './RichText'
 
+export { RichText }
 export { Templates }
 export { Company }
 export { Users }

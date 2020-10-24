@@ -11,6 +11,7 @@ import DASHBOARD from './dashboard'
 import BILLING from './billing'
 import COMPANY from './company'
 import USERS from './users'
+import RICH_TEXT from './rich_text'
 
 export default {
     CHANGE_PASSWORD,
@@ -25,5 +26,6 @@ export default {
     TEMPLATES,
     DASHBOARD,
     BILLING,
-    USERS
+    USERS,
+    RICH_TEXT
 }
