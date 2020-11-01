@@ -6,10 +6,7 @@ import { View } from 'react-native'
  * @param {Type} props - {go in detail about every prop it recieves}
  */
 const Content = (props) => {
-    const inputRef = React.useRef(null)
-    const onWriteText = (e) => {
-        props.onChange(inputRef.current.textContent)
-    }
+
 
     const renderMobile = () => {
         return (
@@ -19,9 +16,12 @@ const Content = (props) => {
 
     const renderWeb = () => {
         return (
-            <div ref={inputRef} onInput={onWriteText} contentEditable={true} suppressContentEditableWarning={true} style={{display: 'inline-block', whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontWeight: props.content.is_bold? 'bold': 'normal'}}>
-                {props.content.text}
-            </div>
+            <span 
+            draggabble="false"
+            style={{fontWeight: props.content.is_bold? 'bold': 'normal', fontStyle: props.content.is_italic ? 'italic': 'normal'}}
+            >
+                {`${props.content.text}`}
+            </span>
         )
     }
 

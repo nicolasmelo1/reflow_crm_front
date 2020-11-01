@@ -38,16 +38,18 @@ const Header = (props) => (
         <link rel="icon" type="image/png" sizes="96x96" href="/pwa/images/icons/favicon-96x96.png"/>
         <link rel="icon" type="image/png" sizes="16x16" href="/pwa/images/icons/favicon-16x16.png"/>
         <link rel="manifest" href="/pwa/manifest.json"/>
-        <script type="text/javascript" src="/dragdroptouch/js/dragdroptouch.js"></script>
+        <script type="text/javascript" src="/dragdroptouch/js/dragdroptouch.js"/>
         <link rel="stylesheet" href="/bulma/css/bulma.min.css" />
         <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'></link>
         <link rel="stylesheet" href="/bootstrap/css/bootstrap-grid.min.css"/>
         <link rel="stylesheet" href="/bootstrap/css/bootstrap-reboot.min.css"/>
         <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css"/>
-        <script src="https://fast.conpass.io/S97nHXnbeCE.js"></script>
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-144919276-1"></script>
-        <script type="text/javascript" src="/google/analytics/index.js"></script>
-        <script type="text/javascript" src="/google/tagmanager/index.js"></script>
+        <script src="https://fast.conpass.io/S97nHXnbeCE.js"/>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-144919276-1"/>
+        <script type="text/javascript" src="/google/analytics/index.js"/>
+        <script type="text/javascript" src="/google/tagmanager/index.js"/>
+        <script type="text/javascript" src="/facebook/pixel/index.js"/>
+        <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=832411284250599&ev=PageView&noscript=1"/></noscript>
     </Head>
 )
 

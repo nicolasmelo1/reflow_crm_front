@@ -22,7 +22,7 @@ const Table = (props) => {
             return block
         })
     })
-    console.log(tableData)
+
     const renderMobile = () => {
         return (
             <View></View>
@@ -37,7 +37,7 @@ const Table = (props) => {
                         <tr key={tableRowIndex}>
                             {tableColumnsData.map((block, columnIndex) => (
                                 <td key={columnIndex} style={{ border: '1px solid #000', padding: '10px'}}>
-                                    {block ? (<Blocks block={block}/>) : ('')}
+                                    {block ? (<Blocks {...props} block={block}/>) : ('')}
                                 </td>
                             ))}
                         </tr>

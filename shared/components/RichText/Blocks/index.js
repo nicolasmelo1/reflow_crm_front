@@ -1,25 +1,27 @@
 import React from 'react'
 import { View } from 'react-native'
+import generateUUID from '../../../utils/generateUUID'
 
 /**
  * {Description of your component, what does it do}
  * @param {Type} props - {go in detail about every prop it recieves}
  */
 const Block = (props) => {
-    const onChangeBlock
-
-    const createNewContent = ({ isBold, isCode, isItalic, isUnderline, latexEquation, link, markerColor, order, text, textColor}) => {
+    const createNewContent = (options = {}) => {
+        const { isBold, isCode, isItalic, isUnderline, latexEquation, link, markerColor, order, text, textColor } = options
         return {
-            is_bold: isBold,
-            is_code: isCode,
-            is_italic: isItalic,
-            is_underline: isUnderline,
-            latex_equation: latexEquation,
-            link: link,
-            marker_color: markerColor,
+            id: null,
+            uuid: generateUUID(),
+            is_bold: isBold ? isBold : false,
+            is_code: isCode ? isCode : false,
+            is_italic: isItalic ? isItalic : false,
+            is_underline: isUnderline ? isUnderline : false,
+            latex_equation: latexEquation ? latexEquation : null,
+            link: link ? link : null,
+            marker_color: markerColor ? markerColor : null,
             order: order,
-            text: text,
-            text_color: textColor,
+            text: text ? text : '',
+            text_color: textColor ? textColor : '',
         }
     }
 
@@ -27,7 +29,11 @@ const Block = (props) => {
         text: require('./Text'),
         table: require('./Table')
     }
-    const newProps = {...props, createNewContent: createNewContent}
+
+    const newProps = {
+        ...props, 
+        createNewContent: createNewContent
+    }
     const Component = blocks[(props.block.block_type === 2) ? 'table' : 'text'].default
     return <Component {...newProps}/>
 }
