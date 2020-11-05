@@ -232,19 +232,16 @@ const Text = (props) => {
      * lets go further:
      * 
      * Suppose the following contents: ["i", "love", "cats"] 
-     * The index of the content we will change when we insert the letter "a" is 2. So what we do first is insert "ts" from "cats" 
-     * in index+1. This gives us: ["i", "love", "cats", "ts"] 
-     * Next the other value to insert is "a" in index+1. So this will give us: This gives us: ["i", "love", "cats", "a", "ts"]
-     * And last but not least: "ca" in index+1. So this will give us: This gives us: ["i", "love", "cats", "ca", "a", "ts"]
+     * The index of the content we will change when we insert the letter "a" is 2. 
+     * So what we do is get the "ca" that goes on the left of the text, the new "a" that goes on the middle and last but not least "ts" comes on the right
+     * With this we create a new array with [content_of_ca, content_of_a, content_of_ts] to be inserted.
      * 
-     * To finish as you must been thinking we remove the index we needed to update, so "cats". And then we have our phrase 
-     * with their specific contents
      * @param {*} content 
      * @param {*} contentIndex 
      * @param {*} startIndexToSelectTextInContent 
      * @param {*} insertedText 
      */
-    const addNewContentInTheMiddleOfContent = (content, contentIndex, startIndexToSelectTextInContent, endIndexToSelectTextInContent, currentText, insertedText) => {
+    const addNewContentInTheMiddleOfContent = (content, startIndexToSelectTextInContent, endIndexToSelectTextInContent, currentText, insertedText) => {
         const toKeepContentTextLeft = currentText.substring(0, startIndexToSelectTextInContent)
         const toKeepContentTextRight = currentText.substring(endIndexToSelectTextInContent, endIndexToSelectTextInContent + currentText.length)
         const contentLeft = props.createNewContent({
@@ -282,7 +279,7 @@ const Text = (props) => {
             textColor: content.text_color,
             text: toKeepContentTextRight
         })
-        props.block.rich_text_block_contents[contentIndex] = [contentLeft, newContent, contentRight]
+        return [contentLeft, newContent, contentRight]
     }
 
     /**
@@ -314,14 +311,15 @@ const Text = (props) => {
             props.block.rich_text_block_contents[contentToInsertText.contentIndex].text = currentText.slice(0, contentToInsertText.startIndexToSelectTextInContent) + 
                 insertedText + currentText.slice(contentToInsertText.startIndexToSelectTextInContent)
         } else if (!isRangeSelected) {
-            addNewContentInTheMiddleOfContent(
+            const contentsToAddInIndex = addNewContentInTheMiddleOfContent(
                 contentToInsertText.content, 
-                contentToInsertText.contentIndex, 
                 contentToInsertText.startIndexToSelectTextInContent, 
                 contentToInsertText.endIndexToSelectTextInContent,
                 currentText, 
                 insertedText
             )
+            props.block.rich_text_block_contents[contentToInsertText.contentIndex] = contentsToAddInIndex
+            // Reference: https://stackoverflow.com/questions/10865025/merge-flatten-an-array-of-arrays
             props.block.rich_text_block_contents = [].concat.apply([], props.block.rich_text_block_contents)
         }
         return insertedText
@@ -419,7 +417,7 @@ const Text = (props) => {
                 // delete contents
                 const contentCurrentText = contents[content.contentIndex].text
                 const toChangeContentText = contentCurrentText.substring(content.startIndexToSelectTextInContent, content.endIndexToSelectTextInContent)
-                addNewContentInTheMiddleOfContent(
+                const contentsToAddInIndex = addNewContentInTheMiddleOfContent(
                     content.content, 
                     content.contentIndex, 
                     content.startIndexToSelectTextInContent, 
@@ -427,8 +425,13 @@ const Text = (props) => {
                     contentCurrentText, 
                     toChangeContentText
                 )
+                // with this the type of the data in the contentIndex of props.block.rich_text_block_contents chages from object to array
+                // we need to do this because we do it on a for loop, which might affect the further index updates in the array.
+                // You will see that after the forEach we flatten the array of a arrays to a single array.
+                props.block.rich_text_block_contents[content.contentIndex] = contentsToAddInIndex
                 changedText = changedText + toChangeContentText
             })
+            // Reference: https://stackoverflow.com/questions/10865025/merge-flatten-an-array-of-arrays
             props.block.rich_text_block_contents = [].concat.apply([], props.block.rich_text_block_contents)
             mergeAndDeleteEmptyContents(changedText)
             props.updateBlocks()
