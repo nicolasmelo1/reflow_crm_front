@@ -65,7 +65,7 @@ class RichText extends React.Component {
                             uuid: "dbf716aa-7b01-4477-89ef-3013ecbce2a3",
                             text: "Gatos\n",
                             is_bold: false,
-                            is_italic: false,
+                            is_italic: true,
                             is_underline: false,
                             is_code: false,
                             latex_equation: "",

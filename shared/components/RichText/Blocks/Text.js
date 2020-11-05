@@ -8,6 +8,10 @@ import { renderToString } from 'react-dom/server'
  * @param {Type} props - {go in detail about every prop it recieves}
  */
 const Text = (props) => {
+    const stateOfSelectionData = {
+        isBold: false,
+        isItalic: false
+    }
     const inputRef = React.useRef(null)
     const caretPositionRef = React.useRef(null)
     const whereCaretPositionShouldGoAfterUpdateRef = React.useRef({
@@ -15,6 +19,7 @@ const Text = (props) => {
         positionInContent: 0
     })
     const [innerHtml, setInnerHtml] = useState('')
+    const [stateOfSelection, setStateOfSelection] = useState(stateOfSelectionData)
 
     /**
      * On the browser, when we update the state, the caret jumps (it means it disappear) so the user needs 
@@ -47,6 +52,8 @@ const Text = (props) => {
                 selection.addRange(range)
             }
             caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
+
+            checkStateOfSelectedElementAndUpdateState()
         }
     }
 
@@ -102,19 +109,22 @@ const Text = (props) => {
     const onSelectText = (e) => {
         if (e.nativeEvent.type === 'mouseup') {
             caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
+            checkStateOfSelectedElementAndUpdateState()
         }
     }
 
     /**
      * This function is used to delete the contents from the state and merge together equal contents
      */
-    const mergeAndDeleteEmptyContents = () => {
+    const mergeAndDeleteEmptyContents = (insertedText) => {
         let newContents = []
         let contentsToConsider = []
         let contents = props.block.rich_text_block_contents
+        
         for (let i=0; i < contents.length; i++) {
-            if (!/^(\s*)$/g.test(contents[i].text)) {
-                contentsToConsider.push(contents[i]) 
+            if (contents[i].text !== '') {
+            //if (!/^(\s*)$/g.test(contents[i].text)) {
+                contentsToConsider.push(contents[i])
             }
         }
         contents = [...contentsToConsider]
@@ -146,52 +156,184 @@ const Text = (props) => {
             }
         }
         if (newContents.length === 0) newContents.push(props.createNewContent({order: 0}))
+
+        // Sets the caret position, the caret position to go is the caretPosition start + insertedText length
+        // then we need to make this in a for loop so we count each content text length and check if the content is between
+        // the caret position to go.
+        let stackedNumberOfWords = 0
+        const caretPositionIndex = caretPositionRef.current.start + insertedText.length
+        for (let i=0; i < newContents.length; i++) {
+            if (stackedNumberOfWords <= caretPositionIndex && newContents[i].text.length + stackedNumberOfWords >= caretPositionIndex) {
+                whereCaretPositionShouldGoAfterUpdateRef.current.contentIndex = i
+                whereCaretPositionShouldGoAfterUpdateRef.current.positionInContent = caretPositionIndex - stackedNumberOfWords
+                break
+            }
+            stackedNumberOfWords = newContents[i].text.length + stackedNumberOfWords
+        }
         // add a new line char at the end of the last content to prevent a weird bug from happening
         if (!/^\n$/g.test(newContents[newContents.length -1].text.substr(newContents[newContents.length -1].text.length - 1))) newContents[newContents.length -1].text = newContents[newContents.length -1].text + '\n'
         props.block.rich_text_block_contents = newContents
     }
 
     /**
+     * This returns a list of selected contents.
+     */
+    const getSelectedContents = () => {
+        let stackedNumberOfWords = 0
+        let selectedContentsArray = []
+        const contents = props.block.rich_text_block_contents
+        for (let contentIndex=0; contentIndex < contents.length; contentIndex++) {
+            const lengthOfContent = contents[contentIndex].text.length
+            const stackedNumberOfWordsWithLengthOfContent = stackedNumberOfWords + lengthOfContent
+            
+            // conditionals to check, first check if user selected a range or just set the caret to a certain position
+            // second check if the content is inside of range. And Third checks if content is inside of selection 
+            // (NOT A SELECTION RANGE, here the user has just set a caret position)
+            const isRangeSelection = caretPositionRef.current.start !== caretPositionRef.current.end
+            const isContentInSelectionRange = caretPositionRef.current.start < stackedNumberOfWordsWithLengthOfContent && stackedNumberOfWords <= caretPositionRef.current.end
+            const isContentInSelection = caretPositionRef.current.start <= stackedNumberOfWordsWithLengthOfContent
+            
+            // Set start and end indexes inside of each content
+            const startIndexToSelectTextInContent = (caretPositionRef.current.start - stackedNumberOfWords < 0) ? 0 : caretPositionRef.current.start - stackedNumberOfWords
+            const endIndexToSelectTextInContent = (caretPositionRef.current.end - stackedNumberOfWords < lengthOfContent) ? caretPositionRef.current.end - stackedNumberOfWords : lengthOfContent
+
+            // is a Range selection
+            if (isRangeSelection && isContentInSelectionRange) {
+                selectedContentsArray.push({
+                    startIndexToSelectTextInContent: startIndexToSelectTextInContent,
+                    endIndexToSelectTextInContent: endIndexToSelectTextInContent,
+                    contentIndex: contentIndex, 
+                    content: contents[contentIndex]
+                })
+            // The user just set the caret to a certain position without selecting a range
+            } else if (!isRangeSelection && isContentInSelection) {
+                selectedContentsArray.push({
+                    startIndexToSelectTextInContent: startIndexToSelectTextInContent,
+                    endIndexToSelectTextInContent: endIndexToSelectTextInContent,
+                    contentIndex: contentIndex, 
+                    content: contents[contentIndex]
+                })
+            }
+
+            if (stackedNumberOfWordsWithLengthOfContent >= caretPositionRef.current.end) {
+                break
+            }
+            stackedNumberOfWords = stackedNumberOfWordsWithLengthOfContent
+        }
+        return selectedContentsArray
+    }
+
+    /**
+     * Suppose you selected the bold option and now you are inserting the letter: "a"
+     * But you are inserting it in the middle of "Cats" content which is not bold so the content becomes: ["Ca", "a", "ts"]
+     * As it should be clear in the above "Cats" is first a content, but when we insert "a" in the middle of it we will have 3
+     * contents: ["not-bold", "bold", "not-bold"] 
+     * So what we need to do is separate this content in 3 different contents. We do this by separating on the opposite direction
+     * lets go further:
+     * 
+     * Suppose the following contents: ["i", "love", "cats"] 
+     * The index of the content we will change when we insert the letter "a" is 2. So what we do first is insert "ts" from "cats" 
+     * in index+1. This gives us: ["i", "love", "cats", "ts"] 
+     * Next the other value to insert is "a" in index+1. So this will give us: This gives us: ["i", "love", "cats", "a", "ts"]
+     * And last but not least: "ca" in index+1. So this will give us: This gives us: ["i", "love", "cats", "ca", "a", "ts"]
+     * 
+     * To finish as you must been thinking we remove the index we needed to update, so "cats". And then we have our phrase 
+     * with their specific contents
+     * @param {*} content 
+     * @param {*} contentIndex 
+     * @param {*} startIndexToSelectTextInContent 
+     * @param {*} insertedText 
+     */
+    const addNewContentInTheMiddleOfContent = (content, contentIndex, startIndexToSelectTextInContent, endIndexToSelectTextInContent, currentText, insertedText) => {
+        const toKeepContentTextLeft = currentText.substring(0, startIndexToSelectTextInContent)
+        const toKeepContentTextRight = currentText.substring(endIndexToSelectTextInContent, endIndexToSelectTextInContent + currentText.length)
+        const contentLeft = props.createNewContent({
+            isBold: content.is_bold, 
+            isCode: content.is_code, 
+            isItalic: content.is_italic, 
+            isUnderline: content.is_underline, 
+            latexEquation: content.latex_equation, 
+            link: content.link, 
+            markerColor: content.marker_color, 
+            order: 0, 
+            textColor: content.text_color,
+            text: toKeepContentTextLeft
+        })
+        const newContent = props.createNewContent({
+            isBold: stateOfSelection.isBold, 
+            isItalic: stateOfSelection.isItalic,
+            isUnderline: content.is_underline, 
+            latexEquation: content.latex_equation, 
+            link: content.link, 
+            markerColor: content.marker_color, 
+            order: 0, 
+            textColor: content.text_color,
+            text: insertedText
+        })
+        const contentRight = props.createNewContent({
+            isBold: content.is_bold, 
+            isItalic: content.is_italic,
+            isCode: content.is_code, 
+            isUnderline: content.is_underline, 
+            latexEquation: content.latex_equation, 
+            link: content.link, 
+            markerColor: content.marker_color, 
+            order: 0, 
+            textColor: content.text_color,
+            text: toKeepContentTextRight
+        })
+        props.block.rich_text_block_contents[contentIndex] = [contentLeft, newContent, contentRight]
+    }
+
+    /**
      * Deletes contents and add new text to a content
      */
     const changeContent = (insertedText) => {
-        let selectionResult = []
-        let stackedNumberOfWords = 0
-        let isFirstContentSelected = true
-        let contents = props.block.rich_text_block_contents
+        //let isEditingFirstContentSelected = true
         const hasDeletedSomeContent = caretPositionRef.current.start !== caretPositionRef.current.end
-        for (let contentIndex=0; contentIndex < contents.length; contentIndex++) {
-            const lengthOfContent = contents[contentIndex].text.length
-            
-            if (caretPositionRef.current.start <= stackedNumberOfWords + lengthOfContent && stackedNumberOfWords <= caretPositionRef.current.end) {
-                // we do this because if you are selecting 2 contents exactly the size of the selection it considers the previous content. We do this to prevent this.
-                // So when the user is selecting a range we DON't consider when cursorPosition.start !== stackedNumberOfWords + lengthOfContent
-                // If the user has not select a range but set a cursor at select the end of the content, selects the previous content as it should.
-                const startIndexToSelectTextInContent = (caretPositionRef.current.start - stackedNumberOfWords < 0) ? 0 : caretPositionRef.current.start - stackedNumberOfWords
-                const endIndexToSelectTextInContent = (caretPositionRef.current.end - stackedNumberOfWords < lengthOfContent) ? caretPositionRef.current.end - stackedNumberOfWords : lengthOfContent
-                if ((caretPositionRef.start !== stackedNumberOfWords + lengthOfContent && stackedNumberOfWords + lengthOfContent !== 0) && hasDeletedSomeContent || stackedNumberOfWords + lengthOfContent !== 0 && hasDeletedSomeContent) {
-                    // deleted some content
-                    
-                    const newText = contents[contentIndex].text.substr(0, startIndexToSelectTextInContent) + contents[contentIndex].text.substr(endIndexToSelectTextInContent)
-                    props.block.rich_text_block_contents[contentIndex].text = newText
-                } 
-                if (isFirstContentSelected) {
-                    // inserts the new text in the content
-                    const currentText = props.block.rich_text_block_contents[contentIndex].text
-                    props.block.rich_text_block_contents[contentIndex].text = currentText.slice(0, startIndexToSelectTextInContent) + insertedText + currentText.slice(startIndexToSelectTextInContent)
-                    whereCaretPositionShouldGoAfterUpdateRef.current.contentIndex = contentIndex
-                    whereCaretPositionShouldGoAfterUpdateRef.current.positionInContent = startIndexToSelectTextInContent + insertedText.length
-                    isFirstContentSelected = false
-                }
+        const selectedContents = getSelectedContents()
+
+        selectedContents.forEach(content => {
+            // delete contents
+            if (hasDeletedSomeContent) {
+                const newText = props.block.rich_text_block_contents[content.contentIndex].text
+                    .substr(0, content.startIndexToSelectTextInContent) + props.block.rich_text_block_contents[content.contentIndex].text
+                    .substr(content.endIndexToSelectTextInContent)
+                props.block.rich_text_block_contents[content.contentIndex].text = newText
             }
-            if (stackedNumberOfWords + lengthOfContent >= caretPositionRef.current.end) {
-                break
-            }
-            stackedNumberOfWords = stackedNumberOfWords + lengthOfContent
+        })
+        
+        // inserts the new text in the content or create a new content if content options changes
+        const contentToInsertText = selectedContents[0]
+        const isRangeSelected = caretPositionRef.current.start !== caretPositionRef.current.end
+        const isContentStateSameAsStateSelection = stateOfSelection.isBold === contentToInsertText.content.is_bold && 
+                                                   stateOfSelection.isItalic === contentToInsertText.content.is_italic
+        const currentText = props.block.rich_text_block_contents[contentToInsertText.contentIndex].text
+        
+        if ((isContentStateSameAsStateSelection && !isRangeSelected) || isRangeSelected) {
+            props.block.rich_text_block_contents[contentToInsertText.contentIndex].text = currentText.slice(0, contentToInsertText.startIndexToSelectTextInContent) + 
+                insertedText + currentText.slice(contentToInsertText.startIndexToSelectTextInContent)
+        } else if (!isRangeSelected) {
+            addNewContentInTheMiddleOfContent(
+                contentToInsertText.content, 
+                contentToInsertText.contentIndex, 
+                contentToInsertText.startIndexToSelectTextInContent, 
+                contentToInsertText.endIndexToSelectTextInContent,
+                currentText, 
+                insertedText
+            )
+            props.block.rich_text_block_contents = [].concat.apply([], props.block.rich_text_block_contents)
         }
         return insertedText
     }
 
+    /**
+     * When the user deletes something we consider as if he had selected the content. What it means is:
+     * 
+     * Suppose we have the following phrase: "IloveCats" and we place the caret at "IloveCa|ts" (the caret)
+     * @param {*} text 
+     * @param {*} keyCode 
+     */
     const getInsertedTextAndFixCaretPosition = (text, keyCode) => {
         let insertedText = ''
         const oldText = props.block.rich_text_block_contents.map(content => content.text).join('')
@@ -227,18 +369,70 @@ const Text = (props) => {
                 insertedText = text.substring(caretPositionRef.current.start, endInsertedTextIndex)
             }
         }
-        return changeContent(insertedText)
+        return insertedText
+    }
+
+    const checkStateOfSelectedElementAndUpdateState = () => {
+        const selectedContents = getSelectedContents()
+        const isBold = selectedContents.every(selectedContent => selectedContent.content.is_bold)
+        const isItalic = selectedContents.every(selectedContent => selectedContent.content.is_italic)
+        setStateOfSelection({
+            isBold: isBold,
+            isItalic: isItalic
+        })
+    }
+
+    const onBlur = () => {
+        setStateOfSelection({
+            isBold: false,
+            isItalic: false
+        })
     }
 
     const onChangeText = (text, keyCode) => {   
-        let stackedNumberOfWords = 0
-        let blockIndexesInSelection = []
         if (caretPositionRef.current === null || [37, 38, 39, 40].includes(keyCode)) {
             caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
         }
         const insertedText = getInsertedTextAndFixCaretPosition(text, keyCode)
-        mergeAndDeleteEmptyContents()
+        changeContent(insertedText)
+        mergeAndDeleteEmptyContents(insertedText)
         props.updateBlocks()
+    }
+
+    const onChangeSelectionState = (type, isActive) => {
+        // user has not selected a range but had just set the caret to a position
+        switch (type) {
+            case 'bold':
+                stateOfSelection.isBold = isActive
+                break
+            case 'italic': 
+                stateOfSelection.isItalic = isActive
+                break
+        }
+        setStateOfSelection({...stateOfSelection})
+
+        if (caretPositionRef.current.start !== caretPositionRef.current.end) {
+            const selectedContents = getSelectedContents()
+            let contents = [...props.block.rich_text_block_contents]
+            let changedText = ''
+            selectedContents.forEach(content => {
+                // delete contents
+                const contentCurrentText = contents[content.contentIndex].text
+                const toChangeContentText = contentCurrentText.substring(content.startIndexToSelectTextInContent, content.endIndexToSelectTextInContent)
+                addNewContentInTheMiddleOfContent(
+                    content.content, 
+                    content.contentIndex, 
+                    content.startIndexToSelectTextInContent, 
+                    content.endIndexToSelectTextInContent,
+                    contentCurrentText, 
+                    toChangeContentText
+                )
+                changedText = changedText + toChangeContentText
+            })
+            props.block.rich_text_block_contents = [].concat.apply([], props.block.rich_text_block_contents)
+            mergeAndDeleteEmptyContents(changedText)
+            props.updateBlocks()
+        }
     }
 
     useEffect(() => {
@@ -254,6 +448,7 @@ const Text = (props) => {
         setCaretPosition()
     }, [innerHtml])
     
+
     const renderMobile = () => {
         return (
             <View></View>
@@ -262,17 +457,41 @@ const Text = (props) => {
 
     const renderWeb = () => {
         return (
-            <div
-            ref={inputRef} 
-            onSelect={(e) => onSelectText(e)}
-            onKeyUp={(e) => onChangeText(inputRef.current.textContent, e.keyCode || e.charCode)}
-            onClick={(e) => {return null}}
-            contentEditable={true} 
-            draggabble="false"
-            suppressContentEditableWarning={true}
-            style={{display: 'inline-block', whiteSpace: 'pre-wrap', wordBreak: 'break-word'}}
-            dangerouslySetInnerHTML={{__html: innerHtml}}
-            />
+            <div>
+                <div>
+                    <button 
+                    onClick={(e) => onChangeSelectionState('bold', !stateOfSelection.isBold)} 
+                    onMouseDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return false;}}
+                    style={{ color: stateOfSelection.isBold ? '#0dbf7e': '#000'}}>
+                        Negrito
+                    </button>
+                    <button 
+                    onClick={(e) => onChangeSelectionState('italic', !stateOfSelection.isItalic)} 
+                    onMouseDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return false;
+                    }}
+                    style={{ color: stateOfSelection.isItalic ? '#0dbf7e': '#000'}}>
+                        Itálico
+                    </button>
+                </div>
+                <div
+                ref={inputRef} 
+                onBlur={(e) => onBlur(e)}
+                onSelect={(e) => onSelectText(e)}
+                onKeyUp={(e) => onChangeText(inputRef.current.textContent, e.keyCode || e.charCode)}
+                onClick={(e) => {return null}}
+                contentEditable={true} 
+                draggabble="false"
+                suppressContentEditableWarning={true}
+                style={{display: 'inline-block', whiteSpace: 'pre-wrap', wordBreak: 'break-word', width: '100%'}}
+                dangerouslySetInnerHTML={{__html: innerHtml}}
+                />  
+            </div>
         )
     }
 
