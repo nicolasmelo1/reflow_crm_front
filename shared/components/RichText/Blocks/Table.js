@@ -1,7 +1,7 @@
 import React from 'react'
 import { View } from 'react-native'
 import Content from '../Content'
-import Blocks from '../Blocks'
+import Block from '../Blocks'
 /**
  * {Description of your component, what does it do}
  * @param {Type} props - {go in detail about every prop it recieves}
@@ -23,6 +23,10 @@ const Table = (props) => {
         })
     })
 
+    const onEnter = () => {
+        console.log('teste')
+    }
+
     const renderMobile = () => {
         return (
             <View></View>
@@ -37,7 +41,7 @@ const Table = (props) => {
                         <tr key={tableRowIndex}>
                             {tableColumnsData.map((block, columnIndex) => (
                                 <td key={columnIndex} style={{ border: '1px solid #000', padding: '10px'}}>
-                                    {block ? (<Blocks {...props} block={block}/>) : ('')}
+                                    {block ? (<Block {...props} block={block} contextBlocks={props.block.rich_text_depends_on_blocks} onEnter={onEnter}/>) : ('')}
                                 </td>
                             ))}
                         </tr>

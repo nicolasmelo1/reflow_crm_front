@@ -1,59 +1,29 @@
-import NotificationText from './NotificationText'
-import NotificationContainer from './NotificationContainer'
-import NotificationDate from './NotificationDate'
-import NotificationTitle from './NotificationTitle'
-import NotificationCard from './NotificationCard'
-import NotificationHeader from './NotificationHeader'
-import NotificationButton from './NotificationButton'
-import NotificationConfigurationContainer from './NotificationConfigurationContainer'
-import NotificationConfigurationGoBackButton from './NotificationConfigurationGoBackButton'
-import NotificationConfigurationCard from './NotificationConfigurationCard'
-import NotificationConfigurationCardIcon from './NotificationConfigurationCardIcon'
-import NotificationConfigurationCardText from './NotificationConfigurationCardText'
-import NotificationConfigurationFormContainer from './NotificationConfigurationFormContainer'
-import NotificationConfigurationFormCheckbox from './NotificationConfigurationFormCheckbox'
-import NotificationConfigurationForCompanyExplanation from './NotificationConfigurationForCompanyExplanation'
-import NotificationConfigurationFormCheckboxesContainer from './NotificationConfigurationFormCheckboxesContainer'
-import NotificationConfigurationFormCheckboxText from './NotificationConfigurationFormCheckboxText'
-import NotificationConfigurationFormFieldLabel from './NotificationConfigurationFormFieldLabel'
-import NotificationConfigurationFormFieldLabelRequired from './NotificationConfigurationFormFieldLabelRequired'
-import NotificationConfigurationFormFieldInput from './NotificationConfigurationFormFieldInput'
-import NotificationConfigurationFormFieldContainer from './NotificationConfigurationFormFieldContainer'
-import NotificationConfigurationFormSelectContainer from './NotificationConfigurationFormSelectContainer'
-import NotificationConfigurationFormVariableContainer from './NotificationConfigurationFormVariableContainer'
-import NotificationConfigurationFormSaveButton from './NotificationConfigurationFormSaveButton'
-import NotificationConfigurationFormErrors from './NotificationConfigurationFormErrors'
-import NotificationConfigurationFormDaysDiffSelect from './NotificationConfigurationFormDaysDiffSelect'
-import NotificationConfigurationAddNewCard from './NotificationConfigurationAddNewCard'
-import NotificationConfigurationAddNewCardIcon from './NotificationConfigurationAddNewCardIcon'
-import NotificationConfigurationAddNewCardText from './NotificationConfigurationAddNewCardText'
-
-export { NotificationConfigurationAddNewCardText }
-export { NotificationConfigurationAddNewCardIcon }
-export { NotificationConfigurationAddNewCard }
-export { NotificationConfigurationFormDaysDiffSelect }
-export { NotificationConfigurationFormErrors }
-export { NotificationConfigurationFormSaveButton }
-export { NotificationConfigurationFormVariableContainer }
-export { NotificationConfigurationFormSelectContainer }
-export { NotificationConfigurationFormFieldContainer }
-export { NotificationConfigurationFormFieldInput }
-export { NotificationConfigurationFormFieldLabelRequired }
-export { NotificationConfigurationFormFieldLabel }
-export { NotificationConfigurationFormCheckboxText }
-export { NotificationConfigurationFormCheckboxesContainer }
-export { NotificationConfigurationForCompanyExplanation }
-export { NotificationConfigurationFormCheckbox }
-export { NotificationConfigurationFormContainer }
-export { NotificationConfigurationGoBackButton }
-export { NotificationConfigurationCard }
-export { NotificationConfigurationCardIcon }
-export { NotificationConfigurationCardText }
-export { NotificationConfigurationContainer }
-export { NotificationButton }
-export { NotificationCard }
-export { NotificationHeader }
-export { NotificationTitle }
-export { NotificationDate }
-export { NotificationText }
-export { NotificationContainer }
+export { default as NotificationText } from './NotificationText'
+export { default as NotificationContainer } from './NotificationContainer'
+export { default as NotificationDate } from './NotificationDate'
+export { default as NotificationTitle } from './NotificationTitle'
+export { default as NotificationCard } from './NotificationCard'
+export { default as NotificationHeader } from './NotificationHeader'
+export { default as NotificationButton } from './NotificationButton'
+export { default as NotificationConfigurationContainer } from './NotificationConfigurationContainer'
+export { default as NotificationConfigurationGoBackButton } from './NotificationConfigurationGoBackButton'
+export { default as NotificationConfigurationCard } from './NotificationConfigurationCard'
+export { default as NotificationConfigurationCardIcon } from './NotificationConfigurationCardIcon'
+export { default as NotificationConfigurationCardText } from './NotificationConfigurationCardText'
+export { default as NotificationConfigurationFormContainer } from './NotificationConfigurationFormContainer'
+export { default as NotificationConfigurationFormCheckbox } from './NotificationConfigurationFormCheckbox'
+export { default as NotificationConfigurationForCompanyExplanation } from './NotificationConfigurationForCompanyExplanation'
+export { default as NotificationConfigurationFormCheckboxesContainer } from './NotificationConfigurationFormCheckboxesContainer'
+export { default as NotificationConfigurationFormCheckboxText } from './NotificationConfigurationFormCheckboxText'
+export { default as NotificationConfigurationFormFieldLabel } from './NotificationConfigurationFormFieldLabel'
+export { default as NotificationConfigurationFormFieldLabelRequired } from './NotificationConfigurationFormFieldLabelRequired'
+export { default as NotificationConfigurationFormFieldInput } from './NotificationConfigurationFormFieldInput'
+export { default as NotificationConfigurationFormFieldContainer } from './NotificationConfigurationFormFieldContainer'
+export { default as NotificationConfigurationFormSelectContainer } from './NotificationConfigurationFormSelectContainer'
+export { default as NotificationConfigurationFormVariableContainer } from './NotificationConfigurationFormVariableContainer'
+export { default as NotificationConfigurationFormSaveButton } from './NotificationConfigurationFormSaveButton'
+export { default as NotificationConfigurationFormErrors } from './NotificationConfigurationFormErrors'
+export { default as NotificationConfigurationFormDaysDiffSelect } from './NotificationConfigurationFormDaysDiffSelect'
+export { default as NotificationConfigurationAddNewCard } from './NotificationConfigurationAddNewCard'
+export { default as NotificationConfigurationAddNewCardIcon } from './NotificationConfigurationAddNewCardIcon'
+export { default as NotificationConfigurationAddNewCardText } from './NotificationConfigurationAddNewCardText'

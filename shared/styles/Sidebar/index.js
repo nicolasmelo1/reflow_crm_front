@@ -1,45 +1,22 @@
-import SidebarMenu from './SidebarMenu'
-import SidebarContainer from './SidebarContainer'
-import SidebarToggleContainer from './SidebarToggleContainer'
-import SidebarAccordionToggle from './SidebarAccordionToggle'
-import SidebarAccordion from './SidebarAccordion'
-import SidebarCardHeader from './SidebarCardHeader'
-import SidebarCard from './SidebarCard'
-import SidebarCardBody from './SidebarCardBody'
-import SidebarFormItem from './SidebarFormItem'
-import SidebarLink from './SidebarLink'
-import SidebarIcons from './SidebarIcons'
-import SidebarIconsContainer from './SidebarIconsContainer'
-import SidebarGroupInput from './SidebarGroupInput'
-import SidebarFormInput from './SidebarFormInput'
-import SidebarDisabledGroupLabel from './SidebarDisabledGroupLabel'
-import SidebarDisabledFormLabel from './SidebarDisabledFormLabel'
-import SidebarAddButton from  './SidebarAddButton'
-import SidebarToggle from './SidebarToggle'
-import SidebarEditTemplateButton from './SidebarEditTemplateButton'
-import SidebarAddNewTemplateButton from  './SidebarAddNewTemplateButton'
-import SidebarTopButtonsContainer from './SidebarTopButtonsContainer'
-import SidebarGroupsContainer from './SidebarGroupsContainer'
-
-export { SidebarGroupsContainer }
-export { SidebarTopButtonsContainer }
-export { SidebarToggleContainer }
-export { SidebarContainer }
-export { SidebarAddNewTemplateButton }
-export { SidebarEditTemplateButton }
-export { SidebarToggle }
-export { SidebarAddButton }
-export { SidebarDisabledFormLabel }
-export { SidebarFormInput }
-export { SidebarDisabledGroupLabel }
-export { SidebarGroupInput }
-export { SidebarIconsContainer }
-export { SidebarIcons }
-export { SidebarMenu }
-export { SidebarAccordionToggle }
-export { SidebarCardHeader }
-export { SidebarAccordion }
-export { SidebarCard }
-export { SidebarFormItem }
-export { SidebarLink }
-export { SidebarCardBody }
+export { default as SidebarMenu } from './SidebarMenu'
+export { default as SidebarContainer } from './SidebarContainer'
+export { default as SidebarToggleContainer } from './SidebarToggleContainer'
+export { default as SidebarAccordionToggle } from './SidebarAccordionToggle'
+export { default as SidebarAccordion } from './SidebarAccordion'
+export { default as SidebarCardHeader } from './SidebarCardHeader'
+export { default as SidebarCard } from './SidebarCard'
+export { default as SidebarCardBody } from './SidebarCardBody'
+export { default as SidebarFormItem } from './SidebarFormItem'
+export { default as SidebarLink } from './SidebarLink'
+export { default as SidebarIcons } from './SidebarIcons'
+export { default as SidebarIconsContainer } from './SidebarIconsContainer'
+export { default as SidebarGroupInput } from './SidebarGroupInput'
+export { default as SidebarFormInput } from './SidebarFormInput'
+export { default as SidebarDisabledGroupLabel } from './SidebarDisabledGroupLabel'
+export { default as SidebarDisabledFormLabel } from './SidebarDisabledFormLabel'
+export { default as SidebarAddButton } from  './SidebarAddButton'
+export { default as SidebarToggle } from './SidebarToggle'
+export { default as SidebarEditTemplateButton } from './SidebarEditTemplateButton'
+export { default as SidebarAddNewTemplateButton } from  './SidebarAddNewTemplateButton'
+export { default as SidebarTopButtonsContainer } from './SidebarTopButtonsContainer'
+export { default as SidebarGroupsContainer } from './SidebarGroupsContainer'

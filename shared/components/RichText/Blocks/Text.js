@@ -1,7 +1,11 @@
 import React, { useState , useEffect } from 'react'
 import { View } from 'react-native'
-import Content from '../Content'
 import { renderToString } from 'react-dom/server'
+import Content from '../Content'
+import { ContentOptions } from '../Utils'
+import { 
+    BlockText
+} from '../../../styles/RichText'
 
 /**
  * {Description of your component, what does it do}
@@ -10,16 +14,57 @@ import { renderToString } from 'react-dom/server'
 const Text = (props) => {
     const stateOfSelectionData = {
         isBold: false,
-        isItalic: false
+        isItalic: false,
+        isUnderline: false,
+        isCode: false
+    }
+    const webKeyCodeReference = {
+        46: 'Delete',
+        8: 'Backspace',
+        13: 'Enter'
     }
     const inputRef = React.useRef(null)
-    const caretPositionRef = React.useRef(null)
+    const caretPositionRef = React.useRef({
+        start: null,
+        end: null
+    })
     const whereCaretPositionShouldGoAfterUpdateRef = React.useRef({
-        contentIndex: 0,
-        positionInContent: 0
+        contentIndex: null,
+        positionInContent: null
     })
     const [innerHtml, setInnerHtml] = useState('')
     const [stateOfSelection, setStateOfSelection] = useState(stateOfSelectionData)
+    
+    /**
+     * - We check if the browser has support for both getSelection and createRange (only IE9 does not support these)
+     * - last but not least we get the positions on where the caret should go
+     * 
+     * Check here for reference: https://stackoverflow.com/a/6249440 on how this works
+     * 
+     * @param {*} contentIndex 
+     * @param {*} positionInContent 
+     */
+    const setCaretPositionWeb = (contentIndex, positionInContent) => {
+        if (typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
+            const range = document.createRange()
+            const selection = window.getSelection()
+
+            range.selectNodeContents(inputRef.current)
+            const node = inputRef.current.childNodes[contentIndex]
+            const nodePosition = positionInContent
+            if (node) {
+                range.setStart(
+                    node.firstChild ? node.firstChild : node, 
+                    nodePosition
+                )
+                range.collapse(true)
+            } else {
+                range.collapse(false) 
+            }
+            selection.removeAllRanges()
+            selection.addRange(range)
+        }
+    }
 
     /**
      * On the browser, when we update the state, the caret jumps (it means it disappear) so the user needs 
@@ -28,28 +73,24 @@ const Text = (props) => {
      * 
      * - First we need to see if the element is defined and if the element is the active element of the document. 
      * (without this all the other text blocks of the document would be focused)
-     * - Then we check if the browser has support for both getSelection and createRange (only IE9 does not support these)
-     * - last but not least we get the positions on where the caret should go using the `whereCaretPositionShouldGoAfterUpdateRef`
-     * 
-     * Check here for reference: https://stackoverflow.com/a/6249440 on how this works
+     * - Then we check if the `whereCaretPositionShouldGoAfterUpdateRef` was defined and is not null, if it is we need to go to this position
+     * otherwise the caret shoud go to the position of the `caretPositionRef` (this is used when we focus the input, onEnter and onRemoveCurrent and onRemoveAfter)
+     * - last we update whereCaretPositionShouldGoAfterUpdateRef to null, so the caret should not go to any new position except the position it is currently in.
+     * - Also update the caretPositionRef to the current caret position.
      */
-    const setCaretPositionInInput = () => {
-        if (inputRef.current && inputRef.current === document.activeElement) {
-            if (typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
-                const range = document.createRange()
-                const selection = window.getSelection()
-                
-                range.selectNodeContents(inputRef.current)
-                const node = inputRef.current.childNodes[whereCaretPositionShouldGoAfterUpdateRef.current.contentIndex]
-                const nodePosition = whereCaretPositionShouldGoAfterUpdateRef.current.positionInContent
-                range.setStart(
-                    node.firstChild ? node.firstChild : node, 
-                    nodePosition
-                )
-                range.collapse(true)
-
-                selection.removeAllRanges()
-                selection.addRange(range)
+    const setCaretPositionInInput = (activeBlock) => {
+        if (activeBlock === props.block.uuid) {
+            if (whereCaretPositionShouldGoAfterUpdateRef.current.contentIndex !== null && whereCaretPositionShouldGoAfterUpdateRef.current.positionInContent !== null) {
+                setCaretPositionWeb(whereCaretPositionShouldGoAfterUpdateRef.current.contentIndex, whereCaretPositionShouldGoAfterUpdateRef.current.positionInContent)
+            } else if (caretPositionRef.current.start !== null && caretPositionRef.current.end !== null) {
+                const selectedContents = getSelectedContents()
+                if (selectedContents[0]) {
+                    setCaretPositionWeb(selectedContents[0].contentIndex, selectedContents[0].startIndexToSelectTextInContent)
+                }
+            }
+            whereCaretPositionShouldGoAfterUpdateRef.current = {
+                contentIndex: null,
+                positionInContent: null
             }
             caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
             checkStateOfSelectedElementAndUpdateState()
@@ -180,8 +221,8 @@ const Text = (props) => {
         let contentsToConsider = []
         
         for (let i=0; i < props.block.rich_text_block_contents.length; i++) {
-            if (props.block.rich_text_block_contents[i].text !== '') {
-            //if (!/^(\s*)$/g.test(contents[i].text)) {
+            //if (props.block.rich_text_block_contents[i].text !== '' || props.block.rich_text_block_contents.length === 1) {
+            if (!/^(\s*)$/g.test(props.block.rich_text_block_contents[i].text) || props.block.rich_text_block_contents.length === 1) {
                 contentsToConsider.push(props.block.rich_text_block_contents[i])
             }
         }
@@ -207,10 +248,14 @@ const Text = (props) => {
      * 
      * We need to do this because there is a bug in the browser that when you press Enter two \n are created which can cause
      * some weird bugs to happen. To prevent this we just add a new line at the end of the last content.
+     * 
+     * @param {Array<Object>} contentsArray - Recieves an array of contents that will be merged together in a single content.
+     * 
+     * @returns {Array<Object>} - Returns a contents array with merged contents
      */
-    const mergeEqualContentsSideBySide = () => {
+    const mergeEqualContentsSideBySide = (contentsArray) => {
         let newContents = []
-        let contents = [...props.block.rich_text_block_contents]
+        let contents = [...contentsArray]
 
         // if two contents that are side by side are equal, create a new content that merge the content text
         while (contents.length > 0) {
@@ -246,7 +291,7 @@ const Text = (props) => {
         // add a new line char at the end of the last content to prevent a weird bug from happening
         if (!/^\n$/g.test(newContents[newContents.length -1].text.substr(newContents[newContents.length -1].text.length - 1))) newContents[newContents.length -1].text = newContents[newContents.length -1].text + '\n'
 
-        props.block.rich_text_block_contents = [...newContents]
+        return newContents
     }
 
     /**
@@ -282,11 +327,8 @@ const Text = (props) => {
     const mergeEqualDeleteEmptyAndSetWhereCaretPositionShouldGo = (insertedText) => {
     
         deleteEmptyContents()
-        mergeEqualContentsSideBySide()
+        props.block.rich_text_block_contents = mergeEqualContentsSideBySide(props.block.rich_text_block_contents)
         updateWhereCaretPositionShouldGo(insertedText)
-        /*// add a new line char at the end of the last content to prevent a weird bug from happening
-        if (!/^\n$/g.test(newContents[newContents.length -1].text.substr(newContents[newContents.length -1].text.length - 1))) newContents[newContents.length -1].text = newContents[newContents.length -1].text + '\n'
-        props.block.rich_text_block_contents = newContents*/
     }
 
     /**
@@ -304,12 +346,13 @@ const Text = (props) => {
      * Notice that content_of_ca and content_of_ts are equal on types, but have different texts, it is just the
      * "cats" content split into two.
      * 
+     * Important: we check if the state of the content has changed (it means it was bold and it's not bold anymore)
      * @param {*} content 
      * @param {*} contentIndex 
      * @param {*} startIndexToSelectTextInContent 
      * @param {*} insertedText 
      */
-    const addNewContentInTheMiddleOfContent = (content, startIndexToSelectTextInContent, endIndexToSelectTextInContent, currentText, insertedText) => {
+    const addNewContentInTheMiddleOfContent = (content, startIndexToSelectTextInContent, endIndexToSelectTextInContent, currentText, insertedText, selectionState) => {
         const toKeepContentTextLeft = currentText.substring(0, startIndexToSelectTextInContent)
         const toKeepContentTextRight = currentText.substring(endIndexToSelectTextInContent, endIndexToSelectTextInContent + currentText.length)
         const contentLeft = props.createNewContent({
@@ -325,9 +368,10 @@ const Text = (props) => {
             text: toKeepContentTextLeft
         })
         const newContent = props.createNewContent({
-            isBold: stateOfSelection.isBold, 
-            isItalic: stateOfSelection.isItalic,
-            isUnderline: content.is_underline, 
+            isBold: selectionState.isBold, 
+            isItalic: selectionState.isItalic,
+            isUnderline: selectionState.isUnderline, 
+            isCode: selectionState.isCode,
             latexEquation: content.latex_equation, 
             link: content.link, 
             markerColor: content.marker_color, 
@@ -410,7 +454,10 @@ const Text = (props) => {
         const isRangeSelected = caretPositionRef.current.start !== caretPositionRef.current.end
         // TODO: CHECK MORE STATES
         const isContentStateSameAsStateSelection = stateOfSelection.isBold === contentToInsertText.content.is_bold && 
-                                                   stateOfSelection.isItalic === contentToInsertText.content.is_italic
+                                                   stateOfSelection.isItalic === contentToInsertText.content.is_italic &&
+                                                   stateOfSelection.isUnderline === contentToInsertText.content.is_underline &&
+                                                   stateOfSelection.isCode === contentToInsertText.content.is_code
+
         const currentText = props.block.rich_text_block_contents[contentToInsertText.contentIndex].text
         
         if ((isContentStateSameAsStateSelection && !isRangeSelected) || isRangeSelected) {
@@ -423,7 +470,8 @@ const Text = (props) => {
                 contentToInsertText.startIndexToSelectTextInContent, 
                 contentToInsertText.endIndexToSelectTextInContent,
                 currentText, 
-                insertedText
+                insertedText,
+                stateOfSelection
             )
             props.block.rich_text_block_contents[contentToInsertText.contentIndex] = contentsToAddInIndex
             // Reference: https://stackoverflow.com/questions/10865025/merge-flatten-an-array-of-arrays
@@ -460,12 +508,12 @@ const Text = (props) => {
             // User has deleted some text
             if (hasDeletedText) {
                 // User has pressed backspace
-                if (keyCode === 8) {
+                if (webKeyCodeReference[keyCode] === 'Backspace') {
                     // Make as user have selected the character before
                     caretPositionRef.current.start = caretPositionRef.current.start - (oldText.length - text.length)
                 }
                 // User has pressed delete
-                if (keyCode === 46) {
+                if (webKeyCodeReference[keyCode] === 'Delete') {
                     // Make as user have selected the character after
                     caretPositionRef.current.end = caretPositionRef.current.end + (oldText.length - text.length)
                 }
@@ -504,26 +552,45 @@ const Text = (props) => {
         const selectedContents = getSelectedContents()
         const isBold = selectedContents.every(selectedContent => selectedContent.content.is_bold)
         const isItalic = selectedContents.every(selectedContent => selectedContent.content.is_italic)
+        const isUnderline = selectedContents.every(selectedContent => selectedContent.content.is_underline)
+        const isCode = selectedContents.every(selectedContent => selectedContent.content.is_code)
+
         setStateOfSelection({
             isBold: isBold,
-            isItalic: isItalic
+            isItalic: isItalic,
+            isUnderline: isUnderline,
+            isCode: isCode
         })
     }
 
     // When the user unselect the input we need to set the state of selection back to null, so all of the buttons
     // appear as unselected
-    const onBlur = (e) => {
+    const onBlur = () => {
         setStateOfSelection({
             isBold: false,
-            isItalic: false
+            isItalic: false,
+            isCode: false,
+            isUnderline: false
         })
+        if (props.activeBlock === props.block.uuid) {
+            props.updateBlocks(null)
+        }
     }
 
-    // When we focus on the input we get the cursor position and also needs to check the state of the selected
-    // element, without doing this on a simple ctrl+tab in you go back to the page the states are not set again
+    /**
+     * When we focus the input we check if the current active block is this block, if this block is not the active one we 
+     * make it active updating the block, and last but not least we set the caret position in the input. We need to set the caret position
+     * because we sometimes focus programatically (see one of the `useEffect` below)
+     */
     const onFocus = () => {
-        caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
-        checkStateOfSelectedElementAndUpdateState()
+        //caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
+        //checkStateOfSelectedElementAndUpdateState()
+        
+        if (props.activeBlock !== props.block.uuid) {
+            props.updateBlocks(props.block.uuid)
+        }
+
+        setCaretPositionInInput(props.block.uuid)
     }
 
     /**
@@ -540,6 +607,9 @@ const Text = (props) => {
             caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
             checkStateOfSelectedElementAndUpdateState()
         }
+        if (props.activeBlock !== props.block.uuid) {
+            props.updateBlocks(props.block.uuid)
+        }
     }
 
     /**
@@ -550,6 +620,9 @@ const Text = (props) => {
     const onClickText = (e) => {
         caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
         checkStateOfSelectedElementAndUpdateState()
+        if (props.activeBlock !== props.block.uuid) {
+            props.updateBlocks(props.block.uuid)
+        }
     }
 
     /**
@@ -567,22 +640,206 @@ const Text = (props) => {
      * @param {*} text 
      * @param {*} keyCode 
      */
-    const onChangeText = (text, keyCode) => {   
+    const onChangeText = (text, e) => {   
+        const keyCode = e.keyCode || e.charCode
         const oldText = props.block.rich_text_block_contents.map(content => content.text).join('')
 
         if (oldText !== text) {
             // You must ALWAYS follow that order of functions, the order is important
-            const insertedText = getInsertedTextAndFixCaretPosition(text, keyCode)
+            let insertedText = getInsertedTextAndFixCaretPosition(text, keyCode)
+            
+            // prevent accents (When you are trying to insert an accent like ~ on mac for example you press ALT + N, this creates this accent ˜, if we 
+            // didn't had this we would have the following text "N˜ão". Which is something we don't want.) Because of this we prevent those 
+            // "raw" and "temporaty" accents from being inserted
+            if (/^(ˆ|˜|¨|`|´|"|')$/g.test(insertedText)) {
+                insertedText = ''
+            }
 
             const selectedContents = getSelectedContents()
             removeTextInContent(selectedContents)
             insertTextInContent(selectedContents, insertedText)
 
             mergeEqualDeleteEmptyAndSetWhereCaretPositionShouldGo(insertedText)
-            props.updateBlocks()
+            props.updateBlocks(props.block.uuid)
         } else {
             caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
             checkStateOfSelectedElementAndUpdateState()
+        }
+    }
+    
+    /**
+     * When you press enter we send the props upper in the chain of blocks. So if you are pressing enter here but this component
+     * is inside a Table block, we will activate the table block enter and not this.
+     * 
+     * When you press ENTER what you need to do is: 
+     * 1 - Get the selected contents, but what metters for us is the last content ONLY the last selected content. 
+     * 2 - Gets the selection from `endIndexToSelectTextInContent`. This is the first part we will copy to the next block.
+     * 3 - Gets the rest of the contets prior of the selected content and create a new contents array
+     * 4 - Update the end of the caret position to the end of the text
+     * 5 - Remove the text in the current content, removes the empty content and last but not least merge the contents
+     * 6 - Make the caret end position be the start position
+     * 7 - Create new block with contents
+     * 
+     * Example with the following contents ["I", "Lo|ve", "Ca|ts", "VeryMuch"] (the "|" represents the caret position)
+     * 1 - Get "Cats" content
+     * 2 - "ts" inside of "Cats" is what is going to the next block, the contents of the next block should be: ["ts", "VeryMuch"], this
+     * gets only the "ts" part, so the first content
+     * 3 - After "Cats" content we have the "VeryMuch" content only, with we had more we would pick all of them. With this we merge "ts" that is
+     * the content from the previous step and "VeryMuch" creating the  ["ts", "VeryMuch"] contents array.
+     * 4 - ["I", "Lo|ve", "Ca|ts", "VeryMuch"] The contents we remove in this block is not only "ve" and "Ca" but EVERYTHING after that. So what we simulate
+     * is the following ["I", "Lo|ve", "Cats", "VeryMuch|"]. We moved the end caret to the end of the string so it's like the user has selected everything.
+     * 5 - The content after that will be ["I", "Lo"]
+     * 6 - The caret.end position was after "VeryMuch" we move it from position 17 to position 2, so after "Lo|" so the caret positions are fixed and right
+     * 7 - Creates a new block with ["ts", "VeryMuch"] contents that we created before
+     */
+    const onEnter = () => {
+        if (props.onEnter) {
+            props.onEnter()
+        } else {
+            const oldText = props.block.rich_text_block_contents.map(content => content.text).join('')
+            const selectedContentsForCurrentSelection = getSelectedContents()
+            const firstContentToTheNextBlock = JSON.parse(JSON.stringify(selectedContentsForCurrentSelection[selectedContentsForCurrentSelection.length-1]))
+            firstContentToTheNextBlock.content.text = firstContentToTheNextBlock.content.text.substring(
+                firstContentToTheNextBlock.endIndexToSelectTextInContent, firstContentToTheNextBlock.content.text.length
+            )
+            
+            const subsequentContentsToTheNextBlock = JSON.parse(JSON.stringify(props.block.rich_text_block_contents.slice(firstContentToTheNextBlock.contentIndex+1, props.block.rich_text_block_contents.length)))
+            const contentsOfNextBlock = [firstContentToTheNextBlock.content, ...subsequentContentsToTheNextBlock]
+            
+            caretPositionRef.current.end = oldText.length
+            const selectedContents = getSelectedContents()
+            removeTextInContent(selectedContents)
+            deleteEmptyContents()
+            props.block.rich_text_block_contents = mergeEqualContentsSideBySide(props.block.rich_text_block_contents)
+
+            caretPositionRef.current.end = caretPositionRef.current.start
+
+            const indexOfBlockInContext = props.contextBlocks.findIndex(block => block.uuid === props.block.uuid)
+            const newBlock = props.createNewTextBlock({ order: props.contextBlocks.length+1, richTextBlockContents: contentsOfNextBlock })
+            props.contextBlocks.splice(indexOfBlockInContext + 1, 0, newBlock)
+            props.updateBlocks(newBlock.uuid)
+        }
+    }
+
+    /** 
+     * This is really similar to `onRemoveCurrent` but instead of removing the block you are currently in, removes the block after the one you are
+     * currently in. It is fired when the user press DELETE on the last caret position of the contents (it means the caret is on the end of the string).
+     * 
+     * So if you have two blocks with the following texts:
+     * > "I Love Cats|" (the "|" is the caret)
+     * > " Very Much"
+     * 
+     * When you press DELETE, the block AFTER the current should be removed and its contents should be appended, so the final block should be:
+     * > "I Love Cats| Very Much"
+     * 
+     * Important 1: 
+     * > "I Love Cats"
+     * > " Very Much|" (the "|" is the caret)
+     * If you press delete in this ocasion nothing will work, because we don't have a next Block from the current Block so nothing to append.
+     * 
+     * Important 2: On tables and other block types you might want to control the flow and logic in them so you can send a `onRemoveAfter` function prop
+     * to control inside of the block how this should work.
+     * 
+     * Important 3: We always insert the `\n` as the last character of the last content, to make this work without issues we need to remove this character
+     * So on the example above the real text would be:
+     * > "I Love Cats\n|" (the "|" is the caret)
+     * > " Very Much\n"
+     * What we do is remove `\n` from "I Love Cats" and THEN append 
+     */
+    const onRemoveAfter = () => {
+        if (props.onRemoveAfter) {
+            props.onRemoveAfter()
+        } else { 
+            const indexOfBlockInContext = props.contextBlocks.findIndex(block => block.uuid === props.block.uuid)
+            if (props.contextBlocks.length - 1 > indexOfBlockInContext+1) {
+                const contentsToAppendOnCurrentBlock = JSON.parse(JSON.stringify(props.contextBlocks[indexOfBlockInContext+1].rich_text_block_contents))
+                const currentBlockContents = props.contextBlocks[indexOfBlockInContext].rich_text_block_contents
+
+                // Since the last element is always \n we remove it from the text to be ready to append the new content.
+                props.contextBlocks[indexOfBlockInContext].rich_text_block_contents[currentBlockContents.length-1].text = props.contextBlocks[indexOfBlockInContext].rich_text_block_contents[currentBlockContents.length-1].text.substring(
+                    0, props.contextBlocks[indexOfBlockInContext].rich_text_block_contents[currentBlockContents.length-1].text.length-1
+                )
+                props.block.rich_text_block_contents = props.block.rich_text_block_contents.concat(contentsToAppendOnCurrentBlock)
+                props.block.rich_text_block_contents = mergeEqualContentsSideBySide(props.block.rich_text_block_contents)
+                props.contextBlocks.splice(indexOfBlockInContext+1, 1)
+                props.updateBlocks(props.block.uuid)
+            }
+        }
+    }
+
+    /**
+     * This is fired whenever the user press backspace and is on the caret position 0 on the start and end.
+     * 
+     * So if you have two blocks with the following texts:
+     * > "I Love Cats"
+     * > "| Very Much" (the "|" is the caret)
+     * 
+     * On the second Block the caret is on the position 0 and a range is not selected (start and end position of caret are equal). On this case when 
+     * the user press backspace what happens is that we append all of the contents from the CURRENT block to the previous block, so we end up with:
+     * > "I Love Cats| Very Much" (the "|" is the caret)
+     * 
+     * What we are doing is appendind the contents from the CURRENT BLOCK to the PREVIOUS block. The caret should also be focused after
+     * 
+     * Important 1: 
+     * > "|I Love Cats"
+     * > " Very Much" (the "|" is the caret)
+     * If you press backspace in this ocasion nothing will work, because we don't have a previous Block from the first Block.
+     * 
+     * Important 2: On tables and other block types you might want to control the flow and logic in them so you can send a onRemoveCurrent function prop
+     * to control inside of the block how this should work.
+     * 
+     * Important 3: We always insert the `\n` as the last character of the last content, to make this work without issues we need to remove this character
+     * So on the example above the real text would be:
+     * > "I Love Cats\n"
+     * > "| Very Much\n" (the "|" is the caret)
+     * What we do is remove `\n` from "I Love Cats" and THEN append 
+     */
+    const onRemoveCurrent = () => {
+        if (props.onRemoveCurrent) {
+            props.onRemoveCurrent()
+        } else {
+            const indexOfBlockInContext = props.contextBlocks.findIndex(block => block.uuid === props.block.uuid)
+            const contentsForNextBlock = JSON.parse(JSON.stringify(props.contextBlocks[indexOfBlockInContext].rich_text_block_contents))
+            // get previous block to focus
+            if (indexOfBlockInContext !== 0) {
+                const uuidToFocusAfterUpdate = props.contextBlocks[indexOfBlockInContext - 1].uuid
+                
+                let previousBlockContents = props.contextBlocks[indexOfBlockInContext - 1].rich_text_block_contents
+                // Since the last element is always \n we remove it from the text to be ready to append the new content.
+                props.contextBlocks[indexOfBlockInContext - 1].rich_text_block_contents[previousBlockContents.length-1].text = props.contextBlocks[indexOfBlockInContext - 1].rich_text_block_contents[previousBlockContents.length-1].text.substring(
+                    0, props.contextBlocks[indexOfBlockInContext - 1].rich_text_block_contents[previousBlockContents.length-1].text.length-1
+                )
+                props.contextBlocks[indexOfBlockInContext - 1].rich_text_block_contents = previousBlockContents.concat(contentsForNextBlock)
+                props.contextBlocks[indexOfBlockInContext - 1].rich_text_block_contents = mergeEqualContentsSideBySide(props.contextBlocks[indexOfBlockInContext - 1].rich_text_block_contents)
+                props.contextBlocks.splice(indexOfBlockInContext, 1)
+                props.updateBlocks(uuidToFocusAfterUpdate)
+            }
+        }
+    }
+
+    /**
+     * Fired when the user presses the keydown, this runs before the KeyUp event that we use to change the text.
+     * Because of this we can cancel the keyUp event here, like "Enter" for creating new blocks.
+     * 
+     * Right now we focus on 3 key events:
+     * 
+     * @param {*} e 
+     */
+    const onKeyDown = (e) => {
+        const keyCode = e.keyCode
+        const oldText = props.block.rich_text_block_contents.map(content => content.text).join('')
+        if (webKeyCodeReference[keyCode] === 'Enter' && !e.shiftKey) {
+            e.preventDefault()
+            e.stopPropagation()
+            onEnter()
+        } else if (webKeyCodeReference[keyCode] === 'Backspace' && caretPositionRef.current.start === 0 && caretPositionRef.current.end === 0) {
+            e.preventDefault()
+            e.stopPropagation()
+            onRemoveCurrent()
+        } else if (webKeyCodeReference[keyCode] === 'Delete' && caretPositionRef.current.start >= oldText.length-1 && caretPositionRef.current.end >= oldText.length-1) {
+            e.preventDefault()
+            e.stopPropagation()
+            onRemoveAfter()
         }
     }
 
@@ -599,57 +856,85 @@ const Text = (props) => {
      * @param {*} isActive 
      */
     const onChangeSelectionState = (type, isActive) => {
-        // user has not selected a range but had just set the caret to a position
-        switch (type) {
-            case 'bold':
-                stateOfSelection.isBold = isActive
-                break
-            case 'italic': 
-                stateOfSelection.isItalic = isActive
-                break
-        }
-        setStateOfSelection({...stateOfSelection})
+        const elementIsFocused = (process.env['APP'] === 'web') ? props.activeBlock === props.block.uuid : false
+        if (elementIsFocused) {
+            // user has not selected a range but had just set the caret to a position
+            switch (type) {
+                case 'bold':
+                    stateOfSelection.isBold = isActive
+                    break
+                case 'italic': 
+                    stateOfSelection.isItalic = isActive
+                    break
+                case 'underline':
+                    stateOfSelection.isUnderline = isActive
+                    break
+                case 'code':
+                    stateOfSelection.isCode = isActive
+                    break
+            }
+            setStateOfSelection({...stateOfSelection})
 
-        if (caretPositionRef.current.start !== caretPositionRef.current.end) {
-            const selectedContents = getSelectedContents()
-            let contents = [...props.block.rich_text_block_contents]
-            let changedText = ''
-            selectedContents.forEach(content => {
-                // delete contents
-                const contentCurrentText = contents[content.contentIndex].text
-                const toChangeContentText = contentCurrentText.substring(content.startIndexToSelectTextInContent, content.endIndexToSelectTextInContent)
-                const contentsToAddInIndex = addNewContentInTheMiddleOfContent(
-                    content.content, 
-                    content.startIndexToSelectTextInContent, 
-                    content.endIndexToSelectTextInContent,
-                    contentCurrentText, 
-                    toChangeContentText
-                )
-                // with this the type of the data in the contentIndex of props.block.rich_text_block_contents chages from object to array
-                // we need to do this because we do it on a for loop, which might affect the further index updates in the array.
-                // You will see that after the forEach we flatten the array of a arrays to a single array.
-                props.block.rich_text_block_contents[content.contentIndex] = contentsToAddInIndex
-                changedText = changedText + toChangeContentText
-            })
-            // Reference: https://stackoverflow.com/questions/10865025/merge-flatten-an-array-of-arrays
-            props.block.rich_text_block_contents = [].concat.apply([], props.block.rich_text_block_contents)
-            mergeEqualDeleteEmptyAndSetWhereCaretPositionShouldGo(changedText)
-            props.updateBlocks()
+            if (caretPositionRef.current.start !== caretPositionRef.current.end) {
+                const selectedContents = getSelectedContents()
+                let contents = [...props.block.rich_text_block_contents]
+                let changedText = ''
+                selectedContents.forEach(content => {
+                    // delete contents
+
+                    // Since the last element is always \n we remove it from the text to be ready to append the new content.
+                    contents[contents.length-1].text = (contents[contents.length-1].text.substring(contents[contents.length-1].text.length-1,contents[contents.length-1].text.length) === '\n') ? contents[contents.length-1].text.substring(
+                        0, contents[contents.length-1].text.length-1
+                    ) : contents[contents.length-1].text
+                    const contentCurrentText = contents[content.contentIndex].text
+                    const toChangeContentText = contentCurrentText.substring(content.startIndexToSelectTextInContent, content.endIndexToSelectTextInContent)
+                    // We need to know what has changed to change it inside of the content, this way we can keep unchanged states.
+                    // If your content is underlined but you selected it to be bold (but selected another content that is NOT underlined)
+                    // we are able to keep the underline state of this content and change it ONLY to be bold
+                    const contentsToAddInIndex = addNewContentInTheMiddleOfContent(
+                        content.content, 
+                        content.startIndexToSelectTextInContent, 
+                        content.endIndexToSelectTextInContent,
+                        contentCurrentText, 
+                        toChangeContentText,
+                        {
+                            isBold: type === 'bold' ? stateOfSelection.isBold : content.content.is_bold,
+                            isItalic: type === 'italic' ? stateOfSelection.isItalic : content.content.is_italic,
+                            isUnderline: type === 'underline' ? stateOfSelection.isUnderline : content.content.is_underline,
+                            isCode: type === 'code' ? stateOfSelection.isCode : content.content.is_code,
+                        }
+                    )
+                    // with this the type of the data in the contentIndex of props.block.rich_text_block_contents chages from object to array
+                    // we need to do this because we do it on a for loop, which might affect the further index updates in the array.
+                    // You will see that after the forEach we flatten the array of a arrays to a single array.
+                    props.block.rich_text_block_contents[content.contentIndex] = contentsToAddInIndex
+                    changedText = changedText + toChangeContentText
+                })
+                // Reference: https://stackoverflow.com/questions/10865025/merge-flatten-an-array-of-arrays
+                props.block.rich_text_block_contents = [].concat.apply([], props.block.rich_text_block_contents)
+                mergeEqualDeleteEmptyAndSetWhereCaretPositionShouldGo(changedText)
+                props.updateBlocks(props.block.uuid)
+            }
         }
     }
 
     useEffect(() => {
         let innerHtmlText = ''
-        props.block.rich_text_block_contents.map((content, index) => {
+        props.block.rich_text_block_contents.forEach((content, index) => {
             innerHtmlText = innerHtmlText + renderToString(<Content key={index} content={content}/>)
         })
         setInnerHtml(innerHtmlText)
+        
+        if (props.activeBlock === props.block.uuid) {
+            //setCaretPositionInInput()
+            inputRef.current.focus()
+            //setCaretPositionInInput()
+        }
     })
 
     useEffect(() => {
-        setCaretPositionInInput()
+        setCaretPositionInInput(props.activeBlock)
     }, [innerHtml])
-    
 
     const renderMobile = () => {
         return (
@@ -660,38 +945,23 @@ const Text = (props) => {
     const renderWeb = () => {
         return (
             <div>
-                <div>
-                    <button 
-                    onClick={(e) => onChangeSelectionState('bold', !stateOfSelection.isBold)} 
-                    onMouseDown={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        return false;}}
-                    style={{ color: stateOfSelection.isBold ? '#0dbf7e': '#000'}}>
-                        Negrito
-                    </button>
-                    <button 
-                    onClick={(e) => onChangeSelectionState('italic', !stateOfSelection.isItalic)} 
-                    onMouseDown={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        return false;
-                    }}
-                    style={{ color: stateOfSelection.isItalic ? '#0dbf7e': '#000'}}>
-                        Itálico
-                    </button>
-                </div>
-                <div
+                {(props.activeBlock === props.block.uuid) ? (
+                    <ContentOptions
+                    onChangeSelectionState={onChangeSelectionState}
+                    stateOfSelection={stateOfSelection}
+                    />
+                ) : ''}
+                <BlockText
                 ref={inputRef} 
-                onBlur={(e) => {onBlur(e); console.log('Blur')}}
+                onBlur={(e) => onBlur()}
                 onFocus={(e) => onFocus()}
                 onSelect={(e) => onSelectText(e)}
-                onKeyUp={(e) => onChangeText(inputRef.current.textContent, e.keyCode || e.charCode)}
+                onKeyDown={(e) => onKeyDown(e)}
+                onKeyUp={(e) => onChangeText(inputRef.current.innerText, e)}
                 onClick={(e) => onClickText(e)}
                 contentEditable={true} 
                 draggabble="false"
                 suppressContentEditableWarning={true}
-                style={{display: 'inline-block', whiteSpace: 'pre-wrap', wordBreak: 'break-word', width: '100%'}}
                 dangerouslySetInnerHTML={{__html: innerHtml}}
                 />  
             </div>

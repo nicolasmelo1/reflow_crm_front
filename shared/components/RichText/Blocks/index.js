@@ -25,6 +25,26 @@ const Block = (props) => {
         }
     }
 
+    const createNewTextBlock = (options = {}) => {
+        //const textBlockType = props.block.block_type.filter(blockType === 'text')
+        const { alignmentTypeId, order, richTextBlockContents } = options
+
+        return {
+            id: null,
+            uuid: generateUUID(),
+            image_option: null,
+            list_option: null,
+            text_option: {
+                id: null,
+                alignment_type: alignmentTypeId ? alignmentTypeId : 1
+            },
+            table_option: null,
+            block_type: 1,
+            order: order,
+            rich_text_block_contents: richTextBlockContents ? richTextBlockContents.map(content => ({...content, id: null, uuid: generateUUID()})) : [createNewContent({order: 0, text: '\n'})]
+        }
+    }
+
     const blocks = {
         text: require('./Text'),
         table: require('./Table')
@@ -32,7 +52,8 @@ const Block = (props) => {
 
     const newProps = {
         ...props, 
-        createNewContent: createNewContent
+        createNewContent: createNewContent,
+        createNewTextBlock: createNewTextBlock
     }
     const Component = blocks[(props.block.block_type === 2) ? 'table' : 'text'].default
     return <Component {...newProps}/>

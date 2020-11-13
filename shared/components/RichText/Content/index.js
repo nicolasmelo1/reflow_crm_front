@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
+import { 
+    ContentText
+} from '../../../styles/RichText'
 
 /**
  * {Description of your component, what does it do}
@@ -16,12 +19,17 @@ const Content = (props) => {
 
     const renderWeb = () => {
         return (
-            <span 
+            <ContentText 
             draggabble="false"
-            style={{fontWeight: props.content.is_bold? 'bold': 'normal', fontStyle: props.content.is_italic ? 'italic': 'normal'}}
+            isItalic={props.content.is_italic}
+            isBold={props.content.is_bold}
+            isCode={props.content.is_code}
+            isUnderline={props.content.is_underline}
+            textColor={props.content.text_color}
+            markerColor={props.content.marker_color}
             >
                 {`${props.content.text}`}
-            </span>
+            </ContentText>
         )
     }
 

@@ -1,111 +1,55 @@
-import TemplatesContainer from './TemplatesContainer'
-import TemplatesHeader from './TemplatesHeader'
-import TemplatesGoBackButton from './TemplatesGoBackButton'
-import TemplatesContentContainer from './TemplatesContentContainer'
-import TemplatesTemplateTypeSelectionContainer from './TemplatesTemplateTypeSelectionContainer'
-import TemplatesTemplateTypeSelectionTitle from './TemplatesTemplateTypeSelectionTitle'
-import TemplatesTemplateFilterTypeButtonsContainer from './TemplatesTemplateFilterTypeButtonsContainer'
-import TemplatesTemplateFilterTypeButtons from './TemplatesTemplateFilterTypeButtons'
-import TemplatesTemplateFilterTypeButtonsText from './TemplatesTemplateFilterTypeButtonsText'
-import TemplatesTypeSelectionButtonsContainer from './TemplatesTypeSelectionButtonsContainer'
-import TemplatesTypeSelectionButtons from './TemplatesTypeSelectionButtons'
-import TemplatesTypeSelectionButtonsText from './TemplatesTypeSelectionButtonsText'
-import TemplatesSelectionContainer from './TemplatesSelectionContainer'
-import TemplatesSelectionCard from './TemplatesSelectionCard'
-import TemplatesSelectionText from './TemplatesSelectionText'
-import TemplatesPreviewContainer from './TemplatesPreviewContainer'
-import TemplatesPreviewContentsContainer from './TemplatesPreviewContentsContainer'
-import TemplatesPreviewDescriptionContainer from './TemplatesPreviewDescriptionContainer'
-import TemplatesPreviewDescriptionText from './TemplatesPreviewDescriptionText'
-import TemplatesPreviewDescriptionTitle from './TemplatesPreviewDescriptionTitle'
-import TemplatesPreviewDescriptionUseButton from './TemplatesPreviewDescriptionUseButton'
-import TemplatesPreviewFormularyOptionsContainer from './TemplatesPreviewFormularyOptionsContainer'
-import TemplatesPreviewFormularyOptionsTitle from './TemplatesPreviewFormularyOptionsTitle'
-import TemplatesPreviewFormularyOptionsText from './TemplatesPreviewFormularyOptionsText'
-import TemplatesPreviewFormularyOptionsIcon from './TemplatesPreviewFormularyOptionsIcon'
-import TemplatesPreviewFormularyOptionsButton from './TemplatesPreviewFormularyOptionsButton'
-import TemplatesPreviewFormularyPreviewContainer from './TemplatesPreviewFormularyPreviewContainer'
-import TemplatesPreviewFormularyPreviewTitle from './TemplatesPreviewFormularyPreviewTitle'
-import TemplatesPreviewFormularyPreviewFormularyContainer from './TemplatesPreviewFormularyPreviewFormularyContainer'
-import TemplatesConfigurationContainer from './TemplatesConfigurationContainer'
-import TemplatesConfigurationCardsContainer from './TemplatesConfigurationCardsContainer'
-import TemplatesConfigurationCardContainer from './TemplatesConfigurationCardContainer'
-import TemplatesConfigurationCardContainerHeader from './TemplatesConfigurationCardContainerHeader'
-import TemplatesConfigurationCardLabel from './TemplatesConfigurationCardLabel'
-import TemplateConfigurationFormContainer from './TemplateConfigurationFormContainer'
-import TemplateConfigurationFormCheckboxesContainer from './TemplateConfigurationFormCheckboxesContainer'
-import TemplateConfigurationFormCheckboxText from './TemplateConfigurationFormCheckboxText'
-import TemplateConfigurationFormFieldContainer from './TemplateConfigurationFormFieldContainer'
-import TemplateConfigurationFormFieldInput from './TemplateConfigurationFormFieldInput'
-import TemplateConfigurationFormFieldTextArea from './TemplateConfigurationFormFieldTextArea'
-import TemplateConfigurationFormFieldLabel from './TemplateConfigurationFormFieldLabel'
-import TemplateConfigurationFormFieldLabelRequired from './TemplateConfigurationFormFieldLabelRequired'
-import TemplateConfigurationFormSelectContainer from './TemplateConfigurationFormSelectContainer'
-import TemplateConfigurationFormFormularySelectContainer from './TemplateConfigurationFormFormularySelectContainer'
-import TemplateConfigurationFormAddFormulariesButton from './TemplateConfigurationFormAddFormulariesButton'
-import TemplateConfigurationFormAddFormulariesButtonLabel from './TemplateConfigurationFormAddFormulariesButtonLabel'
-import TemplateConfigurationFormDependencyLabel from './TemplateConfigurationFormDependencyLabel'
-import TemplateConfigurationFormSaveButton from './TemplateConfigurationFormSaveButton'
-import TemplateConfigurationFormSaveLabel from './TemplateConfigurationFormSaveLabel'
-import TemplatesConfigurationCardHeaderButton from './TemplatesConfigurationCardHeaderButton'
-import TemplatesConfigurationAddNewCard from './TemplatesConfigurationAddNewCard'
-import TemplatesConfigurationAddNewIcon from './TemplatesConfigurationAddNewIcon'
-import TemplatesConfigurationAddNewText from './TemplatesConfigurationAddNewText'
-import TemplatesConfigurationLoadMoreCard from './TemplatesConfigurationLoadMoreCard'
-import TemplatesConfigurationLoadMoreText from './TemplatesConfigurationLoadMoreText'
-
-export { TemplatesConfigurationLoadMoreText }
-export { TemplatesConfigurationLoadMoreCard }
-export { TemplatesConfigurationAddNewText }
-export { TemplatesConfigurationAddNewIcon }
-export { TemplatesConfigurationAddNewCard }
-export { TemplatesConfigurationCardHeaderButton }
-export { TemplateConfigurationFormSaveLabel }
-export { TemplateConfigurationFormSaveButton }
-export { TemplateConfigurationFormDependencyLabel }
-export { TemplateConfigurationFormAddFormulariesButtonLabel }
-export { TemplateConfigurationFormAddFormulariesButton }
-export { TemplateConfigurationFormFormularySelectContainer }
-export { TemplateConfigurationFormSelectContainer }
-export { TemplateConfigurationFormFieldLabelRequired }
-export { TemplateConfigurationFormFieldLabel }
-export { TemplateConfigurationFormFieldTextArea }
-export { TemplateConfigurationFormFieldInput}
-export { TemplateConfigurationFormFieldContainer }
-export { TemplateConfigurationFormCheckboxText }
-export { TemplateConfigurationFormCheckboxesContainer }
-export { TemplateConfigurationFormContainer }
-export { TemplatesConfigurationCardLabel }
-export { TemplatesConfigurationCardContainerHeader }
-export { TemplatesConfigurationCardContainer }
-export { TemplatesConfigurationCardsContainer }
-export { TemplatesConfigurationContainer }
-export { TemplatesPreviewFormularyPreviewFormularyContainer }
-export { TemplatesPreviewFormularyPreviewTitle }
-export { TemplatesPreviewFormularyPreviewContainer }
-export { TemplatesPreviewFormularyOptionsButton }
-export { TemplatesPreviewFormularyOptionsIcon }
-export { TemplatesPreviewFormularyOptionsText }
-export { TemplatesPreviewFormularyOptionsTitle }
-export { TemplatesPreviewFormularyOptionsContainer }
-export { TemplatesPreviewDescriptionUseButton }
-export { TemplatesPreviewDescriptionTitle }
-export { TemplatesPreviewDescriptionText }
-export { TemplatesPreviewDescriptionContainer }
-export { TemplatesPreviewContentsContainer }
-export { TemplatesPreviewContainer }
-export { TemplatesSelectionText }
-export { TemplatesSelectionCard }
-export { TemplatesSelectionContainer }
-export { TemplatesTypeSelectionButtonsContainer }
-export { TemplatesTypeSelectionButtonsText }
-export { TemplatesTypeSelectionButtons }
-export { TemplatesTemplateFilterTypeButtonsText }
-export { TemplatesTemplateFilterTypeButtons }
-export { TemplatesTemplateFilterTypeButtonsContainer }
-export { TemplatesTemplateTypeSelectionTitle }
-export { TemplatesTemplateTypeSelectionContainer }
-export { TemplatesContentContainer }
-export { TemplatesGoBackButton }
-export { TemplatesHeader }
-export { TemplatesContainer }
+export { default as TemplatesContainer } from './TemplatesContainer'
+export { default as TemplatesHeader } from './TemplatesHeader'
+export { default as TemplatesGoBackButton } from './TemplatesGoBackButton'
+export { default as TemplatesContentContainer } from './TemplatesContentContainer'
+export { default as TemplatesTemplateTypeSelectionContainer } from './TemplatesTemplateTypeSelectionContainer'
+export { default as TemplatesTemplateTypeSelectionTitle } from './TemplatesTemplateTypeSelectionTitle'
+export { default as TemplatesTemplateFilterTypeButtonsContainer } from './TemplatesTemplateFilterTypeButtonsContainer'
+export { default as TemplatesTemplateFilterTypeButtons } from './TemplatesTemplateFilterTypeButtons'
+export { default as TemplatesTemplateFilterTypeButtonsText } from './TemplatesTemplateFilterTypeButtonsText'
+export { default as TemplatesTypeSelectionButtonsContainer } from './TemplatesTypeSelectionButtonsContainer'
+export { default as TemplatesTypeSelectionButtons } from './TemplatesTypeSelectionButtons'
+export { default as TemplatesTypeSelectionButtonsText } from './TemplatesTypeSelectionButtonsText'
+export { default as TemplatesSelectionContainer } from './TemplatesSelectionContainer'
+export { default as TemplatesSelectionCard } from './TemplatesSelectionCard'
+export { default as TemplatesSelectionText } from './TemplatesSelectionText'
+export { default as TemplatesPreviewContainer } from './TemplatesPreviewContainer'
+export { default as TemplatesPreviewContentsContainer } from './TemplatesPreviewContentsContainer'
+export { default as TemplatesPreviewDescriptionContainer } from './TemplatesPreviewDescriptionContainer'
+export { default as TemplatesPreviewDescriptionText } from './TemplatesPreviewDescriptionText'
+export { default as TemplatesPreviewDescriptionTitle } from './TemplatesPreviewDescriptionTitle'
+export { default as TemplatesPreviewDescriptionUseButton } from './TemplatesPreviewDescriptionUseButton'
+export { default as TemplatesPreviewFormularyOptionsContainer } from './TemplatesPreviewFormularyOptionsContainer'
+export { default as TemplatesPreviewFormularyOptionsTitle } from './TemplatesPreviewFormularyOptionsTitle'
+export { default as TemplatesPreviewFormularyOptionsText } from './TemplatesPreviewFormularyOptionsText'
+export { default as TemplatesPreviewFormularyOptionsIcon } from './TemplatesPreviewFormularyOptionsIcon'
+export { default as TemplatesPreviewFormularyOptionsButton } from './TemplatesPreviewFormularyOptionsButton'
+export { default as TemplatesPreviewFormularyPreviewContainer } from './TemplatesPreviewFormularyPreviewContainer'
+export { default as TemplatesPreviewFormularyPreviewTitle } from './TemplatesPreviewFormularyPreviewTitle'
+export { default as TemplatesPreviewFormularyPreviewFormularyContainer } from './TemplatesPreviewFormularyPreviewFormularyContainer'
+export { default as TemplatesConfigurationContainer } from './TemplatesConfigurationContainer'
+export { default as TemplatesConfigurationCardsContainer } from './TemplatesConfigurationCardsContainer'
+export { default as TemplatesConfigurationCardContainer } from './TemplatesConfigurationCardContainer'
+export { default as TemplatesConfigurationCardContainerHeader } from './TemplatesConfigurationCardContainerHeader'
+export { default as TemplatesConfigurationCardLabel } from './TemplatesConfigurationCardLabel'
+export { default as TemplateConfigurationFormContainer } from './TemplateConfigurationFormContainer'
+export { default as TemplateConfigurationFormCheckboxesContainer } from './TemplateConfigurationFormCheckboxesContainer'
+export { default as TemplateConfigurationFormCheckboxText } from './TemplateConfigurationFormCheckboxText'
+export { default as TemplateConfigurationFormFieldContainer } from './TemplateConfigurationFormFieldContainer'
+export { default as TemplateConfigurationFormFieldInput } from './TemplateConfigurationFormFieldInput'
+export { default as TemplateConfigurationFormFieldTextArea } from './TemplateConfigurationFormFieldTextArea'
+export { default as TemplateConfigurationFormFieldLabel } from './TemplateConfigurationFormFieldLabel'
+export { default as TemplateConfigurationFormFieldLabelRequired } from './TemplateConfigurationFormFieldLabelRequired'
+export { default as TemplateConfigurationFormSelectContainer } from './TemplateConfigurationFormSelectContainer'
+export { default as TemplateConfigurationFormFormularySelectContainer } from './TemplateConfigurationFormFormularySelectContainer'
+export { default as TemplateConfigurationFormAddFormulariesButton } from './TemplateConfigurationFormAddFormulariesButton'
+export { default as TemplateConfigurationFormAddFormulariesButtonLabel } from './TemplateConfigurationFormAddFormulariesButtonLabel'
+export { default as TemplateConfigurationFormDependencyLabel } from './TemplateConfigurationFormDependencyLabel'
+export { default as TemplateConfigurationFormSaveButton } from './TemplateConfigurationFormSaveButton'
+export { default as TemplateConfigurationFormSaveLabel } from './TemplateConfigurationFormSaveLabel'
+export { default as TemplatesConfigurationCardHeaderButton } from './TemplatesConfigurationCardHeaderButton'
+export { default as TemplatesConfigurationAddNewCard } from './TemplatesConfigurationAddNewCard'
+export { default as TemplatesConfigurationAddNewIcon } from './TemplatesConfigurationAddNewIcon'
+export { default as TemplatesConfigurationAddNewText } from './TemplatesConfigurationAddNewText'
+export { default as TemplatesConfigurationLoadMoreCard } from './TemplatesConfigurationLoadMoreCard'
+export { default as TemplatesConfigurationLoadMoreText } from './TemplatesConfigurationLoadMoreText'

@@ -1,5 +1,2 @@
-import DataTypeHeaderAnchor from './DataTypeHeaderAnchor'
-import DataTypeHeaderContainer from './DataTypeHeaderContainer'
-
-export { DataTypeHeaderContainer }
-export { DataTypeHeaderAnchor }
+export { default as DataTypeHeaderAnchor } from './DataTypeHeaderAnchor'
+export { default as DataTypeHeaderContainer } from './DataTypeHeaderContainer'

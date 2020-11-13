@@ -1,21 +1,10 @@
-import ChangePasswordContainer from './ChangePasswordContainer'
-import ChangePasswordFormContainer from './ChangePasswordFormContainer'
-import ChangePasswordInput from './ChangePasswordInput'
-import ChangePasswordLabel from './ChangePasswordLabel'
-import ChangePasswordLogo from './ChangePasswordLogo'
-import ChangePasswordError from './ChangePasswordError'
-import ChangePasswordSubmitButton from './ChangePasswordSubmitButton'
-import ChangePasswordVisualizePasswordLabel from './ChangePasswordVisualizePasswordLabel'
-import ChangePasswordHeader from './ChangePasswordHeader'
-import ChangePasswordGoBackButton from './ChangePasswordGoBackButton'
-
-export { ChangePasswordGoBackButton }
-export { ChangePasswordHeader }
-export { ChangePasswordVisualizePasswordLabel }
-export { ChangePasswordSubmitButton }
-export { ChangePasswordFormContainer }
-export { ChangePasswordContainer }
-export { ChangePasswordError }
-export { ChangePasswordInput }
-export { ChangePasswordLabel }
-export { ChangePasswordLogo }
+export { default as ChangePasswordContainer } from './ChangePasswordContainer'
+export { default as ChangePasswordFormContainer } from './ChangePasswordFormContainer'
+export { default as ChangePasswordInput } from './ChangePasswordInput'
+export { default as ChangePasswordLabel } from './ChangePasswordLabel'
+export { default as ChangePasswordLogo } from './ChangePasswordLogo'
+export { default as ChangePasswordError } from './ChangePasswordError'
+export { default as ChangePasswordSubmitButton } from './ChangePasswordSubmitButton'
+export { default as ChangePasswordVisualizePasswordLabel } from './ChangePasswordVisualizePasswordLabel'
+export { default as ChangePasswordHeader } from './ChangePasswordHeader'
+export { default as ChangePasswordGoBackButton } from './ChangePasswordGoBackButton'

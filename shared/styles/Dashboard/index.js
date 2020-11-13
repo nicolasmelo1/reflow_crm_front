@@ -1,91 +1,45 @@
-import DashboardConfigurationAddNewCard from './DashboardConfigurationAddNewCard'
-import DashboardConfigurationAddNewIcon from './DashboardConfigurationAddNewIcon'
-import DashboardConfigurationAddNewText from './DashboardConfigurationAddNewText'
-import DashboardConfigurationCardContainer from './DashboardConfigurationCardContainer'
-import DashboardConfigurationCardTitle from './DashboardConfigurationCardTitle'
-import DashboardConfigurationCardIcon from './DashboardConfigurationCardIcon'
-import DashboardConfigurationForCompanyExplanation from './DashboardConfigurationForCompanyExplanation'
-import DashboardConfigurationCardChartAndTitleContainer from './DashboardConfigurationCardChartAndTitleContainer'
-import DashboardConfigurationCardButtonsContainer from './DashboardConfigurationCardButtonsContainer'
-import DashboardConfigurationFullFormContainer from './DashboardConfigurationFullFormContainer'
-import DashboardConfigurationChartAndFormContainer from './DashboardConfigurationChartAndFormContainer'
-import DashboardConfigurationFormContainer from './DashboardConfigurationFormContainer'
-import DashboardConfigurationFormGoBackButton from './DashboardConfigurationFormGoBackButton'
-import DashboardConfigurationFormHeader from './DashboardConfigurationFormHeader'
-import DashboardConfigurationFormSelectContainer from './DashboardConfigurationFormSelectContainer'
-import DashboardConfigurationPreviewTitleLabel from './DashboardConfigurationPreviewTitleLabel'
-import DashboardConfigurationSaveButton from './DashboardConfigurationSaveButton'
-import DashboardConfigurationChartContainer from './DashboardConfigurationChartContainer'
-import DashboardConfigurationFormFieldContainer from './DashboardConfigurationFormFieldContainer'
-import DashboardConfigurationFormFieldLabel from './DashboardConfigurationFormFieldLabel'
-import DashboardConfigurationFormFieldRequiredLabel from './DashboardConfigurationFormFieldRequiredLabel'
-import DashboardConfigurationFormFieldInput from './DashboardConfigurationFormFieldInput'
-import DashboardConfigurationCardsContainer from './DashboardConfigurationCardsContainer'
-import ChartContainer from './ChartContainer'
-import ChartTotalContainer from './ChartTotalContainer'
-import ChartTotalContent from './ChartTotalContent'
-import ChartTotalTitleLabel from './ChartTotalTitleLabel'
-import ChartTotalLabel from './ChartTotalLabel'
-import ChartTotalLabelContainer from './ChartTotalLabelContainer'
-import DashboardChartContainer from './DashboardChartContainer'
-import DashboardChartsContainer from './DashboardChartsContainer'
-import DashboardChartTitle from './DashboardChartTitle'
-import DashboardTopButtonsContainer from './DashboardTopButtonsContainer'
-import DashboardConfigurationButton from './DashboardConfigurationButton'
-import DashboardConfigurationButtonHolder from './DashboardConfigurationButtonHolder'
-import DashboardTotalContainer from './DashboardTotalContainer'
-import DashboardFilterIcon from './DashboardFilterIcon'
-import DashboardFilterHolder from './DashboardFilterHolder'
-import DashboardFilterContainer from './DashboardFilterContainer'
-import DashboardFilterButton from './DashboardFilterButton'
-import DashboardFilterButtonLabel from './DashboardFilterButtonLabel'
-import DashboardUpdateDateHolder from './DashboardUpdateDateHolder'
-import DashboardUpdateDateDateRangeContainer from './DashboardUpdateDateDateRangeContainer'
-import DashboardUpdateDateInput from './DashboardUpdateDateInput'
-import DashboardUpdateDateLabel from './DashboardUpdateDateLabel'
-
-export { DashboardUpdateDateLabel }
-export { DashboardUpdateDateInput }
-export { DashboardUpdateDateDateRangeContainer }
-export { DashboardUpdateDateHolder }
-export { DashboardFilterButtonLabel }
-export { DashboardFilterButton }
-export { DashboardFilterContainer }
-export { DashboardFilterHolder }
-export { DashboardFilterIcon }
-export { DashboardTotalContainer }
-export { DashboardConfigurationButtonHolder }
-export { DashboardConfigurationButton }
-export { DashboardTopButtonsContainer }
-export { DashboardChartTitle }
-export { DashboardChartContainer }
-export { DashboardChartsContainer }
-export { ChartTotalLabelContainer }
-export { ChartTotalTitleLabel }
-export { ChartTotalLabel }
-export { ChartTotalContent }
-export { ChartTotalContainer }
-export { ChartContainer }
-export { DashboardConfigurationForCompanyExplanation }
-export { DashboardConfigurationCardsContainer }
-export { DashboardConfigurationFormFieldInput }
-export { DashboardConfigurationFormFieldRequiredLabel }
-export { DashboardConfigurationFormFieldLabel }
-export { DashboardConfigurationFormFieldContainer }
-export { DashboardConfigurationFormContainer }
-export { DashboardConfigurationPreviewTitleLabel }
-export { DashboardConfigurationSaveButton }
-export { DashboardConfigurationChartContainer }
-export { DashboardConfigurationChartAndFormContainer }
-export { DashboardConfigurationFormGoBackButton }
-export { DashboardConfigurationFormHeader }
-export { DashboardConfigurationFullFormContainer }
-export { DashboardConfigurationFormSelectContainer }
-export { DashboardConfigurationCardButtonsContainer }
-export { DashboardConfigurationCardChartAndTitleContainer }
-export { DashboardConfigurationCardIcon }
-export { DashboardConfigurationCardTitle }
-export { DashboardConfigurationCardContainer }
-export { DashboardConfigurationAddNewText }
-export { DashboardConfigurationAddNewIcon }
-export { DashboardConfigurationAddNewCard }
+export { default as DashboardConfigurationAddNewCard } from './DashboardConfigurationAddNewCard'
+export { default as DashboardConfigurationAddNewIcon } from './DashboardConfigurationAddNewIcon'
+export { default as DashboardConfigurationAddNewText } from './DashboardConfigurationAddNewText'
+export { default as DashboardConfigurationCardContainer } from './DashboardConfigurationCardContainer'
+export { default as DashboardConfigurationCardTitle } from './DashboardConfigurationCardTitle'
+export { default as DashboardConfigurationCardIcon } from './DashboardConfigurationCardIcon'
+export { default as DashboardConfigurationForCompanyExplanation } from './DashboardConfigurationForCompanyExplanation'
+export { default as DashboardConfigurationCardChartAndTitleContainer } from './DashboardConfigurationCardChartAndTitleContainer'
+export { default as DashboardConfigurationCardButtonsContainer } from './DashboardConfigurationCardButtonsContainer'
+export { default as DashboardConfigurationFullFormContainer } from './DashboardConfigurationFullFormContainer'
+export { default as DashboardConfigurationChartAndFormContainer } from './DashboardConfigurationChartAndFormContainer'
+export { default as DashboardConfigurationFormContainer } from './DashboardConfigurationFormContainer'
+export { default as DashboardConfigurationFormGoBackButton } from './DashboardConfigurationFormGoBackButton'
+export { default as DashboardConfigurationFormHeader } from './DashboardConfigurationFormHeader'
+export { default as DashboardConfigurationFormSelectContainer } from './DashboardConfigurationFormSelectContainer'
+export { default as DashboardConfigurationPreviewTitleLabel } from './DashboardConfigurationPreviewTitleLabel'
+export { default as DashboardConfigurationSaveButton } from './DashboardConfigurationSaveButton'
+export { default as DashboardConfigurationChartContainer } from './DashboardConfigurationChartContainer'
+export { default as DashboardConfigurationFormFieldContainer } from './DashboardConfigurationFormFieldContainer'
+export { default as DashboardConfigurationFormFieldLabel } from './DashboardConfigurationFormFieldLabel'
+export { default as DashboardConfigurationFormFieldRequiredLabel } from './DashboardConfigurationFormFieldRequiredLabel'
+export { default as DashboardConfigurationFormFieldInput } from './DashboardConfigurationFormFieldInput'
+export { default as DashboardConfigurationCardsContainer } from './DashboardConfigurationCardsContainer'
+export { default as ChartContainer } from './ChartContainer'
+export { default as ChartTotalContainer } from './ChartTotalContainer'
+export { default as ChartTotalContent } from './ChartTotalContent'
+export { default as ChartTotalTitleLabel } from './ChartTotalTitleLabel'
+export { default as ChartTotalLabel } from './ChartTotalLabel'
+export { default as ChartTotalLabelContainer } from './ChartTotalLabelContainer'
+export { default as DashboardChartContainer } from './DashboardChartContainer'
+export { default as DashboardChartsContainer } from './DashboardChartsContainer'
+export { default as DashboardChartTitle } from './DashboardChartTitle'
+export { default as DashboardTopButtonsContainer } from './DashboardTopButtonsContainer'
+export { default as DashboardConfigurationButton } from './DashboardConfigurationButton'
+export { default as DashboardConfigurationButtonHolder } from './DashboardConfigurationButtonHolder'
+export { default as DashboardTotalContainer } from './DashboardTotalContainer'
+export { default as DashboardFilterIcon } from './DashboardFilterIcon'
+export { default as DashboardFilterHolder } from './DashboardFilterHolder'
+export { default as DashboardFilterContainer } from './DashboardFilterContainer'
+export { default as DashboardFilterButton } from './DashboardFilterButton'
+export { default as DashboardFilterButtonLabel } from './DashboardFilterButtonLabel'
+export { default as DashboardUpdateDateHolder } from './DashboardUpdateDateHolder'
+export { default as DashboardUpdateDateDateRangeContainer } from './DashboardUpdateDateDateRangeContainer'
+export { default as DashboardUpdateDateInput } from './DashboardUpdateDateInput'
+export { default as DashboardUpdateDateLabel } from './DashboardUpdateDateLabel'

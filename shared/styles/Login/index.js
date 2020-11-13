@@ -1,25 +1,12 @@
-import LoginInputContainer from './LoginInputContainer'
-import LoginForgotPassword from './LoginForgotPassword'
-import LoginInput from './LoginInput'
-import LoginFieldError from './LoginFieldError'
-import LoginVisualizePasswordIcon from './LoginVisualizePasswordIcon'
-import LoginLogo from './LoginLogo'
-import LoginLabel from './LoginLabel'
-import LoginButton from './LoginButton'
-import LoginOnboardingButton from './LoginOnboardingButton'
-import LoginButtonText from './LoginButtonText'
-import LoginContainer from './LoginContainer'
-import LoginFormContainer from './LoginFormContainer'
-
-export { LoginOnboardingButton }
-export { LoginFormContainer }
-export { LoginContainer }
-export { LoginButtonText }
-export { LoginButton }
-export { LoginVisualizePasswordIcon }
-export { LoginForgotPassword }
-export { LoginFieldError }
-export { LoginInputContainer }
-export { LoginInput }
-export { LoginLabel }
-export { LoginLogo }
+export { default as LoginInputContainer } from './LoginInputContainer'
+export { default as LoginForgotPassword } from './LoginForgotPassword'
+export { default as LoginInput } from './LoginInput'
+export { default as LoginFieldError } from './LoginFieldError'
+export { default as LoginVisualizePasswordIcon } from './LoginVisualizePasswordIcon'
+export { default as LoginLogo } from './LoginLogo'
+export { default as LoginLabel } from './LoginLabel'
+export { default as LoginButton } from './LoginButton'
+export { default as LoginOnboardingButton } from './LoginOnboardingButton'
+export { default as LoginButtonText } from './LoginButtonText'
+export { default as LoginContainer } from './LoginContainer'
+export { default as LoginFormContainer } from './LoginFormContainer'

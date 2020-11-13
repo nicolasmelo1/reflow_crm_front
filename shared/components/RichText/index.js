@@ -18,170 +18,173 @@ class RichText extends React.Component {
             rich_text_page_blocks: []
         }*/
         this.state = {
-            id: 1,
-            raw_text: "",
-            rich_text_page_blocks: [
-                {
-                    id: 1,
-                    uuid: "7495ff92-c16b-45d0-94cd-d02d1056c113",
-                    image_option: null,
-                    list_option: null,
-                    text_option: {
+            activeBlock: null,
+            data: {
+                id: 1,
+                raw_text: "",
+                rich_text_page_blocks: [
+                    {
                         id: 1,
-                        alignment_type: 2
-                    },
-                    table_option: null,
-                    block_type: 1,
-                    order: 1,
-                    rich_text_block_contents: [
-                        {
-                            order: 1,
-                            uuid: "3d1d811c-eddf-4c5b-bccb-9e2f1fc52443",
-                            text: "Eu",
-                            is_bold: false,
-                            is_italic: false,
-                            is_underline: false,
-                            is_code: false,
-                            latex_equation: "",
-                            marker_color: "",
-                            text_color: "",
-                            link: null
+                        uuid: "7495ff92-c16b-45d0-94cd-d02d1056c113",
+                        image_option: null,
+                        list_option: null,
+                        text_option: {
+                            id: 1,
+                            alignment_type: 2
                         },
-                        {
-                            order: 2,
-                            uuid: "e2f9a2c0-d6ca-44ab-8819-0d5c499cd521",
-                            text: "AMO",
-                            is_bold: true,
-                            is_italic: true,
-                            is_underline: false,
-                            is_code: false,
-                            latex_equation: "",
-                            marker_color: "",
-                            text_color: "",
-                            link: null
-                        },
-                        {
-                            order: 3,
-                            uuid: "dbf716aa-7b01-4477-89ef-3013ecbce2a3",
-                            text: "Gatos\n",
-                            is_bold: false,
-                            is_italic: true,
-                            is_underline: false,
-                            is_code: false,
-                            latex_equation: "",
-                            marker_color: "",
-                            text_color: "",
-                            link: null
-                        }
-                    ],
-                    rich_text_depends_on_blocks: []
-                },
-                {
-                    id: 4,
-                    uuid: "d37d2821-ca19-42cd-9e01-c8cc18237f27",
-                    image_option: null,
-                    list_option: null,
-                    text_option: null,
-                    table_option: {
-                        id: 1,
-                        rows_num: 2,
-                        columns_num: 2,
-                        border_color: ""
+                        table_option: null,
+                        block_type: 1,
+                        order: 1,
+                        rich_text_block_contents: [
+                            {
+                                order: 1,
+                                uuid: "3d1d811c-eddf-4c5b-bccb-9e2f1fc52443",
+                                text: "Eu",
+                                is_bold: false,
+                                is_italic: false,
+                                is_underline: false,
+                                is_code: false,
+                                latex_equation: "",
+                                marker_color: "",
+                                text_color: "",
+                                link: null
+                            },
+                            {
+                                order: 2,
+                                uuid: "e2f9a2c0-d6ca-44ab-8819-0d5c499cd521",
+                                text: "AMO",
+                                is_bold: true,
+                                is_italic: true,
+                                is_underline: false,
+                                is_code: false,
+                                latex_equation: "",
+                                marker_color: "",
+                                text_color: "",
+                                link: null
+                            },
+                            {
+                                order: 3,
+                                uuid: "dbf716aa-7b01-4477-89ef-3013ecbce2a3",
+                                text: "Gatos\n",
+                                is_bold: false,
+                                is_italic: true,
+                                is_underline: true,
+                                is_code: true,
+                                latex_equation: "",
+                                marker_color: "",
+                                text_color: "",
+                                link: null
+                            }
+                        ],
+                        rich_text_depends_on_blocks: []
                     },
-                    block_type: 2,
-                    order: 4,
-                    rich_text_block_contents: [],
-                    rich_text_depends_on_blocks: [
-                        {
-                            id: 2,
-                            uuid: "75722a40-e659-4787-95e5-fb1ea1d5d223",
-                            image_option: null,
-                            list_option: null,
-                            text_option: {
+                    {
+                        id: 4,
+                        uuid: "d37d2821-ca19-42cd-9e01-c8cc18237f27",
+                        image_option: null,
+                        list_option: null,
+                        text_option: null,
+                        table_option: {
+                            id: 1,
+                            rows_num: 2,
+                            columns_num: 2,
+                            border_color: ""
+                        },
+                        block_type: 2,
+                        order: 4,
+                        rich_text_block_contents: [],
+                        rich_text_depends_on_blocks: [
+                            {
                                 id: 2,
-                                alignment_type: 2
+                                uuid: "75722a40-e659-4787-95e5-fb1ea1d5d223",
+                                image_option: null,
+                                list_option: null,
+                                text_option: {
+                                    id: 2,
+                                    alignment_type: 2
+                                },
+                                table_option: null,
+                                block_type: 1,
+                                order: 2,
+                                rich_text_block_contents: [
+                                    {
+                                        order: 4,
+                                        uuid: "1dc179fa-bd6c-4680-95b9-d24e8dad2544",
+                                        text: "Coluna 1",
+                                        is_bold: false,
+                                        is_italic: false,
+                                        is_underline: false,
+                                        is_code: false,
+                                        latex_equation: null,
+                                        marker_color: null,
+                                        text_color: null,
+                                        link: null
+                                    }
+                                ],
+                                rich_text_depends_on_blocks: []
                             },
-                            table_option: null,
-                            block_type: 1,
-                            order: 2,
-                            rich_text_block_contents: [
-                                {
-                                    order: 4,
-                                    uuid: "1dc179fa-bd6c-4680-95b9-d24e8dad2544",
-                                    text: "Coluna 1",
-                                    is_bold: false,
-                                    is_italic: false,
-                                    is_underline: false,
-                                    is_code: false,
-                                    latex_equation: null,
-                                    marker_color: null,
-                                    text_color: null,
-                                    link: null
-                                }
-                            ],
-                            rich_text_depends_on_blocks: []
-                        },
-                        {
-                            id: 3,
-                            uuid: "2038ee11-1c97-4c03-8895-b64306d8e79a",
-                            image_option: null,
-                            list_option: null,
-                            text_option: {
+                            {
                                 id: 3,
-                                alignment_type: 2
+                                uuid: "2038ee11-1c97-4c03-8895-b64306d8e79a",
+                                image_option: null,
+                                list_option: null,
+                                text_option: {
+                                    id: 3,
+                                    alignment_type: 2
+                                },
+                                table_option: null,
+                                block_type: 1,
+                                order: 3,
+                                rich_text_block_contents: [
+                                    {
+                                        order: 5,
+                                        uuid: "ad5ee394-654c-4723-a372-20652fb11663",
+                                        text: "Coluna 2",
+                                        is_bold: false,
+                                        is_italic: false,
+                                        is_underline: false,
+                                        is_code: false,
+                                        latex_equation: null,
+                                        marker_color: null,
+                                        text_color: null,
+                                        link: null
+                                    }
+                                ],
+                                rich_text_depends_on_blocks: []
                             },
-                            table_option: null,
-                            block_type: 1,
-                            order: 3,
-                            rich_text_block_contents: [
-                                {
-                                    order: 5,
-                                    uuid: "ad5ee394-654c-4723-a372-20652fb11663",
-                                    text: "Coluna 2",
-                                    is_bold: false,
-                                    is_italic: false,
-                                    is_underline: false,
-                                    is_code: false,
-                                    latex_equation: null,
-                                    marker_color: null,
-                                    text_color: null,
-                                    link: null
-                                }
-                            ],
-                            rich_text_depends_on_blocks: []
-                        },
-                        {
-                            id: 5,
-                            uuid: "2388835a-5244-491e-bd9c-a086d0fc2cdb",
-                            image_option: null,
-                            list_option: null,
-                            text_option: {
-                                id: 4,
-                                alignment_type: 2
-                            },
-                            table_option: null,
-                            block_type: 1,
-                            order: 5,
-                            rich_text_block_contents: [
-                                {
-                                    order: 6,
-                                    uuid: "401d74e5-c1ea-4978-911d-792e491d059c",
-                                    text: "Coluna 1.2",
-                                    is_bold: true,
-                                    is_italic: false,
-                                    is_underline: false,
-                                    is_code: false,
-                                    latex_equation: null,
-                                    marker_color: null,
-                                    text_color: null,
-                                    link: null
-                                }
-                            ],
-                            rich_text_depends_on_blocks: []
-                        }
-                    ]
-                }
-            ]
+                            {
+                                id: 5,
+                                uuid: "2388835a-5244-491e-bd9c-a086d0fc2cdb",
+                                image_option: null,
+                                list_option: null,
+                                text_option: {
+                                    id: 4,
+                                    alignment_type: 2
+                                },
+                                table_option: null,
+                                block_type: 1,
+                                order: 5,
+                                rich_text_block_contents: [
+                                    {
+                                        order: 6,
+                                        uuid: "401d74e5-c1ea-4978-911d-792e491d059c",
+                                        text: "Coluna 1.2",
+                                        is_bold: true,
+                                        is_italic: false,
+                                        is_underline: false,
+                                        is_code: false,
+                                        latex_equation: null,
+                                        marker_color: null,
+                                        text_color: null,
+                                        link: null
+                                    }
+                                ],
+                                rich_text_depends_on_blocks: []
+                            }
+                        ]
+                    }
+                ]
+            }
         }
     }
     
@@ -202,9 +205,11 @@ class RichText extends React.Component {
      * You can add a `console.log` to this.state inside of this function when you update the props in a child component 
      * to see how this works.
      */
-    updateBlocks = () => {
-        console.log(this.state)
-        this.setState(state => ({...this.state}))
+    updateBlocks = (activeBlock) => {
+        this.setState(state => ({
+            activeBlock: activeBlock,
+            data:{...this.state.data}
+        }))
     }
 
     componentDidMount = () => {
@@ -226,10 +231,16 @@ class RichText extends React.Component {
 
     renderWeb = () => {
         return (
-            <div style={{ height: 'var(--app-height)', overflow: 'auto' }}>
+            <div style={{ height: 'var(--app-height)', overflow: 'auto', backgroundColor: '#fff', padding: '10px', margin: '50px 0 0 0' }}>
                 <div>
-                    {this.state.rich_text_page_blocks.map((block, index) => (
-                        <Block key={block.uuid} block={block} updateBlocks={this.updateBlocks}/>
+                    {this.state.data.rich_text_page_blocks.map((block, index) => (
+                        <Block 
+                        key={block.uuid} 
+                        block={block} 
+                        activeBlock={this.state.activeBlock} 
+                        updateBlocks={this.updateBlocks} 
+                        contextBlocks={this.state.data.rich_text_page_blocks}
+                        />
                     ))}
                 </div>
                 <pre

@@ -1,31 +1,15 @@
-import OnboardingContainer from './OnboardingContainer'
-import OnboardingLogo from './OnboardingLogo'
-import OnboardingFormContainer from './OnboardingFormContainer'
-import OnboardingLabel from './OnboardingLabel'
-import OnboardingRequiredLabel from './OnboardingRequiredLabel'
-import OnboardingNonRequiredFieldMessage from './OnboardingNonRequiredFieldMessage'
-import OnboardingInput from './OnboardingInput'
-import OnboardingError from './OnboardingError'
-import OnboardingDeclarationInput from './OnboardingDeclarationInput'
-import OnboardingDeclarationLabel from './OnboardingDeclarationLabel'
-import OnboardingContinueButton from './OnboardingContinueButton'
-import OnboardingVisualizePasswordLabel from './OnboardingVisualizePasswordLabel'
-import OnboardingSubmitButton from './OnboardingSubmitButton'
-import OnboardingGoBackButton from './OnboardingGoBackButton'
-import OnboardingBottomButtonsContainer from './OnboardingBottomButtonsContainer'
-
-export { OnboardingBottomButtonsContainer }
-export { OnboardingGoBackButton }
-export { OnboardingSubmitButton }
-export { OnboardingVisualizePasswordLabel }
-export { OnboardingContinueButton }
-export { OnboardingDeclarationLabel }
-export { OnboardingDeclarationInput }
-export { OnboardingError }
-export { OnboardingInput }
-export { OnboardingNonRequiredFieldMessage }
-export { OnboardingRequiredLabel }
-export { OnboardingLabel }
-export { OnboardingFormContainer }
-export { OnboardingLogo }
-export { OnboardingContainer }
+export { default as OnboardingContainer } from './OnboardingContainer'
+export { default as OnboardingLogo } from './OnboardingLogo'
+export { default as OnboardingFormContainer } from './OnboardingFormContainer'
+export { default as OnboardingLabel } from './OnboardingLabel'
+export { default as OnboardingRequiredLabel } from './OnboardingRequiredLabel'
+export { default as OnboardingNonRequiredFieldMessage } from './OnboardingNonRequiredFieldMessage'
+export { default as OnboardingInput } from './OnboardingInput'
+export { default as OnboardingError } from './OnboardingError'
+export { default as OnboardingDeclarationInput } from './OnboardingDeclarationInput'
+export { default as OnboardingDeclarationLabel } from './OnboardingDeclarationLabel'
+export { default as OnboardingContinueButton } from './OnboardingContinueButton'
+export { default as OnboardingVisualizePasswordLabel } from './OnboardingVisualizePasswordLabel'
+export { default as OnboardingSubmitButton } from './OnboardingSubmitButton'
+export { default as OnboardingGoBackButton } from './OnboardingGoBackButton'
+export { default as OnboardingBottomButtonsContainer } from './OnboardingBottomButtonsContainer'

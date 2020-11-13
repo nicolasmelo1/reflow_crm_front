@@ -1,19 +1,9 @@
-import AlertContainer from './AlertContainer'
-import AlertBoxContainer from './AlertBoxContainer'
-import AlertBoxContentContainer from './AlertBoxContentContainer'
-import AlertButtonsContainer from './AlertButtonsContainer'
-import AlertCancelButton from './AlertCancelButton'
-import AlertCancelText from './AlertCancelText'
-import AlertOkButton from './AlertOkButton'
-import AlertOkText from './AlertOkText'
-import AlertTitleContainer from './AlertTitleContainer'
-
-export { AlertTitleContainer }
-export { AlertOkText }
-export { AlertOkButton }
-export { AlertCancelText }
-export { AlertCancelButton }
-export { AlertButtonsContainer }
-export { AlertBoxContentContainer }
-export { AlertBoxContainer }
-export { AlertContainer }
+export { default as AlertContainer } from './AlertContainer'
+export { default as AlertBoxContainer } from './AlertBoxContainer'
+export { default as AlertBoxContentContainer } from './AlertBoxContentContainer'
+export { default as AlertButtonsContainer } from './AlertButtonsContainer'
+export { default as AlertCancelButton } from './AlertCancelButton'
+export { default as AlertCancelText } from './AlertCancelText'
+export { default as AlertOkButton } from './AlertOkButton'
+export { default as AlertOkText } from './AlertOkText'
+export { default as AlertTitleContainer } from './AlertTitleContainer'

@@ -1,25 +1,12 @@
-import FilterAddNewFilterButton from './FilterAddNewFilterButton'
-import FilterAndExtractButton from './FilterAndExtractButton'
-import FilterContainer from './FilterContainer'
-import FilterDeleteButton from './FilterDeleteButton'
-import FilterSpinner from './FilterSpinner'
-import FilterIcon from './FilterIcon'
-import FilterInput from './FilterInput'
-import FilterInputDropdownButton from './FilterInputDropdownButton'
-import FilterInputGroup from './FilterInputGroup'
-import FilterSearchButton from './FilterSearchButton'
-import FilterDropdownMenu from './FilterDropdownMenu'
-import FilterHeaderContainer from './FilterHeaderContainer'
-
-export { FilterHeaderContainer }
-export { FilterDropdownMenu }
-export { FilterAddNewFilterButton }
-export { FilterAndExtractButton }
-export { FilterContainer }
-export { FilterDeleteButton }
-export { FilterSpinner }
-export { FilterIcon }
-export { FilterInput }
-export { FilterInputDropdownButton }
-export { FilterInputGroup }
-export { FilterSearchButton }
+export { default as FilterAddNewFilterButton } from './FilterAddNewFilterButton'
+export { default as FilterAndExtractButton } from './FilterAndExtractButton'
+export { default as FilterContainer } from './FilterContainer'
+export { default as FilterDeleteButton } from './FilterDeleteButton'
+export { default as FilterSpinner } from './FilterSpinner'
+export { default as FilterIcon } from './FilterIcon'
+export { default as FilterInput } from './FilterInput'
+export { default as FilterInputDropdownButton } from './FilterInputDropdownButton'
+export { default as FilterInputGroup } from './FilterInputGroup'
+export { default as FilterSearchButton } from './FilterSearchButton'
+export { default as FilterDropdownMenu } from './FilterDropdownMenu'
+export { default as FilterHeaderContainer } from './FilterHeaderContainer'

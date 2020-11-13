@@ -1,21 +1,10 @@
-import CompanyFormularyContainer from './CompanyFormularyContainer'
-import CompanyFormularyFieldContainer from './CompanyFormularyFieldContainer'
-import CompanyFormularyFieldInput from './CompanyFormularyFieldInput'
-import CompanyFormularyFieldLabel from './CompanyFormularyFieldLabel'
-import CompanyFormularyFieldError from './CompanyFormularyFieldError'
-import CompanyFormularySaveButton from './CompanyFormularySaveButton'
-import CompanyFormularySaveButtonText from './CompanyFormularySaveButtonText'
-import CompanyFormularyLogoContainer from './CompanyFormularyLogoContainer'
-import CompanyFormularyLogoHelperLabel from './CompanyFormularyLogoHelperLabel'
-import CompanyFormularyLogo from './CompanyFormularyLogo'
-
-export { CompanyFormularyLogo }
-export { CompanyFormularyLogoHelperLabel }
-export { CompanyFormularyLogoContainer }
-export { CompanyFormularySaveButtonText }
-export { CompanyFormularySaveButton }
-export { CompanyFormularyFieldError }
-export { CompanyFormularyFieldLabel }
-export { CompanyFormularyFieldInput }
-export { CompanyFormularyFieldContainer }
-export { CompanyFormularyContainer }
+export { default as CompanyFormularyContainer } from './CompanyFormularyContainer'
+export { default as CompanyFormularyFieldContainer } from './CompanyFormularyFieldContainer'
+export { default as CompanyFormularyFieldInput } from './CompanyFormularyFieldInput'
+export { default as CompanyFormularyFieldLabel } from './CompanyFormularyFieldLabel'
+export { default as CompanyFormularyFieldError } from './CompanyFormularyFieldError'
+export { default as CompanyFormularySaveButton } from './CompanyFormularySaveButton'
+export { default as CompanyFormularySaveButtonText } from './CompanyFormularySaveButtonText'
+export { default as CompanyFormularyLogoContainer } from './CompanyFormularyLogoContainer'
+export { default as CompanyFormularyLogoHelperLabel } from './CompanyFormularyLogoHelperLabel'
+export { default as CompanyFormularyLogo } from './CompanyFormularyLogo'
