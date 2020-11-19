@@ -2,14 +2,17 @@ import React from 'react'
 import styled from 'styled-components'
 import { View } from 'react-native'
 
+
 export default process.env['APP'] === 'web' ?
 styled.div`
     display: inline-block;
     white-space: pre-wrap;
     word-break: break-word;
-    width: 100%;
     padding: 5px;
+    width: 100%;
     outline: none !important;
+    caret-color: ${props => ![null, '', undefined].includes(props.caretColor) ? props.caretColor : '#000'};
+    text-align: ${props => props.alignmentType }
 `
 :
 styled(View)``

@@ -9,8 +9,6 @@ import {
  * @param {Type} props - {go in detail about every prop it recieves}
  */
 const Content = (props) => {
-
-
     const renderMobile = () => {
         return (
             <View></View>
@@ -27,6 +25,7 @@ const Content = (props) => {
             isUnderline={props.content.is_underline}
             textColor={props.content.text_color}
             markerColor={props.content.marker_color}
+            textSize={props.content.text_size}
             >
                 {`${props.content.text}`}
             </ContentText>

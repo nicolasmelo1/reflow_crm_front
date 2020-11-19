@@ -11,7 +11,9 @@ styled.div`
     position: sticky;
     background-color: white;
     padding: 10px;
-
+    display: flex;
+    flex-direction: row;
+    align-items: center
 `
 :
 styled(View)``

@@ -41,7 +41,10 @@ import {
     faFileUpload,
     faTimes,
     faTimesCircle,
-    faCheck
+    faCheck,
+    faAlignLeft,
+    faAlignCenter,
+    faAlignRight
 } from '@fortawesome/free-solid-svg-icons'
 
 
@@ -71,7 +74,10 @@ library.add(
     faFileUpload,
     faTimes,
     faTimesCircle,
-    faCheck
+    faCheck,
+    faAlignLeft,
+    faAlignCenter,
+    faAlignRight
 )
 
 /*** 

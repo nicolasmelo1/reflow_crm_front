@@ -12,6 +12,29 @@ class RichText extends React.Component {
         super(props)
         this.CancelToken = axios.CancelToken
         this.source = null
+        this.types = {
+            billing: {},
+            data: {},
+            defaults: {
+                text_alignment_type: [
+                    {
+                        id: 1,
+                        name: 'left',
+                        order: 1
+                    },
+                    {
+                        id: 3,
+                        name: 'center',
+                        order: 2
+                    },
+                    {
+                        id: 2,
+                        name: 'right',
+                        order: 3
+                    },
+                ]
+            }
+        }
         /*this.state = {
             id: null,
             raw_text: '',
@@ -30,7 +53,7 @@ class RichText extends React.Component {
                         list_option: null,
                         text_option: {
                             id: 1,
-                            alignment_type: 2
+                            alignment_type: 1
                         },
                         table_option: null,
                         block_type: 1,
@@ -40,6 +63,7 @@ class RichText extends React.Component {
                                 order: 1,
                                 uuid: "3d1d811c-eddf-4c5b-bccb-9e2f1fc52443",
                                 text: "Eu",
+                                text_size: 12,
                                 is_bold: false,
                                 is_italic: false,
                                 is_underline: false,
@@ -53,6 +77,7 @@ class RichText extends React.Component {
                                 order: 2,
                                 uuid: "e2f9a2c0-d6ca-44ab-8819-0d5c499cd521",
                                 text: "AMO",
+                                text_size: 12,
                                 is_bold: true,
                                 is_italic: true,
                                 is_underline: false,
@@ -66,6 +91,7 @@ class RichText extends React.Component {
                                 order: 3,
                                 uuid: "dbf716aa-7b01-4477-89ef-3013ecbce2a3",
                                 text: "Gatos\n",
+                                text_size: 12,
                                 is_bold: false,
                                 is_italic: true,
                                 is_underline: true,
@@ -77,8 +103,8 @@ class RichText extends React.Component {
                             }
                         ],
                         rich_text_depends_on_blocks: []
-                    },
-                    {
+                    }
+                    /*{
                         id: 4,
                         uuid: "d37d2821-ca19-42cd-9e01-c8cc18237f27",
                         image_option: null,
@@ -111,6 +137,7 @@ class RichText extends React.Component {
                                         order: 4,
                                         uuid: "1dc179fa-bd6c-4680-95b9-d24e8dad2544",
                                         text: "Coluna 1",
+                                        text_size: '',
                                         is_bold: false,
                                         is_italic: false,
                                         is_underline: false,
@@ -140,6 +167,7 @@ class RichText extends React.Component {
                                         order: 5,
                                         uuid: "ad5ee394-654c-4723-a372-20652fb11663",
                                         text: "Coluna 2",
+                                        text_size: '',
                                         is_bold: false,
                                         is_italic: false,
                                         is_underline: false,
@@ -169,6 +197,7 @@ class RichText extends React.Component {
                                         order: 6,
                                         uuid: "401d74e5-c1ea-4978-911d-792e491d059c",
                                         text: "Coluna 1.2",
+                                        text_size: '',
                                         is_bold: true,
                                         is_italic: false,
                                         is_underline: false,
@@ -182,7 +211,7 @@ class RichText extends React.Component {
                                 rich_text_depends_on_blocks: []
                             }
                         ]
-                    }
+                    }*/
                 ]
             }
         }
@@ -231,12 +260,13 @@ class RichText extends React.Component {
 
     renderWeb = () => {
         return (
-            <div style={{ height: 'var(--app-height)', overflow: 'auto', backgroundColor: '#fff', padding: '10px', margin: '50px 0 0 0' }}>
+            <div style={{ height: 'var(--app-height)', overflow: 'auto', backgroundColor: '#fff', padding: '10px', margin: '40px 0 0 0' }}>
                 <div>
                     {this.state.data.rich_text_page_blocks.map((block, index) => (
                         <Block 
                         key={block.uuid} 
                         block={block} 
+                        types={this.types}
                         activeBlock={this.state.activeBlock} 
                         updateBlocks={this.updateBlocks} 
                         contextBlocks={this.state.data.rich_text_page_blocks}

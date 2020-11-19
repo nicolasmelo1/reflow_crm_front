@@ -8,10 +8,11 @@ import generateUUID from '../../../utils/generateUUID'
  */
 const Block = (props) => {
     const createNewContent = (options = {}) => {
-        const { isBold, isCode, isItalic, isUnderline, latexEquation, link, markerColor, order, text, textColor } = options
+        const { isBold, isCode, isItalic, isUnderline, latexEquation, link, markerColor, order, text, textSize, textColor } = options
         return {
             id: null,
             uuid: generateUUID(),
+            text_size: textSize ? textSize: '',
             is_bold: isBold ? isBold : false,
             is_code: isCode ? isCode : false,
             is_italic: isItalic ? isItalic : false,

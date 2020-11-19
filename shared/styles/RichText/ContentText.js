@@ -30,6 +30,7 @@ styled.span`
     padding: ${props=> props.isCode ? '0 3px': '0'};
     margin: ${props=> props.isCode ? '0 2px': '0'};
     border-radius: ${props=> props.isCode ? '3px' : '0'};
+    font-size: ${props => ![null, '', undefined].includes(props.textSize) ? `${props.textSize}pt` : '12pt' }
 `
 :
 styled(Text)``
