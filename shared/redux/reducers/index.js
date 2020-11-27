@@ -7,7 +7,8 @@ import templates from './templates'
 import billing from './billing'
 import company from './company'
 import users from './users'
-
+import pdf_generator from './pdf_generator'
+import navbar from './navbar'
 import { DEAUTHENTICATE } from '../types'
 
 
@@ -19,8 +20,10 @@ const appReducer = combineReducers({
     templates,
     billing,
     company,
-    users
-});
+    users,
+    pdf_generator,
+    navbar
+})
 
 const rootReducer = (state, action) => {
     if (action.type === DEAUTHENTICATE) {

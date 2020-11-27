@@ -1,7 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 
-export default styled.input`
+export default process.env['APP'] === 'web' ? 
+styled.input`
     border: 0;
     background-color: white !important;
     color: #17242D;
@@ -23,3 +24,5 @@ export default styled.input`
         box-shadow: none
     }
 `
+:
+null

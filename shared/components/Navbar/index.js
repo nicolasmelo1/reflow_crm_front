@@ -31,7 +31,8 @@ class Navbar extends React.Component {
         this.source = null
         this.state = {
             isOpen: false,
-            notifications: null
+            notifications: null,
+            homeFormularyData: null
         }
     }
 
@@ -58,6 +59,10 @@ class Navbar extends React.Component {
 
     handleCompany = () => {
         Router.push(paths.company().asUrl, paths.company().asUrl, { shallow: true })
+    }
+
+    handlePDFTempalte = () => {
+        Router.push(paths.pdfTemplates().asUrl, paths.pdfTemplates(this.props.login.primaryForm).asUrl, { shallow: true })
     }
 
     freeTrialRemainingDays = () => {
@@ -119,6 +124,20 @@ class Navbar extends React.Component {
         return configDropdown
     }
 
+    getToolsDropdown = () => {
+        let toolsDropdown = []
+        if (isAdmin(this.props.login.types?.defaults?.profile_type, this.props.login.user)) {
+            toolsDropdown = [
+                {
+                    label: strings['pt-br']['headerHomePdfGeneratorTools'],
+                    href: '#',
+                    onClick: this.handlePDFTempalte
+                }
+            ]
+        }
+        return toolsDropdown
+    }
+
     componentDidMount = () => {
         this.source = this.CancelToken.source()
         this.props.onGetNewNotifications(this.source)
@@ -126,6 +145,33 @@ class Navbar extends React.Component {
         this.props.onGetUserData(this.source)
     }
     
+    componentDidUpdate = () => {
+        if (
+            this.props.navbar.isInHomeScreen && 
+            this.props.sidebar.initial.length > 0 &&
+            ((this.state.homeFormularyData !== null && this.state.homeFormularyData.form_name !== this.props.login.primaryForm) || 
+            this.state.homeFormularyData === null)
+        ) {
+            const formularyName = this.props.login.primaryForm
+            const groups = this.props.sidebar.initial
+            let formularyData = null
+            
+            for (let groupIndex=0; groupIndex<groups.length; groupIndex++){
+                for (let formularyIndex=0; formularyIndex<groups[groupIndex].form_group.length; formularyIndex++) {
+                    if (groups[groupIndex].form_group[formularyIndex].form_name === formularyName) {
+                        formularyData = JSON.parse(JSON.stringify(groups[groupIndex].form_group[formularyIndex]))
+                        break
+                    }
+                }
+            }
+
+            this.setState(state => ({
+                ...state,
+                homeFormularyData: formularyData
+            }))
+        }
+    }
+
     componentWillUnmount = () => {
         if (this.source) {
             this.source.cancel()
@@ -153,7 +199,11 @@ class Navbar extends React.Component {
                     <FontAwesomeIcon icon={this.state.isOpen ? 'times' : 'bars'}/>
                 </NavbarToggleButton>
                 <NavbarItemsContainer isOpen={this.state.isOpen}>
-                    <NavbarLink link={paths.home(this.props.login.primaryForm).asUrl} slug={paths.home().asUrl} icon='tasks' label={strings['pt-br']['headerGestaoLabel']}/>
+                    {(this.props.navbar.isInHomeScreen && this.state.homeFormularyData !== null) ? (
+                        <NavbarDropdown icon='tasks' label={this.state.homeFormularyData.label_name} items={this.getToolsDropdown()}/>
+                    ) : (
+                        <NavbarLink link={paths.home(this.props.login.primaryForm).asUrl} slug={paths.home().asUrl} icon='tasks' label={strings['pt-br']['headerGestaoLabel']}/>
+                    )}
                     <NavbarLink badge={this.props.notificationBadge > 0 ? this.props.notificationBadge : null} link={paths.notifications().asUrl} slug={paths.notifications().asUrl} icon='bell' label={strings['pt-br']['headerNotificationLabel']}/>
                     <NavbarDropdown icon='cog' label={strings['pt-br']['headerSettingsLabel']} items={this.getConfigDropdown()}/>
                 </NavbarItemsContainer>
@@ -166,7 +216,20 @@ class Navbar extends React.Component {
         const Tab = this.props.Tab
         return (
             <Tab.Navigator initialRouteName={'home'}>
-                <Tab.Screen name="home" component={this.props.HomeComponent}/>
+                <Tab.Screen 
+                name="home" 
+                component={this.props.HomeComponent}
+                options={{
+                    title: this.props.navbar.isInHomeScreen && this.state.homeFormularyData !== null ? this.state.homeFormularyData.label_name : 'Home'
+                }}
+                listeners={{
+                    tabPress: e => {
+                        if (this.props.navbar.isInHomeScreen) {
+                            e.preventDefault()
+                            this.props.setIsHomeToolsOpen(!this.props.isHomeToolsMenuOpen)
+                        }
+                    },
+                }}/>
                 <Tab.Screen name="notifications" component={this.props.NotificationComponent}/>
                 <Tab.Screen name="configurations" component={this.props.ConfigurationComponent}/>
             </Tab.Navigator>
@@ -178,4 +241,10 @@ class Navbar extends React.Component {
     }
 };
 
-export default connect(store => ({login: store.login, company: store.company, notificationBadge: store.notification.notification.badge }), actions)(Navbar)
+export default connect(store => ({
+    login: store.login, 
+    sidebar: store.home.sidebar,
+    company: store.company, 
+    navbar: store.navbar,
+    notificationBadge: store.notification.notification.badge 
+}), actions)(Navbar)

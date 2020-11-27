@@ -1,8 +1,15 @@
 import React from 'react'
 import { View } from 'react-native'
 import axios from 'axios'
+import { connect } from 'react-redux'
 import agent from '../../utils/agent'
+import generateUUID from '../../utils/generateUUID'
 import Block from './Blocks'
+import { 
+    RichTextContainer,
+    RichTextBlocksContainer
+} from '../../styles/RichText'
+
 /**
  * {Description of your component, what does it do}
  * @param {Type} props - {go in detail about every prop it recieves}
@@ -42,181 +49,75 @@ class RichText extends React.Component {
         }*/
         this.state = {
             activeBlock: null,
-            data: {
-                id: 1,
-                raw_text: "",
-                rich_text_page_blocks: [
-                    {
-                        id: 1,
-                        uuid: "7495ff92-c16b-45d0-94cd-d02d1056c113",
-                        image_option: null,
-                        list_option: null,
-                        text_option: {
-                            id: 1,
-                            alignment_type: 1
-                        },
-                        table_option: null,
-                        block_type: 1,
-                        order: 1,
-                        rich_text_block_contents: [
-                            {
-                                order: 1,
-                                uuid: "3d1d811c-eddf-4c5b-bccb-9e2f1fc52443",
-                                text: "Eu",
-                                text_size: 12,
-                                is_bold: false,
-                                is_italic: false,
-                                is_underline: false,
-                                is_code: false,
-                                latex_equation: "",
-                                marker_color: "",
-                                text_color: "",
-                                link: null
-                            },
-                            {
-                                order: 2,
-                                uuid: "e2f9a2c0-d6ca-44ab-8819-0d5c499cd521",
-                                text: "AMO",
-                                text_size: 12,
-                                is_bold: true,
-                                is_italic: true,
-                                is_underline: false,
-                                is_code: false,
-                                latex_equation: "",
-                                marker_color: "",
-                                text_color: "",
-                                link: null
-                            },
-                            {
-                                order: 3,
-                                uuid: "dbf716aa-7b01-4477-89ef-3013ecbce2a3",
-                                text: "Gatos\n",
-                                text_size: 12,
-                                is_bold: false,
-                                is_italic: true,
-                                is_underline: true,
-                                is_code: true,
-                                latex_equation: "",
-                                marker_color: "",
-                                text_color: "",
-                                link: null
-                            }
-                        ],
-                        rich_text_depends_on_blocks: []
-                    }
-                    /*{
-                        id: 4,
-                        uuid: "d37d2821-ca19-42cd-9e01-c8cc18237f27",
-                        image_option: null,
-                        list_option: null,
-                        text_option: null,
-                        table_option: {
-                            id: 1,
-                            rows_num: 2,
-                            columns_num: 2,
-                            border_color: ""
-                        },
-                        block_type: 2,
-                        order: 4,
-                        rich_text_block_contents: [],
-                        rich_text_depends_on_blocks: [
-                            {
-                                id: 2,
-                                uuid: "75722a40-e659-4787-95e5-fb1ea1d5d223",
-                                image_option: null,
-                                list_option: null,
-                                text_option: {
-                                    id: 2,
-                                    alignment_type: 2
-                                },
-                                table_option: null,
-                                block_type: 1,
-                                order: 2,
-                                rich_text_block_contents: [
-                                    {
-                                        order: 4,
-                                        uuid: "1dc179fa-bd6c-4680-95b9-d24e8dad2544",
-                                        text: "Coluna 1",
-                                        text_size: '',
-                                        is_bold: false,
-                                        is_italic: false,
-                                        is_underline: false,
-                                        is_code: false,
-                                        latex_equation: null,
-                                        marker_color: null,
-                                        text_color: null,
-                                        link: null
-                                    }
-                                ],
-                                rich_text_depends_on_blocks: []
-                            },
-                            {
-                                id: 3,
-                                uuid: "2038ee11-1c97-4c03-8895-b64306d8e79a",
-                                image_option: null,
-                                list_option: null,
-                                text_option: {
-                                    id: 3,
-                                    alignment_type: 2
-                                },
-                                table_option: null,
-                                block_type: 1,
-                                order: 3,
-                                rich_text_block_contents: [
-                                    {
-                                        order: 5,
-                                        uuid: "ad5ee394-654c-4723-a372-20652fb11663",
-                                        text: "Coluna 2",
-                                        text_size: '',
-                                        is_bold: false,
-                                        is_italic: false,
-                                        is_underline: false,
-                                        is_code: false,
-                                        latex_equation: null,
-                                        marker_color: null,
-                                        text_color: null,
-                                        link: null
-                                    }
-                                ],
-                                rich_text_depends_on_blocks: []
-                            },
-                            {
-                                id: 5,
-                                uuid: "2388835a-5244-491e-bd9c-a086d0fc2cdb",
-                                image_option: null,
-                                list_option: null,
-                                text_option: {
-                                    id: 4,
-                                    alignment_type: 2
-                                },
-                                table_option: null,
-                                block_type: 1,
-                                order: 5,
-                                rich_text_block_contents: [
-                                    {
-                                        order: 6,
-                                        uuid: "401d74e5-c1ea-4978-911d-792e491d059c",
-                                        text: "Coluna 1.2",
-                                        text_size: '',
-                                        is_bold: true,
-                                        is_italic: false,
-                                        is_underline: false,
-                                        is_code: false,
-                                        latex_equation: null,
-                                        marker_color: null,
-                                        text_color: null,
-                                        link: null
-                                    }
-                                ],
-                                rich_text_depends_on_blocks: []
-                            }
-                        ]
-                    }*/
-                ]
-            }
+            data: props.initialData ? props.initialData : this.createNewPage()
         }
     }
     
+    getBlockTypeIdByName = (blockName) => {
+        if (this.props.types?.rich_text?.block_type !== undefined) {
+            for (let i=0; i<this.props.types?.rich_text?.block_type.length; i++) {
+                if (this.props.types.rich_text.block_type[i].name === blockName) {
+                    return this.props.types.rich_text.block_type[i].id
+                }
+            }
+        } return null
+    } 
+
+    getAligmentTypeIdByName = (alignmentName) => {
+        if (this.props.types?.rich_text?.alignment_type !== undefined) {
+            for (let i=0; i<this.props.types?.rich_text?.alignment_type.length; i++) {
+                if (this.props.types.rich_text.alignment_type[i].name === alignmentName) {
+                    return this.props.types.rich_text.alignment_type[i].id
+                }
+            }
+        } 
+        return null
+    }
+
+    createNewPage = () => {
+        const alignmentType = this.getAligmentTypeIdByName('left')
+        const blockType = this.getBlockTypeIdByName('text')
+
+        return {
+            id: null,
+            raw_text: "",
+            rich_text_page_blocks: [
+                {
+                    id: null,
+                    uuid: generateUUID(),
+                    image_option: null,
+                    list_option: null,
+                    text_option: {
+                        id: null,
+                        alignment_type: alignmentType
+                    },
+                    table_option: null,
+                    block_type: blockType,
+                    order: 0,
+                    rich_text_block_contents: [
+                        {
+                            order: 0,
+                            uuid: generateUUID(),
+                            text: "Digite aqui\n",
+                            text_size: 12,
+                            is_bold: false,
+                            is_italic: false,
+                            is_underline: false,
+                            is_code: false,
+                            is_custom: false,
+                            custom_value: '',
+                            latex_equation: null,
+                            marker_color: "",
+                            text_color: "",
+                            link: null
+                        }
+                    ]
+                }
+            ]
+        }
+
+    }
+
     /**
      * We update the state by reference, it means this might work like a blackBox for some people.
      * Reference: https://stackoverflow.com/questions/373419/whats-the-difference-between-passing-by-reference-vs-passing-by-value
@@ -257,26 +158,35 @@ class RichText extends React.Component {
             <View></View>
         )
     }
-
+    
     renderWeb = () => {
         return (
-            <div style={{ height: 'var(--app-height)', overflow: 'auto', backgroundColor: '#fff', padding: '10px', margin: '40px 0 0 0' }}>
-                <div>
+            <RichTextContainer height={this.props.height}>
+                <RichTextBlocksContainer>
                     {this.state.data.rich_text_page_blocks.map((block, index) => (
                         <Block 
                         key={block.uuid} 
                         block={block} 
                         types={this.types}
+                        isEditable={this.props.isEditable ? this.props.isEditable : true}
                         activeBlock={this.state.activeBlock} 
                         updateBlocks={this.updateBlocks} 
                         contextBlocks={this.state.data.rich_text_page_blocks}
+                        renderCustomContent={this.props.renderCustomContent}
+                        getAligmentTypeIdByName={this.getAligmentTypeIdByName}
+                        getBlockTypeIdByName={this.getBlockTypeIdByName}
+                        handleUnmanagedContent={this.props.handleUnmanagedContent}
+                        unmanagedContentValue={this.props.unmanagedContentValue}
+                        isUnmanagedContentSelectorOpen={this.props.isUnmanagedContentSelectorOpen}
+                        onOpenUnmanagedContentSelector={this.props.onOpenUnmanagedContentSelector}
+                        onChangeUnmanagedContentValue={this.props.onChangeUnmanagedContentValue}
                         />
                     ))}
-                </div>
-                <pre
+                </RichTextBlocksContainer>
+                {/*<pre
                 dangerouslySetInnerHTML={{__html: JSON.stringify(this.state, null, '\t')}}
-                />
-            </div>
+                />*/}
+            </RichTextContainer>
         )
     }
 
@@ -285,4 +195,4 @@ class RichText extends React.Component {
     }
 }
 
-export default RichText
+export default connect(state => ({ types: state.login.types }), {})(RichText)

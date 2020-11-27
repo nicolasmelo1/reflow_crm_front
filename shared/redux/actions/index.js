@@ -8,6 +8,8 @@ import changepassword from './changepassword'
 import billing from './billing'
 import users from './users'
 import company from './company'
+import pdf_generator from './pdf_generator'
+import navbar from './navbar'
 
 export default {
     ...home,
@@ -19,5 +21,7 @@ export default {
     ...billing,
     ...users,
     ...company,
-    ...changepassword
+    ...changepassword,
+    ...pdf_generator,
+    ...navbar
 }

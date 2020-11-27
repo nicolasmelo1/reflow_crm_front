@@ -19,6 +19,8 @@ const Text = (props) => {
         isItalic: false,
         isUnderline: false,
         isCode: false,
+        isCustom: false,
+        customValue: null,
         markerColor: '',
         textColor: '',
         textSize: ''
@@ -38,6 +40,8 @@ const Text = (props) => {
         contentIndex: null,
         positionInContent: null
     })
+    const isWaitingForCustomInput = React.useRef(false)
+    const customInputCaretPosition = React.useRef(caretPositionRef)
     const [innerHtml, setInnerHtml] = useState('')
     const [stateOfSelection, setStateOfSelection] = useState(stateOfSelectionData)
     
@@ -55,6 +59,32 @@ const Text = (props) => {
     }
 
     /**
+     * Check if the position of the caret is on a custom content, if it is we need to select the hole content so the
+     * user cannot edit the middle of it
+     */
+    const checkIfCaretPositionIsCustomFixAndSetCaretPosition = () => {
+        const selectedContents = getSelectedContents()
+        if (selectedContents.length > 0) {
+            const firstContentInSelection = selectedContents[0]
+            const lastContentInSelection = selectedContents[selectedContents.length-1]
+            if (lastContentInSelection.content.is_custom || firstContentInSelection.content.is_custom) {
+                if (lastContentInSelection.content.is_custom && lastContentInSelection.endIndexToSelectTextInContent !== lastContentInSelection.content.length) {
+                    caretPositionRef.current.end = caretPositionRef.current.end + (lastContentInSelection.content.text.length - lastContentInSelection.endIndexToSelectTextInContent)
+                }
+                if (firstContentInSelection.content.is_custom && firstContentInSelection.startIndexToSelectTextInContent !== 0) {
+                    caretPositionRef.current.start = caretPositionRef.current.start + firstContentInSelection.startIndexToSelectTextInContent
+                }
+                setCaretPositionWeb(
+                    firstContentInSelection.contentIndex, 
+                    firstContentInSelection.content.is_custom ? 0: firstContentInSelection.startIndexToSelectTextInContent, 
+                    lastContentInSelection.contentIndex, 
+                    lastContentInSelection.content.is_custom ? lastContentInSelection.content.text.length : lastContentInSelection.endIndexToSelectTextInContent
+                )  
+            }
+        }
+    }
+
+    /**
      * - We check if the browser has support for both getSelection and createRange (only IE9 does not support these)
      * - last but not least we get the positions on where the caret should go
      * 
@@ -63,25 +93,71 @@ const Text = (props) => {
      * @param {*} contentIndex 
      * @param {*} positionInContent 
      */
-    const setCaretPositionWeb = (contentIndex, positionInContent) => {
+    const setCaretPositionWeb = (startContentIndex, startPositionInContent, endContentIndex=null, endPositionInContent=null) => {
         if (typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
             const range = document.createRange()
             const selection = window.getSelection()
-
             range.selectNodeContents(inputRef.current)
-            const node = inputRef.current.childNodes[contentIndex]
-            const nodePosition = positionInContent
-            if (node) {
-                range.setStart(
-                    node.firstChild ? node.firstChild : node, 
-                    nodePosition
-                )
-                range.collapse(true)
+
+            if (endContentIndex === null && endPositionInContent === null) {
+                const node = inputRef.current.childNodes[startContentIndex]
+                const nodePosition = startPositionInContent
+                if (node) {
+                    range.setStart(
+                        node.firstChild ? node.firstChild : node, 
+                        nodePosition
+                    )
+                    range.collapse(true)
+                } else {
+                    range.collapse(false) 
+                }
             } else {
-                range.collapse(false) 
+                const startNode = inputRef.current.childNodes[startContentIndex]
+                const endNode = inputRef.current.childNodes[endContentIndex]
+                const startNodePosition = startPositionInContent
+                const endNodePosition = endPositionInContent
+                try {
+                    if (startNode) {
+                        range.setStart(
+                            startNode.firstChild ? startNode.firstChild : startNode, 
+                            startNodePosition
+                        )
+                    } 
+                    if (endNode) {
+                        range.setEnd(
+                            endNode.firstChild ? endNode.firstChild : endNode, 
+                            endNodePosition
+                        )
+                    }
+                } catch {}
             }
             selection.removeAllRanges()
             selection.addRange(range)
+        }
+    }
+
+    /** 
+     * Gets the caret X and Y position so we can display a option above the content, this is used to send for the unmanaged.
+     */
+    const getCaretCoordinatesWeb = () => {
+        let x = 0
+        let y = 0
+        const isSupported = typeof window.getSelection !== "undefined"
+        if (isSupported) {
+            const selection = window.getSelection()
+            if (selection.rangeCount !== 0) {
+                const range = selection.getRangeAt(0).cloneRange()
+                range.collapse(true)
+                const rect = range.getClientRects()[0]
+                if (rect) {
+                    x = rect.left
+                    y = rect.top
+                }
+            }
+        }
+        return { 
+            x: x, 
+            y: y 
         }
     }
 
@@ -94,11 +170,13 @@ const Text = (props) => {
      * (without this all the other text blocks of the document would be focused)
      * - Then we check if the `whereCaretPositionShouldGoAfterUpdateRef` was defined and is not null, if it is we need to go to this position
      * otherwise the caret shoud go to the position of the `caretPositionRef` (this is used when we focus the input, onEnter and onRemoveCurrent and onRemoveAfter)
-     * - last we update whereCaretPositionShouldGoAfterUpdateRef to null, so the caret should not go to any new position except the position it is currently in.
+     * - Then we update whereCaretPositionShouldGoAfterUpdateRef to null, so the caret should not go to any new position except the position it is currently in.
      * - Also update the caretPositionRef to the current caret position.
+     * - Then we check if it is a custom element, if it is we need to select the hole content
+     * - Then we check the state of this element (is it bold, is it italic) and then we update the options of the text.
      */
     const setCaretPositionInInput = (activeBlock) => {
-        if (activeBlock === props.block.uuid) {
+        if (activeBlock === props.block.uuid && !isWaitingForCustomInput.current) {
             if (whereCaretPositionShouldGoAfterUpdateRef.current.contentIndex !== null && whereCaretPositionShouldGoAfterUpdateRef.current.positionInContent !== null) {
                 setCaretPositionWeb(whereCaretPositionShouldGoAfterUpdateRef.current.contentIndex, whereCaretPositionShouldGoAfterUpdateRef.current.positionInContent)
             } else if (caretPositionRef.current.start !== null && caretPositionRef.current.end !== null) {
@@ -112,6 +190,7 @@ const Text = (props) => {
                 positionInContent: null
             }
             caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
+            checkIfCaretPositionIsCustomFixAndSetCaretPosition()
             checkStateOfSelectedElementAndUpdateState()
         }
     }
@@ -273,6 +352,7 @@ const Text = (props) => {
         // if two contents that are side by side are equal, create a new content that merge the content text
         while (contents.length > 0) {
             if (contents[1] !== undefined &&
+                !contents[0].is_custom && !contents[1].is_custom &&
                 contents[0].link === contents[1].link &&
                 contents[0].is_bold === contents[1].is_bold && 
                 contents[0].is_italic === contents[1].is_italic &&
@@ -302,7 +382,8 @@ const Text = (props) => {
         }
         // if the block has no contents, insert a new empty content.
         if (newContents.length === 0) newContents.push(props.createNewContent({order: 0}))
-
+        // if the block has a single empty content, reset the state of it
+        if (newContents.length === 1 && newContents[0].text === '') newContents[0] = props.createNewContent({order: 0, text: ''})
         return newContents
     }
 
@@ -373,6 +454,8 @@ const Text = (props) => {
             isItalic: content.is_italic, 
             isUnderline: content.is_underline, 
             latexEquation: content.latex_equation, 
+            isCustom: content.is_custom,
+            customValue: content.custom_value,
             link: content.link, 
             markerColor: content.marker_color, 
             order: 0, 
@@ -385,6 +468,8 @@ const Text = (props) => {
             isItalic: selectionState.isItalic,
             isUnderline: selectionState.isUnderline, 
             isCode: selectionState.isCode,
+            isCustom: selectionState.isCustom,
+            customValue: selectionState.customValue,
             latexEquation: content.latex_equation, 
             link: content.link, 
             markerColor: selectionState.markerColor, 
@@ -399,6 +484,8 @@ const Text = (props) => {
             isCode: content.is_code, 
             isUnderline: content.is_underline, 
             latexEquation: content.latex_equation, 
+            isCustom: content.is_custom,
+            customValue: content.custom_value,
             link: content.link, 
             markerColor: content.marker_color, 
             order: 0, 
@@ -603,7 +690,9 @@ const Text = (props) => {
             textColor: '',
             markerColor: ''
         })
-        if (props.activeBlock === props.block.uuid) {
+        // if we are waiting for a custom content we don't dismiss the active block so this way we know that is 
+        // exactly THIS block that will contain the content.
+        if (props.activeBlock === props.block.uuid && isWaitingForCustomInput.current === false) {
             props.updateBlocks(null)
         }
     }
@@ -614,13 +703,14 @@ const Text = (props) => {
      * because we sometimes focus programatically (see one of the `useEffect` below)
      */
     const onFocus = () => {
-        //caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
-        //checkStateOfSelectedElementAndUpdateState()
-        
+        // When we focus we also dismiss the unmanaged content selector
+        if (props.isUnmanagedContentSelectorOpen) {
+            props.onOpenUnmanagedContentSelector(false)
+        }
         if (props.activeBlock !== props.block.uuid) {
             props.updateBlocks(props.block.uuid)
         }
-
+        isWaitingForCustomInput.current = false
         setCaretPositionInInput(props.block.uuid)
     }
 
@@ -638,10 +728,12 @@ const Text = (props) => {
             caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
             checkStateOfSelectedElementAndUpdateState()
         }
+        checkIfCaretPositionIsCustomFixAndSetCaretPosition()
         if (props.activeBlock !== props.block.uuid) {
             props.updateBlocks(props.block.uuid)
         }
     }
+
 
     /**
      * Exactly the same as `onFocus`
@@ -656,7 +748,10 @@ const Text = (props) => {
         }
     }
 
-    /**
+    /*********************************
+     * UNHANDLED CONTENT STARTS HERE *
+     *********************************
+
      * This is more of a onKeyUp function, what this does is check if the text it has is the same text as it was before
      * if that's the case no changes are made.
      * 
@@ -672,12 +767,19 @@ const Text = (props) => {
      * because there is a bug in the browser that when you press Enter two \n are created. This can cause
      * some weird bugs to happen. To prevent this we just add a new line at the end of the last content.
      * 
-     * It's important to notive that before updating we remove this \n from the text that we recieve and from the last content
+     * It's important to notice that before updating we remove this \n from the text that we recieve and from the last content
      * we just add it again after all of the texts was updated
+     * 
+     * UNHANDLED CONTENTS: 
+     * Those contents are contents that should not be handled by the text component itself.
+     * What we do is check if the inserted text is to open an unhandled selection box (like sometimes you may want that
+     * if the user types '@' we will display the users. Sometimes typing the same key we will open a box showing
+     * the fields of a formulary)
+     * 
      * @param {*} text 
      * @param {*} keyCode 
      */
-    const onChangeText = (text, e={}) => {   
+    const onChangeText = (text, e={}) => {
         const keyCode = e.keyCode || e.charCode || 0
         const oldText = props.block.rich_text_block_contents.map(content => content.text).join('')
 
@@ -695,10 +797,23 @@ const Text = (props) => {
             // prevent accents (When you are trying to insert an accent like ~ on mac for example you press ALT + N, this creates this accent ˜, if we 
             // didn't had this we would have the following text "N˜ão". Which is something we don't want.) Because of this we prevent those 
             // "raw" and "temporaty" accents from being inserted
+            // IMPORTANT: Here we prevent the caretPositionRef to update in "onKeyDown" if there is any accent, this is because
+            // it moves to the next position so it becomes wrong
             if (/^(ˆ|˜|¨|`|´|"|')$/g.test(insertedText)) {
                 insertedText = ''
+                wasKeyDownPressedRef.current = true
+            } else {
+                wasKeyDownPressedRef.current = false
             }
-
+            
+            // Opens custom menus when user press a particular key. The menu and the content that will be displayed to the user
+            // is fully handled outside of the text component.
+            if (props.handleUnmanagedContent && props.handleUnmanagedContent[insertedText]) {
+                props.handleUnmanagedContent[insertedText](getCaretCoordinatesWeb())
+                props.onOpenUnmanagedContentSelector(true)
+                isWaitingForCustomInput.current = true
+                customInputCaretPosition.current = JSON.parse(JSON.stringify(caretPositionRef.current))
+            } 
 
             const selectedContents = getSelectedContents()
             removeTextInContent(selectedContents)
@@ -708,13 +823,14 @@ const Text = (props) => {
             // Has removed last line break so we need to insert it again
             props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text = 
             props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text + '\n'
-            //caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
             props.updateBlocks(props.block.uuid)
+    
         } else {
             caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
+            checkIfCaretPositionIsCustomFixAndSetCaretPosition()
             checkStateOfSelectedElementAndUpdateState()
+            wasKeyDownPressedRef.current = false
         }
-        wasKeyDownPressedRef.current = false
     }
     
     /**
@@ -886,6 +1002,7 @@ const Text = (props) => {
     const onKeyDown = (e) => {
         if (!wasKeyDownPressedRef.current) {
             caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
+            checkIfCaretPositionIsCustomFixAndSetCaretPosition()
             wasKeyDownPressedRef.current = true
         }
 
@@ -976,6 +1093,8 @@ const Text = (props) => {
                             isUnderline: type === 'underline' ? stateOfSelection.isUnderline : content.content.is_underline,
                             isCode: type === 'code' ? stateOfSelection.isCode : content.content.is_code,
                             textColor: type === 'textColor' ? stateOfSelection.textColor : content.content.text_color,
+                            isCustom: content.content.is_custom,
+                            customValue: content.content.custom_value,
                             textSize: type === 'textSize' ? stateOfSelection.textSize : content.content.text_size,
                             markerColor: type === 'markerColor' ? stateOfSelection.markerColor : content.content.marker_color
                         }
@@ -1007,6 +1126,10 @@ const Text = (props) => {
         }
     }
 
+    /**
+     * Used when user paste on the text content.
+     * @param {*} e 
+     */
     const onPaste = (e) => {
         e.stopPropagation()
         e.preventDefault()
@@ -1022,14 +1145,72 @@ const Text = (props) => {
     useEffect(() => {
         let innerHtmlText = ''
         props.block.rich_text_block_contents.forEach((content, index) => {
-            innerHtmlText = innerHtmlText + renderToString(<Content key={index} content={content}/>)
+            if (content.is_custom) {
+                const { component, text } = props.renderCustomContent(content)
+                props.block.rich_text_block_contents[index].text = text
+                const CustomContent = component 
+                innerHtmlText = innerHtmlText + renderToString(<CustomContent key={index} content={content}/>)
+            } else {
+                innerHtmlText = innerHtmlText + renderToString(
+                    <Content 
+                    key={index} 
+                    content={content} 
+                    />
+                )
+            }
         })
         setInnerHtml(innerHtmlText)
-        
-        if (props.activeBlock === props.block.uuid) {
+        if (isWaitingForCustomInput.current) {
+            inputRef.current.blur()
+        }
+        if (props.activeBlock === props.block.uuid && !isWaitingForCustomInput.current) {
             inputRef.current.focus()
         }
     })
+
+    useEffect(() => {
+        // handles unmanaged content. When the user types a key it opens a box so the user can select the options
+        // When the user selects an option we change the props of the value, than we this Effect runs.
+        // We remove the key that he had typed '@', '#' or any other particular key.
+        // And insert this new custom_value in the middle of the content
+        if (isWaitingForCustomInput.current && props.activeBlock === props.block.uuid) {
+            caretPositionRef.current = JSON.parse(JSON.stringify(customInputCaretPosition.current))
+            isWaitingForCustomInput.current = false
+            let selectedContents = getSelectedContents()
+            const content = selectedContents[selectedContents.length-1]
+            // gets the current text removing the handled caret ('#', '@' and so on)
+            const currentText = content.content.text.substring(0, content.startIndexToSelectTextInContent) + content.content.text.substring(content.startIndexToSelectTextInContent + 1, content.content.text.length)
+            const contentsToAddInIndex = addNewContentInTheMiddleOfContent(
+                content.content, 
+                content.startIndexToSelectTextInContent, 
+                content.startIndexToSelectTextInContent,
+                currentText, 
+                props.unmanagedContentValue.toString(),
+                {
+                    isBold: false,
+                    isItalic: false,
+                    isUnderline: false,
+                    isCode: false,
+                    isCustom: true,
+                    customValue: props.unmanagedContentValue.toString(),
+                    textColor: '',
+                    textSize: '',
+                    markerColor: ''
+                }
+            )
+            // adds an empty content space after the content, this way we are not blocked from writing.
+            // (remember that when it is a custom content, we select the hole element)
+            // got this idea from Notion.so
+            contentsToAddInIndex.splice(2, 0, props.createNewContent({text: ' ', order: 0}))
+            props.block.rich_text_block_contents[content.contentIndex] = contentsToAddInIndex
+            props.block.rich_text_block_contents = [].concat.apply([], props.block.rich_text_block_contents)
+            mergeEqualDeleteEmptyAndSetWhereCaretPositionShouldGo('')
+            // resets the value so we can handle further prop changes.
+            props.onChangeUnmanagedContentValue(null)
+            props.onOpenUnmanagedContentSelector(false)
+            props.updateBlocks(props.block.uuid)
+        }
+    }, [props.unmanagedContentValue])
 
     useEffect(() => {
         setCaretPositionInInput(props.activeBlock)
@@ -1045,7 +1226,7 @@ const Text = (props) => {
         return (
             <div>
                 <Options
-                isBlockActive={props.activeBlock === props.block.uuid}
+                isBlockActive={props.activeBlock === props.block.uuid && props.isEditable}
                 contentOptions={
                     <TextContentOptions 
                     onChangeSelectionState={onChangeSelectionState}
@@ -1064,21 +1245,11 @@ const Text = (props) => {
                 ref={inputRef} 
                 caretColor={(![null, ''].includes(stateOfSelection.textColor) ? stateOfSelection.textColor : '#000')}
                 alignmentType={getAlignmentTypeNameById(props.block.text_option.alignment_type)}
-                onBlur={(e) => {
-                    onBlur()
-                }}
-                onPaste={(e) => {
-                    onPaste(e)
-                }}
-                onFocus={(e) => {
-                    onFocus()
-                }}
-                onSelect={(e) => {
-                    onSelectText(e)
-                }}
-                onKeyDown={(e) => {
-                    onKeyDown(e)
-                }}
+                onBlur={(e) => onBlur()}
+                onPaste={(e) => onPaste(e)}
+                onFocus={(e) => onFocus()}
+                onSelect={(e) => onSelectText(e)}
+                onKeyDown={(e) => onKeyDown(e)}
                 onKeyUp={(e) => {
                     e.preventDefault()
                     //inputRef.current.dispatchEvent(new KeyboardEvent('keyup', {}))
@@ -1087,7 +1258,7 @@ const Text = (props) => {
                 onClick={(e) => {
                     onClickText(e)
                 }}
-                contentEditable={true} 
+                contentEditable={props.isEditable} 
                 draggabble="false"
                 suppressContentEditableWarning={true}
                 dangerouslySetInnerHTML={{__html: innerHtml}}

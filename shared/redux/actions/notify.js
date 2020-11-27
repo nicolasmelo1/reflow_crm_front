@@ -1,4 +1,4 @@
-import { SET_NOTIFY } from '../types';
+import { SET_NOTIFY } from '../types'
 
 /**
  * This is used for adding notification toasts to the top of the page

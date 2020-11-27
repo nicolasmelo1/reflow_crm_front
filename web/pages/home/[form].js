@@ -133,6 +133,8 @@ class Data extends React.Component {
     }
 
     componentDidMount = () => {
+        this.props.onChangeNavbarIsInHomeScreen(true)
+        
         this.props.onUpdatePrimaryForm(this.props.router.query.form)
         if (this.props.router.query.formId) {
             // we take out the formId parameter of the url because it can cause some weird and non wanted
@@ -147,6 +149,10 @@ class Data extends React.Component {
             this.setFormularyId(null)
             this.props.onUpdatePrimaryForm(this.props.router.query.form)
         }
+    }
+
+    componentWillUnmount = () => {
+        this.props.onChangeNavbarIsInHomeScreen(false)
     }
 
     render () {

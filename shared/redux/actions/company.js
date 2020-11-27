@@ -29,7 +29,6 @@ const onGetCompanyData = (source) => {
                 agent.websocket.COMPANY.recieveCompanyUpdated({
                     companyId: response.data.data.id,
                     callback: (data) => {
-                        console.log('called recieveCompanyUpdated')
                         getAndDispatchCompanyData(dispatch, source)                  
                     }
                 })

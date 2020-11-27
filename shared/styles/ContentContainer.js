@@ -16,7 +16,7 @@ styled.div`
     padding: ${props => getPadding(props)};
     max-width: 100%;    
     background-color: ${props => props.isNotLogged ? '#fff': '#f2f2f2'};
-    height: calc(var(--app-height) - 70px);
+    height: ${props => props.hideNavBar ? 'var(--app-height)' : 'calc(var(--app-height) - 70px)'};
 `
 :
 styled(View)`

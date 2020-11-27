@@ -21,7 +21,7 @@ const Content = (props) => {
             draggabble="false"
             isItalic={props.content.is_italic}
             isBold={props.content.is_bold}
-            isCode={props.content.is_code}
+            isCode={props.content.text === '' || props.content.text === '\n' ? false : props.content.is_code}
             isUnderline={props.content.is_underline}
             textColor={props.content.text_color}
             markerColor={props.content.marker_color}

@@ -107,6 +107,7 @@ const strings = {
         headerNotificationLabel: 'Notificações',
         headerHelpLabel: 'Ajuda',
         headerLogoutLabel: 'Logout',
+        headerHomePdfGeneratorTools: 'Gerador de PDF',
         formularySaveButtonLabel: 'Salvar',
         formularyDuplicateButtonLabel: 'Duplicar',
         formularyEditButtonLabel: 'Editar campos',

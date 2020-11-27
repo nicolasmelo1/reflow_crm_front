@@ -8,4 +8,4 @@ const onCreateUserAndCompany = (body) => {
 
 export default {
     onCreateUserAndCompany
-};
+}

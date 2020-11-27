@@ -10,9 +10,9 @@ import Billing from './Billing'
 import Users from './Users'
 import Company from './Company'
 import Templates from './Templates'
-import RichText from './RichText'
+import PDFGenerator from './PDFGenerator'
 
-export { RichText }
+export { PDFGenerator }
 export { Templates }
 export { Company }
 export { Users }

@@ -199,7 +199,7 @@ const TextContentOptions = (props) => {
                     >
                         {'-'}
                     </TextContentOptionFontSizeButton>
-                        {`${textSize}pt`}
+                        {textSize ? `${textSize}pt` : ''}
                     <TextContentOptionFontSizeButton
                     onMouseDown={(e) => onMouseDownPlusFontSize()}
                     onClick={(e) => onClickButtonsOnFontSize()}

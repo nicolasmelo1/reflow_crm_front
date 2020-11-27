@@ -1,7 +1,8 @@
 import React from 'react'
 import { View } from 'react-native'
 import {
-    ContentOptionContainer
+    ContentOptionContainer,
+    ContentOptionFullContainer
 } from '../../../styles/RichText'
 /**
  * {Description of your component, what does it do}
@@ -17,8 +18,7 @@ const Options = (props) => {
 
     const renderWeb = () => {
         return (
-            <div 
-            style={{ position: 'absolute', top: 0, left:0, width: '100%', marginTop: '0px'}}
+            <ContentOptionFullContainer 
             onMouseDown={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -37,7 +37,7 @@ const Options = (props) => {
                     ) : null}
                     {props.blockOptions ? props.blockOptions : null}
                 </ContentOptionContainer>
-            </div>
+            </ContentOptionFullContainer>
         )
     }
     if (props.isBlockActive) {

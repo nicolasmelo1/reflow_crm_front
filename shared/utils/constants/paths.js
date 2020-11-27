@@ -160,6 +160,18 @@ const paths = {
                 }
             }
         }
+    },
+    pdfTemplates(form) {
+        return {
+            asUrl: form ? `/${form}/pdf_generator` : `/[form]/pdf_generator`,
+            adminOnly: false,
+            webOnly: false,
+            loginOnly: true,
+            asReactNavigationPath: {
+                root: 'home',
+                nested: {}
+            }
+        }
     }
 }
 

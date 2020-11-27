@@ -8,15 +8,31 @@ import generateUUID from '../../../utils/generateUUID'
  */
 const Block = (props) => {
     const createNewContent = (options = {}) => {
-        const { isBold, isCode, isItalic, isUnderline, latexEquation, link, markerColor, order, text, textSize, textColor } = options
+        const { 
+            isBold, 
+            isCode, 
+            isItalic, 
+            isUnderline, 
+            isCustom,
+            customValue,
+            latexEquation, 
+            link, 
+            markerColor, 
+            order, 
+            text, 
+            textSize, 
+            textColor 
+        } = options
         return {
             id: null,
             uuid: generateUUID(),
-            text_size: textSize ? textSize: '',
+            text_size: textSize ? textSize: 12,
             is_bold: isBold ? isBold : false,
             is_code: isCode ? isCode : false,
             is_italic: isItalic ? isItalic : false,
             is_underline: isUnderline ? isUnderline : false,
+            is_custom: isCustom ? isCustom : false,
+            custom_value: customValue ? customValue : null,
             latex_equation: latexEquation ? latexEquation : null,
             link: link ? link : null,
             marker_color: markerColor ? markerColor : null,
@@ -37,10 +53,10 @@ const Block = (props) => {
             list_option: null,
             text_option: {
                 id: null,
-                alignment_type: alignmentTypeId ? alignmentTypeId : 1
+                alignment_type: alignmentTypeId ? alignmentTypeId : props.getAligmentTypeIdByName('left')
             },
             table_option: null,
-            block_type: 1,
+            block_type: props.getBlockTypeIdByName('text'),
             order: order,
             rich_text_block_contents: richTextBlockContents ? richTextBlockContents.map(content => ({...content, id: null, uuid: generateUUID()})) : [createNewContent({order: 0, text: '\n'})]
         }

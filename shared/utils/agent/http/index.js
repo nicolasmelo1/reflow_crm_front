@@ -12,6 +12,7 @@ import BILLING from './billing'
 import COMPANY from './company'
 import USERS from './users'
 import RICH_TEXT from './rich_text'
+import PDF_GENERATOR from './pdf_generator'
 
 export default {
     CHANGE_PASSWORD,
@@ -27,5 +28,6 @@ export default {
     DASHBOARD,
     BILLING,
     USERS,
-    RICH_TEXT
+    RICH_TEXT,
+    PDF_GENERATOR
 }

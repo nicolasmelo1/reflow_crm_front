@@ -1,7 +1,8 @@
 import styled from 'styled-components'
 import { Button } from 'react-bootstrap'
 
-export default styled.button`
+export default process.env['APP'] === 'web' ? 
+styled.button`
     background-color: #17242D !important;
     border: 0;
     margin: 0;
@@ -27,3 +28,5 @@ export default styled.button`
         width: 100%;
     }
 `
+:
+null

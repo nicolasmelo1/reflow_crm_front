@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 
-export default styled.button`
+export default process.env['APP'] === 'web' ?
+styled.button`
     background-color: #17242D;
     border: 0;
     width: 100%;
@@ -18,3 +19,5 @@ export default styled.button`
         border: 0;
     }
 `
+:
+null

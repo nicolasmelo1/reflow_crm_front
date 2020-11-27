@@ -3,7 +3,7 @@ import * as Linking from 'expo-linking'
 import { paths, pathsAsArray } from '@shared/utils/constants/paths'
 
 export const navigationRef = React.createRef();
-
+export const currentRoute = navigationRef.current ? navigationRef.current.getCurrentRoute() : {}
 /**
  * 
  * @param {*} object 
