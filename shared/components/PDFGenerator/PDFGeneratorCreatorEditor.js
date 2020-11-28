@@ -20,6 +20,8 @@ const Custom = (props) => {
  * @param {Type} props - {go in detail about every prop it recieves}
  */
 const PDFGeneratorCreatorEditor = (props) => {
+    const sourceRef = React.useRef()
+    const [richTextData, setRichTextData] = useState({})
     const [templateData, setTemplateData] = useState({})
     const [isEditingTemplateName, setIsEditingTemplateName] = useState(false)
     const [unmanagedFieldSelectedValue, setUnmanagedFieldSelectedValue] = useState(null)
@@ -54,8 +56,21 @@ const PDFGeneratorCreatorEditor = (props) => {
     }
 
     useEffect(() => {
+        sourceRef.current = props.cancelToken.source()
         setTemplateData({...props.templateData})
-    }, [props.templateData])
+        if (props.templateData?.pdf_template_rich_text?.rich_text) {
+            props.onGetRichTextDataById(sourceRef.current, props.templateData?.pdf_template_rich_text?.rich_text).then(response => {
+                if (response && response.status === 200) {
+                    setRichTextData(response.data.data)
+                }
+            })
+        }
+        return () => {
+            if(sourceRef.current) {
+                sourceRef.current.cancel()
+            }
+        }
+    }, [])
 
     const renderMobile = () => {
         return (
@@ -95,6 +110,7 @@ const PDFGeneratorCreatorEditor = (props) => {
                     />
                 ) : ''}
                 <RichText 
+                initialData={richTextData}
                 renderCustomContent={renderCustomContent} 
                 handleUnmanagedContent={unmanaged} 
                 onOpenUnmanagedContentSelector={setIsUnmanagedFieldSelectorOpen}

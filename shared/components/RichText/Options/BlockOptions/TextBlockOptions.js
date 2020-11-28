@@ -31,7 +31,7 @@ const TextBlockOptions = (props) => {
     const renderWeb = () => {
         return (
             <div>
-                {props.types.defaults.text_alignment_type.map(textAlignmentType => (
+                {props.types.rich_text.alignment_type.map(textAlignmentType => (
                     <TextBlockOptionAlignmentButton
                     key={textAlignmentType.id}
                     onClick={(e) => props.onChangeAlignmentType(textAlignmentType.id)}

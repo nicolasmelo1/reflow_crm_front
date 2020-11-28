@@ -9,6 +9,7 @@ import billing from './billing'
 import users from './users'
 import company from './company'
 import pdf_generator from './pdf_generator'
+import rich_text from './rich_text'
 import navbar from './navbar'
 
 export default {
@@ -23,5 +24,6 @@ export default {
     ...company,
     ...changepassword,
     ...pdf_generator,
+    ...rich_text,
     ...navbar
 }

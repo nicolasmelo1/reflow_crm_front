@@ -33,23 +33,9 @@ class PDFGenerator extends React.Component {
                     onGetPDFGeneratorTemplatesConfiguration={this.props.onGetPDFGeneratorTemplatesConfiguration}
                     onChangePDFGeneratorTemplateConfigurationDataState={this.props.onChangePDFGeneratorTemplateConfigurationDataState}
                     onGetPDFGeneratorTempalatesConfigurationFieldOptions={this.props.onGetPDFGeneratorTempalatesConfigurationFieldOptions}
+                    onGetRichTextDataById={this.props.onGetRichTextDataById}
                     />
                 )}
-                {/*<div style={{ height: '50px', width: '100%'}}>
-                    <button>Salvar</button>
-                    <button>Cancelar</button>
-                </div>
-                {this.state.isUnmanagedOpen ? (
-                    <OptionBox top={this.state.position.y} left={this.state.position.x} onClickOption={this.onClickOption}/>
-                ) : ''}
-                <RichText 
-                renderCustomContent={this.renderCustomContent} 
-                handleUnmanagedContent={this.unmanaged} 
-                onOpenUnmanagedContentSelector={this.setIsUnmanagedOpen}
-                isUnmanagedContentSelectorOpen={this.state.isUnmanagedOpen}
-                onChangeUnmanagedContentValue={this.setUnmanagedValue}
-                unmanagedContentValue={this.state.unmanagedValue}
-                />*/}
             </div>
         )
     }

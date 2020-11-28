@@ -58,10 +58,12 @@ const PDFGeneratorCreator = (props) => {
             <div>
                 {selectedTemplateIndex !== null ? (
                     <PDFGeneratorCreatorEditor
+                    cancelToken={props.cancelToken}
                     fieldOptions={fieldOptions}
                     templateData={getTemplateData()}
                     setSelectedTemplateIndex={setSelectedTemplateIndex}
                     cancelToken={props.cancelToken}
+                    onGetRichTextDataById={props.onGetRichTextDataById}
                     />
                 ) : (
                     <div style={{ height: 'var(--app-height)', width: '100%'}}>

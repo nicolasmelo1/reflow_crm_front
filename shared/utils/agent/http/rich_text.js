@@ -1,8 +1,8 @@
 import requests from '../requests'
 
 const RICH_TEXT = {
-    getTestText: async (source) => {
-        return await requests.get(`rich_text/test_text/1/`, {}, {}, source)
+    getRichTextData: async (source, richTextPageId) => {
+        return await requests.get(`rich_text/${richTextPageId}/`, {}, {}, source)
     }
 }
 

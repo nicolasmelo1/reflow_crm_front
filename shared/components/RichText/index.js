@@ -2,13 +2,14 @@ import React from 'react'
 import { View } from 'react-native'
 import axios from 'axios'
 import { connect } from 'react-redux'
-import agent from '../../utils/agent'
 import generateUUID from '../../utils/generateUUID'
+import isEqual from '../../utils/isEqual'
 import Block from './Blocks'
 import { 
     RichTextContainer,
     RichTextBlocksContainer
 } from '../../styles/RichText'
+
 
 /**
  * {Description of your component, what does it do}
@@ -19,29 +20,6 @@ class RichText extends React.Component {
         super(props)
         this.CancelToken = axios.CancelToken
         this.source = null
-        this.types = {
-            billing: {},
-            data: {},
-            defaults: {
-                text_alignment_type: [
-                    {
-                        id: 1,
-                        name: 'left',
-                        order: 1
-                    },
-                    {
-                        id: 3,
-                        name: 'center',
-                        order: 2
-                    },
-                    {
-                        id: 2,
-                        name: 'right',
-                        order: 3
-                    },
-                ]
-            }
-        }
         /*this.state = {
             id: null,
             raw_text: '',
@@ -49,7 +27,8 @@ class RichText extends React.Component {
         }*/
         this.state = {
             activeBlock: null,
-            data: props.initialData ? props.initialData : this.createNewPage()
+            data: this.props.initialData && Object.keys(this.props.initialData).length !== 0 ? 
+            JSON.parse(JSON.stringify(this.props.initialData)) : this.createNewPage()
         }
     }
     
@@ -74,6 +53,9 @@ class RichText extends React.Component {
         return null
     }
 
+    /**
+     * 
+     */
     createNewPage = () => {
         const alignmentType = this.getAligmentTypeIdByName('left')
         const blockType = this.getBlockTypeIdByName('text')
@@ -142,15 +124,21 @@ class RichText extends React.Component {
         }))
     }
 
-    componentDidMount = () => {
-        this.source = this.CancelToken.source()
-        /*agent.http.RICH_TEXT.getTestText(this.source).then(response => {
-            if (response && response.status === 200) {
-                this.setState(state => {
-                    return response.data.data
-                })
-            }
-        })*/
+    updateData = (data) => {
+        this.setState(state => ({
+            ...state,
+            data: data
+        }))
+    }
+
+    componentDidUpdate = (prevProps) => {
+        if (
+            !isEqual(this.props.initialData, prevProps.initialData) &&
+            this.props.initialData && 
+            Object.keys(this.props.initialData).length !== 0
+        ) {
+            this.updateData(JSON.parse(JSON.stringify(this.props.initialData)))
+        }
     }
 
     renderMobile = () => {
@@ -167,7 +155,7 @@ class RichText extends React.Component {
                         <Block 
                         key={block.uuid} 
                         block={block} 
-                        types={this.types}
+                        types={this.props.types}
                         isEditable={this.props.isEditable ? this.props.isEditable : true}
                         activeBlock={this.state.activeBlock} 
                         updateBlocks={this.updateBlocks} 

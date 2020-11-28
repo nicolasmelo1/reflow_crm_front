@@ -50,9 +50,9 @@ const Text = (props) => {
      * @param {*} id 
      */
     const getAlignmentTypeNameById = (id) => {
-        for (let i = 0; i<props.types.defaults.text_alignment_type.length; i++) {
-            if (props.types.defaults.text_alignment_type[i].id === id) {
-                return props.types.defaults.text_alignment_type[i].name
+        for (let i = 0; i<props.types.rich_text.alignment_type.length; i++) {
+            if (props.types.rich_text.alignment_type[i].id === id) {
+                return props.types.rich_text.alignment_type[i].name
             }
         } 
         return ''
