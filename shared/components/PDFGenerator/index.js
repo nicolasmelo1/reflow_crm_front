@@ -31,6 +31,8 @@ class PDFGenerator extends React.Component {
                     templates={this.props.pdf_generator.creator.templates}
                     pdfGeneratorData={this.props.pdf_generator.creator.data}
                     onGetPDFGeneratorTemplatesConfiguration={this.props.onGetPDFGeneratorTemplatesConfiguration}
+                    onCreatePDFGeneratorTemplateConfiguration={this.props.onCreatePDFGeneratorTemplateConfiguration}
+                    onUpdatePDFGeneratorTemplateConfiguration={this.props.onUpdatePDFGeneratorTemplateConfiguration}
                     onChangePDFGeneratorTemplateConfigurationDataState={this.props.onChangePDFGeneratorTemplateConfigurationDataState}
                     onGetPDFGeneratorTempalatesConfigurationFieldOptions={this.props.onGetPDFGeneratorTempalatesConfigurationFieldOptions}
                     onGetRichTextDataById={this.props.onGetRichTextDataById}

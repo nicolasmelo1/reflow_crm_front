@@ -1,6 +1,10 @@
 import React from 'react'
 import { View } from 'react-native'
-import { FieldOptionsContainer } from '../../styles/PDFGenerator'
+import { 
+    FieldOptionsContainer, 
+    FieldOptionsButtons,
+    FieldOptionsFormularyTitle
+} from '../../styles/PDFGenerator'
 
 /**
  * {Description of your component, what does it do}
@@ -19,10 +23,20 @@ const FieldSelectorOptionBox = (props) => {
             top={props.top}
             left={props.left}
             >
-                {props.fieldOptions.map(fieldOption=> (
-                    <button key={fieldOption.id} style={{display: 'block'}} onClick={(e) => {props.onClickOption(fieldOption.id)}}>
-                        {fieldOption.label_name}
-                    </button>
+                {props.fieldOptions.map(formOption=> (
+                    <div>
+                        <FieldOptionsFormularyTitle key={formOption.id}>
+                            {formOption.label_name}
+                        </FieldOptionsFormularyTitle>
+                        {formOption.form_fields.map(fieldOption => (
+                            <FieldOptionsButtons 
+                            key={fieldOption.id} 
+                            onClick={(e) => {props.onClickOption(fieldOption.id)}}
+                            >
+                                {fieldOption.label_name}
+                            </FieldOptionsButtons>
+                        ))}
+                    </div>
                 ))}
             </FieldOptionsContainer>
         )

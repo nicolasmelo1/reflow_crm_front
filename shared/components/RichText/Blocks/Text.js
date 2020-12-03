@@ -182,7 +182,8 @@ const Text = (props) => {
             } else if (caretPositionRef.current.start !== null && caretPositionRef.current.end !== null) {
                 const selectedContents = getSelectedContents()
                 if (selectedContents[0]) {
-                    setCaretPositionWeb(selectedContents[0].contentIndex, selectedContents[0].startIndexToSelectTextInContent)
+                    setCaretPositionWeb(selectedContents[0].contentIndex, selectedContents[0].startIndexToSelectTextInContent, 
+                                        selectedContents[selectedContents.length-1].contentIndex, selectedContents[selectedContents.length-1].endIndexToSelectTextInContent)
                 }
             }
             whereCaretPositionShouldGoAfterUpdateRef.current = {
@@ -317,14 +318,20 @@ const Text = (props) => {
      */
     const deleteEmptyContents = () => {
         let contentsToConsider = []
-        
+        let removedCustomContents = []
         for (let i=0; i < props.block.rich_text_block_contents.length; i++) {
             if (props.block.rich_text_block_contents[i].text !== '' || props.block.rich_text_block_contents.length === 1) {
             //if (!/^(\s*)$/g.test(props.block.rich_text_block_contents[i].text) || props.block.rich_text_block_contents.length === 1) {
                 contentsToConsider.push(props.block.rich_text_block_contents[i])
+            } else if (props.block.rich_text_block_contents[i].is_custom) {
+                removedCustomContents.push(JSON.parse(JSON.stringify(props.block.rich_text_block_contents[i])))
             }
         }
         props.block.rich_text_block_contents = contentsToConsider
+
+        if (props.onRemoveUnmanagedContent) {
+            props.onRemoveUnmanagedContent(removedCustomContents)
+        }
     }
 
     /**
@@ -587,62 +594,6 @@ const Text = (props) => {
     }
 
     /**
-     * When the user deletes something we consider as if he had selected the content. What it means is:
-     * 
-     * Suppose we have the following phrase: "IloveCats" and we place the caret at "IloveCa|ts" (the caret is  "|")
-     * The position of the caret in this example will be: start = 7 and end = 7
-     * when we press backspace the new phrase will be "IloveCts" but since the start was position 7 we will
-     * then place the caret at "IloveCt|s" which is wrong. So what we do in this function is make as the user selected
-     * the phrase he wants to delete so "IloveC|a|ts" so the position will be: start = 6 and end = 7
-     * When we press delete the new phrase will be "IloveCas" so when the user press "delete" the content
-     * the position must be as user had selected the "t" instead of "a".
-     * 
-     * After this have been made we can then get the inserted text at position.
-     * 
-     * So always use this before selecting contents.
-     * 
-     * @param {*} text 
-     * @param {*} keyCode 
-     */
-    const getInsertedTextAndFixCaretPosition = (text, keyCode) => {
-        let insertedText = ''
-        const oldText = props.block.rich_text_block_contents.map(content => content.text).join('')
-        const isRangeSelection = caretPositionRef.current.start !== caretPositionRef.current.end
-
-        // User has set the caret to a certain position
-        if (!isRangeSelection) {
-            const hasDeletedText = oldText.length > text.length
-            // User has deleted some text
-            if (hasDeletedText) {
-                // User has pressed backspace
-                if (webKeyCodeReference[keyCode] === 'Backspace') {
-                    // Make as user have selected the character before
-                    caretPositionRef.current.start = caretPositionRef.current.start - (oldText.length - text.length)
-                }
-                // User has pressed delete
-                if (webKeyCodeReference[keyCode] === 'Delete') {
-                    // Make as user have selected the character after
-                    caretPositionRef.current.end = caretPositionRef.current.end + (oldText.length - text.length)
-                }
-            } else {
-                // User has inserted some text
-                const endInsertedTextIndex = text.length - oldText.length + caretPositionRef.current.start
-                insertedText = text.substring(caretPositionRef.current.start, endInsertedTextIndex)
-            }           
-        } 
-
-        // We make a new conditional, remember we fix the caret position in the conditional above.
-        if (isRangeSelection) {
-            const hasDeletedText = caretPositionRef.current.end - caretPositionRef.current.start === oldText.length - text.length
-            if (!hasDeletedText) {
-                const endInsertedTextIndex = (caretPositionRef.current.end - caretPositionRef.current.start) - (oldText.length - text.length) + caretPositionRef.current.start
-                insertedText = text.substring(caretPositionRef.current.start, endInsertedTextIndex)
-            }
-        }
-        return insertedText
-    }
-
-    /**
      * This is fired when the user makes a selection or set the caret to a certain position.
      * 
      * The function gets the contents of where the caret is placed and gets its states.
@@ -724,10 +675,9 @@ const Text = (props) => {
      * @param {*} e 
      */
     const onSelectText = (e) => {
-        if (['mouseup'].includes(e.nativeEvent.type)) {
-            caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
-            checkStateOfSelectedElementAndUpdateState()
-        }
+        caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
+        checkStateOfSelectedElementAndUpdateState()
+        
         checkIfCaretPositionIsCustomFixAndSetCaretPosition()
         if (props.activeBlock !== props.block.uuid) {
             props.updateBlocks(props.block.uuid)
@@ -751,17 +701,11 @@ const Text = (props) => {
     /*********************************
      * UNHANDLED CONTENT STARTS HERE *
      *********************************
-
-     * This is more of a onKeyUp function, what this does is check if the text it has is the same text as it was before
-     * if that's the case no changes are made.
      * 
      * What this does is: if the text has changed, we get the inserted text and fix the CaretPosition (
      * more on `getInsertedTextAndFixCaretPosition` function)
      * Then we remove the text in the content and after that insert a new text in the content and last but not least
      * merge equal contents, delete empty and set where caret position should be.
-     * 
-     * If the text was not changed we just update the cursor position and check the state of the selected element.
-     * (because the user might be using the arrows and such)
      * 
      * Before and after updating the contents what we do is insert the '\n' in the end of the last content. We need to do this
      * because there is a bug in the browser that when you press Enter two \n are created. This can cause
@@ -779,60 +723,86 @@ const Text = (props) => {
      * @param {*} text 
      * @param {*} keyCode 
      */
-    const onChangeText = (text, e={}) => {
-        const keyCode = e.keyCode || e.charCode || 0
-        const oldText = props.block.rich_text_block_contents.map(content => content.text).join('')
-
-        if (oldText !== text) {
-            let contents = JSON.parse(JSON.stringify(props.block.rich_text_block_contents))
-            // Checks if last character of the last content is a linebreak there is a bug that happens when you do this on normal browsers
-            // it adds line breaks at the same time
-            if (contents[contents.length-1].text.substring(contents[contents.length-1].text.length-1,contents[contents.length-1].text.length) === '\n') {
-                props.block.rich_text_block_contents[contents.length-1].text = contents[contents.length-1].text.substring(0, contents[contents.length-1].text.length-1)
+    const onInput = (text, inputType, insertedText=null) => {
+        const getInsertedText = (insertedText, inputType) => {
+            if (insertedText) {
+                return insertedText
+            } else if (insertedText === null && inputType === 'insertReplacementText') {
+                const splittedInsertedText = text.substring(caretPositionRef.current.start, text.length).split(' ')
+                if (splittedInsertedText.length > 0) {
+                    insertedText = splittedInsertedText[0]
+                    return insertedText.substring(insertedText.length-1, insertedText.length) === '\n' ? insertedText.substring(0, insertedText.length-1) : insertedText
+                }
+            } else if (insertedText === null && inputType === 'insertLineBreak') {
+                return '\n'
             }
-            text = text.substring(text.length-1, text.length) === '\n' ? text.substring(0, text.length-1) : text
-
-            // You must ALWAYS follow that order of functions, the order is important
-            let insertedText = getInsertedTextAndFixCaretPosition(text, keyCode)
-            // prevent accents (When you are trying to insert an accent like ~ on mac for example you press ALT + N, this creates this accent ˜, if we 
-            // didn't had this we would have the following text "N˜ão". Which is something we don't want.) Because of this we prevent those 
-            // "raw" and "temporaty" accents from being inserted
-            // IMPORTANT: Here we prevent the caretPositionRef to update in "onKeyDown" if there is any accent, this is because
-            // it moves to the next position so it becomes wrong
-            if (/^(ˆ|˜|¨|`|´|"|')$/g.test(insertedText)) {
-                insertedText = ''
-                wasKeyDownPressedRef.current = true
-            } else {
-                wasKeyDownPressedRef.current = false
-            }
-            
-            // Opens custom menus when user press a particular key. The menu and the content that will be displayed to the user
-            // is fully handled outside of the text component.
-            if (props.handleUnmanagedContent && props.handleUnmanagedContent[insertedText]) {
-                props.handleUnmanagedContent[insertedText](getCaretCoordinatesWeb())
-                props.onOpenUnmanagedContentSelector(true)
-                isWaitingForCustomInput.current = true
-                customInputCaretPosition.current = JSON.parse(JSON.stringify(caretPositionRef.current))
+            return ''
+        }
+        
+        const fixCaretPositionIfDelete = (inputType, text, oldText) => {
+            const isRangeSelection = caretPositionRef.current.start !== caretPositionRef.current.end
+            // User has set the caret to a certain position
+            if (!isRangeSelection) {
+                if (inputType === 'deleteContentBackward') {
+                    // User has pressed backspace
+                    // Make as user have selected the character before
+                    caretPositionRef.current.start = caretPositionRef.current.start - (oldText.length - text.length)
+                } else if (inputType === 'deleteContentForward') {
+                    // User has pressed delete
+                    // Make as user have selected the character after
+                    caretPositionRef.current.end = caretPositionRef.current.end + (oldText.length - text.length)
+                }  
             } 
+        }
 
-            const selectedContents = getSelectedContents()
-            removeTextInContent(selectedContents)
-            insertTextInContent(selectedContents, insertedText)
-            mergeEqualDeleteEmptyAndSetWhereCaretPositionShouldGo(insertedText)
+        insertedText = getInsertedText(insertedText, inputType)
+        let contents = JSON.parse(JSON.stringify(props.block.rich_text_block_contents))
+        // Checks if last character of the last content is a linebreak there is a bug that happens when you do this on normal browsers
+        // it adds line breaks at the same time
+        if (contents[contents.length-1].text.substring(contents[contents.length-1].text.length-1,contents[contents.length-1].text.length) === '\n') {
+            props.block.rich_text_block_contents[contents.length-1].text = contents[contents.length-1].text.substring(0, contents[contents.length-1].text.length-1)
+        }
+        text = text.substring(text.length-1, text.length) === '\n' ? text.substring(0, text.length-1) : text
+        let oldText = props.block.rich_text_block_contents.map(content => content.text).join('')
 
-            // Has removed last line break so we need to insert it again
-            props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text = 
-            props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text + '\n'
-            props.updateBlocks(props.block.uuid)
-    
+
+        fixCaretPositionIfDelete(inputType, text, oldText)
+
+        // prevent accents (When you are trying to insert an accent like ~ on mac for example you press ALT + N, this creates this accent ˜, if we 
+        // didn't had this we would have the following text "N˜ão". Which is something we don't want.) Because of this we prevent those 
+        // "raw" and "temporaty" accents from being inserted
+        // IMPORTANT: Here we prevent the caretPositionRef to update in "onKeyDown" if there is any accent, this is because
+        // it moves to the next position so it becomes wrong
+        if (/^(ˆ|˜|¨|`|´|"|')$/g.test(insertedText)) {
+            insertedText = ''
+            wasKeyDownPressedRef.current = true
         } else {
-            caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
-            checkIfCaretPositionIsCustomFixAndSetCaretPosition()
-            checkStateOfSelectedElementAndUpdateState()
             wasKeyDownPressedRef.current = false
         }
+
+        
+        // Opens custom menus when user press a particular key. The menu and the content that will be displayed to the user
+        // is fully handled outside of the text component.
+        if (props.handleUnmanagedContent && props.handleUnmanagedContent[insertedText]) {
+            props.handleUnmanagedContent[insertedText](getCaretCoordinatesWeb())
+            props.onOpenUnmanagedContentSelector(true)
+            isWaitingForCustomInput.current = true
+            customInputCaretPosition.current = JSON.parse(JSON.stringify(caretPositionRef.current))
+        } 
+
+        // You must ALWAYS follow that order of functions, the order is important
+        const selectedContents = getSelectedContents()
+        removeTextInContent(selectedContents)
+        insertTextInContent(selectedContents, insertedText)
+        mergeEqualDeleteEmptyAndSetWhereCaretPositionShouldGo(insertedText)
+
+        // Has removed last line break so we need to insert it again
+        props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text = 
+        props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text + '\n'
+        props.updateBlocks(props.block.uuid)
     }
-    
+
+
     /**
      * When you press enter we send the props upper in the chain of blocks. So if you are pressing enter here but this component
      * is inside a Table block, we will activate the table block enter and not this.
@@ -1107,7 +1077,10 @@ const Text = (props) => {
                 })
                 // Reference: https://stackoverflow.com/questions/10865025/merge-flatten-an-array-of-arrays
                 props.block.rich_text_block_contents = [].concat.apply([], props.block.rich_text_block_contents)
-                mergeEqualDeleteEmptyAndSetWhereCaretPositionShouldGo('')
+                deleteEmptyContents()
+                props.block.rich_text_block_contents = mergeEqualContentsSideBySide(props.block.rich_text_block_contents)
+                
+                //mergeEqualDeleteEmptyAndSetWhereCaretPositionShouldGo('')
                 props.updateBlocks(props.block.uuid)
             }
         }
@@ -1235,7 +1208,7 @@ const Text = (props) => {
                 }
                 blockOptions={
                     <TextBlockOptions
-                    alignmentTypeId={props.block.text_option.alignment_type}
+                    alignmentTypeId={props.block.text_option?.alignment_type}
                     onChangeAlignmentType={onChangeAlignmentType}
                     types={props.types}
                     />
@@ -1244,20 +1217,18 @@ const Text = (props) => {
                 <BlockText
                 ref={inputRef} 
                 caretColor={(![null, ''].includes(stateOfSelection.textColor) ? stateOfSelection.textColor : '#000')}
-                alignmentType={getAlignmentTypeNameById(props.block.text_option.alignment_type)}
+                alignmentType={getAlignmentTypeNameById(props.block.text_option?.alignment_type)}
                 onBlur={(e) => onBlur()}
                 onPaste={(e) => onPaste(e)}
                 onFocus={(e) => onFocus()}
                 onSelect={(e) => onSelectText(e)}
                 onKeyDown={(e) => onKeyDown(e)}
-                onKeyUp={(e) => {
+                onInput={(e) => {
                     e.preventDefault()
-                    //inputRef.current.dispatchEvent(new KeyboardEvent('keyup', {}))
-                    onChangeText(inputRef.current.innerText, e)
+                    onInput(inputRef.current.innerText, e.nativeEvent.inputType, e.nativeEvent.data)
                 }}
-                onClick={(e) => {
-                    onClickText(e)
-                }}
+                onKeyUp={(e) => e.preventDefault()}
+                onClick={(e) => onClickText(e)}
                 contentEditable={props.isEditable} 
                 draggabble="false"
                 suppressContentEditableWarning={true}

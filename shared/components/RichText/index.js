@@ -20,18 +20,18 @@ class RichText extends React.Component {
         super(props)
         this.CancelToken = axios.CancelToken
         this.source = null
-        /*this.state = {
-            id: null,
-            raw_text: '',
-            rich_text_page_blocks: []
-        }*/
         this.state = {
             activeBlock: null,
             data: this.props.initialData && Object.keys(this.props.initialData).length !== 0 ? 
-            JSON.parse(JSON.stringify(this.props.initialData)) : this.createNewPage()
+                  JSON.parse(JSON.stringify(this.props.initialData)) : this.createNewPage()
         }
     }
     
+    /**
+     * Gets the block id by its name
+     * 
+     * @param {String} blockName - Returns the id of the block
+     */
     getBlockTypeIdByName = (blockName) => {
         if (this.props.types?.rich_text?.block_type !== undefined) {
             for (let i=0; i<this.props.types?.rich_text?.block_type.length; i++) {
@@ -42,6 +42,11 @@ class RichText extends React.Component {
         } return null
     } 
 
+    /**
+     * Gets the alignment type by the name of the alignment
+     * 
+     * @param {String} alignmentName - The name of the alignment that you want to retrieve
+     */
     getAligmentTypeIdByName = (alignmentName) => {
         if (this.props.types?.rich_text?.alignment_type !== undefined) {
             for (let i=0; i<this.props.types?.rich_text?.alignment_type.length; i++) {
@@ -54,7 +59,10 @@ class RichText extends React.Component {
     }
 
     /**
+     * Creates a new Page if none was defined by `initialData` props.
      * 
+     * To create a new page we only need to define a new text block with a single content.
+     * Use this whenever you want to create a new page.
      */
     createNewPage = () => {
         const alignmentType = this.getAligmentTypeIdByName('left')
@@ -116,28 +124,51 @@ class RichText extends React.Component {
      * This happens because the props in our child components DOES NOT HAVE A COPY OF EACH BLOCK OBJECT they hold the actual block object.
      * You can add a `console.log` to this.state inside of this function when you update the props in a child component 
      * to see how this works.
+     * 
+     * Important: When the state changes here we propagate the changes to the parent. When we propagate the changes to the parent the changes
+     * does not propagate back.
      */
     updateBlocks = (activeBlock) => {
+        if (this.props.onStateChange) {
+            this.props.onStateChange({...this.state.data})
+        }
         this.setState(state => ({
             activeBlock: activeBlock,
             data:{...this.state.data}
         }))
     }
 
-    updateData = (data) => {
+    /**
+     * Used for setting the initial data to the 'data' state inside of this component. 
+     * 
+     * @param {Object} data - The new data of this component.
+     */
+    setUpdateData = (data) => {
         this.setState(state => ({
             ...state,
             data: data
         }))
     }
 
+    componentDidMount = () => {
+        // When we create a new data rich text we automatically set the initial. 
+        // because of this we need to propagate this new data to the parent.
+        if (this.props.onStateChange) {
+            this.props.onStateChange({...this.state.data})
+        }
+    }
+
     componentDidUpdate = (prevProps) => {
+        // checks if initialData has changed, than checks if it is the same state defined here
+        // and then checks if it is an object. This is used so when we propagate the data to the parent
+        // it does not propagate back.
         if (
             !isEqual(this.props.initialData, prevProps.initialData) &&
+            !isEqual(this.props.initialData, this.state.data) &&
             this.props.initialData && 
             Object.keys(this.props.initialData).length !== 0
         ) {
-            this.updateData(JSON.parse(JSON.stringify(this.props.initialData)))
+            this.setUpdateData(JSON.parse(JSON.stringify(this.props.initialData)))
         }
     }
 
@@ -164,6 +195,7 @@ class RichText extends React.Component {
                         getAligmentTypeIdByName={this.getAligmentTypeIdByName}
                         getBlockTypeIdByName={this.getBlockTypeIdByName}
                         handleUnmanagedContent={this.props.handleUnmanagedContent}
+                        onRemoveUnmanagedContent={this.props.onRemoveUnmanagedContent}
                         unmanagedContentValue={this.props.unmanagedContentValue}
                         isUnmanagedContentSelectorOpen={this.props.isUnmanagedContentSelectorOpen}
                         onOpenUnmanagedContentSelector={this.props.onOpenUnmanagedContentSelector}
@@ -171,9 +203,6 @@ class RichText extends React.Component {
                         />
                     ))}
                 </RichTextBlocksContainer>
-                {/*<pre
-                dangerouslySetInnerHTML={{__html: JSON.stringify(this.state, null, '\t')}}
-                />*/}
             </RichTextContainer>
         )
     }

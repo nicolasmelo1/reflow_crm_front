@@ -16,6 +16,18 @@ const onChangePDFGeneratorTemplatesConfigurationState = (data) => {
     }
 }
 
+const onCreatePDFGeneratorTemplateConfiguration = (data, formName) => {
+    return async (_) => {
+        return await agent.http.PDF_GENERATOR.createTemplate(data, formName)
+    }
+}
+
+const onUpdatePDFGeneratorTemplateConfiguration = (data, formName, pdfTemplateConfigurationId) => {
+    return async (_) => {
+        return await agent.http.PDF_GENERATOR.updateTemplate(data, formName, pdfTemplateConfigurationId)
+    }
+}
+
 const onGetPDFGeneratorTempalatesConfigurationFieldOptions = (source, formName) => {
     return async (_) => {
         return await agent.http.PDF_GENERATOR.getFieldOptions(source, formName)
@@ -24,6 +36,8 @@ const onGetPDFGeneratorTempalatesConfigurationFieldOptions = (source, formName) 
 
 export default {
     onGetPDFGeneratorTemplatesConfiguration,
+    onCreatePDFGeneratorTemplateConfiguration,
+    onUpdatePDFGeneratorTemplateConfiguration,
     onChangePDFGeneratorTemplatesConfigurationState,
     onGetPDFGeneratorTempalatesConfigurationFieldOptions
 }

@@ -4,6 +4,13 @@ import Router from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import PDFGeneratorCreatorEditor from './PDFGeneratorCreatorEditor'
 import { paths } from '../../utils/constants'
+import {
+    PDFGeneratorCreatorButtonsContainer,
+    PDFGeneratorCreatorGoBackButton,
+    PDFGeneratorCreatorCreateNewButton,
+    PDFGeneratorCreatorTemplateTitle,
+    PDFGeneratorCreatorEditTemplateButton
+} from '../../styles/PDFGenerator'
 
 /**
  * {Description of your component, what does it do}
@@ -11,13 +18,26 @@ import { paths } from '../../utils/constants'
  */
 const PDFGeneratorCreator = (props) => {
     const sourceRef = React.useRef()
-    const [fieldOptions, setFieldOptions] = useState([])
+    const [formAndFieldOptions, setFormAndFieldOptions] = useState([])
     const [selectedTemplateIndex, setSelectedTemplateIndex] = useState(null)
     
+    /**
+     * This is used when rendering the `PDFGeneratorCreatorEditor` component, with this we get the templateData to send to the child component.
+     * Since we open the `PDFGeneratorCreatorEditor` component by selecting which index of the 'props.templates' we have selected, this function
+     * tries to return the template of the selectedIndex. If the index is not null but does not exist in the `props.templates` array we return a
+     * new PDFTemplate configuration object.
+     */
     const getTemplateData = () => {
         return [undefined, null].includes(props.templates[selectedTemplateIndex]) ? addNewPDFTemplateConfiguration() : props.templates[selectedTemplateIndex]
     }
-
+    
+    /**
+     * When the user want to create a new Template Configuration we need to return this object. Remember that we open the `PDFGeneratorCreator` 
+     * by defining the selected templateconfiguration index? If we set a index that does not exist in the props.templates array we will create
+     * this new PDFTemplate configuration using the data retrieved from this function
+     * 
+     * @returns {Object} - Returns an object with the template configuration data.
+     */
     const addNewPDFTemplateConfiguration = () => ({
         id: null,
         name: 'Novo template',
@@ -26,18 +46,46 @@ const PDFGeneratorCreator = (props) => {
         pdf_template_rich_text: null
     })
 
+    /**
+     * Fires when the user clicks cancel on this page, we return the user to an empty page so it automatically returns the user to the page
+     * he was in. We actually don't need this.
+     */
     const onClickCancel = () => {
         if (process.env['APP'] === 'web') {
             Router.push(paths.empty().asUrl, paths.empty().asUrl,{ shallow: true })
         }
     }
 
+    /**
+     * Function responsible for creating or updating a PDF template configuration.
+     * `templateConfigurationData` is the template data it is used for sending to the backend.
+     * This function is used inside `PDFGeneratorCreatorEditor` component when saving a template.
+     * If the object has de `id` key and it is not null we update the template configuration, otherwise we
+     * just create a new template.
+     * 
+     * @param {Object} templateConfigurationData - The template configuration data we want to save on the backend.
+     */
+    const onUpdateOrCreatePDFTemplateConfiguration = async (templateConfigurationData) => {
+        let response = null
+        if (templateConfigurationData.id === null) {
+            response = await props.onCreatePDFGeneratorTemplateConfiguration(templateConfigurationData, props.formName)
+        } else {
+            response = await props.onUpdatePDFGeneratorTemplateConfiguration(templateConfigurationData, props.formName, templateConfigurationData.id)
+        }
+        if (response && response.status === 200) {
+            setSelectedTemplateIndex(null)
+            props.onGetPDFGeneratorTemplatesConfiguration(sourceRef.current, props.formName)
+        }
+    }
+
     useEffect(() => {
+        // When the user opens this component we get all of the template configuration for the current formName
+        // Not only this, we also get all of the field options the user can select as variables.
         sourceRef.current = props.cancelToken.source()
         props.onGetPDFGeneratorTemplatesConfiguration(sourceRef.current, props.formName)
         props.onGetPDFGeneratorTempalatesConfigurationFieldOptions(sourceRef.current, props.formName).then(response => {
             if (response && response.status === 200) {
-                setFieldOptions(response.data.data)
+                setFormAndFieldOptions(response.data.data)
             }
         })
         return () => {
@@ -58,29 +106,35 @@ const PDFGeneratorCreator = (props) => {
             <div>
                 {selectedTemplateIndex !== null ? (
                     <PDFGeneratorCreatorEditor
-                    cancelToken={props.cancelToken}
-                    fieldOptions={fieldOptions}
+                    formAndFieldOptions={formAndFieldOptions}
                     templateData={getTemplateData()}
                     setSelectedTemplateIndex={setSelectedTemplateIndex}
-                    cancelToken={props.cancelToken}
-                    onGetRichTextDataById={props.onGetRichTextDataById}
+                    onUpdateOrCreatePDFTemplateConfiguration={onUpdateOrCreatePDFTemplateConfiguration}
                     />
                 ) : (
                     <div style={{ height: 'var(--app-height)', width: '100%'}}>
-                        <div>
-                            <button onClick={(e) => setSelectedTemplateIndex(props.templates.length)}>Criar Novo</button>
-                            <button>Salvar</button>
-                            <button onClick={(e) => onClickCancel()}>Cancelar</button>
-                        </div>
+                        <PDFGeneratorCreatorButtonsContainer>
+                            <PDFGeneratorCreatorGoBackButton onClick={(e) => onClickCancel()}>
+                                {'Voltar para gestão'}
+                            </PDFGeneratorCreatorGoBackButton>
+                            <PDFGeneratorCreatorCreateNewButton
+                            onClick={(e) => setSelectedTemplateIndex(props.templates.length)}
+                            >
+                                {'Criar Novo'}
+                            </PDFGeneratorCreatorCreateNewButton>
+                        </PDFGeneratorCreatorButtonsContainer>
                         <div>
                             {props.templates.map((pdfTemplate, index) => (
                                 <div key={index} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                                    <h2>{pdfTemplate.name}</h2>
-                                    <div>
-                                        <button onClick={(e)=> setSelectedTemplateIndex(index)}>
-                                            <FontAwesomeIcon icon={'pencil-alt'}/>
-                                        </button>
-                                    </div>
+                                    <PDFGeneratorCreatorTemplateTitle>
+                                        {pdfTemplate.name}
+                                    </PDFGeneratorCreatorTemplateTitle>
+
+                                    <PDFGeneratorCreatorEditTemplateButton 
+                                    onClick={(e)=> setSelectedTemplateIndex(index)}
+                                    >
+                                        <FontAwesomeIcon icon={'pencil-alt'}/>
+                                    </PDFGeneratorCreatorEditTemplateButton>
                                 </div>
                             ))}
                         </div>
