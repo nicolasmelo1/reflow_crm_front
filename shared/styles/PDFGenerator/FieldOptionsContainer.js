@@ -5,7 +5,7 @@ import { View } from 'react-native'
 export default process.env['APP'] === 'web' ?
 styled.div`
     width: 200px;
-    background-color: #fffff;
+    background-color: #ffffff;
     overflow-y: auto;
     position: absolute;
     top: ${props => props.top}px;

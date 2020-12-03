@@ -4,7 +4,7 @@ import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
-    margin: 68px 0 0 0;
+    margin: 0px 0 0 0;
     padding: 0 ${props=> props.padding ? props.padding.toString() : '10'}px
 `
 :

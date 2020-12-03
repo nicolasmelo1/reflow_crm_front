@@ -7,7 +7,6 @@ styled.div`
     height: ${props => props.height ? props.height : 'var(--app-height)'};
     width: 100%;
     overflow: auto;
-    position: relative;
     background-color: #fff;
 `
 :
