@@ -249,21 +249,19 @@ const TextContentOptions = (props) => {
                         {'A'}
                     </TextContentOptionMarkerColorActivationButton>
                     {isMarkerColorOptionOpen ? (
-                        <div style={{position: 'relative'}}>
-                            <TextContentOptionMarkerColorOptionsContainer>
-                                {markerColors.map(markerColor => (
-                                        <TextContentOptionMarkerColorOptionButton 
-                                        onClick={(e) => {
-                                            onChangeMarkerColorIsOpen(!isMarkerColorOptionOpen)
-                                            props.onChangeSelectionState('markerColor', null, markerColor)
-                                        }}
-                                        markerColor={markerColor}
-                                        >
-                                            A
-                                        </TextContentOptionMarkerColorOptionButton>
-                                    ))}
-                            </TextContentOptionMarkerColorOptionsContainer> 
-                        </div>
+                        <TextContentOptionMarkerColorOptionsContainer>
+                            {markerColors.map(markerColor => (
+                                    <TextContentOptionMarkerColorOptionButton 
+                                    onClick={(e) => {
+                                        onChangeMarkerColorIsOpen(!isMarkerColorOptionOpen)
+                                        props.onChangeSelectionState('markerColor', null, markerColor)
+                                    }}
+                                    markerColor={markerColor}
+                                    >
+                                        A
+                                    </TextContentOptionMarkerColorOptionButton>
+                                ))}
+                        </TextContentOptionMarkerColorOptionsContainer> 
                     ) : ''}
                 </TextContentOptionMarkerColorContainer>
             </div>
