@@ -4,9 +4,9 @@ import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
-    height: 100%;
-    width: 100%;
-    background-color: transparent;
+    overflow: auto;
+    height: calc(var(--app-height) - 100px);
+    background-color: #fff
 `
 :
 styled(View)``

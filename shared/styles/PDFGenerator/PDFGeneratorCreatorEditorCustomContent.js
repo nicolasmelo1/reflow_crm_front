@@ -9,13 +9,7 @@ const getTextColor = (props) => {
         return props.isCode ? 'red' : '#000'
     }
 }
-const getBackgroundColor = (props) => {
-    if (props.markerColor) {
-        return props.markerColor
-    } else {
-        return props.isCode ? '#f2f2f2' : 'transparent'
-    }
-}
+
 const isBold = (props) => props.isBold ? 'bold': 'normal'
 const isItalic = (props) => props.isItalic ? 'italic': 'normal'
 const isUnderline = (props) => props.isUnderline ? `1px solid ${getTextColor(props)}` : 'none'
@@ -26,17 +20,16 @@ styled.span`
     font-style: ${props => isItalic(props)};
     border-bottom: ${props => isUnderline(props)};
     color: ${props => getTextColor(props)};
-    background-color: ${props => getBackgroundColor(props)};
-    padding: ${props=> props.isCode ? '0 3px': '0'};
+    background-color: #f2f2f2;
+    padding: ${props=> props.isCode ? '0 3px': '0 2px'};
     margin: ${props=> props.isCode ? '0 2px': '0'};
-    border-radius: ${props=> props.isCode ? '3px' : '0'};
+    border-radius: ${props=> props.isCode ? '3px' : '3px'};
     font-size: ${props => ![null, '', undefined].includes(props.textSize) ? `${props.textSize}pt` : '12pt' };
     
     ${props => props.isPlaceholder ? `
-        &:empty:before {
-            content: attr(placeholder);
-            pointer-events: none;
-            display: block;
+        &:before {
+            content: "Digite seu texto aqui";
+            color: #bfbfbf; 
         }
     ` : ''}
 `

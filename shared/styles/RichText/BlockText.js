@@ -13,6 +13,12 @@ styled.div`
     outline: none !important;
     caret-color: ${props => ![null, '', undefined].includes(props.caretColor) ? props.caretColor : '#000'};
     text-align: ${props => props.alignmentType };
+    
+    &:empty:before {
+        content: attr(placeholder);
+        pointer-events: none;
+        display: block;
+    }
 `
 :
 styled(View)``

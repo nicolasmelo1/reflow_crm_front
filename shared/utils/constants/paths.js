@@ -161,9 +161,21 @@ const paths = {
             }
         }
     },
-    pdfTemplates(form) {
+    pdfTemplatesSettings(form) {
         return {
-            asUrl: form ? `/${form}/pdf_generator` : `/[form]/pdf_generator`,
+            asUrl: form ? `/pdf_generator/${form}` : `/pdf_generator/[form]`,
+            adminOnly: false,
+            webOnly: false,
+            loginOnly: true,
+            asReactNavigationPath: {
+                root: 'home',
+                nested: {}
+            }
+        }
+    },
+    pdfTemplates(form, formDataId) {
+        return {
+            asUrl: form && formDataId ? `/pdf_generator/${form}/${formDataId}` : `/pdf_generator/[form]/[formDataId]`,
             adminOnly: false,
             webOnly: false,
             loginOnly: true,

@@ -1,7 +1,7 @@
 import React from 'react'
 import {PDFGenerator, Layout} from '@shared/components'
 import { withRouter } from 'next/router'
-import Header from '../../components/Header'
+import Header from '../../../components/Header'
 
 /**
  * {Description of your component, what does it do}
@@ -14,7 +14,7 @@ class PDFGeneratorPage extends React.Component {
 
     render = () => {
         return (
-            <Layout hideNavBar={true} header={<Header title={'TEST RICH TEXT'}/>}>
+            <Layout hideNavBar={true} header={<Header title={'Gerador de PDF'}/>}>
                 <PDFGenerator/>
             </Layout>
         )

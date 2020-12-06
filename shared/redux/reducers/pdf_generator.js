@@ -1,7 +1,10 @@
-import { SET_PDF_GENERATOR_FORMULARY_OPTIONS, SET_PDF_GENERATOR_CREATOR_TEMPLATES } from '../types';
+import { SET_PDF_GENERATOR_CREATOR_TEMPLATES, SET_PDF_GENERATOR_READER_TEMPLATES } from '../types';
 
 const initialState = {
     creator: {
+        templates: []
+    },
+    reader: {
         templates: []
     }
 }
@@ -16,8 +19,16 @@ const pdfGeneratorReducer = (state = initialState, action) => {
                     templates: action.payload
                 }
             }
+        case SET_PDF_GENERATOR_READER_TEMPLATES:
+            return {
+                ...state,
+                reader: {
+                    ...state.reader,
+                    templates: action.payload
+                }
+            }
         default:
-            return state;
+            return state
     }
 }
 

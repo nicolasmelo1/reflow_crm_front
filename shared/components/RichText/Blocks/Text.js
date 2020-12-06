@@ -4,9 +4,12 @@ import { renderToString } from 'react-dom/server'
 import Content from '../Content'
 import { TextBlockOptions } from '../Options/BlockOptions'
 import { TextContentOptions } from '../Options/ContentOptions'
+import { strings } from '../../../utils/constants'
 import Options from '../Options'
 import { 
-    BlockText
+    BlockText,
+    BlockTextPlaceholderContainer,
+    BlockTextPlaceholderText
 } from '../../../styles/RichText'
 
 /**
@@ -1198,6 +1201,17 @@ const Text = (props) => {
     const renderWeb = () => {
         return (
             <div>
+                {props.block.rich_text_block_contents.length === 1 && 
+                props.activeBlock === props.block.uuid &&
+                props.isEditable &&
+                (props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text === '\n' ||
+                props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text === '') ? (
+                    <BlockTextPlaceholderContainer>
+                        <BlockTextPlaceholderText>
+                            {strings['pt-br']['richTextTextBlockPlaceholder']}
+                        </BlockTextPlaceholderText>
+                    </BlockTextPlaceholderContainer>
+                ) : ''}
                 <Options
                 isBlockActive={props.activeBlock === props.block.uuid && props.isEditable}
                 contentOptions={
@@ -1216,6 +1230,8 @@ const Text = (props) => {
                 />
                 <BlockText
                 ref={inputRef} 
+                className={'notranslate'}
+                spellCheck={true}
                 caretColor={(![null, ''].includes(stateOfSelection.textColor) ? stateOfSelection.textColor : '#000')}
                 alignmentType={getAlignmentTypeNameById(props.block.text_option?.alignment_type)}
                 onBlur={(e) => onBlur()}

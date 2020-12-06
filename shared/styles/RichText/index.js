@@ -1,6 +1,8 @@
 export { default as RichTextContainer } from './RichTextContainer'
 export { default as RichTextBlocksContainer } from './RichTextBlocksContainer'
 export { default as BlockText } from './BlockText'
+export { default as BlockTextPlaceholderContainer } from './BlockTextPlaceholderContainer'
+export { default as BlockTextPlaceholderText } from './BlockTextPlaceholderText'
 export { default as ContentText } from './ContentText'
 export { default as ContentOptionContainer } from './ContentOptionContainer'
 export { default as ContentOptionFullContainer } from './ContentOptionFullContainer'

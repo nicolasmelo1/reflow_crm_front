@@ -1,13 +1,15 @@
 import React from 'react'
 import axios from 'axios'
-import { Row, Col, Spinner } from 'react-bootstrap'
+import Router from 'next/router'
+import { Spinner } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import FormularySections from './FormularySections'
 import FormularySectionsEdit from './FormularySectionsEdit'
 import actions from '../../redux/actions'
-import { strings } from '../../utils/constants'
+import { strings, paths } from '../../utils/constants'
 import isAdmin from '../../utils/isAdmin'
 import { Formularies } from '../../styles/Formulary'
+import PDFGenerator from '../PDFGenerator'
 
 /**
  * IMPORTANT: You might want to read the README to understand how this and all of it's components work.
@@ -171,6 +173,10 @@ class Formulary extends React.Component {
                 data: JSON.parse(JSON.stringify(filled.data))
             }
         }
+    }
+
+    onClickPDFTemplates = () => {
+        Router.push(paths.pdfTemplates().asUrl, paths.pdfTemplates(this.props.formName, this.props.formularyId).asUrl, { shallow: true })
     }
 
     /**
@@ -431,6 +437,11 @@ class Formulary extends React.Component {
                                                         this.state.auxOriginalInitial[this.state.auxOriginalInitialIndex].buildData.label_name : ''}
                                         </Formularies.Navigator>
                                     ) : ''}   
+                                    {!this.isInConnectedFormulary() && this.props.formularyId ? (
+                                        <button onClick={(e) => this.onClickPDFTemplates()}>
+                                            PDF
+                                        </button>
+                                    ) : ''}
                                     <FormularySections 
                                     type={this.props.type}
                                     types={this.props.login.types}

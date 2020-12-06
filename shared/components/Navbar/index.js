@@ -62,7 +62,7 @@ class Navbar extends React.Component {
     }
 
     handlePDFTempalte = () => {
-        Router.push(paths.pdfTemplates().asUrl, paths.pdfTemplates(this.props.login.primaryForm).asUrl, { shallow: true })
+        Router.push(paths.pdfTemplatesSettings().asUrl, paths.pdfTemplatesSettings(this.props.login.primaryForm).asUrl, { shallow: true })
     }
 
     freeTrialRemainingDays = () => {

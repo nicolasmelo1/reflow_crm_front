@@ -4,9 +4,10 @@ import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
-    height: 100%;
-    width: 100%;
-    background-color: transparent;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between
 `
 :
 styled(View)``

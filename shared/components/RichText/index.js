@@ -88,7 +88,7 @@ class RichText extends React.Component {
                         {
                             order: 0,
                             uuid: generateUUID(),
-                            text: "Digite aqui\n",
+                            text: "\n",
                             text_size: 12,
                             is_bold: false,
                             is_italic: false,

@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import actions from '../../redux/actions'
 import PDFGeneratorCreator from './PDFGeneratorCreator'
+import PDFGeneratorReader from './PDFGeneratorReader'
+
 
 /**
  * {Description of your component, what does it do}
@@ -24,18 +26,25 @@ class PDFGenerator extends React.Component {
     renderWeb = () => {
         return (
             <div>
-                {this.props.isReader ? '': (
+                {this.props.isReader ? (
+                    <PDFGeneratorReader
+                    cancelToken={this.cancelToken}
+                    formName={this.props.login.primaryForm}
+                    formId={this.props.formId}
+                    templates={this.props.pdf_generator.reader.templates}
+                    onGetPDFGeneratorTempalatesReader={this.props.onGetPDFGeneratorTempalatesReader}
+                    />
+                ) : (
                     <PDFGeneratorCreator
                     formName={this.props.login.primaryForm}
                     cancelToken={this.cancelToken}
                     templates={this.props.pdf_generator.creator.templates}
-                    pdfGeneratorData={this.props.pdf_generator.creator.data}
                     onGetPDFGeneratorTemplatesConfiguration={this.props.onGetPDFGeneratorTemplatesConfiguration}
                     onCreatePDFGeneratorTemplateConfiguration={this.props.onCreatePDFGeneratorTemplateConfiguration}
                     onUpdatePDFGeneratorTemplateConfiguration={this.props.onUpdatePDFGeneratorTemplateConfiguration}
+                    onRemovePDFGeneratorTemplateConfiguration={this.props.onRemovePDFGeneratorTemplateConfiguration}
                     onChangePDFGeneratorTemplateConfigurationDataState={this.props.onChangePDFGeneratorTemplateConfigurationDataState}
                     onGetPDFGeneratorTempalatesConfigurationFieldOptions={this.props.onGetPDFGeneratorTempalatesConfigurationFieldOptions}
-                    onGetRichTextDataById={this.props.onGetRichTextDataById}
                     />
                 )}
             </div>

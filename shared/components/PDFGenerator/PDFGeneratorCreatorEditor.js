@@ -3,19 +3,32 @@ import { View } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import RichText from '../RichText'
 import FieldSelectorOptionBox from './FieldSelectorOptionBox'
+import { strings } from '../../utils/constants'
 import { 
     PDFGeneratorCreatorTemplateTitleContainer,
     PDFGeneratorCreatorEditorButtonsContainer,
     PDFGeneratorCreatorEditorTemplateCancelButton,
     PDFGeneratorCreatorEditorTemplateSaveButton,
-    PDFGeneratorCreatorEditorTemplateTitleInput
+    PDFGeneratorCreatorEditorTemplateTitleInput,
+    PDFGeneratorCreatorEditorCustomContent,
+    PDFGeneratorCreatorEditorRichTextContainer
 } from '../../styles/PDFGenerator'
+
 
 const Custom = (props) => {
     return (
-        <span style={{color: 'blue', fontWeight: props.content.is_bold ? 'bold' : 'normal'}}>
+        <PDFGeneratorCreatorEditorCustomContent
+        draggabble="false"
+        isItalic={props.content.is_italic}
+        isBold={props.content.is_bold}
+        isCode={props.content.text === '' || props.content.text === '\n' ? false : props.content.is_code}
+        isUnderline={props.content.is_underline}
+        textColor={props.content.text_color}
+        markerColor={props.content.marker_color}
+        textSize={props.content.text_size}
+        >
             {props.content.text}
-        </span>
+        </PDFGeneratorCreatorEditorCustomContent>
     )
 }
 
@@ -149,12 +162,12 @@ const PDFGeneratorCreatorEditor = (props) => {
                     <PDFGeneratorCreatorEditorTemplateSaveButton 
                     onClick={(e) => props.onUpdateOrCreatePDFTemplateConfiguration({...templateData})}
                     > 
-                        {'Salvar'}
+                        {strings['pt-br']['pdfGeneratorEditorSaveButtonLabel']}
                     </PDFGeneratorCreatorEditorTemplateSaveButton>
                     <PDFGeneratorCreatorEditorTemplateCancelButton 
                     onClick={(e) => props.setSelectedTemplateIndex(null)}
                     >
-                        {'Cancelar'}
+                        {strings['pt-br']['pdfGeneratorEditorCancelButtonLabel']}
                     </PDFGeneratorCreatorEditorTemplateCancelButton>
                 </PDFGeneratorCreatorEditorButtonsContainer>
                 {isUnmanagedFieldSelectorOpen ? (
@@ -165,17 +178,19 @@ const PDFGeneratorCreatorEditor = (props) => {
                     onClickOption={onAddVariable}
                     />
                 ) : ''}
-                <RichText 
-                initialData={props.templateData?.pdf_template_rich_text?.rich_text}
-                onStateChange={onRichTextStateChange}
-                renderCustomContent={renderCustomContent} 
-                onRemoveUnmanagedContent={onRemoveVariable}
-                handleUnmanagedContent={unmanaged} 
-                onOpenUnmanagedContentSelector={setIsUnmanagedFieldSelectorOpen}
-                isUnmanagedContentSelectorOpen={isUnmanagedFieldSelectorOpen}
-                onChangeUnmanagedContentValue={setUnmanagedFieldSelectedValue}
-                unmanagedContentValue={unmanagedFieldSelectedValue}
-                />
+                <PDFGeneratorCreatorEditorRichTextContainer>
+                    <RichText 
+                    initialData={props.templateData?.pdf_template_rich_text?.rich_text}
+                    onStateChange={onRichTextStateChange}
+                    renderCustomContent={renderCustomContent} 
+                    onRemoveUnmanagedContent={onRemoveVariable}
+                    handleUnmanagedContent={unmanaged} 
+                    onOpenUnmanagedContentSelector={setIsUnmanagedFieldSelectorOpen}
+                    isUnmanagedContentSelectorOpen={isUnmanagedFieldSelectorOpen}
+                    onChangeUnmanagedContentValue={setUnmanagedFieldSelectedValue}
+                    unmanagedContentValue={unmanagedFieldSelectedValue}
+                    />
+                </PDFGeneratorCreatorEditorRichTextContainer>
             </div>
         )
     }

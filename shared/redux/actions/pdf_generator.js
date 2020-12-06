@@ -1,9 +1,9 @@
-import { SET_PDF_GENERATOR_FORMULARY_OPTIONS, SET_PDF_GENERATOR_CREATOR_TEMPLATES } from '../types'
+import { SET_PDF_GENERATOR_CREATOR_TEMPLATES, SET_PDF_GENERATOR_READER_TEMPLATES } from '../types'
 import agent from '../../utils/agent'
 
 const onGetPDFGeneratorTemplatesConfiguration = (source, formName) => {
     return async (dispatch) => {
-        const response = await agent.http.PDF_GENERATOR.getTemplates(source, formName)
+        const response = await agent.http.PDF_GENERATOR.getTemplatesSettings(source, formName)
         if (response && response.status === 200) {
             dispatch({ type: SET_PDF_GENERATOR_CREATOR_TEMPLATES, payload: response.data.data })
         }
@@ -28,16 +28,33 @@ const onUpdatePDFGeneratorTemplateConfiguration = (data, formName, pdfTemplateCo
     }
 }
 
+const onRemovePDFGeneratorTemplateConfiguration = (formName, pdfTemplateConfigurationId) => {
+    return async(_) => {
+        return await agent.http.PDF_GENERATOR.removeTemplate(formName, pdfTemplateConfigurationId)
+    }    
+}
+
 const onGetPDFGeneratorTempalatesConfigurationFieldOptions = (source, formName) => {
     return async (_) => {
         return await agent.http.PDF_GENERATOR.getFieldOptions(source, formName)
     }
 }
 
+const onGetPDFGeneratorTempalatesReader = (source, formName) => {
+    return async (dispatch) => {
+        const response = await agent.http.PDF_GENERATOR.getTemplates(source, formName)
+        if (response && response.status === 200) {
+            dispatch({ type: SET_PDF_GENERATOR_CREATOR_TEMPLATES, payload: response.data.data })
+        }
+    }
+}
+
 export default {
+    onGetPDFGeneratorTempalatesReader,
     onGetPDFGeneratorTemplatesConfiguration,
     onCreatePDFGeneratorTemplateConfiguration,
     onUpdatePDFGeneratorTemplateConfiguration,
+    onRemovePDFGeneratorTemplateConfiguration,
     onChangePDFGeneratorTemplatesConfigurationState,
     onGetPDFGeneratorTempalatesConfigurationFieldOptions
 }

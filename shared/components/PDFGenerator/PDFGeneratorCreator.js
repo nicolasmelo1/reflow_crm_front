@@ -3,13 +3,17 @@ import { View } from 'react-native'
 import Router from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import PDFGeneratorCreatorEditor from './PDFGeneratorCreatorEditor'
-import { paths } from '../../utils/constants'
+import Alert from '../Utils/Alert'
+import { paths, strings } from '../../utils/constants'
 import {
     PDFGeneratorCreatorButtonsContainer,
     PDFGeneratorCreatorGoBackButton,
     PDFGeneratorCreatorCreateNewButton,
     PDFGeneratorCreatorTemplateTitle,
-    PDFGeneratorCreatorEditTemplateButton
+    PDFGeneratorCreatorEditTemplateButton,
+    PDFGeneratorCreatorRemoveTemplateButton,
+    PDFGeneratorCreatorTemplateCardContainer,
+    PDFGeneratorCreatorTemplatesContainer
 } from '../../styles/PDFGenerator'
 
 /**
@@ -18,6 +22,7 @@ import {
  */
 const PDFGeneratorCreator = (props) => {
     const sourceRef = React.useRef()
+    const [templateIndexToRemove, setTemplateIndexToRemove] = useState(null)
     const [formAndFieldOptions, setFormAndFieldOptions] = useState([])
     const [selectedTemplateIndex, setSelectedTemplateIndex] = useState(null)
     
@@ -40,7 +45,7 @@ const PDFGeneratorCreator = (props) => {
      */
     const addNewPDFTemplateConfiguration = () => ({
         id: null,
-        name: 'Novo template',
+        name: strings['pt-br']['pdfGeneratorEditorNewTemplateTitle'],
         form: null,
         template_configuration_variables: [],
         pdf_template_rich_text: null
@@ -78,6 +83,21 @@ const PDFGeneratorCreator = (props) => {
         }
     }
 
+    /**
+     * Removes a PDF Template from the backend by its id, after the PDFTemplate was removed we load the list of templates again.
+     * 
+     * @param {BigInteger} pdfTemplateConfigurationId - The template id you want to remove.
+     */
+    const onRemovePDFTemplateConfiguration = () => {
+        const pdfTemplateConfigurationId = props.templates[templateIndexToRemove].id
+        props.onRemovePDFGeneratorTemplateConfiguration(props.formName, pdfTemplateConfigurationId).then(response => {
+            if (response && response.status === 200) {
+                props.onGetPDFGeneratorTemplatesConfiguration(sourceRef.current, props.formName)
+            }
+        })
+    }
+
+
     useEffect(() => {
         // When the user opens this component we get all of the template configuration for the current formName
         // Not only this, we also get all of the field options the user can select as variables.
@@ -104,6 +124,21 @@ const PDFGeneratorCreator = (props) => {
     const renderWeb = () => {
         return (
             <div>
+                {templateIndexToRemove !== null ? (
+                    <Alert 
+                    alertTitle={strings['pt-br']['pdfGeneratorOnRemoveTemplateAlertTitle']} 
+                    alertMessage={strings['pt-br']['pdfGeneratorOnRemoveTemplateAlertMessage']} 
+                    show={templateIndexToRemove !== null} 
+                    onHide={() => {
+                        setTemplateIndexToRemove(null)
+                    }} 
+                    onAccept={() => {
+                        setTemplateIndexToRemove(null)
+                        onRemovePDFTemplateConfiguration()
+                    }}
+                    onAcceptButtonLabel={strings['pt-br']['pdfGeneratorOnRemoveTemplateAlertAcceptButtonLabel']}
+                    />
+                ) : ''}
                 {selectedTemplateIndex !== null ? (
                     <PDFGeneratorCreatorEditor
                     formAndFieldOptions={formAndFieldOptions}
@@ -112,33 +147,40 @@ const PDFGeneratorCreator = (props) => {
                     onUpdateOrCreatePDFTemplateConfiguration={onUpdateOrCreatePDFTemplateConfiguration}
                     />
                 ) : (
-                    <div style={{ height: 'var(--app-height)', width: '100%'}}>
+                    <PDFGeneratorCreatorTemplatesContainer>
                         <PDFGeneratorCreatorButtonsContainer>
                             <PDFGeneratorCreatorGoBackButton onClick={(e) => onClickCancel()}>
-                                {'Voltar para gestão'}
+                                {strings['pt-br']['pdfGeneratorCreatortGoBackButtonLabel']}
                             </PDFGeneratorCreatorGoBackButton>
                             <PDFGeneratorCreatorCreateNewButton
                             onClick={(e) => setSelectedTemplateIndex(props.templates.length)}
                             >
-                                {'Criar Novo'}
+                                {strings['pt-br']['pdfGeneratorCreatorCreateNewButtonLabel']}
                             </PDFGeneratorCreatorCreateNewButton>
                         </PDFGeneratorCreatorButtonsContainer>
                         <div>
                             {props.templates.map((pdfTemplate, index) => (
-                                <div key={index} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                                <PDFGeneratorCreatorTemplateCardContainer>
                                     <PDFGeneratorCreatorTemplateTitle>
                                         {pdfTemplate.name}
                                     </PDFGeneratorCreatorTemplateTitle>
 
-                                    <PDFGeneratorCreatorEditTemplateButton 
-                                    onClick={(e)=> setSelectedTemplateIndex(index)}
-                                    >
-                                        <FontAwesomeIcon icon={'pencil-alt'}/>
-                                    </PDFGeneratorCreatorEditTemplateButton>
-                                </div>
+                                    <div>
+                                        <PDFGeneratorCreatorEditTemplateButton 
+                                        onClick={(e)=> setSelectedTemplateIndex(index)}
+                                        >
+                                            <FontAwesomeIcon icon={'pencil-alt'}/>
+                                        </PDFGeneratorCreatorEditTemplateButton>
+                                        <PDFGeneratorCreatorRemoveTemplateButton 
+                                        onClick={(e)=> setTemplateIndexToRemove(index)}
+                                        >
+                                            <FontAwesomeIcon icon={'trash'}/>
+                                        </PDFGeneratorCreatorRemoveTemplateButton>
+                                    </div>
+                                </PDFGeneratorCreatorTemplateCardContainer>
                             ))}
                         </div>
-                    </div>
+                    </PDFGeneratorCreatorTemplatesContainer>
                 )}
             </div>
         )
