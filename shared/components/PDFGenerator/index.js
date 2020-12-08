@@ -32,6 +32,7 @@ class PDFGenerator extends React.Component {
                     formName={this.props.login.primaryForm}
                     formId={this.props.formId}
                     templates={this.props.pdf_generator.reader.templates}
+                    onGetPDFGeneratorValuesReader={this.props.onGetPDFGeneratorValuesReader}
                     onGetPDFGeneratorTempalatesReader={this.props.onGetPDFGeneratorTempalatesReader}
                     />
                 ) : (

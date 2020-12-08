@@ -1,15 +1,17 @@
-import React from 'react';
-import { Provider } from 'react-redux';
-import App from 'next/app';
-import withRedux from 'next-redux-wrapper';
-import { persistStore } from 'redux-persist'
+import React from 'react'
+import App from 'next/app'
+import { Provider } from 'react-redux'
+import { createWrapper } from 'next-redux-wrapper'
 import { PersistGate } from 'redux-persist/integration/react'
-import { initStore } from '@shared/redux/store';
-import agent from '@shared/utils/agent';
+import { initStore } from '@shared/redux/store'
+import agent from '@shared/utils/agent'
 import strings from '@shared/utils/constants/strings'
 import Alert from '@shared/components/Utils/Alert'
 import SplashScreen from '../components/styles/SplashScreen'
 import SplashLogo from '../components/styles/SplashLogo'
+
+const reduxWrapper = createWrapper(initStore)
+const store = initStore()
 
 class MyApp extends App {
 
@@ -130,10 +132,10 @@ class MyApp extends App {
     }
     
     render() {
-        const { Component, pageProps, store } = this.props
+        const { Component, pageProps } = this.props
         return (
             <Provider store={store}>
-                <PersistGate persistor={persistStore(store)}>
+                <PersistGate persistor={store.__persistor}>
                     {this.state.showSplashScreen ? (
                         <SplashScreen>
                             <SplashLogo src="/complete_logo.png" showLogo={this.state.showLogo}/>
@@ -157,4 +159,4 @@ class MyApp extends App {
     }
 }
 
-export default withRedux(initStore, { debug: false })(MyApp)
+export default reduxWrapper.withRedux(MyApp)

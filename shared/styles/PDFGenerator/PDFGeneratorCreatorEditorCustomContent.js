@@ -25,13 +25,6 @@ styled.span`
     margin: ${props=> props.isCode ? '0 2px': '0'};
     border-radius: ${props=> props.isCode ? '3px' : '3px'};
     font-size: ${props => ![null, '', undefined].includes(props.textSize) ? `${props.textSize}pt` : '12pt' };
-    
-    ${props => props.isPlaceholder ? `
-        &:before {
-            content: "Digite seu texto aqui";
-            color: #bfbfbf; 
-        }
-    ` : ''}
 `
 :
 styled(Text)``

@@ -1,4 +1,3 @@
-import { AsyncStorage }from 'react-native'
 import { BEARER, API } from '../../config'
 
 
@@ -29,8 +28,12 @@ const setHeader = (token) => {
 }
 
 const getToken = async () => {
-    const token = process.env['APP'] === 'web' ? window.localStorage.getItem('token') : await AsyncStorage.getItem('token')
-    return token
+    if (process.env['APP'] !== 'web'){
+        const AsyncStorage = require('react-native').AsyncStorage
+        return await AsyncStorage.getItem('token')
+    } else {
+        return window.localStorage.getItem('token') 
+    }
 }
 
 const formEncodeData = (appendToKey, body, files = []) => {

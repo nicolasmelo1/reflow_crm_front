@@ -9,7 +9,7 @@ import actions from '../../redux/actions'
 import { strings, paths } from '../../utils/constants'
 import isAdmin from '../../utils/isAdmin'
 import { Formularies } from '../../styles/Formulary'
-import PDFGenerator from '../PDFGenerator'
+import { PDFGeneratorButtonInFormulary } from '../../styles/PDFGenerator'
 
 /**
  * IMPORTANT: You might want to read the README to understand how this and all of it's components work.
@@ -438,9 +438,11 @@ class Formulary extends React.Component {
                                         </Formularies.Navigator>
                                     ) : ''}   
                                     {!this.isInConnectedFormulary() && this.props.formularyId ? (
-                                        <button onClick={(e) => this.onClickPDFTemplates()}>
+                                        <PDFGeneratorButtonInFormulary 
+                                        onClick={(e) => this.onClickPDFTemplates()}
+                                        >
                                             PDF
-                                        </button>
+                                        </PDFGeneratorButtonInFormulary>
                                     ) : ''}
                                     <FormularySections 
                                     type={this.props.type}

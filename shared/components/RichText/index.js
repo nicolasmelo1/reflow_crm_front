@@ -187,7 +187,7 @@ class RichText extends React.Component {
                         key={block.uuid} 
                         block={block} 
                         types={this.props.types}
-                        isEditable={this.props.isEditable ? this.props.isEditable : true}
+                        isEditable={![null, undefined].includes(this.props.isEditable) ? this.props.isEditable : true}
                         activeBlock={this.state.activeBlock} 
                         updateBlocks={this.updateBlocks} 
                         contextBlocks={this.state.data.rich_text_page_blocks}

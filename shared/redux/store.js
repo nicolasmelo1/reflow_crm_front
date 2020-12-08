@@ -1,7 +1,8 @@
 import { createStore, applyMiddleware, compose } from 'redux';
+import { useMemo } from 'react'
 import thunk from 'redux-thunk';
 import reducer from './reducers';
-import { persistReducer } from 'redux-persist'
+import { persistReducer, persistStore } from 'redux-persist'
 //import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 
 
@@ -29,6 +30,7 @@ if (process.env['APP'] === 'web' || typeof document !== 'undefined') {
 
 
 export const initStore = (initialState = {}) => {
+    const isClient = typeof window !== 'undefined'
     const composeEnhancers = (typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
     const enhancer = composeEnhancers(
         applyMiddleware(thunk),
@@ -40,6 +42,10 @@ export const initStore = (initialState = {}) => {
         whitelist: ['login'],
     }, reducer)
 
-    const store = createStore(persistedReducer, initialState, enhancer)
-    return store;
-};
+    const store = createStore(persistedReducer, enhancer)
+
+    if (isClient) {
+        store.__persistor = persistStore(store)
+    }
+    return store
+}

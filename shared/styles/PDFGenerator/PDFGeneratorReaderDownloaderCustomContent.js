@@ -21,16 +21,24 @@ const isItalic = (props) => props.isItalic ? 'italic': 'normal'
 const isUnderline = (props) => props.isUnderline ? `1px solid ${getTextColor(props)}` : 'none'
 
 export default process.env['APP'] === 'web' ?
-styled.span`
+styled.button`
+    text-align: inherit;
     font-weight: ${props=> isBold(props)};
     font-style: ${props => isItalic(props)};
     border-bottom: ${props => isUnderline(props)};
-    color: ${props => getTextColor(props)};
     background-color: ${props => getBackgroundColor(props)};
-    padding: ${props=> props.isCode ? '0 3px': '0'};
+    color: ${props => getTextColor(props)};
+    padding: ${props=> props.isCode ? '0 3px': '0 2px'};
     margin: ${props=> props.isCode ? '0 2px': '0'};
-    border-radius: ${props=> props.isCode ? '3px' : '0'};
+    border-radius: ${props=> props.isCode ? '3px' : '3px'};
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
     font-size: ${props => ![null, '', undefined].includes(props.textSize) ? `${props.textSize}pt` : '12pt' };
+
+    &:hover {
+        background-color: #0dbf7e50;
+    }
 `
 :
 styled(Text)``

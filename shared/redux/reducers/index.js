@@ -29,6 +29,16 @@ const rootReducer = (state, action) => {
     if (action.type === DEAUTHENTICATE) {
         state = undefined;
     }
+    if (process.env['APP'] === 'web') {
+        const HYDRATE = require('next-redux-wrapper').HYDRATE
+        if (action.type === HYDRATE) {
+            const nextState = {
+                ...state,
+                ...action.payload,
+            }
+            return nextState
+        }          
+    }
 
     return appReducer(state, action)
 }

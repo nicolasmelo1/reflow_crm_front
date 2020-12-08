@@ -2,7 +2,7 @@ import React from 'react'
 import Router from 'next/router';
 import { connect } from 'react-redux';
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { AsyncStorage, TouchableWithoutFeedback, Keyboard, SafeAreaView, Platform, View } from 'react-native'
+import { TouchableWithoutFeedback, Keyboard, SafeAreaView, Platform, View } from 'react-native'
 import Sidebar from './Sidebar'
 import Navbar from './Navbar'
 import Notify from './Notify'
@@ -104,7 +104,13 @@ class Layout extends React.Component {
     setAddTemplates = (data) => (this._ismounted) ? this.setState(state => state.addTemplates = data) : null
 
     setToken = async () => {
-        let token = process.env['APP'] === 'web' ? window.localStorage.getItem('token') : await AsyncStorage.getItem('token')
+        let token = ''
+        if (process.env['APP'] === 'web') {
+            token = window.localStorage.getItem('token')
+        } else {
+            const AsyncStorage = require('react-native').AsyncStorage
+            token = await AsyncStorage.getItem('token')
+        }
         if (!token || token === '') {
             if (this._ismounted) {
                 this.setLogout(true)

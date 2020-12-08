@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { AsyncStorage } from 'react-native'
 import { getToken, setHeader, API_ROOT, logoutFunctionForView, setStorageToken, permissionsHandlerForView } from './utils'
 
 
@@ -18,7 +17,13 @@ import { getToken, setHeader, API_ROOT, logoutFunctionForView, setStorageToken, 
  */
 const refreshToken = async (response, callback, url, params, headers) => {
     if (response.data.reason === 'expired_token') {
-        const refreshToken = process.env['APP'] === 'web' ?  window.localStorage.getItem('refreshToken') : await AsyncStorage.getItem('refreshToken')
+        let refreshToken = ''
+        if (process.env['APP'] === 'web') {
+            refreshToken = window.localStorage.getItem('refreshToken') 
+        } else {
+            const AsyncStorage = require('react-native').AsyncStorage
+            refreshToken = await AsyncStorage.getItem('refreshToken')
+        }
         response = await requests.get('authentication/refresh_token/', {}, setHeader(refreshToken))
         // checks if the response was an error and handles it next
         if (response.status !== 200) {

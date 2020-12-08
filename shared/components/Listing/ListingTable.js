@@ -68,13 +68,13 @@ const ListingTable = (props) => {
             window.addEventListener('resize', defineScrollWidth)
         }
         return () => {
-            tableRef.current.removeEventListener('scroll', onScroll)
             if (scrollWrapperRef.current && tableRef.current) {
+                tableRef.current.removeEventListener('scroll', onScroll)
                 scrollWrapperRef.current.removeEventListener('scroll', onScrollerScroll)
                 window.removeEventListener('resize', defineScrollWidth)
             }
         }
-    })
+    }, [])
 
     return (
         <div>

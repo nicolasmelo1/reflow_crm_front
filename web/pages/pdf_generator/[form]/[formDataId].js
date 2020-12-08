@@ -15,10 +15,10 @@ class PDFGeneratorReaderPage extends React.Component {
     render = () => {
         return (
             <Layout hideNavBar={true} header={<Header title={'Gerador de PDF'}/>}>
-                <PDFGenerator isReader={true}/>
+                <PDFGenerator isReader={true} formId={this.props.router.query.formDataId}/>
             </Layout>
         )
     }
 }
 
-export default PDFGeneratorReaderPage
+export default withRouter(PDFGeneratorReaderPage)

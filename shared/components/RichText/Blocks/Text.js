@@ -67,7 +67,7 @@ const Text = (props) => {
      */
     const checkIfCaretPositionIsCustomFixAndSetCaretPosition = () => {
         const selectedContents = getSelectedContents()
-        if (selectedContents.length > 0) {
+        if (selectedContents.length > 0 && props.isEditable) {
             const firstContentInSelection = selectedContents[0]
             const lastContentInSelection = selectedContents[selectedContents.length-1]
             if (lastContentInSelection.content.is_custom || firstContentInSelection.content.is_custom) {
