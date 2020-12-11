@@ -13,8 +13,8 @@ import SplashLogo from '../components/styles/SplashLogo'
 const reduxWrapper = createWrapper(initStore)
 const store = initStore()
 
-class MyApp extends App {
 
+class MyApp extends App {
     constructor(props) {
         super(props)
         this.state = {

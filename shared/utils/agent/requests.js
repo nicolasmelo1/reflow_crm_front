@@ -24,7 +24,12 @@ const refreshToken = async (response, callback, url, params, headers) => {
             const AsyncStorage = require('react-native').AsyncStorage
             refreshToken = await AsyncStorage.getItem('refreshToken')
         }
-        response = await requests.get('authentication/refresh_token/', {}, setHeader(refreshToken))
+        
+        response = await axios.get(`${API_ROOT}authentication/refresh_token/`, {
+            params: params,
+            headers: setHeader(refreshToken)
+        })
+        
         // checks if the response was an error and handles it next
         if (response.status !== 200) {
             await setStorageToken('', '')
