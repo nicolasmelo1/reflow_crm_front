@@ -24,21 +24,19 @@ const refreshToken = async (response, callback, url, params, headers) => {
             const AsyncStorage = require('react-native').AsyncStorage
             refreshToken = await AsyncStorage.getItem('refreshToken')
         }
-        
-        response = await axios.get(`${API_ROOT}authentication/refresh_token/`, {
-            params: params,
-            headers: setHeader(refreshToken)
-        })
-        
+        try {
+            response = await axios.get(`${API_ROOT}authentication/refresh_token/`, {
+                params: params,
+                headers: setHeader(refreshToken)
+            })
         // checks if the response was an error and handles it next
-        if (response.status !== 200) {
+        } catch {
             await setStorageToken('', '')
             if (logoutFunctionForView) {
                 logoutFunctionForView(true)
             }
-        } else {
-            await setStorageToken(response.data.access_token, response.data.refresh_token)
         }
+        await setStorageToken(response.data.access_token, response.data.refresh_token)
         return callback(url, params, headers)
     }
     if (['invalid_token', 'login_required'].includes(response.data.reason)) {
