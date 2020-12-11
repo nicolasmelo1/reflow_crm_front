@@ -9,9 +9,22 @@ import {
     PDFGeneratorReaderTemplateButton
 } from '../../styles/PDFGenerator'
 
+
 /**
- * {Description of your component, what does it do}
- * @param {Type} props - {go in detail about every prop it recieves}
+ * This component holds all of the template options for downloading. This is a sibling of PDFGeneratorCreator component. It is really similar
+ * with some small differences between them.
+ * 
+ * @param {Object} cancelToken - A axios cancel token, we use this so we can cancel a request when a user unmounts a component before 
+ * the data be retrieved.
+ * @param {String} formName - This is a unique identifier for each form of each company. This props is the form name that 
+ * the user is currently in. 
+ * @param {BigInteger} formId - The ID of the current formulary we are generation the pdf for. We use this
+ * to get the saved data of the formulary.
+ * @param {Array<Object>} templates - The array containing all of templates the user can select. They are what we show to the user.
+ * @param {Function} onGetPDFGeneratorValuesReader - This is a redux action function used for retrieving the values from a 
+ * formulary based on its `formId`
+ * @param {Function} onGetPDFGeneratorTempalatesReader - This is a redux action function used for retrieving the list of templates
+ * so we can show them to the user for selection
  */
 const PDFGeneratorReader = (props) => {
     const sourceRef = React.useRef(null)
@@ -27,8 +40,9 @@ const PDFGeneratorReader = (props) => {
         }
     }
 
-
     useEffect(() => {
+        // When the component is loaded we just fetch for the templates. 
+        // Nothing really fancy about it.
         sourceRef.current = props.cancelToken.source()
         props.onGetPDFGeneratorTempalatesReader(sourceRef.current, props.formName)
         return () => {
@@ -60,7 +74,7 @@ const PDFGeneratorReader = (props) => {
                     <div>
                         <PDFGeneratorReaderTopButtonsContainer>
                             <PDFGeneratorReaderGoBackButton onClick={(e) => onClickCancel()}>
-                                {'Voltar para gestão'}
+                                {strings['pt-br']['pdfGeneratorReaderDownloaderGoBackButtonLabel']}
                             </PDFGeneratorReaderGoBackButton>
                         </PDFGeneratorReaderTopButtonsContainer>
                         <div>
@@ -68,7 +82,6 @@ const PDFGeneratorReader = (props) => {
                                 <PDFGeneratorReaderTemplateButton 
                                 key={pdfTemplate.id} 
                                 onClick={(e) => setSelectedTemplateIndex(index)} 
-                                style={{ display: 'block', width: '100%', textAlign: 'left'}}
                                 >
                                     <h2>
                                         {pdfTemplate.name}

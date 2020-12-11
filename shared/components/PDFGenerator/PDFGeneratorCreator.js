@@ -150,7 +150,7 @@ const PDFGeneratorCreator = (props) => {
                     <PDFGeneratorCreatorTemplatesContainer>
                         <PDFGeneratorCreatorButtonsContainer>
                             <PDFGeneratorCreatorGoBackButton onClick={(e) => onClickCancel()}>
-                                {strings['pt-br']['pdfGeneratorCreatortGoBackButtonLabel']}
+                                {strings['pt-br']['pdfGeneratorCreatorGoBackButtonLabel']}
                             </PDFGeneratorCreatorGoBackButton>
                             <PDFGeneratorCreatorCreateNewButton
                             onClick={(e) => setSelectedTemplateIndex(props.templates.length)}

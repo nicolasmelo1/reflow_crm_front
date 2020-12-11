@@ -93,8 +93,11 @@ const Text = (props) => {
      * 
      * Check here for reference: https://stackoverflow.com/a/6249440 on how this works
      * 
-     * @param {*} contentIndex 
-     * @param {*} positionInContent 
+     * @param {BigInteger} startContentIndex - The index of the content to select. With this we can know on which span element
+     * will be the starting position of the caret.
+     * @param {BigInteger} startPositionInContent 
+     * @param {BigInteger} endContentIndex
+     * @param {BigInteger} endPositionInContent
      */
     const setCaretPositionWeb = (startContentIndex, startPositionInContent, endContentIndex=null, endPositionInContent=null) => {
         if (typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
@@ -177,6 +180,8 @@ const Text = (props) => {
      * - Also update the caretPositionRef to the current caret position.
      * - Then we check if it is a custom element, if it is we need to select the hole content
      * - Then we check the state of this element (is it bold, is it italic) and then we update the options of the text.
+     * 
+     * @param {String} activeBlock
      */
     const setCaretPositionInInput = (activeBlock) => {
         if (activeBlock === props.block.uuid && !isWaitingForCustomInput.current) {
@@ -427,6 +432,8 @@ const Text = (props) => {
 
     /**
      * This function is used to delete the contents from the state and merge together equal contents
+     * 
+     * @param {String} insertedText - The text inserted in the content editable.
      */
     const mergeEqualDeleteEmptyAndSetWhereCaretPositionShouldGo = (insertedText) => {
         deleteEmptyContents()
