@@ -329,7 +329,7 @@ const strings = {
         pdfGeneratorEditorSaveButtonLabel: 'Salvar',
         pdfGeneratorEditorCancelButtonLabel: 'Cancelar',
         pdfGeneratorEditorNewTemplateTitle: 'Novo Template',
-        pdfGeneratorReaderDownloaderGoBackButtonLabel: 'Voltar para gestão',
+        pdfGeneratorReaderGoBackButtonLabel: 'Voltar para gestão',
         pdfGeneratorReaderDownloaderMultipleFieldsSeparatorTitleLabel: 'Esse campo contém multiplos valores, como você deseja separá-los?',
         pdfGeneratorReaderDownloaderMultipleFieldsSeparatorPlaceholder: 'Ex: Separe por " - "',
         pdfGeneratorReaderDownloaderMultipleFieldsSeparatorButtonLabel: 'Ok',

@@ -74,7 +74,7 @@ const PDFGeneratorReader = (props) => {
                     <div>
                         <PDFGeneratorReaderTopButtonsContainer>
                             <PDFGeneratorReaderGoBackButton onClick={(e) => onClickCancel()}>
-                                {strings['pt-br']['pdfGeneratorReaderDownloaderGoBackButtonLabel']}
+                                {strings['pt-br']['pdfGeneratorReaderGoBackButtonLabel']}
                             </PDFGeneratorReaderGoBackButton>
                         </PDFGeneratorReaderTopButtonsContainer>
                         <div>
