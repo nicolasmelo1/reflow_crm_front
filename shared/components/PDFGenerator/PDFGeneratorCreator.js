@@ -48,7 +48,7 @@ const PDFGeneratorCreator = (props) => {
         name: strings['pt-br']['pdfGeneratorEditorNewTemplateTitle'],
         form: null,
         template_configuration_variables: [],
-        pdf_template_rich_text: null
+        rich_text_page: null
     })
 
     /**

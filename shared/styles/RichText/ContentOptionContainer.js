@@ -8,7 +8,6 @@ styled.div`
     border: 1px solid #f2f2f2;
     border-radius: 4px;
     position: absolute;
-    clear: both;
     background-color: white;
     display: flex;
     flex-direction: row;

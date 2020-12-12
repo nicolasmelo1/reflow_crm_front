@@ -59,6 +59,7 @@ const ChargeForm = (props) => {
     const currencyPrefix = '$'
     const additionalInformationByIndividualChargeName = {
         per_gb: strings['pt-br']['billingChargePerGbAdditionalInformation'],
+        per_pdf_download: strings['pt-br']['billingChargePerPDFDownloadAdditionalInformation'],
         per_chart_user: strings['pt-br']['billingChargePerChartUserAdditionalInformation'],
         per_chart_company: strings['pt-br']['billingChargePerChartCompanyAdditionalInformation']
     }
@@ -84,6 +85,17 @@ const ChargeForm = (props) => {
             },
             {
                 label: '10', value: '10'
+            }
+        ],
+        per_pdf_download: [
+            {
+                label: '30', value: '30'
+            },
+            {
+                label: '60', value: '60'
+            },
+            {
+                label: '200', value: '200'
             }
         ],
         per_gb: [

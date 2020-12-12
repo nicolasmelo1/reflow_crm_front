@@ -55,6 +55,12 @@ const onGetPDFGeneratorValuesReader = (source, formName, pdfTemplateConfiguratio
     }
 }
 
+const onCheckIfCanDownloadPDF = (source, formName, pdfTemplateConfigurationId) => {
+    return async (_) => {
+        return await agent.http.PDF_GENERATOR.canDownloadPDF(source, formName, pdfTemplateConfigurationId)
+    }
+}
+
 export default {
     onGetPDFGeneratorTempalatesReader,
     onGetPDFGeneratorValuesReader,
@@ -63,5 +69,6 @@ export default {
     onUpdatePDFGeneratorTemplateConfiguration,
     onRemovePDFGeneratorTemplateConfiguration,
     onChangePDFGeneratorTemplatesConfigurationState,
-    onGetPDFGeneratorTempalatesConfigurationFieldOptions
+    onGetPDFGeneratorTempalatesConfigurationFieldOptions,
+    onCheckIfCanDownloadPDF
 }

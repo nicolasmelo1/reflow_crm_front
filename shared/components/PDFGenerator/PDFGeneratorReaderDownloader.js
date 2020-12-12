@@ -52,6 +52,9 @@ const Custom = (props) => {
  * we only use this function to close this component.
  * @param {Function} onGetPDFGeneratorValuesReader - This is a redux action function used for retrieving the
  * values from a formulary based on its `formId`
+ * @param {Function} onCheckIfCanDownloadPDF - Sends a request to the backend to see if can download template
+ * @param {Function} onAddNotification - When the user is trying to download a pdf template but face an error. We need to add a notification
+ * for the user
  */
 const PDFGeneratorReaderDownloader = (props) => {
     const sourceRef = React.useRef(null)
@@ -100,12 +103,18 @@ const PDFGeneratorReaderDownloader = (props) => {
     const onDownloadDocument = () => {
         const jsPDF = require('jspdf').jsPDF
         const html2canvas = require('html2canvas')
-        const doc = new jsPDF();
+        const doc = new jsPDF()
 
         html2canvas(documentRef.current, { scale: 1 }).then(canvas => {
             const imgData = canvas.toDataURL('image/jpeg')		                                                                                    
             doc.addImage(imgData, 'jpeg', 20, 20)
-            doc.save(`${props.templateData.name}.pdf`)
+            props.onCheckIfCanDownloadPDF(sourceRef.current, props.formName, props.templateData.id).then(response => {
+                if (response && response.status === 200) {
+                    doc.save(`${props.templateData.name}.pdf`)
+                } else {
+                    props.onAddNotification(strings['pt-br']['pdfGeneratorDownloaderErrorMessage'], 'error')
+                }
+            })
         })
     }
 
@@ -267,7 +276,7 @@ const PDFGeneratorReaderDownloader = (props) => {
                     >
                         <RichText 
                         isEditable={false}
-                        initialData={props.templateData?.pdf_template_rich_text?.rich_text}
+                        initialData={props.templateData?.rich_text_page}
                         renderCustomContent={renderCustomContent} 
                         />
                     </div>

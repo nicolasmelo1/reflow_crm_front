@@ -93,10 +93,8 @@ const PDFGeneratorCreatorEditor = (props) => {
     const onRichTextStateChange = (data) => {
         setTemplateData({
             ...templateData, 
-            pdf_template_rich_text:{
-                rich_text: {
-                    ...data
-                }
+            rich_text_page: {
+                ...data
             }
         })
     }
@@ -180,7 +178,7 @@ const PDFGeneratorCreatorEditor = (props) => {
                 ) : ''}
                 <PDFGeneratorCreatorEditorRichTextContainer>
                     <RichText 
-                    initialData={props.templateData?.pdf_template_rich_text?.rich_text}
+                    initialData={props.templateData?.rich_text_page}
                     onStateChange={onRichTextStateChange}
                     renderCustomContent={renderCustomContent} 
                     onRemoveUnmanagedContent={onRemoveVariable}

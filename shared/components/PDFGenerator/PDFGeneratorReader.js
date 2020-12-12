@@ -25,6 +25,9 @@ import {
  * formulary based on its `formId`
  * @param {Function} onGetPDFGeneratorTempalatesReader - This is a redux action function used for retrieving the list of templates
  * so we can show them to the user for selection
+ * @param {Function} onCheckIfCanDownloadPDF - Sends a request to the backend to see if can download template
+ * @param {Function} onAddNotification - When the user is trying to download a pdf template but face an error. We need to add a notification
+ * for the user
  */
 const PDFGeneratorReader = (props) => {
     const sourceRef = React.useRef(null)
@@ -69,6 +72,8 @@ const PDFGeneratorReader = (props) => {
                     templateData={props.templates[selectedTemplateIndex]}
                     setSelectedTemplateIndex={setSelectedTemplateIndex}
                     onGetPDFGeneratorValuesReader={props.onGetPDFGeneratorValuesReader}
+                    onCheckIfCanDownloadPDF={props.onCheckIfCanDownloadPDF}
+                    onAddNotification={props.onAddNotification}
                     />
                 ) : (
                     <div>

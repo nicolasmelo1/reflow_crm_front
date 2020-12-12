@@ -22,6 +22,9 @@ const PDF_GENERATOR = {
     },
     getValueOptions: async (source, formName, pdfTemplateConfigurationId, formDataId) => {
         return await requests.get(`pdf_generator/${companyId}/${formName}/${pdfTemplateConfigurationId}/value_options/${formDataId}/`, {}, {}, source)
+    },
+    canDownloadPDF: async (source, formName, pdfTemplateConfigurationId) => {
+        return await requests.get(`pdf_generator/${companyId}/${formName}/${pdfTemplateConfigurationId}/generate/`, {}, {}, source)
     }
 }
 

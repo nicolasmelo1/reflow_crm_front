@@ -26,7 +26,6 @@ const refreshToken = async (response, callback, url, params, headers) => {
         }
         try {
             response = await axios.get(`${API_ROOT}authentication/refresh_token/`, {
-                params: params,
                 headers: setHeader(refreshToken)
             })
         // checks if the response was an error and handles it next
@@ -52,11 +51,11 @@ const refreshToken = async (response, callback, url, params, headers) => {
  * This function is responsible for handling all of the exceptions of a request, if it is something about the login or about
  * jwt_token, we handle it here, otherwise we 
  * 
- * @param response - the response of the axios exception
- * @param callback - the function to fire with the new token after it has been refreshed. Callbacks are any `requests` functions like: 'get', 'del', etc.
- * @param url - the url parameter from the function
- * @param params - the param or body parameter from the function
- * @param headers - the headers parameter from the function
+ * @param {Object} response - the response of the axios exception
+ * @param {Function} callback - the function to fire with the new token after it has been refreshed. Callbacks are any `requests` functions like: 'get', 'del', etc.
+ * @param {String} url - the url parameter from the function
+ * @param {Object} params - the param or body parameter from the function
+ * @param {Object} headers - the headers parameter from the function
  */
 const exceptionHandler = async (response, callback, url, params, headers) => {
     if (response && response.data) {

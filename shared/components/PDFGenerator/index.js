@@ -34,6 +34,8 @@ class PDFGenerator extends React.Component {
                     templates={this.props.pdf_generator.reader.templates}
                     onGetPDFGeneratorValuesReader={this.props.onGetPDFGeneratorValuesReader}
                     onGetPDFGeneratorTempalatesReader={this.props.onGetPDFGeneratorTempalatesReader}
+                    onCheckIfCanDownloadPDF={this.props.onCheckIfCanDownloadPDF}
+                    onAddNotification={this.props.onAddNotification}
                     />
                 ) : (
                     <PDFGeneratorCreator
