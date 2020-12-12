@@ -24,8 +24,8 @@ const FieldSelectorOptionBox = (props) => {
             left={props.left}
             >
                 {props.fieldOptions.map(formOption=> (
-                    <div>
-                        <FieldOptionsFormularyTitle key={formOption.id}>
+                    <div key={formOption.id}>
+                        <FieldOptionsFormularyTitle>
                             {formOption.label_name}
                         </FieldOptionsFormularyTitle>
                         {formOption.form_fields.map(fieldOption => (

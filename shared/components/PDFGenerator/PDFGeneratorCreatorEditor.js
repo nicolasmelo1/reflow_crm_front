@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { View } from 'react-native'
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { Spinner } from 'react-bootstrap'
 import RichText from '../RichText'
 import FieldSelectorOptionBox from './FieldSelectorOptionBox'
 import { strings } from '../../utils/constants'
@@ -48,6 +48,7 @@ const Custom = (props) => {
  * an object. If this object has the id key as null then it will create a new PDFTemplate ohterwise it will update an existing template Configuration.
  */
 const PDFGeneratorCreatorEditor = (props) => {
+    const [isLoading, setIsLoading] = useState(false)
     const [templateData, setTemplateData] = useState({...props.templateData})
     const [unmanagedFieldSelectedValue, setUnmanagedFieldSelectedValue] = useState(null)
     const [isUnmanagedFieldSelectorOpen, setIsUnmanagedFieldSelectorOpen] = useState(false)
@@ -120,10 +121,12 @@ const PDFGeneratorCreatorEditor = (props) => {
      * @param {Array<Object>} contents - This is an array of contents of all of the custom contents removed from the Rich Text
      */
     const onRemoveVariable = (contents) => {
+        console.log(contents)
         contents.forEach(content => {
             const indexToRemove = templateData.template_configuration_variables.findIndex(configurationVariable => configurationVariable.field.toString() === content.custom_value.toString())
             templateData.template_configuration_variables.splice(indexToRemove, 1)
         })
+        console.log(templateData.template_configuration_variables)
         setTemplateData({
             ...templateData,
             template_configuration_variables: [...templateData.template_configuration_variables]
@@ -144,6 +147,19 @@ const PDFGeneratorCreatorEditor = (props) => {
         })
     }
 
+    /**
+     * Submits the template data to the backend, when we submit we change the isLoading so 
+     * the user cannot make any interaction on the buttons while it is loading.
+     */
+    const onSubmit = () => {
+        setIsLoading(true)
+        props.onUpdateOrCreatePDFTemplateConfiguration({...templateData}).then(response => {
+            if ([undefined, null].includes(response) || response.status !== 200) {
+                setIsLoading(false)
+            }
+        })
+    }
+
     const renderMobile = () => {
         return (
             <View></View>
@@ -158,12 +174,14 @@ const PDFGeneratorCreatorEditor = (props) => {
                 </PDFGeneratorCreatorTemplateTitleContainer>
                 <PDFGeneratorCreatorEditorButtonsContainer> 
                     <PDFGeneratorCreatorEditorTemplateSaveButton 
-                    onClick={(e) => props.onUpdateOrCreatePDFTemplateConfiguration({...templateData})}
+                    onClick={(e) => isLoading ? null : onSubmit({...templateData})}
                     > 
-                        {strings['pt-br']['pdfGeneratorEditorSaveButtonLabel']}
+                        {isLoading ? (
+                            <Spinner animation="border" size="sm"/>
+                        ): strings['pt-br']['pdfGeneratorEditorSaveButtonLabel']}
                     </PDFGeneratorCreatorEditorTemplateSaveButton>
                     <PDFGeneratorCreatorEditorTemplateCancelButton 
-                    onClick={(e) => props.setSelectedTemplateIndex(null)}
+                    onClick={(e) => isLoading ? null : props.setSelectedTemplateIndex(null)}
                     >
                         {strings['pt-br']['pdfGeneratorEditorCancelButtonLabel']}
                     </PDFGeneratorCreatorEditorTemplateCancelButton>

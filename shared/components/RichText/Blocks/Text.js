@@ -328,13 +328,14 @@ const Text = (props) => {
         let contentsToConsider = []
         let removedCustomContents = []
         for (let i=0; i < props.block.rich_text_block_contents.length; i++) {
-            if (props.block.rich_text_block_contents[i].text !== '' || props.block.rich_text_block_contents.length === 1) {
+            if (props.block.rich_text_block_contents[i].text !== '') {
             //if (!/^(\s*)$/g.test(props.block.rich_text_block_contents[i].text) || props.block.rich_text_block_contents.length === 1) {
                 contentsToConsider.push(props.block.rich_text_block_contents[i])
             } else if (props.block.rich_text_block_contents[i].is_custom) {
                 removedCustomContents.push(JSON.parse(JSON.stringify(props.block.rich_text_block_contents[i])))
             }
         }
+
         props.block.rich_text_block_contents = contentsToConsider
 
         if (props.onRemoveUnmanagedContent) {
@@ -1116,12 +1117,12 @@ const Text = (props) => {
     const onPaste = (e) => {
         e.stopPropagation()
         e.preventDefault()
-        const clipboardData = e.clipboardData || window.clipboardData;
-        const pastedData = clipboardData.getData('Text');
+        const clipboardData = e.clipboardData || window.clipboardData
+        const pastedData = clipboardData.getData('Text')
         if (!['', null, undefined].includes(pastedData)) {
             const textWithPastedData = inputRef.current.innerText.substring(0, caretPositionRef.current.start) + pastedData + 
                 inputRef.current.innerText.substring(caretPositionRef.current.end, inputRef.current.innerText.length)  
-            onChangeText(textWithPastedData)
+            onInput(textWithPastedData, '', pastedData)
         }
     }
 

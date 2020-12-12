@@ -81,6 +81,7 @@ const PDFGeneratorCreator = (props) => {
             setSelectedTemplateIndex(null)
             props.onGetPDFGeneratorTemplatesConfiguration(sourceRef.current, props.formName)
         }
+        return response
     }
 
     /**
