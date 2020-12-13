@@ -103,19 +103,75 @@ const PDFGeneratorReaderDownloader = (props) => {
     const onDownloadDocument = () => {
         const jsPDF = require('jspdf').jsPDF
         const html2canvas = require('html2canvas')
-        const doc = new jsPDF()
+        const doc = new jsPDF('portrait', 'px', 'a4')
 
+        // reference from https://stackoverflow.com/a/4925265
+        /* let copiedElement = documentRef.current.cloneNode(true)
+        let childrenElements = copiedElement.getElementsByTagName("*")
+
+        copiedElement.setAttribute("style", window.getComputedStyle(copiedElement).cssText)
+        for(let i=-1, l=childrenElements.length; ++i < l;) {
+            childrenElements[i].setAttribute("style", window.getComputedStyle(childrenElements[i]).cssText)
+        }
+
+        doc.html(copiedElement, { 
+            margin: 20,
+            html2canvas: {
+                // insert html2canvas options here, e.g.
+                scale: 0.5
+            },
+            callback: () => {
+                props.onCheckIfCanDownloadPDF(sourceRef.current, props.formName, props.templateData.id).then(response => {
+                    if (response && response.status === 200) {
+                        doc.save(`${props.templateData.name}.pdf`)
+                    } else {
+                        props.onAddNotification(strings['pt-br']['pdfGeneratorDownloaderErrorMessage'], 'error')
+                    }
+                })
+            }
+        }, 20, 20)*/
         html2canvas(documentRef.current, { scale: 1 }).then(canvas => {
-            const imgData = canvas.toDataURL('image/jpeg')		                                                                                    
-            doc.addImage(imgData, 'jpeg', 20, 20)
+            const padding = 20
+            const pageHeight = 1123
+            const pageWidth = 794
+            for (var i = 0; i <= documentRef.current.clientHeight/(pageHeight+padding); i++) {
+                //! This is all just html2canvas stuff
+                const sourceImageY = ((pageHeight - padding)*i) // start 1123 pixels down for every new page
+
+                window.onePageCanvas = document.createElement("canvas")
+                onePageCanvas.setAttribute('width', pageWidth)
+                onePageCanvas.setAttribute('height', pageHeight)
+                const canvasContext = onePageCanvas.getContext('2d')
+                // details on this usage of this function: 
+                // https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Using_images#Slicing
+                canvasContext.fillStyle = "#FFFFFF"
+                canvasContext.fillRect(0, 0, pageWidth, pageHeight)
+                canvasContext.drawImage(canvas, 0, sourceImageY, pageWidth, pageHeight+padding, 0, 0, pageWidth, pageHeight)
+
+                // document.body.appendChild(canvas);
+                const canvasDataURL = onePageCanvas.toDataURL("image/png", 1.0)
+
+                //! If we're on anything other than the first page,
+                // add another page
+                if (i > 0) {
+                    doc.addPage() //8.5" x 11" in pts (in*72)
+                }
+                //! now we declare that we're working on that page
+                doc.setPage(i+1)
+                //! now we add content to that page!
+                console.log(doc.addImage.toString())
+                doc.addImage(canvasDataURL, 'PNG', 20, 20)
+            }
+
             props.onCheckIfCanDownloadPDF(sourceRef.current, props.formName, props.templateData.id).then(response => {
                 if (response && response.status === 200) {
                     doc.save(`${props.templateData.name}.pdf`)
                 } else {
                     props.onAddNotification(strings['pt-br']['pdfGeneratorDownloaderErrorMessage'], 'error')
                 }
-            })
+            })  
         })
+        
     }
 
     /**
