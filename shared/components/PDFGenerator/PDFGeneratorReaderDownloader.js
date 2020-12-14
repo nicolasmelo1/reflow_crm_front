@@ -105,7 +105,7 @@ const PDFGeneratorReaderDownloader = (props) => {
         const html2canvas = require('html2canvas')
         const doc = new jsPDF('portrait', 'px', 'a4')
 
-        html2canvas(documentRef.current, { scale: 1 }).then(canvas => {
+        html2canvas(documentRef.current).then(canvas => {
             const padding = 20
             const pageHeight = 1123
             const pageWidth = 794
