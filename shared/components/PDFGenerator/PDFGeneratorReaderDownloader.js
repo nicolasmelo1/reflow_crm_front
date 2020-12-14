@@ -103,12 +103,19 @@ const PDFGeneratorReaderDownloader = (props) => {
     const onDownloadDocument = () => {
         const jsPDF = require('jspdf').jsPDF
         const html2canvas = require('html2canvas')
-        const doc = new jsPDF('portrait', 'px', 'a4')
+        const doc = new jsPDF({
+            orientation: 'portrait', 
+            unit: 'px', 
+            format: 'a4', 
+            hotfixes: ["px_scaling"]
+        })
 
-        html2canvas(documentRef.current).then(canvas => {
+        html2canvas(documentRef.current, { scale: 1 }).then(canvas => {
             const padding = 20
             const pageHeight = 1123
             const pageWidth = 794
+
+            var context = canvas.getContext("2d");
             for (var i = 0; i <= documentRef.current.clientHeight/(pageHeight+padding); i++) {
                 //! This is all just html2canvas stuff
                 const sourceImageY = ((pageHeight - padding)*i) // start 1123 pixels down for every new page
@@ -121,7 +128,6 @@ const PDFGeneratorReaderDownloader = (props) => {
                 // https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Using_images#Slicing
                 canvasContext.fillStyle = "#FFFFFF"
                 canvasContext.fillRect(0, 0, pageWidth, pageHeight)
-                canvasContext.scale(5, 5)
                 canvasContext.drawImage(canvas, 0, sourceImageY, pageWidth, pageHeight+padding, 0, 0, pageWidth, pageHeight)
 
                 // document.body.appendChild(canvas);
