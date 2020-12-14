@@ -72,7 +72,8 @@ const PDFGeneratorCreatorEditor = (props) => {
         let text = ''
         for (let formIndex = 0; formIndex<props.formAndFieldOptions.length; formIndex++) {
             for (let fieldIndex=0; fieldIndex<props.formAndFieldOptions[formIndex].form_fields.length; fieldIndex++) {
-                if (props.formAndFieldOptions[formIndex].form_fields[fieldIndex].id.toString() === content.custom_value) {
+                if (content.custom_value.includes('fieldVariable') && 
+                    `fieldVariable-${props.formAndFieldOptions[formIndex].form_fields[fieldIndex].id.toString()} fromConnectedField-${props.formAndFieldOptions[formIndex].form_from_connected_field ? props.formAndFieldOptions[formIndex].form_from_connected_field.id.toString(): ''}` === content.custom_value) {
                     text = props.formAndFieldOptions[formIndex].form_fields[fieldIndex].label_name
                     break
                 }
@@ -110,40 +111,6 @@ const PDFGeneratorCreatorEditor = (props) => {
         setTemplateData({
             ...templateData,
             name: templateName
-        })
-    }
-    
-    /**
-     * When we remove a unmanaged variable in the rich text it can notify the upper component about the removal by `onRemoveUnmanagedContent` props, that's why this is for.
-     * This way we can remove the variable from the template_configuration_variables. Obviously we cannot track the order on the variables. So the order of the variables actually
-     * doesn't matter much here. We use this for optimizations in the backend.
-     * 
-     * @param {Array<Object>} contents - This is an array of contents of all of the custom contents removed from the Rich Text
-     */
-    const onRemoveVariable = (contents) => {
-        console.log(contents)
-        contents.forEach(content => {
-            const indexToRemove = templateData.template_configuration_variables.findIndex(configurationVariable => configurationVariable.field.toString() === content.custom_value.toString())
-            templateData.template_configuration_variables.splice(indexToRemove, 1)
-        })
-        console.log(templateData.template_configuration_variables)
-        setTemplateData({
-            ...templateData,
-            template_configuration_variables: [...templateData.template_configuration_variables]
-        })
-    }
-    
-    /**
-     * Really similar to onRemoveVariable, excepts this is fired when the user adds a new variable on the rich text. As said in `onRemoveVariable`
-     * The order here doesn't matter
-     * 
-     * @param {BigInteger} fieldId - The id of the field you are adding as a variable.
-     */
-    const onAddVariable = (fieldId) => {
-        setUnmanagedFieldSelectedValue(fieldId)
-        setTemplateData({
-            ...templateData,
-            template_configuration_variables: templateData.template_configuration_variables.concat({id:null, field: fieldId})
         })
     }
 
@@ -191,7 +158,7 @@ const PDFGeneratorCreatorEditor = (props) => {
                     fieldOptions={props.formAndFieldOptions}
                     top={unmanagedFieldSelectorPosition.y} 
                     left={unmanagedFieldSelectorPosition.x} 
-                    onClickOption={onAddVariable}
+                    onClickOption={setUnmanagedFieldSelectedValue}
                     />
                 ) : ''}
                 <PDFGeneratorCreatorEditorRichTextContainer>
@@ -199,7 +166,6 @@ const PDFGeneratorCreatorEditor = (props) => {
                     initialData={props.templateData?.rich_text_page}
                     onStateChange={onRichTextStateChange}
                     renderCustomContent={renderCustomContent} 
-                    onRemoveUnmanagedContent={onRemoveVariable}
                     handleUnmanagedContent={unmanaged} 
                     onOpenUnmanagedContentSelector={setIsUnmanagedFieldSelectorOpen}
                     isUnmanagedContentSelectorOpen={isUnmanagedFieldSelectorOpen}

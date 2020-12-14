@@ -79,7 +79,7 @@ const PDFGeneratorReaderDownloader = (props) => {
     const renderCustomContent = (content) => {
         let textArray = []
         for (let valuesIndex = 0; valuesIndex<valueOptions.length; valuesIndex++) {
-            if (valueOptions[valuesIndex].field_id.toString() === content.custom_value) {
+            if (`fieldVariable-${valueOptions[valuesIndex].field_id} fromConnectedField-${valueOptions[valuesIndex].form_value_from_connected_field ? valueOptions[valuesIndex].form_value_from_connected_field.id: ''}` === content.custom_value) {
                 textArray.push(valueOptions[valuesIndex].value)
             }
         }
@@ -105,31 +105,6 @@ const PDFGeneratorReaderDownloader = (props) => {
         const html2canvas = require('html2canvas')
         const doc = new jsPDF('portrait', 'px', 'a4')
 
-        // reference from https://stackoverflow.com/a/4925265
-        /* let copiedElement = documentRef.current.cloneNode(true)
-        let childrenElements = copiedElement.getElementsByTagName("*")
-
-        copiedElement.setAttribute("style", window.getComputedStyle(copiedElement).cssText)
-        for(let i=-1, l=childrenElements.length; ++i < l;) {
-            childrenElements[i].setAttribute("style", window.getComputedStyle(childrenElements[i]).cssText)
-        }
-
-        doc.html(copiedElement, { 
-            margin: 20,
-            html2canvas: {
-                // insert html2canvas options here, e.g.
-                scale: 0.5
-            },
-            callback: () => {
-                props.onCheckIfCanDownloadPDF(sourceRef.current, props.formName, props.templateData.id).then(response => {
-                    if (response && response.status === 200) {
-                        doc.save(`${props.templateData.name}.pdf`)
-                    } else {
-                        props.onAddNotification(strings['pt-br']['pdfGeneratorDownloaderErrorMessage'], 'error')
-                    }
-                })
-            }
-        }, 20, 20)*/
         html2canvas(documentRef.current, { scale: 1 }).then(canvas => {
             const padding = 20
             const pageHeight = 1123
@@ -159,7 +134,6 @@ const PDFGeneratorReaderDownloader = (props) => {
                 //! now we declare that we're working on that page
                 doc.setPage(i+1)
                 //! now we add content to that page!
-                console.log(doc.addImage.toString())
                 doc.addImage(canvasDataURL, 'PNG', 20, 20)
             }
 
@@ -191,7 +165,7 @@ const PDFGeneratorReaderDownloader = (props) => {
      */
     const onClickCustomElement = (e) => {
         e.preventDefault()
-        const valuesOfElement = valueOptions.filter(valueOption => valueOption.field_id.toString() === e.target.dataset.customValue)
+        const valuesOfElement = valueOptions.filter(valueOption => `fieldVariable-${valueOption.field_id.toString()} fromConnectedField-${valueOption.form_value_from_connected_field ? valueOption.form_value_from_connected_field.id.toString(): ''}` === e.target.dataset.customValue)
         if (valuesOfElement.length > 1) {
             multipleValuesElementToChange.current = e.target
             setMultipleValuesDividerSetterFieldId(parseInt(e.target.dataset.customValue))
@@ -213,7 +187,7 @@ const PDFGeneratorReaderDownloader = (props) => {
     const onClickToChangeCustomElementText = () => {
         if (multipleValuesDividerInputRef.current && multipleValuesElementToChange.current) {
             const text = valueOptions
-                .filter(valueOption => valueOption.field_id.toString() === multipleValuesElementToChange.current.dataset.customValue)
+                .filter(valueOption => `fieldVariable-${valueOption.field_id.toString()} fromConnectedField-${valueOption.form_value_from_connected_field ? valueOption.form_value_from_connected_field.id.toString(): ''}` === multipleValuesElementToChange.current.dataset.customValue)
                 .map(valueOption => valueOption.value)
                 .join(multipleValuesDividerInputRef.current.value)
             multipleValuesElementToChange.current.textContent = text

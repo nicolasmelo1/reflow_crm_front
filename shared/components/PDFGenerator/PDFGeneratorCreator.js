@@ -161,7 +161,7 @@ const PDFGeneratorCreator = (props) => {
                         </PDFGeneratorCreatorButtonsContainer>
                         <div>
                             {props.templates.map((pdfTemplate, index) => (
-                                <PDFGeneratorCreatorTemplateCardContainer>
+                                <PDFGeneratorCreatorTemplateCardContainer key={pdfTemplate.id}>
                                     <PDFGeneratorCreatorTemplateTitle>
                                         {pdfTemplate.name}
                                     </PDFGeneratorCreatorTemplateTitle>

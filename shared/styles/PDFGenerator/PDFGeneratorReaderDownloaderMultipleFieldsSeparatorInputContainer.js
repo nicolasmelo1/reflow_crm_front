@@ -13,6 +13,7 @@ const calculateLeft = (left) => {
 export default process.env['APP'] === 'web' ?
 styled.div`
     position: absolute; 
+    z-index: 1;
     background-color: #fff;
     display: flex;
     padding: 10px;

@@ -25,13 +25,18 @@ const FieldSelectorOptionBox = (props) => {
             >
                 {props.fieldOptions.map(formOption=> (
                     <div key={formOption.id}>
-                        <FieldOptionsFormularyTitle>
-                            {formOption.label_name}
-                        </FieldOptionsFormularyTitle>
+                        <div style={{borderBottom: '1px solid #bfbfbf'}}>
+                            <FieldOptionsFormularyTitle>
+                                {formOption.label_name}
+                            </FieldOptionsFormularyTitle>
+                            {formOption.form_from_connected_field ? (
+                                <small style={{ margin: '0 5px', color: '#0dbf7e', fontSize: 10}}>{`Do campo `}<strong style={{ color: '#0dbf7e' }}>{formOption.form_from_connected_field.label_name}</strong></small>
+                            ) : ''}
+                        </div>
                         {formOption.form_fields.map(fieldOption => (
                             <FieldOptionsButtons 
                             key={fieldOption.id} 
-                            onClick={(e) => {props.onClickOption(fieldOption.id)}}
+                            onClick={(e) => {props.onClickOption(`fieldVariable-${fieldOption.id} fromConnectedField-${formOption.form_from_connected_field ? formOption.form_from_connected_field.id : ''}`)}}
                             >
                                 {fieldOption.label_name}
                             </FieldOptionsButtons>
