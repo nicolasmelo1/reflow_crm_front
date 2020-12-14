@@ -121,6 +121,7 @@ const PDFGeneratorReaderDownloader = (props) => {
                 // https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Using_images#Slicing
                 canvasContext.fillStyle = "#FFFFFF"
                 canvasContext.fillRect(0, 0, pageWidth, pageHeight)
+                canvasContext.scale(5, 5)
                 canvasContext.drawImage(canvas, 0, sourceImageY, pageWidth, pageHeight+padding, 0, 0, pageWidth, pageHeight)
 
                 // document.body.appendChild(canvas);
