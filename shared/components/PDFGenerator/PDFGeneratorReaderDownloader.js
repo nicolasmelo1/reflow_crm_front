@@ -107,7 +107,7 @@ const PDFGeneratorReaderDownloader = (props) => {
             orientation: 'portrait', 
             unit: 'px', 
             format: 'a4', 
-            hotfixes: ["px_scaling"]
+            hotfixes: ['px_scaling']
         })
 
         html2canvas(documentRef.current, { scale: 1 }).then(canvas => {

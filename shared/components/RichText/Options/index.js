@@ -12,7 +12,24 @@ const Options = (props) => {
 
     const renderMobile = () => {
         return (
-            <View></View>
+            <ContentOptionFullContainer>
+                <ContentOptionContainer horizontal={true} keyboardShouldPersistTaps={'always'}>
+                {props.contentOptions ? props.contentOptions : null}
+                    {props.contentOptions && props.blockOptions ? (
+                        <View style={{
+                            marginLeft: 10,
+                            marginRight: 10,
+                            marginTop: 0,
+                            marginBottom: 0,
+                            height: 40,
+                            width: 2,
+                            backgroundColor: '#f2f2f2'
+                        }}/>
+                    ) : null}
+                    {props.blockOptions ? props.blockOptions : null}
+                </ContentOptionContainer>
+            </ContentOptionFullContainer>
+
         )
     }
 

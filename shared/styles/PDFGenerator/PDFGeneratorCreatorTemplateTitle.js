@@ -7,4 +7,7 @@ styled.h3`
     color: #0dbf7e;
 `
 :
-styled(Text)``
+styled(Text)`
+    font-size: 24px;
+    color: #0dbf7e;
+`

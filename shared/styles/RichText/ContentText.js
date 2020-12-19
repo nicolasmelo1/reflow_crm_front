@@ -33,4 +33,14 @@ styled.span`
     font-size: ${props => ![null, '', undefined].includes(props.textSize) ? `${props.textSize}pt` : '12pt' };
 `
 :
-styled(Text)``
+styled(Text)`
+    font-weight: ${props=> isBold(props)};
+    font-style: ${props => isItalic(props)};
+    color: ${props => getTextColor(props)};
+    textDecorationLine: ${props => props.isUnderline ? 'underline': 'none'};
+    background-color: ${props => getBackgroundColor(props)};
+    padding: ${props=> props.isCode ? '0 3px': '0'};
+    margin: ${props=> props.isCode ? '0 2px': '0'};
+    border-radius: ${props=> props.isCode ? '3px' : '0'};
+    font-size: ${props => ![null, '', undefined].includes(props.textSize) ? `${props.textSize}px` : '12px' };
+`

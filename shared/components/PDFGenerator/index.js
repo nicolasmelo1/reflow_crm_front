@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
+import { View } from 'react-native'
 import actions from '../../redux/actions'
 import PDFGeneratorCreator from './PDFGeneratorCreator'
 import PDFGeneratorReader from './PDFGeneratorReader'
@@ -19,7 +20,32 @@ class PDFGenerator extends React.Component {
 
     renderMobile = () => {
         return (
-            <View></View>
+            <View>
+                {this.props.isReader ? (
+                    <PDFGeneratorReader
+                    cancelToken={this.cancelToken}
+                    formName={this.props.login.primaryForm}
+                    formId={this.props.formId}
+                    templates={this.props.pdf_generator.reader.templates}
+                    onGetPDFGeneratorValuesReader={this.props.onGetPDFGeneratorValuesReader}
+                    onGetPDFGeneratorTempalatesReader={this.props.onGetPDFGeneratorTempalatesReader}
+                    onCheckIfCanDownloadPDF={this.props.onCheckIfCanDownloadPDF}
+                    onAddNotification={this.props.onAddNotification}
+                    />
+                ) : (
+                    <PDFGeneratorCreator
+                    formName={this.props.login.primaryForm}
+                    cancelToken={this.cancelToken}
+                    templates={this.props.pdf_generator.creator.templates}
+                    onGetPDFGeneratorTemplatesConfiguration={this.props.onGetPDFGeneratorTemplatesConfiguration}
+                    onCreatePDFGeneratorTemplateConfiguration={this.props.onCreatePDFGeneratorTemplateConfiguration}
+                    onUpdatePDFGeneratorTemplateConfiguration={this.props.onUpdatePDFGeneratorTemplateConfiguration}
+                    onRemovePDFGeneratorTemplateConfiguration={this.props.onRemovePDFGeneratorTemplateConfiguration}
+                    onChangePDFGeneratorTemplateConfigurationDataState={this.props.onChangePDFGeneratorTemplateConfigurationDataState}
+                    onGetPDFGeneratorTempalatesConfigurationFieldOptions={this.props.onGetPDFGeneratorTempalatesConfigurationFieldOptions}
+                    />
+                )}
+            </View>
         )
     }
 

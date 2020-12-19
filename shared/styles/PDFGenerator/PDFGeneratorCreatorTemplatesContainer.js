@@ -9,4 +9,7 @@ styled.div`
     width: 100%
 `
 :
-styled(View)``
+styled(View)`
+    display: flex;
+    flex-direction: row;
+`

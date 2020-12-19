@@ -130,7 +130,6 @@ const Chart = (props) => {
 
     // ONLY MOBILE.
     const getJsToInjectInWebview = (gettingOnRender=false) => {
-            //const maintainAspectRatio = (typeof props.maintainAspectRatio !== 'undefined') ? props.maintainAspectRatio : true
         const numberFormat = (props.numberFormat) ? props.numberFormat : null
         return `
             if (typeof Chart === 'undefined') {

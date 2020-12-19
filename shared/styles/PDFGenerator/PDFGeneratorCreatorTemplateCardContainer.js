@@ -10,4 +10,10 @@ styled.div`
     justify-content: space-between
 `
 :
-styled(View)``
+styled(View)`
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between
+`

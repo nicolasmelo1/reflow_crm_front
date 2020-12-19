@@ -9,4 +9,9 @@ styled.div`
     border-radius: 5px;
 `
 :
-styled(View)``
+styled(View)`
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;    
+    height: 40px;
+`

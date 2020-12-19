@@ -1,5 +1,8 @@
 import { BEARER, API } from '../../config'
-
+let AsyncStorage;
+if (process.env['APP'] !== 'web') { 
+    AsyncStorage = require('react-native').AsyncStorage
+}
 
 const API_ROOT = API;
 let companyId = null

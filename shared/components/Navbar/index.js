@@ -220,16 +220,19 @@ class Navbar extends React.Component {
                 name="home" 
                 component={this.props.HomeComponent}
                 options={{
-                    title: this.props.navbar.isInHomeScreen && this.state.homeFormularyData !== null ? this.state.homeFormularyData.label_name : 'Home'
+                    title: this.props.navbar.setIsHomeToolsMenuOpen && this.state.homeFormularyData !== null ? this.state.homeFormularyData.label_name : 'Home'
                 }}
-                listeners={{
+                listeners={({ navigation, route }) => ({
                     tabPress: e => {
                         if (this.props.navbar.isInHomeScreen) {
                             e.preventDefault()
-                            this.props.setIsHomeToolsOpen(!this.props.isHomeToolsMenuOpen)
+                            this.props.setIsHomeToolsMenuOpen(!this.props.isHomeToolsMenuOpen)
+                        } else {
+                            e.preventDefault()
+                            navigation.navigate('pdf_generator')
                         }
                     },
-                }}/>
+                })}/>
                 <Tab.Screen name="notifications" component={this.props.NotificationComponent}/>
                 <Tab.Screen name="configurations" component={this.props.ConfigurationComponent}/>
             </Tab.Navigator>

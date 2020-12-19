@@ -11,7 +11,18 @@ import {
 const Content = (props) => {
     const renderMobile = () => {
         return (
-            <View></View>
+            <ContentText 
+            draggabble="false"
+            isItalic={props.content.is_italic}
+            isBold={props.content.is_bold}
+            isCode={props.content.text === '' || props.content.text === '\n' ? false : props.content.is_code}
+            isUnderline={props.content.is_underline}
+            textColor={props.content.text_color}
+            markerColor={props.content.marker_color}
+            textSize={props.content.text_size}
+            >
+                {`${props.content.text}`}
+            </ContentText>
         )
     }
 

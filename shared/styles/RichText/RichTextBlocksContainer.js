@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { View } from 'react-native'
+import { ScrollView } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
@@ -8,4 +8,6 @@ styled.div`
     padding: 0 ${props=> props.padding ? props.padding.toString() : '10'}px
 `
 :
-styled(View)``
+styled(ScrollView)`
+height: 85%
+`

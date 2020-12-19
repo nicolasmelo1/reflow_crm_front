@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import Layout from '@shared/components/Layout'
-import { Button, Modal, View, SafeAreaView } from 'react-native'
+import { Button, Modal, View, SafeAreaView, TouchableOpacity, Text } from 'react-native'
 import { connect } from 'react-redux'
 import actions from '@shared/redux/actions'
 import { withAuthenticationContext, withHomeToolsMenuContext } from '../contexts'
@@ -40,6 +40,14 @@ class Data extends React.Component {
                             <Button onPress={(e) => {
                                 this.props.homeToolsMenuContext.setIsHomeToolsMenuOpen(false)
                             }} title={'Fechar'}/>
+                            <TouchableOpacity onPress={(e) => {
+                                this.props.homeToolsMenuContext.setIsHomeToolsMenuOpen(false)
+                                this.props.navigation.navigate('pdf_generator')
+                            }}>
+                                <Text>
+                                    PDF
+                                </Text>
+                            </TouchableOpacity>
                         </SafeAreaView>
                     </Modal>
                 ) : (

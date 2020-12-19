@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Text } from 'react-native'
+import { TouchableOpacity } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.button`
@@ -18,4 +18,14 @@ styled.button`
     }
 `
 :
-styled(Text)``
+styled(TouchableOpacity)`
+    font-style: italic;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    border-radius: 2px;
+    padding: 0 5px;
+    width: 40px;
+    text-align: center;
+    height: 40px;
+`

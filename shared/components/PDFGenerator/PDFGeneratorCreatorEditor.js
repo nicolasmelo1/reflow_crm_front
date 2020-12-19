@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { View } from 'react-native'
+import { Modal, SafeAreaView, TouchableOpacity } from 'react-native'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { Spinner } from 'react-bootstrap'
 import RichText from '../RichText'
 import FieldSelectorOptionBox from './FieldSelectorOptionBox'
@@ -129,7 +130,27 @@ const PDFGeneratorCreatorEditor = (props) => {
 
     const renderMobile = () => {
         return (
-            <View></View>
+            <Modal animationType="slide">
+                <SafeAreaView>
+                    <PDFGeneratorCreatorEditorButtonsContainer>
+                        <PDFGeneratorCreatorEditorTemplateCancelButton onPress={e=>props.setSelectedTemplateIndex(null)}>
+                            <FontAwesomeIcon icon={'times'} />
+                        </PDFGeneratorCreatorEditorTemplateCancelButton>
+                    </PDFGeneratorCreatorEditorButtonsContainer>
+                    <PDFGeneratorCreatorEditorRichTextContainer>
+                        <RichText 
+                        initialData={props.templateData?.rich_text_page}
+                        onStateChange={onRichTextStateChange}
+                        renderCustomContent={renderCustomContent} 
+                        handleUnmanagedContent={unmanaged} 
+                        onOpenUnmanagedContentSelector={setIsUnmanagedFieldSelectorOpen}
+                        isUnmanagedContentSelectorOpen={isUnmanagedFieldSelectorOpen}
+                        onChangeUnmanagedContentValue={setUnmanagedFieldSelectedValue}
+                        unmanagedContentValue={unmanagedFieldSelectedValue}
+                        />
+                    </PDFGeneratorCreatorEditorRichTextContainer>
+                </SafeAreaView>
+            </Modal>
         )
     }
 

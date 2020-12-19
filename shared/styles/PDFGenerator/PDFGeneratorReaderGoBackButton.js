@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { View } from 'react-native'
+import { TouchableOpacity } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.button`

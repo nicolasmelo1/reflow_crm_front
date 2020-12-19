@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { View } from 'react-native'
+import { Modal } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
@@ -13,4 +13,9 @@ styled.div`
     max-width: calc(var(--app-width) - 150px)
 `
 :
-styled(View)``
+styled(Modal)`
+    flex-direction: row;
+    height: 100%
+    width: 100%;
+    background-color: #00000050;
+`

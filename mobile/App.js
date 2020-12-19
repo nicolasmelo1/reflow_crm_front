@@ -45,7 +45,7 @@ class App extends React.Component {
     render() {
         return (
             <Provider store={this.store}>
-                <PersistGate persistor={persistStore(this.store)}>
+                <PersistGate persistor={this.store.__persistor}>
                     {this.state.fontIsLoaded ? (
                         <NavigationContainer ref={navigationRef}>
                             <Main/>

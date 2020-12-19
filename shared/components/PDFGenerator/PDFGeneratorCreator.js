@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View } from 'react-native'
+import { View, Text } from 'react-native'
 import Router from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import PDFGeneratorCreatorEditor from './PDFGeneratorCreatorEditor'
@@ -118,7 +118,48 @@ const PDFGeneratorCreator = (props) => {
 
     const renderMobile = () => {
         return (
-            <View></View>
+            <View>
+                {templateIndexToRemove !== null ? (
+                    <Alert 
+                    alertTitle={strings['pt-br']['pdfGeneratorOnRemoveTemplateAlertTitle']} 
+                    alertMessage={strings['pt-br']['pdfGeneratorOnRemoveTemplateAlertMessage']} 
+                    show={templateIndexToRemove !== null} 
+                    onHide={() => {
+                        setTemplateIndexToRemove(null)
+                    }} 
+                    onAccept={() => {
+                        setTemplateIndexToRemove(null)
+                        onRemovePDFTemplateConfiguration()
+                    }}
+                    onAcceptButtonLabel={strings['pt-br']['pdfGeneratorOnRemoveTemplateAlertAcceptButtonLabel']}
+                    />
+                ) : null}
+                {selectedTemplateIndex !== null ? (
+                    <PDFGeneratorCreatorEditor
+                    formAndFieldOptions={formAndFieldOptions}
+                    templateData={getTemplateData()}
+                    setSelectedTemplateIndex={setSelectedTemplateIndex}
+                    onUpdateOrCreatePDFTemplateConfiguration={onUpdateOrCreatePDFTemplateConfiguration}
+                    />
+                ) : (
+                    <PDFGeneratorCreatorTemplatesContainer>
+                        {props.templates.map((pdfTemplate, index) => (
+                            <PDFGeneratorCreatorTemplateCardContainer key={pdfTemplate.id}>
+                                <PDFGeneratorCreatorEditTemplateButton onPress={(e)=> setSelectedTemplateIndex(index)}>
+                                    <PDFGeneratorCreatorTemplateTitle>
+                                        {pdfTemplate.name}
+                                    </PDFGeneratorCreatorTemplateTitle>
+                                </PDFGeneratorCreatorEditTemplateButton>
+                                <PDFGeneratorCreatorRemoveTemplateButton 
+                                onClick={(e)=> setTemplateIndexToRemove(index)}
+                                >
+                                    <FontAwesomeIcon icon={'trash'}/>
+                                </PDFGeneratorCreatorRemoveTemplateButton>
+                            </PDFGeneratorCreatorTemplateCardContainer>
+                        ))}
+                    </PDFGeneratorCreatorTemplatesContainer>
+                )}
+            </View>
         )
     }
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { View } from 'react-native'
+import { TextInput } from 'react-native'
 
 
 export default process.env['APP'] === 'web' ?
@@ -21,4 +21,7 @@ styled.div`
     }
 `
 :
-styled(View)``
+styled(TextInput)`
+    color: transparent;
+    padding: 5px;
+`

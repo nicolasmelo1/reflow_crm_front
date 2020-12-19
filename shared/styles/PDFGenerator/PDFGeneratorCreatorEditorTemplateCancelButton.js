@@ -16,4 +16,9 @@ styled.button`
     }
 `
 :
-styled(TouchableOpacity)``
+styled(TouchableOpacity)`
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+`

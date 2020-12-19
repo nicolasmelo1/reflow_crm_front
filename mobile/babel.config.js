@@ -1,7 +1,7 @@
 module.exports = function(api) {
     api.cache(true);
     return {
-        presets: ['@expo/next-adapter/babel', "babel-preset-expo", "@babel/preset-react", ],
+        presets: ["babel-preset-expo" ],
         plugins: [
             [
                 "module-resolver", 
@@ -11,8 +11,6 @@ module.exports = function(api) {
                         "@shared": "../shared",
                     }
                 }
-            ], [
-                "babel-plugin-transform-inline-environment-variables"
             ]
         ]
     };

@@ -15,4 +15,6 @@ styled.button`
     }
 `
 :
-styled(TouchableOpacity)``
+styled(TouchableOpacity)`
+    margin: 5px 10px;
+`

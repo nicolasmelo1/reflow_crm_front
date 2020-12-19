@@ -9,4 +9,7 @@ styled.div`
     position: relative;
 `
 :
-styled(View)``
+styled(View)`
+    flex-direction: column;
+    height: ${props => props.height ? props.height : '97%'};
+`

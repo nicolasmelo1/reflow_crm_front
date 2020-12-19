@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View } from 'react-native'
+import { View, Text, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native'
 import sleep from '../../../../utils/sleep'
 import {
     TextContentOptionBoldButton,
@@ -79,6 +79,9 @@ const TextContentOptions = (props) => {
             setIsTextColorOptionOpen(isOpen)
         } else {
             setIsTextColorOptionOpen(isOpen)
+            if (props.onOpenModal) {
+                props.onOpenModal(isOpen)
+            }
         }
     }
 
@@ -141,7 +144,110 @@ const TextContentOptions = (props) => {
 
     const renderMobile = () => {
         return (
-            <View></View>
+            <View style={{flexDirection: 'row'}}>
+                <TextContentOptionBoldButton 
+                isBold={props.stateOfSelection.isBold}
+                onPress={(e) => props.onChangeSelectionState('bold', !props.stateOfSelection.isBold, '')}
+                >
+                    <Text style={{color: props.stateOfSelection.isBold ? '#0dbf7e': '#17242D'}}>{'B'}</Text>
+                </TextContentOptionBoldButton>
+                <TextContentOptionItalicButton 
+                isItalic={props.stateOfSelection.isItalic}
+                onPress={(e) => props.onChangeSelectionState('italic', !props.stateOfSelection.isItalic, '')} 
+                >
+                    <Text style={{fontStyle: 'italic', color: props.stateOfSelection.isItalic ? '#0dbf7e': '#17242D'}}>{'I'}</Text>
+                </TextContentOptionItalicButton>
+                <TextContentOptionUnderlineButton
+                isUnderline={props.stateOfSelection.isUnderline}
+                onPress={(e) => props.onChangeSelectionState('underline', !props.stateOfSelection.isUnderline, '')}
+                >
+                    <Text style={{color: props.stateOfSelection.isUnderline ? '#0dbf7e': '#17242D'}}>{'U'}</Text>
+                </TextContentOptionUnderlineButton>
+                <TextContentOptionCodeButton
+                isCode={props.stateOfSelection.isCode}
+                onPress={(e) => props.onChangeSelectionState('code', !props.stateOfSelection.isCode, '')}
+                >
+                    <Text style={{color: props.stateOfSelection.isCode ? '#0dbf7e': '#17242D'}}>{'<>'}</Text>
+                </TextContentOptionCodeButton>
+                <TextContentOptionFontSizeContainer>
+                    <TextContentOptionFontSizeButton
+                    onPressIn={(e) => onMouseDownMinusFontSize()}
+                    onPress={(e) => onClickButtonsOnFontSize()}
+                    onPressOut={(e) => onMouseUpMinusFontSize()}                    
+                    >
+                        <Text>{'-'}</Text>
+                    </TextContentOptionFontSizeButton>
+                        <Text>{textSize ? `${textSize}pt` : '12pt'}</Text>
+                    <TextContentOptionFontSizeButton
+                    onPressIn={(e) => onMouseDownPlusFontSize()}
+                    onPress={(e) => onClickButtonsOnFontSize()}
+                    onPressOut={(e) => onMouseUpPlusFontSize()}    
+                    >
+                        <Text>{'+'}</Text>
+                    </TextContentOptionFontSizeButton>
+                </TextContentOptionFontSizeContainer>
+                <TextContentOptionTextColorActivationButton
+                onPress={(e) => onChangeTextColorIsOpen(!isTextColorOptionOpen)}
+                textColor={props.stateOfSelection.textColor}
+                >   
+                    <Text style={{color: props.stateOfSelection.textColor && !['', null, undefined].includes(props.stateOfSelection.textColor) ? props.stateOfSelection.textColor : '#000'}}>{'A'}</Text>
+                </TextContentOptionTextColorActivationButton>
+                {isTextColorOptionOpen ? (
+                    <TextContentOptionTextColorOptionsContainer transparent={true} animationType={'slide'}>
+                        <SafeAreaView style={{height: '100%', backgroundColor: '#00000050', flexDirection: 'row'}}>
+                            <View style={{height: '60%', alignSelf: 'flex-end', backgroundColor: '#fff', width: '100%', bottom: -100, paddingBottom: 100}}>
+                                <TouchableOpacity onPress={(e) => {onChangeTextColorIsOpen(!isTextColorOptionOpen)}} style={{ alignSelf: 'flex-end', margin: 10}}>
+                                    <Text>Cancelar</Text>
+                                </TouchableOpacity>
+                                <ScrollView keyboardShouldPersistTaps={'always'}>
+                                    {textColors.map(textColor => (
+                                        <TextContentOptionTextColorOptionButton 
+                                        key={textColor}
+                                        onPress={(e) => {
+                                            onChangeTextColorIsOpen(!isTextColorOptionOpen)
+                                            props.onChangeSelectionState('textColor', null, textColor)
+                                        }}
+                                        >
+                                            <Text style={{color: textColor && !['', null, undefined].includes(textColor) ? textColor : '#000'}}>A</Text>
+                                        </TextContentOptionTextColorOptionButton>
+                                    ))}
+                                </ScrollView>
+                            </View>
+                        </SafeAreaView>
+                    </TextContentOptionTextColorOptionsContainer> 
+                ) : null}
+                <TextContentOptionMarkerColorActivationButton
+                onPress={(e) => onChangeMarkerColorIsOpen(!isMarkerColorOptionOpen)}
+                markerColor={props.stateOfSelection.markerColor}
+                >   
+                    <Text>{'A'}</Text>
+                </TextContentOptionMarkerColorActivationButton>
+                {isMarkerColorOptionOpen ? (
+                    <TextContentOptionTextColorOptionsContainer transparent={true} animationType={'slide'}>
+                        <SafeAreaView style={{height: '100%', backgroundColor: '#00000050', flexDirection: 'row'}}>
+                            <View style={{height: '60%', alignSelf: 'flex-end', backgroundColor: '#fff', width: '100%', bottom: -100, paddingBottom: 100}}>
+                                <TouchableOpacity onPress={(e) => {onChangeMarkerColorIsOpen(!isMarkerColorOptionOpen)}} style={{ alignSelf: 'flex-end', margin: 10}}>
+                                    <Text>Cancelar</Text>
+                                </TouchableOpacity>
+                                <ScrollView keyboardShouldPersistTaps={'always'}>
+                                    {markerColors.map(markerColor => (
+                                        <TextContentOptionMarkerColorOptionButton 
+                                        key={markerColor}
+                                        onPress={(e) => {
+                                            onChangeMarkerColorIsOpen(!isMarkerColorOptionOpen)
+                                            props.onChangeSelectionState('markerColor', null, markerColor)
+                                        }}
+                                        markerColor={markerColor}
+                                        >
+                                            <Text>A</Text>
+                                        </TextContentOptionMarkerColorOptionButton>
+                                    ))}
+                                </ScrollView>
+                            </View>
+                        </SafeAreaView>
+                    </TextContentOptionTextColorOptionsContainer> 
+                ) : null}
+            </View>
         )
     }
 

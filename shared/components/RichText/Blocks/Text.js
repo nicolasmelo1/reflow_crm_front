@@ -1,5 +1,5 @@
 import React, { useState , useEffect } from 'react'
-import { View } from 'react-native'
+import { KeyboardAvoidingView } from 'react-native'
 import { renderToString } from 'react-dom/server'
 import Content from '../Content'
 import { TextBlockOptions } from '../Options/BlockOptions'
@@ -11,6 +11,12 @@ import {
     BlockTextPlaceholderContainer,
     BlockTextPlaceholderText
 } from '../../../styles/RichText'
+
+let WebView;
+if(process.env['APP'] !== 'web') {
+    WebView = require('react-native-webview').WebView
+}
+
 
 /**
  * {Description of your component, what does it do}
@@ -34,20 +40,53 @@ const Text = (props) => {
         13: 'Enter'
     }
     const wasKeyDownPressedRef = React.useRef(false)
+    const keyDownPressedRef = React.useRef(null)
     const inputRef = React.useRef(null)
+    const activeBlockRef = React.useRef(null)
     const caretPositionRef = React.useRef({
         start: null,
         end: null
     })
-    const whereCaretPositionShouldGoAfterUpdateRef = React.useRef({
+    const whereCaretPositionShouldGoAfterUpdateRef = React.useRef(process.env['APP'] === 'web' ? {
         contentIndex: null,
         positionInContent: null
+    } : {
+        start: 0,
+        end: 0
     })
     const isWaitingForCustomInput = React.useRef(false)
     const customInputCaretPosition = React.useRef(caretPositionRef)
     const [innerHtml, setInnerHtml] = useState('')
+    const [isToolbarModalOpen, setToolbarIsModalOpen] = useState(false)
     const [stateOfSelection, setStateOfSelection] = useState(stateOfSelectionData)
-    
+    const [mobileTextSelection, setMobileTextSelection] = useState({
+        start: 0,
+        end: 0
+    })
+
+    const mobileAddToolbar = () => {
+        if (props.addToolbar) {
+            props.addToolbar(<Options
+                isBlockActive={true}
+                contentOptions={
+                    <TextContentOptions 
+                    onOpenModal={setToolbarIsModalOpen}
+                    onChangeSelectionState={onChangeSelectionState}
+                    stateOfSelection={stateOfSelection}
+                    />
+                }
+                blockOptions={
+                    <TextBlockOptions
+                    alignmentTypeId={props.block.text_option?.alignment_type}
+                    onChangeAlignmentType={onChangeAlignmentType}
+                    types={props.types}
+                    />
+                }
+                />
+            )
+        }
+    }
+
     /**
      * Gets alignment type name by it's id, we need this because we only have the id of the alignmentType but not
      * @param {*} id 
@@ -83,6 +122,7 @@ const Text = (props) => {
                     lastContentInSelection.contentIndex, 
                     lastContentInSelection.content.is_custom ? lastContentInSelection.content.text.length : lastContentInSelection.endIndexToSelectTextInContent
                 )  
+            
             }
         }
     }
@@ -100,7 +140,7 @@ const Text = (props) => {
      * @param {BigInteger} endPositionInContent
      */
     const setCaretPositionWeb = (startContentIndex, startPositionInContent, endContentIndex=null, endPositionInContent=null) => {
-        if (typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
+        if (process.env['APP'] === 'web' && typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
             const range = document.createRange()
             const selection = window.getSelection()
             range.selectNodeContents(inputRef.current)
@@ -146,24 +186,26 @@ const Text = (props) => {
      * Gets the caret X and Y position so we can display a option above the content, this is used to send for the unmanaged.
      */
     const getCaretCoordinatesWeb = () => {
-        let x = 0
-        let y = 0
-        const isSupported = typeof window.getSelection !== "undefined"
-        if (isSupported) {
-            const selection = window.getSelection()
-            if (selection.rangeCount !== 0) {
-                const range = selection.getRangeAt(0).cloneRange()
-                range.collapse(true)
-                const rect = range.getClientRects()[0]
-                if (rect) {
-                    x = rect.left
-                    y = rect.top
+        if (process.env['APP'] === 'web') {
+            let x = 0
+            let y = 0
+            const isSupported = typeof window.getSelection !== "undefined"
+            if (isSupported) {
+                const selection = window.getSelection()
+                if (selection.rangeCount !== 0) {
+                    const range = selection.getRangeAt(0).cloneRange()
+                    range.collapse(true)
+                    const rect = range.getClientRects()[0]
+                    if (rect) {
+                        x = rect.left
+                        y = rect.top
+                    }
                 }
             }
-        }
-        return { 
-            x: x, 
-            y: y 
+            return { 
+                x: x, 
+                y: y 
+            }   
         }
     }
 
@@ -185,23 +227,26 @@ const Text = (props) => {
      */
     const setCaretPositionInInput = (activeBlock) => {
         if (activeBlock === props.block.uuid && !isWaitingForCustomInput.current) {
-            if (whereCaretPositionShouldGoAfterUpdateRef.current.contentIndex !== null && whereCaretPositionShouldGoAfterUpdateRef.current.positionInContent !== null) {
-                setCaretPositionWeb(whereCaretPositionShouldGoAfterUpdateRef.current.contentIndex, whereCaretPositionShouldGoAfterUpdateRef.current.positionInContent)
-            } else if (caretPositionRef.current.start !== null && caretPositionRef.current.end !== null) {
-                const selectedContents = getSelectedContents()
-                if (selectedContents[0]) {
-                    setCaretPositionWeb(selectedContents[0].contentIndex, selectedContents[0].startIndexToSelectTextInContent, 
-                                        selectedContents[selectedContents.length-1].contentIndex, selectedContents[selectedContents.length-1].endIndexToSelectTextInContent)
+            if (process.env['APP'] === 'web') {
+                if (whereCaretPositionShouldGoAfterUpdateRef.current.contentIndex !== null && whereCaretPositionShouldGoAfterUpdateRef.current.positionInContent !== null) {
+                    setCaretPositionWeb(whereCaretPositionShouldGoAfterUpdateRef.current.contentIndex, whereCaretPositionShouldGoAfterUpdateRef.current.positionInContent)
+                } else if (caretPositionRef.current.start !== null && caretPositionRef.current.end !== null) {
+                    const selectedContents = getSelectedContents()
+                    if (selectedContents[0]) {
+                        setCaretPositionWeb(selectedContents[0].contentIndex, selectedContents[0].startIndexToSelectTextInContent, 
+                                            selectedContents[selectedContents.length-1].contentIndex, selectedContents[selectedContents.length-1].endIndexToSelectTextInContent)
+                    }
                 }
+                whereCaretPositionShouldGoAfterUpdateRef.current = {
+                    contentIndex: null,
+                    positionInContent: null
+                }
+                caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
+                
+                checkIfCaretPositionIsCustomFixAndSetCaretPosition()
+                checkStateOfSelectedElementAndUpdateState()
             }
-            whereCaretPositionShouldGoAfterUpdateRef.current = {
-                contentIndex: null,
-                positionInContent: null
-            }
-            caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
-            checkIfCaretPositionIsCustomFixAndSetCaretPosition()
-            checkStateOfSelectedElementAndUpdateState()
-        }
+        } 
     }
 
     /**
@@ -222,37 +267,39 @@ const Text = (props) => {
      * @param {Object} element - The element object on which you get the selection position from, usually this will be the `inputRef.current`
      */
     const getWebSelectionSelectCursorPosition = (element) => {
-        let start = 0
-        let end = 0
-        let selection = null
-        const document = element.ownerDocument || element.document
-        const window = document.defaultView || document.parentWindow
-        if (typeof window.getSelection != "undefined") {
-            selection = window.getSelection()
-            if (selection.rangeCount > 0) {
-                const range = window.getSelection().getRangeAt(0)
-                const preCaretRange = range.cloneRange()
-                preCaretRange.selectNodeContents(element)
-                preCaretRange.setEnd(range.startContainer, range.startOffset)
-                start = preCaretRange.toString().length
-                preCaretRange.setEnd(range.endContainer, range.endOffset)
-                end = preCaretRange.toString().length
+        if (process.env['APP'] === 'web') {
+            let start = 0
+            let end = 0
+            let selection = null
+            const document = element.ownerDocument || element.document
+            const window = document.defaultView || document.parentWindow
+            if (typeof window.getSelection != "undefined") {
+                selection = window.getSelection()
+                if (selection.rangeCount > 0) {
+                    const range = window.getSelection().getRangeAt(0)
+                    const preCaretRange = range.cloneRange()
+                    preCaretRange.selectNodeContents(element)
+                    preCaretRange.setEnd(range.startContainer, range.startOffset)
+                    start = preCaretRange.toString().length
+                    preCaretRange.setEnd(range.endContainer, range.endOffset)
+                    end = preCaretRange.toString().length
+                }
+            } else if ((selection = document.selection) && selection.type != "Control") {
+                const textRange = selection.createRange()
+                const preCaretTextRange = document.body.createTextRange()
+                preCaretTextRange.moveToElementText(element)
+                preCaretTextRange.setEndPoint("EndToStart", textRange)
+                start = preCaretTextRange.text.length
+                preCaretTextRange.setEndPoint("EndToEnd", textRange)
+                end = preCaretTextRange.text.length
             }
-        } else if ((selection = document.selection) && selection.type != "Control") {
-            const textRange = selection.createRange()
-            const preCaretTextRange = document.body.createTextRange()
-            preCaretTextRange.moveToElementText(element)
-            preCaretTextRange.setEndPoint("EndToStart", textRange)
-            start = preCaretTextRange.text.length
-            preCaretTextRange.setEndPoint("EndToEnd", textRange)
-            end = preCaretTextRange.text.length
-        }
-        return { 
-            start: start, 
-            end: end 
+            return { 
+                start: start, 
+                end: end 
+            }
         }
     }
-
+    
     /**
      * Retrieves the selected contents from the selection.
      * Suppose you have the phrase: "ILoveCats" in which "I" is a content in the array,
@@ -428,6 +475,9 @@ const Text = (props) => {
                 break
             }
             stackedNumberOfWords = props.block.rich_text_block_contents[i].text.length + stackedNumberOfWords
+        }
+        if (process.env['APP'] !== 'web') {
+            caretPositionRef.current = JSON.parse(JSON.stringify(whereCaretPositionShouldGoAfterUpdateRef.current))
         }
     }
 
@@ -638,6 +688,7 @@ const Text = (props) => {
                 textColor: (textColor) ? selectedContents[0].content.text_color : '',
                 markerColor: (markerColor) ? selectedContents[0].content.marker_color : ''
             })
+            props.updateBlocks(props.activeBlock)
         }
     }
 
@@ -654,7 +705,7 @@ const Text = (props) => {
         })
         // if we are waiting for a custom content we don't dismiss the active block so this way we know that is 
         // exactly THIS block that will contain the content.
-        if (props.activeBlock === props.block.uuid && isWaitingForCustomInput.current === false) {
+        if (props.activeBlock === props.block.uuid && isWaitingForCustomInput.current === false && isToolbarModalOpen === false) {
             props.updateBlocks(null)
         }
     }
@@ -673,7 +724,9 @@ const Text = (props) => {
             props.updateBlocks(props.block.uuid)
         }
         isWaitingForCustomInput.current = false
-        setCaretPositionInInput(props.block.uuid)
+        if (process.env['APP'] === 'web') {
+            setCaretPositionInInput(props.block.uuid)
+        }
     }
 
     /**
@@ -686,12 +739,21 @@ const Text = (props) => {
      * @param {*} e 
      */
     const onSelectText = (e) => {
-        caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
-        checkStateOfSelectedElementAndUpdateState()
-        
-        checkIfCaretPositionIsCustomFixAndSetCaretPosition()
-        if (props.activeBlock !== props.block.uuid) {
-            props.updateBlocks(props.block.uuid)
+        if (process.env['APP'] === 'web') {
+            caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
+            checkStateOfSelectedElementAndUpdateState()
+            checkIfCaretPositionIsCustomFixAndSetCaretPosition()
+            if (props.activeBlock !== props.block.uuid) {
+                props.updateBlocks(props.block.uuid)
+            }
+        } else {
+            if (!wasKeyDownPressedRef.current) {
+                caretPositionRef.current = {start: e.nativeEvent.selection.start, end: e.nativeEvent.selection.end} 
+                setMobileTextSelection(caretPositionRef.current)
+                checkStateOfSelectedElementAndUpdateState()
+            } else {
+                whereCaretPositionShouldGoAfterUpdateRef.current = {start: e.nativeEvent.selection.start, end: e.nativeEvent.selection.end} 
+            }
         }
     }
 
@@ -736,9 +798,7 @@ const Text = (props) => {
      */
     const onInput = (text, inputType, insertedText=null) => {
         const getInsertedText = (insertedText, inputType) => {
-            if (insertedText) {
-                return insertedText
-            } else if (insertedText === null && inputType === 'insertReplacementText') {
+            if (insertedText === null && inputType === 'insertReplacementText') {
                 const splittedInsertedText = text.substring(caretPositionRef.current.start, text.length).split(' ')
                 if (splittedInsertedText.length > 0) {
                     insertedText = splittedInsertedText[0]
@@ -746,6 +806,10 @@ const Text = (props) => {
                 }
             } else if (insertedText === null && inputType === 'insertLineBreak') {
                 return '\n'
+            } else if (process.env['APP'] !== 'web' && ['Enter', 'Backspace'].includes(inputType)) {
+                return ''
+            } else if (insertedText) {
+                return insertedText
             }
             return ''
         }
@@ -754,7 +818,7 @@ const Text = (props) => {
             const isRangeSelection = caretPositionRef.current.start !== caretPositionRef.current.end
             // User has set the caret to a certain position
             if (!isRangeSelection) {
-                if (inputType === 'deleteContentBackward') {
+                if ((inputType === 'deleteContentBackward' && process.env['APP'] === 'web') || (inputType === 'Backspace' && process.env['APP'] !== 'web')) {
                     // User has pressed backspace
                     // Make as user have selected the character before
                     caretPositionRef.current.start = caretPositionRef.current.start - (oldText.length - text.length)
@@ -765,12 +829,12 @@ const Text = (props) => {
                 }  
             } 
         }
-
         insertedText = getInsertedText(insertedText, inputType)
         let contents = JSON.parse(JSON.stringify(props.block.rich_text_block_contents))
         // Checks if last character of the last content is a linebreak there is a bug that happens when you do this on normal browsers
-        // it adds line breaks at the same time
-        if (contents[contents.length-1].text.substring(contents[contents.length-1].text.length-1,contents[contents.length-1].text.length) === '\n') {
+        // it adds line breaks at the same time.
+        // WEB ONLY, on mobile no such thing happens
+        if (process.env['APP'] === 'web' && contents[contents.length-1].text.substring(contents[contents.length-1].text.length-1,contents[contents.length-1].text.length) === '\n') {
             props.block.rich_text_block_contents[contents.length-1].text = contents[contents.length-1].text.substring(0, contents[contents.length-1].text.length-1)
         }
         text = text.substring(text.length-1, text.length) === '\n' ? text.substring(0, text.length-1) : text
@@ -790,7 +854,6 @@ const Text = (props) => {
         } else {
             wasKeyDownPressedRef.current = false
         }
-
         
         // Opens custom menus when user press a particular key. The menu and the content that will be displayed to the user
         // is fully handled outside of the text component.
@@ -807,10 +870,13 @@ const Text = (props) => {
         insertTextInContent(selectedContents, insertedText)
         mergeEqualDeleteEmptyAndSetWhereCaretPositionShouldGo(insertedText)
 
-        // Has removed last line break so we need to insert it again
-        props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text = 
-        props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text + '\n'
-        props.updateBlocks(props.block.uuid)
+        // Has removed last line break so we need to insert it again, only needed on web, on mobile
+        // no such thing happens
+        if (process.env['APP'] === 'web') {
+            props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text = 
+            props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text + '\n'
+        }
+        props.updateBlocks(props.activeBlock)
     }
 
 
@@ -864,6 +930,7 @@ const Text = (props) => {
             const indexOfBlockInContext = props.contextBlocks.findIndex(block => block.uuid === props.block.uuid)
             const newBlock = props.createNewTextBlock({ order: props.contextBlocks.length+1, richTextBlockContents: contentsOfNextBlock })
             props.contextBlocks.splice(indexOfBlockInContext + 1, 0, newBlock)
+            activeBlockRef.current = newBlock.uuid
             props.updateBlocks(newBlock.uuid)
         }
     }
@@ -967,7 +1034,9 @@ const Text = (props) => {
                 props.contextBlocks.splice(indexOfBlockInContext, 1)
                 props.updateBlocks(uuidToFocusAfterUpdate)
             } else {
-                caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
+                if (process.env['APP'] === 'web') {
+                    caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
+                }
             }
         }
     }
@@ -977,27 +1046,34 @@ const Text = (props) => {
      * Because of this we can cancel the keyUp event here, like "Enter" for creating new blocks.
      * 
      * Right now we focus on 3 key events:
+     * - Enter
+     * - Backspace
+     * - Delete
      * 
      * @param {*} e 
      */
     const onKeyDown = (e) => {
         if (!wasKeyDownPressedRef.current) {
-            caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
-            checkIfCaretPositionIsCustomFixAndSetCaretPosition()
+            if (process.env['APP'] === 'web') {
+                caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
+                checkIfCaretPositionIsCustomFixAndSetCaretPosition()
+            } else {
+                keyDownPressedRef.current = e.nativeEvent.key
+            }
             wasKeyDownPressedRef.current = true
         }
 
         const keyCode = e.keyCode
         const oldText = props.block.rich_text_block_contents.map(content => content.text).join('')
-        if (webKeyCodeReference[keyCode] === 'Enter' && !e.shiftKey) {
+        if (webKeyCodeReference[keyCode] === 'Enter' && !e.shiftKey || keyDownPressedRef.current === 'Enter') {
             e.preventDefault()
             e.stopPropagation()
             onEnter()
-        } else if (webKeyCodeReference[keyCode] === 'Backspace' && caretPositionRef.current.start === 0 && caretPositionRef.current.end === 0) {
+        } else if ((webKeyCodeReference[keyCode] === 'Backspace' || keyDownPressedRef.current === 'Backspace') && caretPositionRef.current && caretPositionRef.current.start === 0 && caretPositionRef.current.end === 0) {
             e.preventDefault()
             e.stopPropagation()
             onRemoveCurrent()
-        } else if (webKeyCodeReference[keyCode] === 'Delete' && caretPositionRef.current.start >= oldText.length-1 && caretPositionRef.current.end >= oldText.length-1) {
+        } else if (webKeyCodeReference[keyCode] === 'Delete' && caretPositionRef.current && caretPositionRef.current.start >= oldText.length-1 && caretPositionRef.current.end >= oldText.length-1) {
             e.preventDefault()
             e.stopPropagation()
             onRemoveAfter()
@@ -1018,7 +1094,8 @@ const Text = (props) => {
      * @param {String} color - Some contents are colors so we use
      */
     const onChangeSelectionState = (type, isActive=false, color='', textSize=12) => {
-        const elementIsFocused = (process.env['APP'] === 'web') ? props.activeBlock === props.block.uuid : false
+
+        const elementIsFocused = props.activeBlock === props.block.uuid
         if (elementIsFocused) {
             // user has not selected a range but had just set the caret to a position
             switch (type) {
@@ -1045,7 +1122,6 @@ const Text = (props) => {
                     break
             }
             setStateOfSelection({...stateOfSelection})
-
             if (caretPositionRef.current.start !== caretPositionRef.current.end) {
                 const selectedContents = getSelectedContents()
                 let contents = [...props.block.rich_text_block_contents]
@@ -1053,7 +1129,7 @@ const Text = (props) => {
                 selectedContents.forEach(content => {
                     // delete contents
 
-                    // Since the last element is always \n we remove it from the text to be ready to append the new content.
+                    // ONLY ON WEB. Since the last element is always \n we remove it from the text to be ready to append the new content.
                     contents[contents.length-1].text = (contents[contents.length-1].text.substring(contents[contents.length-1].text.length-1,contents[contents.length-1].text.length) === '\n') ? contents[contents.length-1].text.substring(
                         0, contents[contents.length-1].text.length-1
                     ) : contents[contents.length-1].text
@@ -1092,8 +1168,9 @@ const Text = (props) => {
                 props.block.rich_text_block_contents = mergeEqualContentsSideBySide(props.block.rich_text_block_contents)
                 
                 //mergeEqualDeleteEmptyAndSetWhereCaretPositionShouldGo('')
-                props.updateBlocks(props.block.uuid)
-            }
+            } 
+            mobileAddToolbar()
+            props.updateBlocks(props.block.uuid)
         }
     }
 
@@ -1127,23 +1204,26 @@ const Text = (props) => {
     }
 
     useEffect(() => {
-        let innerHtmlText = ''
-        props.block.rich_text_block_contents.forEach((content, index) => {
-            if (content.is_custom) {
-                const { component, text } = props.renderCustomContent(content)
-                props.block.rich_text_block_contents[index].text = text
-                const CustomContent = component 
-                innerHtmlText = innerHtmlText + renderToString(<CustomContent key={index} content={content}/>)
-            } else {
-                innerHtmlText = innerHtmlText + renderToString(
-                    <Content 
-                    key={index} 
-                    content={content} 
-                    />
-                )
-            }
-        })
-        setInnerHtml(innerHtmlText)
+        // WEB ONLY
+        if (process.env['APP'] === 'web') {
+            let innerHtmlText = ''
+            props.block.rich_text_block_contents.forEach((content, index) => {
+                if (content.is_custom) {
+                    const { component, text } = props.renderCustomContent(content)
+                    props.block.rich_text_block_contents[index].text = text
+                    const CustomContent = component 
+                    innerHtmlText = innerHtmlText + renderToString(<CustomContent key={index} content={content}/>)
+                } else {
+                    innerHtmlText = innerHtmlText + renderToString(
+                        <Content 
+                        key={index} 
+                        content={content} 
+                        />
+                    )
+                }
+            })
+            setInnerHtml(innerHtmlText)
+        }
         if (isWaitingForCustomInput.current) {
             inputRef.current.blur()
         }
@@ -1201,8 +1281,47 @@ const Text = (props) => {
     }, [innerHtml])
 
     const renderMobile = () => {
+        mobileAddToolbar()
         return (
-            <View></View>
+            <KeyboardAvoidingView>
+                <BlockText
+                ref={inputRef} 
+                autoCapitalize={'none'}
+                autoCompleteType={'off'}
+                autoCorrect={false}
+                autoFocus={false}
+                onFocus={(e) => onFocus()}
+                onBlur={(e) => onBlur()}
+                multiline={true}
+                onKeyPress={(e) => {  
+                    onKeyDown(e)            
+                }}
+                onSelectionChange={(e) => onSelectText(e)}
+                onChangeText={(text) => {
+                    onInput(text, keyDownPressedRef.current, keyDownPressedRef.current)  
+                }}
+                textAlign={getAlignmentTypeNameById(props.block.text_option?.alignment_type)}
+                value={''}
+                >
+                    {props.block.rich_text_block_contents.map((content, index) => {
+                        if (content.is_custom) {
+                            const { component, text } = props.renderCustomContent(content)
+                            props.block.rich_text_block_contents[index].text = text
+                            const CustomContent = component 
+                            return (
+                                <CustomContent key={content.uuid} content={content}/>
+                            )
+                        } else {
+                            return (
+                                <Content 
+                                key={content.uuid} 
+                                content={content} 
+                                />
+                            )
+                        }
+                    })}
+                </BlockText>
+            </KeyboardAvoidingView>
         )
     }
 

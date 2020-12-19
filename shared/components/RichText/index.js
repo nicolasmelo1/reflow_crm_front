@@ -1,5 +1,5 @@
 import React from 'react'
-import { View } from 'react-native'
+import { View, KeyboardAvoidingView } from 'react-native'
 import axios from 'axios'
 import { connect } from 'react-redux'
 import generateUUID from '../../utils/generateUUID'
@@ -18,10 +18,12 @@ import {
 class RichText extends React.Component {
     constructor(props) {
         super(props)
+        this.toolbar = React.createRef(null)
         this.CancelToken = axios.CancelToken
         this.source = null
         this.state = {
             activeBlock: null,
+            toolbar: null,
             data: this.props.initialData && Object.keys(this.props.initialData).length !== 0 ? 
                   JSON.parse(JSON.stringify(this.props.initialData)) : this.createNewPage()
         }
@@ -88,7 +90,7 @@ class RichText extends React.Component {
                         {
                             order: 0,
                             uuid: generateUUID(),
-                            text: "\n",
+                            text: "",
                             text_size: 12,
                             is_bold: false,
                             is_italic: false,
@@ -133,6 +135,7 @@ class RichText extends React.Component {
             this.props.onStateChange({...this.state.data})
         }
         this.setState(state => ({
+            ...state,
             activeBlock: activeBlock,
             data:{...this.state.data}
         }))
@@ -148,6 +151,10 @@ class RichText extends React.Component {
             ...state,
             data: data
         }))
+    }
+
+    addToolbar = (toolbar) => {
+        this.toolbar.current = toolbar
     }
 
     componentDidMount = () => {
@@ -174,7 +181,34 @@ class RichText extends React.Component {
 
     renderMobile = () => {
         return (
-            <View></View>
+            <RichTextContainer height={this.props.height}>
+                <RichTextBlocksContainer keyboardShouldPersistTaps={'always'}>
+                    {this.state.data.rich_text_page_blocks.map((block, index) => (
+                        <Block 
+                        key={block.uuid} 
+                        block={block} 
+                        types={this.props.types}
+                        addToolbar={this.addToolbar}
+                        isEditable={![null, undefined].includes(this.props.isEditable) ? this.props.isEditable : true}
+                        activeBlock={this.state.activeBlock} 
+                        updateBlocks={this.updateBlocks} 
+                        contextBlocks={this.state.data.rich_text_page_blocks}
+                        renderCustomContent={this.props.renderCustomContent}
+                        getAligmentTypeIdByName={this.getAligmentTypeIdByName}
+                        getBlockTypeIdByName={this.getBlockTypeIdByName}
+                        handleUnmanagedContent={this.props.handleUnmanagedContent}
+                        onRemoveUnmanagedContent={this.props.onRemoveUnmanagedContent}
+                        unmanagedContentValue={this.props.unmanagedContentValue}
+                        isUnmanagedContentSelectorOpen={this.props.isUnmanagedContentSelectorOpen}
+                        onOpenUnmanagedContentSelector={this.props.onOpenUnmanagedContentSelector}
+                        onChangeUnmanagedContentValue={this.props.onChangeUnmanagedContentValue}
+                        />
+                    ))}
+                </RichTextBlocksContainer>
+                <KeyboardAvoidingView behavior="padding" style={{ flex: 1}} keyboardVerticalOffset={150}>
+                    {this.toolbar.current !== null && this.state.activeBlock !== null ? this.toolbar.current : null}
+                </KeyboardAvoidingView>
+            </RichTextContainer>
         )
     }
     

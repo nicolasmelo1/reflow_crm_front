@@ -5,7 +5,7 @@ import Data from '../pages/data'
 import Notification from '../pages/notification'
 import ConfigurationRoute from './configuration'
 import { HomeToolsMenuContext } from '../contexts'
-
+import HomeRoutes from './home'
 
 const MainRoutes = (props) => {
     const Tab = createBottomTabNavigator()
@@ -20,7 +20,7 @@ const MainRoutes = (props) => {
             Tab={Tab} 
             isHomeToolsMenuOpen={isHomeToolsMenuOpen}
             setIsHomeToolsMenuOpen={setIsHomeToolsMenuOpen}
-            HomeComponent={Data}
+            HomeComponent={HomeRoutes}
             NotificationComponent={Notification}
             ConfigurationComponent={ConfigurationRoute}
             />
