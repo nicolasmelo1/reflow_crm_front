@@ -24,7 +24,19 @@ const TextBlockOptions = (props) => {
 
     const renderMobile = () => {
         return (
-            <View></View>
+            <View style={{ flexDirection: 'row' }}>
+                {props.types.rich_text.alignment_type.map(textAlignmentType => (
+                    <TextBlockOptionAlignmentButton
+                    key={textAlignmentType.id}
+                    onPress={(e) => props.onChangeAlignmentType(textAlignmentType.id)}
+                    >
+                        <TextBlockOptionAlignmentButtonIcon
+                        isSelected={props.alignmentTypeId === textAlignmentType.id}
+                        icon={getIconFromAlignmentTypeName(textAlignmentType.name)}
+                        />
+                    </TextBlockOptionAlignmentButton>
+                ))}
+            </View>
         )
     }
 

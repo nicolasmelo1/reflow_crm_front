@@ -830,6 +830,7 @@ const Text = (props) => {
             } 
         }
         insertedText = getInsertedText(insertedText, inputType)
+
         let contents = JSON.parse(JSON.stringify(props.block.rich_text_block_contents))
         // Checks if last character of the last content is a linebreak there is a bug that happens when you do this on normal browsers
         // it adds line breaks at the same time.
@@ -839,7 +840,7 @@ const Text = (props) => {
         }
         text = text.substring(text.length-1, text.length) === '\n' ? text.substring(0, text.length-1) : text
         let oldText = props.block.rich_text_block_contents.map(content => content.text).join('')
-
+        console.log(oldText)
 
         fixCaretPositionIfDelete(inputType, text, oldText)
 
@@ -848,7 +849,8 @@ const Text = (props) => {
         // "raw" and "temporaty" accents from being inserted
         // IMPORTANT: Here we prevent the caretPositionRef to update in "onKeyDown" if there is any accent, this is because
         // it moves to the next position so it becomes wrong
-        if (/^(ˆ|˜|¨|`|´|"|')$/g.test(insertedText)) {
+        // ONLY ON WEB
+        if (process.env['APP'] === 'web' && /^(ˆ|˜|¨|`|´|"|')$/g.test(insertedText)) {
             insertedText = ''
             wasKeyDownPressedRef.current = true
         } else {
@@ -1053,12 +1055,12 @@ const Text = (props) => {
      * @param {*} e 
      */
     const onKeyDown = (e) => {
+        keyDownPressedRef.current = e.nativeEvent.key
+
         if (!wasKeyDownPressedRef.current) {
             if (process.env['APP'] === 'web') {
                 caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
                 checkIfCaretPositionIsCustomFixAndSetCaretPosition()
-            } else {
-                keyDownPressedRef.current = e.nativeEvent.key
             }
             wasKeyDownPressedRef.current = true
         }
@@ -1183,8 +1185,9 @@ const Text = (props) => {
     const onChangeAlignmentType = (alignmentId) => {
         if (props.activeBlock === props.block.uuid) {
             props.block.text_option.alignment_type = alignmentId
-            props.updateBlocks(props.block.uuid)
         }
+        mobileAddToolbar()
+        props.updateBlocks(props.block.uuid)
     }
 
     /**
@@ -1287,6 +1290,12 @@ const Text = (props) => {
                 <BlockText
                 ref={inputRef} 
                 autoCapitalize={'none'}
+                placeholder={
+                    props.activeBlock === props.block.uuid && 
+                    props.block.rich_text_block_contents.length === 1 && 
+                    props.isEditable && 
+                    ['', '\n'].includes(props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text) ? 
+                    strings['pt-br']['richTextTextBlockPlaceholder'] : ''}
                 autoCompleteType={'off'}
                 autoCorrect={false}
                 autoFocus={false}
@@ -1303,7 +1312,15 @@ const Text = (props) => {
                 textAlign={getAlignmentTypeNameById(props.block.text_option?.alignment_type)}
                 value={''}
                 >
-                    {props.block.rich_text_block_contents.map((content, index) => {
+                    {
+                    props.block?.uuid &&
+                    props.activeBlock === props.block.uuid && 
+                    props.block.rich_text_block_contents.length === 1 && 
+                    props.isEditable && 
+                    ['', '\n'].includes(props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text) ? 
+                        (<Text>{strings['pt-br']['richTextTextBlockPlaceholder'] }</Text>)
+                    : 
+                    props.block.rich_text_block_contents.map((content, index) => {
                         if (content.is_custom) {
                             const { component, text } = props.renderCustomContent(content)
                             props.block.rich_text_block_contents[index].text = text
