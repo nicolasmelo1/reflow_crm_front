@@ -24,7 +24,7 @@ const PDFGeneratorCreator = (props) => {
     const sourceRef = React.useRef()
     const [templateIndexToRemove, setTemplateIndexToRemove] = useState(null)
     const [formAndFieldOptions, setFormAndFieldOptions] = useState([])
-    const [selectedTemplateIndex, setSelectedTemplateIndex] = useState(-1/*null*/)
+    const [selectedTemplateIndex, setSelectedTemplateIndex] = useState(null)
     
     /**
      * This is used when rendering the `PDFGeneratorCreatorEditor` component, with this we get the templateData to send to the child component.
