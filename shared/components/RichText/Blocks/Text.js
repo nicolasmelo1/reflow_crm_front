@@ -149,9 +149,10 @@ const Text = (props) => {
                 const node = inputRef.current.childNodes[startContentIndex]
                 const nodePosition = startPositionInContent
                 if (node) {
+                    const nodeText = node.firstChild ? node.firstChild : node
                     range.setStart(
-                        node.firstChild ? node.firstChild : node, 
-                        nodePosition
+                        nodeText, 
+                        nodePosition > nodeText.length ? nodeText.length : nodePosition
                     )
                     range.collapse(true)
                 } else {
