@@ -154,11 +154,17 @@ class Navbar extends React.Component {
             this.state.homeFormularyData === null)
         ) {
             const formularyName = this.props.login.primaryForm
+            console.log('formularyName')
+            console.log(formularyName)
             const groups = this.props.sidebar.initial
+            console.log('groups')
+            console.log(groups)
             let formularyData = null
             
             for (let groupIndex=0; groupIndex<groups.length; groupIndex++){
+                console.log(groups[groupIndex].form_group)
                 for (let formularyIndex=0; formularyIndex<groups[groupIndex].form_group.length; formularyIndex++) {
+                    console.log(groups[groupIndex].form_group[formularyIndex].form_name)
                     if (groups[groupIndex].form_group[formularyIndex].form_name === formularyName) {
                         formularyData = JSON.parse(JSON.stringify(groups[groupIndex].form_group[formularyIndex]))
                         break
@@ -170,7 +176,7 @@ class Navbar extends React.Component {
             console.log('stateFormularyData')
             console.log(this.state.homeFormularyData)
             
-            if (!isEqual(formularyData, this.state.homeFormularyData)) {
+            if (!isEqual(formularyData, this.state.homeFormularyData) && formularyData !== null) {
                 this.setState(state => ({
                     ...state,
                     homeFormularyData: formularyData
