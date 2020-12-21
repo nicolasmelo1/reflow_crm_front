@@ -8,6 +8,7 @@ import NavbarDropdown from './NavbarDropdown'
 import { strings, paths } from '../../utils/constants'
 import actions from '../../redux/actions'
 import isAdmin from '../../utils/isAdmin'
+import isEqual from '../../utils/isEqual'
 import { 
     NavbarFreeTrialAlertButton, 
     NavbarFreeTrialAlertText,
@@ -145,7 +146,7 @@ class Navbar extends React.Component {
         this.props.onGetUserData(this.source)
     }
     
-    componentDidUpdate = () => {
+    componentDidUpdate = (prevProps) => {
         if (
             this.props.navbar.isInHomeScreen && 
             this.props.sidebar.initial.length > 0 &&
@@ -164,11 +165,17 @@ class Navbar extends React.Component {
                     }
                 }
             }
-
-            this.setState(state => ({
-                ...state,
-                homeFormularyData: formularyData
-            }))
+            console.log('formularyData')
+            console.log(formularyData)
+            console.log('stateFormularyData')
+            console.log(this.state.homeFormularyData)
+            
+            if (!isEqual(formularyData, this.state.homeFormularyData)) {
+                this.setState(state => ({
+                    ...state,
+                    homeFormularyData: formularyData
+                }))
+            }
         }
     }
 
