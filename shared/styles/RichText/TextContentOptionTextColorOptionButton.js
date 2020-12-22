@@ -7,6 +7,7 @@ styled.button`
     border: 0;
     background-color: transparent; 
     padding: 3px 10px;
+    color: ${props => props.textColor ? props.textColor : '#000'};
     border-radius: 5px; 
     margin: 3px
 `

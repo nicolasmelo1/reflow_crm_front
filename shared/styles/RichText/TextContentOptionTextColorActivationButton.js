@@ -7,7 +7,9 @@ styled.button`
     color: ${props => props.textColor && !['', null, undefined].includes(props.textColor) ? props.textColor : '#000'}; 
     border: 0;
     background-color: transparent; 
-    border-radius: 5px
+    border-radius: 5px;
+    width: 30px;
+    height: 30px;
 `
 :
 styled(TouchableOpacity)`

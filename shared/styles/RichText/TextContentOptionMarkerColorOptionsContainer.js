@@ -7,6 +7,8 @@ styled.div`
     position: absolute; 
     display: flex; 
     flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
     border-radius: 5px; 
     border: 1px solid #f2f2f2; 
     background-color: white; 

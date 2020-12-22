@@ -7,7 +7,9 @@ styled.button`
     color: #000; 
     background-color: ${props => props.markerColor && !['', null, undefined].includes(props.markerColor) ? props.markerColor : 'transparent'}; 
     border: 1px solid #bfbfbf;
-    border-radius: 5px
+    border-radius: 5px;
+    width: 30px;
+    height: 30px;
 `
 :
 styled(TouchableOpacity)`

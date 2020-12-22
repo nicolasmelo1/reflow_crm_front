@@ -330,6 +330,7 @@ const TextContentOptions = (props) => {
                         <TextContentOptionTextColorOptionsContainer>
                             {textColors.map(textColor => (
                                 <TextContentOptionTextColorOptionButton 
+                                key={textColor}
                                 onClick={(e) => {
                                     onChangeTextColorIsOpen(!isTextColorOptionOpen)
                                     props.onChangeSelectionState('textColor', null, textColor)
@@ -358,6 +359,7 @@ const TextContentOptions = (props) => {
                         <TextContentOptionMarkerColorOptionsContainer>
                             {markerColors.map(markerColor => (
                                     <TextContentOptionMarkerColorOptionButton 
+                                    key={markerColor}
                                     onClick={(e) => {
                                         onChangeMarkerColorIsOpen(!isMarkerColorOptionOpen)
                                         props.onChangeSelectionState('markerColor', null, markerColor)

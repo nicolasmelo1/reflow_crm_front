@@ -841,7 +841,6 @@ const Text = (props) => {
         }
         text = text.substring(text.length-1, text.length) === '\n' ? text.substring(0, text.length-1) : text
         let oldText = props.block.rich_text_block_contents.map(content => content.text).join('')
-        console.log(oldText)
 
         fixCaretPositionIfDelete(inputType, text, oldText)
 
@@ -915,10 +914,10 @@ const Text = (props) => {
             const oldText = props.block.rich_text_block_contents.map(content => content.text).join('')
             const selectedContentsForCurrentSelection = getSelectedContents()
             const firstContentToTheNextBlock = JSON.parse(JSON.stringify(selectedContentsForCurrentSelection[selectedContentsForCurrentSelection.length-1]))
-            firstContentToTheNextBlock.content.text = firstContentToTheNextBlock.content.text.substring(
+        
+            firstContentToTheNextBlock.content.text = `${firstContentToTheNextBlock.content.text}`.substring(
                 firstContentToTheNextBlock.endIndexToSelectTextInContent, firstContentToTheNextBlock.content.text.length
             )
-            
             const subsequentContentsToTheNextBlock = JSON.parse(JSON.stringify(props.block.rich_text_block_contents.slice(firstContentToTheNextBlock.contentIndex+1, props.block.rich_text_block_contents.length)))
             const contentsOfNextBlock = [firstContentToTheNextBlock.content, ...subsequentContentsToTheNextBlock]
             
@@ -1199,7 +1198,9 @@ const Text = (props) => {
         e.stopPropagation()
         e.preventDefault()
         const clipboardData = e.clipboardData || window.clipboardData
-        const pastedData = clipboardData.getData('Text')
+        // i don't know why but there is this character code shown as the number 13 that javascript itself can't handle correctly 
+        // it can cause many unhandled bugs
+        const pastedData = `${clipboardData.getData('Text')}`.split('').filter(char => char.charCodeAt(0) !== 13).join('')
         if (!['', null, undefined].includes(pastedData)) {
             const textWithPastedData = inputRef.current.innerText.substring(0, caretPositionRef.current.start) + pastedData + 
                 inputRef.current.innerText.substring(caretPositionRef.current.end, inputRef.current.innerText.length)  
