@@ -94,13 +94,25 @@ const TextContentOptions = (props) => {
         }
     }
 
+    const onClickPlusFontSize = () => {
+        if (props.stateOfSelection.textSize + 1 < 400) {
+            props.onChangeSelectionState('textSize', null, '', parseInt(props.stateOfSelection.textSize) + 1)
+        }
+    }
+
+    const onClickMinusFontSize = () => {
+        if (props.stateOfSelection.textSize - 1 > 1) {
+            props.onChangeSelectionState('textSize', null, '', parseInt(props.stateOfSelection.textSize) - 1)
+        }
+    }
+
     const onMouseDownPlusFontSize = () => {
         isFontSizePlusIconPressedRef.current = true
-        setTextSize(textSizeRef.current + 1)
+        setTextSize(parseInt(textSizeRef.current) + 1)
         setTimeout(async () => {
             while (isMounted.current && isFontSizePlusIconPressedRef.current) {
                 await sleep(200)
-                setTextSize(textSizeRef.current + 1)
+                setTextSize(parseInt(textSizeRef.current) + 1)
             }
         }, 1500)
     }
@@ -110,17 +122,17 @@ const TextContentOptions = (props) => {
     }
 
     const onClickButtonsOnFontSize = () => {
-        props.onChangeSelectionState('textSize', null, '', textSizeRef.current)
+        props.onChangeSelectionState('textSize', null, '', parseInt(textSizeRef.current))
     }
 
     const onMouseDownMinusFontSize = () => {
         isFontSizeMinusIconPressedRef.current = true
         setTextSize(textSizeRef.current - 1)
         setTimeout(async () => {
-            let safeCounter = textSizeRef.current - 1
+            let safeCounter = parseInt(textSizeRef.current) - 1
             while (isMounted.current && isFontSizeMinusIconPressedRef.current && safeCounter> 0) {
                 await sleep(200)
-                setTextSize(textSizeRef.current - 1)
+                setTextSize(parseInt(textSizeRef.current) - 1)
                 safeCounter--
             }
         }, 1500)
@@ -171,17 +183,13 @@ const TextContentOptions = (props) => {
                 </TextContentOptionCodeButton>
                 <TextContentOptionFontSizeContainer>
                     <TextContentOptionFontSizeButton
-                    onPressIn={(e) => onMouseDownMinusFontSize()}
-                    onPress={(e) => onClickButtonsOnFontSize()}
-                    onPressOut={(e) => onMouseUpMinusFontSize()}                    
+                    onPress={(e) => onClickMinusFontSize()}
                     >
                         <Text>{'-'}</Text>
                     </TextContentOptionFontSizeButton>
                         <Text>{textSize ? `${textSize}pt` : '12pt'}</Text>
                     <TextContentOptionFontSizeButton
-                    onPressIn={(e) => onMouseDownPlusFontSize()}
-                    onPress={(e) => onClickButtonsOnFontSize()}
-                    onPressOut={(e) => onMouseUpPlusFontSize()}    
+                    onPress={(e) => onClickPlusFontSize()}
                     >
                         <Text>{'+'}</Text>
                     </TextContentOptionFontSizeButton>

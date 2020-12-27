@@ -41,7 +41,6 @@ module.exports = withOffline({
     },
     env: {
         REGISTER_SW_IN_DEV_MODE: false,
-        OLD_APP_HOST: process.env.OLD_APP_HOST ? process.env.OLD_APP_HOST : 'https://app.reflow.com.br/',
         VINDI_PUBLIC_API: process.env.VINDI_PUBLIC_API ? process.env.VINDI_PUBLIC_API : 'https://sandbox-app.vindi.com.br/api/v1/public/payment_profiles',
         VINDI_PUBLIC_API_KEY: process.env.VINDI_PUBLIC_API_KEY ? process.env.VINDI_PUBLIC_API_KEY :  'uNZqO8kJbVRIRSiBEsbyWRGtpTGLd432AxXHYltw_Ow',
         API_HOST: process.env.API_HOST,

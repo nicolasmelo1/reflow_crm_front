@@ -92,7 +92,9 @@ const KanbanCards = (props) => {
         kanbanCardContainerRef.current.addEventListener('scroll', onScroll)
         dataSource.current = props.cancelToken.source()
         return () => {
-            kanbanCardContainerRef.current.removeEventListener('scroll', onScroll)
+            if (kanbanCardContainerRef.current) {
+                kanbanCardContainerRef.current.removeEventListener('scroll', onScroll)
+            }
             if(dataSource.current) {
                 dataSource.current.cancel()
             }

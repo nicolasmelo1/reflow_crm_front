@@ -1,6 +1,30 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { View } from 'react-native'
+import { Animated, Easing, View } from 'react-native'
+
+const Options = (props) => {
+    const [opacity] = useState(new Animated.Value(0))
+
+    useEffect(() => {
+        Animated.timing(opacity, {
+            toValue: 1,
+            duration: 1000,
+            easing: Easing.ease,
+            useNativeDriver: true
+        }).start()
+    }, [])
+  
+    return (
+      <Animated.View // Special animatable View
+        source={props.source}
+        style={{
+            ...props.style['0'],
+            opacity: opacity,
+        }}>
+        {props.children}
+      </Animated.View>
+    )
+}
 
 export default process.env['APP'] === 'web' ?
 styled.div`
@@ -8,7 +32,7 @@ styled.div`
     white-space: nowrap
 `
 :
-styled(View)`
+styled(Options)`
     width: 100%;
     height: 50px;
     padding: 5px 0 0 0;

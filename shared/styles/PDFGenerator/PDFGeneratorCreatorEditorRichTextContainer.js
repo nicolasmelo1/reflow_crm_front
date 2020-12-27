@@ -1,10 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
-import { View } from 'react-native'
+import { View, PixelRatio } from 'react-native'
+
 
 export default process.env['APP'] === 'web' ?
 styled.div`
     height: calc(var(--app-height) - 100px);
+    box-shadow: #3c404315 0px 1px 3px 1px;
     padding: 70px;
     width: 735px;
     background-color: #fff;
@@ -12,4 +14,9 @@ styled.div`
     overflow: auto;
 `
 :
-styled(View)``
+styled(View)`
+    height: ${props => {
+        return props.height - (43 * PixelRatio.get())
+    }
+    }px
+`

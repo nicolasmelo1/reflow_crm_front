@@ -250,7 +250,6 @@ class Layout extends React.Component {
                                 <ContentContainer 
                                 sidebarIsOpen={this.state.sidebarIsOpen} 
                                 showSideBar={this.props.showSideBar} 
-                                isNotLogged={this.props.isNotLogged} 
                                 hideNavBar={this.props.hideNavBar}
                                 >
                                     {this.props.children}

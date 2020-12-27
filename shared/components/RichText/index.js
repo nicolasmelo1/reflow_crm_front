@@ -1,15 +1,20 @@
 import React from 'react'
-import { View, KeyboardAvoidingView } from 'react-native'
+import { View, KeyboardAvoidingView, Keyboard } from 'react-native'
 import axios from 'axios'
 import { connect } from 'react-redux'
 import generateUUID from '../../utils/generateUUID'
 import isEqual from '../../utils/isEqual'
+import deepCopy from '../../utils/deepCopy'
+import delay from '../../utils/delay'
+
+import Options from './Options'
 import Block from './Blocks'
 import { 
     RichTextContainer,
     RichTextBlocksContainer
 } from '../../styles/RichText'
 
+const makeDelay = delay(150)
 
 /**
  * {Description of your component, what does it do}
@@ -18,12 +23,22 @@ import {
 class RichText extends React.Component {
     constructor(props) {
         super(props)
-        this.toolbar = React.createRef(null)
+        this.flatListRef = React.createRef()
+        this.onFocusHeap = []
+        this.toolbar = React.createRef()
+        this.toolbar.current = {
+            blockUUID: null,
+            contentOptionComponent: null,
+            contentOptionProps: null,
+            blockOptionComponent: null,
+            blockOptionProps: null
+        }
         this.CancelToken = axios.CancelToken
         this.source = null
         this.state = {
             activeBlock: null,
-            toolbar: null,
+            mobileKeyboardHeight: 0,
+            mobileRichTextHeight: 0,
             data: this.props.initialData && Object.keys(this.props.initialData).length !== 0 ? 
                   JSON.parse(JSON.stringify(this.props.initialData)) : this.createNewPage()
         }
@@ -58,6 +73,28 @@ class RichText extends React.Component {
             }
         } 
         return null
+    }
+
+    setRichTextHeight = (height) => {
+        this.setState(state => ({
+            ...state,
+            mobileRichTextHeight: height,
+        }))
+    }
+
+    setKeyboardHeight = (height) => {
+        this.setState(state => ({
+            ...state,
+            mobileKeyboardHeight: height,
+        }))
+    }
+
+    onKeyboardDidShow = (e) => {
+        this.setKeyboardHeight(e.endCoordinates.height)
+    }
+    
+    onKeyboardDidHide = () => {
+        this.setKeyboardHeight(0)
     }
 
     /**
@@ -130,15 +167,45 @@ class RichText extends React.Component {
      * Important: When the state changes here we propagate the changes to the parent. When we propagate the changes to the parent the changes
      * does not propagate back.
      */
-    updateBlocks = (activeBlock) => {
-        if (this.props.onStateChange) {
-            this.props.onStateChange({...this.state.data})
+    updateBlocks = (activeBlock, isFocus=false, blockIndex = null) => {
+        const update = (activeBlock) => {
+            if (this.props.onStateChange) {
+                this.props.onStateChange({...this.state.data})
+            }
+            this.setState(state => ({
+                ...state,
+                activeBlock: activeBlock,
+                data:{...this.state.data}
+            }))
         }
-        this.setState(state => ({
-            ...state,
-            activeBlock: activeBlock,
-            data:{...this.state.data}
-        }))
+
+        if (process.env['APP'] !== 'web') {
+            if (isFocus === true) {
+                // the focus head prevents us from changing the focus too much, when too much onFocus is being fired at once
+                // we keep the activeBlock on the heap, so during this time, if the user tries to change the focus of the element
+                // we consider the previous focus (so we do not focus on the new element, until the heap becomes empty again)
+                this.onFocusHeap.push(activeBlock)
+                makeDelay(() => {
+                    this.onFocusHeap = []
+                })
+
+                activeBlock = this.onFocusHeap.length > 0 ? this.onFocusHeap[0] : activeBlock
+                if (activeBlock !== this.state.activeBlock) {
+                    update(activeBlock)
+                    this.flatListRef.current.scrollToIndex({index: blockIndex, viewPosition: 0.5, animated: true})
+                }
+            } else if (activeBlock === null) {
+                makeDelay(() => {
+                    if (activeBlock === null) {
+                        update(activeBlock)
+                    }
+                })
+            } else {
+                update(activeBlock)
+            }      
+        } else {
+            update(activeBlock)
+        }
     }
 
     /**
@@ -153,8 +220,26 @@ class RichText extends React.Component {
         }))
     }
 
-    addToolbar = (toolbar) => {
-        this.toolbar.current = toolbar
+    addToolbar = (blockUUID, contentOptionComponent, contentOptionProps, blockOptionComponent, blockOptionProps) => {
+        if (
+            this.state.activeBlock === blockUUID && 
+            (
+                blockUUID !== this.toolbar.current.blockUUID || 
+                !isEqual(contentOptionProps, this.toolbar.current.contentOptionProps) ||
+                !isEqual(blockOptionProps, this.toolbar.current.blockOptionProps)
+            )
+        ) {
+            this.toolbar.current = {
+                blockUUID: blockUUID,
+                contentOptionComponent: contentOptionComponent,
+                contentOptionProps: deepCopy(contentOptionProps),
+                blockOptionComponent: blockOptionComponent,
+                blockOptionProps: deepCopy(blockOptionProps)
+            }
+            this.setState(state => ({
+                ...state
+            }))
+        }
     }
 
     componentDidMount = () => {
@@ -162,6 +247,10 @@ class RichText extends React.Component {
         // because of this we need to propagate this new data to the parent.
         if (this.props.onStateChange) {
             this.props.onStateChange({...this.state.data})
+        }
+        if (process.env['APP'] !== 'web') {
+            Keyboard.addListener('keyboardDidShow', this.onKeyboardDidShow)
+            Keyboard.addListener('keyboardDidHide', this.onKeyboardDidHide)  
         }
     }
 
@@ -179,14 +268,46 @@ class RichText extends React.Component {
         }
     }
 
+    componentWillUnmount = () => {
+        if (process.env['APP'] !== 'web') {
+            Keyboard.removeListener('keyboardDidShow', this.onKeyboardDidShow)
+            Keyboard.removeListener('keyboardDidHide', this.onKeyboardDidHide)  
+        }
+    }
+
     renderMobile = () => {
+        const ContentOptionComponent = this.toolbar.current.contentOptionComponent
+        const BlockOptionComponent = this.toolbar.current.blockOptionComponent
+        const toolbarProps = () => {
+            let toolbarProps = {}
+            if (this.toolbar.current.contentOptionComponent !== null) {
+                toolbarProps['contentOptions'] = (
+                    <ContentOptionComponent {...this.toolbar.current.contentOptionProps}/>
+                )
+            }
+            if (this.toolbar.current.blockOptionComponent !== null) {
+                toolbarProps['blockOptions'] = (
+                    <BlockOptionComponent {...this.toolbar.current.blockOptionProps}/>
+                )
+            }
+            return toolbarProps
+        }
         return (
-            <RichTextContainer height={this.props.height}>
-                <RichTextBlocksContainer keyboardShouldPersistTaps={'always'}>
-                    {this.state.data.rich_text_page_blocks.map((block, index) => (
+            <RichTextContainer height={this.props.height} onLayout={(e) => this.setRichTextHeight(e.nativeEvent.layout.height)}>
+                <RichTextBlocksContainer 
+                ref={this.flatListRef}
+                style={{
+                    height: this.state.mobileKeyboardHeight !== 0 ? this.state.mobileRichTextHeight - this.state.mobileKeyboardHeight - 163 : this.state.mobileRichTextHeight
+                }}
+                scrollEnabled={true}
+                keyboardShouldPersistTaps={'never'}
+                data={this.state.data.rich_text_page_blocks}
+                keyExtractor={(item) => item.uuid}
+                renderItem={({ item, index, __ }) => {
+                    return (
                         <Block 
-                        key={block.uuid} 
-                        block={block} 
+                        block={item} 
+                        blockIndex={index}
                         types={this.props.types}
                         addToolbar={this.addToolbar}
                         isEditable={![null, undefined].includes(this.props.isEditable) ? this.props.isEditable : true}
@@ -203,11 +324,18 @@ class RichText extends React.Component {
                         onOpenUnmanagedContentSelector={this.props.onOpenUnmanagedContentSelector}
                         onChangeUnmanagedContentValue={this.props.onChangeUnmanagedContentValue}
                         />
-                    ))}
-                </RichTextBlocksContainer>
-                <KeyboardAvoidingView behavior="padding" style={{ flex: 1}} keyboardVerticalOffset={150}>
-                    {this.toolbar.current !== null && this.state.activeBlock !== null ? this.toolbar.current : null}
+                    )
+                }}
+                />
+                <KeyboardAvoidingView behavior="padding" style={{ flex: 1}}>
+                    {this.state.activeBlock !== null ? (
+                        <Options
+                        isBlockActive={true}
+                        {...toolbarProps()}
+                        />
+                    ) : null}
                 </KeyboardAvoidingView>
+
             </RichTextContainer>
         )
     }
@@ -221,6 +349,7 @@ class RichText extends React.Component {
                         key={block.uuid} 
                         block={block} 
                         types={this.props.types}
+                        addToolbar={this.addToolbar}
                         isEditable={![null, undefined].includes(this.props.isEditable) ? this.props.isEditable : true}
                         activeBlock={this.state.activeBlock} 
                         updateBlocks={this.updateBlocks} 

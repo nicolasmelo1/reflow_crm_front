@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { AuthenticationContext } from '../contexts'
-import { getAsync, NOTIFICATIONS } from 'expo-permissions'
+import { askAsync, getAsync, NOTIFICATIONS } from 'expo-permissions'
 import Constants from 'expo-constants'
 import { AsyncStorage, Platform, Vibration } from 'react-native'
-import { Notifications } from 'expo'
-import { handleNavigation } from './_navigation.js';
+import * as Notifications from 'expo-notifications'
+import { handleNavigation } from './_navigation.js'
 import * as Linking from 'expo-linking'
 import { LoginRoutes, MainRoutes } from '../routes'
 import { useEffect } from 'react'

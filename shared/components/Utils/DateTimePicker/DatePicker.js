@@ -108,7 +108,9 @@ const DatePickerCalendar = (props) => {
         if (props.containerRef) {
             dateTableRef.current.addEventListener("mousemove", onMouseMove)
             return () => {
-                dateTableRef.current.removeEventListener("mousemove", onMouseMove)
+                if (dateTableRef.current) {
+                    dateTableRef.current.removeEventListener("mousemove", onMouseMove)
+                }
             }
         }
     })

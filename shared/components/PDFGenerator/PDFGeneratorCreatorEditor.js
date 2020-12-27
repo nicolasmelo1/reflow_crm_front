@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Modal, SafeAreaView, TouchableOpacity } from 'react-native'
+import { Modal, SafeAreaView, useWindowDimensions } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { Spinner } from 'react-bootstrap'
 import RichText from '../RichText'
@@ -49,6 +49,7 @@ const Custom = (props) => {
  * an object. If this object has the id key as null then it will create a new PDFTemplate ohterwise it will update an existing template Configuration.
  */
 const PDFGeneratorCreatorEditor = (props) => {
+    const mobileWindowHeight = useWindowDimensions().height
     const [isLoading, setIsLoading] = useState(false)
     const [templateData, setTemplateData] = useState({...props.templateData})
     const [unmanagedFieldSelectedValue, setUnmanagedFieldSelectedValue] = useState(null)
@@ -131,13 +132,22 @@ const PDFGeneratorCreatorEditor = (props) => {
     const renderMobile = () => {
         return (
             <Modal animationType="slide">
+                {isUnmanagedFieldSelectorOpen ? (
+                    <FieldSelectorOptionBox 
+                    fieldOptions={props.formAndFieldOptions}
+                    onClickOption={setUnmanagedFieldSelectedValue}
+                    setIsUnmanagedFieldSelectorOpen={setIsUnmanagedFieldSelectorOpen}
+                    />
+                ) : null}
                 <SafeAreaView>
                     <PDFGeneratorCreatorEditorButtonsContainer>
                         <PDFGeneratorCreatorEditorTemplateCancelButton onPress={e=>props.setSelectedTemplateIndex(null)}>
                             <FontAwesomeIcon icon={'times'} />
                         </PDFGeneratorCreatorEditorTemplateCancelButton>
                     </PDFGeneratorCreatorEditorButtonsContainer>
-                    <PDFGeneratorCreatorEditorRichTextContainer>
+                    <PDFGeneratorCreatorEditorRichTextContainer
+                    height={mobileWindowHeight}
+                    >
                         <RichText 
                         initialData={props.templateData?.rich_text_page}
                         onStateChange={onRichTextStateChange}

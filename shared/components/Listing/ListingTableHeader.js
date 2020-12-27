@@ -85,7 +85,7 @@ const ListingTableHead = (props) => {
                     if (header_field.is_selected) {
                         return (
                             <ListingTableHeaderContainer key={index}>
-                                <ListingTableHeaderElement>
+                                <ListingTableHeaderElement isFirstColumn={index === 0}>
                                     <div>
                                         <ListingTableHeaderElementParagraph>
                                             {header_field.field.label_name}
@@ -111,11 +111,11 @@ const ListingTableHead = (props) => {
                         <ListingTableHeaderElementParagraph>
                             {strings['pt-br']['listingHeaderEditLabel']}
                         </ListingTableHeaderElementParagraph>
-                        <ListingTableHeaderElementIconContainer isTableButton={true}/>
+                        <ListingTableHeaderElementIconContainer isTableButton={true} isFirstColumn={props.fieldHeaders.length === 0}/>
                     </ListingTableHeaderElement>
                 </ListingTableHeaderContainer>
                 <ListingTableHeaderContainer>
-                    <ListingTableHeaderElement isTableButton={true}>
+                    <ListingTableHeaderElement isTableButton={true} isLastColumn={true}>
                         <ListingTableHeaderElementParagraph>
                             {strings['pt-br']['listingHeaderDeleteLabel']}
                         </ListingTableHeaderElementParagraph>

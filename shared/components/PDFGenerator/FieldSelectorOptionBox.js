@@ -1,9 +1,12 @@
 import React from 'react'
-import { View } from 'react-native'
+import { Modal, SafeAreaView, View, Text } from 'react-native'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { 
     FieldOptionsContainer, 
     FieldOptionsButtons,
-    FieldOptionsFormularyTitle
+    FieldOptionsFormularyTitle,
+    PDFGeneratorCreatorEditorButtonsContainer,
+    PDFGeneratorCreatorEditorTemplateCancelButton
 } from '../../styles/PDFGenerator'
 
 /**
@@ -13,7 +16,41 @@ import {
 const FieldSelectorOptionBox = (props) => {
     const renderMobile = () => {
         return (
-            <View></View>
+            <Modal animationType={'slide'}>
+                <SafeAreaView>
+                    <PDFGeneratorCreatorEditorButtonsContainer>
+                        <PDFGeneratorCreatorEditorTemplateCancelButton onPress={e=>props.setIsUnmanagedFieldSelectorOpen(false)}>
+                            <FontAwesomeIcon icon={'times'} />
+                        </PDFGeneratorCreatorEditorTemplateCancelButton>
+                    </PDFGeneratorCreatorEditorButtonsContainer>
+                    <FieldOptionsContainer>
+                        {props.fieldOptions.map(formOption=> (
+                            <View key={formOption.id}>
+                                <FieldOptionsFormularyTitle>
+                                    {formOption.label_name}
+                                </FieldOptionsFormularyTitle>
+                                {formOption.form_from_connected_field ? (
+                                    <View>
+                                        <Text style={{ margin: '0 5px', color: '#0dbf7e', fontSize: 10}}>{`Do campo `}</Text>
+                                        <Text style={{ color: '#0dbf7e', fontSize: 10 }}>{formOption.form_from_connected_field.label_name}</Text>
+                                    </View>
+                                ) : null}
+                                {formOption.form_fields.map((fieldOption, index) => (
+                                    <FieldOptionsButtons 
+                                    isFirst={index === 0}
+                                    key={fieldOption.id} 
+                                    onPress={(e) => {props.onClickOption(`fieldVariable-${fieldOption.id} fromConnectedField-${formOption.form_from_connected_field ? formOption.form_from_connected_field.id : ''}`)}}
+                                    >
+                                        <Text>
+                                            {fieldOption.label_name}
+                                        </Text>
+                                    </FieldOptionsButtons>
+                                ))}
+                            </View>
+                        ))}
+                    </FieldOptionsContainer>
+                </SafeAreaView>
+            </Modal>
         )
     }
 

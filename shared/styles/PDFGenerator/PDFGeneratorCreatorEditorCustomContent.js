@@ -27,4 +27,13 @@ styled.span`
     font-size: ${props => ![null, '', undefined].includes(props.textSize) ? `${props.textSize}pt` : '12pt' };
 `
 :
-styled(Text)``
+styled(Text)`
+    font-weight: ${props=> isBold(props)};
+    font-style: ${props => isItalic(props)};
+    color: ${props => getTextColor(props)};
+    background-color: #f2f2f2;
+    padding: ${props=> props.isCode ? '0 3px': '0 2px'};
+    margin: ${props=> props.isCode ? '0 2px': '0'};
+    border-radius: ${props=> props.isCode ? '3px' : '3px'};
+    font-size: ${props => ![null, '', undefined].includes(props.textSize) ? `${props.textSize*1.2}px` : `${12*1.2}pt` };
+`

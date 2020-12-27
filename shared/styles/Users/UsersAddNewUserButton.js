@@ -4,7 +4,7 @@ import { TouchableOpacity } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.button`
-    border-radius: 5px;
+    border-radius: 50px;
     padding: 5px 10px;
     border: 0;
     background-color: #0dbf7e;

@@ -18,4 +18,10 @@ styled.button`
     }
 `
 :
-styled(TouchableOpacity)``
+styled(TouchableOpacity)`
+    padding: 10px; 
+    ${props => props.isFirst ? `` : `
+        border-top-width: 1px;
+        border-top-color: #f2f2f2;
+    `}
+`

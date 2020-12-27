@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { View } from 'react-native'
+import { ScrollView } from 'react-native'
 
 const calculateLeft = (left) => {
     if (window.innerWidth - left < 200) {
@@ -26,4 +26,7 @@ styled.div`
     z-index: 5;
 `
 :
-styled(View)``
+styled(ScrollView)`
+    padding: 10px;
+    height: 92%;
+`

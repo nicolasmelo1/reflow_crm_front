@@ -282,7 +282,9 @@ const TemplateConfigurationForm = (props) => {
         // This adds an event listener for resizing the text area while the user types on the description text input
         if (process.env['APP'] === 'web') descriptionInputRef.current.addEventListener('input', resizeDescriptionTextArea)
         return () => {
-            if (process.env['APP'] === 'web') descriptionInputRef.current.removeEventListener('input', resizeDescriptionTextArea)
+            if (descriptionInputRef.current) {
+                if (process.env['APP'] === 'web') descriptionInputRef.current.removeEventListener('input', resizeDescriptionTextArea)
+            }
         }
     }, [])
 

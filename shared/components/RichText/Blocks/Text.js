@@ -5,6 +5,7 @@ import Content from '../Content'
 import { TextBlockOptions } from '../Options/BlockOptions'
 import { TextContentOptions } from '../Options/ContentOptions'
 import { strings } from '../../../utils/constants'
+import isEqual from '../../../utils/isEqual'
 import Options from '../Options'
 import { 
     BlockText,
@@ -32,20 +33,21 @@ const Text = (props) => {
         customValue: null,
         markerColor: '',
         textColor: '',
-        textSize: ''
+        textSize: 12
     }
     const webKeyCodeReference = {
         46: 'Delete',
         8: 'Backspace',
         13: 'Enter'
     }
+    const isMountedRef = React.useRef(false)
     const wasKeyDownPressedRef = React.useRef(false)
     const keyDownPressedRef = React.useRef(null)
     const inputRef = React.useRef(null)
     const activeBlockRef = React.useRef(null)
     const caretPositionRef = React.useRef({
-        start: null,
-        end: null
+        start: 0,
+        end: 0
     })
     const whereCaretPositionShouldGoAfterUpdateRef = React.useRef(process.env['APP'] === 'web' ? {
         contentIndex: null,
@@ -59,37 +61,65 @@ const Text = (props) => {
     const [innerHtml, setInnerHtml] = useState('')
     const [isToolbarModalOpen, setToolbarIsModalOpen] = useState(false)
     const [stateOfSelection, setStateOfSelection] = useState(stateOfSelectionData)
-    const [mobileTextSelection, setMobileTextSelection] = useState({
-        start: 0,
-        end: 0
-    })
 
+
+    /**
+     * THis is a function for adding the toolbar in the root of the page.
+     * With this simple function we can maintain a simple API for the components to follow and also allow
+     * complex layouts to be created.
+     * 
+     * So let's start. HOW THE F•C* does this work?
+     * - First things first: On the parent component we do not keep the state but instead we keep everything inside
+     * of a ref. This way we can prevent rerendering stuff and just rerender when needed.
+     * - Second of all you need to add this function on a useEffect hook or a componentDidUpdate, this way after every
+     * rerender of your component we can keep track on what is changing and force the rerender of the hole page tree.
+     * - Third but not least we save all of the data needed to render a Toolbar. This means we need the following parameters:
+     *  - `blockUUID` - The uuid of the current block
+     *  - `contentOptionComponent` - The React component of the content options we want to render, these are options of each content
+     * of the block. They are usually the same, but sometimes you are not dealing with text, so you want to prevent the user
+     * from selecting bold and so on.
+     *  - `blockOptionComponent` - The React component of the BLOCK options we want to render, these are options for the specific
+     * block you have selected.
+     *  - `contentOptionProps` - The props that will go to `contentOptionComponent`
+     *  - `blockOptionProps` - The props that will go to `blockOptionComponent`
+     * 
+     * HOW TO USE THIS:
+     * You need to run this function ONLY inside of a useEffect of componentDidUpdate. MAKE SURE YOU ARE LISTENING TO THE
+     * the state changes that you need. (for example, here we are listening for changes in props and stateOfSelection, every other state
+     * change is irrelevant. When any of this states changes we want the toolbar to update accordingly.)
+     */
     const mobileAddToolbar = () => {
         if (props.addToolbar) {
-            props.addToolbar(<Options
-                isBlockActive={true}
-                contentOptions={
-                    <TextContentOptions 
-                    onOpenModal={setToolbarIsModalOpen}
-                    onChangeSelectionState={onChangeSelectionState}
-                    stateOfSelection={stateOfSelection}
-                    />
-                }
-                blockOptions={
-                    <TextBlockOptions
-                    alignmentTypeId={props.block.text_option?.alignment_type}
-                    onChangeAlignmentType={onChangeAlignmentType}
-                    types={props.types}
-                    />
-                }
-                />
+            const blockUUID = props.block.uuid
+            const contentOptionComponent = TextContentOptions
+            const blockOptionComponent = TextBlockOptions
+            const contentOptionProps = {
+                onOpenModal: setToolbarIsModalOpen,
+                onChangeSelectionState: onChangeSelectionState,
+                stateOfSelection: stateOfSelection
+            }
+            const blockOptionProps = {
+                alignmentTypeId: props.block.text_option?.alignment_type,
+                onChangeAlignmentType: onChangeAlignmentType,
+                types: props.types
+            }
+            
+            props.addToolbar(
+                blockUUID,
+                contentOptionComponent,
+                contentOptionProps,
+                blockOptionComponent,
+                blockOptionProps
             )
         }
     }
 
     /**
      * Gets alignment type name by it's id, we need this because we only have the id of the alignmentType but not
-     * @param {*} id 
+     * 
+     * @param {BigInteger} id - The id of the aligment type that you want to retrieve the name
+     * 
+     * @returns {String} - The name of the alignment_type id that you send or an empty string if it does not exist.
      */
     const getAlignmentTypeNameById = (id) => {
         for (let i = 0; i<props.types.rich_text.alignment_type.length; i++) {
@@ -114,20 +144,22 @@ const Text = (props) => {
                     caretPositionRef.current.end = caretPositionRef.current.end + (lastContentInSelection.content.text.length - lastContentInSelection.endIndexToSelectTextInContent)
                 }
                 if (firstContentInSelection.content.is_custom && firstContentInSelection.startIndexToSelectTextInContent !== 0) {
-                    caretPositionRef.current.start = caretPositionRef.current.start + firstContentInSelection.startIndexToSelectTextInContent
+                    caretPositionRef.current.start = caretPositionRef.current.start - firstContentInSelection.startIndexToSelectTextInContent
                 }
-                setCaretPositionWeb(
-                    firstContentInSelection.contentIndex, 
-                    firstContentInSelection.content.is_custom ? 0: firstContentInSelection.startIndexToSelectTextInContent, 
-                    lastContentInSelection.contentIndex, 
-                    lastContentInSelection.content.is_custom ? lastContentInSelection.content.text.length : lastContentInSelection.endIndexToSelectTextInContent
-                )  
-            
+                if (process.env['APP'] === 'web') {
+                    setCaretPositionWeb(
+                        firstContentInSelection.contentIndex, 
+                        firstContentInSelection.content.is_custom ? 0: firstContentInSelection.startIndexToSelectTextInContent, 
+                        lastContentInSelection.contentIndex, 
+                        lastContentInSelection.content.is_custom ? lastContentInSelection.content.text.length : lastContentInSelection.endIndexToSelectTextInContent
+                    ) 
+                }
             }
         }
     }
 
     /**
+     * WORKS ONLY FOR WEB
      * - We check if the browser has support for both getSelection and createRange (only IE9 does not support these)
      * - last but not least we get the positions on where the caret should go
      * 
@@ -184,7 +216,11 @@ const Text = (props) => {
     }
 
     /** 
+     * WORKS ONLY FOR WEB
+     * 
      * Gets the caret X and Y position so we can display a option above the content, this is used to send for the unmanaged.
+     * 
+     * @returns {Object} - returns an object with X and Y keys.
      */
     const getCaretCoordinatesWeb = () => {
         if (process.env['APP'] === 'web') {
@@ -224,7 +260,7 @@ const Text = (props) => {
      * - Then we check if it is a custom element, if it is we need to select the hole content
      * - Then we check the state of this element (is it bold, is it italic) and then we update the options of the text.
      * 
-     * @param {String} activeBlock
+     * @param {String} activeBlock - THe current active block in the page.
      */
     const setCaretPositionInInput = (activeBlock) => {
         if (activeBlock === props.block.uuid && !isWaitingForCustomInput.current) {
@@ -247,10 +283,12 @@ const Text = (props) => {
                 checkIfCaretPositionIsCustomFixAndSetCaretPosition()
                 checkStateOfSelectedElementAndUpdateState()
             }
-        } 
+        }
     }
 
     /**
+     * WORKS ONLY ON WEB 
+     * 
      * On the browser we cannot get the selection position by default on a contentEditable element.
      * Because of this we need this function, this function is fired whenever we make a selection and it gives the
      * Start and the End position of the selection in the contentEditable. Suppose you have the following text in you contentEditable:
@@ -266,6 +304,9 @@ const Text = (props) => {
      * Reference: https://stackoverflow.com/a/4812022
      * 
      * @param {Object} element - The element object on which you get the selection position from, usually this will be the `inputRef.current`
+     * 
+     * @returns {Object} - An object with "start" and "end" keys that are both the start position of the selection cursor and the end position
+     * of the selection cursor.
      */
     const getWebSelectionSelectCursorPosition = (element) => {
         if (process.env['APP'] === 'web') {
@@ -342,19 +383,21 @@ const Text = (props) => {
 
             // is a Range selection
             if (isRangeSelection && isContentInSelectionRange) {
+                // always consider custom contents as hole
                 selectedContentsArray.push({
-                    startIndexToSelectTextInContent: startIndexToSelectTextInContent,
-                    endIndexToSelectTextInContent: endIndexToSelectTextInContent,
+                    startIndexToSelectTextInContent: contents[contentIndex].is_custom ? 0 : startIndexToSelectTextInContent,
+                    endIndexToSelectTextInContent: contents[contentIndex].is_custom ? contents[contentIndex].text.length : endIndexToSelectTextInContent,
                     contentIndex: contentIndex, 
-                    content: JSON.parse(JSON.stringify(contents[contentIndex]))
+                    content: ![undefined, null].includes(contents[contentIndex]) ? JSON.parse(JSON.stringify(contents[contentIndex])) : props.createNewContent({order: 0})
                 })
             // The user just set the caret to a certain position without selecting a range
             } else if (!isRangeSelection && isContentInSelection) {
+                // always consider custom contents as hole
                 selectedContentsArray.push({
-                    startIndexToSelectTextInContent: startIndexToSelectTextInContent,
-                    endIndexToSelectTextInContent: endIndexToSelectTextInContent,
+                    startIndexToSelectTextInContent: contents[contentIndex].is_custom ? 0 : startIndexToSelectTextInContent,
+                    endIndexToSelectTextInContent: contents[contentIndex].is_custom ? contents[contentIndex].text.length : endIndexToSelectTextInContent,
                     contentIndex: contentIndex, 
-                    content: JSON.parse(JSON.stringify(contents[contentIndex]))
+                    content: ![undefined, null].includes(contents[contentIndex]) ? JSON.parse(JSON.stringify(contents[contentIndex])) : props.createNewContent({order: 0})
                 })
             }
 
@@ -460,7 +503,30 @@ const Text = (props) => {
      * This function just gets the position where the caret should go, this position are both: The content where the
      * caret should go and the position inside of the content text where the caret should go.
      * 
-     * @param {*} insertedText 
+     *   |--------------|
+     *  |  FOR MOBILE  |
+     * |--------------|
+     * - On mobile no such thing is needed we just update the refs of the caretPositionRef to maintain the right position
+     * of the caret. This function does not have the right name for mobile. On mobile what we do is just update the refs.
+     * so when the user types another word the `caretPositionRef.current` is in the right position.
+     *
+     * We do this because we can't prevent any event from firing in mobile. So if the user is typing and the state is still being
+     * updated `onSelectText` will not update the caretPositionRef. When the code reaches here it means we have already
+     * updated the state, or is at least close to fire the update. So we update the refs for the next input.
+     *       
+     * If we did not made this what would happen is this: 
+     * - If we are in position {start: 0, end:0} and tries to insert an letter 'A' in the input
+     * - While inserting the caretPositionRef would be { start: 1, end: 1} because it would fire `onSelectChange` while firing `onChangeText`
+     *
+     * The same happens on the browser if we used onKeyUp event. onKeyUp fires the onSelect because the browser understands that
+     * after adding 'A' the caret will move from '|' to 'A|' (the "|" is the caret). So if A has been inserted now the selection changed from
+     * position 0 to position 1. That's why we use onInput instead. onInput fires BEFORE the 'A' is inserted in the input, so, before the onSelect event.
+     *
+     * on Mobile no such event as onInput exists, that's why we need to use this little hack for.
+     *
+     * On web it works differently. 
+     * 
+     * @param {String} insertedText - The inserted text in the input.
      */
     const updateWhereCaretPositionShouldGo = (insertedText) => {
         // Sets the caret position, the caret position to go is the caretPosition start + insertedText length
@@ -469,16 +535,26 @@ const Text = (props) => {
         let stackedNumberOfWords = 0
         const caretPositionIndex = caretPositionRef.current.start + insertedText.length
         
-        for (let i=0; i < props.block.rich_text_block_contents.length; i++) {
-            if (stackedNumberOfWords <= caretPositionIndex && props.block.rich_text_block_contents[i].text.length + stackedNumberOfWords >= caretPositionIndex) {
-                whereCaretPositionShouldGoAfterUpdateRef.current.contentIndex = i
-                whereCaretPositionShouldGoAfterUpdateRef.current.positionInContent = caretPositionIndex - stackedNumberOfWords
-                break
+        if (process.env['APP'] === 'web') {
+            for (let i=0; i < props.block.rich_text_block_contents.length; i++) {
+                if (stackedNumberOfWords <= caretPositionIndex && props.block.rich_text_block_contents[i].text.length + stackedNumberOfWords >= caretPositionIndex) {
+                    whereCaretPositionShouldGoAfterUpdateRef.current.contentIndex = i
+                    whereCaretPositionShouldGoAfterUpdateRef.current.positionInContent = caretPositionIndex - stackedNumberOfWords
+                    break
+                }
+                stackedNumberOfWords = props.block.rich_text_block_contents[i].text.length + stackedNumberOfWords
             }
-            stackedNumberOfWords = props.block.rich_text_block_contents[i].text.length + stackedNumberOfWords
-        }
-        if (process.env['APP'] !== 'web') {
-            caretPositionRef.current = JSON.parse(JSON.stringify(whereCaretPositionShouldGoAfterUpdateRef.current))
+        } else {
+            if (whereCaretPositionShouldGoAfterUpdateRef.current.start !== null && whereCaretPositionShouldGoAfterUpdateRef.current.end !== null) {
+                caretPositionRef.current = {
+                    start: whereCaretPositionShouldGoAfterUpdateRef.current.start, 
+                    end: whereCaretPositionShouldGoAfterUpdateRef.current.end
+                }
+                whereCaretPositionShouldGoAfterUpdateRef.current = {
+                    start: null,
+                    end: null
+                }
+            }
         }
     }
 
@@ -606,12 +682,12 @@ const Text = (props) => {
      * (the text you are inserting WILL NOT BE SPLITED, BUT THE CONTENT on where you are inserting 
      * on might be, more on that later).
      * 
-     * So what we do is check two things: Has the user selected a range it or did he just set the caret
+     * So what we do is check two things: Has the user selected a range or did he just set the caret
      * to a certain position? And has the content the same state as the state you are inserting? (the content
      * you are inserting will be bold but the content where you are inserting is not Bold, this should create
-     * a new content)
+     * a new content with is_bold as true)
      * 
-     * With this in place we have then two cases:
+     * With this in place we have two cases:
      * 1 - We just need to insert the text in the position, so if the content is "Love" and we are inserting
      * "123" we will have the content with the text "Love123"
      * 2 - The content you are inserting is of another type, so we use `addNewContentInTheMiddleOfContent`
@@ -662,8 +738,8 @@ const Text = (props) => {
      * Then we display to the users the states that are COMMON for ALL of the contents.
      * 
      * On ["I", "Love", "Cats"] example if "Love" is Bold and Italic, and "Cats" is just Italic
-     * we will display just that the contents are italic (you can look on docs or word to have a better understanding
-     * on how this works)
+     * we will display just that the contents are italic (you can look on Google Docs or Microsoft Work to have a better understanding
+     * on how this works: write a text, make a part of it bold, and the other bold and underlined, then select the text)
      * 
      * This changes the state, most stuff here changes references, this is one of the few functions that changes directly
      * the state.
@@ -679,7 +755,6 @@ const Text = (props) => {
             const markerColor = selectedContents.every((selectedContent, __, array) => selectedContent.content.marker_color === array[0].content.marker_color)
             const textSize = selectedContents.every((selectedContent, __, array) => selectedContent.content.text_size === array[0].content.text_size) 
 
-            // TODO: ERROR HERE
             setStateOfSelection({
                 isBold: isBold,
                 isItalic: isItalic,
@@ -689,21 +764,12 @@ const Text = (props) => {
                 textColor: (textColor) ? selectedContents[0].content.text_color : '',
                 markerColor: (markerColor) ? selectedContents[0].content.marker_color : ''
             })
-            props.updateBlocks(props.activeBlock)
         }
     }
 
     // When the user unselect the input we need to set the state of selection back to null, so all of the buttons
     // appear as unselected
     const onBlur = () => {
-        setStateOfSelection({
-            isBold: false,
-            isItalic: false,
-            isCode: false,
-            isUnderline: false,
-            textColor: '',
-            markerColor: ''
-        })
         // if we are waiting for a custom content we don't dismiss the active block so this way we know that is 
         // exactly THIS block that will contain the content.
         if (props.activeBlock === props.block.uuid && isWaitingForCustomInput.current === false && isToolbarModalOpen === false) {
@@ -717,12 +783,12 @@ const Text = (props) => {
      * because we sometimes focus programatically (see one of the `useEffect` below)
      */
     const onFocus = () => {
-        // When we focus we also dismiss the unmanaged content selector
+        // When we focus we also dismiss the unmanaged content selector)
         if (props.isUnmanagedContentSelectorOpen) {
             props.onOpenUnmanagedContentSelector(false)
         }
         if (props.activeBlock !== props.block.uuid) {
-            props.updateBlocks(props.block.uuid)
+            props.updateBlocks(props.block.uuid, true, props.blockIndex)
         }
         isWaitingForCustomInput.current = false
         if (process.env['APP'] === 'web') {
@@ -734,8 +800,38 @@ const Text = (props) => {
      * This function is fired whenever the user makes a selection on the text. It can be either be a click event
      * or select a range. 
      * 
-     * When the user makes changes like press a key, this function is fired, because of this we need to check
-     * the type of the event and map just for mouseups.
+     * It's important to understand the following about `onSelect` on mobile and on the web:
+     * - The browser understands that after adding 'A' the caret will move from '|' to 'A|' (the "|" is the caret). 
+     * So if A has been inserted now the selection changed from position 0 to position 1. 
+     * That's why we use onInput instead in the browser. onInput fires BEFORE the 'A' is inserted in the input, so, before the onSelect event.
+     * 
+     * The same applies to mobile. And on mobile is even worse because we can't prevent any event from firing and there is
+     * no such thing as 'onInput' event.
+     * 
+     * "Okay, i understand, but what does it do?"
+     * 
+     * ON WEB:
+     * Since we have onInput event, when the state is updated we already used the caretPositionRef on the position that we needed
+     * (this means that when we add a string like 'A' in the textInput we need the caretPositionRef at position 0, AND NOT on position 1
+     * this means we need the CURRENT state of the caretPositionRef and not the one AFTER the update)
+     * So we just update the caretPositionRef.current with the new position of the caret. While also checking the 
+     * State Of Selected Element (so it checks if the the selected text is Bold, Italic and so on and updates the toolbar)
+     * 
+     * ON MOBILE:
+     * If a wasKeyDownPressedRef is true this means the onInput is STILL updating the state. So we do not want to change the 
+     * `caretPositionRef.current` (we use this caretPosition to know what changed on the text and HOW we should change the contents of the block
+     * so it is really important that it remains still while updating the content of the block.)
+     * So what we do instead is update the whereCaretPositionShouldGoAfterUpdateRef.current with the next position of the caret
+     * (since we just update the caret position reference when no key was pressed, when a key is pressed we will not know the next caretPositionRef
+     * to go. So we add this value to an aux variable that updates the caretPositionRef.current after the state was changed:
+     * you might want to check updateWhereCaretPositionShouldGo function for mobile)
+     * 
+     * if wasKeyDownPressedRef.current is false it means the user is not inserting any text but instead just moving the cursor.
+     * So we just update the refs and the state.
+     * 
+     * Notice that we don't use the checkIfCaretPositionIsCustomFixAndSetCaretPosition function Because we can't have the control over the selection
+     * on mobile. Yep we know that there is this prop called `selection` that you set the start and end for the text input. But it never
+     * seemed to work well on mobile for our use case. If you can make it work, fell free to change the behaviour.
      * 
      * @param {*} e 
      */
@@ -748,9 +844,9 @@ const Text = (props) => {
                 props.updateBlocks(props.block.uuid)
             }
         } else {
+            
             if (!wasKeyDownPressedRef.current) {
                 caretPositionRef.current = {start: e.nativeEvent.selection.start, end: e.nativeEvent.selection.end} 
-                setMobileTextSelection(caretPositionRef.current)
                 checkStateOfSelectedElementAndUpdateState()
             } else {
                 whereCaretPositionShouldGoAfterUpdateRef.current = {start: e.nativeEvent.selection.start, end: e.nativeEvent.selection.end} 
@@ -831,19 +927,17 @@ const Text = (props) => {
             } 
         }
         insertedText = getInsertedText(insertedText, inputType)
-
         let contents = JSON.parse(JSON.stringify(props.block.rich_text_block_contents))
         // Checks if last character of the last content is a linebreak there is a bug that happens when you do this on normal browsers
         // it adds line breaks at the same time.
         // WEB ONLY, on mobile no such thing happens
-        if (process.env['APP'] === 'web' && contents[contents.length-1].text.substring(contents[contents.length-1].text.length-1,contents[contents.length-1].text.length) === '\n') {
+        if (contents[contents.length-1].text.substring(contents[contents.length-1].text.length-1,contents[contents.length-1].text.length) === '\n') {
             props.block.rich_text_block_contents[contents.length-1].text = contents[contents.length-1].text.substring(0, contents[contents.length-1].text.length-1)
         }
         text = text.substring(text.length-1, text.length) === '\n' ? text.substring(0, text.length-1) : text
         let oldText = props.block.rich_text_block_contents.map(content => content.text).join('')
 
         fixCaretPositionIfDelete(inputType, text, oldText)
-
         // prevent accents (When you are trying to insert an accent like ~ on mac for example you press ALT + N, this creates this accent ˜, if we 
         // didn't had this we would have the following text "N˜ão". Which is something we don't want.) Because of this we prevent those 
         // "raw" and "temporaty" accents from being inserted
@@ -913,27 +1007,29 @@ const Text = (props) => {
         } else {
             const oldText = props.block.rich_text_block_contents.map(content => content.text).join('')
             const selectedContentsForCurrentSelection = getSelectedContents()
-            const firstContentToTheNextBlock = JSON.parse(JSON.stringify(selectedContentsForCurrentSelection[selectedContentsForCurrentSelection.length-1]))
+            if (selectedContentsForCurrentSelection[selectedContentsForCurrentSelection.length-1] !== undefined) {
+                const firstContentToTheNextBlock = JSON.parse(JSON.stringify(selectedContentsForCurrentSelection[selectedContentsForCurrentSelection.length-1]))
         
-            firstContentToTheNextBlock.content.text = `${firstContentToTheNextBlock.content.text}`.substring(
-                firstContentToTheNextBlock.endIndexToSelectTextInContent, firstContentToTheNextBlock.content.text.length
-            )
-            const subsequentContentsToTheNextBlock = JSON.parse(JSON.stringify(props.block.rich_text_block_contents.slice(firstContentToTheNextBlock.contentIndex+1, props.block.rich_text_block_contents.length)))
-            const contentsOfNextBlock = [firstContentToTheNextBlock.content, ...subsequentContentsToTheNextBlock]
-            
-            caretPositionRef.current.end = oldText.length
-            const selectedContents = getSelectedContents()
-            removeTextInContent(selectedContents)
-            deleteEmptyContents()
-            props.block.rich_text_block_contents = mergeEqualContentsSideBySide(props.block.rich_text_block_contents)
+                firstContentToTheNextBlock.content.text = `${firstContentToTheNextBlock.content.text}`.substring(
+                    firstContentToTheNextBlock.endIndexToSelectTextInContent, firstContentToTheNextBlock.content.text.length
+                )
+                const subsequentContentsToTheNextBlock = JSON.parse(JSON.stringify(props.block.rich_text_block_contents.slice(firstContentToTheNextBlock.contentIndex+1, props.block.rich_text_block_contents.length)))
+                const contentsOfNextBlock = [firstContentToTheNextBlock.content, ...subsequentContentsToTheNextBlock]
+                
+                caretPositionRef.current.end = oldText.length
+                const selectedContents = getSelectedContents()
+                removeTextInContent(selectedContents)
+                deleteEmptyContents()
+                props.block.rich_text_block_contents = mergeEqualContentsSideBySide(props.block.rich_text_block_contents)
 
-            caretPositionRef.current.end = caretPositionRef.current.start
+                caretPositionRef.current.end = caretPositionRef.current.start
 
-            const indexOfBlockInContext = props.contextBlocks.findIndex(block => block.uuid === props.block.uuid)
-            const newBlock = props.createNewTextBlock({ order: props.contextBlocks.length+1, richTextBlockContents: contentsOfNextBlock })
-            props.contextBlocks.splice(indexOfBlockInContext + 1, 0, newBlock)
-            activeBlockRef.current = newBlock.uuid
-            props.updateBlocks(newBlock.uuid)
+                const indexOfBlockInContext = props.contextBlocks.findIndex(block => block.uuid === props.block.uuid)
+                const newBlock = props.createNewTextBlock({ order: props.contextBlocks.length+1, richTextBlockContents: contentsOfNextBlock })
+                props.contextBlocks.splice(indexOfBlockInContext + 1, 0, newBlock)
+                activeBlockRef.current = newBlock.uuid
+                props.updateBlocks(newBlock.uuid)
+            }
         }
     }
 
@@ -1033,8 +1129,18 @@ const Text = (props) => {
 
                 props.contextBlocks[indexOfBlockInContext - 1].rich_text_block_contents = previousBlockContents.concat(contentsForNextBlock)
                 props.contextBlocks[indexOfBlockInContext - 1].rich_text_block_contents = mergeEqualContentsSideBySide(props.contextBlocks[indexOfBlockInContext - 1].rich_text_block_contents)
-                props.contextBlocks.splice(indexOfBlockInContext, 1)
-                props.updateBlocks(uuidToFocusAfterUpdate)
+                if (process.env['APP'] == 'web') {
+                    props.contextBlocks.splice(indexOfBlockInContext, 1)
+                    props.updateBlocks(uuidToFocusAfterUpdate)
+                } else {
+                    props.updateBlocks(uuidToFocusAfterUpdate)
+                    setTimeout(() => {
+                        if (isMountedRef.current) {
+                            props.contextBlocks.splice(indexOfBlockInContext, 1)
+                            props.updateBlocks(uuidToFocusAfterUpdate)
+                        }
+                    }, 100)
+                }
             } else {
                 if (process.env['APP'] === 'web') {
                     caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
@@ -1056,7 +1162,6 @@ const Text = (props) => {
      */
     const onKeyDown = (e) => {
         keyDownPressedRef.current = e.nativeEvent.key
-
         if (!wasKeyDownPressedRef.current) {
             if (process.env['APP'] === 'web') {
                 caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
@@ -1064,7 +1169,7 @@ const Text = (props) => {
             }
             wasKeyDownPressedRef.current = true
         }
-
+        
         const keyCode = e.keyCode
         const oldText = props.block.rich_text_block_contents.map(content => content.text).join('')
         if (webKeyCodeReference[keyCode] === 'Enter' && !e.shiftKey || keyDownPressedRef.current === 'Enter') {
@@ -1096,8 +1201,7 @@ const Text = (props) => {
      * @param {String} color - Some contents are colors so we use
      */
     const onChangeSelectionState = (type, isActive=false, color='', textSize=12) => {
-
-        const elementIsFocused = props.activeBlock === props.block.uuid
+        const elementIsFocused = process.env['APP'] ? props.activeBlock === props.block.uuid : true
         if (elementIsFocused) {
             // user has not selected a range but had just set the caret to a position
             switch (type) {
@@ -1171,8 +1275,6 @@ const Text = (props) => {
                 
                 //mergeEqualDeleteEmptyAndSetWhereCaretPositionShouldGo('')
             } 
-            mobileAddToolbar()
-            props.updateBlocks(props.block.uuid)
         }
     }
 
@@ -1186,8 +1288,7 @@ const Text = (props) => {
         if (props.activeBlock === props.block.uuid) {
             props.block.text_option.alignment_type = alignmentId
         }
-        mobileAddToolbar()
-        props.updateBlocks(props.block.uuid)
+        props.updateBlocks(props.activeBlock)
     }
 
     /**
@@ -1207,6 +1308,13 @@ const Text = (props) => {
             onInput(textWithPastedData, '', pastedData)
         }
     }
+
+    useEffect(() => {
+        isMountedRef.current = true
+        return () => {
+            isMountedRef.current = false
+        }
+    }, [])
 
     useEffect(() => {
         // WEB ONLY
@@ -1229,13 +1337,21 @@ const Text = (props) => {
             })
             setInnerHtml(innerHtmlText)
         }
+    })
+
+    useEffect(() => {
         if (isWaitingForCustomInput.current) {
             inputRef.current.blur()
         }
-        if (props.activeBlock === props.block.uuid && !isWaitingForCustomInput.current) {
+        if (props.activeBlock === props.block.uuid && (!isWaitingForCustomInput.current || !props.isUnmanagedContentSelectorOpen)) {
+            isWaitingForCustomInput.current = false
             inputRef.current.focus()
         }
-    })
+    }, [props.activeBlock, props.unmanagedContentValue, props.isUnmanagedContentSelectorOpen])
+
+    useEffect(() => {
+        mobileAddToolbar()
+    }, [props, stateOfSelection])
 
     useEffect(() => {
         // handles unmanaged content. When the user types a key it opens a box so the user can select the options
@@ -1286,27 +1402,19 @@ const Text = (props) => {
     }, [innerHtml])
 
     const renderMobile = () => {
-        mobileAddToolbar()
         return (
             <KeyboardAvoidingView>
                 <BlockText
                 ref={inputRef} 
                 autoCapitalize={'none'}
-                placeholder={
-                    props.activeBlock === props.block.uuid && 
-                    props.block.rich_text_block_contents.length === 1 && 
-                    props.isEditable && 
-                    ['', '\n'].includes(props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text) ? 
-                    strings['pt-br']['richTextTextBlockPlaceholder'] : ''}
                 autoCompleteType={'off'}
                 autoCorrect={false}
                 autoFocus={false}
                 onFocus={(e) => onFocus()}
                 onBlur={(e) => onBlur()}
                 multiline={true}
-                onKeyPress={(e) => {  
-                    onKeyDown(e)            
-                }}
+                scrollEnabled={false}
+                onKeyPress={(e) => onKeyDown(e)}
                 onSelectionChange={(e) => onSelectText(e)}
                 onChangeText={(text) => {
                     onInput(text, keyDownPressedRef.current, keyDownPressedRef.current)  
@@ -1314,29 +1422,27 @@ const Text = (props) => {
                 textAlign={getAlignmentTypeNameById(props.block.text_option?.alignment_type)}
                 value={''}
                 >
-                    {
-                    props.block?.uuid &&
-                    props.activeBlock === props.block.uuid && 
-                    props.block.rich_text_block_contents.length === 1 && 
-                    props.isEditable && 
-                    ['', '\n'].includes(props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text) ? 
-                        (<Text>{strings['pt-br']['richTextTextBlockPlaceholder'] }</Text>)
-                    : 
-                    props.block.rich_text_block_contents.map((content, index) => {
+                    {props.block.rich_text_block_contents.map((content, index) => {
+                        if (index === props.block.rich_text_block_contents.length - 1 && content.text.substring(content.text.length-1, content.text.length) === '\n') {
+                            props.block.rich_text_block_contents[index].text = content.text.substring(0, content.text.length-1)
+                            //content.text = content.text.substring(0, content.text.length-1)
+                        }
                         if (content.is_custom) {
                             const { component, text } = props.renderCustomContent(content)
                             props.block.rich_text_block_contents[index].text = text
                             const CustomContent = component 
                             return (
-                                <CustomContent key={content.uuid} content={content}/>
+                                <CustomContent key={content.uuid} content={props.block.rich_text_block_contents[index]}/>
                             )
-                        } else {
+                        } else if (content.text !== '') {
                             return (
                                 <Content 
                                 key={content.uuid} 
-                                content={content} 
+                                content={props.block.rich_text_block_contents[index]} 
                                 />
                             )
+                        } else {
+                            return null
                         }
                     })}
                 </BlockText>

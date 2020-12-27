@@ -8,4 +8,7 @@ styled.p`
     color: #bfbfbf;
 `
 :
-styled(Text)``
+styled(Text)`
+    font-size: 24px;
+    color: #bfbfbf;
+`

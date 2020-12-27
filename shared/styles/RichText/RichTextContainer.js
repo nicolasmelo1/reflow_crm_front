@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { View } from 'react-native'
+import { Dimensions, View } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
@@ -10,6 +10,6 @@ styled.div`
 `
 :
 styled(View)`
+    height: 100%;
     flex-direction: column;
-    height: ${props => props.height ? props.height : '97%'};
 `
