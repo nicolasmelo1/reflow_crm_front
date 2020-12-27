@@ -57,7 +57,7 @@ const KanbanDimension = (props) => {
             dimension.style.backgroundColor = 'transparent';
         });
         if (isMoving) {
-            e.currentTarget.style.backgroundColor = '#fff'
+            e.currentTarget.style.backgroundColor = '#f2f2f2'
         }
     }
 
