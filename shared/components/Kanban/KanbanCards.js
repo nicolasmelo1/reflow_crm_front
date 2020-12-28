@@ -86,7 +86,6 @@ const KanbanCards = (props) => {
     }, [props.params, props.pagination])
 
     useEffect(() => {
-        //kanbanCardContainer.addEventListener('scroll', onScrollKanban)
         dataSource.current = props.cancelToken.source()
         return function () {    
             if(dataSource.current) {
