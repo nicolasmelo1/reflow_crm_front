@@ -19,7 +19,12 @@ import mobilecheck from '../../utils/mobilecheck'
  */
 const ListingTable = (props) => {
     const isMobile = mobilecheck()
+    const isMountedRef = React.useRef(false)
     const [hasFiredRequestForNewPage, _setHasFiredRequestForNewPage] = useState(false)
+    const paginationRef = React.useRef({
+        current: 1,
+        total: 1
+    })
     const tableRef = React.useRef(null)
     const scrollWrapperRef = React.useRef(null)
     const scrollRef = React.useRef(null)
@@ -43,17 +48,17 @@ const ListingTable = (props) => {
         }
     }
 
-    const onScrollerScroll = (e) => {
-        if (scrollWrapperRef.current) tableRef.current.scrollLeft = scrollWrapperRef.current.scrollLeft
+    const onScrollerScroll = (scrollWrapper) => {
+        tableRef.current.scrollLeft = scrollWrapper.scrollLeft
     }
 
-    const onScroll = (e) => {  
-        if (scrollWrapperRef.current) scrollWrapperRef.current.scrollLeft = tableRef.current.scrollLeft
-        if (!hasFiredRequestForNewPageRef.current && props.pagination.current < props.pagination.total && tableRef.current.scrollTop >= (tableRef.current.scrollHeight - tableRef.current.offsetHeight))  {
+    const onScrollTable = (table) => {  
+        if (scrollWrapperRef.current) scrollWrapperRef.current.scrollLeft = table.scrollLeft
+        if (!hasFiredRequestForNewPageRef.current && props.pagination.current < props.pagination.total && table.scrollTop >= (table.scrollHeight - table.offsetHeight))  {
             setHasFiredRequestForNewPage(true) 
             const page = props.pagination.current + 1
             props.setPageParam(page).then(response=> {
-                if (response.status === 200) {
+                if (response && isMountedRef.current && response.status === 200) {
                     setHasFiredRequestForNewPage(false) 
                 }
             })
@@ -61,29 +66,32 @@ const ListingTable = (props) => {
     }
 
     useEffect(() => {
-        tableRef.current.addEventListener('scroll', onScroll)
-        if (scrollWrapperRef.current && tableRef.current) {
-            defineScrollWidth()
-            scrollWrapperRef.current.addEventListener('scroll', onScrollerScroll)
-            window.addEventListener('resize', defineScrollWidth)
-        }
-        return () => {
-            if (scrollWrapperRef.current && tableRef.current) {
-                tableRef.current.removeEventListener('scroll', onScroll)
-                scrollWrapperRef.current.removeEventListener('scroll', onScrollerScroll)
-                window.removeEventListener('resize', defineScrollWidth)
-            }
+        isMountedRef.current = true
+ 
+        defineScrollWidth()
+        window.addEventListener('resize', defineScrollWidth)
+
+        return function () {
+            isMountedRef.current = false
+            window.removeEventListener('resize', defineScrollWidth)
         }
     }, [])
+
+    useEffect(() => {
+        paginationRef.current = props.pagination
+    }, [props.pagination])
 
     return (
         <div>
             {!isMobile ? (
-                <div style={{ width: '100%', overflowY: 'hidden', overflowX: 'scroll', height:'20px' }} ref={scrollWrapperRef}>
+                <div style={{ width: '100%', overflowY: 'hidden', overflowX: 'scroll', height:'20px' }} 
+                ref={scrollWrapperRef} 
+                onScroll={(e) => onScrollerScroll(e.target)}
+                >
                     <div style={{ height:'20px'}} ref={scrollRef}></div>
                 </div>
             ): ''}
-            <ListingTableContainer ref={tableRef} isMobile={isMobile}>
+            <ListingTableContainer ref={tableRef} onScroll={(e) => onScrollTable(e.target)} isMobile={isMobile}>
                 <Table>
                     <ListingTableHeader 
                     isLoadingData={props.isLoadingData}
@@ -106,4 +114,4 @@ const ListingTable = (props) => {
     )
 }
 
-export default ListingTable;
+export default ListingTable

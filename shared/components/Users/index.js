@@ -305,8 +305,6 @@ class Users extends React.Component {
 
                                     </UsersTableContent>
                                 </View>
-
-
                             </ScrollView>
                         </View>
                     )}

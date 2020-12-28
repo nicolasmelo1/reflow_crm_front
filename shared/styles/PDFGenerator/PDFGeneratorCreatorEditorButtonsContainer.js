@@ -14,7 +14,7 @@ styled.div`
 styled(View)`
     width: 100%;
     display: flex;
-    direction: rtl;
     flex-direction: row;
+    justify-content: space-between;
     padding: 10px;
 `

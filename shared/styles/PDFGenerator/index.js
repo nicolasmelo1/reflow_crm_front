@@ -8,6 +8,7 @@ export { default as PDFGeneratorCreatorEditorCustomContent } from './PDFGenerato
 export { default as PDFGeneratorCreatorButtonsContainer } from './PDFGeneratorCreatorButtonsContainer'
 export { default as PDFGeneratorCreatorGoBackButton } from './PDFGeneratorCreatorGoBackButton'
 export { default as PDFGeneratorCreatorCreateNewButton } from './PDFGeneratorCreatorCreateNewButton'
+export { default as PDFGeneratorCreatorCreateNewButtonLabel } from './PDFGeneratorCreatorCreateNewButtonLabel'
 export { default as PDFGeneratorCreatorTemplateTitle } from './PDFGeneratorCreatorTemplateTitle'
 export { default as PDFGeneratorCreatorEditTemplateButton } from './PDFGeneratorCreatorEditTemplateButton'
 export { default as PDFGeneratorCreatorRemoveTemplateButton } from './PDFGeneratorCreatorRemoveTemplateButton'

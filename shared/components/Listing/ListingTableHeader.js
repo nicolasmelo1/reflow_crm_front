@@ -78,6 +78,10 @@ const ListingTableHead = (props) => {
         }
     })
     
+    useEffect(() => {
+        props.defineScrollWidth()
+    }, [props.fieldHeaders])
+
     return (
         <thead>
             <tr>

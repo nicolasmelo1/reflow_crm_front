@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, Animated } from 'react-native'
 import Router from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import PDFGeneratorCreatorEditor from './PDFGeneratorCreatorEditor'
@@ -9,12 +9,18 @@ import {
     PDFGeneratorCreatorButtonsContainer,
     PDFGeneratorCreatorGoBackButton,
     PDFGeneratorCreatorCreateNewButton,
+    PDFGeneratorCreatorCreateNewButtonLabel,
     PDFGeneratorCreatorTemplateTitle,
     PDFGeneratorCreatorEditTemplateButton,
     PDFGeneratorCreatorRemoveTemplateButton,
     PDFGeneratorCreatorTemplateCardContainer,
     PDFGeneratorCreatorTemplatesContainer
 } from '../../styles/PDFGenerator'
+
+let Swipeable = null
+if (process.env['APP'] !== 'web') {
+    Swipeable = require('react-native-gesture-handler').Swipeable
+}
 
 /**
  * {Description of your component, what does it do}
@@ -142,22 +148,44 @@ const PDFGeneratorCreator = (props) => {
                     onUpdateOrCreatePDFTemplateConfiguration={onUpdateOrCreatePDFTemplateConfiguration}
                     />
                 ) : (
-                    <PDFGeneratorCreatorTemplatesContainer>
-                        {props.templates.map((pdfTemplate, index) => (
-                            <PDFGeneratorCreatorTemplateCardContainer key={pdfTemplate.id}>
-                                <PDFGeneratorCreatorEditTemplateButton onPress={(e)=> setSelectedTemplateIndex(index)}>
-                                    <PDFGeneratorCreatorTemplateTitle>
-                                        {pdfTemplate.name}
-                                    </PDFGeneratorCreatorTemplateTitle>
-                                </PDFGeneratorCreatorEditTemplateButton>
-                                <PDFGeneratorCreatorRemoveTemplateButton 
-                                onClick={(e)=> setTemplateIndexToRemove(index)}
+                    <View style={{ height: '100%'}}>
+                        <PDFGeneratorCreatorCreateNewButton onPress={(e) => setSelectedTemplateIndex(props.templates.length)}>
+                            <PDFGeneratorCreatorCreateNewButtonLabel>
+                                {'+'}
+                            </PDFGeneratorCreatorCreateNewButtonLabel>
+                        </PDFGeneratorCreatorCreateNewButton>
+                        <PDFGeneratorCreatorTemplatesContainer>
+                            {props.templates.map((pdfTemplate, index) => (
+                                <Swipeable 
+                                key={pdfTemplate.id}
+                                friction={2}
+                                rightThreshold={40}
+                                renderRightActions={(progress, dragX) => {
+                                    return (
+                                        <View style={{ width: 70, flexDirection: 'row' }}>
+                                            <Animated.View style={{ flex: 1, transform: [{ translateX: 0 }]}}>
+                                                <PDFGeneratorCreatorRemoveTemplateButton
+                                                onPress={(e)=> setTemplateIndexToRemove(index)}
+                                                >
+                                                    <FontAwesomeIcon icon={'trash'}/>
+                                                </PDFGeneratorCreatorRemoveTemplateButton>
+                                            </Animated.View>
+                                        </View>
+                                    )
+                                }}
                                 >
-                                    <FontAwesomeIcon icon={'trash'}/>
-                                </PDFGeneratorCreatorRemoveTemplateButton>
-                            </PDFGeneratorCreatorTemplateCardContainer>
-                        ))}
-                    </PDFGeneratorCreatorTemplatesContainer>
+                                    <PDFGeneratorCreatorTemplateCardContainer>
+                                        <PDFGeneratorCreatorEditTemplateButton onPress={(e)=> setSelectedTemplateIndex(index)}>
+                                            <PDFGeneratorCreatorTemplateTitle>
+                                                {pdfTemplate.name}
+                                            </PDFGeneratorCreatorTemplateTitle>
+                                        </PDFGeneratorCreatorEditTemplateButton>
+
+                                    </PDFGeneratorCreatorTemplateCardContainer>
+                                </Swipeable>
+                            ))}
+                        </PDFGeneratorCreatorTemplatesContainer>
+                    </View>
                 )}
             </View>
         )

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Modal, SafeAreaView, useWindowDimensions } from 'react-native'
+import { Modal, TextInput, SafeAreaView, useWindowDimensions } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { Spinner } from 'react-bootstrap'
 import RichText from '../RichText'
@@ -141,6 +141,7 @@ const PDFGeneratorCreatorEditor = (props) => {
                 ) : null}
                 <SafeAreaView>
                     <PDFGeneratorCreatorEditorButtonsContainer>
+                        <PDFGeneratorCreatorEditorTemplateTitleInput value={templateData.name} onChange={(e) => onChangeTemplateName(e.nativeEvent.text)}/>
                         <PDFGeneratorCreatorEditorTemplateCancelButton onPress={e=>props.setSelectedTemplateIndex(null)}>
                             <FontAwesomeIcon icon={'times'} />
                         </PDFGeneratorCreatorEditorTemplateCancelButton>

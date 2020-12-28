@@ -15,4 +15,9 @@ styled.input`
     }
 `
 :
-styled(TextInput)``
+styled(TextInput)`
+    color: #0dbf7e;
+    border-bottom-color: #0dbf7e;
+    border-bottom-width: 1px; 
+    max-width: 93%
+`

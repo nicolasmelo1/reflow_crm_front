@@ -9,7 +9,7 @@ const HomeRoutes = (props) => {
     const Stack = createStackNavigator()
 
     return (
-        <Stack.Navigator initialRouteName={'pdf_generator'}>
+        <Stack.Navigator initialRouteName={'data'}>
             <Stack.Screen name={'data'} component={DataPage} options={{headerShown: false, title: 'Gestão'}}/>
             <Stack.Screen name={'pdf_generator'} component={PDFGeneratorPage} options={{title: 'Gerador de PDF', headerTintColor: '#0dbf7e'}}/>
         </Stack.Navigator>

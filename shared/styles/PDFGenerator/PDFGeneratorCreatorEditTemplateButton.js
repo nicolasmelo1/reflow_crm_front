@@ -16,5 +16,9 @@ styled.button`
 `
 :
 styled(TouchableOpacity)`
+    width: 95%;
+    height: 100%;
+    flex-direction: row;
+    align-items: center;
     margin: 5px 10px;
 `

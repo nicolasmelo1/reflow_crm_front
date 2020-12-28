@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { AuthenticationContext } from '../contexts'
 import { askAsync, getAsync, NOTIFICATIONS } from 'expo-permissions'
 import Constants from 'expo-constants'
-import { AsyncStorage, Platform, Vibration } from 'react-native'
+import { AsyncStorage, Platform, Vibration, StatusBar } from 'react-native'
 import * as Notifications from 'expo-notifications'
 import { handleNavigation } from './_navigation.js'
 import * as Linking from 'expo-linking'
@@ -48,7 +48,9 @@ const Main = (props) => {
     }
     
     const handleNotification = notification => {
-        Vibration.vibrate()
+        if (notification !== null) {
+            Vibration.vibrate()
+        }
     }
     
     const getComponent = () => {
@@ -66,7 +68,7 @@ const Main = (props) => {
             setIsAuthenticated(true)
             if (Constants.isDevice) {
                 registerForPushNotificationsAsync()
-                Notifications.addListener(handleNotification);
+                Notifications.setNotificationHandler(handleNotification);
             }
         }
     })
@@ -88,6 +90,9 @@ const Main = (props) => {
             isAuthenticated: isAuthenticated,
             setIsAuthenticated: setIsAuthenticated
         }}>
+            <StatusBar
+            barStyle={'dark-content'}
+            />
             {getComponent()}
         </AuthenticationContext.Provider>
     )

@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { View } from 'react-native'
+import { ScrollView } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
@@ -9,7 +9,8 @@ styled.div`
     width: 100%
 `
 :
-styled(View)`
-    display: flex;
-    flex-direction: row;
+styled(ScrollView)`
+    background-color: #f2f2f2;
+    height: 100%;
+    flex-direction: column;
 `

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View } from 'react-native'
+import { View, Text } from 'react-native'
 import Router from 'next/router'
 import { paths, strings } from '../../utils/constants'
 import PDFGeneratorReaderDownloader from './PDFGeneratorReaderDownloader'
@@ -57,7 +57,38 @@ const PDFGeneratorReader = (props) => {
 
     const renderMobile = () => {
         return (
-            <View></View>
+            <View>
+                {selectedTemplateIndex !== null ? (
+                    <PDFGeneratorReaderDownloader
+                    cancelToken={props.cancelToken}
+                    formId={props.formId}
+                    formName={props.formName}
+                    templateData={props.templates[selectedTemplateIndex]}
+                    setSelectedTemplateIndex={setSelectedTemplateIndex}
+                    onGetPDFGeneratorValuesReader={props.onGetPDFGeneratorValuesReader}
+                    onCheckIfCanDownloadPDF={props.onCheckIfCanDownloadPDF}
+                    onAddNotification={props.onAddNotification}
+                    />
+                ) : (
+                    <View>
+                        <PDFGeneratorReaderTopButtonsContainer>
+                            <PDFGeneratorReaderGoBackButton onClick={(e) => onClickCancel()}>
+                                {strings['pt-br']['pdfGeneratorReaderGoBackButtonLabel']}
+                            </PDFGeneratorReaderGoBackButton>
+                        </PDFGeneratorReaderTopButtonsContainer>
+                        {props.templates.map((pdfTemplate, index) => (
+                            <PDFGeneratorReaderTemplateButton 
+                            key={pdfTemplate.id} 
+                            onClick={(e) => setSelectedTemplateIndex(index)} 
+                            >
+                                <Text>
+                                    {pdfTemplate.name}
+                                </Text>
+                            </PDFGeneratorReaderTemplateButton>
+                        ))}
+                    </View>
+                )}
+            </View>
         )
     }
 

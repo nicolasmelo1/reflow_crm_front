@@ -232,7 +232,7 @@ class Navbar extends React.Component {
                             this.props.setIsHomeToolsMenuOpen(!this.props.isHomeToolsMenuOpen)
                         } else {
                             e.preventDefault()
-                            navigation.navigate('pdf_generator')
+                            navigation.navigate('data')
                         }
                     },
                 })}/>

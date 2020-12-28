@@ -11,7 +11,9 @@ styled.div`
 `
 :
 styled(View)`
-    width: 100%;
+    background-color: #fff;
+    margin: 1px 0 0 0;
+    padding: 15px 0px;
     display: flex;
     flex-direction: row;
     align-items: center;
