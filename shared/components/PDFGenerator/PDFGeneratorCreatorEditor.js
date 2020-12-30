@@ -150,6 +150,7 @@ const PDFGeneratorCreatorEditor = (props) => {
                     height={mobileWindowHeight}
                     >
                         <RichText 
+                        initialText={strings['pt-br']['pdfGeneratorEditorRichTextInitialText']}
                         initialData={props.templateData?.rich_text_page}
                         onStateChange={onRichTextStateChange}
                         renderCustomContent={renderCustomContent} 
@@ -195,6 +196,7 @@ const PDFGeneratorCreatorEditor = (props) => {
                 ) : ''}
                 <PDFGeneratorCreatorEditorRichTextContainer>
                     <RichText 
+                    initialText={strings['pt-br']['pdfGeneratorEditorRichTextInitialText']}
                     initialData={props.templateData?.rich_text_page}
                     onStateChange={onRichTextStateChange}
                     renderCustomContent={renderCustomContent} 

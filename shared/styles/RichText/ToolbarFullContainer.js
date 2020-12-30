@@ -28,8 +28,12 @@ const Options = (props) => {
 
 export default process.env['APP'] === 'web' ?
 styled.div`
-    width: 100%;
-    white-space: nowrap
+    width: ${props => props.width}px;
+    position: fixed;
+    white-space: nowrap;
+    transform: translate3d(0, -55px, 0);
+    transform: background-color .5s .8s cubic-bezier(0.165, 0.840, 0.440, 1.000) forwards;
+    
 `
 :
 styled(Options)`

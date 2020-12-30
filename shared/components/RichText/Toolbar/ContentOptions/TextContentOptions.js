@@ -18,6 +18,11 @@ import {
     TextContentOptionFontSizeButton
 } from '../../../../styles/RichText'
 
+let OverlayTrigger = null
+if (process.env['APP'] === 'web') { 
+    OverlayTrigger = require('react-bootstrap').OverlayTrigger
+}
+
 /**
  * {Description of your component, what does it do}
  * @param {Type} props - {go in detail about every prop it recieves}

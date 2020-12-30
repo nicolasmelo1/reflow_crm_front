@@ -11,6 +11,7 @@ styled.button`
     border-radius: 2px;
     padding: 0 5px;
     width: 30px;
+    height: 30px;
     text-align: center;
     
     &:hover {

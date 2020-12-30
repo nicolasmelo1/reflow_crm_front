@@ -328,6 +328,7 @@ const strings = {
         pdfGeneratorCreatorGoBackButtonLabel: 'Voltar para gestão',
         pdfGeneratorCreatorCreateNewButtonLabel: 'Criar Novo',
         pdfGeneratorEditorSaveButtonLabel: 'Salvar',
+        pdfGeneratorEditorRichTextInitialText: 'Escreva aqui',
         pdfGeneratorEditorCancelButtonLabel: 'Cancelar',
         pdfGeneratorEditorNewTemplateTitle: 'Novo Template',
         pdfGeneratorReaderGoBackButtonLabel: 'Voltar para gestão',

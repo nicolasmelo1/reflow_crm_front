@@ -9,7 +9,9 @@ styled.button`
     padding: 3px 10px;
     color: ${props => props.textColor ? props.textColor : '#000'};
     border-radius: 5px; 
-    margin: 3px
+    margin: 3px;
+    width: 30px;
+    height: 30px;
 `
 :
 styled(TouchableOpacity)`

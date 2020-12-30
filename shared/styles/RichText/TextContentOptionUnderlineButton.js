@@ -13,6 +13,7 @@ styled.button`
     border-bottom: 1px solid ${props => props.isUnderline ? '#0dbf7e' : '#000'};
     border-radius: 2px;
     width: 30px;
+    height: 30px;
     text-align: center;
 
     &:hover {

@@ -12,6 +12,7 @@ styled.button`
     padding: 0 5px;
     width: 30px;
     text-align: center;
+    height: 30px;
 
     &:hover {
         background-color: #0dbf7e20

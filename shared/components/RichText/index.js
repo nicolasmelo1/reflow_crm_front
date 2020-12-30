@@ -7,7 +7,7 @@ import isEqual from '../../utils/isEqual'
 import deepCopy from '../../utils/deepCopy'
 import delay from '../../utils/delay'
 
-import Options from './Options'
+import Toolbar from './Toolbar'
 import Block from './Blocks'
 import { 
     RichTextContainer,
@@ -24,8 +24,8 @@ class RichText extends React.Component {
     constructor(props) {
         super(props)
         this.flatListRef = React.createRef()
-        this.onFocusHeap = []
         this.toolbar = React.createRef()
+        this.onFocusHeap = []
         this.toolbar.current = {
             blockUUID: null,
             contentOptionComponent: null,
@@ -48,6 +48,8 @@ class RichText extends React.Component {
      * Gets the block id by its name
      * 
      * @param {String} blockName - Returns the id of the block
+     * 
+     * @returns {BigInteger} - Returns the id of the block from it's name. Can return null
      */
     getBlockTypeIdByName = (blockName) => {
         if (this.props.types?.rich_text?.block_type !== undefined) {
@@ -58,6 +60,23 @@ class RichText extends React.Component {
             }
         } return null
     } 
+    
+    /**
+     * Returns the block name by the id of the block
+     * 
+     * @param {BigInteger} blockId - A block id.
+     * 
+     * @returns {String} - The name of the block, can be a text, a list, and so on.
+     */
+    getBlockTypeNameById = (blockId) => {
+        if (this.props.types?.rich_text?.block_type !== undefined) {
+            for (let i=0; i<this.props.types?.rich_text?.block_type.length; i++) {
+                if (this.props.types.rich_text.block_type[i].id === blockId) {
+                    return this.props.types.rich_text.block_type[i].name
+                }
+            }
+        } return null
+    }
 
     /**
      * Gets the alignment type by the name of the alignment
@@ -104,6 +123,7 @@ class RichText extends React.Component {
      * Use this whenever you want to create a new page.
      */
     createNewPage = () => {
+        const initialText = this.props.initialText
         const alignmentType = this.getAligmentTypeIdByName('left')
         const blockType = this.getBlockTypeIdByName('text')
 
@@ -127,7 +147,7 @@ class RichText extends React.Component {
                         {
                             order: 0,
                             uuid: generateUUID(),
-                            text: "",
+                            text: initialText ? initialText : '',
                             text_size: 12,
                             is_bold: false,
                             is_italic: false,
@@ -179,33 +199,33 @@ class RichText extends React.Component {
             }))
         }
 
-        if (process.env['APP'] !== 'web') {
-            if (isFocus === true) {
-                // the focus head prevents us from changing the focus too much, when too much onFocus is being fired at once
-                // we keep the activeBlock on the heap, so during this time, if the user tries to change the focus of the element
-                // we consider the previous focus (so we do not focus on the new element, until the heap becomes empty again)
-                this.onFocusHeap.push(activeBlock)
-                makeDelay(() => {
-                    this.onFocusHeap = []
-                })
+        if (isFocus === true) {
+            // the focus head prevents us from changing the focus too much, when too much onFocus is being fired at once
+            // we keep the activeBlock on the heap, so during this time, if the user tries to change the focus of the element
+            // we consider the previous focus (so we do not focus on the new element, until the heap becomes empty again)
+            // this is because since we are updating the state, on mobile this change can be too much to handle since we run 
+            // react native on a js thread separated from the native thread
+            this.onFocusHeap.push(activeBlock)
+            makeDelay(() => {
+                this.onFocusHeap = []
+            })
 
-                activeBlock = this.onFocusHeap.length > 0 ? this.onFocusHeap[0] : activeBlock
-                if (activeBlock !== this.state.activeBlock) {
-                    update(activeBlock)
+            activeBlock = this.onFocusHeap.length > 0 ? this.onFocusHeap[0] : activeBlock
+            if (activeBlock !== this.state.activeBlock) {
+                update(activeBlock)
+                if (process.env['APP'] !== 'web') {
                     this.flatListRef.current.scrollToIndex({index: blockIndex, viewPosition: 0.5, animated: true})
                 }
-            } else if (activeBlock === null) {
-                makeDelay(() => {
-                    if (activeBlock === null) {
-                        update(activeBlock)
-                    }
-                })
-            } else {
-                update(activeBlock)
-            }      
+            }
+        } else if (activeBlock === null) {
+            makeDelay(() => {
+                if (activeBlock === null) {
+                    update(activeBlock)
+                }
+            })
         } else {
             update(activeBlock)
-        }
+        }      
     }
 
     /**
@@ -220,13 +240,14 @@ class RichText extends React.Component {
         }))
     }
 
-    addToolbar = (blockUUID, contentOptionComponent, contentOptionProps, blockOptionComponent, blockOptionProps) => {
+    addToolbar = (blockUUID, contentOptionComponent, contentOptionProps, blockOptionComponent, blockOptionProps, obligatoryBlockProps) => {
         if (
             this.state.activeBlock === blockUUID && 
             (
                 blockUUID !== this.toolbar.current.blockUUID || 
                 !isEqual(contentOptionProps, this.toolbar.current.contentOptionProps) ||
-                !isEqual(blockOptionProps, this.toolbar.current.blockOptionProps)
+                !isEqual(blockOptionProps, this.toolbar.current.blockOptionProps) ||
+                !isEqual(obligatoryBlockProps, this.toolbar.current.obligatoryBlockProps)
             )
         ) {
             this.toolbar.current = {
@@ -234,7 +255,8 @@ class RichText extends React.Component {
                 contentOptionComponent: contentOptionComponent,
                 contentOptionProps: deepCopy(contentOptionProps),
                 blockOptionComponent: blockOptionComponent,
-                blockOptionProps: deepCopy(blockOptionProps)
+                blockOptionProps: deepCopy(blockOptionProps),
+                obligatoryBlockProps: deepCopy(obligatoryBlockProps)
             }
             this.setState(state => ({
                 ...state
@@ -275,23 +297,26 @@ class RichText extends React.Component {
         }
     }
 
-    renderMobile = () => {
+    getToolbarProps = () => {
         const ContentOptionComponent = this.toolbar.current.contentOptionComponent
         const BlockOptionComponent = this.toolbar.current.blockOptionComponent
-        const toolbarProps = () => {
-            let toolbarProps = {}
-            if (this.toolbar.current.contentOptionComponent !== null) {
-                toolbarProps['contentOptions'] = (
-                    <ContentOptionComponent {...this.toolbar.current.contentOptionProps}/>
-                )
-            }
-            if (this.toolbar.current.blockOptionComponent !== null) {
-                toolbarProps['blockOptions'] = (
-                    <BlockOptionComponent {...this.toolbar.current.blockOptionProps}/>
-                )
-            }
-            return toolbarProps
+        let toolbarProps = {
+            ...this.toolbar.current.obligatoryBlockProps
         }
+        if (this.toolbar.current.contentOptionComponent !== null) {
+            toolbarProps['contentOptions'] = (
+                <ContentOptionComponent {...this.toolbar.current.contentOptionProps}/>
+            )
+        }
+        if (this.toolbar.current.blockOptionComponent !== null) {
+            toolbarProps['blockOptions'] = (
+                <BlockOptionComponent {...this.toolbar.current.blockOptionProps}/>
+            )
+        }
+        return toolbarProps
+    }
+
+    renderMobile = () => {
         return (
             <RichTextContainer height={this.props.height} onLayout={(e) => this.setRichTextHeight(e.nativeEvent.layout.height)}>
                 <RichTextBlocksContainer 
@@ -309,6 +334,7 @@ class RichText extends React.Component {
                         block={item} 
                         blockIndex={index}
                         types={this.props.types}
+                        blockTypeOptionsForSelection={this.props.types.rich_text.block_type}
                         addToolbar={this.addToolbar}
                         isEditable={![null, undefined].includes(this.props.isEditable) ? this.props.isEditable : true}
                         activeBlock={this.state.activeBlock} 
@@ -316,6 +342,7 @@ class RichText extends React.Component {
                         contextBlocks={this.state.data.rich_text_page_blocks}
                         renderCustomContent={this.props.renderCustomContent}
                         getAligmentTypeIdByName={this.getAligmentTypeIdByName}
+                        getBlockTypeNameById={this.getBlockTypeNameById}
                         getBlockTypeIdByName={this.getBlockTypeIdByName}
                         handleUnmanagedContent={this.props.handleUnmanagedContent}
                         onRemoveUnmanagedContent={this.props.onRemoveUnmanagedContent}
@@ -328,10 +355,10 @@ class RichText extends React.Component {
                 }}
                 />
                 <KeyboardAvoidingView behavior="padding" style={{ flex: 1}}>
-                    {this.state.activeBlock !== null ? (
-                        <Options
+                    {this.state.activeBlock !== null && this.props.isEditable ? (
+                        <Toolbar
                         isBlockActive={true}
-                        {...toolbarProps()}
+                        {...this.getToolbarProps()}
                         />
                     ) : null}
                 </KeyboardAvoidingView>
@@ -342,13 +369,21 @@ class RichText extends React.Component {
     
     renderWeb = () => {
         return (
-            <RichTextContainer height={this.props.height}>
+            <RichTextContainer className={'rich-text-container'} height={this.props.height}>
+                {this.state.activeBlock !== null && this.props.isEditable ? (
+                    <Toolbar
+                    width={this.state.webToolbarWidth}
+                    isBlockActive={true}
+                    {...this.getToolbarProps()}
+                    />
+                ) : ''}
                 <RichTextBlocksContainer>
                     {this.state.data.rich_text_page_blocks.map((block, index) => (
                         <Block 
                         key={block.uuid} 
                         block={block} 
                         types={this.props.types}
+                        blockTypeOptionsForSelection={this.props.types.rich_text.block_type}
                         addToolbar={this.addToolbar}
                         isEditable={![null, undefined].includes(this.props.isEditable) ? this.props.isEditable : true}
                         activeBlock={this.state.activeBlock} 
@@ -356,6 +391,7 @@ class RichText extends React.Component {
                         contextBlocks={this.state.data.rich_text_page_blocks}
                         renderCustomContent={this.props.renderCustomContent}
                         getAligmentTypeIdByName={this.getAligmentTypeIdByName}
+                        getBlockTypeNameById={this.getBlockTypeNameById}
                         getBlockTypeIdByName={this.getBlockTypeIdByName}
                         handleUnmanagedContent={this.props.handleUnmanagedContent}
                         onRemoveUnmanagedContent={this.props.onRemoveUnmanagedContent}

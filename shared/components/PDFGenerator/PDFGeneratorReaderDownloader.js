@@ -15,6 +15,11 @@ import {
     PDFGeneratorReaderDownloaderDownloadButton
 } from '../../styles/PDFGenerator'
 
+let Spinner = null
+if (process.env['APP'] === 'web') {
+    Spinner = require('react-bootstrap').Spinner
+}
+
 
 const Custom = (props) => {
     return (
@@ -62,6 +67,7 @@ const PDFGeneratorReaderDownloader = (props) => {
     const multipleValuesDividerInputRef = React.useRef(null)
     const multipleValuesElementToChange = React.useRef(null)
     const multipleValuesDividerInputContainerRef = React.useRef(null)
+    const [isDownloadingFile, setIsDownloadingFile] = useState(false)
     const [valueOptions, setValueOptions] = useState([])
     const [hasRenderedValueOptions, setHasRenderedValueOptions] = useState(false)
     const [multipleValuesDividerSetterFieldId, setMultipleValuesDividerSetterFieldId] = useState(null)
@@ -101,6 +107,7 @@ const PDFGeneratorReaderDownloader = (props) => {
      * and then we download it as a pdf. 
      */
     const onDownloadDocument = () => {
+        setIsDownloadingFile(true)
         const jsPDF = require('jspdf').jsPDF
         const html2canvas = require('html2canvas')
         const doc = new jsPDF({
@@ -115,8 +122,7 @@ const PDFGeneratorReaderDownloader = (props) => {
             const pageHeight = 1123
             const pageWidth = 794
 
-            var context = canvas.getContext("2d");
-            for (var i = 0; i <= documentRef.current.clientHeight/(pageHeight+padding); i++) {
+            for (let i = 0; i <= documentRef.current.clientHeight/(pageHeight+padding); i++) {
                 //! This is all just html2canvas stuff
                 const sourceImageY = ((pageHeight - padding)*i) // start 1123 pixels down for every new page
 
@@ -150,6 +156,7 @@ const PDFGeneratorReaderDownloader = (props) => {
                 } else {
                     props.onAddNotification(strings['pt-br']['pdfGeneratorDownloaderErrorMessage'], 'error')
                 }
+                setIsDownloadingFile(false)
             })  
         })
         
@@ -302,9 +309,9 @@ const PDFGeneratorReaderDownloader = (props) => {
                         &nbsp;{strings['pt-br']['pdfGeneratorReaderDownloaderGoBackButtonLabel']}
                     </PDFGeneratorReaderDownloaderGoBackButton>
                     <PDFGeneratorReaderDownloaderDownloadButton 
-                    onClick={(e) => onDownloadDocument()}
+                    onClick={(e) => isDownloadingFile ? null : onDownloadDocument()}
                     >
-                        {strings['pt-br']['pdfGeneratorReaderDownloaderDownloadButtonLabel']}
+                        {isDownloadingFile ? (<Spinner animation="border" size="sm"/>) : strings['pt-br']['pdfGeneratorReaderDownloaderDownloadButtonLabel']}
                     </PDFGeneratorReaderDownloaderDownloadButton>
                 </PDFGeneratorReaderTopButtonsContainer>
                 <PDFGeneratorReaderDownloaderPage>
@@ -312,7 +319,7 @@ const PDFGeneratorReaderDownloader = (props) => {
                     ref={documentRef}
                     >
                         <RichText 
-                        isEditable={true}
+                        isEditable={false}
                         initialData={props.templateData?.rich_text_page}
                         renderCustomContent={renderCustomContent} 
                         />

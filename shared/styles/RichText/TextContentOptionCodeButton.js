@@ -10,6 +10,7 @@ styled.button`
     border: 0;
     border-radius: 2px;
     width: 30px;
+    height: 30px;
     text-align: center;
 
     &:hover {

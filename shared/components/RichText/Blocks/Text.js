@@ -2,11 +2,11 @@ import React, { useState , useEffect } from 'react'
 import { KeyboardAvoidingView } from 'react-native'
 import { renderToString } from 'react-dom/server'
 import Content from '../Content'
-import { TextBlockOptions } from '../Options/BlockOptions'
-import { TextContentOptions } from '../Options/ContentOptions'
+import { TextBlockOptions } from '../Toolbar/BlockOptions'
+import { TextContentOptions } from '../Toolbar/ContentOptions'
 import { strings } from '../../../utils/constants'
 import isEqual from '../../../utils/isEqual'
-import Options from '../Options'
+import Toolbar from '../Toolbar'
 import { 
     BlockText,
     BlockTextPlaceholderContainer,
@@ -35,11 +35,7 @@ const Text = (props) => {
         textColor: '',
         textSize: 12
     }
-    const webKeyCodeReference = {
-        46: 'Delete',
-        8: 'Backspace',
-        13: 'Enter'
-    }
+
     const isMountedRef = React.useRef(false)
     const wasKeyDownPressedRef = React.useRef(false)
     const keyDownPressedRef = React.useRef(null)
@@ -103,13 +99,18 @@ const Text = (props) => {
                 onChangeAlignmentType: onChangeAlignmentType,
                 types: props.types
             }
+            const obligatoryBlockProps = {
+                onDeleteBlock: props.onDeleteBlock,
+                onDuplicateBlock: props.onDuplicateBlock
+            }
             
             props.addToolbar(
                 blockUUID,
                 contentOptionComponent,
                 contentOptionProps,
                 blockOptionComponent,
-                blockOptionProps
+                blockOptionProps,
+                obligatoryBlockProps
             )
         }
     }
@@ -1160,8 +1161,8 @@ const Text = (props) => {
      * 
      * @param {*} e 
      */
-    const onKeyDown = (e) => {
-        keyDownPressedRef.current = e.nativeEvent.key
+    const onKeyDown = (event, pressedKey) => {
+        keyDownPressedRef.current = pressedKey
         if (!wasKeyDownPressedRef.current) {
             if (process.env['APP'] === 'web') {
                 caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
@@ -1170,20 +1171,21 @@ const Text = (props) => {
             wasKeyDownPressedRef.current = true
         }
         
-        const keyCode = e.keyCode
         const oldText = props.block.rich_text_block_contents.map(content => content.text).join('')
-        if (webKeyCodeReference[keyCode] === 'Enter' && !e.shiftKey || keyDownPressedRef.current === 'Enter') {
-            e.preventDefault()
-            e.stopPropagation()
+        if ((process.env['APP'] === 'web' && keyDownPressedRef.current === 'Enter' && !event.shiftKey)|| (process.env['APP'] !== 'web' && keyDownPressedRef.current === 'Enter')) {
+            event.preventDefault()
+            event.stopPropagation()
             onEnter()
-        } else if ((webKeyCodeReference[keyCode] === 'Backspace' || keyDownPressedRef.current === 'Backspace') && caretPositionRef.current && caretPositionRef.current.start === 0 && caretPositionRef.current.end === 0) {
-            e.preventDefault()
-            e.stopPropagation()
+        } else if (keyDownPressedRef.current === 'Backspace' && caretPositionRef.current && caretPositionRef.current.start === 0 && caretPositionRef.current.end === 0) {
+            event.preventDefault()
+            event.stopPropagation()
             onRemoveCurrent()
-        } else if (webKeyCodeReference[keyCode] === 'Delete' && caretPositionRef.current && caretPositionRef.current.start >= oldText.length-1 && caretPositionRef.current.end >= oldText.length-1) {
-            e.preventDefault()
-            e.stopPropagation()
+        } else if (keyDownPressedRef.current === 'Delete' && caretPositionRef.current && caretPositionRef.current.start >= oldText.length-1 && caretPositionRef.current.end >= oldText.length-1) {
+            event.preventDefault()
+            event.stopPropagation()
             onRemoveAfter()
+        } else if (keyDownPressedRef.current === '/' && caretPositionRef.current && caretPositionRef.current.start === 0 && caretPositionRef.current.end === 0 && (oldText === '' || oldText === '\n')) {
+            props.openBlockSelection()
         }
     }
 
@@ -1278,6 +1280,14 @@ const Text = (props) => {
         }
     }
 
+    const isToShowPlaceholder = () => {
+        return props.block.rich_text_block_contents.length === 1 && 
+        props.activeBlock === props.block.uuid &&
+        props.isEditable &&
+        (props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text === '\n' ||
+        props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text === '')
+    }
+
     /**
      * Changes the alignment of the text to the right, to the center or to the middle.
      * This changes the alignment on the hole block.
@@ -1340,7 +1350,7 @@ const Text = (props) => {
     })
 
     useEffect(() => {
-        if (isWaitingForCustomInput.current) {
+        if (isWaitingForCustomInput.current || props.activeBlock === null) {
             inputRef.current.blur()
         }
         if (props.activeBlock === props.block.uuid && (!isWaitingForCustomInput.current || !props.isUnmanagedContentSelectorOpen)) {
@@ -1414,7 +1424,7 @@ const Text = (props) => {
                 onBlur={(e) => onBlur()}
                 multiline={true}
                 scrollEnabled={false}
-                onKeyPress={(e) => onKeyDown(e)}
+                onKeyPress={(e) => onKeyDown(e, e.nativeEvent.key)}
                 onSelectionChange={(e) => onSelectText(e)}
                 onChangeText={(text) => {
                     onInput(text, keyDownPressedRef.current, keyDownPressedRef.current)  
@@ -1453,33 +1463,13 @@ const Text = (props) => {
     const renderWeb = () => {
         return (
             <div>
-                {props.block.rich_text_block_contents.length === 1 && 
-                props.activeBlock === props.block.uuid &&
-                props.isEditable &&
-                (props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text === '\n' ||
-                props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text === '') ? (
+                {isToShowPlaceholder() ? (
                     <BlockTextPlaceholderContainer>
                         <BlockTextPlaceholderText>
                             {strings['pt-br']['richTextTextBlockPlaceholder']}
                         </BlockTextPlaceholderText>
                     </BlockTextPlaceholderContainer>
                 ) : ''}
-                <Options
-                isBlockActive={props.activeBlock === props.block.uuid && props.isEditable}
-                contentOptions={
-                    <TextContentOptions 
-                    onChangeSelectionState={onChangeSelectionState}
-                    stateOfSelection={stateOfSelection}
-                    />
-                }
-                blockOptions={
-                    <TextBlockOptions
-                    alignmentTypeId={props.block.text_option?.alignment_type}
-                    onChangeAlignmentType={onChangeAlignmentType}
-                    types={props.types}
-                    />
-                }
-                />
                 <BlockText
                 ref={inputRef} 
                 className={'notranslate'}
@@ -1490,7 +1480,7 @@ const Text = (props) => {
                 onPaste={(e) => onPaste(e)}
                 onFocus={(e) => onFocus()}
                 onSelect={(e) => onSelectText(e)}
-                onKeyDown={(e) => onKeyDown(e)}
+                onKeyDown={(e) => onKeyDown(e, e.nativeEvent.key)}
                 onInput={(e) => {
                     e.preventDefault()
                     onInput(inputRef.current.innerText, e.nativeEvent.inputType, e.nativeEvent.data)

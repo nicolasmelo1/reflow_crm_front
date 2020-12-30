@@ -4,8 +4,9 @@ import { Modal } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
-    position: absolute; 
     display: flex; 
+    position: absolute;
+    left: 0;
     flex-wrap: wrap;
     border-radius: 5px; 
     border: 1px solid #f2f2f2; 
