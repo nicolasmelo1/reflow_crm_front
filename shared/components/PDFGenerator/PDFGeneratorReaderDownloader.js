@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
+import axios from 'axios'
 import RichText from '../RichText'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { strings } from '../../utils/constants'
@@ -108,57 +109,33 @@ const PDFGeneratorReaderDownloader = (props) => {
      */
     const onDownloadDocument = () => {
         setIsDownloadingFile(true)
-        const jsPDF = require('jspdf').jsPDF
-        const html2canvas = require('html2canvas')
-        const doc = new jsPDF({
-            orientation: 'portrait', 
-            unit: 'px', 
-            format: 'a4', 
-            hotfixes: ['px_scaling']
-        })
-
-        html2canvas(documentRef.current, { scale: 1 }).then(canvas => {
-            const padding = 20
-            const pageHeight = 1123
-            const pageWidth = 794
-
-            for (let i = 0; i <= documentRef.current.clientHeight/(pageHeight+padding); i++) {
-                //! This is all just html2canvas stuff
-                const sourceImageY = ((pageHeight - padding)*i) // start 1123 pixels down for every new page
-
-                window.onePageCanvas = document.createElement("canvas")
-                onePageCanvas.setAttribute('width', pageWidth)
-                onePageCanvas.setAttribute('height', pageHeight)
-                const canvasContext = onePageCanvas.getContext('2d')
-                // details on this usage of this function: 
-                // https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Using_images#Slicing
-                canvasContext.fillStyle = "#FFFFFF"
-                canvasContext.fillRect(0, 0, pageWidth, pageHeight)
-                canvasContext.drawImage(canvas, 0, sourceImageY, pageWidth, pageHeight+padding, 0, 0, pageWidth, pageHeight)
-
-                // document.body.appendChild(canvas);
-                const canvasDataURL = onePageCanvas.toDataURL("image/png", 1.0)
-
-                //! If we're on anything other than the first page,
-                // add another page
-                if (i > 0) {
-                    doc.addPage() //8.5" x 11" in pts (in*72)
-                }
-                //! now we declare that we're working on that page
-                doc.setPage(i+1)
-                //! now we add content to that page!
-                doc.addImage(canvasDataURL, 'PNG', 20, 20)
+        const page = `
+            <html>
+                <head>
+                    ${document.head.innerHTML.toString()}
+                </head>
+                <body style="font-family: Roboto !important;">
+                    ${documentRef.current.innerHTML.toString()}
+                </body>
+            </html>
+        `
+        props.onCheckIfCanDownloadPDF(sourceRef.current, props.formName, props.templateData.id).then(response => {
+            if (response && response.status === 200) {
+                axios.post('/api/generate_pdf', {html: page}, {
+                    responseType: 'blob'
+                }).then(response => {
+                    const blob = new Blob([response.data], {type: 'application/pdf'})
+                    const link = document.createElement('a')
+                    link.href = window.URL.createObjectURL(blob)
+                    link.download = `${props.templateData.name}.pdf`
+                    link.click()
+                    link.remove()
+                })
+            } else {
+                props.onAddNotification(strings['pt-br']['pdfGeneratorDownloaderErrorMessage'], 'error')
             }
-
-            props.onCheckIfCanDownloadPDF(sourceRef.current, props.formName, props.templateData.id).then(response => {
-                if (response && response.status === 200) {
-                    doc.save(`${props.templateData.name}.pdf`)
-                } else {
-                    props.onAddNotification(strings['pt-br']['pdfGeneratorDownloaderErrorMessage'], 'error')
-                }
-                setIsDownloadingFile(false)
-            })  
-        })
+            setIsDownloadingFile(false)
+        })  
         
     }
 

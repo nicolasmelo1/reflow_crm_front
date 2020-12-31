@@ -11,18 +11,6 @@ const Block = (props) => {
     const [isBlockSelectionOpen, setIsBlockSelectionOpen] = useState(false)
     const blockSelectorRef = React.useRef(null)
 
-    /** 
-     * This is used so we can change the current block type of a block. Notice that when we change the block type
-     * we actually change the hole structure of the block data and it cannot be retrieved.
-     * 
-     * @param {BigInteger} blockTypeId - The instance id of the blockType to use now for the current block.
-     */
-    const changeBlockType = (blockTypeId) => {
-        props.block.block_type = blockTypeId
-        setIsBlockSelectionOpen(false)
-        props.updateBlocks(props.block.uuid)
-    }
-
     /**
      * Opens the selection of possible blocks that a user can select.
      */
@@ -122,11 +110,40 @@ const Block = (props) => {
         props.updateBlocks(null)
     }
 
+    /** 
+     * This is used so we can change the current block type of a block. Notice that when we change the block type
+     * we actually change the hole structure of the block data and it cannot be retrieved.
+     * 
+     * @param {BigInteger} blockTypeId - The instance id of the blockType to use now for the current block.
+     */
+    const changeBlockType = (blockTypeId) => {
+        props.block.block_type = blockTypeId
+        setIsBlockSelectionOpen(false)
+        props.addToolbar({
+            blockUUID: props.block.uuid, 
+            obligatoryBlockProps: {
+                onDeleteBlock: onDeleteBlock,
+                onDuplicateBlock: onDuplicateBlock
+            }
+        })
+        props.updateBlocks(props.block.uuid)
+    }
+
     const onMouseDownWeb = (e) => {
         if (blockSelectorRef.current && !blockSelectorRef.current.contains(e.target)) {
             setIsBlockSelectionOpen(false)
         }
     }
+
+    useEffect(() => {
+        props.addToolbar({
+            blockUUID: props.block.uuid, 
+            obligatoryBlockProps: {
+                onDeleteBlock: onDeleteBlock,
+                onDuplicateBlock: onDuplicateBlock
+            }
+        })
+    }, [props.activeBlock])
 
     useEffect(() => {
         if (process.env['APP'] === 'web') {
@@ -151,6 +168,12 @@ const Block = (props) => {
     // to prevent adding the openBlockSelection of the parent block and not the child.
     const newProps = {
         ...props, 
+        toolbarProps: {
+            obligatoryBlockProps: {
+                onDeleteBlock: onDeleteBlock,
+                onDuplicateBlock: onDuplicateBlock
+            }
+        },
         onDuplicateBlock: onDuplicateBlock,
         onDeleteBlock: onDeleteBlock,
         openBlockSelection: openBlockSelection,

@@ -26,6 +26,7 @@ class RichText extends React.Component {
         this.flatListRef = React.createRef()
         this.toolbar = React.createRef()
         this.onFocusHeap = []
+        this.nextActiveBlock = null
         this.toolbar.current = {
             blockUUID: null,
             contentOptionComponent: null,
@@ -185,9 +186,14 @@ class RichText extends React.Component {
      * to see how this works.
      * 
      * Important: When the state changes here we propagate the changes to the parent. When we propagate the changes to the parent the changes
-     * does not propagate back.
+     * does not propagate back to this component, if that would be the case we would be in an eternal loop.
      */
     updateBlocks = (activeBlock, isFocus=false, blockIndex = null) => {
+        // we need this when we set null, we need to check after the next active block is null if we haven't changed it yet. If we haven't then
+        // we update the active block to null. We NEED to do this because we have onBlur event, which can cause the toolbar to clip. Since we don't
+        // want this from happening, when we set the next active block to null we put this change in a delay, if the state changes before it
+        // we don't set it to null.
+        this.nextActiveBlock = activeBlock
         const update = (activeBlock) => {
             if (this.props.onStateChange) {
                 this.props.onStateChange({...this.state.data})
@@ -218,8 +224,10 @@ class RichText extends React.Component {
                 }
             }
         } else if (activeBlock === null) {
+            // When we dismiss the focus it can cause some weird behaviour. Because some blocks, like text, can have an event for blur (so when the user
+            // dismiss the block we update the state here.) Because of this
             makeDelay(() => {
-                if (activeBlock === null) {
+                if (this.nextActiveBlock === null) {
                     update(activeBlock)
                 }
             })
@@ -240,27 +248,34 @@ class RichText extends React.Component {
         }))
     }
 
-    addToolbar = (blockUUID, contentOptionComponent, contentOptionProps, blockOptionComponent, blockOptionProps, obligatoryBlockProps) => {
-        if (
-            this.state.activeBlock === blockUUID && 
-            (
-                blockUUID !== this.toolbar.current.blockUUID || 
-                !isEqual(contentOptionProps, this.toolbar.current.contentOptionProps) ||
-                !isEqual(blockOptionProps, this.toolbar.current.blockOptionProps) ||
-                !isEqual(obligatoryBlockProps, this.toolbar.current.obligatoryBlockProps)
-            )
-        ) {
-            this.toolbar.current = {
-                blockUUID: blockUUID,
-                contentOptionComponent: contentOptionComponent,
-                contentOptionProps: deepCopy(contentOptionProps),
-                blockOptionComponent: blockOptionComponent,
-                blockOptionProps: deepCopy(blockOptionProps),
-                obligatoryBlockProps: deepCopy(obligatoryBlockProps)
+    addToolbar = (options = {}) => {
+        if (options?.obligatoryBlockProps?.onDeleteBlock === undefined && 
+            options?.obligatoryBlockProps?.onDuplicateBlock === undefined &&
+            options?.blockUUID === undefined) {
+                throw TypeError('`obligatoryBlockProps` and `blockUUID` are required parameters on the `addToolbar` function')
             }
-            this.setState(state => ({
-                ...state
-            }))
+        else {
+            if (
+                this.state.activeBlock === options.blockUUID && 
+                (
+                    options.blockUUID !== this.toolbar.current.blockUUID || 
+                    !isEqual(options?.contentOptionProps, this.toolbar.current.contentOptionProps) ||
+                    !isEqual(options?.blockOptionProps, this.toolbar.current.blockOptionProps) ||
+                    !isEqual(options?.obligatoryBlockProps, this.toolbar.current.obligatoryBlockProps)
+                )
+            ) {
+                this.toolbar.current = {
+                    blockUUID: options.blockUUID,
+                    contentOptionComponent: options?.contentOptionComponent,
+                    contentOptionProps: deepCopy(options?.contentOptionProps),
+                    blockOptionComponent: options?.blockOptionComponent,
+                    blockOptionProps: deepCopy(options?.blockOptionProps),
+                    obligatoryBlockProps: deepCopy(options.obligatoryBlockProps)
+                }
+                this.setState(state => ({
+                    ...state
+                }))
+            }
         }
     }
 
@@ -303,12 +318,12 @@ class RichText extends React.Component {
         let toolbarProps = {
             ...this.toolbar.current.obligatoryBlockProps
         }
-        if (this.toolbar.current.contentOptionComponent !== null) {
+        if (![null, undefined].includes(this.toolbar.current.contentOptionComponent)) {
             toolbarProps['contentOptions'] = (
                 <ContentOptionComponent {...this.toolbar.current.contentOptionProps}/>
             )
         }
-        if (this.toolbar.current.blockOptionComponent !== null) {
+        if (![null, undefined].includes(this.toolbar.current.blockOptionComponent)) {
             toolbarProps['blockOptions'] = (
                 <BlockOptionComponent {...this.toolbar.current.blockOptionProps}/>
             )
@@ -355,7 +370,7 @@ class RichText extends React.Component {
                 }}
                 />
                 <KeyboardAvoidingView behavior="padding" style={{ flex: 1}}>
-                    {this.state.activeBlock !== null && this.props.isEditable ? (
+                    {this.state.activeBlock !== this.toolbar.current.blockUUID && ![false, null, undefined].includes(this.props.isEditable) ? (
                         <Toolbar
                         isBlockActive={true}
                         {...this.getToolbarProps()}
@@ -370,7 +385,7 @@ class RichText extends React.Component {
     renderWeb = () => {
         return (
             <RichTextContainer className={'rich-text-container'} height={this.props.height}>
-                {this.state.activeBlock !== null && this.props.isEditable ? (
+                {this.state.activeBlock !== null && this.props.isEditable !== false ? (
                     <Toolbar
                     width={this.state.webToolbarWidth}
                     isBlockActive={true}

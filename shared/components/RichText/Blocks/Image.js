@@ -51,8 +51,6 @@ const Image = (props) => {
                         alignItems: 'center',
                         position: 'absolute',
                         backgroundColor: '#bfbfbf',
-                        left: 0,
-                        top: '40px',
                         height: '100px',
                         width: '200px',
                     }}>

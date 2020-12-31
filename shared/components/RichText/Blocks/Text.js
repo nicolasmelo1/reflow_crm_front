@@ -86,31 +86,22 @@ const Text = (props) => {
      */
     const mobileAddToolbar = () => {
         if (props.addToolbar) {
-            const blockUUID = props.block.uuid
-            const contentOptionComponent = TextContentOptions
-            const blockOptionComponent = TextBlockOptions
-            const contentOptionProps = {
+            props.toolbarProps.blockUUID = props.block.uuid
+            props.toolbarProps.contentOptionComponent = TextContentOptions
+            props.toolbarProps.blockOptionComponent = TextBlockOptions
+            props.toolbarProps.contentOptionProps = {
                 onOpenModal: setToolbarIsModalOpen,
                 onChangeSelectionState: onChangeSelectionState,
                 stateOfSelection: stateOfSelection
             }
-            const blockOptionProps = {
+            props.toolbarProps.blockOptionProps = {
                 alignmentTypeId: props.block.text_option?.alignment_type,
                 onChangeAlignmentType: onChangeAlignmentType,
                 types: props.types
             }
-            const obligatoryBlockProps = {
-                onDeleteBlock: props.onDeleteBlock,
-                onDuplicateBlock: props.onDuplicateBlock
-            }
             
             props.addToolbar(
-                blockUUID,
-                contentOptionComponent,
-                contentOptionProps,
-                blockOptionComponent,
-                blockOptionProps,
-                obligatoryBlockProps
+                props.toolbarProps
             )
         }
     }
@@ -773,7 +764,9 @@ const Text = (props) => {
     const onBlur = () => {
         // if we are waiting for a custom content we don't dismiss the active block so this way we know that is 
         // exactly THIS block that will contain the content.
-        if (props.activeBlock === props.block.uuid && isWaitingForCustomInput.current === false && isToolbarModalOpen === false) {
+        if (props.activeBlock === props.block.uuid && 
+            isWaitingForCustomInput.current === false && 
+            isToolbarModalOpen === false) {
             props.updateBlocks(null)
         }
     }
