@@ -109,10 +109,26 @@ const PDFGeneratorReaderDownloader = (props) => {
      */
     const onDownloadDocument = () => {
         setIsDownloadingFile(true)
+        let styles = ''
+        document.styleSheets.forEach(cssstylesheet => {
+            if (cssstylesheet.href) {
+                let style = `<link href="${cssstylesheet.href}" rel="stylesheet"> `
+                styles = styles + style
+
+            } else {
+                let style = '<style type="text/css"> '
+                style = style + cssstylesheet.rules.map(rule => rule.selectorText).join(' ')
+                style = style + ' </style>'
+                styles = styles + style
+            }
+        })
         const page = `
             <html>
                 <head>
-                    ${document.head.innerHTML.toString()}
+                    <meta charset="utf-8">
+                    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1">
+                    ${styles}
                 </head>
                 <body style="font-family: Roboto !important;">
                     ${documentRef.current.innerHTML.toString()}
