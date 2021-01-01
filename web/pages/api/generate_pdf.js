@@ -8,7 +8,7 @@ export default async function handler(req, res) {
         if (browsers <= maximumNumberOfBrowsers) {
             browsers ++
 
-            const browser = await puppeteer.launch({ headless: true, args: ['--disable-dev-shm-usage'] })
+            const browser = await puppeteer.launch({ headless: true, args: ['--disable-dev-shm-usage', '--no-sandbox'] })
             const page = await browser.newPage()
             await page.setContent(req.body.html, {waitUntil: 'networkidle0'})
             const pdf = await page.pdf({ format: 'A4' })
