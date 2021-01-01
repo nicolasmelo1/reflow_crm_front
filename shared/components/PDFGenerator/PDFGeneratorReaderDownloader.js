@@ -128,6 +128,11 @@ const PDFGeneratorReaderDownloader = (props) => {
                     <meta charset="utf-8">
                     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1">
+                    <style type="text/css">
+                        html {
+                            -webkit-print-color-adjust: exact;
+                        }
+                    </style>
                     ${styles}
                 </head>
                 <body style="font-family: Roboto !important;">
@@ -135,6 +140,7 @@ const PDFGeneratorReaderDownloader = (props) => {
                 </body>
             </html>
         `
+
         props.onCheckIfCanDownloadPDF(sourceRef.current, props.formName, props.templateData.id).then(response => {
             if (response && response.status === 200) {
                 axios.post('/api/generate_pdf', {html: page}, {
@@ -146,13 +152,13 @@ const PDFGeneratorReaderDownloader = (props) => {
                     link.download = `${props.templateData.name}.pdf`
                     link.click()
                     link.remove()
+                    setIsDownloadingFile(false)
                 })
             } else {
                 props.onAddNotification(strings['pt-br']['pdfGeneratorDownloaderErrorMessage'], 'error')
+                setIsDownloadingFile(false)
             }
-            setIsDownloadingFile(false)
-        })  
-        
+        })
     }
 
     /**

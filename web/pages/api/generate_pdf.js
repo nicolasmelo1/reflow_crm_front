@@ -3,6 +3,9 @@ const puppeteer = require('puppeteer')
 let browsers = 0
 const maximumNumberOfBrowsers = 10
 
+// This is why we use NEXT.js (and love it). By using this we can run puppeteer on the node backend of 
+// the next.js aplication without needing to touch our real backend. With puppeteer we can get a web 
+// page and generate a pdf from it. With this everything becomes slick and concise.
 export default async function handler(req, res) {
     if (req.method === 'POST') {
         if (browsers <= maximumNumberOfBrowsers) {
@@ -11,8 +14,10 @@ export default async function handler(req, res) {
             const browser = await puppeteer.launch({ headless: true, args: ['--disable-dev-shm-usage', '--no-sandbox'] })
             const page = await browser.newPage()
             await page.setContent(req.body.html, {waitUntil: 'networkidle0'})
-            const pdf = await page.pdf({ format: 'A4' })
-            
+            await page.emulateMediaType('screen')
+            const pdf = await page.pdf({
+                width:'794px', height: '1123px'
+            })
             await browser.close()
             browsers --
             res.setHeader('Content-Type', 'application/pdf')

@@ -20,6 +20,10 @@ import {
     LoginVisualizePasswordIcon
 } from '../../styles/Login'
 
+let Spinner = null
+if (process.env['APP'] === 'web') {
+    Spinner = require('react-bootstrap').Spinner
+}
 
 /**
  * This component handles the login of a user on the platform, it is important to understand a condition on the user onboarding
@@ -45,6 +49,7 @@ class Login extends React.Component {
         this.passwordRef = createRef()
         this.emailRef = createRef()
         this.state = {
+            isVerifying: false,
             visualizePassword: false,
             slideLogo: false,
             showLogo: false,
@@ -56,6 +61,8 @@ class Login extends React.Component {
             password: process.env.NODE_ENV === 'production' ? '' : 'Mudar123'
         }
     }
+
+    setIsVerifing = (isVerifying) => this.setState(state => ({...state, isVerifying: isVerifying}))
 
     /**
      * We don't have any special screen to send the reset password email to the user, we do this directly in the login screen.
@@ -114,10 +121,13 @@ class Login extends React.Component {
         // since he will not have written anything
         this.state.email = (this.state.email == '' && this.emailRef.current && this.emailRef.current.value ) ? this.emailRef.current.value : this.state.email
         this.state.password = (this.state.password == '' && this.passwordRef.current && this.passwordRef.current.value ) ? this.passwordRef.current.value : this.state.password
+        this.setIsVerifing(true)
         this.props.onAuthenticate({ email: this.state.email, password: this.state.password}).then(response => {
             if (!response) {
+                this.setIsVerifing(false)
                 this.props.onAddNotification(strings['pt-br']['loginUnknownLoginError'],'error')
             } else if (response.status !== 200) {
+                this.setIsVerifing(false)
                 this.props.onAddNotification(errors('pt-br', 'incorrect_pass_or_user'), 'error')
             } else {
                 // force types to be defines when logging in.
@@ -130,9 +140,11 @@ class Login extends React.Component {
                         if (process.env['APP'] === 'web') {
                             Router.push(paths.home().asUrl, paths.home(this.props.login.primaryForm).asUrl, { shallow: true })
                         } else {
+                            this.setIsVerifing(false)
                             this.props.setIsAuthenticated(true)
                         }
                     } else {
+                        this.setIsVerifing(false)
                         this.props.setAddTemplates(true)
                     }  
                 })
@@ -176,9 +188,10 @@ class Login extends React.Component {
                     </LoginInputContainer>
                     <LoginForgotPassword onClick={e=> this.onClickForgotPassword()}>{strings['pt-br']['loginRedefinePasswordButtonLabel']}</LoginForgotPassword>
                     <LoginButton type="submit" onClick={e => {
-                        e.preventDefault(); 
-                        this.handleLogin()
-                    }}>{strings['pt-br']['loginSubmitButtonLabel']}</LoginButton>
+                        this.state.isVerifying ? null : this.handleLogin()
+                    }}>
+                        {this.state.isVerifying ? (<Spinner animation="border" size="sm"/>) : strings['pt-br']['loginSubmitButtonLabel']}
+                    </LoginButton>
                     <LoginOnboardingButton onClick={e => {
                         this.redirectToOnboarding()
                     }}>
