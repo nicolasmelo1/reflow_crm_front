@@ -110,15 +110,15 @@ const PDFGeneratorReaderDownloader = (props) => {
     const onDownloadDocument = () => {
         setIsDownloadingFile(true)
         let styles = ''
-        document.styleSheets.forEach(cssstylesheet => {
+        Object.values(document.styleSheets).forEach(cssstylesheet => {
             if (cssstylesheet.href) {
-                let style = `<link href="${cssstylesheet.href}" rel="stylesheet"> `
+                let style = ` <link href="${cssstylesheet.href}" rel="stylesheet"> `
                 styles = styles + style
 
             } else {
-                let style = '<style type="text/css"> '
-                style = style + cssstylesheet.rules.map(rule => rule.selectorText).join(' ')
-                style = style + ' </style>'
+                let style = ' <style type="text/css"> '
+                style = style + Object.values(cssstylesheet.rules).map(rule => rule.cssText).join(' ')
+                style = style + ' </style> '
                 styles = styles + style
             }
         })
