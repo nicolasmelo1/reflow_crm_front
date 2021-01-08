@@ -8,7 +8,7 @@ module.exports = function(api) {
                 {
                     extensions: [".ios.js", ".android.js", ".js", ".json"],
                     alias: {
-                        "@shared": "../shared",
+                        "@shared": "../shared"
                     }
                 }
             ]

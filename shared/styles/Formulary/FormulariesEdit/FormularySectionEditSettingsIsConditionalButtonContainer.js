@@ -1,6 +1,13 @@
+import React from 'react'
+import { View } from 'react-native'
 import styled from 'styled-components'
-import { Col } from 'react-bootstrap'
+import dynamicImport from '../../../utils/dynamicImport'
 
-export default styled(Col)`
+const Col = dynamicImport('react-bootstrap', 'Col')
+
+export default process.env['APP'] === 'web' && Col ? 
+styled(Col)`
     margin: 5px
 `
+:
+styled(View)``

@@ -53,6 +53,7 @@ module.exports = withOffline({
                 ...config.resolve.alias,
                 '@react-native-community/async-storage': 'react-native-web/dist/exports/AsyncStorage/index.js',
                 '@fortawesome/react-native-fontawesome': '@fortawesome/react-fontawesome',
+                './dynamicImport.mobile': './dynamicImport.web',
                 "react-native": path.join(__dirname, 'node_modules', 'react-native-web'),
                 "expo": path.join(__dirname, 'node_modules', 'react-native-web')
             },
@@ -67,6 +68,8 @@ module.exports = withOffline({
             use: defaultLoaders.babel,
             include: [path.resolve(__dirname, '..', 'shared')]
         })
+
+        config.module.exprContextCritical = false
 
         return config
     }

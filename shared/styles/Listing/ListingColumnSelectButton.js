@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-import { Button } from 'react-bootstrap'
 
 export default process.env['APP'] === 'web' ? 
 styled.button`

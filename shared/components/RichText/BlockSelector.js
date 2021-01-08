@@ -1,11 +1,27 @@
 import React from 'react'
 import { View } from 'react-native'
+import { types } from '../../utils/constants'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import {
+    BlockSelectorContainer,
+    BlockSelectorButton,
+    BlockSelectorIcon
+} from '../../styles/RichText'
 
 /**
  * {Description of your component, what does it do}
  * @param {Type} props - {go in detail about every prop it recieves}
  */
 const BlockSelector = React.forwardRef((props, ref) => {
+    const iconByBlockName = (blockName) => {
+        return {
+            text: 'font',
+            image: 'image',
+            list: 'list',
+            table: 'table',
+        }[blockName]
+    }
+
     const renderMobile = () => {
         return (
             <View></View>
@@ -14,25 +30,16 @@ const BlockSelector = React.forwardRef((props, ref) => {
 
     const renderWeb = () => {
         return (
-            <div ref={ref} style={{position: 'absolute', transform: 'translate3d(0, 30px, 0)', maxHeight: '250px', width: '200px', backgroundColor: 'white'}}>
+            <BlockSelectorContainer ref={ref}>
                 {props.blockOptions.map((blockOption, index) => (
-                    <button 
+                    <BlockSelectorButton 
                     key={index}
                     onClick={(e) => {props.changeBlockType(blockOption.id)}}
-                    style={{
-                        display: 'block', 
-                        width: '100%', 
-                        borderBottom: '1px solid #f2f2f2', 
-                        borderLeft: 0, 
-                        borderTop:0, 
-                        borderRight: 0, 
-                        backgroundColor: '#fff',
-                        boxShadow: 'rgba(15, 15, 15, 0.05) 0px 0px 0px 1px, rgba(15, 15, 15, 0.1) 0px 3px 6px, rgba(15, 15, 15, 0.2) 0px 9px 24px'}}
                     >
-                        {blockOption.name}
-                    </button>
+                        <BlockSelectorIcon icon={iconByBlockName(blockOption.name)}/>{' ' + types('pt-br', 'block_type', blockOption.name)}
+                    </BlockSelectorButton>
                 ))}
-            </div>
+            </BlockSelectorContainer>
         )
     }
 

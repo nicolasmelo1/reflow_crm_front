@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { Modal, TextInput, SafeAreaView, useWindowDimensions } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { Spinner } from 'react-bootstrap'
 import RichText from '../RichText'
 import FieldSelectorOptionBox from './FieldSelectorOptionBox'
+import dynamicImport from '../../utils/dynamicImport'
 import { strings } from '../../utils/constants'
 import { 
     PDFGeneratorCreatorTemplateTitleContainer,
@@ -15,6 +15,7 @@ import {
     PDFGeneratorCreatorEditorRichTextContainer
 } from '../../styles/PDFGenerator'
 
+const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 
 const Custom = (props) => {
     return (

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Spinner } from 'react-bootstrap'
+import dynamicImport from '../../utils/dynamicImport'
 import { strings } from '../../utils/constants'
 import { 
     ListingTableHeaderContainer, 
@@ -9,6 +9,8 @@ import {
     ListingTableHeaderElementIconContainer,
     ListingTableHeaderElementIconSpinner
 } from '../../styles/Listing'
+
+const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 
 /**
  * Renders the header of the table and most of the table header logic.

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import { View, Text } from 'react-native'
-import { OverlayTrigger, Popover } from 'react-bootstrap'
+import React, { useEffect } from 'react'
+import { View } from 'react-native'
 import charts from '../../utils/charts'
+import dynamicImport from '../../utils/dynamicImport'
 import isEqual from '../../utils/isEqual'
 import { 
     ChartContainer,
@@ -15,12 +15,9 @@ import PopoverContent from '../../styles/PopoverContent'
 import chart from '../../utils/charts'
 import formatNumber from '../../utils/formatNumber'
 
-
-let WebView;
-if(process.env['APP'] !== 'web') {
-    WebView = require('react-native-webview').WebView
-}
-
+const WebView = dynamicImport('react-native-webview', 'WebView')
+const OverlayTrigger = dynamicImport('react-bootstrap', 'OverlayTrigger')
+const Popover = dynamicImport('react-bootstrap', 'Popover')
 
 /**
  * Since we render the totals the same way on the card and on the popover

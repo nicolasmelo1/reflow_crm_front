@@ -39,9 +39,11 @@ const getToken = async () => {
     }
 }
 
-const formEncodeData = (appendToKey, body, files = []) => {
+const formEncodeData = (appendToKey='', body=null, files = []) => {
     let formData = new FormData()
-    formData.append(appendToKey, JSON.stringify(body))
+    if (appendToKey !== '' && body !== null) {
+        formData.append(appendToKey, JSON.stringify(body))
+    }
     files.forEach(file=> {
         formData.append(file.name, file.file)
     })

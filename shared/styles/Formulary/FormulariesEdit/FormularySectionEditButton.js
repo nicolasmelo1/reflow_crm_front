@@ -1,7 +1,9 @@
-import styled from 'styled-components'
-import { Col } from 'react-bootstrap'
 import React from 'react'
+import { View } from 'react-native'
+import styled from 'styled-components'
+import dynamicImport from '../../../utils/dynamicImport'
 
+const Col = dynamicImport('react-bootstrap', 'Col')
 
 const getShadow = (props) => {
     if (props.isConditional) {
@@ -19,15 +21,8 @@ const getShadow = (props) => {
     }
 }
 
-const getShadowOnHover = (props) => {
-    if (props.isConditional) {
-        return 'inset 2px 2px 1px #323232, inset -2px -2px 1px #565656;'
-    } else {
-        return 'inset 5px 5px 10px #b3b3b3, inset -5px -5px 10px #ffffff'
-    }
-}
-
-export default styled(React.forwardRef(({isOpen, isConditional, ...rest}, ref) => <Col {...rest} ref={ref}/>))`
+export default process.env['APP'] === 'web' && Col ? 
+styled(React.forwardRef(({isOpen, isConditional, ...rest}, ref) => <Col {...rest} ref={ref}/>))`
     color: ${props=> props.isConditional ? '#f2f2f2': '#17242D'};
     border-radius: 5px;
     margin: 10px 10px;
@@ -40,3 +35,5 @@ export default styled(React.forwardRef(({isOpen, isConditional, ...rest}, ref) =
         background-color: ${props=> props.isConditional ? '#0f181e' : '#f2f2f2'};
     }
 `
+:
+styled(View)``

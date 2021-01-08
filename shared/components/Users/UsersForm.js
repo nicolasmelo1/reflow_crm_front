@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { View, Modal, SafeAreaView, Text, ActivityIndicator } from 'react-native'
-import { Spinner } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { Select } from '../Utils'
-import { FRONT_END_URL } from '../../config'
+import { FRONT_END_HOST } from '../../config'
+import dynamicImport from '../../utils/dynamicImport'
 import { types, paths, strings } from '../../utils/constants'
 import {
     UsersFormularyDuplicateButton,
@@ -28,6 +28,8 @@ import {
     UsersFormularyPermissionOptionTitle,
     UsersFormularyPermissionOptionContainer
 } from '../../styles/Users'
+
+const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 
 /**
  * This component is used for effectively create or update a new user. This is the formulary that the admin sees
@@ -282,7 +284,7 @@ const UsersForm = (props) => {
             option_accessed_by_user: optionsUserHaveAccess.map(optionAccessedBy => ({field_option_id: optionAccessedBy})),
             form_accessed_by_user: formulariesUserHaveAccess.map(formularyAccessedBy => ({form_id: formularyAccessedBy})),
             change_password_url: (process.env['APP']=== 'web') ? window.location.origin + paths.changepassword().asUrl + '?temp_pass={}' : 
-                                                                 FRONT_END_URL + paths.changepassword().asUrl + '?temp_pass={}'
+                                  FRONT_END_HOST + paths.changepassword().asUrl + '?temp_pass={}'
         }
         props.onSubmitForm(data).then(response => {
             if (response && response.status === 200) {

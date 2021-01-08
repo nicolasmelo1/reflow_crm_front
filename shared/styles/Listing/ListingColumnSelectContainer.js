@@ -1,7 +1,12 @@
+import React from 'react'
+import { View } from 'react-native'
 import styled from 'styled-components'
-import { Dropdown } from 'react-bootstrap'
+import dynamicImport from '../../utils/dynamicImport'
 
-export default styled(Dropdown)`
+const Dropdown = dynamicImport('react-bootstrap', 'Dropdown')
+
+export default process.env['APP'] === 'web' && Dropdown ? 
+styled(Dropdown)`
     @media(max-width: 640px) {
         width: 100%;
     };
@@ -9,3 +14,5 @@ export default styled(Dropdown)`
         float: right;
     }
 `
+:
+styled(View)``

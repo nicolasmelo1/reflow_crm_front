@@ -13,6 +13,7 @@ import COMPANY from './company'
 import USERS from './users'
 import RICH_TEXT from './rich_text'
 import PDF_GENERATOR from './pdf_generator'
+import DRAFT from './draft'
 
 export default {
     CHANGE_PASSWORD,
@@ -29,5 +30,6 @@ export default {
     BILLING,
     USERS,
     RICH_TEXT,
-    PDF_GENERATOR
+    PDF_GENERATOR,
+    DRAFT
 }

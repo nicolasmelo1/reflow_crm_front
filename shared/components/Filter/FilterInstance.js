@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import { View } from 'react-native'
-import { Dropdown } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import { FilterInputGroup, FilterInputDropdownButton, FilterInput, FilterDeleteButton, FilterDropdownMenu } from '../../styles/Filter'
 import DateRangePicker from '../Utils/DateRangePicker'
 import { Select } from '../Utils'
 import { stringToJsDateFormat, jsDateToStringFormat } from '../../utils/dates'
+import dynamicImport from '../../utils/dynamicImport'
 import { strings } from '../../utils/constants'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+
+const Dropdown = dynamicImport('react-bootstrap', 'Dropdown')
 
 /**
  * Holds the data of a single filter, we can have multiple filters, but this holds just one filter

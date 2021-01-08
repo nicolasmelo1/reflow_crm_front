@@ -1,7 +1,14 @@
 import React from 'react'
-import { Dropdown } from 'react-bootstrap'
+import dynamicImport from '../../utils/dynamicImport'
 import { strings } from '../../utils/constants'
-import { ListingColumnSelectButton, ListingColumnSelectItemsContainer, ListingColumnSelectItems, ListingColumnSelectContainer } from '../../styles/Listing'
+import { 
+    ListingColumnSelectButton, 
+    ListingColumnSelectItemsContainer, 
+    ListingColumnSelectItems, 
+    ListingColumnSelectContainer 
+} from '../../styles/Listing'
+
+const Dropdown = dynamicImport('react-bootstrap', 'Dropdown')
 
 /**
  * This component contains the user selected columns button login, the button can be found

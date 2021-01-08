@@ -6,17 +6,11 @@ import { TextBlockOptions } from '../Toolbar/BlockOptions'
 import { TextContentOptions } from '../Toolbar/ContentOptions'
 import { strings } from '../../../utils/constants'
 import isEqual from '../../../utils/isEqual'
-import Toolbar from '../Toolbar'
 import { 
     BlockText,
     BlockTextPlaceholderContainer,
     BlockTextPlaceholderText
 } from '../../../styles/RichText'
-
-let WebView;
-if(process.env['APP'] !== 'web') {
-    WebView = require('react-native-webview').WebView
-}
 
 
 /**
@@ -84,7 +78,7 @@ const Text = (props) => {
      * the state changes that you need. (for example, here we are listening for changes in props and stateOfSelection, every other state
      * change is irrelevant. When any of this states changes we want the toolbar to update accordingly.)
      */
-    const mobileAddToolbar = () => {
+    const addToolbar = () => {
         if (props.addToolbar) {
             props.toolbarProps.blockUUID = props.block.uuid
             props.toolbarProps.contentOptionComponent = TextContentOptions
@@ -880,8 +874,8 @@ const Text = (props) => {
      * 
      * UNHANDLED CONTENTS: 
      * Those contents are contents that should not be handled by the text component itself.
-     * What we do is check if the inserted text is to open an unhandled selection box (like sometimes you may want that
-     * if the user types '@' we will display the users. Sometimes typing the same key we will open a box showing
+     * What we do is check if the inserted text is to open an unhandled selection box (for example, sometimes you may want that
+     * if the user types '@' we will display a list of the users. Sometimes typing the same key we will open a box showing
      * the fields of a formulary)
      * 
      * @param {*} text 
@@ -1019,7 +1013,15 @@ const Text = (props) => {
                 caretPositionRef.current.end = caretPositionRef.current.start
 
                 const indexOfBlockInContext = props.contextBlocks.findIndex(block => block.uuid === props.block.uuid)
-                const newBlock = props.createNewTextBlock({ order: props.contextBlocks.length+1, richTextBlockContents: contentsOfNextBlock })
+                const newBlock = props.createNewBlock({ 
+                    order: props.contextBlocks.length+1, 
+                    richTextBlockContents: contentsOfNextBlock,
+                    blockTypeId: props.getBlockTypeIdByName('text'),
+                    textOptions: {
+                        id: null,
+                        alignment_type: props.getAligmentTypeIdByName('left')
+                    }
+                })
                 props.contextBlocks.splice(indexOfBlockInContext + 1, 0, newBlock)
                 activeBlockRef.current = newBlock.uuid
                 props.updateBlocks(newBlock.uuid)
@@ -1353,7 +1355,7 @@ const Text = (props) => {
     }, [props.activeBlock, props.unmanagedContentValue, props.isUnmanagedContentSelectorOpen])
 
     useEffect(() => {
-        mobileAddToolbar()
+        addToolbar()
     }, [props, stateOfSelection])
 
     useEffect(() => {
@@ -1428,7 +1430,6 @@ const Text = (props) => {
                     {props.block.rich_text_block_contents.map((content, index) => {
                         if (index === props.block.rich_text_block_contents.length - 1 && content.text.substring(content.text.length-1, content.text.length) === '\n') {
                             props.block.rich_text_block_contents[index].text = content.text.substring(0, content.text.length-1)
-                            //content.text = content.text.substring(0, content.text.length-1)
                         }
                         if (content.is_custom) {
                             const { component, text } = props.renderCustomContent(content)

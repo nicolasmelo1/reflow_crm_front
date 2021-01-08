@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { View } from 'react-native'
 import deepCopy from '../../../utils/deepCopy'
+import delay from '../../../utils/delay'
 import generateUUID from '../../../utils/generateUUID'
 import BlockSelector from '../BlockSelector'
+
+
+const makeDelay = delay(100)
+
 /**
  * {Description of your component, what does it do}
  * @param {Type} props - {go in detail about every prop it recieves}
@@ -22,7 +27,19 @@ const Block = (props) => {
      * Creates a new content with options if they are defined.
      * 
      * @param {Object} options = {
-     *      isBold: {String} - If the new content is bold
+     *      isBold: {Boolean} - If the new content is bold
+     *      isCode: {Boolean} - If the content is a code
+     *      isItalic: {Boolean} - If the content is italic
+     *      isUnderline: {Boolean} - If the content is underlined 
+     *      isCustom: {Boolean} - If the content is a custom content (custom contents are not handled by the Rich text itself)
+     *      customValue: {String} - If the content is custom we can use this custom value so the parent components can know what to render
+     *      latexEquation: {String} - Not yet defined and handled by the rich text.
+     *      link: {String} - Not yet defined and handled by the rich text.
+     *      markerColor: {String} - The hex color of the marker (the background color)
+     *      order: {BigInteger} - The order of the content, be cautious about it, this can lead to bugs if not set correctly
+     *      text: {String} - The value itself of the content.
+     *      textSize: {BigInteger} - The size of the text in points for web or pixels for mobile to set.
+     *      textColor: {String} - The hex color of the text itself.
      * }
      */
     const createNewContent = (options = {}) => {
@@ -59,21 +76,30 @@ const Block = (props) => {
             text_color: textColor ? textColor : '',
         }
     }
-
-    const createNewTextBlock = (options = {}) => {
-        const { alignmentTypeId, order, richTextBlockContents } = options
-
+    
+    /**
+     * Used for creating a new block.
+     * 
+     * @param {Object} options = {
+     *      order: {BigInteger} - The order of the block, be cautious about it, this can lead to bugs if not set correctly 
+     *      richTextBlockContents: {Array<Objects>} - Array of contents, you can look for `createNewContent()` function to see the contract
+     *      blockTypeId: {BigInteger} - The id of the block type to use. Is it a text, an image? What is it?
+     *      textOption: {Object} - custom options for `text` block types, you should know the contract inside of your block.
+     *      listOptions: {Object} - custom options for `list` block types, you should know the contract inside of your block.
+     *      imageOptions: {Object} - custom options for `image` block types, you should know the contract inside of your block.
+     *      tableOptions: {Object} - custom options for `table` block types, you should know the contract inside of your block.     
+     * }
+     */
+    const createNewBlock = (options = {}) => {
+        const { order, richTextBlockContents, blockTypeId} = options
         return {
             id: null,
             uuid: generateUUID(),
-            image_option: null,
-            list_option: null,
-            text_option: {
-                id: null,
-                alignment_type: alignmentTypeId ? alignmentTypeId : props.getAligmentTypeIdByName('left')
-            },
-            table_option: null,
-            block_type: props.getBlockTypeIdByName('text'),
+            image_option: ![null, undefined].includes(options.imageOptions) ? options.imageOptions : null,
+            list_option: ![null, undefined].includes(options.listOptions) ? options.listOptions : null,
+            text_option: ![null, undefined].includes(options.textOptions) ? options.textOptions : null,
+            table_option: ![null, undefined].includes(options.tableOptions) ? options.tableOptions : null,
+            block_type: blockTypeId,
             order: order,
             rich_text_block_contents: richTextBlockContents ? richTextBlockContents.map(content => ({...content, id: null, uuid: generateUUID()})) : [createNewContent({order: 0, text: ''})]
         }
@@ -95,6 +121,10 @@ const Block = (props) => {
         }
     }
 
+    /**
+     * Duplicates this current block to a new block below it. When we duplicate we DO NOT automatically select
+     * the next one.
+     */
     const onDuplicateBlock = () => {
         if (props.onDuplicateBlock) {
             props.onDuplicateBlock()
@@ -129,6 +159,11 @@ const Block = (props) => {
         props.updateBlocks(props.block.uuid)
     }
 
+    /**
+     * This is for closing the block selector container when the user clicks outside of the block selector.
+     * 
+     * @param {Object} e - The event object.
+     */
     const onMouseDownWeb = (e) => {
         if (blockSelectorRef.current && !blockSelectorRef.current.contains(e.target)) {
             setIsBlockSelectionOpen(false)
@@ -136,12 +171,15 @@ const Block = (props) => {
     }
 
     useEffect(() => {
-        props.addToolbar({
-            blockUUID: props.block.uuid, 
-            obligatoryBlockProps: {
-                onDeleteBlock: onDeleteBlock,
-                onDuplicateBlock: onDuplicateBlock
-            }
+        // if the block is active we automatically add the toolbar since every toolbar have obligatory block props.
+        makeDelay(() => {
+            props.addToolbar({
+                blockUUID: props.block.uuid, 
+                obligatoryBlockProps: {
+                    onDeleteBlock: onDeleteBlock,
+                    onDuplicateBlock: onDuplicateBlock
+                }
+            })
         })
     }, [props.activeBlock])
 
@@ -164,8 +202,8 @@ const Block = (props) => {
 
     // we use this because we always pass the props directly, but since a block can contain another block, we
     // need to update the references to the child and not the parent props. So let's say we defined openBlockSelection
-    // in the parent component and the parent component passes this and other props to the children. We need this
-    // to prevent adding the openBlockSelection of the parent block and not the child.
+    // in the parent component and the parent component passes this and other props to the children. We need this `newProps` 
+    // object to prevent adding the openBlockSelection of the parent block and not the child.
     const newProps = {
         ...props, 
         toolbarProps: {
@@ -178,7 +216,7 @@ const Block = (props) => {
         onDeleteBlock: onDeleteBlock,
         openBlockSelection: openBlockSelection,
         createNewContent: createNewContent,
-        createNewTextBlock: createNewTextBlock
+        createNewBlock: createNewBlock
     }
     const Container = process.env['APP'] === 'web' ? `div`: View
     const Component = blocks[props.getBlockTypeNameById(props.block.block_type)].default

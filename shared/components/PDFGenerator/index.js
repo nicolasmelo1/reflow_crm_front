@@ -8,8 +8,14 @@ import PDFGeneratorReader from './PDFGeneratorReader'
 
 
 /**
- * {Description of your component, what does it do}
- * @param {Type} props - {go in detail about every prop it recieves}
+ * This view is responsible for rendering pdf templates. We have two possible states here:
+ * 
+ * - We are creating a pdf template, so the variables displayed to the user are the field names.
+ * - We are reading a pdf template and are prior from downloading, so the variables displayed to the user are
+ * field values.
+ * 
+ * @param {Boolean} isReader - Set if the PDF template is in reader state (look at the explanation above). Defaults to false
+ * @param {BigInteger} formId - if the pdf template is in reader state, we need the formId so we can retrieve the formValue options
  */
 class PDFGenerator extends React.Component {
     constructor(props) {

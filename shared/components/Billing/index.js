@@ -1,11 +1,10 @@
 import React from 'react'
 import { View } from 'react-native'
-import { Spinner } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import creditCardType from 'credit-card-type'
 import { VINDI_PUBLIC_API, VINDI_PUBLIC_API_KEY } from '../../config'
+import dynamicImport from '../../utils/dynamicImport'
 import { strings } from '../../utils/constants'
 import actions from '../../redux/actions'
 import PaymentForm from './PaymentForm'
@@ -20,6 +19,9 @@ import {
     BillingExpandableCardIcon,
     BillingExpandableCardError
 } from '../../styles/Billing'
+
+const creditCardType = dynamicImport('credit-card-type', '')
+const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 
 /**
  * This component is responsible for holding the billing formulary.

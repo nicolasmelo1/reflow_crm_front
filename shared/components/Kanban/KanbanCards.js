@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { Spinner } from 'react-bootstrap'
 import { 
     KanbanCardsContainer,
     KanbanCardContainer, 
@@ -8,7 +7,10 @@ import {
     KanbanLoadMoreDataButton
 } from '../../styles/Kanban'
 import { strings } from '../../utils/constants'
+import dynamicImport from '../../utils/dynamicImport'
 
+
+const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 
 /**
  * This component controls all of the cards in a SINGLE dimension

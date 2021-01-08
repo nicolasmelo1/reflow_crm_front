@@ -1,14 +1,25 @@
-import { Row, Col } from 'react-bootstrap'
-import { View, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
-import { SidebarMenu, SidebarToggle, SidebarToggleContainer, SidebarContainer, SidebarTopButtonsContainer, SidebarEditTemplateButton, SidebarAddNewTemplateButton } from '../../styles/Sidebar' // not implemented in RN
+import { View, Text, TouchableOpacity } from 'react-native'
+import axios from 'axios'
 import SidebarGroup from './SidebarGroup'
 import SidebarGroupEdit from './SidebarGroupEdit'
 import actions from '../../redux/actions'
 import { connect } from 'react-redux'
+import dynamicImport from '../../utils/dynamicImport'
 import { strings } from '../../utils/constants'
 import isAdmin from '../../utils/isAdmin'
-import axios from 'axios'
+import { 
+    SidebarMenu, 
+    SidebarToggle,
+    SidebarToggleContainer, 
+    SidebarContainer,
+    SidebarTopButtonsContainer, 
+    SidebarEditTemplateButton, 
+    SidebarAddNewTemplateButton 
+} from '../../styles/Sidebar' 
+
+const Col = dynamicImport('react-bootstrap', 'Col')
+const Row = dynamicImport('react-bootstrap', 'Row')
 
 /*** 
  * This is the sidebar of management pages, like kanban, listing and others, this side bar right now is only rendered in those pages.

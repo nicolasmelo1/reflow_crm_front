@@ -1,4 +1,8 @@
-import { OverlayTrigger, Tooltip } from 'react-bootstrap'
+import dynamicImport from '../utils/dynamicImport'
+
+const OverlayTrigger = dynamicImport('react-bootstrap', 'OverlayTrigger')
+const Tooltip = dynamicImport('react-bootstrap', 'Tooltip')
+
 
 /**
  * Pop over to show when the user hover a button or a element

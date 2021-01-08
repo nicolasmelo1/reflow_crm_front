@@ -1,7 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 import { TouchableOpacity } from 'react-native'
-import Button from 'react-bootstrap/Button'
+import dynamicImport from '../../utils/dynamicImport'
+
+const Button = dynamicImport('react-bootstrap', 'Button')
 
 export default process.env['APP'] === 'web' ?
 styled(Button)`

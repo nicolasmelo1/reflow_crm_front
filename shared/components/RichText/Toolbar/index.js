@@ -1,20 +1,30 @@
 import React, { useState, useEffect } from 'react'
 import { View } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { strings } from '../../../utils/constants'
+import Overlay from '../../../styles/Overlay'
 import {
     ToolbarContainer,
     ToolbarFullContainer,
     ToolbarOptionsSeparator,
     ToolbarDefaultBlockOptionsButton
 } from '../../../styles/RichText'
+
 /**
- * {Description of your component, what does it do}
+ * This is the toolbar, for a nicer api we wanted that every toolbar should be defined in each block itself and not
+ * on the rich text itself. With an API like this every block will be open to define its own custom toolbar when active.
+ * 
  * @param {Boolean} isBlockActive - {go in detail about every prop it recieves}
  */
 const Toolbar = (props) => {
     const toolbarRef = React.useRef(null)
     const [webToolbarWidth, setWebToolbarWidth] = useState(0)
 
+    /**
+     * Fired when the user resizes the window in web so we can make the toolbar shrink it's size.
+     * 
+     * @param {Object} e - The event object emmited by the browser
+     */
     const onResizeRichTextWeb = (e) => {
         setWebToolbarWidth(toolbarRef.current.closest('.rich-text-container').offsetWidth)
     } 
@@ -68,12 +78,16 @@ const Toolbar = (props) => {
                                 <ToolbarOptionsSeparator/>
                             ) : null}
                             <div style={{ display: 'flex', flexDirection: 'row'}}>
-                                <ToolbarDefaultBlockOptionsButton onClick={(e) => props.onDuplicateBlock()}>
-                                    <FontAwesomeIcon icon={'copy'}/>
-                                </ToolbarDefaultBlockOptionsButton>
-                                <ToolbarDefaultBlockOptionsButton onClick={(e) => props.onDeleteBlock()}>
-                                    <FontAwesomeIcon icon={'trash'}/>
-                                </ToolbarDefaultBlockOptionsButton>
+                                <Overlay text={strings['pt-br']['richTextToolbarDuplicateBlockButtonOverlay']}>
+                                    <ToolbarDefaultBlockOptionsButton onClick={(e) => props.onDuplicateBlock()}>
+                                        <FontAwesomeIcon icon={'copy'}/>
+                                    </ToolbarDefaultBlockOptionsButton>
+                                </Overlay>
+                                <Overlay text={strings['pt-br']['richTextToolbarDeleteBlockButtonOverlay']}>
+                                    <ToolbarDefaultBlockOptionsButton onClick={(e) => props.onDeleteBlock()}>
+                                        <FontAwesomeIcon icon={'trash'}/>
+                                    </ToolbarDefaultBlockOptionsButton>
+                                </Overlay>
                             </div>
                     </ToolbarContainer>
                 </div>

@@ -3,6 +3,8 @@ import { View } from 'react-native'
 import axios from 'axios'
 import RichText from '../RichText'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { FRONT_END_HOST } from '../../config'
+import dynamicImport from '../../utils/dynamicImport'
 import { strings } from '../../utils/constants'
 import { 
     PDFGeneratorReaderTopButtonsContainer,
@@ -16,11 +18,7 @@ import {
     PDFGeneratorReaderDownloaderDownloadButton
 } from '../../styles/PDFGenerator'
 
-let Spinner = null
-if (process.env['APP'] === 'web') {
-    Spinner = require('react-bootstrap').Spinner
-}
-
+const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 
 const Custom = (props) => {
     return (
@@ -143,7 +141,7 @@ const PDFGeneratorReaderDownloader = (props) => {
 
         props.onCheckIfCanDownloadPDF(sourceRef.current, props.formName, props.templateData.id).then(response => {
             if (response && response.status === 200) {
-                axios.post('/api/generate_pdf', {html: page}, {
+                axios.post(`${FRONT_END_HOST}api/generate_pdf`, {html: page}, {
                     responseType: 'blob'
                 }).then(response => {
                     const blob = new Blob([response.data], {type: 'application/pdf'})

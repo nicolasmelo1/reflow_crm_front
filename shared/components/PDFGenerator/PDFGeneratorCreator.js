@@ -4,6 +4,7 @@ import Router from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import PDFGeneratorCreatorEditor from './PDFGeneratorCreatorEditor'
 import Alert from '../Utils/Alert'
+import dynamicImport from '../../utils/dynamicImport'
 import { paths, strings } from '../../utils/constants'
 import {
     PDFGeneratorCreatorButtonsContainer,
@@ -17,10 +18,7 @@ import {
     PDFGeneratorCreatorTemplatesContainer
 } from '../../styles/PDFGenerator'
 
-let Swipeable = null
-if (process.env['APP'] !== 'web') {
-    Swipeable = require('react-native-gesture-handler').Swipeable
-}
+const Swipeable = dynamicImport('react-native-gesture-handler', 'Swipeable')
 
 /**
  * {Description of your component, what does it do}

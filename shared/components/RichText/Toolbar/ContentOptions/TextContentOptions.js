@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native'
+import dynamicImport from '../../../../utils/dynamicImport'
 import sleep from '../../../../utils/sleep'
 import {
     TextContentOptionBoldButton,
@@ -18,13 +19,11 @@ import {
     TextContentOptionFontSizeButton
 } from '../../../../styles/RichText'
 
-let OverlayTrigger = null
-if (process.env['APP'] === 'web') { 
-    OverlayTrigger = require('react-bootstrap').OverlayTrigger
-}
+const OverlayTrigger = dynamicImport('react-bootstrap', 'OverlayTrigger')
 
 /**
- * {Description of your component, what does it do}
+ * This block is the Toolbar options of the content for the Text block.
+ * 
  * @param {Type} props - {go in detail about every prop it recieves}
  */
 const TextContentOptions = (props) => {
@@ -78,6 +77,11 @@ const TextContentOptions = (props) => {
         '#66ccff50'
     ]
     
+    /**
+     * This sets that the TextColor selection is open so the user can select the new color of the text.
+     * 
+     * @param {Boolean} isOpen - sets the state of the TextColor selection box.
+     */
     const onChangeTextColorIsOpen = (isOpen) => {
         if (isOpen && isMarkerColorOptionOpen) {
             setIsMarkerColorOptionOpen(false)

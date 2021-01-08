@@ -1,5 +1,4 @@
 import React from 'react'
-import { Row, Col } from 'react-bootstrap'
 import axios from 'axios'
 import { connect } from 'react-redux'
 import KanbanConfigurationForm from './KanbanConfigurationForm'
@@ -7,8 +6,17 @@ import KanbanTable from './KanbanTable'
 import Filter from '../Filter'
 import actions from '../../redux/actions'
 import { strings } from '../../utils/constants'
-import { KanbanFilterIcon, KanbanFilterHolder, KanbanFilterContainer, KanbanFilterButton, KanbanConfigurationButton } from '../../styles/Kanban'
+import dynamicImport from '../../utils/dynamicImport'
+import { 
+    KanbanFilterIcon, 
+    KanbanFilterHolder, 
+    KanbanFilterContainer, 
+    KanbanFilterButton, 
+    KanbanConfigurationButton 
+} from '../../styles/Kanban'
 
+const Col = dynamicImport('react-bootstrap', 'Col')
+const Row = dynamicImport('react-bootstrap', 'Row')
 
 /**
  * This controls everything from the Kanban component, this component holds the Kanban table (with it's dimension and cards),

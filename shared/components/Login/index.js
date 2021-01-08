@@ -3,6 +3,7 @@ import { Text, TouchableOpacity } from 'react-native'
 import Router from 'next/router'
 import { connect } from 'react-redux';
 import actions from '../../redux/actions'
+import dynamicImport from '../../utils/dynamicImport'
 import agent from '../../utils/agent'
 import { strings, errors, paths } from '../../utils/constants'
 import { 
@@ -20,10 +21,8 @@ import {
     LoginVisualizePasswordIcon
 } from '../../styles/Login'
 
-let Spinner = null
-if (process.env['APP'] === 'web') {
-    Spinner = require('react-bootstrap').Spinner
-}
+const Spinner = dynamicImport('react-bootstrap', 'Spinner')
+
 
 /**
  * This component handles the login of a user on the platform, it is important to understand a condition on the user onboarding

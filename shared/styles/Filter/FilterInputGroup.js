@@ -1,9 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
-import { InputGroup } from 'react-bootstrap'
 import { View } from 'react-native'
+import dynamicImport from '../../utils/dynamicImport'
 
-export default process.env['APP'] === 'web' ?
+const InputGroup = dynamicImport('react-bootstrap', 'InputGroup')
+
+export default process.env['APP'] === 'web'?
 styled(InputGroup)`
     margin: 0 0 5px 0;
 `

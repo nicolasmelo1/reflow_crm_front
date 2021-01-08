@@ -1,6 +1,7 @@
-import Chart from 'chart.js'
 import formatNumber from './formatNumber'
+import dynamicImport from './dynamicImport'
 
+const Chart = dynamicImport('chart.js', '')
 
 const chart = (context, type, labels, values, numberFormat=null, maintainAspectRatio=true) => {
     let possibleColors = [

@@ -1,9 +1,11 @@
 import React from 'react'
-import { Row, Col } from 'react-bootstrap'
 import Link from 'next/link';
 import { SidebarCardBody, SidebarFormItem, SidebarLink } from '../../styles/Sidebar'
 import { paths } from '../../utils/constants'
+import dynamicImport from '../../utils/dynamicImport'
 
+const Col = dynamicImport('react-bootstrap', 'Col')
+const Row = dynamicImport('react-bootstrap', 'Row')
 
 const SidebarForm = (props) => {
     return (

@@ -1,9 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Popover } from 'react-bootstrap'
 import { View } from 'react-native'
+import dynamicImport from '../utils/dynamicImport'
 
-export default process.env['APP'] === 'web' ?
+const Popover = dynamicImport('react-bootstrap', 'Popover')
+
+export default process.env['APP'] === 'web' && Popover ?
 styled(Popover.Content)`
     overflow: auto;
     max-height: calc(var(--app-height) - 50px)

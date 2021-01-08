@@ -321,7 +321,10 @@ const strings = {
         billingCompanyFormularyZipCodeFieldLabel: 'CEP',
         billingCompanyFormularyStateFieldLabel: 'Estado',
         billingCompanyFormularyCityFieldLabel: 'Cidade',
+        richTextImageBlockButtonLabel: 'Clique para inserir uma imagem',
         richTextTextBlockPlaceholder: 'Digite aqui',
+        richTextToolbarDuplicateBlockButtonOverlay: 'Duplicar',
+        richTextToolbarDeleteBlockButtonOverlay: 'Excluir',
         pdfGeneratorOnRemoveTemplateAlertTitle: 'Atenção!',
         pdfGeneratorOnRemoveTemplateAlertMessage: 'Ao continuar a ação não poderá ser desfeita. Tem certeza que deseja continuar?',
         pdfGeneratorOnRemoveTemplateAlertAcceptButtonLabel: 'Continuar',
@@ -433,7 +436,11 @@ const strings = {
         individualChargeValueTypePerChartUser: 'Gráficos no Dashboard para cada usuário por página',
         profileTypeAdmin: 'Administrador',
         profileTypeCoordinator: 'Coordenador',
-        profileTypeSimpleUser: 'Analista'
+        profileTypeSimpleUser: 'Analista',
+        blockTypeImage: 'Imagem',
+        blockTypeText: 'Texto',
+        blockTypeTable: 'Tabela',
+        blockTypeList: 'Lista'
     }
 }
 

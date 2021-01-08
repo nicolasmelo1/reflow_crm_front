@@ -1,15 +1,17 @@
 import React from 'react'
 import axios from 'axios'
 import Router from 'next/router'
-import { Spinner } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import FormularySections from './FormularySections'
 import FormularySectionsEdit from './FormularySectionsEdit'
 import actions from '../../redux/actions'
 import { strings, paths } from '../../utils/constants'
+import dynamicImport from '../../utils/dynamicImport'
 import isAdmin from '../../utils/isAdmin'
 import { Formularies } from '../../styles/Formulary'
 import { PDFGeneratorButtonInFormulary } from '../../styles/PDFGenerator'
+
+const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 
 /**
  * IMPORTANT: You might want to read the README to understand how this and all of it's components work.

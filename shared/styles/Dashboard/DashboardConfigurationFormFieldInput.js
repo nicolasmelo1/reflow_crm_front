@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Form } from 'react-bootstrap'
 import { TextInput } from 'react-native'
 
 export default process.env['APP'] === 'web' ? 

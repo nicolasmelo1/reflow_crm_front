@@ -1,10 +1,10 @@
 import React from 'react'
 import { View, Text, ScrollView, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native'
-import { Spinner } from 'react-bootstrap'
 import axios from 'axios'
 import { connect } from 'react-redux'
 import UsersForm from './UsersForm'
 import { types, strings } from '../../utils/constants'
+import dynamicImport from '../../utils/dynamicImport'
 import actions from '../../redux/actions'
 import Alert from '../Utils/Alert'
 import {
@@ -17,6 +17,7 @@ import {
     UsersAddNewUserButton
 } from '../../styles/Users'
 
+const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 
 /**
  * This component is responsible for configuring users in the reflow software. It's important to understand

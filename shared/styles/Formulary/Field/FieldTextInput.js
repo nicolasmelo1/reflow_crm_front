@@ -1,7 +1,12 @@
+import React from 'react'
+import { TextInput } from 'react-native'
 import styled from 'styled-components'
-import { Form } from 'react-bootstrap' 
+import dynamicImport from '../../../utils/dynamicImport'
 
-export default styled(Form.Control)`
+const Form = dynamicImport('react-bootstrap', 'Form')
+
+export default process.env['APP'] === 'web' && Form ? 
+styled(Form.Control)`
     border: 0;
     background-color: white !important;
     color: #17242D;
@@ -15,3 +20,5 @@ export default styled(Form.Control)`
         outline: 0;
     }
 `
+:
+styled(TextInput)

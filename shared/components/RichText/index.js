@@ -6,7 +6,7 @@ import generateUUID from '../../utils/generateUUID'
 import isEqual from '../../utils/isEqual'
 import deepCopy from '../../utils/deepCopy'
 import delay from '../../utils/delay'
-
+import actions from '../../redux/actions'
 import Toolbar from './Toolbar'
 import Block from './Blocks'
 import { 
@@ -23,6 +23,7 @@ const makeDelay = delay(150)
 class RichText extends React.Component {
     constructor(props) {
         super(props)
+        this._isMounted = false
         this.flatListRef = React.createRef()
         this.toolbar = React.createRef()
         this.onFocusHeap = []
@@ -95,13 +96,29 @@ class RichText extends React.Component {
         return null
     }
 
+    /**
+     * ONLY ON MOBILE
+     * 
+     * Set the rich text height. This will be the height of the scrollview where the user types
+     * 
+     * @param {BigInteger} height - The height in units, recieved by the onLayout event
+     */
     setRichTextHeight = (height) => {
-        this.setState(state => ({
-            ...state,
-            mobileRichTextHeight: height,
-        }))
+        if (this._isMounted) {
+            this.setState(state => ({
+                ...state,
+                mobileRichTextHeight: height,
+            }))
+        }
     }
 
+    /**
+     * ONLY ON MOBILE
+     * 
+     * Set the keyboard height. This is the height the keyboard consumes, this way we can shrink the scrollView
+     * 
+     * @param {BigInteger} height - The height in units, recieved by the keyboardDidShow event
+     */
     setKeyboardHeight = (height) => {
         this.setState(state => ({
             ...state,
@@ -109,10 +126,20 @@ class RichText extends React.Component {
         }))
     }
 
+    /**
+     * Event fired when the keyboard or mobile is shown to the user.
+     * 
+     * @param {object} e - The event API, check for explanation: https://reactnative.dev/docs/keyboard#addlistener
+     */
     onKeyboardDidShow = (e) => {
         this.setKeyboardHeight(e.endCoordinates.height)
     }
     
+    /**
+     * Event fired when the keyboard or mobile is hidden to the user.
+     * 
+     * @param {object} e - The event API, check for explanation: https://reactnative.dev/docs/keyboard#addlistener
+     */
     onKeyboardDidHide = () => {
         this.setKeyboardHeight(0)
     }
@@ -194,15 +221,63 @@ class RichText extends React.Component {
         // want this from happening, when we set the next active block to null we put this change in a delay, if the state changes before it
         // we don't set it to null.
         this.nextActiveBlock = activeBlock
+
+        const checkIfLastPageBlockIsEmptyTextAndIfNotAddIt = () => {
+            const lastBlockOfPage = this.state.data.rich_text_page_blocks[this.state.data.rich_text_page_blocks.length - 1]
+            if (
+                this.getBlockTypeNameById(lastBlockOfPage.block_type) !== 'text' || 
+                lastBlockOfPage.rich_text_block_contents.length > 1 || 
+                lastBlockOfPage.rich_text_block_contents[0] === undefined || 
+                lastBlockOfPage.rich_text_block_contents[0].text !== ''
+            ) {
+                const alignmentType = this.getAligmentTypeIdByName('left')
+                const blockType = this.getBlockTypeIdByName('text')
+                this.state.data.rich_text_page_blocks.push({
+                    id: null,
+                    uuid: generateUUID(),
+                    image_option: null,
+                    list_option: null,
+                    text_option: {
+                        id: null,
+                        alignment_type: alignmentType
+                    },
+                    table_option: null,
+                    block_type: blockType,
+                    order: 0,
+                    rich_text_block_contents: [
+                        {
+                            order: 0,
+                            uuid: generateUUID(),
+                            text: '',
+                            text_size: 12,
+                            is_bold: false,
+                            is_italic: false,
+                            is_underline: false,
+                            is_code: false,
+                            is_custom: false,
+                            custom_value: '',
+                            latex_equation: null,
+                            marker_color: "",
+                            text_color: "",
+                            link: null
+                        }
+                    ]
+                })
+            }
+        }
+
         const update = (activeBlock) => {
             if (this.props.onStateChange) {
                 this.props.onStateChange({...this.state.data})
             }
-            this.setState(state => ({
-                ...state,
-                activeBlock: activeBlock,
-                data:{...this.state.data}
-            }))
+            if (this._isMounted) {
+                checkIfLastPageBlockIsEmptyTextAndIfNotAddIt()
+                this.setState(state => ({
+                    ...state,
+                    activeBlock: activeBlock,
+                    data:{...this.state.data}
+                }))
+            }
         }
 
         if (isFocus === true) {
@@ -280,6 +355,7 @@ class RichText extends React.Component {
     }
 
     componentDidMount = () => {
+        this._isMounted = true
         // When we create a new data rich text we automatically set the initial. 
         // because of this we need to propagate this new data to the parent.
         if (this.props.onStateChange) {
@@ -306,6 +382,7 @@ class RichText extends React.Component {
     }
 
     componentWillUnmount = () => {
+        this._isMounted = false
         if (process.env['APP'] !== 'web') {
             Keyboard.removeListener('keyboardDidShow', this.onKeyboardDidShow)
             Keyboard.removeListener('keyboardDidHide', this.onKeyboardDidHide)  
@@ -348,9 +425,11 @@ class RichText extends React.Component {
                         <Block 
                         block={item} 
                         blockIndex={index}
+                        pageId={this.state.data.id}
                         types={this.props.types}
                         blockTypeOptionsForSelection={this.props.types.rich_text.block_type}
                         addToolbar={this.addToolbar}
+                        onCreateDraft={this.props.onCreateDraft}
                         isEditable={![null, undefined].includes(this.props.isEditable) ? this.props.isEditable : true}
                         activeBlock={this.state.activeBlock} 
                         updateBlocks={this.updateBlocks} 
@@ -398,8 +477,10 @@ class RichText extends React.Component {
                         key={block.uuid} 
                         block={block} 
                         types={this.props.types}
+                        pageId={this.state.data.id}
                         blockTypeOptionsForSelection={this.props.types.rich_text.block_type}
                         addToolbar={this.addToolbar}
+                        onCreateDraft={this.props.onCreateDraft}
                         isEditable={![null, undefined].includes(this.props.isEditable) ? this.props.isEditable : true}
                         activeBlock={this.state.activeBlock} 
                         updateBlocks={this.updateBlocks} 
@@ -426,4 +507,4 @@ class RichText extends React.Component {
     }
 }
 
-export default connect(state => ({ types: state.login.types }), {})(RichText)
+export default connect(state => ({ types: state.login.types }), actions)(RichText)

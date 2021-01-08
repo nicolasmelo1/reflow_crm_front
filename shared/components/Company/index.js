@@ -1,10 +1,10 @@
 import React from 'react'
 import { ActivityIndicator, TouchableOpacity } from 'react-native'
 import axios from 'axios'
-import { Spinner } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { connect } from 'react-redux'
 import actions from '../../redux/actions'
+import dynamicImport from '../../utils/dynamicImport'
 import { strings } from '../../utils/constants'
 import {
     CompanyFormularyContainer,
@@ -18,6 +18,8 @@ import {
     CompanyFormularyLogoHelperLabel,
     CompanyFormularyLogo
 } from '../../styles/Company'
+
+const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 
 /**
  * This component is responsible for editing companies. It's actually really simple right now since

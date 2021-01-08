@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { Col, Row } from 'react-bootstrap'
 import Fields from './Fields'
 import { Formularies } from '../../styles/Formulary'
+import dynamicImport from '../../utils/dynamicImport'
 
- 
+const Col = dynamicImport('react-bootstrap', 'Col')
+const Row = dynamicImport('react-bootstrap', 'Row')
+
 /**
  * This Components controls each section individually
  */

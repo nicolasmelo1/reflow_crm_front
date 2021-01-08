@@ -1,9 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Form } from 'react-bootstrap'
 import { TextInput } from 'react-native'
+import dynamicImport from '../../utils/dynamicImport'
 
-export default process.env['APP'] === 'web' ?
+const Form = dynamicImport('react-bootstrap', 'Form')
+
+export default process.env['APP'] === 'web' && Form ?
 styled(Form.Control)`
     min-width: 100px;
     border-radius: 0 !important;

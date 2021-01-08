@@ -1,7 +1,12 @@
+import React from 'react'
+import { View } from 'react-native'
 import styled from 'styled-components'
-import { Dropdown } from 'react-bootstrap'
+import dynamicImport from '../../utils/dynamicImport'
 
-export default styled(Dropdown.Menu)`
+const Dropdown = dynamicImport('react-bootstrap', 'Dropdown')
+
+export default process.env['APP'] === 'web' && Dropdown ? 
+styled(Dropdown.Menu)`
     width: 100%;
     padding: 0 !important;
     overflow: auto;
@@ -14,3 +19,5 @@ export default styled(Dropdown.Menu)`
         max-height: calc(var(--app-height) - 191px);
     };
 `
+:
+styled(View)``

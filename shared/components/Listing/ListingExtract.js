@@ -1,12 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment'
-import { Spinner } from 'react-bootstrap'
-import { ListingFilterAndExtractContainer, ListingFilterAndExtractButton, ListingExtractContainer, ListingExtractUpdateDateTitle, ListingExtractUpdateDateInput, ListingExtractButtons, ListingExtractUpdateDateContainer} from '../../styles/Listing'
 import DateRangePicker from '../Utils/DateRangePicker'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { strings } from '../../utils/constants'
 import sleep from '../../utils/sleep'
+import dynamicImport from '../../utils/dynamicImport'
 import { stringToJsDateFormat, jsDateToStringFormat } from '../../utils/dates'
+import { 
+    ListingFilterAndExtractContainer, 
+    ListingFilterAndExtractButton, 
+    ListingExtractContainer, 
+    ListingExtractUpdateDateTitle, 
+    ListingExtractUpdateDateInput, 
+    ListingExtractButtons, 
+    ListingExtractUpdateDateContainer
+} from '../../styles/Listing'
+
+const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 
 /**
  * This component renders the extract button and it's small formulary

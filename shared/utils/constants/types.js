@@ -104,6 +104,12 @@ const types = (lang, type, key) => {
             admin: strings[lang]['profileTypeAdmin'],
             coordinator: strings[lang]['profileTypeCoordinator'],
             simple_user: strings[lang]['profileTypeSimpleUser']
+        },
+        block_type: {
+            image: strings[lang]['blockTypeImage'],
+            text: strings[lang]['blockTypeText'],
+            list: strings[lang]['blockTypeList'],
+            table: strings[lang]['blockTypeTable']
         }
     }[type][key]
 }

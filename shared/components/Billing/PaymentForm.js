@@ -1,7 +1,7 @@
 import React from 'react'
 import { View } from 'react-native'
-import creditCardType from 'credit-card-type'
 import { numberMasker, numberUnmasker } from '../../utils/numberMasker'
+import dynamicImport from '../../utils/dynamicImport'
 import { types, strings } from '../../utils/constants'
 import { 
     BillingFormularyRequiredField,
@@ -26,7 +26,9 @@ import {
     PaymentFormCreditCardInfoDeleteButtonIcon,
     PaymentFormCreditCardInfoDeleteButton,
     PaymentFormCreditCardInfoCreditCardFlagLogo
- } from '../../styles/Billing'
+} from '../../styles/Billing'
+
+const creditCardType = dynamicImport('credit-card-type', '')
 
 /**
  * This component holds the payment data of the billing formulary. Payment data can be separated in 4 distinct section

@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Row } from 'react-bootstrap';
-import { FormulariesEdit }  from '../../styles/Formulary';
-import { types, strings } from '../../utils/constants';
+import React, { useState, useEffect } from 'react'
+import { FormulariesEdit }  from '../../styles/Formulary'
+import { types, strings } from '../../utils/constants'
+import dynamicImport from '../../utils/dynamicImport'
 import Select from '../Utils/Select';
+
+const Row = dynamicImport('react-bootstrap', 'Row')
 
 /**
  * This component controls the formulary for the section, the formulary of the section

@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { View } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { OverlayTrigger, Popover } from 'react-bootstrap'
 import { types, strings } from '../../utils/constants'
-import isEqual from '../../utils/isEqual'
+import dynamicImport from '../../utils/dynamicImport'
 import {
     BillingFormularyContainer,
     BillingFormularySectionContainer,
@@ -14,6 +13,8 @@ import {
     BillingChargeTotalValueLabel,
 } from '../../styles/Billing'
 
+const OverlayTrigger = dynamicImport('react-bootstrap', 'OverlayTrigger')
+const Popover = dynamicImport('react-bootstrap', 'Popover')
 
 const PopoverWithAditionalInformation = React.forwardRef(({additionalInformation, ...rest}, ref) => {
     return (

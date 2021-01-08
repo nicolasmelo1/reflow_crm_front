@@ -1,7 +1,12 @@
+import React from 'react'
+import { View } from 'react-native'
 import styled from 'styled-components'
-import { Dropdown } from 'react-bootstrap'
+import dynamicImport from '../../utils/dynamicImport'
 
-export default styled(Dropdown.Item)`
+const Dropdown = dynamicImport('react-bootstrap', 'Dropdown')
+
+export default process.env['APP'] === 'web' && Dropdown ? 
+styled(Dropdown.Item)`
     background-color: ${props => props.active ? '#17242D' : '#f2f2f2'} !important;
     color: ${props => props.active ? '#f2f2f2' : '#17242D'};
     border: 0;
@@ -17,3 +22,5 @@ export default styled(Dropdown.Item)`
         border: 0;
     }
 `
+:
+styled(View)``

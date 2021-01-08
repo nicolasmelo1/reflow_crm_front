@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from 'react'
-import { Table, Spinner } from 'react-bootstrap'
 import ListingTableContent from './ListingTableContent'
 import ListingTableHeader from './ListingTableHeader'
-import { ListingTableContainer, ListingTableLoaderContainer } from '../../styles/Listing'
 import mobilecheck from '../../utils/mobilecheck'
+import dynamicImport from '../../utils/dynamicImport'
+import { 
+    ListingTableContainer, 
+    ListingTableLoaderContainer 
+} from '../../styles/Listing'
+
+const Table = dynamicImport('react-bootstrap', 'Table')
+const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 
 /**
  * This component holds most of the logic from the table component, with it`s headers and content.

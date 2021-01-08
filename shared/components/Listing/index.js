@@ -1,13 +1,12 @@
 import React from 'react'
 import axios from 'axios'
-import { Row, Col } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import ListingTable from './ListingTable'
 import ListingExtract from './ListingExtract'
 import ListingColumnSelect from './ListingColumnSelect'
 import Filter from '../Filter'
-import Alert from '../Utils/Alert'
 import actions from '../../redux/actions'
+import dynamicImport from '../../utils/dynamicImport'
 import { 
     ListingFilterAndExtractContainer, 
     ListingFilterContainer, 
@@ -16,6 +15,8 @@ import {
     ListingButtonsContainer 
 } from '../../styles/Listing'
 
+const Col = dynamicImport('react-bootstrap', 'Col')
+const Row = dynamicImport('react-bootstrap', 'Row')
 /**
  * This component render all of the listing logic, like the table, the totals, filters and extract
  * 
