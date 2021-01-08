@@ -44,7 +44,7 @@ const ListingTable = (props) => {
     }
 
     const defineScrollWidth = (e) => {
-        if (tableRef && tableRef.current) {
+        if (tableRef && tableRef.current && scrollWrapperRef.current && scrollRef.current) {
             if (tableRef.current.scrollWidth > tableRef.current.clientWidth) {
                 scrollWrapperRef.current.style.display = 'block'
                 if (scrollRef.current) scrollRef.current.style.width = tableRef.current.scrollWidth + 8 + 'px'
