@@ -332,7 +332,7 @@ class RichText extends React.Component {
         else {
             if (
                 this.state.activeBlock === options.blockUUID && 
-                (
+                ( 
                     options.blockUUID !== this.toolbar.current.blockUUID || 
                     !isEqual(options?.contentOptionProps, this.toolbar.current.contentOptionProps) ||
                     !isEqual(options?.blockOptionProps, this.toolbar.current.blockOptionProps) ||
@@ -347,6 +347,8 @@ class RichText extends React.Component {
                     blockOptionProps: deepCopy(options?.blockOptionProps),
                     obligatoryBlockProps: deepCopy(options.obligatoryBlockProps)
                 }
+
+                console.log(this.toolbar.current)
                 this.setState(state => ({
                     ...state
                 }))
@@ -430,6 +432,7 @@ class RichText extends React.Component {
                         blockTypeOptionsForSelection={this.props.types.rich_text.block_type}
                         addToolbar={this.addToolbar}
                         onCreateDraft={this.props.onCreateDraft}
+                        onRemoveDraft={this.props.onRemoveDraft}
                         isEditable={![null, undefined].includes(this.props.isEditable) ? this.props.isEditable : true}
                         activeBlock={this.state.activeBlock} 
                         updateBlocks={this.updateBlocks} 
@@ -481,6 +484,7 @@ class RichText extends React.Component {
                         blockTypeOptionsForSelection={this.props.types.rich_text.block_type}
                         addToolbar={this.addToolbar}
                         onCreateDraft={this.props.onCreateDraft}
+                        onRemoveDraft={this.props.onRemoveDraft}
                         isEditable={![null, undefined].includes(this.props.isEditable) ? this.props.isEditable : true}
                         activeBlock={this.state.activeBlock} 
                         updateBlocks={this.updateBlocks} 

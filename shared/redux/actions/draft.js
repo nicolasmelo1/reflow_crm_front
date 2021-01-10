@@ -6,6 +6,13 @@ const onCreateDraft = (file) => {
     }
 }
 
+const onRemoveDraft = (draftStringId) => {
+    return async (_) => {
+        return await agent.http.DRAFT.removeDraft(draftStringId)
+    }
+}
+
 export default {
-    onCreateDraft
+    onCreateDraft,
+    onRemoveDraft
 }

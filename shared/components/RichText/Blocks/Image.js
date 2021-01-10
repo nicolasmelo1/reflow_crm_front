@@ -15,6 +15,7 @@ import {
  * @param {Type} props - {go in detail about every prop it recieves}
  */
 const Image = (props) => {
+    const activeBlockRef = React.useRef(null)
     const isMountedRef = React.useRef(false)
     const imageFileRef = React.useRef(null)
     const imageBlockRef = React.useRef(null)
@@ -47,25 +48,10 @@ const Image = (props) => {
      * change is irrelevant. When any of this states changes we want the toolbar to update accordingly.)
      */
     const addToolbar = () => {
-        /*if (props.addToolbar) {
+        if (props.addToolbar) {      
             props.toolbarProps.blockUUID = props.block.uuid
-            props.toolbarProps.contentOptionComponent = TextContentOptions
-            props.toolbarProps.blockOptionComponent = TextBlockOptions
-            props.toolbarProps.contentOptionProps = {
-                onOpenModal: setToolbarIsModalOpen,
-                onChangeSelectionState: onChangeSelectionState,
-                stateOfSelection: stateOfSelection
-            }
-            props.toolbarProps.blockOptionProps = {
-                alignmentTypeId: props.block.text_option?.alignment_type,
-                onChangeAlignmentType: onChangeAlignmentType,
-                types: props.types
-            }
-            
-            props.addToolbar(
-                props.toolbarProps
-            )
-        }*/
+            props.addToolbar({...props.toolbarProps})
+        }
     }
 
     /**
@@ -87,7 +73,7 @@ const Image = (props) => {
      * @param {Object} e - The event emitted by the browser when `onmousedown` is fired
      */
     const onMouseDownWeb = (e) => {
-        if (!imageBlockRef.current.contains(e.target)) {
+        if (!imageBlockRef.current.contains(e.target) && props.block.uuid === activeBlockRef.current) {
             props.updateBlocks(null)
         }
     }
@@ -99,6 +85,7 @@ const Image = (props) => {
      * @param {FilesList<Blob>} files - This are the files of the input, we can only have one per input so we only use the first one.
      */
     const onUploadFile = (files) => {
+        console.log('teste')
         imageFileRef.current = files[0]
         props.onCreateDraft(imageFileRef.current).then(async response => {
             if (response && response.status === 200) {
@@ -147,8 +134,17 @@ const Image = (props) => {
         return () => {
             isMountedRef.current = false
             document.removeEventListener("mousedown", onMouseDownWeb)
+            
+            if (draftStringIdRef.current !== null) {
+                props.onRemoveDraft(draftStringIdRef.current)
+            }
         }
     }, [])
+
+    useEffect(() => {
+        addToolbar()
+        activeBlockRef.current = props.activeBlock
+    }, [props.activeBlock])
 
     const renderMobile = () => {
         return (

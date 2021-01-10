@@ -10,6 +10,9 @@ const DRAFT = {
     },
     createDraft: async (file) => {
         return await requests.post(`draft/${companyId}/file/`, formEncodeData(``, null, [{name: file.name, file: file}]), {'Content-Type': 'multipart/form-data'})
+    },
+    removeDraft: async (draftStringId) => {
+        return await requests.delete(`draft/${companyId}/${draftStringId}/`)
     }
 }
 

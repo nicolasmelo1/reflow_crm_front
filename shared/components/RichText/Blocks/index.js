@@ -6,7 +6,7 @@ import generateUUID from '../../../utils/generateUUID'
 import BlockSelector from '../BlockSelector'
 
 
-const makeDelay = delay(100)
+const makeDelay = delay(200)
 
 /**
  * {Description of your component, what does it do}
@@ -149,13 +149,6 @@ const Block = (props) => {
     const changeBlockType = (blockTypeId) => {
         props.block.block_type = blockTypeId
         setIsBlockSelectionOpen(false)
-        props.addToolbar({
-            blockUUID: props.block.uuid, 
-            obligatoryBlockProps: {
-                onDeleteBlock: onDeleteBlock,
-                onDuplicateBlock: onDuplicateBlock
-            }
-        })
         props.updateBlocks(props.block.uuid)
     }
 
@@ -169,19 +162,6 @@ const Block = (props) => {
             setIsBlockSelectionOpen(false)
         }
     }
-
-    useEffect(() => {
-        // if the block is active we automatically add the toolbar since every toolbar have obligatory block props.
-        makeDelay(() => {
-            props.addToolbar({
-                blockUUID: props.block.uuid, 
-                obligatoryBlockProps: {
-                    onDeleteBlock: onDeleteBlock,
-                    onDuplicateBlock: onDuplicateBlock
-                }
-            })
-        })
-    }, [props.activeBlock])
 
     useEffect(() => {
         if (process.env['APP'] === 'web') {
