@@ -14,6 +14,7 @@ const makeDelay = delay(200)
  */
 const Block = (props) => {
     const [isBlockSelectionOpen, setIsBlockSelectionOpen] = useState(false)
+    const [imageFile, setImageFile] = useState(null)
     const blockSelectorRef = React.useRef(null)
 
     /**
@@ -153,6 +154,18 @@ const Block = (props) => {
     }
 
     /**
+     * Used when the user pastes a image in the text block. We automatically convert it to a image block and add this image
+     * to the block. We make all of this in this component because what should handle this special use case is the block itself.
+     * 
+     * @param {File} file - A file object that the user pasted in the text input. 
+     */
+    const onPasteImageInText = (file) => {
+        props.block.block_type = props.getBlockTypeIdByName('image')
+        setImageFile(file)
+        props.updateBlocks(props.block.uuid)
+    }
+
+    /**
      * This is for closing the block selector container when the user clicks outside of the block selector.
      * 
      * @param {Object} e - The event object.
@@ -192,6 +205,8 @@ const Block = (props) => {
                 onDuplicateBlock: onDuplicateBlock
             }
         },
+        imageFile: imageFile,
+        onPasteImageInText: onPasteImageInText,
         onDuplicateBlock: onDuplicateBlock,
         onDeleteBlock: onDeleteBlock,
         openBlockSelection: openBlockSelection,

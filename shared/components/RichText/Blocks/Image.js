@@ -4,9 +4,11 @@ import { strings } from '../../../utils/constants'
 import { View } from 'react-native'
 import {
     BlockImageButton,
+    BlockImageSelectContainer,
     BlockImageSelectImageContainer,
     BlockImageSelectImageButton,
-    BlockImageImageButton
+    BlockImageImageButton,
+    BlockImageSelectImageTypeButton
 } from '../../../styles/RichText'
 
 /**
@@ -19,6 +21,10 @@ const Image = (props) => {
     const imageFileRef = React.useRef(null)
     const imageBlockRef = React.useRef(null)
     const draftStringIdRef = React.useRef(null)
+    const [activeImageType, setActiveImageType] = useState({
+        imageFile: true,
+        imageLink: false
+    })
     const [imageUrl, setImageUrl] = useState(null)
 
     /**
@@ -105,6 +111,13 @@ const Image = (props) => {
         })
     }
 
+    const onAddLink = (link) => {
+        props.block.image_option.link = link
+        setImageUrl(link)
+        props.updateBlocks(props.block.uuid)
+
+    }
+
     /**
      * This function is used when the component is mounted. when the component is mounted and we have a `link`
      * or a `file_name` defined we add a new image link to the component so the image is loaded.
@@ -139,6 +152,9 @@ const Image = (props) => {
         document.addEventListener("mousedown", onMouseDownWeb)
         checkIfImageOptionsAndInsertIt()
         addImageUrlOnMount()
+        if (![null, undefined].includes(props.imageFile)) {
+            onUploadFile([props.imageFile])
+        }
 
         return () => {
             isMountedRef.current = false
@@ -178,12 +194,37 @@ const Image = (props) => {
                     </BlockImageImageButton>
                 )}
                 {props.block.uuid === props.activeBlock && imageUrl === null ? (
-                    <BlockImageSelectImageContainer>
-                        <BlockImageSelectImageButton>
-                            {strings['pt-br']['richTextImageBlockSelectImagesButtonLabel']}
-                            <input type={'file'} style={{ display: 'none' }} accept={'image/*'} onChange={(e) => onUploadFile(e.target.files)}/>
-                        </BlockImageSelectImageButton>
-                    </BlockImageSelectImageContainer>
+                    <BlockImageSelectContainer>
+                        <div style={{ display: 'flex', flexDirection: 'row' }}>
+                            <BlockImageSelectImageTypeButton 
+                            isSelected={activeImageType.imageFile}
+                            onClick={(e) => setActiveImageType({imageFile:true, imageLink: false})}
+                            >
+                                {strings['pt-br']['richTextImageBlockSelectFileTypeButtonLabel']}
+                            </BlockImageSelectImageTypeButton>
+                            <BlockImageSelectImageTypeButton 
+                            isSelected={activeImageType.imageLink}
+                            onClick={(e) => setActiveImageType({imageFile:false, imageLink: true})}
+                            >
+                                {strings['pt-br']['richTextImageBlockSelectLinkTypeButtonLabel']}
+                            </BlockImageSelectImageTypeButton>
+                        </div>
+                        <BlockImageSelectImageContainer>
+                            {activeImageType.imageFile ? (
+                                <BlockImageSelectImageButton>
+                                    {strings['pt-br']['richTextImageBlockSelectImagesButtonLabel']}
+                                    <input type={'file'} style={{ display: 'none' }} accept={'image/*'} onChange={(e) => onUploadFile(e.target.files)}/>
+                                </BlockImageSelectImageButton>
+                            ) : (
+                                <input 
+                                type={'text'} 
+                                style={{ width: '95%'}} 
+                                onChange={(e)=> {onAddLink(e.target.value)}} 
+                                placeholder={strings['pt-br']['richTextImageBlockSelectLinkTypePlaceholder']}
+                                />
+                            )}
+                        </BlockImageSelectImageContainer>
+                    </BlockImageSelectContainer>
                 ) : ''}
             </div>
         )

@@ -1317,20 +1317,40 @@ const Text = (props) => {
     }
 
     /**
-     * Used when user paste on the text content.
+     * Used when user paste on the text content we fire this function. To understand on how we get data from the clipboard here you should check 
+     * the following: https://developer.mozilla.org/en-US/docs/Web/API/DataTransferItem/getAsFile
+     * 
+     * and this: https://ourcodeworld.com/articles/read/491/how-to-retrieve-images-from-the-clipboard-with-javascript-in-the-browser
+     * 
+     * With this we can know if the user is pasting an image or if he is pasting a text.
+     * If the user is pasting an image we send a props to the block component so it automatically creates a block and updates
+     * 
      * @param {*} e 
      */
     const onPaste = (e) => {
         e.stopPropagation()
         e.preventDefault()
         const clipboardData = e.clipboardData || window.clipboardData
-        // i don't know why but there is this character code shown as the number 13 that javascript itself can't handle correctly 
-        // it can cause many unhandled bugs
-        const pastedData = `${clipboardData.getData('Text')}`.split('').filter(char => char.charCodeAt(0) !== 13).join('')
-        if (!['', null, undefined].includes(pastedData)) {
-            const textWithPastedData = inputRef.current.innerText.substring(0, caretPositionRef.current.start) + pastedData + 
+        const clipboardDataItems = (clipboardData || {})?.items
+        let clipboardImage = null
+        let clipboardText = null
+
+        if (clipboardDataItems) {
+            for (let i = 0; i<clipboardDataItems.length; i++) {
+                if ((clipboardDataItems[i].kind == 'string') && (clipboardDataItems[i].type.match('^text/plain'))) {
+                    clipboardText = `${clipboardData.getData('Text')}`.split('').filter(char => char.charCodeAt(0) !== 13).join('')
+                } else if ((clipboardDataItems[i].kind == 'file') && (clipboardDataItems[i].type.match('^image/'))) {
+                    const file = clipboardDataItems[i].getAsFile()
+                    clipboardImage = file
+                }
+            }
+        }
+        if (clipboardImage) {
+            props.onPasteImageInText(clipboardImage)
+        } else if (!['', null, undefined].includes(clipboardText)) {
+            const textWithPastedData = inputRef.current.innerText.substring(0, caretPositionRef.current.start) + clipboardText + 
                 inputRef.current.innerText.substring(caretPositionRef.current.end, inputRef.current.innerText.length)  
-            onInput(textWithPastedData, '', pastedData)
+            onInput(textWithPastedData, '', clipboardText)
         }
     }
 

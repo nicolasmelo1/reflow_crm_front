@@ -16,7 +16,13 @@ export default async function handler(req, res) {
             await page.setContent(req.body.html, {waitUntil: 'networkidle0'})
             await page.emulateMediaType('screen')
             const pdf = await page.pdf({
-                width:'794px', height: '1123px'
+                width:'794px', height: '1123px',
+                margin: {
+                    top: '35px',
+                    left: '35px',
+                    right: '35px',
+                    bottom: '35px'
+                }
             })
             await browser.close()
             browsers --
