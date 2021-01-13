@@ -6,7 +6,7 @@ const LISTING = {
             return callback(data)
         } else if (data === undefined) {
             const websocket = Socket.getInstance()
-            websocket.addCallback(LISTING.recieveDataUpdated, {callback, formName})
+            websocket.addCallback(LISTING.recieveDataUpdated, 'LISTING.recieveDataUpdated', {callback, formName})
         }
     }
 }

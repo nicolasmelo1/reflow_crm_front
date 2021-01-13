@@ -6,7 +6,7 @@ const COMPANY = {
             return callback(data)
         } else if (data === undefined) {
             const websocket = Socket.getInstance()
-            websocket.addCallback(COMPANY.recieveCompanyUpdated, {callback, companyId})
+            websocket.addCallback(COMPANY.recieveCompanyUpdated, 'COMPANY.recieveCompanyUpdated', {callback, companyId})
         }
     }
 }

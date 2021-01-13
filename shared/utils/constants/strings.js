@@ -322,6 +322,7 @@ const strings = {
         billingCompanyFormularyStateFieldLabel: 'Estado',
         billingCompanyFormularyCityFieldLabel: 'Cidade',
         richTextImageBlockButtonLabel: 'Clique para inserir uma imagem',
+        richTextImageBlockSelectImagesButtonLabel: 'Selecionar arquivo',
         richTextTextBlockPlaceholder: 'Digite aqui',
         richTextToolbarDuplicateBlockButtonOverlay: 'Duplicar',
         richTextToolbarDeleteBlockButtonOverlay: 'Excluir',

@@ -6,7 +6,7 @@ const NOTIFICATION = {
             return callback(data)
         } else if (data === undefined) {
             const websocket = Socket.getInstance()
-            websocket.addCallback(NOTIFICATION.recieveNotificationBadge, {callback})
+            websocket.addCallback(NOTIFICATION.recieveNotificationBadge, 'NOTIFICATION.recieveNotificationBadge', {callback})
         }
     },
     updateNotificationBadge: async ({data}) => {

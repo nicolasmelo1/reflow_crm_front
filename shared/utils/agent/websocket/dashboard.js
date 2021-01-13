@@ -6,7 +6,7 @@ const DASHBOARD = {
             return callback(data)
         } else if (data === undefined) {
             const websocket = Socket.getInstance()
-            websocket.addCallback(DASHBOARD.recieveDataUpdated, {callback, formName})
+            websocket.addCallback(DASHBOARD.recieveDataUpdated, 'DASHBOARD.recieveDataUpdated', {callback, formName})
         }
     }
 }

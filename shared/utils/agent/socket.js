@@ -21,7 +21,7 @@ class Socket {
 
     domain = API_ROOT.replace('http://', 'ws://').replace('https://', 'wss://')
     registeredSocket = null
-    callbacks = []  
+    callbacks = {} 
     registering = false
 
     static getInstance() {
@@ -57,23 +57,8 @@ class Socket {
     }
 
     /**
-     * Checks if a callback function is already in the array of callbacks and returns the index of the 
-     * registered callback in the array of callbacks.
-     * 
-     * @param {Function} callbackFunction - The function that you want to check if exists in the array of callbacks.
-     */
-    callbacksArrayContainsCallback(callbackFunction) {
-        for (let i = 0; i < this.callbacks.length; i++) {
-            if (isEqual(this.callbacks[i], callbackFunction)) {
-                return i
-            }
-        }
-        return -1
-    }
-
-    /**
      * Adds the "onmessage" event listener to the websocket. We call each each registered callback
-     * whenever we recieve a messate.
+     * whenever we recieve a message.
      * Use event listeners here wont work because we don't have any control of previously registered
      * event listeners, it can lead to unexpected results. Calling everything once we recieve a new message
      * makes it easier to debug and know what is happening.
@@ -87,7 +72,7 @@ class Socket {
     onRecieve() {
         if (this.registeredSocket !== null) {
             this.registeredSocket.onmessage = (e) => {
-                this.callbacks.forEach(({ callback, argument }) => {
+                [...Object.values(this.callbacks)].forEach(({ callback, argument }) => {
                     callback({ data: JSON.parse(e.data), ...argument})
                 })
             }
@@ -104,18 +89,18 @@ class Socket {
      * function, always make a full reload of the hole page.
      * 
      * @param {Function} callback - The function that you want to run when a new message is recieved.
+     * @param {String} callbackName - This is the function name that you are adding, sometimes you might want to append multiple
+     * equal functions (like on a loop). So what you do is simply give unique names to the function, this way you can add multiple
+     * equal callbacks of the same function but treated differently.
      * @param {Object} argument - The arguments that you will pass to the callback function when a new message is recieved.
      */
-    addCallback(callback, argument={}) {
+    addCallback(callback, callbackName, argument={}) {
         const callbackObject = {
             callback,
             argument
         }
-        const callbackIndex = this.callbacksArrayContainsCallback(callbackObject)
-        if (callbackIndex !== -1) {
-            this.callbacks.splice(callbackIndex, 1)
-        }
-        this.callbacks.push(callbackObject)
+        //const hasCallback = this.callbacks.hasOwnProperty(callbackName)
+        this.callbacks[callbackName] = callbackObject
         this.onRecieve()
     }
 
@@ -127,7 +112,7 @@ class Socket {
         this.registeredSocket.onclose = (e) => {
             if (process.env.NODE_ENV !== 'production') console.log('Websocket disconnected, retrying...')
             if (e.code === 1000) {
-                this.callbacks = []
+                this.callbacks = {}
             }
             this.reconnect()
         }
@@ -164,7 +149,8 @@ class Socket {
     }
 
     /**
-     * MOBILE ONLY. When the user closes the app on mobile, it disconnects from the 
+     * MOBILE ONLY. When the user closes the app on mobile, it disconnects from the websocket connection
+     * and it only opens again when the user opens the app again.
      */
     appStateChanged() {
         if (process.env['APP'] !== 'web') {

@@ -6,7 +6,7 @@ const KANBAN = {
             return callback(data)
         } else if (data === undefined) {
             const websocket = Socket.getInstance()
-            websocket.addCallback(KANBAN.recieveDataUpdated, {callback, formName})
+            websocket.addCallback(KANBAN.recieveDataUpdated, `KANBAN.recieveDataUpdated`, {callback, formName})
         }
     }
 }

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import agent from '../../../utils/agent'
 import { strings } from '../../../utils/constants'
-import Toolbar from '../Toolbar'
 import { View } from 'react-native'
 import {
     BlockImageButton,
@@ -85,13 +84,22 @@ const Image = (props) => {
      * @param {FilesList<Blob>} files - This are the files of the input, we can only have one per input so we only use the first one.
      */
     const onUploadFile = (files) => {
-        console.log('teste')
         imageFileRef.current = files[0]
         props.onCreateDraft(imageFileRef.current).then(async response => {
             if (response && response.status === 200) {
                 props.block.image_option.file_name = response.data.data.draft_id
                 draftStringIdRef.current = response.data.data.draft_id
                 setImageUrl(await agent.http.DRAFT.getDraftFile(response.data.data.draft_id))
+                
+                agent.websocket.DRAFT.recieveFileRemoved({
+                    blockId: props.block.uuid,
+                    callback: (data) => {
+                        if (isMountedRef.current && data.data.draft_string_id === draftStringIdRef.current) {
+                            onUploadFile([imageFileRef.current])
+                        }
+                    }
+                })
+
                 props.updateBlocks(props.block.uuid)
             }
         })
@@ -131,6 +139,7 @@ const Image = (props) => {
         document.addEventListener("mousedown", onMouseDownWeb)
         checkIfImageOptionsAndInsertIt()
         addImageUrlOnMount()
+
         return () => {
             isMountedRef.current = false
             document.removeEventListener("mousedown", onMouseDownWeb)
@@ -171,7 +180,7 @@ const Image = (props) => {
                 {props.block.uuid === props.activeBlock && imageUrl === null ? (
                     <BlockImageSelectImageContainer>
                         <BlockImageSelectImageButton>
-                            {'Selecionar arquivo'}
+                            {strings['pt-br']['richTextImageBlockSelectImagesButtonLabel']}
                             <input type={'file'} style={{ display: 'none' }} accept={'image/*'} onChange={(e) => onUploadFile(e.target.files)}/>
                         </BlockImageSelectImageButton>
                     </BlockImageSelectImageContainer>

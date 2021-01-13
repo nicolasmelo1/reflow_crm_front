@@ -29,7 +29,8 @@ const Text = (props) => {
         textColor: '',
         textSize: 12
     }
-
+    
+    const isInCompositionRef = React.useRef(false)
     const isMountedRef = React.useRef(false)
     const wasKeyDownPressedRef = React.useRef(false)
     const keyDownPressedRef = React.useRef(null)
@@ -328,6 +329,35 @@ const Text = (props) => {
         }
     }
     
+    /**
+     * WORKS ONLY ON WEB 
+     * 
+     * Okay, so this might seems kinda tricky to follow along if you do not have a Mac but anyway, this can help you have a better understanding:
+     * https://developer.mozilla.org/en-US/docs/Web/API/Element/compositionstart_event
+     * 
+     * What happens is that: on Mac when you type the following word: não 
+     * it goes like this per key stroke:
+     * 1. n
+     * 2. n˜
+     * 3. nã
+     * 4. não
+     * 
+     * See that in step 2 the accent appears from a moment of time waiting for the next word and on step 3 the `˜` disappears and `ã` shows in its place? 
+     * This is what the compositionStart and compositionEnd stands for. When the user is trying to write a new letter with an accent, when the user writes an accent
+     * like `˜` the `onCompositionStart` event is fired, waiting for the next input. If the user clicks outside, move the cursor with the arrows, or write a character
+     * then `onCompositionEnd` is fired. So what do we do is: 
+     * 
+     * When compositionStart is fired we update a ref to signal that a composition is taking place, with this ref we prevent the onInput event from being fired and updating 
+     * the state.
+     * So with thisn restriction, just when the composition ends, we update the text with the new insertedText. And then we also update the ref to signal that the 
+     * composition has just ended and is not taking place anymore.
+     */
+    const onCompositionEnd = (insertedText) => {
+        isInCompositionRef.current = false
+        onInput(inputRef.current.innerText, 'inputText', insertedText)
+    }
+
+
     /**
      * Retrieves the selected contents from the selection.
      * Suppose you have the phrase: "ILoveCats" in which "I" is a content in the array,
@@ -825,14 +855,15 @@ const Text = (props) => {
      */
     const onSelectText = (e) => {
         if (process.env['APP'] === 'web') {
-            caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
-            checkStateOfSelectedElementAndUpdateState()
-            checkIfCaretPositionIsCustomFixAndSetCaretPosition()
+            if (!wasKeyDownPressedRef.current) {
+                caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
+                checkStateOfSelectedElementAndUpdateState()
+                checkIfCaretPositionIsCustomFixAndSetCaretPosition()
+            }
             if (props.activeBlock !== props.block.uuid) {
                 props.updateBlocks(props.block.uuid)
             }
         } else {
-            
             if (!wasKeyDownPressedRef.current) {
                 caretPositionRef.current = {start: e.nativeEvent.selection.start, end: e.nativeEvent.selection.end} 
                 checkStateOfSelectedElementAndUpdateState()
@@ -914,6 +945,7 @@ const Text = (props) => {
                 }  
             } 
         }
+
         insertedText = getInsertedText(insertedText, inputType)
         let contents = JSON.parse(JSON.stringify(props.block.rich_text_block_contents))
         // Checks if last character of the last content is a linebreak there is a bug that happens when you do this on normal browsers
@@ -926,18 +958,6 @@ const Text = (props) => {
         let oldText = props.block.rich_text_block_contents.map(content => content.text).join('')
 
         fixCaretPositionIfDelete(inputType, text, oldText)
-        // prevent accents (When you are trying to insert an accent like ~ on mac for example you press ALT + N, this creates this accent ˜, if we 
-        // didn't had this we would have the following text "N˜ão". Which is something we don't want.) Because of this we prevent those 
-        // "raw" and "temporaty" accents from being inserted
-        // IMPORTANT: Here we prevent the caretPositionRef to update in "onKeyDown" if there is any accent, this is because
-        // it moves to the next position so it becomes wrong
-        // ONLY ON WEB
-        if (process.env['APP'] === 'web' && /^(ˆ|˜|¨|`|´|"|')$/g.test(insertedText)) {
-            insertedText = ''
-            wasKeyDownPressedRef.current = true
-        } else {
-            wasKeyDownPressedRef.current = false
-        }
         
         // Opens custom menus when user press a particular key. The menu and the content that will be displayed to the user
         // is fully handled outside of the text component.
@@ -1476,9 +1496,13 @@ const Text = (props) => {
                 onSelect={(e) => onSelectText(e)}
                 onKeyDown={(e) => onKeyDown(e, e.nativeEvent.key)}
                 onInput={(e) => {
-                    e.preventDefault()
-                    onInput(inputRef.current.innerText, e.nativeEvent.inputType, e.nativeEvent.data)
+                    if (isInCompositionRef.current === false) {
+                        e.preventDefault()
+                        onInput(inputRef.current.innerText, e.nativeEvent.inputType, e.nativeEvent.data)
+                    }
                 }}
+                onCompositionStart = {(e) => {isInCompositionRef.current = true}}
+                onCompositionEnd = {(e) => onCompositionEnd(e.nativeEvent.data)}
                 onKeyUp={(e) => e.preventDefault()}
                 onClick={(e) => onClickText(e)}
                 contentEditable={props.isEditable} 

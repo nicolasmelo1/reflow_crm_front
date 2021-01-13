@@ -348,7 +348,6 @@ class RichText extends React.Component {
                     obligatoryBlockProps: deepCopy(options.obligatoryBlockProps)
                 }
 
-                console.log(this.toolbar.current)
                 this.setState(state => ({
                     ...state
                 }))
