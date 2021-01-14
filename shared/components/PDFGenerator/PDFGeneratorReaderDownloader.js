@@ -316,7 +316,7 @@ const PDFGeneratorReaderDownloader = (props) => {
                     ref={documentRef}
                     >
                         <RichText 
-                        isEditable={false}
+                        isEditable={true}
                         initialData={props.templateData?.rich_text_page}
                         renderCustomContent={renderCustomContent} 
                         />
