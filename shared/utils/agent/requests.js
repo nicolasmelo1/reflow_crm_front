@@ -80,15 +80,22 @@ const exceptionHandler = async (response, callback, url, params, headers) => {
  * > requests.post('login/', body)
  */
 const requests = {
-    delete: async (url, params = {}, headers = {}) => {   
+    delete: async (url, params = {}, headers = {}, source=null) => {   
+        if (!source) {
+            const CancelToken = axios.CancelToken
+            source = new CancelToken(function (_) {})
+        }
         try {
             return await axios.delete(`${API_ROOT}${url}`, {
                 params: params,
-                headers: Object.assign(setHeader(await getToken()), headers)
+                headers: Object.assign(setHeader(await getToken()), headers),
+                cancelToken: source.token
             })
         }
         catch (exception) {
-            return await exceptionHandler(exception.response, requests.delete, url, params, headers)
+            if (!axios.isCancel(exception)) {
+                return await exceptionHandler(exception.response, requests.delete, url, params, headers)
+            }
         }
     },
     get: async (url, params = {}, headers = {}, source=null) => {
@@ -111,24 +118,36 @@ const requests = {
             }
         }
     },
-    put: async (url, body, headers = {}) => {
+    put: async (url, body, headers = {}, source=null) => {
+        if (!source) {
+            const CancelToken = axios.CancelToken
+            source = new CancelToken(function (_) {})
+        }
         try {
             return await axios.put(`${API_ROOT}${url}`, body, { 
-                headers: Object.assign(setHeader(await getToken()), headers) 
+                headers: Object.assign(setHeader(await getToken()), headers),
+                cancelToken: source.token
             })
         }
         catch (exception) {
             return await exceptionHandler(exception.response, requests.put, url, body, headers)
         }
     },
-    post: async (url, body, headers = {}) => {
+    post: async (url, body, headers = {}, source=null) => {
+        if (!source) {
+            const CancelToken = axios.CancelToken
+            source = new CancelToken(function (_) {})
+        }
         try {
             return await axios.post(`${API_ROOT}${url}`, body, { 
                 headers: Object.assign(setHeader(await getToken()), headers),
+                cancelToken: source.token
             })
         }
         catch (exception) {
-            return await exceptionHandler(exception.response, requests.post, url, body, headers)
+            if (!axios.isCancel(exception)) {
+                return await exceptionHandler(exception.response, requests.post, url, body, headers)
+            }
         }
     }
 }

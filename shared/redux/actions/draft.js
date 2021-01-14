@@ -1,8 +1,8 @@
 import agent from '../../utils/agent'
  
-const onCreateDraft = (file) => {
+const onCreateDraft = (source, file) => {
     return async (_) => {
-        return await agent.http.DRAFT.createDraft(file)
+        return await agent.http.DRAFT.createDraft(source, file)
     }
 }
 

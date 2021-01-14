@@ -8,8 +8,8 @@ const DRAFT = {
         const token = await getToken()
         return `${API_ROOT}draft/${companyId}/file/${draftStringId}/?token=${token}`
     },
-    createDraft: async (file) => {
-        return await requests.post(`draft/${companyId}/file/`, formEncodeData(``, null, [{name: file.name, file: file}]), {'Content-Type': 'multipart/form-data'})
+    createDraft: async (source, file) => {
+        return await requests.post(`draft/${companyId}/file/`, formEncodeData(``, null, [{name: file.name, file: file}]), {'Content-Type': 'multipart/form-data'}, source)
     },
     removeDraft: async (draftStringId) => {
         return await requests.delete(`draft/${companyId}/${draftStringId}/`)

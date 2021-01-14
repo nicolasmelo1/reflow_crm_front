@@ -30,6 +30,7 @@ export default process.env['APP'] === 'web' ?
 styled.div`
     width: ${props => props.width}px;
     position: fixed;
+    z-index: 10;
     white-space: nowrap;
     transform: translate3d(0, -55px, 0);
     transform: background-color .5s .8s cubic-bezier(0.165, 0.840, 0.440, 1.000) forwards;

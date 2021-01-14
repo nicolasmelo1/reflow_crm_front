@@ -6,6 +6,13 @@ export default process.env['APP'] === 'web' ?
 styled.button`
     border: 0;
     background-color: transparent;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    transform: scale(${props => props.sizeRelativeToView})
 `
 :
 styled(TouchableOpacity)``
