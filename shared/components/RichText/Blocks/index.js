@@ -132,9 +132,9 @@ const Block = (props) => {
         }
         let block = deepCopy(props.block)
         block.uuid = generateUUID()
-        block.rich_text_block_contents = block.rich_text_block_contents.map(block => {
-            block.uuid = generateUUID()
-            return block
+        block.rich_text_block_contents = block.rich_text_block_contents.map(content => {
+            content.uuid = generateUUID()
+            return content
         })
         const indexOfBlockInContext = props.contextBlocks.findIndex(block => block.uuid === props.block.uuid)
         props.contextBlocks.splice(indexOfBlockInContext + 1, 0, block)

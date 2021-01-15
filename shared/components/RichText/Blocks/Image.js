@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import generateUUID from '../../../utils/generateUUID'
 import agent from '../../../utils/agent'
+import base64 from '../../../utils/base64'
 import { strings } from '../../../utils/constants'
 import { View } from 'react-native'
 import {
@@ -19,7 +21,7 @@ import {
 const Image = (props) => {
     const activeBlockRef = React.useRef(null)
     const isMountedRef = React.useRef(false)
-    const imageRef = React.useRef(null)
+    const imageUrlRef = React.useRef(null)
     const imageFileRef = React.useRef(null)
     const imageBlockRef = React.useRef(null)
     const draftStringIdRef = React.useRef(null)
@@ -32,7 +34,13 @@ const Image = (props) => {
         imageFile: true,
         imageLink: false
     })
-    const [imageUrl, setImageUrl] = useState(null)
+    const [imageUrl, _setImageUrl] = useState(null)
+
+    const setImageUrl = (data) => {
+        imageUrlRef.current = data
+        _setImageUrl(data)
+    }
+
     const setSizeRelativeToView = (data) => {
         sizeRelativeToViewRef.current = data
         _setSizeRelativeToView(data)
@@ -60,7 +68,7 @@ const Image = (props) => {
      * 
      * HOW TO USE THIS:
      * You need to run this function ONLY inside of a useEffect of componentDidUpdate. MAKE SURE YOU ARE LISTENING TO THE
-     * the state changes that you need. (for example, here we are listening for changes in props and stateOfSelection, every other state
+     * the state changes that you need. (for example, here we are listening for changes in props, every other state
      * change is irrelevant. When any of this states changes we want the toolbar to update accordingly.)
      */
     const addToolbar = () => {
@@ -77,6 +85,7 @@ const Image = (props) => {
         return {
             id: null,
             link: null,
+            file_image_uuid: generateUUID(),
             size_relative_to_view: 1,
             file_name: null
         }
@@ -102,9 +111,11 @@ const Image = (props) => {
      * the changes when the user finishes editing.
      */
     const onMouseUpResizing = () => {
-        isResizingRef.current = 0
-        props.block.image_option.size_relative_to_view = sizeRelativeToViewRef.current 
-        props.updateBlocks(props.block.uuid)
+        if (isResizingRef.current !== 0) {
+            isResizingRef.current = 0
+            props.block.image_option.size_relative_to_view = sizeRelativeToViewRef.current 
+            props.updateBlocks(props.block.uuid)
+        }
     }
     
     /**
@@ -151,13 +162,17 @@ const Image = (props) => {
      */
     const onUploadFile = (files) => {
         imageFileRef.current = files[0]
-        props.onCreateDraft(sourceRef.current, imageFileRef.current).then(async response => {
+        props.onCreateDraftFile(sourceRef.current, imageFileRef.current).then(async response => {
             if (response && response.status === 200) {
-                props.block.image_option.file_name = response.data.data.draft_id
-                draftStringIdRef.current = response.data.data.draft_id
+                const draftStringId = response.data.data.draft_id
+
+                props.setDraftMapHeap(draftStringIdRef.current, draftStringId)
+
+                props.block.image_option.file_name = draftStringId
+                draftStringIdRef.current = draftStringId
                 const imageUrl = await agent.http.DRAFT.getDraftFile(response.data.data.draft_id)
                 setImageUrl(imageUrl)
-                
+
                 agent.websocket.DRAFT.recieveFileRemoved({
                     blockId: props.block.uuid,
                     callback: (data) => {
@@ -187,18 +202,40 @@ const Image = (props) => {
     /**
      * This function is used when the component is mounted. when the component is mounted and we have a `link`
      * or a `file_name` defined we add a new image link to the component so the image is loaded.
+     * 
+     * IMPORTANT: Be aware of the conditions, if we just check if it has a file_name if the `file_name` is a draft
+     * we will change the url to get the image from the rich_text itself and not the draft, which is wrong. 
+     * This was causing a lot of issues in development because it was causing the server to hang whenever we made changes in this file.
+     * This was caused because when you make a Fast Refresh the `useEffect` hook runs (it unmounts the component and then mounts again).
+     * Since we run this function when the component is mounted this error was being caused.
+     * 
+     * To prevent this from happening we decode the file_name, if it as base64 string with `draft-` in it it's almost definetly a draft, otherwise it's not.
      */
-    const addImageUrlOnMount = async () => {
+    const addImageUrlOnMount = () => {
         if (props.block.image_option.link !== null) {
             setImageUrl(props.block.image_option.link)
         } else if (props.block.image_option.file_name !== null) {
-            const url = await agent.http.RICH_TEXT.getRichTextImageBlockFile(
-                props.pageId,
-                props.block.uuid,
-                props.block.image_option.file_name
-            )
-            if (isMountedRef.current) {
-                setImageUrl(url)
+            try {
+                const fileName = base64.decode(props.block.image_option.file_name)
+                if (fileName.includes('draft-')) {
+                    agent.http.DRAFT.getDraftFile(props.block.image_option.file_name).then(url => {
+                        if (isMountedRef.current) {
+                            setImageUrl(url)
+                        }
+                    })
+                }
+            } catch {
+                if (props.pageId !== null) {
+                    agent.http.RICH_TEXT.getRichTextImageBlockFile(
+                        props.pageId,
+                        props.block.image_option.file_image_uuid,
+                        props.block.image_option.file_name
+                    ).then(url => {
+                        if (isMountedRef.current) {
+                            setImageUrl(url)
+                        }
+                    })
+                }
             }
         }
     }
@@ -223,7 +260,7 @@ const Image = (props) => {
         checkIfImageOptionsAndInsertIt()
         addImageUrlOnMount()
         setSizeRelativeToView(parseFloat(props.block?.image_option?.size_relative_to_view || 1.00))
-
+        
         sourceRef.current = axios.CancelToken.source()
 
         if (![null, undefined].includes(props.imageFile)) {
@@ -237,8 +274,10 @@ const Image = (props) => {
                 document.removeEventListener("mouseup", onMouseUpResizing)
                 document.removeEventListener("mousemove", onMouseMoveResizing)
             }
-
-            if (draftStringIdRef.current !== null) {
+            
+            // On production, when the user finishes editing we remove the drafts, this way we do not take space from our s3 when it's not needed
+            // But on development a thing like this can be tedious to work with so we deactivate.
+            if (draftStringIdRef.current !== null && process.env.NODE_ENV === 'production') {
                 props.onRemoveDraft(draftStringIdRef.current)
             }
             if (sourceRef.current) {
@@ -252,6 +291,17 @@ const Image = (props) => {
         activeBlockRef.current = props.activeBlock
     }, [props.activeBlock])
     
+    useEffect(() => {
+        // When we duplicate a file, like an image or a attachment, whatever. We actually create a new reference for the same object (not literally)
+        // So what this means is, when we upload a file we create a draft in our database, and when we duplicate this image or file we are creating
+        // a new reference for the same draft that was created before. What happens is, drafts are temporary, so we need to reupload them again
+        // if they still exist. When a new draft is uploaded a new draft_string_id is issued, the children then also updates its draftStringId
+        if (props.draftMapHeap[props.block.image_option.file_name] && props.draftMapHeap[props.block.image_option.file_name] !== props.block.image_option.file_name) {
+            props.block.image_option.file_name = props.draftMapHeap[props.block.image_option.file_name]
+            props.updateBlocks(props.activeBlock)
+        }
+    }, [props.draftMapHeap])
+
     const renderMobile = () => {
         return (
             <View></View>
@@ -285,7 +335,7 @@ const Image = (props) => {
                                     style={{height: '40px', backgroundColor: '#000', width: '5px', border: '1px solid #f2f2f2', margin: '5px', borderRadius: '20px', padding: 0, cursor: 'col-resize'}} ></button>
                                 </div>
                             ) : ''}
-                            <img ref={imageRef} src={imageUrl}/>
+                            <img src={imageUrl}/>
                         </div>
 
                     </BlockImageImageButton>

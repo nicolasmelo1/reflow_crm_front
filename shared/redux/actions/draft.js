@@ -1,8 +1,14 @@
 import agent from '../../utils/agent'
  
-const onCreateDraft = (source, file) => {
+const onCreateDraftFile = (source, file) => {
     return async (_) => {
-        return await agent.http.DRAFT.createDraft(source, file)
+        return await agent.http.DRAFT.createDraftFile(source, file)
+    }
+}
+
+const onDuplicateDraft = (draftStringId) => {
+    return async (_) => {
+        return await agent.http.DRAFT.duplicateDraft(draftStringId)
     }
 }
 
@@ -13,6 +19,7 @@ const onRemoveDraft = (draftStringId) => {
 }
 
 export default {
-    onCreateDraft,
+    onCreateDraftFile,
+    onDuplicateDraft,
     onRemoveDraft
 }

@@ -7,7 +7,10 @@ const RICH_TEXT = {
         await LOGIN.testToken()
         const token = await getToken()
         return `${API_ROOT}rich_text/${companyId}/${pageId}/${blockUUID}/file/image/${fileName}/?token=${token}`
-    } 
+    },
+    duplicateRichTextImageBlockFile: async (pageId, blockUUID, fileName) => {
+        return requests.put(`rich_text/${companyId}/${pageId}/${blockUUID}/file/image/${fileName}/`, {})
+    }
 }
 
 export default RICH_TEXT

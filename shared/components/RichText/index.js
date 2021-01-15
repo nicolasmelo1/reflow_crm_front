@@ -38,6 +38,7 @@ class RichText extends React.Component {
         this.CancelToken = axios.CancelToken
         this.source = null
         this.state = {
+            draftMapHeap: {},
             activeBlock: null,
             mobileKeyboardHeight: 0,
             mobileRichTextHeight: 0,
@@ -46,6 +47,34 @@ class RichText extends React.Component {
         }
     }
     
+    /**
+     * Why do we need this?
+     * 
+     * When we duplicate a file, like an image or a attachment, whatever. We actually create a new reference for the same object (not literally)
+     * So what this means is, when we upload a file we create a draft in our database, and when we duplicate this image or file we are creating
+     * a new reference for the same draft that was created before. What happens is, drafts are temporary, so we need to reupload them again
+     * if they still exist.
+     * 
+     * So since the duplicated file is a reference to the original draft, when the draft is removed there is no way for the duplicated file or image
+     * to know that the draft was removed. Except we actually save a reference of those changes.
+     * 
+     * And that is exactly what this does. This updates a object that holds the OLD draft string as key and the new draftString as value. This way 
+     * we can easily track those changes and apply them to the duplicates (not the original ones)
+     * 
+     * @param {String} oldDraftId - The old draft string id that will be the key of our object of the heap
+     * @param {*} newDraftId - - The new draft string id that will be the value of our object of the heap
+     */
+    setDraftMapHeap = (oldDraftId, newDraftId) => {
+        if (!['', null, undefined].includes(oldDraftId)) {
+            let draftMapHeap = {...this.state.draftMapHeap}
+            draftMapHeap[oldDraftId] = newDraftId
+            this.setState(state => ({
+                ...state,
+                draftMapHeap
+            }))
+        }
+    }
+
     /**
      * Gets the block id by its name
      * 
@@ -111,7 +140,7 @@ class RichText extends React.Component {
             }))
         }
     }
-
+    
     /**
      * ONLY ON MOBILE
      * 
@@ -430,7 +459,9 @@ class RichText extends React.Component {
                         types={this.props.types}
                         blockTypeOptionsForSelection={this.props.types.rich_text.block_type}
                         addToolbar={this.addToolbar}
-                        onCreateDraft={this.props.onCreateDraft}
+                        setDraftMapHeap={this.setDraftMapHeap}
+                        draftMapHeap={this.state.draftMapHeap}
+                        onCreateDraftFile={this.props.onCreateDraftFile}
                         onRemoveDraft={this.props.onRemoveDraft}
                         isEditable={![null, undefined].includes(this.props.isEditable) ? this.props.isEditable : true}
                         activeBlock={this.state.activeBlock} 
@@ -444,6 +475,7 @@ class RichText extends React.Component {
                         onRemoveUnmanagedContent={this.props.onRemoveUnmanagedContent}
                         unmanagedContentValue={this.props.unmanagedContentValue}
                         isUnmanagedContentSelectorOpen={this.props.isUnmanagedContentSelectorOpen}
+                        onDuplicateRichtTextImageBlockExistingFile={this.props.onDuplicateRichtTextImageBlockExistingFile}
                         onOpenUnmanagedContentSelector={this.props.onOpenUnmanagedContentSelector}
                         onChangeUnmanagedContentValue={this.props.onChangeUnmanagedContentValue}
                         />
@@ -482,7 +514,9 @@ class RichText extends React.Component {
                         pageId={this.state.data.id}
                         blockTypeOptionsForSelection={this.props.types.rich_text.block_type}
                         addToolbar={this.addToolbar}
-                        onCreateDraft={this.props.onCreateDraft}
+                        setDraftMapHeap={this.setDraftMapHeap}
+                        draftMapHeap={this.state.draftMapHeap}
+                        onCreateDraftFile={this.props.onCreateDraftFile}
                         onRemoveDraft={this.props.onRemoveDraft}
                         isEditable={![null, undefined].includes(this.props.isEditable) ? this.props.isEditable : true}
                         activeBlock={this.state.activeBlock} 
@@ -496,6 +530,7 @@ class RichText extends React.Component {
                         onRemoveUnmanagedContent={this.props.onRemoveUnmanagedContent}
                         unmanagedContentValue={this.props.unmanagedContentValue}
                         isUnmanagedContentSelectorOpen={this.props.isUnmanagedContentSelectorOpen}
+                        onDuplicateRichtTextImageBlockExistingFile={this.props.onDuplicateRichtTextImageBlockExistingFile}
                         onOpenUnmanagedContentSelector={this.props.onOpenUnmanagedContentSelector}
                         onChangeUnmanagedContentValue={this.props.onChangeUnmanagedContentValue}
                         />

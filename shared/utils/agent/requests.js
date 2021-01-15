@@ -2,7 +2,7 @@ import axios from 'axios'
 import { getToken, setHeader, API_ROOT, logoutFunctionForView, setStorageToken, permissionsHandlerForView } from './utils'
 
 
-/***
+/**
  * Function that fires when a exception is catched in the requests object functions.
  * This is only for retrieving a new token while firing a request. This way, the token is refreshed 
  * behind the scenes and doesn't affect the request at all.
