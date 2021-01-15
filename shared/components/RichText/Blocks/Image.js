@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
 import generateUUID from '../../../utils/generateUUID'
 import agent from '../../../utils/agent'
 import base64 from '../../../utils/base64'
@@ -11,7 +10,9 @@ import {
     BlockImageSelectImageContainer,
     BlockImageSelectImageButton,
     BlockImageImageButton,
-    BlockImageSelectImageTypeButton
+    BlockImageSelectImageTypeButton,
+    BlockImageResizeButton,
+    BlockImageResizeContainer
 } from '../../../styles/RichText'
 
 /**
@@ -22,10 +23,7 @@ const Image = (props) => {
     const activeBlockRef = React.useRef(null)
     const isMountedRef = React.useRef(false)
     const imageUrlRef = React.useRef(null)
-    const imageFileRef = React.useRef(null)
     const imageBlockRef = React.useRef(null)
-    const draftStringIdRef = React.useRef(null)
-    const sourceRef = React.useRef(null)
     const isResizingRef = React.useRef(0)
     const sizeRelativeToViewRef = React.useRef(0)
     const [isMouseOver, setIsMouseOver] = useState(false)
@@ -161,29 +159,11 @@ const Image = (props) => {
      * @param {FilesList<Blob>} files - This are the files of the input, we can only have one per input so we only use the first one.
      */
     const onUploadFile = (files) => {
-        imageFileRef.current = files[0]
-        props.onCreateDraftFile(sourceRef.current, imageFileRef.current).then(async response => {
-            if (response && response.status === 200) {
-                const draftStringId = response.data.data.draft_id
-
-                props.setDraftMapHeap(draftStringIdRef.current, draftStringId)
-
-                props.block.image_option.file_name = draftStringId
-                draftStringIdRef.current = draftStringId
-                const imageUrl = await agent.http.DRAFT.getDraftFile(response.data.data.draft_id)
-                setImageUrl(imageUrl)
-
-                agent.websocket.DRAFT.recieveFileRemoved({
-                    blockId: props.block.uuid,
-                    callback: (data) => {
-                        if (isMountedRef.current && data.data.draft_string_id === draftStringIdRef.current) {
-                            onUploadFile([imageFileRef.current])
-                        }
-                    }
-                })
-
-                props.updateBlocks(props.block.uuid)
-            }
+        props.onUploadFileToDraft(files[0]).then(async draftStringId => {
+            props.block.image_option.file_name = draftStringId
+            const imageUrl = await agent.http.DRAFT.getDraftFile(draftStringId)
+            setImageUrl(imageUrl)
+            props.updateBlocks(props.block.uuid)
         })
     }
 
@@ -260,8 +240,6 @@ const Image = (props) => {
         addImageUrlOnMount()
         setSizeRelativeToView(parseFloat(props.block?.image_option?.size_relative_to_view || 1.00))
         
-        sourceRef.current = axios.CancelToken.source()
-
         if (![null, undefined].includes(props.imageFile)) {
             onUploadFile([props.imageFile])
         }
@@ -272,15 +250,6 @@ const Image = (props) => {
                 document.removeEventListener("mousedown", onMouseDownWeb)
                 document.removeEventListener("mouseup", onMouseUpResizing)
                 document.removeEventListener("mousemove", onMouseMoveResizing)
-            }
-            
-            // On production, when the user finishes editing we remove the drafts, this way we do not take space from our s3 when it's not needed
-            // But on development a thing like this can be tedious to work with so we deactivate.
-            if (draftStringIdRef.current !== null && process.env.NODE_ENV === 'production') {
-                props.onRemoveDraft(draftStringIdRef.current)
-            }                                                                                                                                                           c
-            if (sourceRef.current) {
-                sourceRef.current.cancel()
             }
         }
     }, [])
@@ -325,14 +294,14 @@ const Image = (props) => {
                         <div style={{ position: 'relative', width: `${sizeRelativeToView*100}%`}}>
 
                             {isMouseOver ? (
-                                <div style={{ width: `100%`, height: '100%', position: 'absolute', backgroundColor: '#00000020', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 10}}>
-                                    <button 
+                                <BlockImageResizeContainer>
+                                    <BlockImageResizeButton 
                                     onMouseDown={(e) => {isResizingRef.current = e.pageX}}
-                                    style={{height: '40px', backgroundColor: '#000', width: '5px',  border: '1px solid #f2f2f2', margin: '5px', borderRadius: '20px', padding: 0, cursor: 'col-resize'}}></button>
-                                    <button 
+                                    />
+                                    <BlockImageResizeButton 
                                     onMouseDown={(e) => {isResizingRef.current = e.pageX}}
-                                    style={{height: '40px', backgroundColor: '#000', width: '5px', border: '1px solid #f2f2f2', margin: '5px', borderRadius: '20px', padding: 0, cursor: 'col-resize'}} ></button>
-                                </div>
+                                    />
+                                </BlockImageResizeContainer>
                             ) : ''}
                             <img src={imageUrl}/>
                         </div>

@@ -6,6 +6,7 @@ import generateUUID from '../../utils/generateUUID'
 import isEqual from '../../utils/isEqual'
 import deepCopy from '../../utils/deepCopy'
 import delay from '../../utils/delay'
+import agent from '../../utils/agent'
 import actions from '../../redux/actions'
 import Toolbar from './Toolbar'
 import Block from './Blocks'
@@ -26,6 +27,7 @@ class RichText extends React.Component {
         this._isMounted = false
         this.flatListRef = React.createRef()
         this.toolbar = React.createRef()
+        this.drafts = {}
         this.onFocusHeap = []
         this.nextActiveBlock = null
         this.toolbar.current = {
@@ -352,6 +354,38 @@ class RichText extends React.Component {
         }))
     }
 
+    /**
+     * When the user is uploading a file we usually save a draft, a draft is a temporary file that will only be available
+     * for a shor period of time.
+     * We use drafts because with them we do not need to upload everything at once, instead we upload them when the user actually
+     * insert an image or a file. So when we save, everything will be already saved.
+     * 
+     * @param {File} file - The file that the user has just uploaded.
+     * @param {String} oldDraftId - Optional. This is needed for us when the file is removed and we recieve the update from the webhook.
+     * 
+     * @returns {String} - Returns a `draftStringId` which is a base64 string containing the draftId
+     */
+    onUploadFileToDraft = async (file, oldDraftId='') => {
+        let draftStringId = ''
+        const response = await this.props.onCreateDraftFile(file)
+        if (response && response.status === 200) {
+            draftStringId = response.data.data.draft_id
+            this.setDraftMapHeap(oldDraftId, draftStringId)
+            this.drafts[draftStringId] = file
+
+            agent.websocket.DRAFT.recieveFileRemoved({
+                blockId: '',
+                callback: (data) => {
+                    if (this._isMounted && [...Object.keys(this.drafts)].includes(data.data.draft_string_id)) {
+                        this.onUploadFileToDraft(this.drafts[data.data.draft_string_id], data.data.draft_string_id)
+                    }
+                }
+            })
+
+        }
+        return draftStringId
+    }
+
     addToolbar = (options = {}) => {
         if (options?.obligatoryBlockProps?.onDeleteBlock === undefined && 
             options?.obligatoryBlockProps?.onDuplicateBlock === undefined &&
@@ -417,6 +451,12 @@ class RichText extends React.Component {
             Keyboard.removeListener('keyboardDidShow', this.onKeyboardDidShow)
             Keyboard.removeListener('keyboardDidHide', this.onKeyboardDidHide)  
         }
+
+        // Remove drafts, since we will not be using them anymore when unmounting this component
+        const draftsToRemove = Object.keys(this.drafts)
+        for (let i = 0; i < draftsToRemove.length; i++) {
+            this.props.onRemoveDraft(draftsToRemove[i])
+        }
     }
 
     getToolbarProps = () => {
@@ -459,10 +499,8 @@ class RichText extends React.Component {
                         types={this.props.types}
                         blockTypeOptionsForSelection={this.props.types.rich_text.block_type}
                         addToolbar={this.addToolbar}
-                        setDraftMapHeap={this.setDraftMapHeap}
                         draftMapHeap={this.state.draftMapHeap}
-                        onCreateDraftFile={this.props.onCreateDraftFile}
-                        onRemoveDraft={this.props.onRemoveDraft}
+                        onUploadFileToDraft={this.onUploadFileToDraft}
                         isEditable={![null, undefined].includes(this.props.isEditable) ? this.props.isEditable : true}
                         activeBlock={this.state.activeBlock} 
                         updateBlocks={this.updateBlocks} 
@@ -513,10 +551,8 @@ class RichText extends React.Component {
                         pageId={this.state.data.id}
                         blockTypeOptionsForSelection={this.props.types.rich_text.block_type}
                         addToolbar={this.addToolbar}
-                        setDraftMapHeap={this.setDraftMapHeap}
                         draftMapHeap={this.state.draftMapHeap}
-                        onCreateDraftFile={this.props.onCreateDraftFile}
-                        onRemoveDraft={this.props.onRemoveDraft}
+                        onUploadFileToDraft={this.onUploadFileToDraft}
                         isEditable={![null, undefined].includes(this.props.isEditable) ? this.props.isEditable : true}
                         activeBlock={this.state.activeBlock} 
                         updateBlocks={this.updateBlocks} 

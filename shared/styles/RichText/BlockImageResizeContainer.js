@@ -3,13 +3,15 @@ import styled from 'styled-components'
 import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
-styled.div`
-    background-color: #17242D;
-    border: 1px solid #f2f2f2;
-    border-radius: 5px; 
-    z-index: 2;
+styled.div` 
+    width: 100%;
+    height: 100%; 
     position: absolute;
-    width: calc(100% - 20px)
+    background-color: #00000020;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1
 `
 :
 styled(View)``

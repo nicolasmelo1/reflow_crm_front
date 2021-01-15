@@ -8,6 +8,8 @@ export { default as BlockImageSelectImageTypeButton } from './BlockImageSelectIm
 export { default as BlockImageSelectContainer } from './BlockImageSelectContainer'
 export { default as BlockImageSelectImageContainer } from './BlockImageSelectImageContainer'
 export { default as BlockImageImageButton } from './BlockImageImageButton'
+export { default as BlockImageResizeButton } from './BlockImageResizeButton'
+export { default as BlockImageResizeContainer } from './BlockImageResizeContainer'
 export { default as BlockImageSelectImageButton } from './BlockImageSelectImageButton'
 export { default as BlockText } from './BlockText'
 export { default as BlockTextPlaceholderContainer } from './BlockTextPlaceholderContainer'
