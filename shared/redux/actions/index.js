@@ -11,7 +11,6 @@ import company from './company'
 import pdf_generator from './pdf_generator'
 import draft from './draft'
 import navbar from './navbar'
-import rich_text from './rich_text'
 
 export default {
     ...home,
@@ -24,7 +23,6 @@ export default {
     ...users,
     ...company,
     ...changepassword,
-    ...rich_text,
     ...pdf_generator,
     ...draft,
     ...navbar

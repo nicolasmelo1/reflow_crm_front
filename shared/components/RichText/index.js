@@ -475,7 +475,6 @@ class RichText extends React.Component {
                         onRemoveUnmanagedContent={this.props.onRemoveUnmanagedContent}
                         unmanagedContentValue={this.props.unmanagedContentValue}
                         isUnmanagedContentSelectorOpen={this.props.isUnmanagedContentSelectorOpen}
-                        onDuplicateRichtTextImageBlockExistingFile={this.props.onDuplicateRichtTextImageBlockExistingFile}
                         onOpenUnmanagedContentSelector={this.props.onOpenUnmanagedContentSelector}
                         onChangeUnmanagedContentValue={this.props.onChangeUnmanagedContentValue}
                         />
@@ -530,7 +529,6 @@ class RichText extends React.Component {
                         onRemoveUnmanagedContent={this.props.onRemoveUnmanagedContent}
                         unmanagedContentValue={this.props.unmanagedContentValue}
                         isUnmanagedContentSelectorOpen={this.props.isUnmanagedContentSelectorOpen}
-                        onDuplicateRichtTextImageBlockExistingFile={this.props.onDuplicateRichtTextImageBlockExistingFile}
                         onOpenUnmanagedContentSelector={this.props.onOpenUnmanagedContentSelector}
                         onChangeUnmanagedContentValue={this.props.onChangeUnmanagedContentValue}
                         />

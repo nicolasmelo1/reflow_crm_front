@@ -228,8 +228,7 @@ const Image = (props) => {
                 if (props.pageId !== null) {
                     agent.http.RICH_TEXT.getRichTextImageBlockFile(
                         props.pageId,
-                        props.block.image_option.file_image_uuid,
-                        props.block.image_option.file_name
+                        props.block.image_option.file_image_uuid
                     ).then(url => {
                         if (isMountedRef.current) {
                             setImageUrl(url)
@@ -279,7 +278,7 @@ const Image = (props) => {
             // But on development a thing like this can be tedious to work with so we deactivate.
             if (draftStringIdRef.current !== null && process.env.NODE_ENV === 'production') {
                 props.onRemoveDraft(draftStringIdRef.current)
-            }
+            }                                                                                                                                                           c
             if (sourceRef.current) {
                 sourceRef.current.cancel()
             }
