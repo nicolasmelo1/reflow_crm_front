@@ -5,7 +5,7 @@ const LISTING = {
         if (data && data.type === 'send_formulary_added_or_updated' && formName === data.data.form_name) {
             return callback(data)
         } else if (data === undefined) {
-            const websocket = Socket.getInstance()
+            const websocket = await Socket.getInstance()
             websocket.addCallback(LISTING.recieveDataUpdated, 'LISTING.recieveDataUpdated', {callback, formName})
         }
     }

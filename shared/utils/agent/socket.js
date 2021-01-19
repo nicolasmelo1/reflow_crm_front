@@ -1,6 +1,5 @@
 import { API_ROOT, getToken } from './utils'
 import http from './http'
-import isEqual from '../isEqual'
 import { AppState } from 'react-native'
 
 /**
@@ -24,7 +23,7 @@ class Socket {
     callbacks = {} 
     registering = false
 
-    static getInstance() {
+    static async getInstance() {
         // socket is a function, when you run this function it automatically connects to the server because
         // `registeredSocket` is null and it is not `registering` anything
         if (Socket.instance == null) {
@@ -33,7 +32,7 @@ class Socket {
 
         if (!this.instance.registeredSocket && !this.instance.registering) {
             this.instance.registering = true
-            this.instance.connect()
+            await this.instance.connect()
         }
 
         return this.instance
@@ -146,6 +145,7 @@ class Socket {
             this.onRecieve()
             this.appStateChanged()
         }
+        this.registering = false
     }
 
     /**
