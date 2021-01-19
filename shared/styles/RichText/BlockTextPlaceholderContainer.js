@@ -4,6 +4,7 @@ import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
+    margin-top: 1px;
     position: absolute;
     padding: 5px 5px;
 `

@@ -240,7 +240,7 @@ class RichText extends React.Component {
                         {
                             order: 0,
                             uuid: generateUUID(),
-                            text: initialText ? initialText : '',
+                            text: initialText ? initialText : process.env['APP'] === 'web' ? '\n' : '',
                             text_size: 12,
                             is_bold: false,
                             is_italic: false,
@@ -313,7 +313,7 @@ class RichText extends React.Component {
                         {
                             order: 0,
                             uuid: generateUUID(),
-                            text: '',
+                            text: process.env['APP'] === 'web' ? '\n' : '',
                             text_size: 12,
                             is_bold: false,
                             is_italic: false,

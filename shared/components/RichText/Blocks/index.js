@@ -73,7 +73,7 @@ const Block = (props) => {
             link: link ? link : null,
             marker_color: markerColor ? markerColor : null,
             order: order,
-            text: text ? text : '',
+            text: text ? text : process.env['APP'] === 'web' ? '\n' : '',
             text_color: textColor ? textColor : '',
         }
     }
