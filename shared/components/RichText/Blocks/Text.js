@@ -1484,7 +1484,6 @@ const Text = (props) => {
                 ) : ''}
                 <BlockText
                 ref={inputRef} 
-                isShowingPlaceholder={isToShowPlaceholder()}
                 className={'notranslate'}
                 spellCheck={true}
                 caretColor={(![null, ''].includes(stateOfSelection.textColor) ? stateOfSelection.textColor : '#000')}
