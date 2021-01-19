@@ -5,7 +5,12 @@ import Content from '../Content'
 import { TextBlockOptions } from '../Toolbar/BlockOptions'
 import { TextContentOptions } from '../Toolbar/ContentOptions'
 import { strings } from '../../../utils/constants'
-import isEqual from '../../../utils/isEqual'
+import {
+    getCaretCoordinatesWeb,
+    caretIsInHighestOrLowestPositionWeb,
+    getSelectionSelectCursorPositionWeb,
+    setCaretPositionWeb
+} from '../../../utils/richText/web'
 import { 
     BlockText,
     BlockTextPlaceholderContainer,
@@ -33,6 +38,7 @@ const Text = (props) => {
     const isInCompositionRef = React.useRef(false)
     const isMountedRef = React.useRef(false)
     const wasKeyDownPressedRef = React.useRef(false)
+    const isFocusingRef = React.useRef(false)
     const keyDownPressedRef = React.useRef(null)
     const inputRef = React.useRef(null)
     const activeBlockRef = React.useRef(null)
@@ -135,6 +141,9 @@ const Text = (props) => {
                 }
                 if (process.env['APP'] === 'web') {
                     setCaretPositionWeb(
+                        inputRef.current,
+                        props.arrowNavigation,
+                        isFocusingRef.current,
                         firstContentInSelection.contentIndex, 
                         firstContentInSelection.content.is_custom ? 0: firstContentInSelection.startIndexToSelectTextInContent, 
                         lastContentInSelection.contentIndex, 
@@ -145,93 +154,6 @@ const Text = (props) => {
         }
     }
 
-    /**
-     * WORKS ONLY FOR WEB
-     * - We check if the browser has support for both getSelection and createRange (only IE9 does not support these)
-     * - last but not least we get the positions on where the caret should go
-     * 
-     * Check here for reference: https://stackoverflow.com/a/6249440 on how this works
-     * 
-     * @param {BigInteger} startContentIndex - The index of the content to select. With this we can know on which span element
-     * will be the starting position of the caret.
-     * @param {BigInteger} startPositionInContent 
-     * @param {BigInteger} endContentIndex
-     * @param {BigInteger} endPositionInContent
-     */
-    const setCaretPositionWeb = (startContentIndex, startPositionInContent, endContentIndex=null, endPositionInContent=null) => {
-        if (process.env['APP'] === 'web' && typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
-            const range = document.createRange()
-            const selection = window.getSelection()
-            range.selectNodeContents(inputRef.current)
-
-            if (endContentIndex === null && endPositionInContent === null) {
-                const node = inputRef.current.childNodes[startContentIndex]
-                const nodePosition = startPositionInContent
-                if (node) {
-                    const nodeText = node.firstChild ? node.firstChild : node
-                    range.setStart(
-                        nodeText, 
-                        nodePosition > nodeText.length ? nodeText.length : nodePosition
-                    )
-                    range.collapse(true)
-                } else {
-                    range.collapse(false) 
-                }
-            } else {
-                const startNode = inputRef.current.childNodes[startContentIndex]
-                const endNode = inputRef.current.childNodes[endContentIndex]
-                const startNodePosition = startPositionInContent
-                const endNodePosition = endPositionInContent
-                try {
-                    if (startNode) {
-                        range.setStart(
-                            startNode.firstChild ? startNode.firstChild : startNode, 
-                            startNodePosition
-                        )
-                    } 
-                    if (endNode) {
-                        range.setEnd(
-                            endNode.firstChild ? endNode.firstChild : endNode, 
-                            endNodePosition
-                        )
-                    }
-                } catch {}
-            }
-            selection.removeAllRanges()
-            selection.addRange(range)
-        }
-    }
-
-    /** 
-     * WORKS ONLY FOR WEB
-     * 
-     * Gets the caret X and Y position so we can display a option above the content, this is used to send for the unmanaged.
-     * 
-     * @returns {Object} - returns an object with X and Y keys.
-     */
-    const getCaretCoordinatesWeb = () => {
-        if (process.env['APP'] === 'web') {
-            let x = 0
-            let y = 0
-            const isSupported = typeof window.getSelection !== "undefined"
-            if (isSupported) {
-                const selection = window.getSelection()
-                if (selection.rangeCount !== 0) {
-                    const range = selection.getRangeAt(0).cloneRange()
-                    range.collapse(true)
-                    const rect = range.getClientRects()[0]
-                    if (rect) {
-                        x = rect.left
-                        y = rect.top
-                    }
-                }
-            }
-            return { 
-                x: x, 
-                y: y 
-            }   
-        }
-    }
 
     /**
      * On the browser, when we update the state, the caret jumps (it means it disappear) so the user needs 
@@ -253,19 +175,33 @@ const Text = (props) => {
         if (activeBlock === props.block.uuid && !isWaitingForCustomInput.current) {
             if (process.env['APP'] === 'web') {
                 if (whereCaretPositionShouldGoAfterUpdateRef.current.contentIndex !== null && whereCaretPositionShouldGoAfterUpdateRef.current.positionInContent !== null) {
-                    setCaretPositionWeb(whereCaretPositionShouldGoAfterUpdateRef.current.contentIndex, whereCaretPositionShouldGoAfterUpdateRef.current.positionInContent)
+                    setCaretPositionWeb(
+                        inputRef.current,
+                        props.arrowNavigation,
+                        isFocusingRef.current,
+                        whereCaretPositionShouldGoAfterUpdateRef.current.contentIndex, 
+                        whereCaretPositionShouldGoAfterUpdateRef.current.positionInContent
+                    )
                 } else if (caretPositionRef.current.start !== null && caretPositionRef.current.end !== null) {
                     const selectedContents = getSelectedContents()
                     if (selectedContents[0]) {
-                        setCaretPositionWeb(selectedContents[0].contentIndex, selectedContents[0].startIndexToSelectTextInContent, 
-                                            selectedContents[selectedContents.length-1].contentIndex, selectedContents[selectedContents.length-1].endIndexToSelectTextInContent)
+                        setCaretPositionWeb(
+                            inputRef.current,
+                            props.arrowNavigation,
+                            isFocusingRef.current,
+                            selectedContents[0].contentIndex, 
+                            selectedContents[0].startIndexToSelectTextInContent,              
+                            selectedContents[selectedContents.length-1].contentIndex,
+                            selectedContents[selectedContents.length-1].endIndexToSelectTextInContent
+                        )
                     }
                 }
+                isFocusingRef.current = false
                 whereCaretPositionShouldGoAfterUpdateRef.current = {
                     contentIndex: null,
                     positionInContent: null
                 }
-                caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
+                caretPositionRef.current = getSelectionSelectCursorPositionWeb(inputRef.current)
                 
                 checkIfCaretPositionIsCustomFixAndSetCaretPosition()
                 checkStateOfSelectedElementAndUpdateState()
@@ -274,58 +210,79 @@ const Text = (props) => {
     }
 
     /**
-     * WORKS ONLY ON WEB 
-     * 
-     * On the browser we cannot get the selection position by default on a contentEditable element.
-     * Because of this we need this function, this function is fired whenever we make a selection and it gives the
-     * Start and the End position of the selection in the contentEditable. Suppose you have the following text in you contentEditable:
-     * `i love cats` and we select the "LOVE" string the positions will be: 
-     * {
-     *      start: 2,
-     *      end: 5
-     * }
-     * since index starts at 0.
-     * 
-     * We use this selection range to determine what has been deleted or what has been changed.
-     * 
-     * Reference: https://stackoverflow.com/a/4812022
-     * 
-     * @param {Object} element - The element object on which you get the selection position from, usually this will be the `inputRef.current`
-     * 
-     * @returns {Object} - An object with "start" and "end" keys that are both the start position of the selection cursor and the end position
-     * of the selection cursor.
+     * Is explained well in `caretIsInHighestOrLowestPositionWeb` function. Read the docs there to understand
+     * how we know that the caret is on the top of the content and how it is on the bottom.
      */
-    const getWebSelectionSelectCursorPosition = (element) => {
-        if (process.env['APP'] === 'web') {
-            let start = 0
-            let end = 0
-            let selection = null
-            const document = element.ownerDocument || element.document
-            const window = document.defaultView || document.parentWindow
-            if (typeof window.getSelection != "undefined") {
-                selection = window.getSelection()
-                if (selection.rangeCount > 0) {
-                    const range = window.getSelection().getRangeAt(0)
-                    const preCaretRange = range.cloneRange()
-                    preCaretRange.selectNodeContents(element)
-                    preCaretRange.setEnd(range.startContainer, range.startOffset)
-                    start = preCaretRange.toString().length
-                    preCaretRange.setEnd(range.endContainer, range.endOffset)
-                    end = preCaretRange.toString().length
+    const handleArrowNavigationWeb = () => {
+        const getNextBlockIndex = () => {
+            const indexOfCurrentBlock = props.contextBlocks.findIndex(block => block.uuid === props.block.uuid)
+            let nextTextBlockIndex = -1
+            for (let i = 0; i < props.contextBlocks.length; i++) {
+                if (props.contextBlocks[i].block_type === props.getBlockTypeIdByName('text') && i > indexOfCurrentBlock) {
+                    nextTextBlockIndex = i
+                    break
                 }
-            } else if ((selection = document.selection) && selection.type != "Control") {
-                const textRange = selection.createRange()
-                const preCaretTextRange = document.body.createTextRange()
-                preCaretTextRange.moveToElementText(element)
-                preCaretTextRange.setEndPoint("EndToStart", textRange)
-                start = preCaretTextRange.text.length
-                preCaretTextRange.setEndPoint("EndToEnd", textRange)
-                end = preCaretTextRange.text.length
             }
-            return { 
-                start: start, 
-                end: end 
+            return nextTextBlockIndex
+        } 
+
+        const getPreviousBlockIndex = () => {
+            const indexOfCurrentBlock = props.contextBlocks.findIndex(block => block.uuid === props.block.uuid)
+            let previousTextBlockIndex = -1
+            for (let i = indexOfCurrentBlock; i >= 0; i--) {
+                if (props.contextBlocks[i].block_type === props.getBlockTypeIdByName('text') && i < indexOfCurrentBlock) {
+                    previousTextBlockIndex = i
+                    break
+                }
             }
+            return previousTextBlockIndex
+        }
+
+        if (typeof(keyDownPressedRef.current) === 'string' && keyDownPressedRef.current.toLowerCase().includes('arrow')){
+            const caretIndexPosition = getSelectionSelectCursorPositionWeb(inputRef.current)
+            const text = inputRef.current.innerText.substring(inputRef.current.innerText.length-1, inputRef.current.innerText.length) === '\n' ? 
+                inputRef.current.innerText.substring(0, inputRef.current.innerText.length-1) : inputRef.current.innerText
+            const caretPosition = getCaretCoordinatesWeb()            
+
+            if (keyDownPressedRef.current === 'ArrowDown' && caretIsInHighestOrLowestPositionWeb(inputRef.current).isLowest) {    
+                props.setArrowNavigation({
+                    focusX: caretPosition.x,
+                    isDownPressed: true
+                })
+
+                const nextTextBlockIndex = getNextBlockIndex()
+                if (nextTextBlockIndex !== -1) {
+                    props.updateBlocks(props.contextBlocks[nextTextBlockIndex].uuid)
+                }
+            } else if (keyDownPressedRef.current === 'ArrowUp' && caretIsInHighestOrLowestPositionWeb(inputRef.current).isHighest) {
+                props.setArrowNavigation({
+                    focusX: caretPosition.x,
+                    isUpPressed: true
+                })
+
+                const previousTextBlockIndex = getPreviousBlockIndex()
+                if (previousTextBlockIndex !== -1) {
+                    props.updateBlocks(props.contextBlocks[previousTextBlockIndex].uuid)
+                }
+            } else if (keyDownPressedRef.current === 'ArrowRight' && caretIsInHighestOrLowestPositionWeb(inputRef.current).isLowest && caretIndexPosition.start >= text.length) {
+                props.setArrowNavigation({
+                    isRightPressed: true
+                })
+                const nextTextBlockIndex = getNextBlockIndex()
+                if (nextTextBlockIndex !== -1) {
+                    props.updateBlocks(props.contextBlocks[nextTextBlockIndex].uuid)
+                }
+            } else if (keyDownPressedRef.current === 'ArrowLeft' && caretIsInHighestOrLowestPositionWeb(inputRef.current).isHighest && caretIndexPosition.start === 0) {
+                props.setArrowNavigation({
+                    focusX: caretPosition.x,
+                    isLeftPressed: true
+                })
+                const previousTextBlockIndex = getPreviousBlockIndex()
+                if (previousTextBlockIndex !== -1) {
+                    props.updateBlocks(props.contextBlocks[previousTextBlockIndex].uuid)
+                }
+            }
+            keyDownPressedRef.current = null
         }
     }
     
@@ -810,6 +767,7 @@ const Text = (props) => {
         }
         isWaitingForCustomInput.current = false
         if (process.env['APP'] === 'web') {
+            isFocusingRef.current = true
             setCaretPositionInInput(props.block.uuid)
         }
     }
@@ -854,9 +812,11 @@ const Text = (props) => {
      * @param {*} e 
      */
     const onSelectText = (e) => {
-        if (process.env['APP'] === 'web') {
+        if (process.env['APP'] === 'web') {    
+            handleArrowNavigationWeb()
+
             if (!wasKeyDownPressedRef.current) {
-                caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
+                caretPositionRef.current = getSelectionSelectCursorPositionWeb(inputRef.current)
                 checkStateOfSelectedElementAndUpdateState()
                 checkIfCaretPositionIsCustomFixAndSetCaretPosition()
             }
@@ -880,7 +840,7 @@ const Text = (props) => {
      * @param {*} e 
      */
     const onClickText = (e) => {
-        caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
+        caretPositionRef.current = getSelectionSelectCursorPositionWeb(inputRef.current)
         checkStateOfSelectedElementAndUpdateState()
         if (props.activeBlock !== props.block.uuid) {
             props.updateBlocks(props.block.uuid)
@@ -1159,7 +1119,7 @@ const Text = (props) => {
                 }
             } else {
                 if (process.env['APP'] === 'web') {
-                    caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
+                    caretPositionRef.current = getSelectionSelectCursorPositionWeb(inputRef.current)
                 }
             }
         }
@@ -1178,14 +1138,17 @@ const Text = (props) => {
      */
     const onKeyDown = (event, pressedKey) => {
         keyDownPressedRef.current = pressedKey
+        if (process.env['APP'] === 'web') {
+            handleArrowNavigationWeb()
+        }
         if (!wasKeyDownPressedRef.current) {
             if (process.env['APP'] === 'web') {
-                caretPositionRef.current = getWebSelectionSelectCursorPosition(inputRef.current)
+                caretPositionRef.current = getSelectionSelectCursorPositionWeb(inputRef.current)
                 checkIfCaretPositionIsCustomFixAndSetCaretPosition()
             }
             wasKeyDownPressedRef.current = true
         }
-        
+    
         const oldText = props.block.rich_text_block_contents.map(content => content.text).join('')
         if ((process.env['APP'] === 'web' && keyDownPressedRef.current === 'Enter' && !event.shiftKey)|| (process.env['APP'] !== 'web' && keyDownPressedRef.current === 'Enter')) {
             event.preventDefault()
@@ -1202,6 +1165,21 @@ const Text = (props) => {
         } else if (keyDownPressedRef.current === '/' && caretPositionRef.current && caretPositionRef.current.start === 0 && caretPositionRef.current.end === 0 && (oldText === '' || oldText === '\n')) {
             props.openBlockSelection()
         }
+    }
+
+    /**
+     * Resets the states from the refs when the user leaves the key
+     */
+    const onKeyUp = () => {
+        keyDownPressedRef.current = null
+        wasKeyDownPressedRef.current = false
+        props.setArrowNavigation({
+            focusX: null,
+            isUpPressed: false,
+            isDownPressed: false,
+            isRightPressed: false,
+            isLeftPressed: false
+        })
     }
 
     /**
@@ -1506,6 +1484,7 @@ const Text = (props) => {
                 ) : ''}
                 <BlockText
                 ref={inputRef} 
+                isShowingPlaceholder={isToShowPlaceholder()}
                 className={'notranslate'}
                 spellCheck={true}
                 caretColor={(![null, ''].includes(stateOfSelection.textColor) ? stateOfSelection.textColor : '#000')}
@@ -1513,8 +1492,13 @@ const Text = (props) => {
                 onBlur={(e) => onBlur()}
                 onPaste={(e) => onPaste(e)}
                 onFocus={(e) => onFocus()}
+                onDoubleClick={(e) => onSelectText(e)}
                 onSelect={(e) => onSelectText(e)}
                 onKeyDown={(e) => onKeyDown(e, e.nativeEvent.key)}
+                onKeyUp={(e) => {
+                    e.preventDefault()
+                    onKeyUp()
+                }}
                 onInput={(e) => {
                     if (isInCompositionRef.current === false) {
                         e.preventDefault()
@@ -1523,7 +1507,6 @@ const Text = (props) => {
                 }}
                 onCompositionStart = {(e) => {isInCompositionRef.current = true}}
                 onCompositionEnd = {(e) => onCompositionEnd(e.nativeEvent.data)}
-                onKeyUp={(e) => e.preventDefault()}
                 onClick={(e) => onClickText(e)}
                 contentEditable={props.isEditable} 
                 draggabble="false"

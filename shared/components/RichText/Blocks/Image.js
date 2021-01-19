@@ -292,7 +292,6 @@ const Image = (props) => {
                     onClick={(e) => {props.isEditable ? props.updateBlocks(props.block.uuid) : null}}
                     >   
                         <div style={{ position: 'relative', width: `${sizeRelativeToView*100}%`}}>
-
                             {isMouseOver ? (
                                 <BlockImageResizeContainer>
                                     <BlockImageResizeButton 

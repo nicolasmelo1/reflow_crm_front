@@ -10,8 +10,8 @@ styled.button`
     border: 1px solid #f2f2f2;
     margin: 5px;
     border-radius: 20px;
-    padding: 0;
-    cursor: col-resize
+    padding: 0px;
+    cursor: col-resize !important;
 `
 :
 styled(TouchableOpacity)``

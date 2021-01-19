@@ -44,6 +44,13 @@ class RichText extends React.Component {
             activeBlock: null,
             mobileKeyboardHeight: 0,
             mobileRichTextHeight: 0,
+            arrowNavigation: {
+                focusX: null,
+                isUpPressed: false,
+                isDownPressed: false,
+                isRightPressed: false,
+                isLeftPressed: false
+            },
             data: this.props.initialData && Object.keys(this.props.initialData).length !== 0 ? 
                   JSON.parse(JSON.stringify(this.props.initialData)) : this.createNewPage()
         }
@@ -139,6 +146,33 @@ class RichText extends React.Component {
             this.setState(state => ({
                 ...state,
                 mobileRichTextHeight: height,
+            }))
+        }
+    }
+
+    /**
+     * WORKS ONLY ON MOBILE
+     * 
+     * This handles when the arrow key is pressed, used only on web and on text blocks
+     * 
+     * @param {Object} - {
+     *      isUpPressed {Boolean} - If key arrow up is pressed it will be true
+     *      isDownPressed {Boolean} - If key arrow down is pressed it will be true
+     *      isRightPressed {Boolean} - If key arrow right is pressed it will be true
+     *      isLeftPressed {Boolean} - If key arrow left is pressed it will be true
+     * }
+     */
+    setArrowNavigation = ({focusX, isUpPressed, isDownPressed, isRightPressed, isLeftPressed}) => {
+        if (this._isMounted) {
+            this.setState(state => ({
+                ...state,
+                arrowNavigation: {
+                    focusX: [null, undefined].includes(focusX) ? null : focusX,
+                    isUpPressed: [null, undefined].includes(isUpPressed) ? false : isUpPressed,
+                    isDownPressed: [null, undefined].includes(isDownPressed) ? false : isDownPressed,
+                    isRightPressed: [null, undefined].includes(isRightPressed) ? false : isRightPressed,
+                    isLeftPressed: [null, undefined].includes(isLeftPressed) ? false : isLeftPressed
+                }
             }))
         }
     }
@@ -504,6 +538,8 @@ class RichText extends React.Component {
                         isEditable={![null, undefined].includes(this.props.isEditable) ? this.props.isEditable : true}
                         activeBlock={this.state.activeBlock} 
                         updateBlocks={this.updateBlocks} 
+                        setArrowNavigation={this.setArrowNavigation}
+                        arrowNavigation={this.state.arrowNavigation}
                         contextBlocks={this.state.data.rich_text_page_blocks}
                         renderCustomContent={this.props.renderCustomContent}
                         getAligmentTypeIdByName={this.getAligmentTypeIdByName}
@@ -556,6 +592,8 @@ class RichText extends React.Component {
                         isEditable={![null, undefined].includes(this.props.isEditable) ? this.props.isEditable : true}
                         activeBlock={this.state.activeBlock} 
                         updateBlocks={this.updateBlocks} 
+                        setArrowNavigation={this.setArrowNavigation}
+                        arrowNavigation={this.state.arrowNavigation}
                         contextBlocks={this.state.data.rich_text_page_blocks}
                         renderCustomContent={this.props.renderCustomContent}
                         getAligmentTypeIdByName={this.getAligmentTypeIdByName}
