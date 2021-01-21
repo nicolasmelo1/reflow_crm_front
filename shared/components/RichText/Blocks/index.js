@@ -73,7 +73,7 @@ const Block = (props) => {
             link: link ? link : null,
             marker_color: markerColor ? markerColor : null,
             order: order,
-            text: text ? text : process.env['APP'] === 'web' ? '\n' : '',
+            text: text ? text : '',
             text_color: textColor ? textColor : '',
         }
     }
@@ -102,7 +102,8 @@ const Block = (props) => {
             table_option: ![null, undefined].includes(options.tableOptions) ? options.tableOptions : null,
             block_type: blockTypeId,
             order: order,
-            rich_text_block_contents: richTextBlockContents ? richTextBlockContents.map(content => ({...content, id: null, uuid: generateUUID()})) : [createNewContent({order: 0, text: ''})]
+            rich_text_block_contents: richTextBlockContents ? richTextBlockContents.map(content => ({...content, id: null, uuid: generateUUID()})) : [createNewContent({order: 0, text: ''})],
+            rich_text_depends_on_blocks: []
         }
     }
 
@@ -113,12 +114,13 @@ const Block = (props) => {
      */
     const onDeleteBlock = () => {
         if (props.onDeleteBlock) {
-            props.onDeleteBlock()
-        }
-        if (props.contextBlocks.length > 1) {
-            const indexOfBlockInContext = props.contextBlocks.findIndex(block => block.uuid === props.block.uuid)
-            props.contextBlocks.splice(indexOfBlockInContext, 1)
-            props.updateBlocks(null)
+            props.onDeleteBlock(props.block.uuid)
+        } else {
+            if (props.contextBlocks.length > 1) {
+                const indexOfBlockInContext = props.contextBlocks.findIndex(block => block.uuid === props.block.uuid)
+                props.contextBlocks.splice(indexOfBlockInContext, 1)
+                props.updateBlocks(null)
+            }
         }
     }
 
@@ -207,8 +209,6 @@ const Block = (props) => {
         },
         imageFile: imageFile,
         onPasteImageInText: onPasteImageInText,
-        onDuplicateBlock: onDuplicateBlock,
-        onDeleteBlock: onDeleteBlock,
         openBlockSelection: openBlockSelection,
         createNewContent: createNewContent,
         createNewBlock: createNewBlock

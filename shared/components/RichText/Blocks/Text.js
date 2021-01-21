@@ -971,7 +971,7 @@ const Text = (props) => {
      */
     const onEnter = () => {
         if (props.onEnter) {
-            props.onEnter()
+            props.onEnter(props.block.uuid)
         } else {
             const oldText = props.block.rich_text_block_contents.map(content => content.text).join('')
             const selectedContentsForCurrentSelection = getSelectedContents()

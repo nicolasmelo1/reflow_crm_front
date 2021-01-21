@@ -277,7 +277,15 @@ const ChargeForm = (props) => {
                                 value={(getCompanyIndividualChargeValueQuantityByName(individualChargeValueType.name)/props.chargesData.filter(chargeData => chargeData.name === individualChargeValueType.name).length).toString()}
                                 onChange={e => onChangeQuantity(e.target.value, individualChargeValueType.name)}
                                 >
-                                    {optionsForIndividualChargeTypes[individualChargeValueType.name].map((option, index)=> (
+                                    {!optionsForIndividualChargeTypes[individualChargeValueType.name].map(option => option.value).includes(getCompanyIndividualChargeValueQuantityByName(individualChargeValueType.name).toString()) ? 
+                                    [].concat(optionsForIndividualChargeTypes[individualChargeValueType.name], 
+                                    [{
+                                        value: getCompanyIndividualChargeValueQuantityByName(individualChargeValueType.name), 
+                                        label: getCompanyIndividualChargeValueQuantityByName(individualChargeValueType.name)}
+                                    ]).map((option, index) => (
+                                        <option key={index} value={option.value}>{option.label}</option>
+                                    ))
+                                    : optionsForIndividualChargeTypes[individualChargeValueType.name].map((option, index) => (
                                         <option key={index} value={option.value}>{option.label}</option>
                                     ))}
                                 </select>

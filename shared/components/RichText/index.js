@@ -236,6 +236,7 @@ class RichText extends React.Component {
                     table_option: null,
                     block_type: blockType,
                     order: 0,
+                    rich_text_depends_on_blocks: [],
                     rich_text_block_contents: [
                         {
                             order: 0,
@@ -293,7 +294,7 @@ class RichText extends React.Component {
                 this.getBlockTypeNameById(lastBlockOfPage.block_type) !== 'text' || 
                 lastBlockOfPage.rich_text_block_contents.length > 1 || 
                 lastBlockOfPage.rich_text_block_contents[0] === undefined || 
-                lastBlockOfPage.rich_text_block_contents[0].text !== ''
+                !['', '\n'].includes(lastBlockOfPage.rich_text_block_contents[0].text)
             ) {
                 const alignmentType = this.getAligmentTypeIdByName('left')
                 const blockType = this.getBlockTypeIdByName('text')
@@ -309,6 +310,7 @@ class RichText extends React.Component {
                     table_option: null,
                     block_type: blockType,
                     order: 0,
+                    rich_text_depends_on_blocks: [],
                     rich_text_block_contents: [
                         {
                             order: 0,

@@ -326,7 +326,7 @@ const strings = {
         richTextImageBlockSelectFileTypeButtonLabel: 'Arquivo',
         richTextImageBlockSelectLinkTypeButtonLabel: 'Link',
         richTextImageBlockSelectLinkTypePlaceholder: 'Exemplo: https://i.imgur.com/4AiXzf8.jpeg',
-        richTextTextBlockPlaceholder: 'Digite aqui',
+        richTextTextBlockPlaceholder: "Digite '/' para acessar lista de blocos",
         richTextToolbarDuplicateBlockButtonOverlay: 'Duplicar',
         richTextToolbarDeleteBlockButtonOverlay: 'Excluir',
         pdfGeneratorOnRemoveTemplateAlertTitle: 'Atenção!',
