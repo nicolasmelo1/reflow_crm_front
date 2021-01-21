@@ -140,6 +140,7 @@ class Onboarding extends React.Component {
         const data = {
             partner: this.props.partner ? this.props.partner : null,
             shared_by: this.props.sharedBy ? this.props.sharedBy : null,
+            discount_coupon: this.props.discount_coupon ? this.props.discount_coupon : null,
             company_name: this.state.companyName,
             user_phone: this.state.phone,
             user_first_name: this.state.name.split(' ')[0],
