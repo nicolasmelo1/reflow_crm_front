@@ -33,7 +33,7 @@ const Header = (props) => (
         <link rel="apple-touch-icon" sizes="114x114" href="/pwa/images/icons/apple-icon-114x114.png"/>
         <link rel="apple-touch-icon" sizes="120x120" href="/pwa/images/icons/apple-icon-120x120.png"/>
         <link rel="apple-touch-icon" sizes="180x180" href="/pwa/images/icons/apple-icon-180x180.png"/>
-        <link rel="icon" type="image/png" sizes="192x192"  href="/pwa/images/icons/android-icon-192x192.png"/>
+        <link rel="icon" type="image/png" sizes="192x192"  href="/pwa/images/icons/icon-192x192.png"/>
         <link rel="icon" type="image/png" sizes="32x32" href="/pwa/images/icons/favicon-32x32.png"/>
         <link rel="icon" type="image/png" sizes="96x96" href="/pwa/images/icons/favicon-96x96.png"/>
         <link rel="icon" type="image/png" sizes="16x16" href="/pwa/images/icons/favicon-16x16.png"/>

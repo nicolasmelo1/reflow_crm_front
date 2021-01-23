@@ -1,4 +1,4 @@
-import React, { useState , useEffect } from 'react'
+import React, { useState , useEffect, memo } from 'react'
 import { KeyboardAvoidingView } from 'react-native'
 import { renderToString } from 'react-dom/server'
 import Content from '../Content'
@@ -87,7 +87,6 @@ const Text = (props) => {
      */
     const addToolbar = () => {
         if (props.addToolbar) {
-            props.toolbarProps.blockUUID = props.block.uuid
             props.toolbarProps.contentOptionComponent = TextContentOptions
             props.toolbarProps.blockOptionComponent = TextBlockOptions
             props.toolbarProps.contentOptionProps = {

@@ -1,7 +1,13 @@
-import React, { useEffect } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { View } from 'react-native'
+import isEqual from '../../../utils/isEqual'
+
 import Content from '../Content'
 import Block from '../Blocks'
+import { TableBlockOptions } from '../Toolbar/BlockOptions'
+import {
+    BlockTableResizeButton
+} from '../../../styles/RichText'
 /**
  * {Description of your component, what does it do}
  * @param {Type} props - {go in detail about every prop it recieves}
@@ -10,39 +16,32 @@ import Block from '../Blocks'
 
 
 const Table = (props) => {
+    const [selectedEdge, setSelectedEdge] = useState({
+        row: {
+            isSelected: false,
+            index: null
+        },
+        column: {
+            isSelected: false,
+            index: null
+        },
+    })
 
     /**
-     * THis is a function for adding the toolbar in the root of the page.
-     * With this simple function we can maintain a simple API for the components to follow and also allow
-     * complex layouts to be created.
+     * Adds the table toolbar when the user clicks on one of the table edges.
      * 
-     * So let's start. HOW THE F•C* does this work?
-     * - First things first: On the parent component we do not keep the state but instead we keep everything inside
-     * of a ref. This way we can prevent rerendering stuff and just rerender when needed.
-     * - Second of all you need to add this function on a useEffect hook or a componentDidUpdate, this way after every
-     * rerender of your component we can keep track on what is changing and force the rerender of the hole page tree.
-     * - Third but not least we save all of the data needed to render a Toolbar. This means we need the following parameters:
-     *  - `blockUUID` - The uuid of the current block
-     *  - `contentOptionComponent` - The React component of the content options we want to render, these are options of each content
-     * of the block. They are usually the same, but sometimes you are not dealing with text, so you want to prevent the user
-     * from selecting bold and so on.
-     *  - `blockOptionComponent` - The React component of the BLOCK options we want to render, these are options for the specific
-     * block you have selected.
-     *  - `contentOptionProps` - The props that will go to `contentOptionComponent`
-     *  - `blockOptionProps` - The props that will go to `blockOptionComponent`
-     * 
-     * HOW TO USE THIS:
-     * You need to run this function ONLY inside of a useEffect of componentDidUpdate. MAKE SURE YOU ARE LISTENING TO THE
-     * the state changes that you need. (for example, here we are listening for changes in props, every other state
-     * change is irrelevant. When any of this states changes we want the toolbar to update accordingly.)
+     * You can see `.addToolbar` on the Block component to see how this works and how to configure it.
      */
     const addToolbar = () => {
-        if (props.addToolbar) {      
-            props.toolbarProps.blockUUID = props.block.uuid
-            props.addToolbar({...props.toolbarProps})
+        props.toolbarProps.blockOptionComponent = TableBlockOptions
+        props.toolbarProps.blockOptionProps = {
+            selectedEdge: selectedEdge,
+            onAddNewRowOrColumn: onAddNewRowOrColumn,
+            onRemoveRowOrColumn: onRemoveRowOrColumn
         }
+        props.addToolbar({...props.toolbarProps})
     }
-
+    
     const tableOptions = () => ({
             id: null,
             rows_num: 2,
@@ -50,8 +49,24 @@ const Table = (props) => {
             border_color: null
     })
 
+    const createEmptyTextBlock = (order) => {
+        return props.createNewBlock({
+            order: order, 
+            blockTypeId: props.getBlockTypeIdByName('text'),
+            textOptions: {
+                id: null,
+                alignment_type: props.getAligmentTypeIdByName('left')
+            }
+        })
+    }
+
     const findRowOfBlockByBlockIndex = (blockIndex) => {
-        
+        return Math.floor(blockIndex/props.block.table_option.columns_num)
+    }
+
+    const findColumnOfBlockByBlockIndex = (blockIndex) => {
+        const rowIndex = findRowOfBlockByBlockIndex(blockIndex)
+        return blockIndex - (props.block.table_option.columns_num*rowIndex)
     }
 
     const checkIfTableOptionsAndInsertIt = () => {
@@ -61,42 +76,55 @@ const Table = (props) => {
                 props.block.rich_text_depends_on_blocks = []
             }
             for (let i = 0; i < props.block.table_option.rows_num * props.block.table_option.columns_num; i++) {
-                props.block.rich_text_depends_on_blocks.push(props.createNewBlock({
-                    order: i, 
-                    blockTypeId: props.getBlockTypeIdByName('text')
-                }))
+                if (i >= props.block.rich_text_depends_on_blocks.length) {
+                    props.block.rich_text_depends_on_blocks.push(createEmptyTextBlock(i))
+                }
             }
         }
         props.updateBlocks(props.block.uuid)
     }   
-
-    const formatedTableData = () => {
-        if (props.block.table_option) {
-            let indexDataHelper = 0
-            const tableData = Array.apply(null, Array(props.block.table_option.rows_num)).map(_ => {
-                return Array.apply(null, Array(props.block.table_option.columns_num)).map(_ => {
-                    let block = props.block.rich_text_depends_on_blocks[indexDataHelper]
-                    if (!block) {
-                        block = null
-                    } else {
-                        indexDataHelper++
-                    }
-                    return block
-                })
-            })
-            return tableData
+    
+    const onAddNewRowOrColumn = () => {
+        if (selectedEdge.row.isSelected) {
+            for (let i=0; i<props.block.table_option.columns_num; i++) {
+                const newBlock = createEmptyTextBlock((props.block.table_option.columns_num * selectedEdge.row.index) + i)
+                props.block.rich_text_depends_on_blocks.splice((props.block.table_option.columns_num * selectedEdge.row.index) + i,0, newBlock)
+            }
+            props.block.table_option.rows_num = props.block.table_option.rows_num + 1
         } else {
-            return []
+            for (let i=0; i<props.block.table_option.rows_num; i++) {
+                const newBlock = createEmptyTextBlock((props.block.table_option.rows_num * selectedEdge.column.index) + i)
+                props.block.rich_text_depends_on_blocks.splice(selectedEdge.column.index + (props.block.table_option.columns_num * i) + i,0, newBlock)
+            }
+            props.block.table_option.columns_num = props.block.table_option.columns_num + 1
+        }
+        props.updateBlocks(props.block.uuid)
+    }
+
+    const onRemoveRowOrColumn = () => {
+        if (selectedEdge.row.isSelected) {
+            if (props.block.table_option.columns_num > 1) {
+                for (let i=0; i<props.block.table_option.rows_num; i++) {
+                    props.block.rich_text_depends_on_blocks.splice(selectedEdge.column.index + (props.block.table_option.columns_num * i) - i,1)
+                }
+                props.block.table_option.columns_num = props.block.table_option.columns_num - 1
+                props.updateBlocks(props.block.uuid)
+            }
+        } else {
+            if (props.block.table_option.rows_num > 1) {
+                for (let i=0; i<props.block.table_option.columns_num; i++) {
+                    props.block.rich_text_depends_on_blocks.splice((props.block.table_option.columns_num * selectedEdge.row.index), 1)
+                }
+                props.block.table_option.rows_num = props.block.table_option.rows_num - 1
+                props.updateBlocks(props.block.uuid)
+            }
         }
     }
-    
+
     const onDeleteChildrenBlock = (blockUUID) => {
         if (props.contextBlocks.length > 1) {
             const indexOfBlockInTable = props.block.rich_text_depends_on_blocks.findIndex(block => block.uuid === blockUUID)
-            const newBlock = props.createNewBlock({
-                order: indexOfBlockInTable, 
-                blockTypeId: props.getBlockTypeIdByName('text')
-            })
+            const newBlock = createEmptyTextBlock(indexOfBlockInTable)
             props.block.rich_text_depends_on_blocks.splice(indexOfBlockInTable, 1, newBlock)
             props.updateBlocks(newBlock.uuid)
         }
@@ -104,18 +132,16 @@ const Table = (props) => {
 
     const onEnter = (blockUUID) => {
         const indexOfBlockInTable = props.block.rich_text_depends_on_blocks.findIndex(block => block.uuid === blockUUID)
+        const newRowIndex = findRowOfBlockByBlockIndex(indexOfBlockInTable) + 1
+        const columnIndex = findColumnOfBlockByBlockIndex(indexOfBlockInTable)
         props.block.table_option.rows_num = props.block.table_option.rows_num + 1
         let blockToFocus = null
         for (let i=0; i<props.block.table_option.columns_num; i++) {
-            const newBlock = props.createNewBlock({
-                order: indexOfBlockInTable, 
-                blockTypeId: props.getBlockTypeIdByName('text')
-            })
-            if (i === 0) blockToFocus = newBlock.uuid
-            props.block.rich_text_depends_on_blocks.push(newBlock)
+            const newBlock = createEmptyTextBlock((props.block.table_option.columns_num*newRowIndex) + i)
+            if (i === columnIndex) blockToFocus = newBlock.uuid
+            props.block.rich_text_depends_on_blocks.splice((props.block.table_option.columns_num*newRowIndex) + i,0, newBlock)
         }
         props.updateBlocks(blockToFocus)
-
     }
 
     useEffect(() => {
@@ -124,7 +150,9 @@ const Table = (props) => {
 
     useEffect(() => {
         addToolbar()
-    }, [props.activeBlock])
+    }, [props.activeBlock, selectedEdge])
+
+    const columnsNumber = props.block?.table_option?.columns_num ? props.block?.table_option?.columns_num : 0
 
     const renderMobile = () => {
         return (
@@ -136,89 +164,95 @@ const Table = (props) => {
         return (
             <table style={{ width: '100%'}}>
                 <tbody>
-                    {formatedTableData().map((tableColumnsData, tableRowIndex) => (
-                        <tr key={tableRowIndex}>
-                            {tableColumnsData.map((block, columnIndex) => (
-                                <td key={columnIndex} style={{ border: '1px solid #000', padding: '10px', position: 'relative'}}>
-                                    <button
-                                    onClick={(e) => {props.updateBlocks(props.block.uuid)}}
-                                    style={{
-                                        cursor: 'pointer',
-                                        position: 'absolute',
-                                        right: 0,
-                                        bottom: 0,
-                                        top: 0,
-                                        width: '1px',
-                                        backgroundColor: 'red',
-                                        padding: 0,
-                                        border: 0
-                                    }}
-                                    />
-                                     <button
-                                    onClick={(e) => {props.updateBlocks(props.block.uuid)}}
-                                    style={{
-                                        cursor: 'pointer',
-                                        position: 'absolute',
-                                        left: 0,
-                                        bottom: 0,
-                                        top: 0,
-                                        width: '1px',
-                                        backgroundColor: 'red',
-                                        padding: 0,
-                                        border: 0
-                                    }}
-                                    />
-                                     <button
-                                    onClick={(e) => {props.updateBlocks(props.block.uuid)}}
-                                    style={{
-                                        cursor: 'pointer',
-                                        position: 'absolute',
-                                        top: 0,
-                                        left: 0,
-                                        height: '1px',
-                                        width: '100%',
-                                        backgroundColor: 'red',
-                                        padding: 0,
-                                        border: 0
-                                    }}
-                                    />
-                                     <button
-                                    onClick={(e) => {props.updateBlocks(props.block.uuid)}}
-                                    style={{
-                                        cursor: 'pointer',
-                                        position: 'absolute',
-                                        bottom: 0,
-                                        left: 0,
-                                        height: '1px',
-                                        width: '100%',
-                                        backgroundColor: 'red',
-                                        padding: 0,
-                                        border: 0
-                                    }}
-                                    />
-
-                                    {block ? (
+                    {Array.apply(null, Array(props.block?.table_option?.rows_num ? props.block?.table_option?.rows_num : 0)).map((_, rowIndex) => (
+                        <tr key={rowIndex}>
+                            {props.block.rich_text_depends_on_blocks.slice(rowIndex * columnsNumber, (rowIndex * columnsNumber) + columnsNumber).map((block, index) => {
+                                const columnIndex = (rowIndex * columnsNumber) + index
+                                block = block ? block : createEmptyTextBlock(rowIndex*columnIndex)
+                                return (
+                                    <td key={block.uuid} 
+                                    style={{ 
+                                        border: '1px solid #000', 
+                                        padding: '10px', 
+                                        position: 'relative', 
+                                        width: `${100/props.block.table_option.columns_num}%`
+                                    }}>
+                                        <BlockTableResizeButton
+                                        buttonType={{isRight: true}}
+                                        onClick={(e) => {
+                                            setSelectedEdge({
+                                                row: {
+                                                    isSelected: false,
+                                                    index: rowIndex
+                                                },
+                                                column: {
+                                                    isSelected: true,
+                                                    index: columnIndex+1
+                                                }
+                                            })
+                                            props.updateBlocks(props.block.uuid)
+                                        }}
+                                        />
+                                        <BlockTableResizeButton
+                                        buttonType={{isLeft: true}}
+                                        onClick={(e) => {
+                                            setSelectedEdge({
+                                                row: {
+                                                    isSelected: false,
+                                                    index: rowIndex
+                                                },
+                                                column: {
+                                                    isSelected: true,
+                                                    index: columnIndex
+                                                }
+                                            })
+                                            props.updateBlocks(props.block.uuid)
+                                        }}
+                                        />
+                                        <BlockTableResizeButton
+                                        buttonType={{isTop: true}}
+                                        onClick={(e) => {
+                                            setSelectedEdge({
+                                                row: {
+                                                    isSelected: true,
+                                                    index: rowIndex
+                                                },
+                                                column: {
+                                                    isSelected: false,
+                                                    index: columnIndex
+                                                }
+                                            })
+                                            props.updateBlocks(props.block.uuid)
+                                        }}
+                                        />
+                                        <BlockTableResizeButton
+                                        buttonType={{isBottom: true}}
+                                        onClick={(e) => {
+                                            setSelectedEdge({
+                                                row: {
+                                                    isSelected: true,
+                                                    index: rowIndex + 1
+                                                },
+                                                column: {
+                                                    isSelected: false,
+                                                    index: columnIndex
+                                                }
+                                            })
+                                            props.updateBlocks(props.block.uuid)
+                                        }}
+                                        />
                                         <Block 
                                         {...props} 
                                         block={block} 
                                         onDeleteBlock={onDeleteChildrenBlock}
+                                        onRemoveCurrent={() => null}
+                                        onRemoveAfter={() => null}
                                         contextBlocks={props.block.rich_text_depends_on_blocks} 
                                         onEnter={onEnter}
-                                        />
-                                    ) : (
-                                        <Block 
-                                        {...props} 
-                                        block={props.createNewBlock({
-                                            order: tableRowIndex*columnIndex, 
-                                            blockTypeId: props.getBlockTypeIdByName('text')
-                                        })} 
-                                        onDeleteBlock={onDeleteChildrenBlock}
-                                        contextBlocks={props.block.rich_text_depends_on_blocks} 
-                                        onEnter={onEnter}
-                                        />
-                                    )}
-                                </td>
-                            ))}
+                                        />   
+                                    </td>
+                                )
+                            })}
                         </tr>
                     ))}
                 </tbody>
@@ -228,5 +262,6 @@ const Table = (props) => {
 
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
+
 
 export default Table

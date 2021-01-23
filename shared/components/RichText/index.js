@@ -348,7 +348,7 @@ class RichText extends React.Component {
         }
 
         if (isFocus === true) {
-            // the focus head prevents us from changing the focus too much, when too much onFocus is being fired at once
+            // the focus heap prevents us from changing the focus too much, when too much onFocus is being fired at once
             // we keep the activeBlock on the heap, so during this time, if the user tries to change the focus of the element
             // we consider the previous focus (so we do not focus on the new element, until the heap becomes empty again)
             // this is because since we are updating the state, on mobile this change can be too much to handle since we run 
@@ -367,7 +367,7 @@ class RichText extends React.Component {
             }
         } else if (activeBlock === null) {
             // When we dismiss the focus it can cause some weird behaviour. Because some blocks, like text, can have an event for blur (so when the user
-            // dismiss the block we update the state here.) Because of this
+            // dismiss the block we update the state here.) 
             makeDelay(() => {
                 if (this.nextActiveBlock === null) {
                     update(activeBlock)
@@ -392,7 +392,7 @@ class RichText extends React.Component {
 
     /**
      * When the user is uploading a file we usually save a draft, a draft is a temporary file that will only be available
-     * for a shor period of time.
+     * for a short period of time.
      * We use drafts because with them we do not need to upload everything at once, instead we upload them when the user actually
      * insert an image or a file. So when we save, everything will be already saved.
      * 

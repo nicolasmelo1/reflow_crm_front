@@ -4,6 +4,7 @@
  * Reference: https://gomakethings.com/check-if-two-arrays-or-objects-are-equal-with-javascript/
  */
 const isEqual = (value, other) => {
+	if (value === other) return true
 
 	// Get the value type
 	const type = Object.prototype.toString.call(value)

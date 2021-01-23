@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { memo, useState, useEffect } from 'react'
 import { View } from 'react-native'
 import deepCopy from '../../../utils/deepCopy'
-import delay from '../../../utils/delay'
 import generateUUID from '../../../utils/generateUUID'
 import BlockSelector from '../BlockSelector'
+import isEqual from '../../../utils/isEqual'
 
-
-const makeDelay = delay(200)
+// TODO: NEED TO RESET THIS
+let previousBlockProps = {}
 
 /**
  * {Description of your component, what does it do}
@@ -16,6 +16,52 @@ const Block = (props) => {
     const [isBlockSelectionOpen, setIsBlockSelectionOpen] = useState(false)
     const [imageFile, setImageFile] = useState(null)
     const blockSelectorRef = React.useRef(null)
+
+    /**
+     * Important: This has the same name as the addToolbar from the page component, so when a block is calling addToolbar
+     * he is calling this function and not the function from the page component. 
+     * 
+     * THis is a function for adding the toolbar in the root of the page.
+     * With this simple function we can maintain a simple API for the components to follow and also allow
+     * complex layouts to be created.
+     * 
+     * So let's start. HOW THE F•C* does this work?
+     * - First things first: On the parent component we do not keep the state but instead we keep everything inside
+     * of a ref. This way we can prevent rerendering stuff and just rerender when needed.
+     * - Second of all you need to add this function on a useEffect hook or a componentDidUpdate, this way after every
+     * rerender of your component we can keep track on what is changing and force the rerender of the hole page tree.
+     * - Third but not least we save all of the data needed to render a Toolbar. This means we need the following parameters:
+     *  - `blockUUID` - The uuid of the current block
+     *  - `contentOptionComponent` - The React component of the content options we want to render, these are options of each content
+     * of the block. They are usually the same, but sometimes you are not dealing with text, so you want to prevent the user
+     * from selecting bold and so on.
+     *  - `blockOptionComponent` - The React component of the BLOCK options we want to render, these are options for the specific
+     * block you have selected.
+     *  - `contentOptionProps` - The props that will go to `contentOptionComponent`
+     *  - `blockOptionProps` - The props that will go to `blockOptionComponent`
+     * 
+     * HOW TO USE THIS:
+     * You need to run this function ONLY inside of a useEffect of componentDidUpdate. MAKE SURE YOU ARE LISTENING TO THE
+     * the state changes that you need. (for example, here we are listening for changes in props, every other state
+     * change is irrelevant. When any of this states changes we want the toolbar to update accordingly.)
+     * 
+     * @param {Object} toolbarProps - OPTIONAL. The props you want to send to the toolbar. It can be undefined,
+     * if its undefined we set a toolbar props ourselves so we send it to the richText, if it's not undefined we pass
+     * the props on the tree until calling the richText component addToolbar
+     */
+    const addToolbar = (toolbarProps) => {
+        if (toolbarProps) {
+            props.addToolbar(toolbarProps)
+        } else {
+            props.addToolbar({
+                blockUUID: props.block.uuid,
+                obligatoryBlockProps: {
+                    onDeleteBlock: onDeleteBlock,
+                    onDuplicateBlock: onDuplicateBlock
+                }
+            })
+        }
+    }
 
     /**
      * Opens the selection of possible blocks that a user can select.
@@ -195,28 +241,10 @@ const Block = (props) => {
         table: require('./Table')
     }
 
-    // we use this because we always pass the props directly, but since a block can contain another block, we
-    // need to update the references to the child and not the parent props. So let's say we defined openBlockSelection
-    // in the parent component and the parent component passes this and other props to the children. We need this `newProps` 
-    // object to prevent adding the openBlockSelection of the parent block and not the child.
-    const newProps = {
-        ...props, 
-        toolbarProps: {
-            obligatoryBlockProps: {
-                onDeleteBlock: onDeleteBlock,
-                onDuplicateBlock: onDuplicateBlock
-            }
-        },
-        imageFile: imageFile,
-        onPasteImageInText: onPasteImageInText,
-        openBlockSelection: openBlockSelection,
-        createNewContent: createNewContent,
-        createNewBlock: createNewBlock
-    }
     const Container = process.env['APP'] === 'web' ? `div`: View
     const Component = blocks[props.getBlockTypeNameById(props.block.block_type)].default
     return (
-        <Container>
+        <Container key={props.block.uuid}>
             {isBlockSelectionOpen ? (
                 <BlockSelector
                 ref={blockSelectorRef}
@@ -224,9 +252,58 @@ const Block = (props) => {
                 blockOptions={props.blockTypeOptionsForSelection}
                 />
             ): null}
-            <Component {...newProps}/>
+            <Component 
+            key={props.block.uuid}
+            {...props}
+            toolbarProps={{
+                blockUUID: props.block.uuid,
+                obligatoryBlockProps: {
+                    onDeleteBlock: onDeleteBlock,
+                    onDuplicateBlock: onDuplicateBlock
+                }
+            }}
+            addToolbar={addToolbar}
+            imageFile={imageFile}
+            onPasteImageInText={onPasteImageInText}
+            openBlockSelection={openBlockSelection}
+            createNewContent={createNewContent}
+            createNewBlock={createNewBlock}
+            />
         </Container>
     )
 }
 
-export default Block
+/**
+ * With this we can prevent rerendering of each block, optimizing A LOT the Rich Text
+ * Since we change the props by reference we need a way of getting the previous props so we use our deepCopy function
+ * and set it to the global function previousBlockProps function so we can compare the previous with the next props.
+ * 
+ * If we don't use this you will notice that prevProps and nextProps will be both equal.
+ * 
+ * @param {Object} prevProps - The previous props, since we update by reference it is equal nextProps
+ * @param {Object} nextProps - The next props we use for comparing
+ */
+const areEqual = (prevProps, nextProps) => {
+    if (Object.keys(previousBlockProps).includes(prevProps.block.uuid)) prevProps = previousBlockProps[prevProps.block.uuid]
+    let areThemEqual = true
+    for (let key of Object.keys(prevProps)) {
+        if (key === 'contextBlocks') {
+            const prevPropsBlocksUUID = prevProps[key].map(block => block.uuid)
+            const nextPropsBlocksUUID = nextProps[key].map(block => block.uuid)
+            if (!isEqual(nextPropsBlocksUUID, prevPropsBlocksUUID)){
+                areThemEqual = false
+                break
+            }
+        } else if (Object.prototype.toString.call(prevProps[key]) === '[object Function]' && prevProps[key].toString() !== nextProps[key].toString())  {
+            areThemEqual = false
+            break
+        } else if (JSON.stringify(prevProps[key]) !== JSON.stringify(nextProps[key])) {
+            areThemEqual = false
+            break
+        }   
+    }
+    previousBlockProps[nextProps.block.uuid] = deepCopy(nextProps)
+    return areThemEqual
+}
+
+export default memo(Block, areEqual)
