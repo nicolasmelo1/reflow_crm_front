@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { TouchableOpacity } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
-styled.button`
+styled.div`
     border: 0;
     background-color: transparent;
     display: flex;

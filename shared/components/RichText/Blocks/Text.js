@@ -10,7 +10,7 @@ import {
     caretIsInHighestOrLowestPositionWeb,
     getSelectionSelectCursorPositionWeb,
     setCaretPositionWeb
-} from '../../../utils/richText/web'
+} from '../utils'
 import { 
     BlockText,
     BlockTextPlaceholderContainer,

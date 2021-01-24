@@ -1,5 +1,9 @@
 import React from 'react'
 import { View } from 'react-native'
+import { strings } from '../../../../utils/constants'
+import { 
+    TableBlockOptionAddOrRemoveButton,
+} from '../../../../styles/RichText'
 
 /**
  * {Description of your component, what does it do}
@@ -8,17 +12,17 @@ import { View } from 'react-native'
 const TableBlockOptions = (props) => {
     const getAddButtonLabel = () => {
         if (props.selectedEdge.row.isSelected) {
-            return 'Adicionar Linha'
+            return strings['pt-br']['richTextTableToolbarAddRowButtonLabel']
         } else {
-            return 'Adicionar Coluna'
+            return strings['pt-br']['richTextTableToolbarAddColumnButtonLabel']
         }
     } 
 
     const getRemoveButtonlabel = () => {
         if (props.selectedEdge.row.isSelected) {
-            return 'Remover Coluna'
+            return strings['pt-br']['richTextTableToolbarRemoveColumnButtonLabel']
         } else {
-            return 'Remover Linha'
+            return strings['pt-br']['richTextTableToolbarRemoveRowButtonLabel']
         }
     }
 
@@ -31,12 +35,16 @@ const TableBlockOptions = (props) => {
     const renderWeb = () => {
         return (
             <div>
-                <button onClick={(e) => props.onAddNewRowOrColumn()}>
-                    {getAddButtonLabel()}
-                </button>
-                <button onClick={(e) => props.onRemoveRowOrColumn()}>
-                    {getRemoveButtonlabel()}
-                </button>
+                {props.selectedEdge.row.isSelected || props.selectedEdge.column.isSelected ? (
+                    <React.Fragment>
+                        <TableBlockOptionAddOrRemoveButton onClick={(e) => props.onAddNewRowOrColumn()}>
+                            {getAddButtonLabel()}
+                        </TableBlockOptionAddOrRemoveButton>
+                        <TableBlockOptionAddOrRemoveButton onClick={(e) => props.onRemoveRowOrColumn()}>
+                            {getRemoveButtonlabel()}
+                        </TableBlockOptionAddOrRemoveButton>
+                    </React.Fragment>
+                ) : ''}
             </div>
         )
     }

@@ -8,6 +8,8 @@ styled.div`
     border: 1px solid #f2f2f2;
     border-radius: 5px; 
     z-index: 2;
+    overflow: auto;
+    padding: 5px;
     position: absolute;
     width: calc(100% - 20px)
 `

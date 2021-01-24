@@ -11,7 +11,7 @@
  * IMPORTANT2: make sure the lib is exists for your environment. If you need to add a new lib, update this file
  * for your environment.
  * 
- * Since we share the same code between different environments (web With React, mobile with React Native and desktop with Electonr) 
+ * Since we share the same code between different environments (web With React, mobile with React Native and desktop with Electron) 
  * we need this code so we don't need to have the same packages on both environments (like install react-native-gesture-handler for web
  * or react-bootstrap for mobile)
  * 

@@ -15,8 +15,9 @@ let previousBlockProps = {}
 const Block = (props) => {
     const [isBlockSelectionOpen, setIsBlockSelectionOpen] = useState(false)
     const [imageFile, setImageFile] = useState(null)
+    const [customBlockOptions, __] = useState(['image_option', 'list_option', 'table_option', 'text_option'])
     const blockSelectorRef = React.useRef(null)
-
+    
     /**
      * Important: This has the same name as the addToolbar from the page component, so when a block is calling addToolbar
      * he is calling this function and not the function from the page component. 
@@ -175,18 +176,32 @@ const Block = (props) => {
      * the next one.
      */
     const onDuplicateBlock = () => {
-        if (props.onDuplicateBlock) {
-            props.onDuplicateBlock()
+        const duplicateBlock = (blockToDuplicate) => {
+            let block = deepCopy(blockToDuplicate)
+            block.uuid = generateUUID()
+            block.rich_text_block_contents = block.rich_text_block_contents.map(content => {
+                content.uuid = generateUUID()
+                return content
+            })
+            customBlockOptions.forEach(option => {
+                if (block[option]) {
+                    block[option].id = null
+                }
+            })
+            if (block.rich_text_depends_on_blocks && block.rich_text_depends_on_blocks.length > 0) {
+                block.rich_text_depends_on_blocks = block.rich_text_depends_on_blocks.map(dependsOnBlock => duplicateBlock(dependsOnBlock))
+            }
+            return block
         }
-        let block = deepCopy(props.block)
-        block.uuid = generateUUID()
-        block.rich_text_block_contents = block.rich_text_block_contents.map(content => {
-            content.uuid = generateUUID()
-            return content
-        })
-        const indexOfBlockInContext = props.contextBlocks.findIndex(block => block.uuid === props.block.uuid)
-        props.contextBlocks.splice(indexOfBlockInContext + 1, 0, block)
-        props.updateBlocks(null)
+        
+        if (props.onDuplicateBlock) {
+            props.onDuplicateBlock(props.block.uuid)
+        } else {
+            const block = duplicateBlock(props.block)
+            const indexOfBlockInContext = props.contextBlocks.findIndex(block => block.uuid === props.block.uuid)
+            props.contextBlocks.splice(indexOfBlockInContext + 1, 0, block)
+            props.updateBlocks(null)
+        }
     }
 
     /** 
@@ -264,6 +279,7 @@ const Block = (props) => {
             }}
             addToolbar={addToolbar}
             imageFile={imageFile}
+            customBlockOptions={customBlockOptions}
             onPasteImageInText={onPasteImageInText}
             openBlockSelection={openBlockSelection}
             createNewContent={createNewContent}
@@ -274,6 +290,9 @@ const Block = (props) => {
 }
 
 /**
+ * See here for further reference: https://pt-br.reactjs.org/docs/react-api.html#reactmemo
+ * And here: https://pt-br.reactjs.org/docs/react-api.html#reactpurecomponent
+ * 
  * With this we can prevent rerendering of each block, optimizing A LOT the Rich Text
  * Since we change the props by reference we need a way of getting the previous props so we use our deepCopy function
  * and set it to the global function previousBlockProps function so we can compare the previous with the next props.
@@ -282,11 +301,14 @@ const Block = (props) => {
  * 
  * @param {Object} prevProps - The previous props, since we update by reference it is equal nextProps
  * @param {Object} nextProps - The next props we use for comparing
+ * 
+ * @returns {Boolean} - Returns true or false whether the props are equal or not.
  */
 const areEqual = (prevProps, nextProps) => {
     if (Object.keys(previousBlockProps).includes(prevProps.block.uuid)) prevProps = previousBlockProps[prevProps.block.uuid]
     let areThemEqual = true
     for (let key of Object.keys(prevProps)) {
+        // This is a special case, we only update if the uuids have changed or if the length had changed
         if (key === 'contextBlocks') {
             const prevPropsBlocksUUID = prevProps[key].map(block => block.uuid)
             const nextPropsBlocksUUID = nextProps[key].map(block => block.uuid)
