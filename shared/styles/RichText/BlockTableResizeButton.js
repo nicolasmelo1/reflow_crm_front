@@ -37,6 +37,7 @@ const getButtonParams = (typeOfButton) => {
 export default process.env['APP'] === 'web' ?
 styled.button`
     position: absolute;
+    background-color: transparent;
     ${props => getButtonParams(props.buttonType)}
     padding: 0;
     border: 0

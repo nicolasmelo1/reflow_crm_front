@@ -69,12 +69,12 @@ const Toolbar = (props) => {
                 <div style={{position: 'relative'}}>
                     <ToolbarContainer ref={toolbarRef}>
                             {props.contentOptions ? props.contentOptions : null}
-                            {props.contentOptions && props.blockOptions ? (
+                            {props.contentOptions ? (
                                 <ToolbarOptionsSeparator/>
 
                             ) : null}
                             {props.blockOptions ? props.blockOptions : null}
-                            {props.contentOptions && props.blockOptions ? (
+                            {props.blockOptions ? (
                                 <ToolbarOptionsSeparator/>
                             ) : null}
                             <div style={{ display: 'flex', flexDirection: 'row'}}>

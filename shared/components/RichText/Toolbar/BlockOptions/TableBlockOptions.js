@@ -1,8 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { View } from 'react-native'
 import { strings } from '../../../../utils/constants'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { 
     TableBlockOptionAddOrRemoveButton,
+    TableBlockOptionTableBorderColorActivationButton,
+    TableBlockOptionTableBorderColorContainer,
+    TableBlockOptionTableBorderColorOptionsContainer,
+    TableBlockOptionTableBorderColorOptionButton
 } from '../../../../styles/RichText'
 
 /**
@@ -10,6 +15,28 @@ import {
  * @param {Type} props - {go in detail about every prop it recieves}
  */
 const TableBlockOptions = (props) => {
+    const [isBorderColorOptionsOpen, setIsBorderColorOptionsOpen] = useState(false)
+    const borderColors = [
+        '', 
+        '#ffffff',
+        '#0dbf7e', 
+        '#17242D', 
+        '#bfbfbf', 
+        '#444444', 
+        '#ff5ac4', 
+        '#ff158a', 
+        '#bb3354', 
+        '#7f5347',
+        '#ff662e',
+        '#ffcb00',
+        '#cab641',
+        '#9cd326',
+        '#037f4b',
+        '#0086c0',
+        '#579cfc',
+        '#66ccff'
+    ]
+
     const getAddButtonLabel = () => {
         if (props.selectedEdge.row.isSelected) {
             return strings['pt-br']['richTextTableToolbarAddRowButtonLabel']
@@ -45,6 +72,28 @@ const TableBlockOptions = (props) => {
                         </TableBlockOptionAddOrRemoveButton>
                     </React.Fragment>
                 ) : ''}
+                <TableBlockOptionTableBorderColorContainer>
+                    <TableBlockOptionTableBorderColorActivationButton
+                    onClick={(e) => setIsBorderColorOptionsOpen(!isBorderColorOptionsOpen)}
+                    >
+                        <FontAwesomeIcon icon={'border-all'}/>
+                    </TableBlockOptionTableBorderColorActivationButton>
+                    {isBorderColorOptionsOpen ? (
+                        <TableBlockOptionTableBorderColorOptionsContainer>
+                            {borderColors.map(color => (
+                                <TableBlockOptionTableBorderColorOptionButton 
+                                borderColor={color}
+                                onClick={(e) => {
+                                    setIsBorderColorOptionsOpen(!isBorderColorOptionsOpen)
+                                    props.onChangeTableBorderColor(color)
+                                }}
+                                >
+                                    <FontAwesomeIcon icon={'border-all'}/>
+                                </TableBlockOptionTableBorderColorOptionButton>
+                            ))}
+                        </TableBlockOptionTableBorderColorOptionsContainer>
+                    ) : ''}
+                </TableBlockOptionTableBorderColorContainer>
             </div>
         )
     }

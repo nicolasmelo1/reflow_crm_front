@@ -18,6 +18,7 @@ import isAdmin from '../utils/isAdmin'
 import { 
     faInfoCircle,
     faTasks,
+    faBorderAll,
     faArrowDown, 
     faCalendarAlt,  
     faPencilAlt, 
@@ -64,6 +65,7 @@ library.add(
     faCopy, 
     faCog, 
     faBell, 
+    faBorderAll,
     faArrowsAlt, 
     faArrowLeft,
     faBars,

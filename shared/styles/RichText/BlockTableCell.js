@@ -4,7 +4,7 @@ import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.td`
-    border: 1px solid #000;
+    border: 1px solid ${props => props.borderColor ? props.borderColor : '#000'};
     padding: 10px;
     position: relative; 
     width: ${props => props.width}%

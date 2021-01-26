@@ -14,14 +14,20 @@ const Overlay = (props) => {
         <OverlayTrigger 
         trigger={['hover', 'focus']} 
         placement="bottom" 
-        delay={{ show: 250, hide: 250 }} 
+        delay={{ show: props.delay ? props.delay : 250, hide: props.delay ? props.delay : 250 }} 
         overlay={<Tooltip>{props.text}</Tooltip>}  
         popperConfig={{
             modifiers: [
                 {
+                    name: 'offset',
+                    options: {
+                        offset: [0, 5],
+                    },
+                },
+                {
                     name: 'preventOverflow',
                     options: {
-                        boundary: 'offsetParent' // false by default
+                        boundary: 'offsetParent'
                     }
                 }
             ]

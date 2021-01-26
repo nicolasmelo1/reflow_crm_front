@@ -3,6 +3,7 @@ import { View } from 'react-native'
 import Block from '../Blocks'
 import deepCopy from '../../../utils/deepCopy'
 import generateUUID from '../../../utils/generateUUID'
+import { strings } from '../../../utils/constants'
 import { TableBlockOptions } from '../Toolbar/BlockOptions'
 import Overlay from '../../../styles/Overlay'
 import {
@@ -16,7 +17,7 @@ import {
  * @param {Type} props - {go in detail about every prop it recieves}
  */
 const Table = (props) => {
-    const [selectedEdge, setSelectedEdge] = useState({
+    const [selectedEdge, _setSelectedEdge] = useState({
         row: {
             isSelected: false,
             index: null
@@ -26,6 +27,23 @@ const Table = (props) => {
             index: null
         },
     })
+    const [columnDimensions, _setColumnDimensions] = useState(Array.from(Array(2).keys()).map(_ => ({ width: 100/2 })))
+    const columnDimensionsRef = React.useRef(columnDimensions)
+    const isResizing = React.useRef(false)
+    const resizingRef = React.useRef({
+        pageX: null,
+        pageY: null
+    })
+    const selectedEdgeRef = React.useRef(selectedEdge)
+    const setSelectedEdge = (data) => {
+        _setSelectedEdge(data)
+        selectedEdgeRef.current = data
+    }
+
+    const setColumnDimensions = (data) => {
+        _setColumnDimensions(data)
+        columnDimensionsRef.current = data
+    }
 
     /**
      * Adds the table toolbar when the user clicks on one of the table edges.
@@ -36,6 +54,8 @@ const Table = (props) => {
         props.toolbarProps.blockOptionComponent = TableBlockOptions
         props.toolbarProps.blockOptionProps = {
             selectedEdge: selectedEdge,
+            onChangeTableBorderColor: onChangeTableBorderColor,
+            tableBorderColor: props.block.table_option.border_color,
             onAddNewRowOrColumn: onAddNewRowOrColumn,
             onRemoveRowOrColumn: onRemoveRowOrColumn
         }
@@ -56,7 +76,8 @@ const Table = (props) => {
             id: null,
             rows_num: 2,
             columns_num: 2,
-            border_color: null
+            border_color: null,
+            column_dimensions: Array.from(Array(2).keys()).map(_ => ({ width: 100/2 }))
     })
 
 
@@ -159,6 +180,42 @@ const Table = (props) => {
         props.updateBlocks(props.block.uuid)
     }   
     
+    const onResizeTableCell = (e) => {
+        if (isResizing.current && resizingRef.current.pageX && resizingRef.current.pageY) {
+            if (selectedEdgeRef.current.column.isSelected && 0 < selectedEdgeRef.current.column.index < props.block.table_option.columns_num) {
+                if (e.pageX > resizingRef.current.pageX && columnDimensionsRef.current[selectedEdgeRef.current.column.index].width - 1 >= 0) {
+                    columnDimensionsRef.current[selectedEdgeRef.current.column.index].width = columnDimensionsRef.current[selectedEdgeRef.current.column.index].width - 1
+                    columnDimensionsRef.current[selectedEdgeRef.current.column.index - 1].width = columnDimensionsRef.current[selectedEdgeRef.current.column.index - 1].width + 1
+
+                }
+                if (e.pageX < resizingRef.current.pageX && columnDimensionsRef.current[selectedEdgeRef.current.column.index].width + 1 <= 100) {
+                    columnDimensionsRef.current[selectedEdgeRef.current.column.index].width = columnDimensionsRef.current[selectedEdgeRef.current.column.index].width + 1
+                    columnDimensionsRef.current[selectedEdgeRef.current.column.index - 1].width = columnDimensionsRef.current[selectedEdgeRef.current.column.index - 1].width - 1
+                }
+            }
+            resizingRef.current.pageX = e.pageX
+            setColumnDimensions([...columnDimensionsRef.current])
+        }
+    }
+
+    const onMouseUp = (e) => {
+        isResizing.current = false
+        resizingRef.current = { pageX: null, pageY: null}
+    }
+
+    const onMouseDown = (e) => {
+        resizingRef.current = {pageX: e.pageX, pageY: e.pageY}
+        isResizing.current = true
+    }
+
+    const onChangeTableBorderColor = (newBorderColor) => {
+        if (newBorderColor === '') {
+            newBorderColor === null
+        }
+        props.block.table_option.border_color = newBorderColor
+        props.updateBlocks(props.block.uuid)
+    }
+
     /**
      * Function for handling when the user clicks to add a new column or a new row.
      * 
@@ -174,29 +231,34 @@ const Table = (props) => {
      * to add in position 7 and not 6.)
      */
     const onAddNewRowOrColumn = () => {
+        let newColumnDimensions = columnDimensions
         if (selectedEdge.row.isSelected) {
+            props.block.table_option.rows_num = props.block.table_option.rows_num + 1
             for (let i=0; i<props.block.table_option.columns_num; i++) {
                 const newBlock = createEmptyTextBlock(0)
                 props.block.rich_text_depends_on_blocks.splice((props.block.table_option.columns_num * selectedEdge.row.index) + i,0, newBlock)
             }
-            props.block.table_option.rows_num = props.block.table_option.rows_num + 1
         } else {
+            props.block.table_option.columns_num = props.block.table_option.columns_num + 1
             for (let i=0; i<props.block.table_option.rows_num; i++) {
                 const newBlock = createEmptyTextBlock(0)
                 props.block.rich_text_depends_on_blocks.splice(selectedEdge.column.index + (props.block.table_option.columns_num * i) + i,0, newBlock)
             }
-            props.block.table_option.columns_num = props.block.table_option.columns_num + 1
+            newColumnDimensions = columnDimensions.map(_ => ({ width: 100/props.block.table_option.columns_num}))
+            columnDimensions.push({ width: 100/props.block.table_option.columns_num})
+            props.block.table_option.column_dimensions = newColumnDimensions
         }
         selectedEdge.row.isSelected = false
         selectedEdge.column.isSelected = false
         selectedEdge.row.index = null
         selectedEdge.column.index = null
 
+        setColumnDimensions([...newColumnDimensions])
         setSelectedEdge({...selectedEdge})
         reorderBlocks()
         props.updateBlocks(props.block.uuid)
     }
-
+    
     /**
      * Really similar to `.onAddNewRowOrColumn()` function. Excpet we are removing a column or a row.
      * 
@@ -310,6 +372,19 @@ const Table = (props) => {
         // When mounting this component we check if it has the table options, otherwise we need to create it.
         // With this we can then mount the table on the screen.
         checkIfTableOptionsAndInsertIt()
+        if (props.block.table_option?.cell_dimensions) setcolumnDimensions(props.block.table_option?.cell_dimensions)
+        if (process.env['APP'] === 'web') {
+            document.addEventListener("mousemove", onResizeTableCell)
+            document.addEventListener("mouseup", onMouseUp)
+
+        }
+
+        return () => {
+            if (process.env['APP'] === 'web') {
+                document.removeEventListener("mousemove", onResizeTableCell)
+                document.removeEventListener("mouseup", onMouseUp)
+            }
+        }
     }, [])
 
     useEffect(() => {
@@ -336,11 +411,16 @@ const Table = (props) => {
                                 return (
                                     <BlockTableCell 
                                     key={block.uuid} 
-                                    width={100/props.block.table_option.columns_num}
+                                    borderColor={props.block.table_option.border_color}
+                                    width={columnDimensions[index].width}
                                     >
-                                        <Overlay text={'Clique para adicionar Coluna ou remover Linha'}>
+                                        <Overlay 
+                                        hasFocusTrigger={false}
+                                        text={strings['pt-br']['richTextTableVerticalEdgeOverlayExplanationLabel']}
+                                        >
                                             <BlockTableResizeButton
                                             buttonType={{isRight: true}}
+                                            onMouseDown={(e) => onMouseDown(e)}
                                             onClick={(e) => {
                                                 setSelectedEdge({
                                                     row: {
@@ -356,9 +436,13 @@ const Table = (props) => {
                                             }}
                                             />
                                         </Overlay>
-                                        <Overlay text={'Clique para adicionar Coluna ou remover Linha'}>
+                                        <Overlay 
+                                        hasFocusTrigger={false}
+                                        text={strings['pt-br']['richTextTableVerticalEdgeOverlayExplanationLabel']}
+                                        >
                                             <BlockTableResizeButton
                                             buttonType={{isLeft: true}}
+                                            onMouseDown={(e) => onMouseDown(e)}
                                             onClick={(e) => {
                                                 setSelectedEdge({
                                                     row: {
@@ -374,9 +458,13 @@ const Table = (props) => {
                                             }}
                                             />
                                         </Overlay>
-                                        <Overlay text={'Clique para adicionar Linha ou remover Coluna'}>
+                                        <Overlay 
+                                        hasFocusTrigger={false}
+                                        text={strings['pt-br']['richTextTableHorizontalEdgeOverlayExplanationLabel']}
+                                        >
                                             <BlockTableResizeButton
                                             buttonType={{isTop: true}}
+                                            onMouseDown={(e) => onMouseDown(e)}
                                             onClick={(e) => {
                                                 setSelectedEdge({
                                                     row: {
@@ -392,9 +480,13 @@ const Table = (props) => {
                                             }}
                                             />
                                         </Overlay>
-                                        <Overlay text={'Clique para adicionar Linha ou remover Coluna'}>
+                                        <Overlay 
+                                        hasFocusTrigger={false}
+                                        text={strings['pt-br']['richTextTableHorizontalEdgeOverlayExplanationLabel']}
+                                        >
                                             <BlockTableResizeButton
                                             buttonType={{isBottom: true}}
+                                            onMouseDown={(e) => onMouseDown(e)}
                                             onClick={(e) => {
                                                 setSelectedEdge({
                                                     row: {

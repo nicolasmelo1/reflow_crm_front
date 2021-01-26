@@ -326,6 +326,8 @@ const strings = {
         richTextImageBlockSelectFileTypeButtonLabel: 'Arquivo',
         richTextImageBlockSelectLinkTypeButtonLabel: 'Link',
         richTextImageBlockSelectLinkTypePlaceholder: 'Exemplo: https://i.imgur.com/4AiXzf8.jpeg',
+        richTextTableVerticalEdgeOverlayExplanationLabel: 'Clique para adicionar uma coluna ou remover a linha',
+        richTextTableHorizontalEdgeOverlayExplanationLabel: 'Clique para adicionar uma linha ou remover a coluna',
         richTextTableToolbarAddRowButtonLabel: 'Adicionar Linha',
         richTextTableToolbarRemoveRowButtonLabel: 'Remover Linha',
         richTextTableToolbarAddColumnButtonLabel: 'Adicionar Coluna',
