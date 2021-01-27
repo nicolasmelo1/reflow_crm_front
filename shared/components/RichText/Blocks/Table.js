@@ -27,7 +27,9 @@ const Table = (props) => {
             index: null
         },
     })
+    const [rowDimensions, _setRowDimensions] = useState(Array.from(Array(2).keys()).map(_ => ({ height: null })))
     const [columnDimensions, _setColumnDimensions] = useState(Array.from(Array(2).keys()).map(_ => ({ width: 100/2 })))
+    const rowDimensionsRef = React.useRef(rowDimensions)
     const columnDimensionsRef = React.useRef(columnDimensions)
     const isResizing = React.useRef(false)
     const resizingRef = React.useRef({
@@ -43,6 +45,11 @@ const Table = (props) => {
     const setColumnDimensions = (data) => {
         _setColumnDimensions(data)
         columnDimensionsRef.current = data
+    }
+
+    const setRowDimensions = (data) => {
+        _setRowDimensions(data)
+        rowDimensionsRef.current = data
     }
 
     /**
@@ -67,17 +74,16 @@ const Table = (props) => {
      * 
      * @returns {Object} - {
      *      id {BigInteger} - The id of the table option 
-     *      rows_num {BigInteger} - The number of rows in the table
-     *      columns_nul {BigInteger} - The number of columns in the table
-     *      border_color {String} - A Hex string of the color of the border of the table.
+     *      border_color {String} - The Hex string of the color of the border
+     *      text_table_option_column_dimensions {Array<{width: {BigInteger}}>} - The number of columns in the table and the width in % of each column
+     *      text_table_option_row_dimensions {Array<{height: {BigInteger}}>} - The number of rows in the table and the height in px of each row
      * }
      */
     const tableOptions = () => ({
             id: null,
-            rows_num: 2,
-            columns_num: 2,
             border_color: null,
-            column_dimensions: Array.from(Array(2).keys()).map(_ => ({ width: 100/2 }))
+            text_table_option_column_dimensions: columnDimensionsRef.current,
+            text_table_option_row_dimensions: rowDimensionsRef.current
     })
 
 
@@ -133,7 +139,7 @@ const Table = (props) => {
      * @returns {BigInteger} - Returns the row index starting at 0.
      */
     const findRowOfBlockByBlockIndex = (blockIndex) => {
-        return Math.floor(blockIndex/props.block.table_option.columns_num)
+        return Math.floor(blockIndex/props.block.table_option.text_table_option_column_dimensions.length)
     }
 
     /**
@@ -156,7 +162,7 @@ const Table = (props) => {
      */
     const findColumnOfBlockByBlockIndex = (blockIndex) => {
         const rowIndex = findRowOfBlockByBlockIndex(blockIndex)
-        return blockIndex - (props.block.table_option.columns_num*rowIndex)
+        return blockIndex - (props.block.table_option.text_table_option_column_dimensions.length*rowIndex)
     }
 
     /**
@@ -166,12 +172,15 @@ const Table = (props) => {
      * we add new text blocks to "fill this gap" so every cell is a text block.
      */
     const checkIfTableOptionsAndInsertIt = () => {
-        if (props.block.table_option === null) {
+        if (props.block.table_option === null || 
+            (props.block.table_option.text_table_option_row_dimensions || []).length === 0 ||
+            (props.block.table_option.text_table_option_column_dimensions || []).length === 0) {
+
             props.block.table_option = tableOptions()
             if ([null, undefined].includes(props.block.rich_text_depends_on_blocks)) {
                 props.block.rich_text_depends_on_blocks = []
             }
-            for (let i = 0; i < props.block.table_option.rows_num * props.block.table_option.columns_num; i++) {
+            for (let i = 0; i < props.block.table_option.text_table_option_row_dimensions.length * props.block.table_option.text_table_option_column_dimensions.length; i++) {
                 if (i >= props.block.rich_text_depends_on_blocks.length) {
                     props.block.rich_text_depends_on_blocks.push(createEmptyTextBlock(i))
                 }
@@ -180,9 +189,15 @@ const Table = (props) => {
         props.updateBlocks(props.block.uuid)
     }   
     
+    /**
+     * Resizes the table column and also it's row. It's important to notice that hen resizing columns we only accept resizing the midle columns
+     * For resizing rows we use pixels normally so no special attention is needed, for resizing columns however we use percentages.
+     * 
+     * @param {Object} e - The object of the event recieved from mousemove event.
+     */
     const onResizeTableCell = (e) => {
         if (isResizing.current && resizingRef.current.pageX && resizingRef.current.pageY) {
-            if (selectedEdgeRef.current.column.isSelected && 0 < selectedEdgeRef.current.column.index < props.block.table_option.columns_num) {
+            if (selectedEdgeRef.current.column.isSelected && selectedEdgeRef.current.column.index > 0 && selectedEdgeRef.current.column.index < props.block.table_option.text_table_option_column_dimensions.length) {
                 if (e.pageX > resizingRef.current.pageX && columnDimensionsRef.current[selectedEdgeRef.current.column.index].width - 1 >= 0) {
                     columnDimensionsRef.current[selectedEdgeRef.current.column.index].width = columnDimensionsRef.current[selectedEdgeRef.current.column.index].width - 1
                     columnDimensionsRef.current[selectedEdgeRef.current.column.index - 1].width = columnDimensionsRef.current[selectedEdgeRef.current.column.index - 1].width + 1
@@ -192,22 +207,54 @@ const Table = (props) => {
                     columnDimensionsRef.current[selectedEdgeRef.current.column.index].width = columnDimensionsRef.current[selectedEdgeRef.current.column.index].width + 1
                     columnDimensionsRef.current[selectedEdgeRef.current.column.index - 1].width = columnDimensionsRef.current[selectedEdgeRef.current.column.index - 1].width - 1
                 }
+            } else if (selectedEdgeRef.current.row.isSelected && selectedEdgeRef.current.row.index > 0) {
+                if (e.pageY > resizingRef.current.pageY) {
+                    const currentHeight = rowDimensionsRef.current[selectedEdgeRef.current.row.index-1].height 
+                    rowDimensionsRef.current[selectedEdgeRef.current.row.index-1].height = currentHeight ? currentHeight + (e.pageY - resizingRef.current.pageY) : 60
+                }
+                if (e.pageY < resizingRef.current.pageY && rowDimensionsRef.current[selectedEdgeRef.current.row.index-1].height > 1) {
+                    const currentHeight = rowDimensionsRef.current[selectedEdgeRef.current.row.index-1].height 
+                    rowDimensionsRef.current[selectedEdgeRef.current.row.index-1].height = currentHeight ? currentHeight - (resizingRef.current.pageY - e.pageY) : 60
+                }
             }
+            resizingRef.current.pageY = e.pageY
             resizingRef.current.pageX = e.pageX
             setColumnDimensions([...columnDimensionsRef.current])
+            setRowDimensions([...rowDimensionsRef.current])
         }
     }
 
+    /**
+     * When the user release the mouse button we reset the isResizingref and resizingRef references and set the 
+     * the column dimension and row dimension to the block.
+     * 
+     * @param {Object} e - The object of the event recieved from mouseup event.
+     */
     const onMouseUp = (e) => {
-        isResizing.current = false
-        resizingRef.current = { pageX: null, pageY: null}
+        if (isResizing.current) {
+            isResizing.current = false
+            resizingRef.current = { pageX: null, pageY: null}
+            props.block.table_option.text_table_option_row_dimensions = [...rowDimensionsRef.current]
+            props.block.table_option.text_table_option_column_dimensions = [...columnDimensionsRef.current]
+            props.updateBlocks(props.block.uuid)
+        }
     }
 
+    /**
+     * When the user clicks with the mouse on one of the edge buttons
+     * 
+     * @param {Object} e - The object of the event recieved from onMouseDown event from react.
+     */
     const onMouseDown = (e) => {
         resizingRef.current = {pageX: e.pageX, pageY: e.pageY}
         isResizing.current = true
     }
 
+    /**
+     * Fired from the toolbar to change the color of the borders of the table.
+     * 
+     * @param {String} newBorderColor - Could be also null, this sets the color of the border as hex string.
+     */
     const onChangeTableBorderColor = (newBorderColor) => {
         if (newBorderColor === '') {
             newBorderColor === null
@@ -232,28 +279,30 @@ const Table = (props) => {
      */
     const onAddNewRowOrColumn = () => {
         let newColumnDimensions = columnDimensions
+        let newRowDimensions = rowDimensions
         if (selectedEdge.row.isSelected) {
-            props.block.table_option.rows_num = props.block.table_option.rows_num + 1
-            for (let i=0; i<props.block.table_option.columns_num; i++) {
+            for (let i=0; i<props.block.table_option.text_table_option_column_dimensions.length; i++) {
                 const newBlock = createEmptyTextBlock(0)
-                props.block.rich_text_depends_on_blocks.splice((props.block.table_option.columns_num * selectedEdge.row.index) + i,0, newBlock)
+                props.block.rich_text_depends_on_blocks.splice((props.block.table_option.text_table_option_column_dimensions.length * selectedEdge.row.index) + i,0, newBlock)
             }
+            rowDimensions.push({ height: null })
+            newRowDimensions = newRowDimensions.map(rowDimension => (rowDimension.height ? { height: rowDimension.height} : { height: null}))
+            props.block.table_option.text_table_option_row_dimensions = newRowDimensions
+            setRowDimensions([...newRowDimensions])
         } else {
-            props.block.table_option.columns_num = props.block.table_option.columns_num + 1
-            for (let i=0; i<props.block.table_option.rows_num; i++) {
+            for (let i=0; i<props.block.table_option.text_table_option_row_dimensions.length; i++) {
                 const newBlock = createEmptyTextBlock(0)
-                props.block.rich_text_depends_on_blocks.splice(selectedEdge.column.index + (props.block.table_option.columns_num * i) + i,0, newBlock)
+                props.block.rich_text_depends_on_blocks.splice(selectedEdge.column.index + (props.block.table_option.text_table_option_column_dimensions.length * i) + i,0, newBlock)
             }
-            newColumnDimensions = columnDimensions.map(_ => ({ width: 100/props.block.table_option.columns_num}))
-            columnDimensions.push({ width: 100/props.block.table_option.columns_num})
-            props.block.table_option.column_dimensions = newColumnDimensions
+            columnDimensions.push({ width: null })
+            newColumnDimensions = columnDimensions.map(_ => ({ width: 100/props.block.table_option.text_table_option_column_dimensions.length}))
+            props.block.table_option.text_table_option_column_dimensions = newColumnDimensions
+            setColumnDimensions([...newColumnDimensions])
         }
         selectedEdge.row.isSelected = false
         selectedEdge.column.isSelected = false
         selectedEdge.row.index = null
         selectedEdge.column.index = null
-
-        setColumnDimensions([...newColumnDimensions])
         setSelectedEdge({...selectedEdge})
         reorderBlocks()
         props.updateBlocks(props.block.uuid)
@@ -271,25 +320,28 @@ const Table = (props) => {
      */
     const onRemoveRowOrColumn = () => {
         if (selectedEdge.row.isSelected) {
-            if (props.block.table_option.columns_num > 1) {
-                props.block.table_option.columns_num = props.block.table_option.columns_num - 1
+            if (props.block.table_option.text_table_option_column_dimensions.length > 1) {
+                columnDimensions.splice(selectedEdge.column.index, 1)
+                props.block.table_option.text_table_option_column_dimensions = columnDimensions
 
-                for (let i=0; i<props.block.table_option.rows_num; i++) {
-                    props.block.rich_text_depends_on_blocks.splice(selectedEdge.column.index + (props.block.table_option.columns_num * i),1)
+                for (let i=0; i<props.block.table_option.text_table_option_row_dimensions.length; i++) {
+                    props.block.rich_text_depends_on_blocks.splice(selectedEdge.column.index + (props.block.table_option.text_table_option_column_dimensions.length * i),1)
                 }
                 selectedEdge.row.isSelected = false
+                setColumnDimensions([...columnDimensions])
                 setSelectedEdge({...selectedEdge})
                 reorderBlocks()
                 props.updateBlocks(props.block.uuid)
             }
         } else {
-            if (props.block.table_option.rows_num > 1) {
-                props.block.table_option.rows_num = props.block.table_option.rows_num - 1
-
-                for (let i=0; i<props.block.table_option.columns_num; i++) {
-                    props.block.rich_text_depends_on_blocks.splice((props.block.table_option.columns_num * selectedEdge.row.index), 1)
+            if (props.block.table_option.text_table_option_row_dimensions.length > 1) {
+                rowDimensions.splice(selectedEdge.row.index, 1)
+                props.block.table_option.text_table_option_row_dimensions = rowDimensions
+                for (let i=0; i<props.block.table_option.text_table_option_column_dimensions.length; i++) {
+                    props.block.rich_text_depends_on_blocks.splice((props.block.table_option.text_table_option_column_dimensions.length * selectedEdge.row.index), 1)
                 }
                 selectedEdge.column.isSelected = false
+                setRowDimensions([...rowDimensions])
                 setSelectedEdge({...selectedEdge})
                 reorderBlocks()
                 props.updateBlocks(props.block.uuid)
@@ -354,16 +406,20 @@ const Table = (props) => {
      * @param {String} blockUUID - The uuid of the block of where you hit enter.
      */
     const onEnter = (blockUUID) => {
+        let newRowDimensions = rowDimensions
         const indexOfBlockInTable = props.block.rich_text_depends_on_blocks.findIndex(block => block.uuid === blockUUID)
         const newRowIndex = findRowOfBlockByBlockIndex(indexOfBlockInTable) + 1
         const columnIndex = findColumnOfBlockByBlockIndex(indexOfBlockInTable)
-        props.block.table_option.rows_num = props.block.table_option.rows_num + 1
+        rowDimensions.push({ height: null })
+        newRowDimensions = newRowDimensions.map(rowDimension => (rowDimension.height ? { height: rowDimension.height} : { height: null}))
+        props.block.table_option.text_table_option_row_dimensions = newRowDimensions
         let blockToFocus = null
-        for (let i=0; i<props.block.table_option.columns_num; i++) {
+        for (let i=0; i<props.block.table_option.text_table_option_column_dimensions.length; i++) {
             const newBlock = createEmptyTextBlock(0)
             if (i === columnIndex) blockToFocus = newBlock.uuid
-            props.block.rich_text_depends_on_blocks.splice((props.block.table_option.columns_num*newRowIndex) + i,0, newBlock)
+            props.block.rich_text_depends_on_blocks.splice((props.block.table_option.text_table_option_column_dimensions.length*newRowIndex) + i,0, newBlock)
         }
+        setRowDimensions([...newRowDimensions])
         reorderBlocks()
         props.updateBlocks(blockToFocus)
     }
@@ -372,7 +428,9 @@ const Table = (props) => {
         // When mounting this component we check if it has the table options, otherwise we need to create it.
         // With this we can then mount the table on the screen.
         checkIfTableOptionsAndInsertIt()
-        if (props.block.table_option?.cell_dimensions) setcolumnDimensions(props.block.table_option?.cell_dimensions)
+        if (props.block.table_option?.text_table_option_column_dimensions) setColumnDimensions(props.block.table_option?.text_table_option_column_dimensions)
+        if (props.block.table_option?.text_table_option_row_dimensions) setRowDimensions(props.block.table_option?.text_table_option_row_dimensions)
+
         if (process.env['APP'] === 'web') {
             document.addEventListener("mousemove", onResizeTableCell)
             document.addEventListener("mouseup", onMouseUp)
@@ -391,7 +449,7 @@ const Table = (props) => {
         addToolbar()
     }, [props.activeBlock, selectedEdge])
 
-    const columnsNumber = props.block?.table_option?.columns_num ? props.block?.table_option?.columns_num : 0
+    const columnsNumber = (props.block?.table_option?.text_table_option_column_dimensions || []).length
 
     const renderMobile = () => {
         return (
@@ -403,7 +461,7 @@ const Table = (props) => {
         return (
             <BlockTableTable>
                 <tbody>
-                    {Array.apply(null, Array(props.block?.table_option?.rows_num ? props.block?.table_option?.rows_num : 0)).map((_, rowIndex) => (
+                    {(props.block?.table_option?.text_table_option_row_dimensions || []).map((_, rowIndex) => (
                         <tr key={rowIndex}>
                             {props.block.rich_text_depends_on_blocks.slice(rowIndex * columnsNumber, (rowIndex * columnsNumber) + columnsNumber).map((block, index) => {
                                 const columnIndex = (rowIndex * columnsNumber) + index
@@ -412,6 +470,7 @@ const Table = (props) => {
                                     <BlockTableCell 
                                     key={block.uuid} 
                                     borderColor={props.block.table_option.border_color}
+                                    height={rowDimensions[rowIndex].height}
                                     width={columnDimensions[index].width}
                                     >
                                         <Overlay 
@@ -420,8 +479,8 @@ const Table = (props) => {
                                         >
                                             <BlockTableResizeButton
                                             buttonType={{isRight: true}}
-                                            onMouseDown={(e) => onMouseDown(e)}
-                                            onClick={(e) => {
+                                            onMouseDown={(e) => {
+                                                onMouseDown(e)
                                                 setSelectedEdge({
                                                     row: {
                                                         isSelected: false,
@@ -442,8 +501,8 @@ const Table = (props) => {
                                         >
                                             <BlockTableResizeButton
                                             buttonType={{isLeft: true}}
-                                            onMouseDown={(e) => onMouseDown(e)}
-                                            onClick={(e) => {
+                                            onMouseDown={(e) => {
+                                                onMouseDown(e)
                                                 setSelectedEdge({
                                                     row: {
                                                         isSelected: false,
@@ -464,8 +523,8 @@ const Table = (props) => {
                                         >
                                             <BlockTableResizeButton
                                             buttonType={{isTop: true}}
-                                            onMouseDown={(e) => onMouseDown(e)}
-                                            onClick={(e) => {
+                                            onMouseDown={(e) => {
+                                                onMouseDown(e)
                                                 setSelectedEdge({
                                                     row: {
                                                         isSelected: true,
@@ -486,8 +545,8 @@ const Table = (props) => {
                                         >
                                             <BlockTableResizeButton
                                             buttonType={{isBottom: true}}
-                                            onMouseDown={(e) => onMouseDown(e)}
-                                            onClick={(e) => {
+                                            onMouseDown={(e) => {
+                                                onMouseDown(e)
                                                 setSelectedEdge({
                                                     row: {
                                                         isSelected: true,

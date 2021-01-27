@@ -21,7 +21,7 @@ const Header = (props) => (
         <meta name="theme-color" content="#0dbf7e" />
         <link rel="apple-touch-icon" sizes="72x72" href="/pwa/images/icons/icon-72x72.png"/>
         <link rel="apple-touch-icon" sizes="96x96" href="/pwa/images/icons/icon-96x96.png"/>
-        <link rel="apple-touch-icon" sizes="144x144" href="/pwa/images/icons/icon-144x144.png"/>
+        <link rel="apple-touch-icon" sizes="144x144" href="/pwa/images/icons/icon-98x98.png"/>
         <link rel="apple-touch-icon" sizes="152x152" href="/pwa/images/icons/icon-152x152.png"/>
         <link rel="apple-touch-icon" sizes="192x192" href="/pwa/images/icons/icon-192x192.png"/>
         <link rel="apple-touch-icon" sizes="384x384" href="/pwa/images/icons/icon-384x384.png"/>
@@ -40,10 +40,10 @@ const Header = (props) => (
         <link rel="manifest" href="/pwa/manifest.json"/>
         <script type="text/javascript" src="/dragdroptouch/js/dragdroptouch.js"/>
         <link rel="stylesheet" href="/bulma/css/bulma.min.css" />
-        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'></link>
         <link rel="stylesheet" href="/bootstrap/css/bootstrap-grid.min.css"/>
         <link rel="stylesheet" href="/bootstrap/css/bootstrap-reboot.min.css"/>
         <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css"/>
+        <link rel='stylesheet' href='/font/roboto.css'/>
         <script src="https://fast.conpass.io/S97nHXnbeCE.js"/>
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-144919276-1"/>
         <script type="text/javascript" src="/google/analytics/index.js"/>

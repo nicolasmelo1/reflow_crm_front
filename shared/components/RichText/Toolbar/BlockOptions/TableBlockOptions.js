@@ -37,6 +37,10 @@ const TableBlockOptions = (props) => {
         '#66ccff'
     ]
 
+    /**
+     * Used when rendering the toolbar of the table. If the row edge is selected we show to add a new row,
+     * otherwise we show to add a column. This is just for changing the text of the button.
+     */
     const getAddButtonLabel = () => {
         if (props.selectedEdge.row.isSelected) {
             return strings['pt-br']['richTextTableToolbarAddRowButtonLabel']
@@ -45,6 +49,10 @@ const TableBlockOptions = (props) => {
         }
     } 
 
+    /**
+     * Similar to `.getAddButtonLabel()` but it's the opposite, when the row is selected we show to delete the column
+     * and when the column is selected we show to delete the row. This is just for changing the text of the button.
+     */
     const getRemoveButtonlabel = () => {
         if (props.selectedEdge.row.isSelected) {
             return strings['pt-br']['richTextTableToolbarRemoveColumnButtonLabel']

@@ -25,8 +25,8 @@
         "type": "image/png"
     },
     {
-        "src": "/pwa/images/icons/icon-144x144.png",
-        "sizes": "144x144",
+        "src": "/pwa/images/icons/icon-98x98.png",
+        "sizes": "98x98",
         "type": "image/png"
     },
     {
@@ -74,8 +74,8 @@
         "density": "2.0"
     },
     {
-        "src": "/pwa/images/icons/icon-144x144.png",
-        "sizes": "144x144",
+        "src": "/pwa/images/icons/icon-98x98.png",
+        "sizes": "98x98",
         "type": "image/png",
         "density": "3.0"
     },

@@ -214,24 +214,33 @@ const Text = (props) => {
      */
     const handleArrowNavigationWeb = () => {
         const getNextBlockIndex = () => {
-            const indexOfCurrentBlock = props.contextBlocks.findIndex(block => block.uuid === props.block.uuid)
             let nextTextBlockIndex = -1
-            for (let i = 0; i < props.contextBlocks.length; i++) {
-                if (props.contextBlocks[i].block_type === props.getBlockTypeIdByName('text') && i > indexOfCurrentBlock) {
-                    nextTextBlockIndex = i
-                    break
+
+            if (props.handleArrowNavigationNextBlockIndex) {
+                nextTextBlockIndex = props.handleArrowNavigationNextBlockIndex()
+            } else {
+                const indexOfCurrentBlock = props.contextBlocks.findIndex(block => block.uuid === props.block.uuid)
+                for (let i = 0; i < props.contextBlocks.length; i++) {
+                    if (props.contextBlocks[i].block_type === props.getBlockTypeIdByName('text') && i > indexOfCurrentBlock) {
+                        nextTextBlockIndex = i
+                        break
+                    }
                 }
             }
             return nextTextBlockIndex
         } 
 
         const getPreviousBlockIndex = () => {
-            const indexOfCurrentBlock = props.contextBlocks.findIndex(block => block.uuid === props.block.uuid)
             let previousTextBlockIndex = -1
-            for (let i = indexOfCurrentBlock; i >= 0; i--) {
-                if (props.contextBlocks[i].block_type === props.getBlockTypeIdByName('text') && i < indexOfCurrentBlock) {
-                    previousTextBlockIndex = i
-                    break
+            if (props.handleArrowNavigationPreviousBlockIndex) {
+                previousTextBlockIndex = props.handleArrowNavigationPreviousBlockIndex()
+            } else {
+                const indexOfCurrentBlock = props.contextBlocks.findIndex(block => block.uuid === props.block.uuid)
+                for (let i = indexOfCurrentBlock; i >= 0; i--) {
+                    if (props.contextBlocks[i].block_type === props.getBlockTypeIdByName('text') && i < indexOfCurrentBlock) {
+                        previousTextBlockIndex = i
+                        break
+                    }
                 }
             }
             return previousTextBlockIndex
