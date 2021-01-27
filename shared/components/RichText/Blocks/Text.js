@@ -213,11 +213,10 @@ const Text = (props) => {
      * how we know that the caret is on the top of the content and how it is on the bottom.
      */
     const handleArrowNavigationWeb = () => {
-        const getNextBlockIndex = () => {
+        const getNextBlockIndex = (isDownOrRight) => {
             let nextTextBlockIndex = -1
-
             if (props.handleArrowNavigationNextBlockIndex) {
-                nextTextBlockIndex = props.handleArrowNavigationNextBlockIndex()
+                nextTextBlockIndex = props.handleArrowNavigationNextBlockIndex(props.block.uuid, isDownOrRight)
             } else {
                 const indexOfCurrentBlock = props.contextBlocks.findIndex(block => block.uuid === props.block.uuid)
                 for (let i = 0; i < props.contextBlocks.length; i++) {
@@ -230,10 +229,10 @@ const Text = (props) => {
             return nextTextBlockIndex
         } 
 
-        const getPreviousBlockIndex = () => {
+        const getPreviousBlockIndex = (isUpOrLeft) => {
             let previousTextBlockIndex = -1
             if (props.handleArrowNavigationPreviousBlockIndex) {
-                previousTextBlockIndex = props.handleArrowNavigationPreviousBlockIndex()
+                previousTextBlockIndex = props.handleArrowNavigationPreviousBlockIndex(props.block.uuid, isUpOrLeft)
             } else {
                 const indexOfCurrentBlock = props.contextBlocks.findIndex(block => block.uuid === props.block.uuid)
                 for (let i = indexOfCurrentBlock; i >= 0; i--) {
@@ -258,7 +257,7 @@ const Text = (props) => {
                     isDownPressed: true
                 })
 
-                const nextTextBlockIndex = getNextBlockIndex()
+                const nextTextBlockIndex = getNextBlockIndex({isDownPressed: true})
                 if (nextTextBlockIndex !== -1) {
                     props.updateBlocks(props.contextBlocks[nextTextBlockIndex].uuid)
                 }
@@ -267,8 +266,7 @@ const Text = (props) => {
                     focusX: caretPosition.x,
                     isUpPressed: true
                 })
-
-                const previousTextBlockIndex = getPreviousBlockIndex()
+                const previousTextBlockIndex = getPreviousBlockIndex({isUpPressed: true})
                 if (previousTextBlockIndex !== -1) {
                     props.updateBlocks(props.contextBlocks[previousTextBlockIndex].uuid)
                 }
@@ -276,7 +274,7 @@ const Text = (props) => {
                 props.setArrowNavigation({
                     isRightPressed: true
                 })
-                const nextTextBlockIndex = getNextBlockIndex()
+                const nextTextBlockIndex = getNextBlockIndex({isRightPressed: true})
                 if (nextTextBlockIndex !== -1) {
                     props.updateBlocks(props.contextBlocks[nextTextBlockIndex].uuid)
                 }
@@ -285,7 +283,7 @@ const Text = (props) => {
                     focusX: caretPosition.x,
                     isLeftPressed: true
                 })
-                const previousTextBlockIndex = getPreviousBlockIndex()
+                const previousTextBlockIndex = getPreviousBlockIndex({isLeftPressed: true})
                 if (previousTextBlockIndex !== -1) {
                     props.updateBlocks(props.contextBlocks[previousTextBlockIndex].uuid)
                 }

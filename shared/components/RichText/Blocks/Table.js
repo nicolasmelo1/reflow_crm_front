@@ -188,7 +188,49 @@ const Table = (props) => {
         }
         props.updateBlocks(props.block.uuid)
     }   
+
+    const onHandleNextBlockArrowNavigation = (blockUUID, isDownOrRightPressed) => {
+        const indexOfCurrentBlock = props.block.rich_text_depends_on_blocks.findIndex(block => block.uuid === blockUUID)
+        let nextTextBlockIndex = -1
+        if (isDownOrRightPressed.isDownPressed) {
+            for (let i = indexOfCurrentBlock; i < props.block.rich_text_depends_on_blocks.length; i += props.block.table_option.text_table_option_column_dimensions.length) {
+                if (props.block.rich_text_depends_on_blocks[i].block_type === props.getBlockTypeIdByName('text') && i > indexOfCurrentBlock) {
+                    nextTextBlockIndex = i
+                    break
+                }
+            }
+        } else {
+            for (let i = indexOfCurrentBlock; i < props.block.rich_text_depends_on_blocks.length; i++) {
+                if (props.block.rich_text_depends_on_blocks[i].block_type === props.getBlockTypeIdByName('text') && i > indexOfCurrentBlock) {
+                    nextTextBlockIndex = i
+                    break
+                }
+            } 
+        }
+        return nextTextBlockIndex
+    }
     
+    const onHandlePreviousBlockArrowNavigation = (blockUUID, isUpOrLeftPressed) => {
+        const indexOfCurrentBlock = props.block.rich_text_depends_on_blocks.findIndex(block => block.uuid === blockUUID)
+        let previousTextBlockIndex = -1
+        if (isUpOrLeftPressed.isUpPressed) {
+            for (let i = indexOfCurrentBlock; i >= 0; i -= props.block.table_option.text_table_option_column_dimensions.length) {
+                if (props.block.rich_text_depends_on_blocks[i].block_type === props.getBlockTypeIdByName('text') && i < indexOfCurrentBlock) {
+                    
+                    previousTextBlockIndex = i
+                    break
+                }
+            }
+        } else {
+            for (let i = indexOfCurrentBlock; i >= 0; i--) {
+                if (props.block.rich_text_depends_on_blocks[i].block_type === props.getBlockTypeIdByName('text') && i < indexOfCurrentBlock) {
+                    previousTextBlockIndex = i
+                    break
+                }
+            } 
+        }
+        return previousTextBlockIndex
+    }
     /**
      * Resizes the table column and also it's row. It's important to notice that hen resizing columns we only accept resizing the midle columns
      * For resizing rows we use pixels normally so no special attention is needed, for resizing columns however we use percentages.
@@ -564,6 +606,8 @@ const Table = (props) => {
                                         <Block 
                                         {...props} 
                                         block={block} 
+                                        handleArrowNavigationNextBlockIndex={onHandleNextBlockArrowNavigation}
+                                        handleArrowNavigationPreviousBlockIndex={onHandlePreviousBlockArrowNavigation}
                                         onDuplicateBlock={onDuplicateChildrenBlock}
                                         onDeleteBlock={onDeleteChildrenBlock}
                                         onRemoveCurrent={() => null}
