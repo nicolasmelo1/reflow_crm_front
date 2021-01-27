@@ -257,34 +257,36 @@ const Block = (props) => {
     }
 
     const Container = process.env['APP'] === 'web' ? `div`: View
-    const Component = blocks[props.getBlockTypeNameById(props.block.block_type)].default
+    const Component = blocks[props.getBlockTypeNameById(props.block.block_type)] ? blocks[props.getBlockTypeNameById(props.block.block_type)].default : null
     return (
         <Container key={props.block.uuid}>
             {isBlockSelectionOpen ? (
                 <BlockSelector
                 ref={blockSelectorRef}
                 changeBlockType={changeBlockType}
-                blockOptions={props.blockTypeOptionsForSelection}
+                blockOptions={props.blockTypes}
                 />
             ): null}
-            <Component 
-            key={props.block.uuid}
-            {...props}
-            toolbarProps={{
-                blockUUID: props.block.uuid,
-                obligatoryBlockProps: {
-                    onDeleteBlock: onDeleteBlock,
-                    onDuplicateBlock: onDuplicateBlock
-                }
-            }}
-            addToolbar={addToolbar}
-            imageFile={imageFile}
-            customBlockOptions={customBlockOptions}
-            onPasteImageInText={onPasteImageInText}
-            openBlockSelection={openBlockSelection}
-            createNewContent={createNewContent}
-            createNewBlock={createNewBlock}
-            />
+            {Component ? (
+                <Component 
+                key={props.block.uuid}
+                {...props}
+                toolbarProps={{
+                    blockUUID: props.block.uuid,
+                    obligatoryBlockProps: {
+                        onDeleteBlock: onDeleteBlock,
+                        onDuplicateBlock: onDuplicateBlock
+                    }
+                }}
+                addToolbar={addToolbar}
+                imageFile={imageFile}
+                customBlockOptions={customBlockOptions}
+                onPasteImageInText={onPasteImageInText}
+                openBlockSelection={openBlockSelection}
+                createNewContent={createNewContent}
+                createNewBlock={createNewBlock}
+                />
+            ) : null}
         </Container>
     )
 }

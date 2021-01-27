@@ -37,7 +37,7 @@ class RichText extends React.Component {
             blockOptionComponent: null,
             blockOptionProps: null
         }
-        this.CancelToken = axios.CancelToken
+        this.cancelToken = axios.CancelToken
         this.source = null
         this.state = {
             draftMapHeap: {},
@@ -92,13 +92,12 @@ class RichText extends React.Component {
      * @returns {BigInteger} - Returns the id of the block from it's name. Can return null
      */
     getBlockTypeIdByName = (blockName) => {
-        if (this.props.types?.rich_text?.block_type !== undefined) {
-            for (let i=0; i<this.props.types?.rich_text?.block_type.length; i++) {
-                if (this.props.types.rich_text.block_type[i].name === blockName) {
-                    return this.props.types.rich_text.block_type[i].id
-                }
+        const blockTypes = this.getBlockTypes()
+        for (let i=0; i<blockTypes.length; i++) {
+            if (blockTypes[i].name === blockName) {
+                return blockTypes[i].id
             }
-        } return null
+        }
     } 
     
     /**
@@ -109,13 +108,14 @@ class RichText extends React.Component {
      * @returns {String} - The name of the block, can be a text, a list, and so on.
      */
     getBlockTypeNameById = (blockId) => {
-        if (this.props.types?.rich_text?.block_type !== undefined) {
-            for (let i=0; i<this.props.types?.rich_text?.block_type.length; i++) {
-                if (this.props.types.rich_text.block_type[i].id === blockId) {
-                    return this.props.types.rich_text.block_type[i].name
-                }
+        const blockTypes = this.getBlockTypes()
+
+        for (let i=0; i<blockTypes.length; i++) {
+            if (blockTypes[i].id === blockId) {
+                return blockTypes[i].name
             }
-        } return null
+        }
+        return null
     }
 
     /**
@@ -422,6 +422,57 @@ class RichText extends React.Component {
         return draftStringId
     }
 
+    /**
+     * If the allowedBlockTypeIds is defined it means not all blocks should be available in this context, so what we do is filter 
+     * the block_types with only the ones that are allowed in the current context. 
+     * 
+     * For example: when generating a PDF template we might choose to not let user embed websites in the rich text, so the embed 
+     * block will be disabled for this context.
+     * 
+     * This way we can create as many blocks as we want and need in the rich text but without affecting the many use cases the richText
+     * might end up having.
+     */
+    getBlockTypes = () => {
+        if (this.props.allowedBlockTypeIds) {
+            return (this.props.types?.rich_text?.block_type || []).filter(blockType => this.props.allowedBlockTypeIds.includes(blockType.id))
+        } else {
+            return (this.props.types?.rich_text?.block_type || [])
+        }
+    }
+
+    /**
+     * This function might be a little confusing about how we add the toolbar to the rich text. But the overall idea is simple:
+     * 
+     * First things first, WE DO NOT save the toolbar data in the state, this is not a good practice according to react itself.
+     * Because by doing this we would be sending components to the state also and that's not what we want.
+     * 
+     * Instead what we do is a lot simpler: we use simple references and use this to define if the rich_text should be rerendered or not
+     * 
+     * We define if the rich text should be rerendered with the following criteria:
+     * - The active block has been changed and the blockUUID recieved is not the same as the activeBlock
+     * - The props of the CONTENT options have been changed
+     * - The props of the BLOCK options have been changed
+     * - The obligatory props have been changed.
+     * 
+     * If one of these is the case we rerender the hole rich text adding the toolbar
+     * 
+     * Yep, we could add some stuff to the state and refresh, but making it this way gives us more control, and also
+     * we don't need to add the ContentOptions component and the BlockOptions component to the State.
+     * 
+     * @param {Object} options - {
+     *      obligatoryBlockProps: {
+     *          onDeleteBlock: {String} - The function that handles when the user clicks to delete this block
+     *          onDuplicateBlock: {String} - The function that handles when the user clicks to duplicate a block
+     *      }
+     *      contentOptionComponent: {React.Component} - Non obligatory set this when you want to make changes to the content,
+     *          this is the component that will be loaded on the toolbar to make changes to the content
+     *      blockOptionComponent: {React.Component} - Non obligatory set this when you want to make changes to the block,
+     *          this is the component that will be loaded on the toolbar with options to make changes to the block
+     *      contentOptionProps: {Object} - All of the props you want to pass to contentOptionComponent
+     *      blockOptionComponent: {Object} - All of the props you want to pass to blockOptionComponent
+     *      blockUUID: {String} - The uuid of the block that this toolbar is for.
+     * }
+     */
     addToolbar = (options = {}) => {
         if (options?.obligatoryBlockProps?.onDeleteBlock === undefined && 
             options?.obligatoryBlockProps?.onDuplicateBlock === undefined &&
@@ -456,11 +507,13 @@ class RichText extends React.Component {
 
     componentDidMount = () => {
         this._isMounted = true
+        this.source = this.cancelToken.source()
         // When we create a new data rich text we automatically set the initial. 
         // because of this we need to propagate this new data to the parent.
         if (this.props.onStateChange) {
             this.props.onStateChange({...this.state.data})
         }
+        this.props.onGetBlockCanContainBlock(this.source)
         if (process.env['APP'] !== 'web') {
             Keyboard.addListener('keyboardDidShow', this.onKeyboardDidShow)
             Keyboard.addListener('keyboardDidHide', this.onKeyboardDidHide)  
@@ -486,6 +539,9 @@ class RichText extends React.Component {
         if (process.env['APP'] !== 'web') {
             Keyboard.removeListener('keyboardDidShow', this.onKeyboardDidShow)
             Keyboard.removeListener('keyboardDidHide', this.onKeyboardDidHide)  
+        }
+        if (this.source) {
+            this.source.cancel()
         }
 
         // Remove drafts, since we will not be using them anymore when unmounting this component
@@ -532,8 +588,9 @@ class RichText extends React.Component {
                         block={item} 
                         blockIndex={index}
                         pageId={this.state.data.id}
+                        blockCanContainBlocks={this.props.rich_text.blockCanContainBlock}
+                        blockTypes={this.getBlockTypes()}
                         types={this.props.types}
-                        blockTypeOptionsForSelection={this.props.types.rich_text.block_type}
                         addToolbar={this.addToolbar}
                         draftMapHeap={this.state.draftMapHeap}
                         onUploadFileToDraft={this.onUploadFileToDraft}
@@ -585,9 +642,10 @@ class RichText extends React.Component {
                         <Block 
                         key={block.uuid} 
                         block={block} 
+                        blockCanContainBlocks={this.props.rich_text.blockCanContainBlock}
+                        blockTypes={this.getBlockTypes()}
                         types={this.props.types}
                         pageId={this.state.data.id}
-                        blockTypeOptionsForSelection={this.props.types.rich_text.block_type}
                         addToolbar={this.addToolbar}
                         draftMapHeap={this.state.draftMapHeap}
                         onUploadFileToDraft={this.onUploadFileToDraft}
@@ -619,4 +677,4 @@ class RichText extends React.Component {
     }
 }
 
-export default connect(state => ({ types: state.login.types }), actions)(RichText)
+export default connect(state => ({ types: state.login.types, rich_text: state.rich_text }), actions)(RichText)

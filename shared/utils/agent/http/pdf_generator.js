@@ -2,6 +2,9 @@ import requests from '../requests'
 import { companyId } from '../utils'
 
 const PDF_GENERATOR = {
+    getAllowedBlocks: async (source) => {
+        return await requests.get(`pdf_generator/allowed_blocks/`, {}, {}, source)
+    },
     getTemplatesSettings: async (source, formName) => {
         return await requests.get(`pdf_generator/${companyId}/${formName}/settings/`, {}, {}, source)
     },

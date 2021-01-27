@@ -140,6 +140,7 @@ const PDFGeneratorCreator = (props) => {
                 ) : null}
                 {selectedTemplateIndex !== null ? (
                     <PDFGeneratorCreatorEditor
+                    allowedRichTextBlockIds={props.allowedRichTextBlockIds}
                     formAndFieldOptions={formAndFieldOptions}
                     templateData={getTemplateData()}
                     setSelectedTemplateIndex={setSelectedTemplateIndex}
@@ -209,6 +210,7 @@ const PDFGeneratorCreator = (props) => {
                 ) : ''}
                 {selectedTemplateIndex !== null ? (
                     <PDFGeneratorCreatorEditor
+                    allowedRichTextBlockIds={props.allowedRichTextBlockIds}
                     formAndFieldOptions={formAndFieldOptions}
                     templateData={getTemplateData()}
                     setSelectedTemplateIndex={setSelectedTemplateIndex}

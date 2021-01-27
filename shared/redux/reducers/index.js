@@ -9,6 +9,7 @@ import company from './company'
 import users from './users'
 import pdf_generator from './pdf_generator'
 import navbar from './navbar'
+import rich_text from './rich_text'
 import { DEAUTHENTICATE } from '../types'
 
 
@@ -22,6 +23,7 @@ const appReducer = combineReducers({
     company,
     users,
     pdf_generator,
+    rich_text,
     navbar
 })
 

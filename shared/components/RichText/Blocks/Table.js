@@ -188,7 +188,15 @@ const Table = (props) => {
         }
         props.updateBlocks(props.block.uuid)
     }   
-
+    /**
+     * This gets the index of the block that the caret should go when the user press the arrow key down or right
+     * 
+     * @param {String} blockUUID - The uuid of the block that is currently focused
+     * @param {Object} isUpOrLeftPressed - {
+     *      isDownPressed: {Boolean} - If the down arrow was pressed
+     *      isRightPressed: {Boolean} - If the right arrow was pressed
+     * } 
+     */
     const onHandleNextBlockArrowNavigation = (blockUUID, isDownOrRightPressed) => {
         const indexOfCurrentBlock = props.block.rich_text_depends_on_blocks.findIndex(block => block.uuid === blockUUID)
         let nextTextBlockIndex = -1
@@ -210,6 +218,15 @@ const Table = (props) => {
         return nextTextBlockIndex
     }
     
+    /**
+     * This gets the index of the block that the caret should go when the user press the arrow key up or left
+     * 
+     * @param {String} blockUUID - The uuid of the block that is currently focused
+     * @param {Object} isUpOrLeftPressed - {
+     *      isUpPressed: {Boolean} - If the up arrow was pressed
+     *      isLeftPressed: {Boolean} - If the left arrow was pressed
+     * }
+     */
     const onHandlePreviousBlockArrowNavigation = (blockUUID, isUpOrLeftPressed) => {
         const indexOfCurrentBlock = props.block.rich_text_depends_on_blocks.findIndex(block => block.uuid === blockUUID)
         let previousTextBlockIndex = -1
@@ -290,6 +307,19 @@ const Table = (props) => {
     const onMouseDown = (e) => {
         resizingRef.current = {pageX: e.pageX, pageY: e.pageY}
         isResizing.current = true
+    }
+
+    /**
+     * We don't want tables to exist inside another table, so to prevent this we use this function that
+     * gets by each block_type what block_types it can contain, with this we filter the blockTypes option on the children blocks.
+     * So when the user press '/' it will show fewer blocks.
+     */
+    const getBlocksItCanContain = () => {
+        if (props.blockCanContainBlocks[props.block.block_type]) {
+            return props.blockTypes.filter(blockType => props.blockCanContainBlocks[props.block.block_type].includes(blockType.id))
+        } else {
+            return props.blockTypes
+        }
     }
 
     /**
@@ -606,6 +636,7 @@ const Table = (props) => {
                                         <Block 
                                         {...props} 
                                         block={block} 
+                                        blockTypes={getBlocksItCanContain()}
                                         handleArrowNavigationNextBlockIndex={onHandleNextBlockArrowNavigation}
                                         handleArrowNavigationPreviousBlockIndex={onHandlePreviousBlockArrowNavigation}
                                         onDuplicateBlock={onDuplicateChildrenBlock}

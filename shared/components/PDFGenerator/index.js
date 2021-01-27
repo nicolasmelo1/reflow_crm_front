@@ -24,6 +24,26 @@ class PDFGenerator extends React.Component {
         this.source = null
     }
 
+    /**
+     * Retrives all of the text block_type ids allowed for pdf templates.
+     */
+    getPermittedRichTextBlockIds = () => {
+        return this.props.pdf_generator.allowedBlocks.map(allowedBlock=> 
+            allowedBlock.block
+        )
+    }
+
+    componentDidMount = () => {
+        this.source = this.cancelToken.source()
+        this.props.onGetAllowedBlocks(this.source)
+    }
+
+    componentWillUnmount = () => {
+        if (this.source) {
+            this.source.cancel()
+        }
+    }
+
     renderMobile = () => {
         return (
             <View>
@@ -37,6 +57,8 @@ class PDFGenerator extends React.Component {
                     onGetPDFGeneratorTempalatesReader={this.props.onGetPDFGeneratorTempalatesReader}
                     onCheckIfCanDownloadPDF={this.props.onCheckIfCanDownloadPDF}
                     onAddNotification={this.props.onAddNotification}
+                    allowedRichTextBlockIds={this.getPermittedRichTextBlockIds()}
+
                     />
                 ) : (
                     <PDFGeneratorCreator
@@ -49,6 +71,7 @@ class PDFGenerator extends React.Component {
                     onRemovePDFGeneratorTemplateConfiguration={this.props.onRemovePDFGeneratorTemplateConfiguration}
                     onChangePDFGeneratorTemplateConfigurationDataState={this.props.onChangePDFGeneratorTemplateConfigurationDataState}
                     onGetPDFGeneratorTempalatesConfigurationFieldOptions={this.props.onGetPDFGeneratorTempalatesConfigurationFieldOptions}
+                    allowedRichTextBlockIds={this.getPermittedRichTextBlockIds()}
                     />
                 )}
             </View>
@@ -68,6 +91,7 @@ class PDFGenerator extends React.Component {
                     onGetPDFGeneratorTempalatesReader={this.props.onGetPDFGeneratorTempalatesReader}
                     onCheckIfCanDownloadPDF={this.props.onCheckIfCanDownloadPDF}
                     onAddNotification={this.props.onAddNotification}
+                    allowedRichTextBlockIds={this.getPermittedRichTextBlockIds()}
                     />
                 ) : (
                     <PDFGeneratorCreator
@@ -80,6 +104,7 @@ class PDFGenerator extends React.Component {
                     onRemovePDFGeneratorTemplateConfiguration={this.props.onRemovePDFGeneratorTemplateConfiguration}
                     onChangePDFGeneratorTemplateConfigurationDataState={this.props.onChangePDFGeneratorTemplateConfigurationDataState}
                     onGetPDFGeneratorTempalatesConfigurationFieldOptions={this.props.onGetPDFGeneratorTempalatesConfigurationFieldOptions}
+                    allowedRichTextBlockIds={this.getPermittedRichTextBlockIds()}
                     />
                 )}
             </div>

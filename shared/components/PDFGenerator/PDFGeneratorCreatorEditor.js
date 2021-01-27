@@ -50,6 +50,7 @@ const Custom = (props) => {
  * an object. If this object has the id key as null then it will create a new PDFTemplate ohterwise it will update an existing template Configuration.
  */
 const PDFGeneratorCreatorEditor = (props) => {
+    const isMountedRef = React.useRef(false)
     const mobileWindowHeight = useWindowDimensions().height
     const [isLoading, setIsLoading] = useState(false)
     const [templateData, setTemplateData] = useState({...props.templateData})
@@ -96,12 +97,14 @@ const PDFGeneratorCreatorEditor = (props) => {
      * at `.createNewPage()` function
      */
     const onRichTextStateChange = (data) => {
-        setTemplateData({
-            ...templateData, 
-            rich_text_page: {
-                ...data
-            }
-        })
+        if (isMountedRef.current) {
+            setTemplateData({
+                ...templateData, 
+                rich_text_page: {
+                    ...data
+                }
+            })
+        }
     }
 
     /**
@@ -124,11 +127,18 @@ const PDFGeneratorCreatorEditor = (props) => {
     const onSubmit = () => {
         setIsLoading(true)
         props.onUpdateOrCreatePDFTemplateConfiguration({...templateData}).then(response => {
-            if ([undefined, null].includes(response) || response.status !== 200) {
+            if (([undefined, null].includes(response) || response.status !== 200) && isMountedRef.current) {
                 setIsLoading(false)
             }
         })
     }
+
+    useEffect(() => {
+        isMountedRef.current = true
+        return () => {
+            isMountedRef.current = false
+        }
+    }, [])
 
     const renderMobile = () => {
         return (
@@ -153,6 +163,7 @@ const PDFGeneratorCreatorEditor = (props) => {
                         <RichText 
                         initialText={strings['pt-br']['pdfGeneratorEditorRichTextInitialText']}
                         initialData={props.templateData?.rich_text_page}
+                        allowedBlockTypeIds={props.allowedRichTextBlockIds}
                         onStateChange={onRichTextStateChange}
                         renderCustomContent={renderCustomContent} 
                         handleUnmanagedContent={unmanaged} 
@@ -199,6 +210,7 @@ const PDFGeneratorCreatorEditor = (props) => {
                     <RichText 
                     initialText={strings['pt-br']['pdfGeneratorEditorRichTextInitialText']}
                     initialData={props.templateData?.rich_text_page}
+                    allowedBlockTypeIds={props.allowedRichTextBlockIds}
                     onStateChange={onRichTextStateChange}
                     renderCustomContent={renderCustomContent} 
                     handleUnmanagedContent={unmanaged} 

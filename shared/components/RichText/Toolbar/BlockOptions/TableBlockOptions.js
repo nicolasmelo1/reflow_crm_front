@@ -89,7 +89,8 @@ const TableBlockOptions = (props) => {
                     {isBorderColorOptionsOpen ? (
                         <TableBlockOptionTableBorderColorOptionsContainer>
                             {borderColors.map(color => (
-                                <TableBlockOptionTableBorderColorOptionButton 
+                                <TableBlockOptionTableBorderColorOptionButton
+                                key={color} 
                                 borderColor={color}
                                 onClick={(e) => {
                                     setIsBorderColorOptionsOpen(!isBorderColorOptionsOpen)
