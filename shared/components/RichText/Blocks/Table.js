@@ -367,7 +367,7 @@ const Table = (props) => {
                 props.block.rich_text_depends_on_blocks.splice(selectedEdge.column.index + (props.block.table_option.text_table_option_column_dimensions.length * i) + i,0, newBlock)
             }
             columnDimensions.push({ width: null })
-            newColumnDimensions = columnDimensions.map(_ => ({ width: 100/props.block.table_option.text_table_option_column_dimensions.length}))
+            newColumnDimensions = columnDimensions.map(_ => ({ width: 100/columnDimensions.length}))
             props.block.table_option.text_table_option_column_dimensions = newColumnDimensions
             setColumnDimensions([...newColumnDimensions])
         }
