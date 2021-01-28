@@ -210,7 +210,21 @@ const Text = (props) => {
 
     /**
      * Is explained well in `caretIsInHighestOrLowestPositionWeb` function. Read the docs there to understand
-     * how we know that the caret is on the top of the content and how it is on the bottom.
+     * how we know that the caret is on the top of the content and how we know it is on the bottom.
+     * 
+     * Since this function holds many business logic we decided to keep it inside of the component.
+     * 
+     * What this does is simple: when the arrow is up and the caret is in the highest position of the block
+     * we need to focus on the previous block. To get the previous `text` block type index we use the `getPreviousBlockIndex`
+     * function to retrieve the index of the previous `text` block. A similar approach is applied when the user press down and the caret 
+     * is in the lowest position. What we do is check if the caret is in the lowestPosition of the block and if it is we get the next
+     * block index that we need to focus.
+     * 
+     * We can override both functions when going up or down with `handleArrowNavigationNextBlockIndex` and `handleArrowNavigationPreviousBlockIndex`
+     * function props. For example, transversing tables should be different than transversing a normal text, so this could be use to override this
+     * functionality without losing the ability to transverse blocks.
+     * 
+     * Be aware that before going to the next block we update the page state with setArrowNavigation signaling the X position of the caret.
      */
     const handleArrowNavigationWeb = () => {
         const getNextBlockIndex = (isDownOrRight) => {
@@ -857,11 +871,17 @@ const Text = (props) => {
      * UNHANDLED CONTENT STARTS HERE *
      *********************************
      * 
-     * What this does is: if the text has changed, we get the inserted text and fix the CaretPosition (
-     * more on `getInsertedTextAndFixCaretPosition` function)
+     * What this does is: if the text has changed, we get the inserted text and fix the CaretPosition. To get the inserted text
+     * we also need the type of the onInput event to understand if we are doing a ctrl+c ctrl+v, adding a line break and so on.
+     * The fix on the caret position exists because when the user is removing the text we want to mimic as if the user had selected
+     * a word to be removed. So the position is like "iLoveCat|" if we want to delete the "t" at the end we mimic like that was actually
+     * "iLoveCa|t|" so as if the user had selected the letter "t", so we can know exaclty which word should be removed. Also the same principle
+     * is applied when a user selects "iLove|Cat|" and press delete or backspace.
+     * 
      * Then we remove the text in the content and after that insert a new text in the content and last but not least
      * merge equal contents, delete empty and set where caret position should be.
      * 
+     * # ONLY ON WEB
      * Before and after updating the contents what we do is insert the '\n' in the end of the last content. We need to do this
      * because there is a bug in the browser that when you press Enter two \n are created. This can cause
      * some weird bugs to happen. To prevent this we just add a new line at the end of the last content.
@@ -873,11 +893,15 @@ const Text = (props) => {
      * Those contents are contents that should not be handled by the text component itself.
      * What we do is check if the inserted text is to open an unhandled selection box (for example, sometimes you may want that
      * if the user types '@' we will display a list of the users. Sometimes typing the same key we will open a box showing
-     * the fields of a formulary)
+     * the fields of a formulary, it depends on the context that the rich text is being used)
      * 
-     * @param {*} text 
-     * @param {*} keyCode 
-     */
+     * @param {String} text - The inner text of the inputRef, this is the hole text of the content.
+     * @param {String} inputType - Mostly used on browsers, the onInput event fires the type of the event on the input, for reference
+     * you can use this list so you can know what types of events onInput emits. https://www.w3.org/TR/input-events-1/ (or you can console
+     * log(e.nativeEvent.inputType) as you type on the input)
+     * @param {String} insertedText - This is only the text that was inserted, so if you press the letter "a" on your keyboard this will 
+     * be only the letter "a" 
+     * */
     const onInput = (text, inputType, insertedText=null) => {
         const getInsertedText = (insertedText, inputType) => {
             if (insertedText === null && inputType === 'insertReplacementText') {
@@ -1147,6 +1171,7 @@ const Text = (props) => {
         if (process.env['APP'] === 'web') {
             handleArrowNavigationWeb()
         }
+        // if it's in composition we do not want the caret position to update
         if (!wasKeyDownPressedRef.current && !isInCompositionRef.current) {
             if (process.env['APP'] === 'web') {
                 caretPositionRef.current = getSelectionSelectCursorPositionWeb(inputRef.current)
@@ -1273,12 +1298,13 @@ const Text = (props) => {
                 props.block.rich_text_block_contents = [].concat.apply([], props.block.rich_text_block_contents)
                 deleteEmptyContents()
                 props.block.rich_text_block_contents = mergeEqualContentsSideBySide(props.block.rich_text_block_contents)
-                
-                //mergeEqualDeleteEmptyAndSetWhereCaretPositionShouldGo('')
             } 
         }
     }
 
+    /**
+     * Just a boolean function used to verify if it needs to show to the user a placeholder
+     */
     const isToShowPlaceholder = () => {
         return props.block.rich_text_block_contents.length === 1 && 
         props.activeBlock === props.block.uuid &&

@@ -7,6 +7,7 @@ styled.p`
     margin: 0;
     color: #bfbfbf;
     white-space: pre-wrap;
+    user-select: none;
 `
 :
 styled(Text)``

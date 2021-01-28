@@ -7,6 +7,7 @@ styled.div`
     margin-top: 1px;
     position: absolute;
     padding: 5px 5px;
+    user-select: none;
 `
 :
 styled(View)``

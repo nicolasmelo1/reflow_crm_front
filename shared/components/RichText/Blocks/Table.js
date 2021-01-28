@@ -27,8 +27,8 @@ const Table = (props) => {
             index: null
         },
     })
-    const [rowDimensions, _setRowDimensions] = useState(Array.from(Array(2).keys()).map(_ => ({ height: null })))
-    const [columnDimensions, _setColumnDimensions] = useState(Array.from(Array(2).keys()).map(_ => ({ width: 100/2 })))
+    const [rowDimensions, _setRowDimensions] = useState(props.block.table_option?.text_table_option_row_dimensions ? props.block.table_option.text_table_option_row_dimensions : Array.from(Array(2).keys()).map(_ => ({ height: null })))
+    const [columnDimensions, _setColumnDimensions] = useState(props.block.table_option?.text_table_option_column_dimensions ? props.block.table_option.text_table_option_column_dimensions : Array.from(Array(2).keys()).map(_ => ({ width: 100/2 })))
     const rowDimensionsRef = React.useRef(rowDimensions)
     const columnDimensionsRef = React.useRef(columnDimensions)
     const isResizing = React.useRef(false)
@@ -500,8 +500,14 @@ const Table = (props) => {
         // When mounting this component we check if it has the table options, otherwise we need to create it.
         // With this we can then mount the table on the screen.
         checkIfTableOptionsAndInsertIt()
-        if (props.block.table_option?.text_table_option_column_dimensions) setColumnDimensions(props.block.table_option?.text_table_option_column_dimensions)
-        if (props.block.table_option?.text_table_option_row_dimensions) setRowDimensions(props.block.table_option?.text_table_option_row_dimensions)
+        if (props.block.table_option?.text_table_option_column_dimensions && 
+            JSON.stringify(props.block.table_option?.text_table_option_column_dimensions) !== JSON.stringify(columnDimensions)) {
+                setColumnDimensions(props.block.table_option?.text_table_option_column_dimensions)
+        }
+        if (props.block.table_option?.text_table_option_row_dimensions &&
+            JSON.stringify(props.block.table_option?.text_table_option_row_dimensions) !== JSON.stringify(rowDimensions)) {
+                setRowDimensions(props.block.table_option?.text_table_option_row_dimensions)
+        }
 
         if (process.env['APP'] === 'web') {
             document.addEventListener("mousemove", onResizeTableCell)
