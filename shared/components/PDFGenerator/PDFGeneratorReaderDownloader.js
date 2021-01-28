@@ -134,6 +134,7 @@ const PDFGeneratorReaderDownloader = (props) => {
                             -webkit-print-color-adjust: exact;
                         }
                     </style>
+                    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"/>
                     ${styles}
                 </head>
                 <body style="font-family: Roboto !important;">
