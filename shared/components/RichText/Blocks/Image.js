@@ -24,7 +24,11 @@ const Image = (props) => {
     const isMountedRef = React.useRef(false)
     const imageUrlRef = React.useRef(null)
     const imageBlockRef = React.useRef(null)
-    const isResizingRef = React.useRef(0)
+    const resizingRef = React.useRef({
+        pageX: null,
+        isLeftButton: null,
+        isRightButton: null
+    })
     const sizeRelativeToViewRef = React.useRef(0)
     const [isMouseOver, setIsMouseOver] = useState(false)
     const [sizeRelativeToView, _setSizeRelativeToView] = useState(0)
@@ -78,8 +82,12 @@ const Image = (props) => {
      * the changes when the user finishes editing.
      */
     const onMouseUpResizing = () => {
-        if (isResizingRef.current !== 0) {
-            isResizingRef.current = 0
+        if (resizingRef.current.pageX !== null && (resizingRef.current.isLeftButton !== null || resizingRef.current.isRightButton !== null)) {
+            resizingRef.current = {
+                pageX: null,
+                isLeftButton: null,
+                isRightButton: null
+            }
             props.block.image_option.size_relative_to_view = sizeRelativeToViewRef.current 
             props.updateBlocks(props.block.uuid)
         }
@@ -105,17 +113,16 @@ const Image = (props) => {
      * @param {Event} e - The event recived by the "mousemove" event by the browser.
      */
     const onMouseMoveResizing = (e) => {
-        if (isResizingRef.current !== 0) {
-            const centerOfScreen = window.innerWidth/2
-            if ((e.pageX < centerOfScreen && e.pageX - isResizingRef.current > 0) || (e.pageX > centerOfScreen && e.pageX - isResizingRef.current < 0)) {
-                if (sizeRelativeToViewRef.current  > 0.1) {
-                    isResizingRef.current = e.pageX
-                    setSizeRelativeToView(parseFloat(sizeRelativeToViewRef.current ) - 0.01)
+        if (resizingRef.current.pageX !== null && (resizingRef.current.isLeftButton !== null || resizingRef.current.isRightButton !== null)) {
+            if ((resizingRef.current.isLeftButton && e.pageX > resizingRef.current.pageX) || (resizingRef.current.isRightButton && e.pageX < resizingRef.current.pageX)) {
+                if (sizeRelativeToViewRef.current > 0.1) {
+                    resizingRef.current.pageX = e.pageX
+                    setSizeRelativeToView(parseFloat(sizeRelativeToViewRef.current) - 0.01)
                 } 
-            } else if ((e.pageX < centerOfScreen && e.pageX - isResizingRef.current < 0) || (e.pageX > centerOfScreen && e.pageX - isResizingRef.current > 0)) {
-                if (sizeRelativeToViewRef.current  <= 1) {
-                    isResizingRef.current = e.pageX
-                    setSizeRelativeToView(parseFloat(sizeRelativeToViewRef.current ) + 0.01)
+            } else if ((resizingRef.current.isLeftButton && e.pageX < resizingRef.current.pageX) || (resizingRef.current.isRightButton && e.pageX > resizingRef.current.pageX)) {
+                if (sizeRelativeToViewRef.current <= 1) {
+                    resizingRef.current.pageX = e.pageX
+                    setSizeRelativeToView(parseFloat(sizeRelativeToViewRef.current) + 0.01)
                 }
             }
         }
@@ -264,10 +271,10 @@ const Image = (props) => {
                             {isMouseOver ? (
                                 <BlockImageResizeContainer>
                                     <BlockImageResizeButton 
-                                    onMouseDown={(e) => {isResizingRef.current = e.pageX}}
+                                    onMouseDown={(e) => {resizingRef.current = {pageX: e.pageX, isLeftButton: true, isRightButton: null}}}
                                     />
                                     <BlockImageResizeButton 
-                                    onMouseDown={(e) => {isResizingRef.current = e.pageX}}
+                                    onMouseDown={(e) => {resizingRef.current = {pageX: e.pageX, isLeftButton: null, isRightButton: true}}}
                                     />
                                 </BlockImageResizeContainer>
                             ) : ''}

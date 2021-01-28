@@ -1147,7 +1147,7 @@ const Text = (props) => {
         if (process.env['APP'] === 'web') {
             handleArrowNavigationWeb()
         }
-        if (!wasKeyDownPressedRef.current) {
+        if (!wasKeyDownPressedRef.current && !isInCompositionRef.current) {
             if (process.env['APP'] === 'web') {
                 caretPositionRef.current = getSelectionSelectCursorPositionWeb(inputRef.current)
                 checkIfCaretPositionIsCustomFixAndSetCaretPosition()
