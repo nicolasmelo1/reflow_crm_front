@@ -75,8 +75,8 @@ const Table = (props) => {
      * @returns {Object} - {
      *      id {BigInteger} - The id of the table option 
      *      border_color {String} - The Hex string of the color of the border
-     *      text_table_option_column_dimensions {Array<{width: {BigInteger}}>} - The number of columns in the table and the width in % of each column
-     *      text_table_option_row_dimensions {Array<{height: {BigInteger}}>} - The number of rows in the table and the height in px of each row
+     *      text_table_option_column_dimensions {Array<{width: {BigInteger}}>} - Holds the number of columns in the table and the width in % of each column
+     *      text_table_option_row_dimensions {Array<{height: {BigInteger}}>} - Holds the number of rows in the table and the height in px of each row
      * }
      */
     const tableOptions = () => ({
@@ -185,8 +185,8 @@ const Table = (props) => {
                     props.block.rich_text_depends_on_blocks.push(createEmptyTextBlock(i))
                 }
             }
+            props.updateBlocks(props.block.uuid)
         }
-        props.updateBlocks(props.block.uuid)
     }   
     /**
      * This gets the index of the block that the caret should go when the user press the arrow key down or right

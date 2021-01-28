@@ -67,7 +67,7 @@ const PDFGeneratorReaderDownloader = (props) => {
     const multipleValuesElementToChange = React.useRef(null)
     const multipleValuesDividerInputContainerRef = React.useRef(null)
     const [isDownloadingFile, setIsDownloadingFile] = useState(false)
-    const [valueOptions, setValueOptions] = useState([])
+    const [valueOptions, setValueOptions] = useState(null)
     const [hasRenderedValueOptions, setHasRenderedValueOptions] = useState(false)
     const [multipleValuesDividerSetterFieldId, setMultipleValuesDividerSetterFieldId] = useState(null)
     const [multipleValuesDividerOptionPosition, setMultipleValuesDividerOptionPosition] = useState({
@@ -83,9 +83,11 @@ const PDFGeneratorReaderDownloader = (props) => {
      */
     const renderCustomContent = (content) => {
         let textArray = []
-        for (let valuesIndex = 0; valuesIndex<valueOptions.length; valuesIndex++) {
-            if (`fieldVariable-${valueOptions[valuesIndex].field_id} fromConnectedField-${valueOptions[valuesIndex].form_value_from_connected_field ? valueOptions[valuesIndex].form_value_from_connected_field.id: ''}` === content.custom_value) {
-                textArray.push(valueOptions[valuesIndex].value)
+        if (valueOptions !== null) {
+            for (let valuesIndex = 0; valuesIndex<valueOptions.length; valuesIndex++) {
+                if (`fieldVariable-${valueOptions[valuesIndex].field_id} fromConnectedField-${valueOptions[valuesIndex].form_value_from_connected_field ? valueOptions[valuesIndex].form_value_from_connected_field.id: ''}` === content.custom_value) {
+                    textArray.push(valueOptions[valuesIndex].value)
+                }
             }
         }
         return {
@@ -109,6 +111,7 @@ const PDFGeneratorReaderDownloader = (props) => {
         setIsDownloadingFile(true)
         let styles = ''
         Object.values(document.styleSheets).forEach(cssstylesheet => {
+            console.log(cssstylesheet)
             if (cssstylesheet.href) {
                 let style = ` <link href="${cssstylesheet.href}" rel="stylesheet"> `
                 styles = styles + style
@@ -138,7 +141,7 @@ const PDFGeneratorReaderDownloader = (props) => {
                 </body>
             </html>
         `
-
+        
         props.onCheckIfCanDownloadPDF(sourceRef.current, props.formName, props.templateData.id).then(response => {
             if (response && response.status === 200) {
                 axios.post(`${FRONT_END_HOST}api/generate_pdf`, {html: page}, {
@@ -176,14 +179,16 @@ const PDFGeneratorReaderDownloader = (props) => {
      */
     const onClickCustomElement = (e) => {
         e.preventDefault()
-        const valuesOfElement = valueOptions.filter(valueOption => `fieldVariable-${valueOption.field_id.toString()} fromConnectedField-${valueOption.form_value_from_connected_field ? valueOption.form_value_from_connected_field.id.toString(): ''}` === e.target.dataset.customValue)
-        if (valuesOfElement.length > 1) {
-            multipleValuesElementToChange.current = e.target
-            setMultipleValuesDividerSetterFieldId(parseInt(e.target.dataset.customValue))
-            setMultipleValuesDividerOptionPosition({
-                x: e.pageX,
-                y: e.pageY
-            })
+        if (valueOptions !== null) {
+            const valuesOfElement = valueOptions.filter(valueOption => `fieldVariable-${valueOption.field_id.toString()} fromConnectedField-${valueOption.form_value_from_connected_field ? valueOption.form_value_from_connected_field.id.toString(): ''}` === e.target.dataset.customValue)
+            if (valuesOfElement.length > 1) {
+                multipleValuesElementToChange.current = e.target
+                setMultipleValuesDividerSetterFieldId(parseInt(e.target.dataset.customValue))
+                setMultipleValuesDividerOptionPosition({
+                    x: e.pageX,
+                    y: e.pageY
+                })
+            }   
         }
     }
 
@@ -196,14 +201,16 @@ const PDFGeneratorReaderDownloader = (props) => {
      * When the user sets his separator we get the inputed value by reference.
      */
     const onClickToChangeCustomElementText = () => {
-        if (multipleValuesDividerInputRef.current && multipleValuesElementToChange.current) {
-            const text = valueOptions
-                .filter(valueOption => `fieldVariable-${valueOption.field_id.toString()} fromConnectedField-${valueOption.form_value_from_connected_field ? valueOption.form_value_from_connected_field.id.toString(): ''}` === multipleValuesElementToChange.current.dataset.customValue)
-                .map(valueOption => valueOption.value)
-                .join(multipleValuesDividerInputRef.current.value)
-            multipleValuesElementToChange.current.textContent = text
+        if (valueOptions !== null) {
+            if (multipleValuesDividerInputRef.current && multipleValuesElementToChange.current) {
+                const text = valueOptions
+                    .filter(valueOption => `fieldVariable-${valueOption.field_id.toString()} fromConnectedField-${valueOption.form_value_from_connected_field ? valueOption.form_value_from_connected_field.id.toString(): ''}` === multipleValuesElementToChange.current.dataset.customValue)
+                    .map(valueOption => valueOption.value)
+                    .join(multipleValuesDividerInputRef.current.value)
+                multipleValuesElementToChange.current.textContent = text
+            }
+            setMultipleValuesDividerSetterFieldId(null)
         }
-        setMultipleValuesDividerSetterFieldId(null)
     }
 
     /**
@@ -257,7 +264,7 @@ const PDFGeneratorReaderDownloader = (props) => {
         // changing the state. Since the Elements will be rendered after that
         // we can easily add the 'click' eventListener to the '.custom_content' elements
         // because they will be already rendered in the page.
-        if (valueOptions.length > 0) {
+        if (valueOptions !== null && valueOptions.length > 0) {
             setHasRenderedValueOptions(true)
         }
     }, [valueOptions])
@@ -315,11 +322,17 @@ const PDFGeneratorReaderDownloader = (props) => {
                     <div 
                     ref={documentRef}
                     >
-                        <RichText 
-                        isEditable={true}
-                        initialData={props.templateData?.rich_text_page}
-                        renderCustomContent={renderCustomContent} 
-                        />
+                        {hasRenderedValueOptions ? (
+                            <RichText 
+                            isEditable={true}
+                            initialData={props.templateData?.rich_text_page}
+                            renderCustomContent={renderCustomContent} 
+                            />
+                        ) : (
+                            <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                                <Spinner animation="border" style={{ color:'#0dbf7e'}}/>
+                            </div>
+                        )}
                     </div>
                 </PDFGeneratorReaderDownloaderPage>
             </div>
