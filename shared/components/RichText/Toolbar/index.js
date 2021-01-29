@@ -10,11 +10,19 @@ import {
     ToolbarDefaultBlockOptionsButton
 } from '../../../styles/RichText'
 
+
 /**
  * This is the toolbar, for a nicer api we wanted that every toolbar should be defined in each block itself and not
  * on the rich text itself. With an API like this every block will be open to define its own custom toolbar when active.
+ * also each block will have their own logic of when to update and when to not update the toolbar.
  * 
- * @param {Boolean} isBlockActive - {go in detail about every prop it recieves}
+ * @param {Boolean} isBlockActive - If the block that this toolbar is used to is active or not.
+ * @param {Function} onDeleteBlock - Function to handle when a block is deleted, this is obligatory for all blocks
+ * @param {Function} onDuplicateBlock - Obligatory function to handle when the user presses to duplicate a block to a new one
+ * @param {React.Component} contentOptions - All of the options that the user can click on the toolbar to change a context. (make it bold,
+ * add italic and so on.)
+ * @param {React.Component} blockOptions - The component that holds all of the options and parameters a user could change for
+ * the hole block
  */
 const Toolbar = (props) => {
     const toolbarRef = React.useRef(null)

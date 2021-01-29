@@ -158,8 +158,8 @@ const setCaretPositionIfArrowNavigationWeb = (inputElement, newRange, arrowNavig
  * might be in order to go to the previous block.
  * To the lowest instead of using the fontHeight we use the lineHeight but the idea is similar. 
  * The other difference for the lowest is that we need to sum the Y with the height because the Y
- * gives us the position of the uppest and leftist edge. When we sum the Y with the height we get the
- * edge position of the bottom and more to the left edge. So instead of adding, we subtract this value
+ * gives us the position of the uppest and leftist vertex. When we sum the Y with the height we get the
+ * edge position of the bottom and more to the left vertex. So instead of adding, we subtract this value
  * with the lineHeight, so we get the area where the caret should be to go to the next block.
  * 
  * @param {HTMLElement} inputElement - The HTML element of the contentEditable input.

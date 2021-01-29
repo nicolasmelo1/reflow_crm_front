@@ -50,7 +50,7 @@ const Custom = (props) => {
  * an object. If this object has the id key as null then it will create a new PDFTemplate ohterwise it will update an existing template Configuration.
  */
 const PDFGeneratorCreatorEditor = (props) => {
-    const isMountedRef = React.useRef(false)
+    const isMountedRef = React.useRef(true)
     const mobileWindowHeight = useWindowDimensions().height
     const [isLoading, setIsLoading] = useState(false)
     const [templateData, setTemplateData] = useState({...props.templateData})
@@ -65,6 +65,25 @@ const PDFGeneratorCreatorEditor = (props) => {
     const unmanaged = {
         '@': setUnmanagedFieldSelectorPosition
     }
+
+    /**
+    * This function is used for validating if the data the user inserted in a field name is valid or not. You will notice that this is a switch
+    * with a set of statements. Each return case is a different condition to check if the data is valid.
+    * 
+    * @param {String} name - The name is actually a key that we use to reference on what the field you are validating is.
+    * If you insert more fields in the formulary, then we will probably have more keys. exept from 'name', all of the keys are
+    * based on the keys from the `userData` object.
+    * @param {String} value - The value the user inserted in this field to validate.
+    */
+    const isValid = (name, value) => {
+        switch (name) {
+            case 'name':
+                return value !== ''
+            default:
+                return true
+        }
+    }
+
 
     /**
      * When the rich text renders a custom content it doesn't know what to render, since it is not handled inside of the rich text itself.
@@ -128,6 +147,9 @@ const PDFGeneratorCreatorEditor = (props) => {
         setIsLoading(true)
         props.onUpdateOrCreatePDFTemplateConfiguration({...templateData}).then(response => {
             if (([undefined, null].includes(response) || response.status !== 200) && isMountedRef.current) {
+                if (response.data?.error?.reason && response.data.error.reason.includes('invalid_rich_text')) {
+                    console.log('teste')
+                }
                 setIsLoading(false)
             }
         })
@@ -182,11 +204,15 @@ const PDFGeneratorCreatorEditor = (props) => {
         return (
             <div>
                 <PDFGeneratorCreatorTemplateTitleContainer>
-                    <PDFGeneratorCreatorEditorTemplateTitleInput value={templateData.name} onChange={(e) => onChangeTemplateName(e.target.value)}/>
+                    <PDFGeneratorCreatorEditorTemplateTitleInput 
+                    isValid={isValid('name', templateData.name)}
+                    value={templateData.name} 
+                    onChange={(e) => onChangeTemplateName(e.target.value)}/>
                 </PDFGeneratorCreatorTemplateTitleContainer>
                 <PDFGeneratorCreatorEditorButtonsContainer> 
-                    <PDFGeneratorCreatorEditorTemplateSaveButton 
-                    onClick={(e) => isLoading ? null : onSubmit({...templateData})}
+                    <PDFGeneratorCreatorEditorTemplateSaveButton
+                    isValid={isValid('name', templateData.name)}
+                    onClick={(e) => isLoading || !isValid('name', templateData.name)  ? null : onSubmit({...templateData})}
                     > 
                         {isLoading ? (
                             <Spinner animation="border" size="sm"/>

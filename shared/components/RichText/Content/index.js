@@ -5,8 +5,15 @@ import {
 } from '../../../styles/RichText'
 
 /**
- * {Description of your component, what does it do}
- * @param {Type} props - {go in detail about every prop it recieves}
+ * This component is each content of a text. A content is an inline content of a text. It can be a bold text, a
+ * italic text, underlined and so on. In other words, each content is an inline element of a text.
+ * 
+ * It's important to notice though that this does not handle CUSTOM CONTENTS. Custom contents are contents handled 
+ * outside of the rich text, in the context they are defined. If you want to support tagging users, fields, adding dates
+ * and other stuff you will need to support it outside of the rich text scope
+ * 
+ * @param {Object} content - check the return of `createNewContent()` on the Block component to understand the expected
+ * structure.
  */
 const Content = (props) => {
     const renderMobile = () => {

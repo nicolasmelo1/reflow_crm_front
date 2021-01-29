@@ -17,9 +17,70 @@ import {
 
 const makeDelay = delay(150)
 
+
 /**
- * {Description of your component, what does it do}
- * @param {Type} props - {go in detail about every prop it recieves}
+ * This is the main component of the RichText. This component represents the page of our own rich text.
+ * 
+ * Yes, we could use stuff like slate.js, draft.js, quill and others but there's a reason on why facebook 
+ * and other companies built their own, even with many libraries out there: They have FULL CONTROL over their own
+ * rich text and they can adapt it to their own needs without needing to depend on open source software that
+ * they doesn't own. And we, as reflow see that making our own Text editor gives us an advantage from other companies
+ * like Clickup and Airtable, because we can end up using it in a lot of places and for a lot of use cases. 
+ * So having full control over the funcionality, as tedious as it might be, is crucial for the success of Reflow.
+ * With stuff like this we can: 
+ * - Share the same code and keep the same functionality between React Native and React. (I haven't fount any
+ * library for rich text in React that could support both platforms, on React Native we would need to use a WebView
+ * which is far from ideal)
+ * - We can further create a docs view in which we can compete as close as possible to Notion and Coda and even
+ * mimic most of their funcionalities.
+ * - We can create a websocket connection from multiple clients for collaboration without relying on third party
+ * software or companies (like Clickup that needs to use the product from a third party provider to allow collaboration
+ * between clients in their docs)
+ * 
+ * IMPORTANT: It's important to understand and notice that the rich text is a UNIQUE FEATURE on its own for our 
+ * platform. But at the same time it can stand on it's own, it's meant to be extensible for MANY use cases that might
+ * exist with it. Like Docs, PDF Generation, a Long Text of a formulary and so on.
+ * 
+ * @param {String} initialText - This is the text that will be shown to the user as he enters the text editor. This will
+ * be a full text and not just a placeholder. This is shown on the first line to him. Normally, if this is not defined
+ * the user starts with a blank page with no text in it. It can be hard for some users to find their way, this is why this 
+ * is important.
+ * @param {Object} initialData - you can check the return function of `createNewPage()` method inside of this component
+ * to understand the structure we expect from this props. If this is defined we DO NOT create a new page and instead use the
+ * data provided from this props.
+ * @param {Function} onStateChange - When the state of the rich text changes we need to propagate all of the data of the 
+ * the rich text to the parent (remember that this component should be extensible) And when we do this we need to prevent the 
+ * parent from propagating the data back down with `initialData` and end up with an infinite recursion loop.
+ * @param {Array<BigInteger>} allowedBlockTypeIds - Sometimes we want to prevent, on a specific context, the user from using
+ * some specific block_types. So, we use this parameter to define which block types are permitted to be used on the specific
+ * context. If this is not defined we do not prevent the user from using any blocks.
+ * @param {Boolean} isEditable - As the name suggests, defines if the rich text can be edited or if it's in read only mode.
+ * 
+ * /----------------/
+ * UNMANAGED CONTENT
+ * /----------------/
+ * Below, there are props that handles unmanaged content. Unmanaged content is some custom content that exists in the 
+ * middle of a text. For some use cases we want to be able to tag users, on others we want to be able to add fields. And so on.
+ * All of this is not handled by the Rich Text itself, it must be handled outside of the Rich Text so you can add as many
+ * custom contents as you want to the text.
+ * 
+ * @param {Function} renderCustomContent - A function that recieves a content as parameter (see `rich_text_block_contents` in
+ * `createNewPage()` function to get the structure expected.) And returns a Object with a `component` and `text` keys.
+ * The `component` is the component that will be rendered in the middle of the text of a `text` block and `text` is
+ * the text that will be inside of this component.
+ * @param {Function} handleUnmanagedContent - This is an object where each key of the object is a character that should
+ * be typed in the rich text in order to do something. `@` in some contexts might be to show a list of users, in others
+ * it might be to show a list of fields. If `@` is being used, you can use `#`, '$', and other to open other options. 
+ * The combinations are infinite. The value of each key is a callback function which recieves the X and Y position of the caret
+ * in the window, on the browser. So we can display the options next to it.
+ * @param {Function} onOpenUnmanagedContentSelector - This is a function to close the UnmanagedContent option when a text block
+ * loses focus and such. This way we do not need to handle on the parent when a text loses focus.
+ * @param {Boolean} isUnmanagedContentSelectorOpen - Checks if a selector of a custom content is open, so we prevent a text block
+ * from being inactive, we can keep it activated inside of the rich text.
+ * @param {Function} onChangeUnmanagedContentValue - We use this to change the unmanagedValue recieved by `unmanagedContentValue` props
+ * back to null, after it had been used.
+ * @param {String} unmanagedContentValue - We use this props to get the selected value all the way to the rich text. So we add this
+ * value not to the actual text itself but to the `custom_value` property of the content.
  */
 class RichText extends React.Component {
     constructor(props) {
@@ -71,7 +132,7 @@ class RichText extends React.Component {
      * we can easily track those changes and apply them to the duplicates (not the original ones)
      * 
      * @param {String} oldDraftId - The old draft string id that will be the key of our object of the heap
-     * @param {*} newDraftId - - The new draft string id that will be the value of our object of the heap
+     * @param {String} newDraftId - - The new draft string id that will be the value of our object of the heap
      */
     setDraftMapHeap = (oldDraftId, newDraftId) => {
         if (!['', null, undefined].includes(oldDraftId)) {
@@ -229,10 +290,7 @@ class RichText extends React.Component {
                     uuid: generateUUID(),
                     image_option: null,
                     list_option: null,
-                    text_option: {
-                        id: null,
-                        alignment_type: alignmentType
-                    },
+                    text_option: null,
                     table_option: null,
                     block_type: blockType,
                     order: 0,
@@ -511,6 +569,7 @@ class RichText extends React.Component {
         // When we create a new data rich text we automatically set the initial. 
         // because of this we need to propagate this new data to the parent.
         if (this.props.onStateChange) {
+            console.log(this.state.data)
             this.props.onStateChange({...this.state.data})
         }
         this.props.onGetBlockCanContainBlock(this.source)
@@ -632,7 +691,6 @@ class RichText extends React.Component {
             <RichTextContainer className={'rich-text-container'} height={this.props.height}>
                 {this.state.activeBlock !== null && this.props.isEditable !== false ? (
                     <Toolbar
-                    width={this.state.webToolbarWidth}
                     isBlockActive={true}
                     {...this.getToolbarProps()}
                     />

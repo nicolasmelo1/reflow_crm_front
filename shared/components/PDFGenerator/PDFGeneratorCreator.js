@@ -20,9 +20,23 @@ import {
 
 const Swipeable = dynamicImport('react-native-gesture-handler', 'Swipeable')
 
+
 /**
- * {Description of your component, what does it do}
- * @param {Type} props - {go in detail about every prop it recieves}
+ * This component is responsible for holding the data of all of the pdf templates. And we use this data
+ * to show a list of templates to the user.
+ * 
+ * @param {String} formName - The name of the current selected formulary, this is usully recieved from the url
+ * @param {Object} cancelToken - A axios cancel token. We use this so we can cancel a request and the promise when the user unmounts a component,
+ * before the data is retrieved
+ * @param {Array<Object>} templates - An array of templates that the user had created. This is recieved from the redux state
+ * @param {Function} onGetPDFGeneratorTemplatesConfiguration - A redux function used for getting all of the templates the user had created
+ * @param {Function} onCreatePDFGeneratorTemplateConfiguration - A redux function used for saving the template data on the backend
+ * @param {Function} onUpdatePDFGeneratorTemplateConfiguration - A redux function used for updating a template data on the backend
+ * @param {Function} onRemovePDFGeneratorTemplateConfiguration - A redux function used for removing a template from the backend, this is used
+ * when the user press delete.
+ * @param {Function} onGetPDFGeneratorTempalatesConfigurationFieldOptions - A redux action function used for retrieving all of options the user
+ * can select inside of the rich text
+ * @param {Array<BigInteger} allowedRichTextBlockIds - All of the blockTypeIds that are allowed to exist in the pdf template.
  */
 const PDFGeneratorCreator = (props) => {
     const sourceRef = React.useRef()

@@ -22,6 +22,7 @@ import {
  * @param {String} partner - The partner name, usually recieved from the url as a parameter with the ?partner= tag. This is something we can define as we want.
  * @param {String} shared_by - The company endpoint, used for referral, usually recieved from the url as a query parameter with the ?shared_by= tag. The shared_by
  * is something that usually we set for the user. The user can't set this parameter
+ * @param {String} discount_coupon - The discount coupon the user is using when entering the platform.
  * @param {Function} openLinks - (MOBILE ONLY) - This is used to open the terms of usage and privacy policy links. With this we can open the browser directly inside
  * of the app.
  */

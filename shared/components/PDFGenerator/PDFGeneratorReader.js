@@ -105,6 +105,7 @@ const PDFGeneratorReader = (props) => {
                     onGetPDFGeneratorValuesReader={props.onGetPDFGeneratorValuesReader}
                     onCheckIfCanDownloadPDF={props.onCheckIfCanDownloadPDF}
                     onAddNotification={props.onAddNotification}
+                    allowedBlockTypeIds={props.allowedRichTextBlockIds}
                     />
                 ) : (
                     <div>

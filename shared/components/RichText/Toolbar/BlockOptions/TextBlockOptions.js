@@ -1,5 +1,4 @@
 import React from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { View } from 'react-native'
 import { 
     TextBlockOptionAlignmentButton,
@@ -7,8 +6,13 @@ import {
 } from '../../../../styles/RichText'
 
 /**
- * {Description of your component, what does it do}
- * @param {Type} props - {go in detail about every prop it recieves}
+ * The toolbar for the text block, this just control the alignment position of the text inside of the block.
+ * 
+ * @param {BigInteger} alignmentTypeId - The id of the selected alignment type
+ * @param {Function} onChangeAlignmentType - A function that recieves the alignmentTypeId as parameter and is used
+ * to change the alignmentType selected
+ * @param {Object} types - the types state, this types are usually the required data from this system to work. 
+ * Types defines all of the field types, form types, format of numbers and dates and many other stuff 
  */
 const TextBlockOptions = (props) => {
     const getIconFromAlignmentTypeName = (name) => {

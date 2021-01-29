@@ -16,8 +16,25 @@ import {
 } from '../../../styles/RichText'
 
 /**
- * {Description of your component, what does it do}
- * @param {Type} props - {go in detail about every prop it recieves}
+ * The image block is simple in its core idea but how we handle images in the rich text can be kind difficult.
+ * 
+ * Usually, to upload a file to the backend what we do is encode the request on a formEncoded data, send the json 
+ * as a string and then, on the backend convert this json stringfied back to json and then we get all of the files 
+ * uploaded and do something.
+ * 
+ * The problem is: every file should be sent at once on a single request. Sure, this can work for small files and small 
+ * text but this can become a problem when a page becomes huge and with many files. So to prevent this from happening
+ * we have created something called `drafts` in our backend, it's a hole new domain for our app. And the idea of this domain
+ * is to hold temporary files. Temporary because they are deleted after some time. So when the user adds an image
+ * we upload a draft, and then when we actually save the draft we just copy the contents from one place to another on the backend
+ * but since this is a backend process, it takes a lot less time than if it was done in the front end.
+ * 
+ * As i said, drafts are temporary, so you need to make sure that if your draft was removed and the rich text is still
+ * open, you need to reupload it to guarantee that it will exist when saving.
+ * 
+ * Besides that, this just holds an image that is centered in the block and that can be resizeble, nothing much.
+ * 
+ * @param {Object} props - {... all of the props defined in the Block and Text components}
  */
 const Image = (props) => {
     const activeBlockRef = React.useRef(null)
@@ -47,7 +64,6 @@ const Image = (props) => {
         sizeRelativeToViewRef.current = data
         _setSizeRelativeToView(data)
     }
-
 
     /**
      * Each block has it's own options, the options of the image block are like the following.
@@ -165,7 +181,8 @@ const Image = (props) => {
      * This was caused because when you make a Fast Refresh the `useEffect` hook runs (it unmounts the component and then mounts again).
      * Since we run this function when the component is mounted this error was being caused.
      * 
-     * To prevent this from happening we decode the file_name, if it as base64 string with `draft-` in it it's almost definetly a draft, otherwise it's not.
+     * To prevent this from happening we decode the file_name, if it is a base64 string with `draft-` in it it's almost definetly a draft, 
+     * otherwise it's probably not a draft.
      */
     const addImageUrlOnMount = () => {
         if (props.block.image_option.link !== null) {

@@ -1,5 +1,5 @@
 import React, { useState , useEffect, memo } from 'react'
-import { KeyboardAvoidingView } from 'react-native'
+import { EventEmitter, KeyboardAvoidingView } from 'react-native'
 import { renderToString } from 'react-dom/server'
 import Content from '../Content'
 import { TextBlockOptions } from '../Toolbar/BlockOptions'
@@ -19,8 +19,34 @@ import {
 
 
 /**
- * {Description of your component, what does it do}
- * @param {Type} props - {go in detail about every prop it recieves}
+ * This is the Text component, one of the most important blocks of the RichText, it is the main block of our richText.
+ * The rich text itself starts with a text block and every new block is automatically a text block. When the user want to
+ * add a new block type what we actually do is convert this block to a a block of another type.
+ * 
+ * This is definetly one of the biggest components of the hole application but don't be scared, it just need many logic to work
+ * but it's not that difficult once you get it.
+ * 
+ * Differently from other richText libraries what we wanted to do was to make the rich text active and not passive. What this
+ * means in other words is that the data actually defines what is rendered, so whenever we type a new word we update the state with
+ * this new word and then we use this data to rerender the block again. Most rich texts use a different metodology where they prevent
+ * to the maximum a text to be rerendered. We wanted to follow this path because first we thought it would be easier to understand
+ * and second is that it is what we knew how to do.
+ * 
+ * Most of the logic here resides on a simple ref: `caretPositionRef` this is the object that holds the start and end position of the 
+ * caret and this is SUPER important for everything inside here to work. By knowing the start and end positions of a caret on the rich text
+ * we can know where a new text should be inserted, if a text was deleted where it was deleted. All of the contexts affected when the 
+ * state change (to bold, to italic and so on). And etc. Understanding this you basically understand 90% of the text block.
+ * 
+ * {... all of the props defined in the Block component}
+ * @param {Object} toolbarProps - Holds all of the obligatory props needed for the toolbar
+ * @param {Function} addToolbar - The addToolbar function from the Block component (not the page component)
+ * @param {File} imageFile - If the user made a ctrl+c image file and ctrl+v on a text block, this will hold the actual file of the image
+ * @param {Array<String>} customBlockOptions - Holds all of the options that needs to be reseted when a block changes types or is duplicated.
+ * @param {Function} onPasteImageInText - Function that handles when the user pastes an image file on a Text block type.
+ * @param {Function} openBlockSelection - Opens the selection of possible blocks that a user can select. Used when the user press '/' before
+ * adding any content to the text block.
+ * @param {Function} createNewContent - Creates a new content inside a block, a content is an inline content. A text can contain multiple contents
+ * @param {Function} createNewBlock - As the name suggests, used for creating a new Block
  */
 const Text = (props) => {
     const stateOfSelectionData = {
@@ -328,6 +354,8 @@ const Text = (props) => {
      * the state.
      * So with thisn restriction, just when the composition ends, we update the text with the new insertedText. And then we also update the ref to signal that the 
      * composition has just ended and is not taking place anymore.
+     * 
+     * @param {String} insertedText - The text that was inserted with the accent.
      */
     const onCompositionEnd = (insertedText) => {
         isInCompositionRef.current = false
@@ -578,10 +606,14 @@ const Text = (props) => {
      * "cats" content split into two.
      * 
      * Important: we check if the state of the content has changed (it means it was bold and it's not bold anymore)
-     * @param {*} content 
-     * @param {*} contentIndex 
-     * @param {*} startIndexToSelectTextInContent 
-     * @param {*} insertedText 
+     * 
+     * @param {Object} content - Check the return of the `createNewContent()` function from the Block component in the index.js 
+     * file to read the expected structure of this object
+     * @param {BigInteger} startIndexToSelectTextInContent - The index of the start position inside of the content text that will be the middle substring.
+     * @param {BigInteger} endIndexToSelectTextInContent -  The index of the end position inside of the content text that will be the middle substring.
+     * @param {String} currentText - The current text of the context.
+     * @param {String} insertedText - The text that will be in the middle of the existing contents.
+     * @param {Object} selectionState - Check object `stateOfSelectionData` for reference
      */
     const addNewContentInTheMiddleOfContent = (content, startIndexToSelectTextInContent, endIndexToSelectTextInContent, currentText, insertedText, selectionState) => {
         const toKeepContentTextLeft = currentText.substring(0, startIndexToSelectTextInContent)
@@ -647,7 +679,7 @@ const Text = (props) => {
      * By now you might already been thinking what do we do. We need to loop between the selected contents and
      * change each content text individually getting the startIndexToSelectTextInContent and endIndexToSelectTextInContent texts
      * 
-     * @param {*} selectedContents 
+     * @param {Array<Object>} selectedContents - Check the return of `getSelectedContents()` for reference on the object structure.
      */
     const removeTextInContent = (selectedContents) => {
         const hasDeletedSomeContent = caretPositionRef.current.start !== caretPositionRef.current.end
@@ -686,8 +718,8 @@ const Text = (props) => {
      * 2 - The content you are inserting is of another type, so we use `addNewContentInTheMiddleOfContent`
      * function to achieve this.
      * 
-     * @param {*} selectedContents 
-     * @param {*} insertedText 
+     * @param {Array<Object>} selectedContents - Check the return of `getSelectedContents()` for reference on the object structure.
+     * @param {String} insertedText - The inserted text, could be a letter or could be a hole word.
      */
     const insertTextInContent = (selectedContents, insertedText) => {
         if (selectedContents.length > 0) {
@@ -829,7 +861,7 @@ const Text = (props) => {
      * on mobile. Yep we know that there is this prop called `selection` that you set the start and end for the text input. But it never
      * seemed to work well on mobile for our use case. If you can make it work, fell free to change the behaviour.
      * 
-     * @param {*} e 
+     * @param {EventEmitter} e - The event fired on onSelect props of TextInput on mobile and of input on web.
      */
     const onSelectText = (e) => {
         if (process.env['APP'] === 'web') {    
@@ -855,9 +887,9 @@ const Text = (props) => {
 
 
     /**
-     * Exactly the same as `onFocus`
+     * Exactly the same as `onFocus`, this handles when the user clicks the text. Nothing fancy.
      * 
-     * @param {*} e 
+     * @param {EventEmitter} e - The event object fired by onClick event 
      */
     const onClickText = (e) => {
         caretPositionRef.current = getSelectionSelectCursorPositionWeb(inputRef.current)
@@ -922,15 +954,13 @@ const Text = (props) => {
         
         const fixCaretPositionIfDelete = (inputType, text, oldText) => {
             const isRangeSelection = caretPositionRef.current.start !== caretPositionRef.current.end
-            // User has set the caret to a certain position
+            // User has set the caret to a certain position and did not made a selection.
             if (!isRangeSelection) {
                 if ((inputType === 'deleteContentBackward' && process.env['APP'] === 'web') || (inputType === 'Backspace' && process.env['APP'] !== 'web')) {
-                    // User has pressed backspace
-                    // Make as user have selected the character before
+                    // User has pressed backspace. Make as user have selected the character before
                     caretPositionRef.current.start = caretPositionRef.current.start - (oldText.length - text.length)
                 } else if (inputType === 'deleteContentForward') {
-                    // User has pressed delete
-                    // Make as user have selected the character after
+                    // User has pressed delete. Make as user have selected the character after
                     caretPositionRef.current.end = caretPositionRef.current.end + (oldText.length - text.length)
                 }  
             } 
@@ -958,14 +988,14 @@ const Text = (props) => {
             customInputCaretPosition.current = JSON.parse(JSON.stringify(caretPositionRef.current))
         } 
 
-        // You must ALWAYS follow that order of functions, the order is important
+        // You must ALWAYS follow that order of functions
         const selectedContents = getSelectedContents()
         removeTextInContent(selectedContents)
         insertTextInContent(selectedContents, insertedText)
         mergeEqualDeleteEmptyAndSetWhereCaretPositionShouldGo(insertedText)
 
         // Has removed last line break so we need to insert it again, only needed on web, on mobile
-        // no such thing happens
+        // no such thing is needed
         if (process.env['APP'] === 'web') {
             props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text = 
             props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text + '\n'
@@ -1164,7 +1194,8 @@ const Text = (props) => {
      * - Backspace
      * - Delete
      * 
-     * @param {*} e 
+     * @param {EventEmitter} e - The event object on  onKeyDown event listener on Mobile and on Web.
+     * @param {String} pressedKey - The key that was pressed in the keyboard.
      */
     const onKeyDown = (event, pressedKey) => {
         keyDownPressedRef.current = pressedKey
@@ -1199,7 +1230,9 @@ const Text = (props) => {
     }
 
     /**
-     * Resets the states from the refs when the user leaves the key
+     * Resets the states from the refs when the user releases the key
+     * 
+     * Also reset the arrowNavigation from the page component 
      */
     const onKeyUp = () => {
         keyDownPressedRef.current = null
@@ -1335,7 +1368,7 @@ const Text = (props) => {
      * With this we can know if the user is pasting an image or if he is pasting a text.
      * If the user is pasting an image we send a props to the block component so it automatically creates a block and updates
      * 
-     * @param {*} e 
+     * @param {EventEmitter} e - The object fired when the user pastes a text in the web
      */
     const onPaste = (e) => {
         e.stopPropagation()
@@ -1438,6 +1471,7 @@ const Text = (props) => {
                     markerColor: ''
                 }
             )
+            contentsToAddInIndex[1].text = props.renderCustomContent(contentsToAddInIndex[1]).text
             // adds an empty content space after the content, this way we are not blocked from writing.
             // (remember that when it is a custom content, we select the hole element)
             // got this idea from Notion.so

@@ -9,14 +9,78 @@ import isEqual from '../../../utils/isEqual'
 let previousBlockProps = {}
 
 /**
- * {Description of your component, what does it do}
- * @param {Type} props - {go in detail about every prop it recieves}
+ * This is the Block, the main block, the parent block of all blocks.
+ * This component holds all of the functionalities needed for every block. For example. Every block
+ * need to have the onDelete and onDuplicate functionality, for when we duplicate a block and for when we 
+ * delete an existing block.
+ * 
+ * We also keep shared functionalities here like: when the user pastes an image on the text it should create
+ * a new image block. Functions to create a new Block and to create a new content are also kept here.
+ * Everything that is common for all of the blocks must be kept here.
+ * 
+ * @param {Object} block - The block object, this holds the object of each block. You can check `createNewBlock`
+ * function inside of this component for details on the structure of this object.
+ * @param {Object} blockCanContainBlocks - Object where every key is a block_type_id and every value is an Array
+ * of block_type_ids. We use this so we can prevent the user from adding tables inside of tables. Basically. With this
+ * every block that contains children blocks can filter what blocks it must accept as children. Like tables for example.
+ * @param {Array<Object>} blockTypes - This is an array of rich_text.block_types. Remember `allowedBlockTypeIds`? we use 
+ * that to filter out what block types must be accepted inside of a context. Also we use `blockCanContainBlocks` to filter
+ * out what block types are accepted as children. This filters out not only the options of `BlockSelector` component but also
+ * the block doesn't even render.
+ * @param {Object} types - the types state, this types are usually the required data from this system to work. 
+ * Types defines all of the field types, form types, format of numbers and dates and many other stuff 
+ * @param {BigInteger} pageId - The id of the current page. A pageId only exists if this page was already saved, otherwise
+ * this will be null.
+ * @param {Function} addToolbar - Each block can define their own toolbar and customize the way they want. To keep this toolbar
+ * in the top of the page on web and in the bottom of the page on mobile we use this function to send all of the parameters needed
+ * to render the toolbar for this specific block. You can read more on `addToolbar` method in the RichText component.
+ * @param {Object} draftMapHeap - When we duplicate a file, like an image or a attachment, whatever. We actually create a new reference for the same object (not literally)
+ * So what this means is, when we upload a file we create a draft in our database, and when we duplicate this image or file we are creating
+ * a new reference for the same draft that was created before. What happens is, drafts are temporary, so we need to reupload them again
+ * if they still exist. So since the duplicated file is a reference to the original draft, when the draft is removed there is no way for the duplicated file or image
+ * to know that the draft was removed. Except we actually save a reference of those changes.
+ * @param {Function} onUploadFileToDraft - When the user is uploading a file we usually save a draft, a draft is a temporary file that will only be available
+ * for a short period of time. * We use drafts because with them we do not need to upload everything at once, instead we upload them when the user actually
+ * insert an image or a file. So when we save, everything will be already saved in the backend, we will not need to upload it
+ * @param {Boolean} isEditable - As the name suggests, defines if the rich text can be edited or if it's in read only mode.
+ * @param {String} activeBlock - The uuid of the block that is active at the current moment. Only one block can be active at a time.
+ * with this we can display the toolbar for the current block or just focus on an input if it's active. This was first created
+ * to be able to autofocus on an text input.
+ * @param {Function} updateBlocks - We update everything by reference, we do not send ANYTHING to this function only the block that
+ * you want to be active. More info can be found on `updateBlocks` function inside of the RichText block
+ * @param {Function} setArrowNavigation - Updates the `arrowNavigation` state in the RichText block. Used for transversing between the blocks
+ * using the arrow keys.
+ * @param {Object} arrowNavigation - The arrowNavigation state from RichText block, check it for further details on the structure.
+ * of the object.
+ * @param {Array<Object>} contextBlocks - An containing all of the blocks of a context. A context here means that: on a table for example
+ * we have a block inside of a block, so we will end up with 2 contexts: The context of the blocks of where the table is part of, and the 
+ * context of the blocks inside of the table. THis can be used for transversing the blocks with arrow keys, handling on enter, on delete and 
+ * so on. With this we do not mix with one another.
+ * @param {Function} getAligmentTypeIdByName - Function that gets the aligment_type_id by a specific aligment name
+ * @param {Function} getBlockTypeNameById - Function that returns a block_type name from a specific id
+ * @param {Function} getBlockTypeIdByName - Function that returns a block_type_id from a specific block name
+ * @param {Function} renderCustomContent - A function that recieves a content as parameter (see `rich_text_block_contents` in
+ * `createNewPage()` function to get the structure expected.) And returns a Object with a `component` and `text` keys.
+ * The `component` is the component that will be rendered in the middle of the text of a `text` block and `text` is
+ * the text that will be inside of this component.
+ * @param {Function} handleUnmanagedContent - This is an object where each key of the object is a character that should
+ * be typed in the rich text in order to do something. `@` in some contexts might be to show a list of users, in others
+ * it might be to show a list of fields. If `@` is being used, you can use `#`, '$', and other to open other options. 
+ * The combinations are infinite. The value of each key is a callback function which recieves the X and Y position of the caret
+ * in the window, on the browser. So we can display the options next to it.
+ * @param {Function} onOpenUnmanagedContentSelector - This is a function to close the UnmanagedContent option when a text block
+ * loses focus and such. This way we do not need to handle on the parent when a text loses focus.
+ * @param {Boolean} isUnmanagedContentSelectorOpen - Checks if a selector of a custom content is open, so we prevent a text block
+ * from being inactive, we can keep it activated inside of the rich text.
+ * @param {Function} onChangeUnmanagedContentValue - We use this to change the unmanagedValue recieved by `unmanagedContentValue` props
+ * back to null, after it had been used.
+ * @param {String} unmanagedContentValue - We use this props to get the selected value all the way to the rich text. So we add this
+ * value not to the actual text itself but to the `custom_value` property of the content.
  */
 const Block = (props) => {
     const [isBlockSelectionOpen, setIsBlockSelectionOpen] = useState(false)
     const [imageFile, setImageFile] = useState(null)
     const [customBlockOptions, __] = useState(['image_option', 'list_option', 'table_option', 'text_option'])
-    const blockSelectorRef = React.useRef(null)
     
     /**
      * Important: This has the same name as the addToolbar from the page component, so when a block is calling addToolbar
@@ -140,7 +204,7 @@ const Block = (props) => {
      */
     const createNewBlock = (options = {}) => {
         const { order, richTextBlockContents, blockTypeId} = options
-        return {
+        const block = {
             id: null,
             uuid: generateUUID(),
             image_option: ![null, undefined].includes(options.imageOptions) ? options.imageOptions : null,
@@ -152,6 +216,13 @@ const Block = (props) => {
             rich_text_block_contents: richTextBlockContents ? richTextBlockContents.map(content => ({...content, id: null, uuid: generateUUID()})) : [createNewContent({order: 0, text: ''})],
             rich_text_depends_on_blocks: []
         }
+        // fixes most issues in the browser by adding a line break on the block.rich_text_block_contents if it's a new block.
+        // We need to do this ONLY when creating a new block instead of using this when create a new content, because if so
+        // it would cause bugs when we use the `createNewContent` function on contexts where we are not creating a new block.
+        if (process.env['APP'] === 'web' && block.rich_text_block_contents.length === 1 && block.rich_text_block_contents[0].text === '') {
+            block.rich_text_block_contents[0].text = '\n'
+        }
+        return block
     }
 
     /** 
@@ -228,28 +299,6 @@ const Block = (props) => {
         props.updateBlocks(props.block.uuid)
     }
 
-    /**
-     * This is for closing the block selector container when the user clicks outside of the block selector.
-     * 
-     * @param {Object} e - The event object.
-     */
-    const onMouseDownWeb = (e) => {
-        if (blockSelectorRef.current && !blockSelectorRef.current.contains(e.target)) {
-            setIsBlockSelectionOpen(false)
-        }
-    }
-
-    useEffect(() => {
-        if (process.env['APP'] === 'web') {
-            document.addEventListener("mousedown", onMouseDownWeb)
-        } 
-        return () => {
-            if (process.env['APP'] === 'web') {
-                document.removeEventListener("mousedown", onMouseDownWeb)
-            } 
-        }
-    }, [])
-
     const blocks = {
         image: require('./Image'),
         text: require('./Text'),
@@ -262,9 +311,9 @@ const Block = (props) => {
         <Container key={props.block.uuid}>
             {isBlockSelectionOpen ? (
                 <BlockSelector
-                ref={blockSelectorRef}
                 changeBlockType={changeBlockType}
                 blockOptions={props.blockTypes}
+                setIsBlockSelectionOpen={setIsBlockSelectionOpen}
                 />
             ): null}
             {Component ? (

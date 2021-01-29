@@ -111,7 +111,6 @@ const PDFGeneratorReaderDownloader = (props) => {
         setIsDownloadingFile(true)
         let styles = ''
         Object.values(document.styleSheets).forEach(cssstylesheet => {
-            console.log(cssstylesheet)
             if (cssstylesheet.href) {
                 let style = ` <link href="${cssstylesheet.href}" rel="stylesheet"> `
                 styles = styles + style
@@ -328,6 +327,7 @@ const PDFGeneratorReaderDownloader = (props) => {
                             isEditable={true}
                             initialData={props.templateData?.rich_text_page}
                             renderCustomContent={renderCustomContent} 
+                            allowedBlockTypeIds={props.allowedRichTextBlockIds}
                             />
                         ) : (
                             <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>

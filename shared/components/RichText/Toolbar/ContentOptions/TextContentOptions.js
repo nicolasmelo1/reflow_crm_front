@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native'
-import dynamicImport from '../../../../utils/dynamicImport'
-import sleep from '../../../../utils/sleep'
 import {
     TextContentOptionBoldButton,
     TextContentOptionItalicButton,
@@ -19,25 +17,40 @@ import {
     TextContentOptionFontSizeButton
 } from '../../../../styles/RichText'
 
-const OverlayTrigger = dynamicImport('react-bootstrap', 'OverlayTrigger')
 
 /**
- * This block is the Toolbar options of the content for the Text block.
+ * This block is the Toolbar options for the contents for the Text block.
  * 
- * @param {Type} props - {go in detail about every prop it recieves}
+ * In simple words: this holds everything you can change in the contents in the text block.
+ * 
+ * @param {Function} onOpenModal - On mobile we open a modal to show the color options we need to notify
+ * the text block that this has happened.
+ * @param {Function} onChangeSelectionState - Function that recieves 3 parameters: 
+ * - A string saying what parameter you are changing from the content 
+ * - True or false wheather this parameter recieves a boolean
+ * - A color string if you are changing a color
+ * - And a text size integer if you are changing the textSize
+ * You usually change one parameter only, the others must be set to null. For exammple Bold is always true or false
+ * because of that we send the first parameter will be 'bold', the second will be true, the third will be null and the last
+ * will be null. This way i can change the contents as bold, underlined and so on.
+ * @param {Object} stateOfSelection - Follows this structure:
+ * {
+ *      isBold: false,
+ *      isItalic: false,
+ *      isUnderline: false,
+ *      isCode: false,
+ *      isCustom: false,
+ *      customValue: null,
+ *      markerColor: '',
+ *      textColor: '',
+ *      textSize: 12
+ * }
  */
 const TextContentOptions = (props) => {
     const isMounted = React.useRef(false)
-    const isFontSizePlusIconPressedRef = React.useRef(false)
-    const isFontSizeMinusIconPressedRef = React.useRef(false)
-    const textSizeRef = React.useRef(0)
-    const [textSize, _setTextSize] = useState(0)
     const [isMarkerColorOptionOpen, setIsMarkerColorOptionOpen] = useState(false)
     const [isTextColorOptionOpen, setIsTextColorOptionOpen] = useState(false)
-    const setTextSize = (data) => {
-        _setTextSize(data)
-        textSizeRef.current = data
-    }
+
     const textColors = [
         '', 
         '#0dbf7e', 
@@ -94,6 +107,12 @@ const TextContentOptions = (props) => {
         }
     }
 
+    /**
+     * This sets if the marker color options container is open or closed. If it's closed the user is not able to 
+     * select colors on the rich text.
+     * 
+     * @param {Boolean} isOpen - sets the state of the MarkerColor selection box.
+     */
     const onChangeMarkerColorIsOpen = (isOpen) => {
         if (isOpen && isTextColorOptionOpen) {
             setIsTextColorOptionOpen(false)
@@ -103,52 +122,24 @@ const TextContentOptions = (props) => {
         }
     }
 
+    /**
+     * The maximum text size of the text is 400 pt. This function is fired when the user clicks the plus(+) icon
+     * in to set the size of the text.
+     */
     const onClickPlusFontSize = () => {
         if (props.stateOfSelection.textSize + 1 < 400) {
             props.onChangeSelectionState('textSize', null, '', parseInt(props.stateOfSelection.textSize) + 1)
         }
     }
 
+    /**
+     * The maximum text size of the text is 1 pt. This function is fired when the user clicks the minus(-) icon
+     * in to set the size of the text.
+     */
     const onClickMinusFontSize = () => {
         if (props.stateOfSelection.textSize - 1 > 1) {
             props.onChangeSelectionState('textSize', null, '', parseInt(props.stateOfSelection.textSize) - 1)
         }
-    }
-
-    const onMouseDownPlusFontSize = () => {
-        isFontSizePlusIconPressedRef.current = true
-        setTextSize(parseInt(textSizeRef.current) + 1)
-        setTimeout(async () => {
-            while (isMounted.current && isFontSizePlusIconPressedRef.current) {
-                await sleep(200)
-                setTextSize(parseInt(textSizeRef.current) + 1)
-            }
-        }, 1500)
-    }
-
-    const onMouseUpPlusFontSize = () => {
-        isFontSizePlusIconPressedRef.current = false
-    }
-
-    const onClickButtonsOnFontSize = () => {
-        props.onChangeSelectionState('textSize', null, '', parseInt(textSizeRef.current))
-    }
-
-    const onMouseDownMinusFontSize = () => {
-        isFontSizeMinusIconPressedRef.current = true
-        setTextSize(textSizeRef.current - 1)
-        setTimeout(async () => {
-            let safeCounter = parseInt(textSizeRef.current) - 1
-            while (isMounted.current && isFontSizeMinusIconPressedRef.current && safeCounter> 0) {
-                await sleep(200)
-                setTextSize(parseInt(textSizeRef.current) - 1)
-                safeCounter--
-            }
-        }, 1500)
-    }
-
-    const onMouseUpMinusFontSize = () => {
-        isFontSizeMinusIconPressedRef.current = false
     }
 
     useEffect(() => {
@@ -157,11 +148,6 @@ const TextContentOptions = (props) => {
             isMounted.current = false
         }
     }, [])
-
-    useEffect(() => {
-        setTextSize(props.stateOfSelection.textSize)
-    }, [props.stateOfSelection.textSize])
-
 
     const renderMobile = () => {
         return (
@@ -196,7 +182,7 @@ const TextContentOptions = (props) => {
                     >
                         <Text>{'-'}</Text>
                     </TextContentOptionFontSizeButton>
-                        <Text>{textSize ? `${textSize}pt` : '12pt'}</Text>
+                        <Text>{props.stateOfSelection?.textSize ? `${props.stateOfSelection.textSize}pt` : '12pt'}</Text>
                     <TextContentOptionFontSizeButton
                     onPress={(e) => onClickPlusFontSize()}
                     >
@@ -316,17 +302,13 @@ const TextContentOptions = (props) => {
                 </TextContentOptionCodeButton>
                 <TextContentOptionFontSizeContainer>
                     <TextContentOptionFontSizeButton
-                    onMouseDown={(e) => onMouseDownMinusFontSize()}
-                    onClick={(e) => onClickButtonsOnFontSize()}
-                    onMouseUp={(e) => onMouseUpMinusFontSize()}
+                    onClick={(e) => onClickMinusFontSize()}
                     >
                         {'-'}
                     </TextContentOptionFontSizeButton>
-                        {textSize ? `${textSize}pt` : ''}
+                        {props.stateOfSelection?.textSize ? `${props.stateOfSelection.textSize}pt` : ''}
                     <TextContentOptionFontSizeButton
-                    onMouseDown={(e) => onMouseDownPlusFontSize()}
-                    onClick={(e) => onClickButtonsOnFontSize()}
-                    onMouseUp={(e) => onMouseUpPlusFontSize()}
+                    onClick={(e) => onClickPlusFontSize()}
                     >
                         {'+'}
                     </TextContentOptionFontSizeButton>

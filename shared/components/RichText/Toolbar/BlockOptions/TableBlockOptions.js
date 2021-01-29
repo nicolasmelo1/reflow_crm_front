@@ -11,8 +11,26 @@ import {
 } from '../../../../styles/RichText'
 
 /**
- * {Description of your component, what does it do}
- * @param {Type} props - {go in detail about every prop it recieves}
+ * The toolbar options for the table block. This handles the table border color, to add a new column or row
+ * and to remove a new column or row.
+ * 
+ * @param {Object} selectedEdge - {
+ *     row: {
+ *         isSelected {Boolean}: if the row edge is selected it will be true, defaults to false
+ *         index {BigInteger}: The index of the selected row edge
+ *     },
+ *     column: {
+ *         isSelected {Boolean}: if the column edge is selected it will be true, defaults to false
+ *         index {BigInteger}: The index of the selected column edge
+ *     }
+ * }
+ * @param {Function} onChangeTableBorderColor - Function that recieves only a single string parameter which is
+ * the border color of the table.
+ * @param {String} tableBorderColor - The hex string of the border color of the table.
+ * @param {Function} onAddNewRowOrColumn - Function used for adding a new row or column, we check if it is
+ * to add a new row or to add a new column inside of the function.
+ * @param {Function} onRemoveRowOrColumn - Function used for removing a row or column, we check if it is
+ * to remove a row or to remove a column inside of the function.
  */
 const TableBlockOptions = (props) => {
     const [isBorderColorOptionsOpen, setIsBorderColorOptionsOpen] = useState(false)

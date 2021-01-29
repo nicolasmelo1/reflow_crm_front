@@ -12,9 +12,25 @@ import {
     BlockTableTable
 } from '../../../styles/RichText'
 
+
 /**
- * {Description of your component, what does it do}
- * @param {Type} props - {go in detail about every prop it recieves}
+ * The component of the table block.
+ * 
+ * The table block actually does nothing much by itself, it just effectively renders the table on the richText
+ * and is a specific way of organizing other blocks. This means that to use this block we actually need other 
+ * children blocks. In the specific case of the table every cell of the table is obligatory an empty text block.
+ * 
+ * This means that on every cell of the table we have just a normal text block and all of his power. If you see slate
+ * or even Quill in Clickup, none of them offers this much flexibility to their tables.
+ * 
+ * The number of rows and the number of columns are calculated by counting the number of elements of 
+ * `props.block.table_option.text_table_option_row_dimensions` and `props.block.table_option.text_table_option_column_dimensions`
+ * respectively. Each of those parameters holds the height in px for each row and the width in % for each column.
+ * 
+ * IMPORTANT: We filter the blocks that can be created inside of the table because we want to prevent tables inside tables
+ * to optimize performance.
+ * 
+ * @param {Object} props {... all of the props defined in the Block and Text components}
  */
 const Table = (props) => {
     const [selectedEdge, _setSelectedEdge] = useState({
@@ -27,8 +43,16 @@ const Table = (props) => {
             index: null
         },
     })
-    const [rowDimensions, _setRowDimensions] = useState(props.block.table_option?.text_table_option_row_dimensions ? props.block.table_option.text_table_option_row_dimensions : Array.from(Array(2).keys()).map(_ => ({ height: null })))
-    const [columnDimensions, _setColumnDimensions] = useState(props.block.table_option?.text_table_option_column_dimensions ? props.block.table_option.text_table_option_column_dimensions : Array.from(Array(2).keys()).map(_ => ({ width: 100/2 })))
+    const [rowDimensions, _setRowDimensions] = useState(
+        props.block.table_option?.text_table_option_row_dimensions ? 
+        props.block.table_option.text_table_option_row_dimensions : 
+        Array.from(Array(2).keys()).map(_ => ({ height: null }))
+    )
+    const [columnDimensions, _setColumnDimensions] = useState(
+        props.block.table_option?.text_table_option_column_dimensions ? 
+        props.block.table_option.text_table_option_column_dimensions : 
+        Array.from(Array(2).keys()).map(_ => ({ width: 100/2 }))
+    )
     const rowDimensionsRef = React.useRef(rowDimensions)
     const columnDimensionsRef = React.useRef(columnDimensions)
     const isResizing = React.useRef(false)
