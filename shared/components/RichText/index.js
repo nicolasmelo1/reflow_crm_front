@@ -290,7 +290,10 @@ class RichText extends React.Component {
                     uuid: generateUUID(),
                     image_option: null,
                     list_option: null,
-                    text_option: null,
+                    text_option: {
+                        id: null,
+                        alignment_type: alignmentType
+                    },
                     table_option: null,
                     block_type: blockType,
                     order: 0,
