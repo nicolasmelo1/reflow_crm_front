@@ -338,6 +338,7 @@ const strings = {
         pdfGeneratorOnRemoveTemplateAlertTitle: 'Atenção!',
         pdfGeneratorOnRemoveTemplateAlertMessage: 'Ao continuar a ação não poderá ser desfeita. Tem certeza que deseja continuar?',
         pdfGeneratorOnRemoveTemplateAlertAcceptButtonLabel: 'Continuar',
+        pdfGeneratorOnSubmitErrorMessage: 'Aconteceu um problema inesperado, entre em contato com nosso suporte', 
         pdfGeneratorCreatorGoBackButtonLabel: 'Voltar para gestão',
         pdfGeneratorCreatorCreateNewButtonLabel: 'Criar Novo',
         pdfGeneratorEditorSaveButtonLabel: 'Salvar',

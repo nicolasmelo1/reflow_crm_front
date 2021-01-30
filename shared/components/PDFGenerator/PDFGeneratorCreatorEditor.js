@@ -48,6 +48,8 @@ const Custom = (props) => {
  * we only use this function to close this component.
  * @param {Function} onUpdateOrCreatePDFTemplateConfiguration - Function defined in `PDFGeneratorCreator` component to save the data on the backend. It recieves
  * an object. If this object has the id key as null then it will create a new PDFTemplate ohterwise it will update an existing template Configuration.
+ * @param {Function} onAddNotification - When the user is trying to create a pdf template but face an error. We need to add a notification
+ * for the user
  */
 const PDFGeneratorCreatorEditor = (props) => {
     const isMountedRef = React.useRef(true)
@@ -148,7 +150,7 @@ const PDFGeneratorCreatorEditor = (props) => {
         props.onUpdateOrCreatePDFTemplateConfiguration({...templateData}).then(response => {
             if (([undefined, null].includes(response) || response.status !== 200) && isMountedRef.current) {
                 if (response.data?.error?.reason && response.data.error.reason.includes('invalid_rich_text')) {
-                    console.log('teste')
+                    props.onAddNotification(strings['pt-br']['pdfGeneratorOnSubmitErrorMessage'], 'error')
                 }
                 setIsLoading(false)
             }

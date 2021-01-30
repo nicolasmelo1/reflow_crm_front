@@ -70,6 +70,7 @@ class PDFGenerator extends React.Component {
                     onUpdatePDFGeneratorTemplateConfiguration={this.props.onUpdatePDFGeneratorTemplateConfiguration}
                     onRemovePDFGeneratorTemplateConfiguration={this.props.onRemovePDFGeneratorTemplateConfiguration}
                     onGetPDFGeneratorTempalatesConfigurationFieldOptions={this.props.onGetPDFGeneratorTempalatesConfigurationFieldOptions}
+                    onAddNotification={this.props.onAddNotification}
                     allowedRichTextBlockIds={this.getPermittedRichTextBlockIds()}
                     />
                 )}
@@ -96,6 +97,7 @@ class PDFGenerator extends React.Component {
                     <PDFGeneratorCreator
                     formName={this.props.login.primaryForm}
                     cancelToken={this.cancelToken}
+                    onAddNotification={this.props.onAddNotification}
                     templates={this.props.pdf_generator.creator.templates}
                     onGetPDFGeneratorTemplatesConfiguration={this.props.onGetPDFGeneratorTemplatesConfiguration}
                     onCreatePDFGeneratorTemplateConfiguration={this.props.onCreatePDFGeneratorTemplateConfiguration}

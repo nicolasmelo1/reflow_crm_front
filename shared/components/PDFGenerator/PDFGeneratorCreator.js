@@ -37,6 +37,8 @@ const Swipeable = dynamicImport('react-native-gesture-handler', 'Swipeable')
  * @param {Function} onGetPDFGeneratorTempalatesConfigurationFieldOptions - A redux action function used for retrieving all of options the user
  * can select inside of the rich text
  * @param {Array<BigInteger} allowedRichTextBlockIds - All of the blockTypeIds that are allowed to exist in the pdf template.
+ * @param {Function} onAddNotification - When the user is trying to create a pdf template but face an error. We need to add a notification
+ * for the user
  */
 const PDFGeneratorCreator = (props) => {
     const sourceRef = React.useRef()
@@ -224,6 +226,7 @@ const PDFGeneratorCreator = (props) => {
                 ) : ''}
                 {selectedTemplateIndex !== null ? (
                     <PDFGeneratorCreatorEditor
+                    onAddNotification={props.onAddNotification}
                     allowedRichTextBlockIds={props.allowedRichTextBlockIds}
                     formAndFieldOptions={formAndFieldOptions}
                     templateData={getTemplateData()}
