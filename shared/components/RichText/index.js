@@ -572,7 +572,6 @@ class RichText extends React.Component {
         // When we create a new data rich text we automatically set the initial. 
         // because of this we need to propagate this new data to the parent.
         if (this.props.onStateChange) {
-            console.log(this.state.data)
             this.props.onStateChange({...this.state.data})
         }
         this.props.onGetBlockCanContainBlock(this.source)

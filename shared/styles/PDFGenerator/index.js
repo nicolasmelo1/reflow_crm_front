@@ -29,3 +29,5 @@ export { default as PDFGeneratorReaderDownloaderPage } from './PDFGeneratorReade
 export { default as PDFGeneratorReaderDownloaderMultipleFieldsSeparatorLabel } from './PDFGeneratorReaderDownloaderMultipleFieldsSeparatorLabel'
 export { default as PDFGeneratorReaderDownloaderMultipleFieldsSeparatorInput } from './PDFGeneratorReaderDownloaderMultipleFieldsSeparatorInput'
 export { default as PDFGeneratorReaderDownloaderMultipleFieldsSeparatorOkButton } from './PDFGeneratorReaderDownloaderMultipleFieldsSeparatorOkButton'
+export { default as PDFGeneratorGetMoreTemplatesButton } from './PDFGeneratorGetMoreTemplatesButton'
+export { default as PDFGeneratorGetMoreTemplatesButtonContainer } from './PDFGeneratorGetMoreTemplatesButtonContainer'

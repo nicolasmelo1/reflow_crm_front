@@ -15,7 +15,9 @@ import {
     PDFGeneratorCreatorEditTemplateButton,
     PDFGeneratorCreatorRemoveTemplateButton,
     PDFGeneratorCreatorTemplateCardContainer,
-    PDFGeneratorCreatorTemplatesContainer
+    PDFGeneratorCreatorTemplatesContainer,
+    PDFGeneratorGetMoreTemplatesButton,
+    PDFGeneratorGetMoreTemplatesButtonContainer
 } from '../../styles/PDFGenerator'
 
 const Swipeable = dynamicImport('react-native-gesture-handler', 'Swipeable')
@@ -42,6 +44,10 @@ const Swipeable = dynamicImport('react-native-gesture-handler', 'Swipeable')
  */
 const PDFGeneratorCreator = (props) => {
     const sourceRef = React.useRef()
+    const [page, setPage] = useState({
+        current: 1,
+        total: 1
+    })
     const [templateIndexToRemove, setTemplateIndexToRemove] = useState(null)
     const [formAndFieldOptions, setFormAndFieldOptions] = useState([])
     const [selectedTemplateIndex, setSelectedTemplateIndex] = useState(null)
@@ -99,11 +105,25 @@ const PDFGeneratorCreator = (props) => {
         }
         if (response && response.status === 200) {
             setSelectedTemplateIndex(null)
-            props.onGetPDFGeneratorTemplatesConfiguration(sourceRef.current, props.formName)
+            props.onGetPDFGeneratorTemplatesConfiguration(sourceRef.current, props.formName, 1).then(response => {
+                if (response && response.status === 200) {
+                    setPage(response.data.pagination)
+                }
+            })
         }
         return response
     }
 
+    const onClickLoadMoreButton = () => {
+        const newPage = page.current + 1
+        if (newPage <= page.total) {
+            props.onGetPDFGeneratorTemplatesConfiguration(sourceRef.current, props.formName, newPage).then(response => {
+                if (response && response.status === 200) {
+                    setPage(response.data.pagination)
+                }
+            })
+        }
+    }
     /**
      * Removes a PDF Template from the backend by its id, after the PDFTemplate was removed we load the list of templates again.
      * 
@@ -113,7 +133,11 @@ const PDFGeneratorCreator = (props) => {
         const pdfTemplateConfigurationId = props.templates[templateIndexToRemove].id
         props.onRemovePDFGeneratorTemplateConfiguration(props.formName, pdfTemplateConfigurationId).then(response => {
             if (response && response.status === 200) {
-                props.onGetPDFGeneratorTemplatesConfiguration(sourceRef.current, props.formName)
+                props.onGetPDFGeneratorTemplatesConfiguration(sourceRef.current, props.formName, 1).then(response => {
+                    if (response && response.status === 200) {
+                        setPage(response.data.pagination)
+                    }
+                })
             }
         })
     }
@@ -123,7 +147,11 @@ const PDFGeneratorCreator = (props) => {
         // When the user opens this component we get all of the template configuration for the current formName
         // Not only this, we also get all of the field options the user can select as variables.
         sourceRef.current = props.cancelToken.source()
-        props.onGetPDFGeneratorTemplatesConfiguration(sourceRef.current, props.formName)
+        props.onGetPDFGeneratorTemplatesConfiguration(sourceRef.current, props.formName, 1).then(response => {
+            if (response && response.status === 200) {
+                setPage(response.data.pagination)
+            }
+        })
         props.onGetPDFGeneratorTempalatesConfigurationFieldOptions(sourceRef.current, props.formName).then(response => {
             if (response && response.status === 200) {
                 setFormAndFieldOptions(response.data.data)
@@ -266,6 +294,15 @@ const PDFGeneratorCreator = (props) => {
                                     </div>
                                 </PDFGeneratorCreatorTemplateCardContainer>
                             ))}
+                            {page.current < page.total ? (
+                                <PDFGeneratorGetMoreTemplatesButtonContainer>
+                                    <PDFGeneratorGetMoreTemplatesButtonContainer
+                                    onClick={(e) => onClickLoadMoreButton()} 
+                                    >
+                                        {strings['pt-br']['pdfGeneratorLoadMoreButtonLabel']}
+                                    </PDFGeneratorGetMoreTemplatesButtonContainer>
+                                </PDFGeneratorGetMoreTemplatesButtonContainer>
+                            ) : ''}
                         </div>
                     </PDFGeneratorCreatorTemplatesContainer>
                 )}

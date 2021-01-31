@@ -14,12 +14,15 @@ const onGetAllowedBlocks = (source) => {
     }
 }
 
-const onGetPDFGeneratorTemplatesConfiguration = (source, formName) => {
-    return async (dispatch) => {
-        const response = await agent.http.PDF_GENERATOR.getTemplatesSettings(source, formName)
+const onGetPDFGeneratorTemplatesConfiguration = (source, formName, page) => {
+    return async (dispatch, getState) => {
+        let templates = getState().pdf_generator.creator.templates
+        const response = await agent.http.PDF_GENERATOR.getTemplatesSettings(source, formName, page)
         if (response && response.status === 200) {
-            dispatch({ type: SET_PDF_GENERATOR_CREATOR_TEMPLATES, payload: response.data.data })
+            const payload = page === 1 ? response.data.data : templates.concat(response.data.data)
+            dispatch({ type: SET_PDF_GENERATOR_CREATOR_TEMPLATES, payload: payload })
         }
+        return response
     }
 }
 

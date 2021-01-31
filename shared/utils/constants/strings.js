@@ -340,6 +340,7 @@ const strings = {
         pdfGeneratorOnRemoveTemplateAlertAcceptButtonLabel: 'Continuar',
         pdfGeneratorOnSubmitErrorMessage: 'Aconteceu um problema inesperado, entre em contato com nosso suporte', 
         pdfGeneratorCreatorGoBackButtonLabel: 'Voltar para gestão',
+        pdfGeneratorLoadMoreButtonLabel: 'Carregar mais',
         pdfGeneratorCreatorCreateNewButtonLabel: 'Criar Novo',
         pdfGeneratorEditorSaveButtonLabel: 'Salvar',
         pdfGeneratorEditorRichTextInitialText: 'Escreva aqui',

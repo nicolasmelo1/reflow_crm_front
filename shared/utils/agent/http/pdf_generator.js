@@ -5,8 +5,8 @@ const PDF_GENERATOR = {
     getAllowedBlocks: async (source) => {
         return await requests.get(`pdf_generator/allowed_blocks/`, {}, {}, source)
     },
-    getTemplatesSettings: async (source, formName) => {
-        return await requests.get(`pdf_generator/${companyId}/${formName}/settings/`, {}, {}, source)
+    getTemplatesSettings: async (source, formName, page) => {
+        return await requests.get(`pdf_generator/${companyId}/${formName}/settings/?page=${page}`, {}, {}, source)
     },
     createTemplate: async (body, formName) => {
         return await requests.post(`pdf_generator/${companyId}/${formName}/settings/`, body)
