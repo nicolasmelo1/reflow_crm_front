@@ -264,7 +264,7 @@ const PDFGeneratorReaderDownloader = (props) => {
         // changing the state. Since the Elements will be rendered after that
         // we can easily add the 'click' eventListener to the '.custom_content' elements
         // because they will be already rendered in the page.
-        if (valueOptions !== null && valueOptions.length > 0) {
+        if (valueOptions !== null) {
             setHasRenderedValueOptions(true)
         }
     }, [valueOptions])

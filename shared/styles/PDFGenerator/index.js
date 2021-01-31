@@ -31,3 +31,4 @@ export { default as PDFGeneratorReaderDownloaderMultipleFieldsSeparatorInput } f
 export { default as PDFGeneratorReaderDownloaderMultipleFieldsSeparatorOkButton } from './PDFGeneratorReaderDownloaderMultipleFieldsSeparatorOkButton'
 export { default as PDFGeneratorGetMoreTemplatesButton } from './PDFGeneratorGetMoreTemplatesButton'
 export { default as PDFGeneratorGetMoreTemplatesButtonContainer } from './PDFGeneratorGetMoreTemplatesButtonContainer'
+export { default as PDFGeneratorReaderTemplatesContainer } from './PDFGeneratorReaderTemplatesContainer'

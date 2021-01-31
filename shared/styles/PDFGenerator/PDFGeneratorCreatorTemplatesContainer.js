@@ -4,9 +4,9 @@ import { ScrollView } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
-    height: calc(var(--app-height) - 15px);
+    width: 100%;
+    height: calc(var(--app-height) - 50px);
     overflow: auto;
-    width: 100%
 `
 :
 styled(ScrollView)`

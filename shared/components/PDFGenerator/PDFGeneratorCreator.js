@@ -114,6 +114,10 @@ const PDFGeneratorCreator = (props) => {
         return response
     }
 
+    /**
+     * We only load 5 templates, so we display a button to load more templates in the bottom of the list.
+     * This handles when the user clicks to load more template.
+     */
     const onClickLoadMoreButton = () => {
         const newPage = page.current + 1
         if (newPage <= page.total) {
@@ -124,6 +128,7 @@ const PDFGeneratorCreator = (props) => {
             })
         }
     }
+
     /**
      * Removes a PDF Template from the backend by its id, after the PDFTemplate was removed we load the list of templates again.
      * 
@@ -262,7 +267,7 @@ const PDFGeneratorCreator = (props) => {
                     onUpdateOrCreatePDFTemplateConfiguration={onUpdateOrCreatePDFTemplateConfiguration}
                     />
                 ) : (
-                    <PDFGeneratorCreatorTemplatesContainer>
+                    <div>
                         <PDFGeneratorCreatorButtonsContainer>
                             <PDFGeneratorCreatorGoBackButton onClick={(e) => onClickCancel()}>
                                 {strings['pt-br']['pdfGeneratorCreatorGoBackButtonLabel']}
@@ -273,7 +278,7 @@ const PDFGeneratorCreator = (props) => {
                                 {strings['pt-br']['pdfGeneratorCreatorCreateNewButtonLabel']}
                             </PDFGeneratorCreatorCreateNewButton>
                         </PDFGeneratorCreatorButtonsContainer>
-                        <div>
+                        <PDFGeneratorCreatorTemplatesContainer>
                             {props.templates.map((pdfTemplate, index) => (
                                 <PDFGeneratorCreatorTemplateCardContainer key={pdfTemplate.id}>
                                     <PDFGeneratorCreatorTemplateTitle>
@@ -296,15 +301,15 @@ const PDFGeneratorCreator = (props) => {
                             ))}
                             {page.current < page.total ? (
                                 <PDFGeneratorGetMoreTemplatesButtonContainer>
-                                    <PDFGeneratorGetMoreTemplatesButtonContainer
+                                    <PDFGeneratorGetMoreTemplatesButton
                                     onClick={(e) => onClickLoadMoreButton()} 
                                     >
                                         {strings['pt-br']['pdfGeneratorLoadMoreButtonLabel']}
-                                    </PDFGeneratorGetMoreTemplatesButtonContainer>
+                                    </PDFGeneratorGetMoreTemplatesButton>
                                 </PDFGeneratorGetMoreTemplatesButtonContainer>
                             ) : ''}
-                        </div>
-                    </PDFGeneratorCreatorTemplatesContainer>
+                        </PDFGeneratorCreatorTemplatesContainer>
+                    </div>
                 )}
             </div>
         )

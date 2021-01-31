@@ -20,8 +20,8 @@ const PDF_GENERATOR = {
     getFieldOptions: async (source, formName) => {
         return await requests.get(`pdf_generator/${companyId}/${formName}/settings/field_options/`, {}, {}, source)
     },
-    getTemplates: async (source, formName) => {
-        return await requests.get(`pdf_generator/${companyId}/${formName}/`, {}, {}, source)
+    getTemplates: async (source, formName, page) => {
+        return await requests.get(`pdf_generator/${companyId}/${formName}/?page=${page}`, {}, {}, source)
     },
     getValueOptions: async (source, formName, pdfTemplateConfigurationId, formDataId) => {
         return await requests.get(`pdf_generator/${companyId}/${formName}/${pdfTemplateConfigurationId}/value_options/${formDataId}/`, {}, {}, source)

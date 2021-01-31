@@ -56,12 +56,15 @@ const onGetPDFGeneratorTempalatesConfigurationFieldOptions = (source, formName) 
     }
 }
 
-const onGetPDFGeneratorTempalatesReader = (source, formName) => {
-    return async (dispatch) => {
-        const response = await agent.http.PDF_GENERATOR.getTemplates(source, formName)
+const onGetPDFGeneratorTempalatesReader = (source, formName, page) => {
+    return async (dispatch, getState) => {
+        let templates = getState().pdf_generator.reader.templates
+        const response = await agent.http.PDF_GENERATOR.getTemplates(source, formName, page)
         if (response && response.status === 200) {
-            dispatch({ type: SET_PDF_GENERATOR_READER_TEMPLATES, payload: response.data.data })
+            const payload = page === 1 ? response.data.data : templates.concat(response.data.data)
+            dispatch({ type: SET_PDF_GENERATOR_READER_TEMPLATES, payload: payload })
         }
+        return response
     }
 }
 

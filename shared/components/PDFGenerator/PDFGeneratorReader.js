@@ -6,7 +6,10 @@ import PDFGeneratorReaderDownloader from './PDFGeneratorReaderDownloader'
 import { 
     PDFGeneratorReaderTopButtonsContainer,
     PDFGeneratorReaderGoBackButton,
-    PDFGeneratorReaderTemplateButton
+    PDFGeneratorReaderTemplateButton,
+    PDFGeneratorGetMoreTemplatesButtonContainer,
+    PDFGeneratorGetMoreTemplatesButton,
+    PDFGeneratorReaderTemplatesContainer
 } from '../../styles/PDFGenerator'
 
 
@@ -31,6 +34,10 @@ import {
  */
 const PDFGeneratorReader = (props) => {
     const sourceRef = React.useRef(null)
+    const [page, setPage] = useState({
+        current: 1,
+        total: 1
+    })
     const [selectedTemplateIndex, setSelectedTemplateIndex] = useState(null)
 
     /**
@@ -43,11 +50,31 @@ const PDFGeneratorReader = (props) => {
         }
     }
 
+    /**
+     * We only load 5 templates, so we display a button to load more templates in the bottom of the list.
+     * This handles when the user clicks to load more template.
+     */
+    const onClickLoadMoreButton = () => {
+        const newPage = page.current + 1
+        if (newPage <= page.total) {
+            props.onGetPDFGeneratorTempalatesReader(sourceRef.current, props.formName, newPage).then(response => {
+                if (response && response.status === 200) {
+                    setPage(response.data.pagination)
+                }
+            })
+        }
+    }
+
     useEffect(() => {
         // When the component is loaded we just fetch for the templates. 
         // Nothing really fancy about it.
         sourceRef.current = props.cancelToken.source()
-        props.onGetPDFGeneratorTempalatesReader(sourceRef.current, props.formName)
+        props.onGetPDFGeneratorTempalatesReader(sourceRef.current, props.formName, 1).then(response => {
+            if (response && response.status === 200) {
+                console.log(response.data.pagination)
+                setPage(response.data.pagination)
+            }
+        })       
         return () => {
             if (sourceRef.current) {
                 sourceRef.current.cancel()
@@ -93,6 +120,7 @@ const PDFGeneratorReader = (props) => {
     }
 
     const renderWeb = () => {
+        console.log(page.total)
         return (
             <div>
                 {selectedTemplateIndex !== null ? (
@@ -114,7 +142,7 @@ const PDFGeneratorReader = (props) => {
                                 {strings['pt-br']['pdfGeneratorReaderGoBackButtonLabel']}
                             </PDFGeneratorReaderGoBackButton>
                         </PDFGeneratorReaderTopButtonsContainer>
-                        <div>
+                        <PDFGeneratorReaderTemplatesContainer>
                             {props.templates.map((pdfTemplate, index) => (
                                 <PDFGeneratorReaderTemplateButton 
                                 key={pdfTemplate.id} 
@@ -125,7 +153,16 @@ const PDFGeneratorReader = (props) => {
                                     </h2>
                                 </PDFGeneratorReaderTemplateButton>
                             ))}
-                        </div>
+                            {page.current < page.total ? (
+                                <PDFGeneratorGetMoreTemplatesButtonContainer>
+                                    <PDFGeneratorGetMoreTemplatesButton
+                                    onClick={(e) => onClickLoadMoreButton()} 
+                                    >
+                                        {strings['pt-br']['pdfGeneratorLoadMoreButtonLabel']}
+                                    </PDFGeneratorGetMoreTemplatesButton>
+                                </PDFGeneratorGetMoreTemplatesButtonContainer>
+                            ) : ''}
+                        </PDFGeneratorReaderTemplatesContainer>
                     </div>
                 )}
             </div>
