@@ -18,6 +18,10 @@ styled.button`
 styled(TouchableOpacity)`
     align-items: center;
     justify-content: center;
-    width: 40px;
+    border-radius: 5px;
     height: 40px;
+    border-width: 1px; 
+    border-color: #f2f2f2;
+    margin: 0 2px;
+    padding: 0 5px;
 `

@@ -8,7 +8,7 @@ const Options = (props) => {
     useEffect(() => {
         Animated.timing(opacity, {
             toValue: 1,
-            duration: 1000,
+            duration: 300,
             easing: Easing.ease,
             useNativeDriver: true
         }).start()

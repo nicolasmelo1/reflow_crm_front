@@ -289,8 +289,8 @@ const UsersForm = (props) => {
         props.onSubmitForm(data).then(response => {
             if (response && response.status === 200) {
                 props.onGetUsersConfiguration(sourceRef.current).then(response=> {
+                    setIsLoading(false)
                     if (response && response.status === 200) {
-                        setIsLoading(false)
                         props.onCloseFormulary()
                     }
                 })
@@ -306,6 +306,9 @@ const UsersForm = (props) => {
                     errors['email'] = errorMessages['unique_email']
                 } else if (errorKeys.includes('detail') && response.data.error['detail'].includes('cannot_edit_itself')) {
                     props.onAddNotification(strings['pt-br']['userConfigurationCannotEditItselfError'], 'error')
+                    props.onCloseFormulary()
+                } else if (errorKeys.includes('detail') && response.data.error['detail'].includes('failed_to_update_payment_gateway')) {
+                    props.onAddNotification(strings['pt-br']['userConfigurationPaymentGatewayError'], 'error')
                     props.onCloseFormulary()
                 }
                 setErrors({...errors})

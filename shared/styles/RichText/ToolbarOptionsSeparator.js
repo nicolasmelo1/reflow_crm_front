@@ -11,11 +11,11 @@ styled.div`
 `
 :
 styled(View)`
-    margin-left: 10px,
-    margin-right: 10px,
-    margin-top: 0,
-    margin-bottom: 0,
-    height: 40px,
-    width: 2px,
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 0;
+    margin-bottom: 0;
+    height: 40px;
+    width: 2px;
     background-color: #f2f2f2
 `

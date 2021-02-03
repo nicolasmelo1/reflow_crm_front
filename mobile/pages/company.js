@@ -3,7 +3,6 @@ import { View } from 'react-native'
 import { withAuthenticationContext } from '../contexts'
 import { Layout, Company } from '@shared/components'
 import * as ImagePicker from 'expo-image-picker';
-import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 
 /**
@@ -21,7 +20,7 @@ class CompanyPage extends React.Component {
      */
     getPermissionAsync = async () => {
         if (Platform.OS !== 'web') {
-            const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL)
+            const { status } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY)
             if (status !== 'granted') {
                 alert('Sorry, we need camera roll permissions to make this work!')
             }

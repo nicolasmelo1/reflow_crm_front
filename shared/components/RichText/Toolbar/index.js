@@ -52,12 +52,24 @@ const Toolbar = (props) => {
     const renderMobile = () => {
         return (
             <ToolbarFullContainer>
-                <ToolbarContainer horizontal={true} keyboardShouldPersistTaps={'always'}>
-                {props.contentOptions ? props.contentOptions : null}
-                    {props.contentOptions && props.blockOptions ? (
+                <ToolbarContainer horizontal={true} keyboardShouldPersistTaps={'handled'}>
+                    {props.contentOptions ? props.contentOptions : null}
+                    {props.contentOptions ? (
                         <ToolbarOptionsSeparator/>
+
                     ) : null}
                     {props.blockOptions ? props.blockOptions : null}
+                    {props.blockOptions ? (
+                        <ToolbarOptionsSeparator/>
+                    ) : null}
+                    <View style={{ display: 'flex', flexDirection: 'row'}}>
+                        <ToolbarDefaultBlockOptionsButton onPress={(e) => props.onDuplicateBlock()}>
+                            <FontAwesomeIcon icon={'copy'}/>
+                        </ToolbarDefaultBlockOptionsButton>
+                        <ToolbarDefaultBlockOptionsButton onPress={(e) => props.onDeleteBlock()}>
+                            <FontAwesomeIcon icon={'trash'}/>
+                        </ToolbarDefaultBlockOptionsButton>
+                    </View>
                 </ToolbarContainer>
             </ToolbarFullContainer>
 

@@ -13,4 +13,8 @@ styled.button`
     color: ${props => props.isSelected ? `#0dbf7e`: `#f2f2f2`};
 `
 :
-styled(TouchableOpacity)``
+styled(TouchableOpacity)`
+    padding: 10px 15px;
+    border-bottom-width: 1px;
+    border-bottom-color: ${props => props.isSelected ? `#0dbf7e`: `transparent`};
+`

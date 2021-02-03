@@ -1,9 +1,10 @@
-import React, { memo, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import generateUUID from '../../../utils/generateUUID'
 import agent from '../../../utils/agent'
 import base64 from '../../../utils/base64'
+import dynamicImport from '../../../utils/dynamicImport'
 import { strings } from '../../../utils/constants'
-import { View } from 'react-native'
+import { Modal, SafeAreaView, View, Text, TextInput, ActivityIndicator, Image } from 'react-native'
 import {
     BlockImageButton,
     BlockImageSelectContainer,
@@ -14,6 +15,9 @@ import {
     BlockImageResizeButton,
     BlockImageResizeContainer
 } from '../../../styles/RichText'
+
+const ImagePicker = dynamicImport('expo-image-picker', '')
+const Permissions = dynamicImport('expo-permissions', '')
 
 /**
  * The image block is simple in its core idea but how we handle images in the rich text can be kind difficult.
@@ -36,7 +40,7 @@ import {
  * 
  * @param {Object} props - {... all of the props defined in the Block and Text components}
  */
-const Image = (props) => {
+const ImageBlock = (props) => {
     const activeBlockRef = React.useRef(null)
     const isMountedRef = React.useRef(false)
     const imageUrlRef = React.useRef(null)
@@ -47,6 +51,7 @@ const Image = (props) => {
         isRightButton: null
     })
     const sizeRelativeToViewRef = React.useRef(0)
+    const [isUploading, setIsUploading] = useState(false)
     const [isMouseOver, setIsMouseOver] = useState(false)
     const [sizeRelativeToView, _setSizeRelativeToView] = useState(0)
     const [activeImageType, setActiveImageType] = useState({
@@ -75,6 +80,36 @@ const Image = (props) => {
             file_image_uuid: generateUUID(),
             size_relative_to_view: 1,
             file_name: null
+        }
+    }
+
+    /**
+     * Ask permission to access the camera roll
+     * You can see it here: https://docs.expo.io/versions/latest/sdk/imagepicker/
+     */
+    const getPermissionAsyncMobile = async () => {
+        if (Platform.OS !== 'web' && process.env['APP'] !== 'web') {
+            const { status } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY)
+            if (status !== 'granted') {
+                alert('Sorry, we need camera roll permissions to make this work!')
+            }
+        }
+    }
+    
+    const pickImageOnMobile = async () => {
+        try {
+            const result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                allowsEditing: true,
+                aspect: [4, 3],
+                quality: 1,
+            })
+            if (!result.cancelled) {
+                return result.uri
+            }
+            return null
+        } catch (E) {
+            return null
         }
     }
 
@@ -151,11 +186,22 @@ const Image = (props) => {
      * @param {FilesList<Blob>} files - This are the files of the input, we can only have one per input so we only use the first one.
      */
     const onUploadFile = (files) => {
-        props.onUploadFileToDraft(files[0]).then(async draftStringId => {
+        let file = null
+        if (process.env['APP'] !== 'web') {
+            const filename = files[0].split('/').pop()
+            const match = /\.(\w+)$/.exec(filename)
+            const type = match ? `image/${match[1]}` : `image`
+            file = { uri: files[0], name: filename, type }
+        } else {
+            file = files[0]
+        }
+        setIsUploading(true)
+        props.onUploadFileToDraft(file).then(async draftStringId => {
             props.block.image_option.file_name = draftStringId
             const imageUrl = await agent.http.DRAFT.getDraftFile(draftStringId)
             setImageUrl(imageUrl)
             props.updateBlocks(props.block.uuid)
+            setIsUploading(false)
         })
     }
 
@@ -229,6 +275,7 @@ const Image = (props) => {
             document.addEventListener("mousemove", onMouseMoveResizing)
             document.addEventListener("mouseup", onMouseUpResizing)
         }
+        getPermissionAsyncMobile()
         checkIfImageOptionsAndInsertIt()
         addImageUrlOnMount()
         setSizeRelativeToView(parseFloat(props.block?.image_option?.size_relative_to_view || 1.00))
@@ -265,7 +312,74 @@ const Image = (props) => {
 
     const renderMobile = () => {
         return (
-            <View></View>
+            <View>
+                {imageUrl === null ? (
+                    <View>
+                        <BlockImageButton 
+                        onPress={(e) => {props.isEditable ? props.updateBlocks(props.block.uuid) : null}}
+                        >
+                            <Text>
+                                {strings['pt-br']['richTextImageBlockButtonLabel']}
+                            </Text>
+                        </BlockImageButton>
+                        {props.block.uuid === props.activeBlock && imageUrl === null ? (
+                            <Modal>
+                                <SafeAreaView>
+                                    <BlockImageSelectContainer>
+                                        <View style={{ display: 'flex', flexDirection: 'row' }}>
+                                            <BlockImageSelectImageTypeButton 
+                                            isSelected={activeImageType.imageFile}
+                                            onPress={(e) => setActiveImageType({imageFile:true, imageLink: false})}
+                                            >
+                                                <Text style={{color: activeImageType.imageFile ? '#0dbf7e': '#17242D'}}>
+                                                    {strings['pt-br']['richTextImageBlockSelectFileTypeButtonLabel']}
+                                                </Text>
+                                            </BlockImageSelectImageTypeButton>
+                                            <BlockImageSelectImageTypeButton 
+                                            isSelected={activeImageType.imageLink}
+                                            onPress={(e) => setActiveImageType({imageFile:false, imageLink: true})}
+                                            >
+                                                <Text style={{color: activeImageType.imageLink ? '#0dbf7e': '#17242D'}}>
+                                                    {strings['pt-br']['richTextImageBlockSelectLinkTypeButtonLabel']}
+                                                </Text>
+                                            </BlockImageSelectImageTypeButton>
+                                        </View>
+                                        <BlockImageSelectImageContainer>
+                                        {activeImageType.imageFile ? (
+                                            <View>
+                                                {isUploading ? (
+                                                    <ActivityIndicator size={'large'} color={'#0dbf7e'}/>
+                                                ) : (
+                                                    <BlockImageSelectImageButton onPress={(e) => pickImageOnMobile().then(file => file ? onUploadFile([file]) : null)}>
+                                                        <Text>
+                                                            {strings['pt-br']['richTextImageBlockSelectImagesButtonLabel']}
+                                                        </Text>
+                                                    </BlockImageSelectImageButton>
+                                                )}
+                                            </View>
+                                        ) : (
+                                            <TextInput 
+                                            style={{ width: '100%', padding: 10, backgroundColor: '#f2f2f2'}} 
+                                            onChange={(e)=> {onAddLink(e.target.value)}} 
+                                            placeholder={strings['pt-br']['richTextImageBlockSelectLinkTypePlaceholder']}
+                                            />
+                                        )}
+                                        </BlockImageSelectImageContainer>
+                                    </BlockImageSelectContainer>
+                                </SafeAreaView>
+                            </Modal>
+                        ) : null}
+                    </View>
+                ) : (
+                    <BlockImageImageButton 
+                    onPress={(e) => {props.isEditable ? props.updateBlocks(props.block.uuid) : null}}
+                    >
+                        <Image style={{ width: '100%', height: 200 }} source={{
+                            uri: imageUrl
+                        }}/>
+                    </BlockImageImageButton>
+                )}
+            </View>
         )
     }
 
@@ -340,4 +454,4 @@ const Image = (props) => {
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 
-export default Image
+export default ImageBlock

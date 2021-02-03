@@ -278,6 +278,7 @@ const strings = {
         userConfigurationFormularyInvalidNameError: 'O nome precisa ser completo',
         userConfigurationFormularyInvalidProfileError: 'O perfil selecionado não é válido',
         userConfigurationCannotEditItselfError: 'Você não pode editar si mesmo',
+        userConfigurationPaymentGatewayError: 'Parece que suas informações de pagamento estão inconsistentes. Verifique as seguintes informações de pagamento antes de continuar: Endereço e Dados de pagamento',
         userConfigurationFormularyNameLabel: 'Nome',
         userConfigurationFormularyEmailLabel: 'Email',
         userConfigurationFormularyProfileLabel: 'Perfil',

@@ -120,7 +120,6 @@ const PDFGeneratorReader = (props) => {
     }
 
     const renderWeb = () => {
-        console.log(page.total)
         return (
             <div>
                 {selectedTemplateIndex !== null ? (

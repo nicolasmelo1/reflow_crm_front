@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native'
 import Block from '../Blocks'
 import deepCopy from '../../../utils/deepCopy'
 import generateUUID from '../../../utils/generateUUID'
@@ -502,22 +502,24 @@ const Table = (props) => {
      * @param {String} blockUUID - The uuid of the block of where you hit enter.
      */
     const onEnter = (blockUUID) => {
-        let newRowDimensions = rowDimensions
-        const indexOfBlockInTable = props.block.rich_text_depends_on_blocks.findIndex(block => block.uuid === blockUUID)
-        const newRowIndex = findRowOfBlockByBlockIndex(indexOfBlockInTable) + 1
-        const columnIndex = findColumnOfBlockByBlockIndex(indexOfBlockInTable)
-        rowDimensions.push({ height: null })
-        newRowDimensions = newRowDimensions.map(rowDimension => (rowDimension.height ? { height: rowDimension.height} : { height: null}))
-        props.block.table_option.text_table_option_row_dimensions = newRowDimensions
-        let blockToFocus = null
-        for (let i=0; i<props.block.table_option.text_table_option_column_dimensions.length; i++) {
-            const newBlock = createEmptyTextBlock(0)
-            if (i === columnIndex) blockToFocus = newBlock.uuid
-            props.block.rich_text_depends_on_blocks.splice((props.block.table_option.text_table_option_column_dimensions.length*newRowIndex) + i,0, newBlock)
+        if (process.env['APP'] === 'web') {
+            let newRowDimensions = rowDimensions
+            const indexOfBlockInTable = props.block.rich_text_depends_on_blocks.findIndex(block => block.uuid === blockUUID)
+            const newRowIndex = findRowOfBlockByBlockIndex(indexOfBlockInTable) + 1
+            const columnIndex = findColumnOfBlockByBlockIndex(indexOfBlockInTable)
+            rowDimensions.push({ height: null })
+            newRowDimensions = newRowDimensions.map(rowDimension => (rowDimension.height ? { height: rowDimension.height} : { height: null}))
+            props.block.table_option.text_table_option_row_dimensions = newRowDimensions
+            let blockToFocus = null
+            for (let i=0; i<props.block.table_option.text_table_option_column_dimensions.length; i++) {
+                const newBlock = createEmptyTextBlock(0)
+                if (i === columnIndex) blockToFocus = newBlock.uuid
+                props.block.rich_text_depends_on_blocks.splice((props.block.table_option.text_table_option_column_dimensions.length*newRowIndex) + i,0, newBlock)
+            }
+            setRowDimensions([...newRowDimensions])
+            reorderBlocks()
+            props.updateBlocks(blockToFocus)
         }
-        setRowDimensions([...newRowDimensions])
-        reorderBlocks()
-        props.updateBlocks(blockToFocus)
     }
 
     useEffect(() => {
@@ -555,7 +557,121 @@ const Table = (props) => {
 
     const renderMobile = () => {
         return (
-            <View></View>
+            <ScrollView horizontal={true} 
+            keyboardShouldPersistTaps={'handled'}
+            centerContent={true}
+            >
+                <View>
+                    {(props.block?.table_option?.text_table_option_row_dimensions || []).map((_, rowIndex) => (
+                        <View 
+                        key={rowIndex}
+                        style={{ 
+                            display: 'flex',
+                            flexDirection: 'row'
+                        }}
+                        >
+                            {props.block.rich_text_depends_on_blocks.slice(rowIndex * columnsNumber, (rowIndex * columnsNumber) + columnsNumber).map((block, index) => {
+                                const columnIndex = (rowIndex * columnsNumber) + index
+                                block = block ? block : createEmptyTextBlock(rowIndex*columnIndex)
+                                console.log(props.block.table_option.border_color)
+                                return (
+                                    <BlockTableCell
+                                    key={block.uuid} 
+                                    borderColor={props.block.table_option.border_color}
+                                    isLastRow={rowIndex === (props.block?.table_option?.text_table_option_row_dimensions || []).length - 1}
+                                    isLastColumn={index === columnsNumber - 1}
+                                    >   
+                                        <BlockTableResizeButton
+                                            style={({ pressed }) => [
+                                                {
+                                                  backgroundColor: pressed
+                                                    ? '#0dbf7e'
+                                                    : 'red'
+                                                }
+                                            ]}
+                                            buttonType={{isRight: true}}
+                                            onPress={(e) => {
+                                                setSelectedEdge({
+                                                    row: {
+                                                        isSelected: false,
+                                                        index: rowIndex
+                                                    },
+                                                    column: {
+                                                        isSelected: true,
+                                                        index: columnIndex+1
+                                                    }
+                                                })
+                                                props.updateBlocks(props.block.uuid)
+                                            }}
+                                        />
+                                        <BlockTableResizeButton
+                                            buttonType={{isLeft: true}}
+                                            onPress={(e) => {
+                                                setSelectedEdge({
+                                                    row: {
+                                                        isSelected: false,
+                                                        index: rowIndex
+                                                    },
+                                                    column: {
+                                                        isSelected: true,
+                                                        index: columnIndex
+                                                    }
+                                                })
+                                                props.updateBlocks(props.block.uuid)
+                                            }}
+                                        />
+                                        <BlockTableResizeButton
+                                            buttonType={{isTop: true}}
+                                            onPress={(e) => {
+                                                setSelectedEdge({
+                                                    row: {
+                                                        isSelected: true,
+                                                        index: rowIndex
+                                                    },
+                                                    column: {
+                                                        isSelected: false,
+                                                        index: columnIndex
+                                                    }
+                                                })
+                                                props.updateBlocks(props.block.uuid)
+                                            }}
+                                        />
+                                        <BlockTableResizeButton
+                                            buttonType={{isBottom: true}}
+                                            onPress={(e) => {
+                                                setSelectedEdge({
+                                                    row: {
+                                                        isSelected: true,
+                                                        index: rowIndex + 1
+                                                    },
+                                                    column: {
+                                                        isSelected: false,
+                                                        index: columnIndex
+                                                    }
+                                                })
+                                                props.updateBlocks(props.block.uuid)
+                                            }}
+                                        />
+                                        <Block 
+                                        {...props} 
+                                        block={block} 
+                                        blockTypes={getBlocksItCanContain()}
+                                        handleArrowNavigationNextBlockIndex={onHandleNextBlockArrowNavigation}
+                                        handleArrowNavigationPreviousBlockIndex={onHandlePreviousBlockArrowNavigation}
+                                        onDuplicateBlock={onDuplicateChildrenBlock}
+                                        onDeleteBlock={onDeleteChildrenBlock}
+                                        onRemoveCurrent={() => null}
+                                        onRemoveAfter={() => null}
+                                        contextBlocks={props.block.rich_text_depends_on_blocks} 
+                                        onEnter={null}
+                                        />   
+                                    </BlockTableCell>
+                                )
+                            })}
+                        </View>
+                    ))}
+                </View>
+            </ScrollView>
         )
     }
     

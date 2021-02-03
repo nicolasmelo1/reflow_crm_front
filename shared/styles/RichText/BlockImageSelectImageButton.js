@@ -11,4 +11,8 @@ styled.label`
     padding: 0 10px;
 `
 :
-styled(Text)``
+styled(Text)`
+    background-color: #0dbf7e;
+    padding: 10px;
+    border-radius: 5px;
+`

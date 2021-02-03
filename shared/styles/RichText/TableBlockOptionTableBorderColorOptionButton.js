@@ -19,5 +19,7 @@ styled.button`
 styled(TouchableOpacity)`
     padding: 10px 10px;
     border-bottom-width: 1px;
+    background-color: transparent;
+    width: 100%;
     border-bottom-color: #bfbfbf;
 `

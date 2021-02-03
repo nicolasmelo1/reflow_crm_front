@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { View } from 'react-native'
+import { TouchableOpacity } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
@@ -20,4 +20,11 @@ styled.div`
     }
 `
 :
-styled(View)``
+styled(TouchableOpacity)`
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    padding: 0 5px;
+    width: 40px;
+    height: 40px;
+`

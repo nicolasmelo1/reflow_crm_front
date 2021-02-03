@@ -65,6 +65,7 @@ const Text = (props) => {
     const isMountedRef = React.useRef(false)
     const wasKeyDownPressedRef = React.useRef(false)
     const isFocusingRef = React.useRef(false)
+    const isSpecialKeydownPressed = React.useRef(false)
     const keyDownPressedRef = React.useRef(null)
     const inputRef = React.useRef(null)
     const activeBlockRef = React.useRef(null)
@@ -125,7 +126,6 @@ const Text = (props) => {
                 onChangeAlignmentType: onChangeAlignmentType,
                 types: props.types
             }
-            
             props.addToolbar(
                 props.toolbarProps
             )
@@ -944,7 +944,11 @@ const Text = (props) => {
                 }
             } else if (insertedText === null && inputType === 'insertLineBreak') {
                 return '\n'
-            } else if (process.env['APP'] !== 'web' && ['Enter', 'Backspace'].includes(inputType)) {
+            } else if (process.env['APP'] !== 'web' && isSpecialKeydownPressed.current) {
+                return ''
+            } else if (process.env['APP'] !== 'web' && inputType === 'Enter') {
+                return '\n\n'
+            } else if (process.env['APP'] !== 'web' && inputType === 'Backspace') {
                 return ''
             } else if (insertedText) {
                 return insertedText
@@ -952,6 +956,7 @@ const Text = (props) => {
             return ''
         }
         
+
         const fixCaretPositionIfDelete = (inputType, text, oldText) => {
             const isRangeSelection = caretPositionRef.current.start !== caretPositionRef.current.end
             // User has set the caret to a certain position and did not made a selection.
@@ -971,10 +976,12 @@ const Text = (props) => {
         // Checks if last character of the last content is a linebreak there is a bug that happens when you do this on normal browsers
         // it adds line breaks at the same time.
         // WEB ONLY, on mobile no such thing happens
-        if (contents[contents.length-1].text.substring(contents[contents.length-1].text.length-1,contents[contents.length-1].text.length) === '\n') {
-            props.block.rich_text_block_contents[contents.length-1].text = contents[contents.length-1].text.substring(0, contents[contents.length-1].text.length-1)
+        if (process.env['APP'] === 'web') {
+            if (contents[contents.length-1].text.substring(contents[contents.length-1].text.length-1,contents[contents.length-1].text.length) === '\n') {
+                props.block.rich_text_block_contents[contents.length-1].text = contents[contents.length-1].text.substring(0, contents[contents.length-1].text.length-1)
+            }
+            text = text.substring(text.length-1, text.length) === '\n' ? text.substring(0, text.length-1) : text
         }
-        text = text.substring(text.length-1, text.length) === '\n' ? text.substring(0, text.length-1) : text
         let oldText = props.block.rich_text_block_contents.map(content => content.text).join('')
 
         fixCaretPositionIfDelete(inputType, text, oldText)
@@ -999,8 +1006,12 @@ const Text = (props) => {
         if (process.env['APP'] === 'web') {
             props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text = 
             props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text + '\n'
+        } else {
+            wasKeyDownPressedRef.current = false
         }
-        props.updateBlocks(props.activeBlock)
+        if (!isSpecialKeydownPressed.current) {
+            props.updateBlocks(props.activeBlock)
+        }
     }
 
 
@@ -1215,14 +1226,19 @@ const Text = (props) => {
         if ((process.env['APP'] === 'web' && keyDownPressedRef.current === 'Enter' && !event.shiftKey)|| (process.env['APP'] !== 'web' && keyDownPressedRef.current === 'Enter')) {
             event.preventDefault()
             event.stopPropagation()
-            onEnter()
+            if (props.onEnter !== null) {
+                isSpecialKeydownPressed.current = true
+                onEnter()
+            }
         } else if (keyDownPressedRef.current === 'Backspace' && caretPositionRef.current && caretPositionRef.current.start === 0 && caretPositionRef.current.end === 0) {
             event.preventDefault()
             event.stopPropagation()
+            isSpecialKeydownPressed.current = true
             onRemoveCurrent()
         } else if (keyDownPressedRef.current === 'Delete' && caretPositionRef.current && caretPositionRef.current.start >= oldText.length-1 && caretPositionRef.current.end >= oldText.length-1) {
             event.preventDefault()
             event.stopPropagation()
+            isSpecialKeydownPressed.current = true
             onRemoveAfter()
         } else if (keyDownPressedRef.current === '/' && caretPositionRef.current && caretPositionRef.current.start === 0 && caretPositionRef.current.end === 0 && (oldText === '' || oldText === '\n')) {
             props.openBlockSelection()

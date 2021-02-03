@@ -2,6 +2,7 @@ import React from 'react'
 import { View, KeyboardAvoidingView, Keyboard } from 'react-native'
 import axios from 'axios'
 import { connect } from 'react-redux'
+import dynamicImport from '../../utils/dynamicImport'
 import generateUUID from '../../utils/generateUUID'
 import isEqual from '../../utils/isEqual'
 import deepCopy from '../../utils/deepCopy'
@@ -17,7 +18,6 @@ import {
 
 const makeDelay = delay(150)
 
-
 /**
  * This is the main component of the RichText. This component represents the page of our own rich text.
  * 
@@ -25,7 +25,8 @@ const makeDelay = delay(150)
  * and other companies built their own, even with many libraries out there: They have FULL CONTROL over their own
  * rich text and they can adapt it to their own needs without needing to depend on open source software that
  * they doesn't own. And we, as reflow see that making our own Text editor gives us an advantage from other companies
- * like Clickup and Airtable, because we can end up using it in a lot of places and for a lot of use cases. 
+ * like Clickup and Airtable, because we can end up using it in a lot of places and for a lot of use cases, also
+ * we can create it fully native so it works on mobile. 
  * So having full control over the funcionality, as tedious as it might be, is crucial for the success of Reflow.
  * With stuff like this we can: 
  * - Share the same code and keep the same functionality between React Native and React. (I haven't fount any
@@ -302,7 +303,7 @@ class RichText extends React.Component {
                         {
                             order: 0,
                             uuid: generateUUID(),
-                            text: initialText ? initialText : process.env['APP'] === 'web' ? '\n' : '',
+                            text: initialText ? initialText : '',
                             text_size: 12,
                             is_bold: false,
                             is_italic: false,
@@ -376,7 +377,7 @@ class RichText extends React.Component {
                         {
                             order: 0,
                             uuid: generateUUID(),
-                            text: process.env['APP'] === 'web' ? '\n' : '',
+                            text: '',
                             text_size: 12,
                             is_bold: false,
                             is_italic: false,
@@ -637,7 +638,11 @@ class RichText extends React.Component {
                 <RichTextBlocksContainer 
                 ref={this.flatListRef}
                 style={{
-                    height: this.state.mobileKeyboardHeight !== 0 ? this.state.mobileRichTextHeight - this.state.mobileKeyboardHeight - 163 : this.state.mobileRichTextHeight
+                    height: this.state.mobileKeyboardHeight !== 0 ? 
+                            this.state.mobileRichTextHeight - this.state.mobileKeyboardHeight - 163 : 
+                            this.state.activeBlock !== null && this.props.isEditable !== false ?
+                            this.state.mobileRichTextHeight - 70 : 
+                            this.state.mobileRichTextHeight
                 }}
                 scrollEnabled={true}
                 keyboardShouldPersistTaps={'never'}
@@ -676,7 +681,7 @@ class RichText extends React.Component {
                 }}
                 />
                 <KeyboardAvoidingView behavior="padding" style={{ flex: 1}}>
-                    {this.state.activeBlock !== this.toolbar.current.blockUUID && ![false, null, undefined].includes(this.props.isEditable) ? (
+                    {this.state.activeBlock !== null && this.props.isEditable !== false ? (
                         <Toolbar
                         isBlockActive={true}
                         {...this.getToolbarProps()}

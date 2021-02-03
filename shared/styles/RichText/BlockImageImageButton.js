@@ -15,4 +15,6 @@ styled.div`
     transform: scale(${props => props.sizeRelativeToView})
 `
 :
-styled(TouchableOpacity)``
+styled(TouchableOpacity)`
+    margin: 5px;
+`

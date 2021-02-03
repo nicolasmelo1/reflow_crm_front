@@ -1,10 +1,13 @@
 import React, { useEffect } from 'react'
-import { View } from 'react-native'
+import { Modal, SafeAreaView, Text } from 'react-native'
 import { types } from '../../utils/constants'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import {
     BlockSelectorContainer,
     BlockSelectorButton,
-    BlockSelectorIcon
+    BlockSelectorIcon,
+    BlockSelectorModalHeader,
+    BlockSelectorModalGoBackButton
 } from '../../styles/RichText'
 
 
@@ -68,7 +71,26 @@ const BlockSelector = (props) => {
 
     const renderMobile = () => {
         return (
-            <View></View>
+            <Modal animationType="slide">
+                <SafeAreaView>
+                    <BlockSelectorModalHeader>
+                        <BlockSelectorModalGoBackButton onPress={(e) => props.setIsBlockSelectionOpen(false)}>
+                            <FontAwesomeIcon icon={'times'} />
+                        </BlockSelectorModalGoBackButton>
+                    </BlockSelectorModalHeader>
+                    <BlockSelectorContainer>
+                        {props.blockOptions.map((blockOption, index) => (
+                            <BlockSelectorButton 
+                            key={index}
+                            onPress={(e) => {props.changeBlockType(blockOption.id)}}
+                            >
+                                <BlockSelectorIcon size={ 24 } style={{color: '#0dbf7e'}} icon={iconByBlockName(blockOption.name)}/>
+                                <Text style={{ color: '#17242D', fontSize: 24 }}>{' ' + types('pt-br', 'block_type', blockOption.name)}</Text>
+                            </BlockSelectorButton>
+                        ))}
+                    </BlockSelectorContainer>
+                </SafeAreaView>
+            </Modal>
         )
     }
 

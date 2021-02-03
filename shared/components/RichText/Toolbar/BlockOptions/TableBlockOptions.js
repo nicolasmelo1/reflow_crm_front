@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View } from 'react-native'
+import { View, Text, Modal, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native'
 import { strings } from '../../../../utils/constants'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { 
@@ -81,7 +81,58 @@ const TableBlockOptions = (props) => {
 
     const renderMobile = () => {
         return (
-            <View></View>
+            <View style={{ flexDirection: 'row'}}>
+                {props.selectedEdge.row.isSelected || props.selectedEdge.column.isSelected ? (
+                    <React.Fragment>
+                        <TableBlockOptionAddOrRemoveButton onPress={(e) => props.onAddNewRowOrColumn()}>
+                            <Text>
+                                {getAddButtonLabel()}
+                            </Text>
+                        </TableBlockOptionAddOrRemoveButton>
+                        <TableBlockOptionAddOrRemoveButton onPress={(e) => props.onRemoveRowOrColumn()}>
+                            <Text>
+                                {getRemoveButtonlabel()}
+                            </Text>
+                        </TableBlockOptionAddOrRemoveButton>
+                    </React.Fragment>
+                ) : null}
+                <TableBlockOptionTableBorderColorActivationButton
+                onPress={(e) => setIsBorderColorOptionsOpen(!isBorderColorOptionsOpen)}
+                >
+                    <FontAwesomeIcon icon={'border-all'}/>
+                </TableBlockOptionTableBorderColorActivationButton>
+                {isBorderColorOptionsOpen ? (
+                    <Modal
+                    animationType="slide"
+                    transparent={true}
+                    >
+                        <SafeAreaView style={{height: '100%', backgroundColor: '#00000050', flexDirection: 'row'}}>
+                            <View style={{height: '60%', alignSelf: 'flex-end', backgroundColor: '#fff', width: '100%', bottom: -100, paddingBottom: 100}}>
+                                <TouchableOpacity 
+                                onPress={(e) => {setIsBorderColorOptionsOpen(!isBorderColorOptionsOpen)}} 
+                                style={{ alignSelf: 'flex-end', margin: 10}}
+                                >
+                                    <Text>Cancelar</Text>
+                                </TouchableOpacity>
+                                <ScrollView>
+                                {borderColors.map(color => (
+                                    <TableBlockOptionTableBorderColorOptionButton
+                                    key={color} 
+                                    borderColor={color}
+                                    onPress={(e) => {
+                                        setIsBorderColorOptionsOpen(!isBorderColorOptionsOpen)
+                                        props.onChangeTableBorderColor(color)
+                                    }}
+                                    >
+                                        <FontAwesomeIcon icon={'border-all'} style={{color: color}}/>
+                                    </TableBlockOptionTableBorderColorOptionButton>
+                                ))}
+                                </ScrollView>
+                            </View>
+                        </SafeAreaView>
+                    </Modal>
+                ) : null}
+            </View>
         )
     }
 

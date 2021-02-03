@@ -367,7 +367,7 @@ const areEqual = (prevProps, nextProps) => {
                 areThemEqual = false
                 break
             }
-        } else if (Object.prototype.toString.call(prevProps[key]) === '[object Function]' && prevProps[key].toString() !== nextProps[key].toString())  {
+        } else if (Object.prototype.toString.call(prevProps[key]) === '[object Function]' && prevProps[key] !== null && nextProps[key] !== null && prevProps[key].toString() !== nextProps[key].toString())  {
             areThemEqual = false
             break
         } else if (JSON.stringify(prevProps[key]) !== JSON.stringify(nextProps[key])) {

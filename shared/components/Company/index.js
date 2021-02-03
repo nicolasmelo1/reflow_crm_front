@@ -116,11 +116,11 @@ class Company extends React.Component {
             
             this.setLogoFile(files[0].name, files[0])
         } else if (files.length > 0 && files[0] !== null) {
-            const filename = files[0].split('/').pop();
+            const filename = files[0].split('/').pop()
           
             // Infer the type of the image
-            const match = /\.(\w+)$/.exec(filename);
-            const type = match ? `image/${match[1]}` : `image`;
+            const match = /\.(\w+)$/.exec(filename)
+            const type = match ? `image/${match[1]}` : `image`
             const file = { uri: files[0], name: filename, type }
             this.setLogoFile(filename, file)
         }

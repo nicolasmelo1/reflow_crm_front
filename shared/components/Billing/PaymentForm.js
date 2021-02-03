@@ -369,7 +369,7 @@ const PaymentForm = (props) => {
                         <div style={{display: 'flex', flexDirection:'row', marginBottom: '10px', alignItems: 'flex-end'}}>
                             <PaymentFormCreditCardValidDateContainer>
                                 <BillingFormularyFieldLabel>
-                                    {strings['pt-br']['billingPaymentFormCreditCardNumberFieldLabel']}
+                                    {strings['pt-br']['billingPaymentFormCreditCardValidDateFieldLabel']}
                                     <BillingFormularyRequiredField>*</BillingFormularyRequiredField>
                                 </BillingFormularyFieldLabel>
                                 <BillingInput 

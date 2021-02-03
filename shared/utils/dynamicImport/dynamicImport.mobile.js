@@ -51,7 +51,9 @@ const dynamicImport = (module, alias='default') => {
             // update here to add new packages for mobile
             const packages = {
                 'react-native-gesture-handler' : require('react-native-gesture-handler'),
-                'react-native-webview': require('react-native-webview')
+                'react-native-webview': require('react-native-webview'),
+                'expo-image-picker': require('expo-image-picker'),
+                'expo-permissions': require('expo-permissions'),
             }
             if (alias !== '') {
                 return packages[module][alias]

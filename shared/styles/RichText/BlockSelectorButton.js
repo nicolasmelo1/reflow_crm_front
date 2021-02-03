@@ -20,4 +20,11 @@ styled.button`
     }
 `
 :
-styled(TouchableOpacity)``
+styled(TouchableOpacity)`
+    display: flex;
+    flex-direction: row;
+    padding: 15px;
+    align-items: center;
+    border-bottom-width: 1px;
+    border-bottom-color: #f2f2f2
+`
