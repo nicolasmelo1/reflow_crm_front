@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Utils from '../../../styles/Utils'
 import Option from './Option'
 import { SafeAreaView, Text, Keyboard, TouchableOpacity } from 'react-native';
+import isPromise from '../../../utils/isPromise'
 
 /**
  * Custom select component used in our formulary, if you need to change something in the select, change this component.
@@ -27,6 +28,10 @@ import { SafeAreaView, Text, Keyboard, TouchableOpacity } from 'react-native';
  * @param {String} optionOnHoverBackgroundColor - (optional) - default to #bfbfbf
  * @param {React.Component} label - (optional) - Instead of a simple text, display a custom label, if you do this, please define a onFilter
  * function
+ * @param {Function} onScrollBottom - (optional) - Responsible for firing sending to the parent that the user has reached the bottom of the options
+ * so the parent can know when to fetch for more data.
+ * @param {BigInteger} scrollBottomThreshold - (optional) - Can fetch for more data before the user reaches the true bottom, with this you can create
+ * the idea of an infinite scroll
  * @param {Function} onFilter - (optional) - Defines a custom on filter function that recieves a string, and MUST return the Array of 
  * objects filtered
  * @param {Boolean} multiple - (optional) use this to inform if you want multiple objects to be selected.
@@ -42,6 +47,7 @@ const Select = (props) => {
     }
     const [searchValue, setSearchValue] = useState('')
     const [options, setOptions] = useState(props.options)
+    const hasReachedBottom = React.useRef(false)
     const inputRef = React.useRef(null)
     const selectOptionsContainerRef = React.useRef(null)
     const selectRef = React.useRef()
@@ -78,16 +84,16 @@ const Select = (props) => {
     }
 
     const updateOptions = (value, selectedOptions) => {
-        let filteredOptions = props.options.filter(option=> selectedOptions.find(selectedOption=> selectedOption.value === option.value) === undefined);
-        if (value !== '') {
-            if (props.onFilter) {
-                filteredOptions = props.onFilter(value)
-            } else {
+        if (props.onFilter) {
+            props.onFilter(value)
+        } else {
+            let filteredOptions = props.options.filter(option=> selectedOptions.find(selectedOption=> selectedOption.value === option.value) === undefined);
+            if (value !== '') {
                 filteredOptions = filteredOptions.filter(option=> option.label.toLowerCase().includes(value.toLowerCase()))
             }
+            setOptions(filteredOptions)
         }
         setSearchValue(value)
-        setOptions(filteredOptions)
     }
 
     const onSelectClick = (e) => {
@@ -101,6 +107,29 @@ const Select = (props) => {
             }
         } else {
             setIsOpen(true)
+        }
+    }
+
+    /**
+     * Responsible for firing sending to the parent that the user has reached the bottom of the options
+     * so we need to fetch for more data.
+     * 
+     * You can also set a threshold to fire the request before reaching the true bottom so 
+     * the user doesn't feel the scrolling.
+     * 
+     * @param {Boolean} isBottom - True if the user has reached the bottom
+     */
+    const onScrollBottom = (isBottom) => {
+        if (!hasReachedBottom.current && isBottom && props.onScrollBottom) {
+            hasReachedBottom.current = true
+            const result = props.onScrollBottom()
+            if (isPromise(result)) {
+                result.then(_ => {
+                    hasReachedBottom.current = false
+                })
+            } else {
+                hasReachedBottom.current = false
+            }
         }
     }
 
@@ -282,6 +311,7 @@ const Select = (props) => {
     }
 
     const renderWeb = () => {
+        const scrollBottomThreshold = props.scrollBottomThreshold ? props.scrollBottomThreshold : 0
         return(
             <Utils.Select.Select isOpen={isOpen} ref={selectRef} onClick={e=>{inputRef.current.focus()}}>
                 <Utils.Select.SelectedOptionsContainer isOpen={isOpen}>
@@ -335,6 +365,7 @@ const Select = (props) => {
                 <Utils.Select.OptionsHolder>
                     {(isOpen) ? (
                         <Utils.Select.OptionsContainer 
+                        onScroll={(e) => onScrollBottom(e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight - scrollBottomThreshold)}
                         ref={selectOptionsContainerRef}
                         maximumHeight={maximumHeight}
                         optionBackgroundColor={props.optionBackgroundColor}

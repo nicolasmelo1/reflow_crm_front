@@ -20,8 +20,15 @@ const FORMULARY = {
         const duplicateUrl = (duplicate) ? '?duplicate=duplicate' : ''
         return await requests.post(`data/${companyId}/${formName}/${formId}/${duplicateUrl}`, formEncodeData(`data`, body, files), {'Content-Type': 'multipart/form-data'})
     },
-    getFormularyFormFieldOptions: async (source, formName, fieldId) => {
-        return await requests.get(`formulary/${companyId}/${formName}/${fieldId}/form/options/`, {}, {}, source)
+    getFormularyFormFieldOptions: async (source, formName, fieldId, page, search=null, valueId=null) => {
+        let params = { page: page }
+        if (search) {
+            params.search = search
+        } 
+        if (valueId) {
+            params.value_id = valueId
+        }
+        return await requests.get(`formulary/${companyId}/${formName}/${fieldId}/form/options/`, params, {}, source)
     },
     getAttachmentFile: async (formName, formularyId, fieldId, fileName) => {
         await LOGIN.testToken()
