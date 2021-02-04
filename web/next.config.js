@@ -1,6 +1,8 @@
 const path = require('path')
 const withOffline = require('next-offline')
 
+
+
 // some configurations are for monorepo to work, you might want to read this:
 // https://medium.com/@agungsurya/create-a-monorepo-of-react-native-and-nextjs-8b93df280343
 module.exports = withOffline({
@@ -23,7 +25,7 @@ module.exports = withOffline({
         importScripts: ['push.js'],
         runtimeCaching: [
             {
-                urlPattern: /^https?.*/,
+                urlPattern: new RegExp(`^${process.env.FRONT_END_HOST ? process.env.FRONT_END_HOST : 'http://localhost:3000/'}?.*`, 'g'),
                 handler: "NetworkFirst",
                 options: {
                     cacheName: "https-calls",
