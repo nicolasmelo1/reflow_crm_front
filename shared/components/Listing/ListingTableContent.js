@@ -105,12 +105,6 @@ const ListingTableContent = (props) => {
             </tr>
             {props.data.map((data, dataIndex) => (
                 <tr key={data.id}>
-                    {props.fieldHeaders.filter(head => head.is_selected).map((head, headIndex) => {
-                        const elements = (data) ? data.dynamic_form_value.filter(data => data.field_name == head.field.name): []
-                        return (
-                            <TableContentElement key={dataIndex+headIndex} elements={elements}/>
-                        )
-                    })}
                     <ListingTableContentElement isTableButton={true}>
                         <ListingEditButtonIcon icon="pencil-alt" onClick={e=> {props.setFormularyId(data.id)}}/>
                     </ListingTableContentElement>
@@ -120,6 +114,12 @@ const ListingTableContent = (props) => {
                             setShowAlert(true)
                         }}/>
                     </ListingTableContentElement>
+                    {props.fieldHeaders.filter(head => head.is_selected).map((head, headIndex) => {
+                        const elements = (data) ? data.dynamic_form_value.filter(data => data.field_name == head.field.name): []
+                        return (
+                            <TableContentElement key={dataIndex+headIndex} elements={elements}/>
+                        )
+                    })}
                 </tr>
             ))}
         </tbody>

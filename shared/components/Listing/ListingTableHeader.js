@@ -87,11 +87,27 @@ const ListingTableHead = (props) => {
     return (
         <thead>
             <tr>
+                <ListingTableHeaderContainer>
+                    <ListingTableHeaderElement isTableButton={true} isFirstColumn={true}>
+                        <ListingTableHeaderElementParagraph>
+                            {strings['pt-br']['listingHeaderEditLabel']}
+                        </ListingTableHeaderElementParagraph>
+                        <ListingTableHeaderElementIconContainer isTableButton={true} isFirstColumn={props.fieldHeaders.length === 0}/>
+                    </ListingTableHeaderElement>
+                </ListingTableHeaderContainer>
+                <ListingTableHeaderContainer>
+                    <ListingTableHeaderElement isTableButton={true}>
+                        <ListingTableHeaderElementParagraph>
+                            {strings['pt-br']['listingHeaderDeleteLabel']}
+                        </ListingTableHeaderElementParagraph>
+                        <ListingTableHeaderElementIconContainer isTableButton={true}/>
+                    </ListingTableHeaderElement>
+                </ListingTableHeaderContainer>
                 {props.fieldHeaders.map(function (header_field, index) {
                     if (header_field.is_selected) {
                         return (
                             <ListingTableHeaderContainer key={index}>
-                                <ListingTableHeaderElement isFirstColumn={index === 0}>
+                                <ListingTableHeaderElement isLastColumn={index === props.fieldHeaders.length - 1}>
                                     <div>
                                         <ListingTableHeaderElementParagraph>
                                             {header_field.field.label_name}
@@ -112,22 +128,6 @@ const ListingTableHead = (props) => {
                         )
                     }
                 })}
-                <ListingTableHeaderContainer>
-                    <ListingTableHeaderElement isTableButton={true}>
-                        <ListingTableHeaderElementParagraph>
-                            {strings['pt-br']['listingHeaderEditLabel']}
-                        </ListingTableHeaderElementParagraph>
-                        <ListingTableHeaderElementIconContainer isTableButton={true} isFirstColumn={props.fieldHeaders.length === 0}/>
-                    </ListingTableHeaderElement>
-                </ListingTableHeaderContainer>
-                <ListingTableHeaderContainer>
-                    <ListingTableHeaderElement isTableButton={true} isLastColumn={true}>
-                        <ListingTableHeaderElementParagraph>
-                            {strings['pt-br']['listingHeaderDeleteLabel']}
-                        </ListingTableHeaderElementParagraph>
-                        <ListingTableHeaderElementIconContainer isTableButton={true}/>
-                    </ListingTableHeaderElement>
-                </ListingTableHeaderContainer>
             </tr>
         </thead>
     )
