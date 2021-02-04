@@ -2,6 +2,7 @@ import {
     SET_DATA_KANBAN,
     SET_DIMENSION_ORDER,
     SET_KANBAN_INITIAL,
+    SET_KANBAN_IGNORE_WEBSOCKET,
     SET_CARDS
 } from '../../types';
 import agent from '../../../utils/agent'
@@ -18,6 +19,7 @@ const getKanbanData = async (dispatch, source, state, params, formName, columnNa
     const data = state.home.kanban.data
 
     let payload = []
+    let response = null
 
     if (initial.default_kanban_card_id && initial.default_dimension_field_id) {
         const dimension = initial.fields.filter(field=> field.id === initial.default_dimension_field_id)
@@ -34,7 +36,7 @@ const getKanbanData = async (dispatch, source, state, params, formName, columnNa
                     page: 1,
                     search_value: params.search_value.concat(dimensionOrder.options),
                 }
-                let response = await agent.http.KANBAN.getData(source, parameters, formName)
+                response = await agent.http.KANBAN.getData(source, parameters, formName)
                 if (response && response.status === 200) {
                     payload.push({
                         dimension: dimensionOrder.options, 
@@ -50,7 +52,7 @@ const getKanbanData = async (dispatch, source, state, params, formName, columnNa
                 page: (params.page) ? params.page : 1,
                 search_value: params.search_value.concat(columnName),
             }
-            let response = await agent.http.KANBAN.getData(source, parameters, formName)
+            response = await agent.http.KANBAN.getData(source, parameters, formName)
             if (response && response.status === 200) {
                 const dimensionIndexInData = data.findIndex(dimensionData => dimensionData.dimension === columnName)
                 if (dimensionIndexInData !== -1) {
@@ -65,9 +67,10 @@ const getKanbanData = async (dispatch, source, state, params, formName, columnNa
                     })
                 }
             }
-            
         }
-        dispatch({ type: SET_DATA_KANBAN, payload: payload})
+        if (response && response.status === 200) {
+            dispatch({ type: SET_DATA_KANBAN, payload: payload})
+        }
     }
     return payload
 }
@@ -172,18 +175,8 @@ const onGetKanbanData = (source, params, formName, columnName = null) => {
         agent.websocket.KANBAN.recieveDataUpdated({
             formName: formName,
             callback: (data) => {
-                if (data && data.data && data.data.user_id && data.data.user_id === getState().login.user.id) {
-                    const filterParams = getState().home.filter
-                    const params = {
-                        search_field: filterParams.search_field,
-                        search_value: filterParams.search_value,
-                        search_exact: filterParams.search_exact
-                    }
-                    try{ 
-                        getKanbanData(dispatch, source, getState(), params, formName, null)
-                    } catch {}
-                } else {
-                    makeDelay(() => {
+                if (!getState().home.kanban.ignoreWebSocket) {
+                    if (data && data.data && data.data.user_id && data.data.user_id === getState().login.user.id) {
                         const filterParams = getState().home.filter
                         const params = {
                             search_field: filterParams.search_field,
@@ -193,7 +186,21 @@ const onGetKanbanData = (source, params, formName, columnName = null) => {
                         try{ 
                             getKanbanData(dispatch, source, getState(), params, formName, null)
                         } catch {}
-                    })
+                    } else {
+                        makeDelay(() => {
+                            const filterParams = getState().home.filter
+                            const params = {
+                                search_field: filterParams.search_field,
+                                search_value: filterParams.search_value,
+                                search_exact: filterParams.search_exact
+                            }
+                            try{ 
+                                getKanbanData(dispatch, source, getState(), params, formName, null)
+                            } catch {}
+                        })
+                    }
+                } else {
+                    dispatch({ type: SET_KANBAN_IGNORE_WEBSOCKET, payload: false})
                 }
             }
         })
@@ -205,11 +212,14 @@ const onGetKanbanData = (source, params, formName, columnName = null) => {
 const onChangeKanbanData = (body, formName, data) => {
     return async (dispatch) => {
         try {
+            dispatch({ type: SET_KANBAN_IGNORE_WEBSOCKET, payload: true})
             const response = await agent.http.KANBAN.updateCardDimension(body, formName)
-            if (response.status === 200){
+            if (response && response.status === 200){
                 dispatch({ type: SET_DATA_KANBAN, payload: data})
                 return response
             } else {
+                dispatch({ type: SET_KANBAN_IGNORE_WEBSOCKET, payload: false})
+
                 return response
             }
         }

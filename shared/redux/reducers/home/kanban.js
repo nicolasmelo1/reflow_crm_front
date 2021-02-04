@@ -2,10 +2,12 @@ import {
     SET_KANBAN_INITIAL,
     SET_DATA_KANBAN,
     SET_DIMENSION_ORDER,
-    SET_CARDS
+    SET_CARDS,
+    SET_KANBAN_IGNORE_WEBSOCKET
 } from '../../types'
 
 let initialState = {
+    ignoreWebSocket: false,
     initial: {
         formName: null,
         default_kanban_card_id: null,
@@ -30,6 +32,11 @@ const kanbanReducer = (state = initialState, action) => {
             return {
                 ...state,
                 cards: action.payload
+            }
+        case SET_KANBAN_IGNORE_WEBSOCKET: 
+            return {
+                ...state,
+                ignoreWebSocket: action.payload
             }
         case SET_DATA_KANBAN:
             return {

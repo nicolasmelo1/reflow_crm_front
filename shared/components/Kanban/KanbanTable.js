@@ -25,6 +25,7 @@ const KanbanTable = (props) => {
     const oldDimensionOrdersRef = React.useRef()
     const oldFormNameRef = React.useRef()
     const kanbanHolderRef = React.useRef()
+    const isMountedRef = React.useRef(false)
     const dataSource = React.useRef(props.cancelToken.source())
     const cardFields = (props.card) ? props.card.kanban_card_fields: []
     const [hasFiredDimensionOrders, _setHasFiredDimensionOrders] = useState(false)
@@ -51,19 +52,23 @@ const KanbanTable = (props) => {
     }
 
     useEffect(() => {
+        isMountedRef.current = true
         dataSource.current = props.cancelToken.source()
         return () => {
             if(dataSource.current) {
                 dataSource.current.cancel()
             }
+            isMountedRef.current = false
         }
     }, [])
 
     useEffect(() => {
-        if (!hasFiredDimensionOrdersRef.current && props.defaultKanbanCardId && props.defaultDimensionId) {
+        if (!hasFiredDimensionOrdersRef.current && props.defaultKanbanCardId && props.defaultDimensionId && isMountedRef.current) {
             setHasFiredDimensionOrders(true)
             props.onGetDimensionOrders(dataSource.current, props.formName, props.defaultDimensionId).then(_ => {
-                setHasFiredDimensionOrders(false)
+                if (isMountedRef.current) {
+                    setHasFiredDimensionOrders(false)
+                }
             })
         }
     }, [props.defaultDimensionId, props.defaultKanbanCardId])
