@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { View } from 'react-native'
 import { strings } from '../../../utils/constants'
 import { FormulariesEdit } from '../../../styles/Formulary'
 
@@ -27,16 +28,26 @@ const Option = (props) => {
         option: ''
     })
 
-    return (
-        <FormulariesEdit.FieldFormFieldContainer>
-            <FormulariesEdit.FieldFormLabel>
-                {strings['pt-br']['formularyEditFieldOptionLabel']}
-            </FormulariesEdit.FieldFormLabel>
-            {fieldOptions.map((fieldOption, index) => (
-                <FormulariesEdit.InputField key={index} type="text" value={fieldOption.option} onChange={e=>{onChangeFieldOption(e, index)}}/>
-            ))}
-        </FormulariesEdit.FieldFormFieldContainer>
-    )
+    const renderMobile = () => {
+        return (
+            <View></View>
+        )
+    }
+
+    const renderWeb = () => {
+        return (
+            <FormulariesEdit.FieldFormFieldContainer>
+                <FormulariesEdit.FieldFormLabel>
+                    {strings['pt-br']['formularyEditFieldOptionLabel']}
+                </FormulariesEdit.FieldFormLabel>
+                {fieldOptions.map((fieldOption, index) => (
+                    <FormulariesEdit.InputField key={index} type="text" value={fieldOption.option} onChange={e=>{onChangeFieldOption(e, index)}}/>
+                ))}
+            </FormulariesEdit.FieldFormFieldContainer>
+        )
+    }
+
+    return process.env['APP'] === 'web' ? renderWeb() : renderMobile() 
 }
 
 export default Option

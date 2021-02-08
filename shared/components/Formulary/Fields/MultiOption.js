@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { View } from 'react-native'
 import Select from '../../Utils/Select'
 import Field from '../../../styles/Formulary/Field' 
 
@@ -13,11 +14,21 @@ const MultiOption = (props) => {
 
     const fieldValues = props.values.map(value=> { return { value: value.value, label: value.value }})
 
-    return (
-        <Field.Select isOpen={isOpen}>
-            <Select options={data} onChange={onChange} multiple={true} initialValues={fieldValues} isOpen={isOpen} setIsOpen={setIsOpen}/>
-        </Field.Select>
-    )
+    const renderMobile = () => {
+        return (
+            <View></View>
+        )
+    }
+
+    const renderWeb = () => {
+        return (
+            <Field.Select isOpen={isOpen}>
+                <Select options={data} onChange={onChange} multiple={true} initialValues={fieldValues} isOpen={isOpen} setIsOpen={setIsOpen}/>
+            </Field.Select>
+        )
+    } 
+
+    return process.env['APP'] === 'web' ? renderWeb() : renderMobile() 
 }
 
 export default MultiOption

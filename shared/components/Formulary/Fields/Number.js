@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
+import { TextInput } from 'react-native'
 import { Field } from '../../../styles/Formulary'
 import formatNumber from '../../../utils/formatNumber'
+
 
 const Number = (props) => {
     const [numberFormat, setNumberFormat] = useState({})
@@ -52,9 +54,20 @@ const Number = (props) => {
 
 
     const fieldValue = (props.values.length === 0) ? '': props.values[0].value
-    return (
-        <Field.Text type="text" value={fieldValue} ref={input} onChange={e => {onChangeNumberValue(e)}}/>
-    )
+
+    const renderMobile = () => {
+        return (
+            <TextInput value={fieldValue}/>
+        )
+    }
+
+    const renderWeb = () => {
+        return (
+            <Field.Text type="text" value={fieldValue} ref={input} onChange={e => {onChangeNumberValue(e)}}/>
+        )
+    }
+
+    return process.env['APP'] === 'web' ? renderWeb() : renderMobile() 
 }
 
 export default Number

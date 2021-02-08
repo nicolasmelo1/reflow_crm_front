@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
+import { View } from 'react-native'
 import Select from '../../Utils/Select'
 import agent from '../../../utils/agent'
 import { strings } from '../../../utils/constants'
 import { FormulariesEdit }  from '../../../styles/Formulary'
+
 
 const Connection = (props) => {
     const [templateSelectIsOpen, setTemplateSelectIsOpen] = useState(false)
@@ -90,56 +92,66 @@ const Connection = (props) => {
         setInitialField(fieldOptions.filter(fieldOption => (props.field.form_field_as_option) ? props.field.form_field_as_option.id === fieldOption.value : false))
     }, [props.field.form_field_as_option, fieldOptions])
     
-    return (
-        <div>
-            <FormulariesEdit.FieldFormFieldContainer>
-                <FormulariesEdit.FieldFormLabel>
-                    {strings['pt-br']['formularyEditFieldConnectionTemplateSelectorLabel']}
-                </FormulariesEdit.FieldFormLabel>
-                <FormulariesEdit.SelectorContainer isOpen={templateSelectIsOpen}>
-                    <Select 
-                    isOpen={templateSelectIsOpen}
-                    setIsOpen={setTemplateSelectIsOpen}
-                    options={groupOptions} 
-                    initialValues={initialGroup} 
-                    onChange={onChangeGroup} 
-                    />
-                </FormulariesEdit.SelectorContainer> 
-            </FormulariesEdit.FieldFormFieldContainer>
-            {initialGroup.length !== 0 ? (
+    const renderMobile = () => {
+        return (
+            <View></View>
+        )
+    }
+
+    const renderWeb = () => {
+        return (
+            <div>
                 <FormulariesEdit.FieldFormFieldContainer>
                     <FormulariesEdit.FieldFormLabel>
-                        {strings['pt-br']['formularyEditFieldConnectionFormularySelectorLabel']}
+                        {strings['pt-br']['formularyEditFieldConnectionTemplateSelectorLabel']}
                     </FormulariesEdit.FieldFormLabel>
-                    <FormulariesEdit.SelectorContainer isOpen={formularySelectIsOpen}>
+                    <FormulariesEdit.SelectorContainer isOpen={templateSelectIsOpen}>
                         <Select 
-                        isOpen={formularySelectIsOpen}
-                        setIsOpen={setFormularySelectIsOpen}
-                        options={formOptions} 
-                        initialValues={initialForm} 
-                        onChange={onChangeForm} 
+                        isOpen={templateSelectIsOpen}
+                        setIsOpen={setTemplateSelectIsOpen}
+                        options={groupOptions} 
+                        initialValues={initialGroup} 
+                        onChange={onChangeGroup} 
                         />
-                    </FormulariesEdit.SelectorContainer>
+                    </FormulariesEdit.SelectorContainer> 
                 </FormulariesEdit.FieldFormFieldContainer>
-            ): ''}
-            {initialForm.length !== 0 && initialGroup.length !== 0 ?  (
-                <FormulariesEdit.FieldFormFieldContainer>
-                    <FormulariesEdit.FieldFormLabel>
-                        {strings['pt-br']['formularyEditFieldConnectionFieldSelectorLabel']}
-                    </FormulariesEdit.FieldFormLabel>
-                    <FormulariesEdit.SelectorContainer isOpen={fieldSelectIsOpen}>
-                        <Select 
-                        isOpen={fieldSelectIsOpen}
-                        setIsOpen={setFieldSelectIsOpen}
-                        options={fieldOptions} 
-                        initialValues={initialField} 
-                        onChange={onChangeField} 
-                        />
-                    </FormulariesEdit.SelectorContainer>
-                </FormulariesEdit.FieldFormFieldContainer>
-            ): ''}
-        </div>
-    )
+                {initialGroup.length !== 0 ? (
+                    <FormulariesEdit.FieldFormFieldContainer>
+                        <FormulariesEdit.FieldFormLabel>
+                            {strings['pt-br']['formularyEditFieldConnectionFormularySelectorLabel']}
+                        </FormulariesEdit.FieldFormLabel>
+                        <FormulariesEdit.SelectorContainer isOpen={formularySelectIsOpen}>
+                            <Select 
+                            isOpen={formularySelectIsOpen}
+                            setIsOpen={setFormularySelectIsOpen}
+                            options={formOptions} 
+                            initialValues={initialForm} 
+                            onChange={onChangeForm} 
+                            />
+                        </FormulariesEdit.SelectorContainer>
+                    </FormulariesEdit.FieldFormFieldContainer>
+                ): ''}
+                {initialForm.length !== 0 && initialGroup.length !== 0 ?  (
+                    <FormulariesEdit.FieldFormFieldContainer>
+                        <FormulariesEdit.FieldFormLabel>
+                            {strings['pt-br']['formularyEditFieldConnectionFieldSelectorLabel']}
+                        </FormulariesEdit.FieldFormLabel>
+                        <FormulariesEdit.SelectorContainer isOpen={fieldSelectIsOpen}>
+                            <Select 
+                            isOpen={fieldSelectIsOpen}
+                            setIsOpen={setFieldSelectIsOpen}
+                            options={fieldOptions} 
+                            initialValues={initialField} 
+                            onChange={onChangeField} 
+                            />
+                        </FormulariesEdit.SelectorContainer>
+                    </FormulariesEdit.FieldFormFieldContainer>
+                ): ''}
+            </div>
+        )
+    }
+
+    return process.env['APP'] === 'web' ? renderWeb() : renderMobile() 
 }
 
 export default Connection

@@ -52,16 +52,16 @@ const onGetFormularyUserOptions = (source, formName, fieldId) => {
     } 
 }
 
-const onCreateFormularyData = (body, files, formName) => {
+const onCreateFormularyData = (body, formName) => {
     return (_) => {
-        return agent.http.FORMULARY.createFormularyData(body, files, formName)
+        return agent.http.FORMULARY.createFormularyData(body, formName)
     }
 }
 
 
-const onUpdateFormularyData = (body, files, formName, formId, duplicate=null) => {
+const onUpdateFormularyData = (body, formName, formId, duplicate=null) => {
     return (_) => {
-        return agent.http.FORMULARY.updateFormularyData(body, files, formName, formId, duplicate)
+        return agent.http.FORMULARY.updateFormularyData(body, formName, formId, duplicate)
     }
 }
 

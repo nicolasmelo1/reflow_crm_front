@@ -1,12 +1,32 @@
 import React, { useState, useEffect } from 'react'
+import { View } from 'react-native'
 import FormularySection from './FormularySection'
 import { Formularies } from '../../styles/Formulary'
 import { strings } from '../../utils/constants'
-import { useRouter } from 'next/router'
+
+
 /**
  * This component controls all sections and contains all sections data. It is one of the main components from the formulary.
- * @param {*} data - defines the WHAT to render from the form. if nothing is provided we build one from scratch
- * @param {Function} setData - sets the data from the formulary main component
+ * 
+ * @param {String} formName - The currently form opened form_name 
+ * @param {('full'|'preview'|'embbed')} type - this have some differeces on what is shown to the user,
+ * - embbed - is the formulary that is used to embed in external websites and urls, so, for the external world. 
+ * it deactivates funcionalities like: add new or edit connection field is not available, cannot edit.
+ * - preview - the formulary is fully functional, except it doesn't have a save button
+ * - full - usually the formulary that is used in the home page.
+ * @param {Object} types - the types state, this types are usually the required data from this system to work. 
+ * Types defines all of the field types, form types, format of numbers and dates and many other stuff 
+ * @param {Object} errors - Those are the errors recieved from the backend, sometimes it can contain the `detail` and `reason` keys
+ * and sometimes it can contain the `data` keys
+ * @param {Object} onChangeFormulary - When the user clicks `add new` or `edit` in the formulary we need to fetch the data for a new formulary.
+ * @param {Object} data - defines the WHAT to render from the form. If nothing is provided we build one from scratch.
+ * @param {Boolean} isAuxOriginalInitial - defines if the current formulary is from the list of connected formularies. When the user clicks
+ * the `add new` or `edit` button in a form field, we need to open the connected formulary in place
+ * @param {Function} setFilledIsAuxOriginalInitial - sets the isAuxOriginalInitial state.
+ * @param {Boolean} hasBuiltInitial - Used for checking if we already built the initial formulary data. This is important because on the first render
+ * we build the formulary here and not on the parent component
+ * @param {Function} setFilledHasBuiltInitial - Function for changing the hasBuiltInitial state.
+ * @param {Function} setFilledData - sets the data from the formulary main component
  * @param {Array<Object>} sections - defines the HOW to build the formulary, this json contains all of the information about each section, 
  */
 const FormularySections = (props) => {
@@ -160,40 +180,50 @@ const FormularySections = (props) => {
             }
         }
     }, [props.sections, props.data])
-    
 
-    return (
-        <div>
-            {sectionsToLoad.map((section, index) => (
-                <Formularies.SectionContainer key={index} isConditional={section.conditional_value !== null} isMultiSection={section.form_type==='multi-form'}>
-                    <Formularies.TitleLabel isConditional={section.conditional_value !== null}>{ section.label_name }</Formularies.TitleLabel>
-                    {section.form_type==='multi-form' ? (
-                        <Formularies.MultiForm.AddButton onClick={e=>addSection(e, section)}>
-                            {strings['pt-br']['formularyMultiFormAddButtonLabel']}
-                        </Formularies.MultiForm.AddButton>
-                    ): ''} 
-                    {props.data.depends_on_dynamic_form.filter(sectionData=> section.id.toString() === sectionData.form_id.toString()).map((sectionData, index) => (
-                        <FormularySection 
-                        isSectionConditional={section.conditional_value !== null}
-                        type={props.type}
-                        types={props.types}
-                        errors={props.errors}
-                        onChangeFormulary={props.onChangeFormulary}
-                        key={(sectionData.id) ? sectionData.id: index} 
-                        sectionData={sectionData} 
-                        files={props.files}
-                        updateSection={updateSection}
-                        setFilledFiles={props.setFilledFiles}
-                        sectionDataIndex={index} 
-                        section={section} 
-                        fields={section.form_fields}
-                        removeSection={section.form_type==='multi-form' ? removeSection: null}
-                        />
-                    ))}
-                </Formularies.SectionContainer>            
-            ))}
-        </div>
-    )
+    const renderMobile = () => {
+        return (
+            <View></View>
+        )
+    }
+
+    const renderWeb = () => {
+        return (
+            <div>
+                {sectionsToLoad.map((section, index) => (
+                    <Formularies.SectionContainer key={index} isConditional={section.conditional_value !== null} isMultiSection={section.form_type==='multi-form'}>
+                        <Formularies.TitleLabel isConditional={section.conditional_value !== null}>{ section.label_name }</Formularies.TitleLabel>
+                        {section.form_type==='multi-form' ? (
+                            <Formularies.MultiForm.AddButton onClick={e=>addSection(e, section)}>
+                                {strings['pt-br']['formularyMultiFormAddButtonLabel']}
+                            </Formularies.MultiForm.AddButton>
+                        ): ''} 
+                        {props.data.depends_on_dynamic_form.filter(sectionData=> section.id.toString() === sectionData.form_id.toString()).map((sectionData, index) => (
+                            <FormularySection 
+                            formName={props.formName}
+                            isSectionConditional={section.conditional_value !== null}
+                            type={props.type}
+                            types={props.types}
+                            errors={props.errors}
+                            onChangeFormulary={props.onChangeFormulary}
+                            key={(sectionData.id) ? sectionData.id: index} 
+                            sectionData={sectionData} 
+                            updateSection={updateSection}
+                            onAddFile={props.onAddFile}
+                            draftToFileReference={props.draftToFileReference}
+                            sectionDataIndex={index} 
+                            section={section} 
+                            fields={section.form_fields}
+                            removeSection={section.form_type==='multi-form' ? removeSection: null}
+                            />
+                        ))}
+                    </Formularies.SectionContainer>            
+                ))}
+            </div>
+        )
+    }
+
+    return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 
 export default FormularySections

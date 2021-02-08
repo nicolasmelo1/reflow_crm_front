@@ -1,4 +1,5 @@
 import React from 'react'
+import { View } from 'react-native'
 import FormularyFieldEdit from './FieldsEdit'
 import { FormulariesEdit }  from '../../styles/Formulary'
 import { strings } from '../../utils/constants'
@@ -24,31 +25,41 @@ import { strings } from '../../utils/constants'
  * the `form` field type or when the user creates a conditional section
  */
 const FormularyFieldsEdit = (props) => {
-    return (
-        <div>
-            {props.fields.map((field, index)=> (
-                <FormularyFieldEdit
-                key={index}
-                field={field}
-                types={props.types}
-                removeField={props.removeField}
-                fieldIsMoving={props.fieldIsMoving}
-                onMoveField={props.onMoveField}
-                setFieldIsMoving={props.setFieldIsMoving}
-                sectionIndex={props.sectionIndex}
-                onUpdateField={props.onUpdateField}
-                formulariesOptions={props.formulariesOptions}
-                userOptions={props.userOptions}
-                formName={props.formName}
-                formId={props.formId}
-                fieldIndex={index}
-                onTestFormularySettingsFormulaField={props.onTestFormularySettingsFormulaField}
-                />
-            ))}
-            <FormulariesEdit.AddNewFieldButton text={strings['pt-br']['formularyEditAddNewFieldButtonLabel']} onClick={e=>{props.onAddNewField(props.sectionIndex)}}/>
+    const renderMobile = () => {
+        return (
+            <View></View>
+        )
+    }
 
-        </div>
-    )
+    const renderWeb = () => {
+        return (
+            <div>
+                {props.fields.map((field, index)=> (
+                    <FormularyFieldEdit
+                    key={index}
+                    field={field}
+                    types={props.types}
+                    removeField={props.removeField}
+                    fieldIsMoving={props.fieldIsMoving}
+                    onMoveField={props.onMoveField}
+                    setFieldIsMoving={props.setFieldIsMoving}
+                    sectionIndex={props.sectionIndex}
+                    onUpdateField={props.onUpdateField}
+                    formulariesOptions={props.formulariesOptions}
+                    userOptions={props.userOptions}
+                    formName={props.formName}
+                    formId={props.formId}
+                    fieldIndex={index}
+                    onTestFormularySettingsFormulaField={props.onTestFormularySettingsFormulaField}
+                    />
+                ))}
+                <FormulariesEdit.AddNewFieldButton text={strings['pt-br']['formularyEditAddNewFieldButtonLabel']} onClick={e=>{props.onAddNewField(props.sectionIndex)}}/>
+    
+            </div>
+        )
+    }
+
+    return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 
 export default FormularyFieldsEdit

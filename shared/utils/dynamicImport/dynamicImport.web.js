@@ -50,7 +50,8 @@ const dynamicImport = (module, alias='default') => {
             const packages = {
                 'react-bootstrap': require('react-bootstrap'),
                 'credit-card-type': require('credit-card-type'),
-                'chart.js': require('chart.js')
+                'chart.js': require('chart.js'),
+                'next/router': require('next/router')
             }
             if (alias !== '') {
                 return packages[module][alias]

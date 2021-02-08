@@ -391,8 +391,8 @@ const Text = (props) => {
             const lengthOfContent = contents[contentIndex].text.length
             const stackedNumberOfWordsWithLengthOfContent = stackedNumberOfWords + lengthOfContent
             
-            // conditionals to check, first check if user selected a range or just set the caret to a certain position
-            // second check if the content is inside of range. And Third checks if content is inside of selection 
+            // conditionals to check, first check if user selected any number of carets or just set the caret to a certain position
+            // second check if the content is inside of range. And Third checks if content is inside of selection if the user hasn't selected a range.
             // (IT IS NOT A SELECTION RANGE, here the user has just set a caret position)
             const isRangeSelection = caretPositionRef.current.start !== caretPositionRef.current.end
             const isContentInSelectionRange = caretPositionRef.current.start < stackedNumberOfWordsWithLengthOfContent && stackedNumberOfWords <= caretPositionRef.current.end
@@ -441,7 +441,6 @@ const Text = (props) => {
         let removedCustomContents = []
         for (let i=0; i < props.block.rich_text_block_contents.length; i++) {
             if (props.block.rich_text_block_contents[i].text !== '') {
-            //if (!/^(\s*)$/g.test(props.block.rich_text_block_contents[i].text) || props.block.rich_text_block_contents.length === 1) {
                 contentsToConsider.push(props.block.rich_text_block_contents[i])
             } else if (props.block.rich_text_block_contents[i].is_custom) {
                 removedCustomContents.push(JSON.parse(JSON.stringify(props.block.rich_text_block_contents[i])))
@@ -1006,9 +1005,8 @@ const Text = (props) => {
         if (process.env['APP'] === 'web') {
             props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text = 
             props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text + '\n'
-        } else {
-            wasKeyDownPressedRef.current = false
         }
+        wasKeyDownPressedRef.current = false
         if (!isSpecialKeydownPressed.current) {
             props.updateBlocks(props.activeBlock)
         }
@@ -1032,7 +1030,7 @@ const Text = (props) => {
      * 1 - Get "Cats" content
      * 2 - "ts" inside of "Cats" is what is going to the next block, the contents of the next block should be: ["ts", "VeryMuch"], this
      * gets only the "ts" part, so the first content
-     * 3 - After "Cats" content we have the "VeryMuch" content only, with we had more we would pick all of them. With this we merge "ts" that is
+     * 3 - After "Cats" content we have the "VeryMuch" content only, if we had more we would pick all of them. With this we merge "ts" that is
      * the content from the previous step and "VeryMuch" creating the  ["ts", "VeryMuch"] contents array.
      * 4 - ["I", "Lo|ve", "Ca|ts", "VeryMuch"] The contents we remove in this block is not only "ve" and "Ca" but EVERYTHING after that. So what we simulate
      * is the following ["I", "Lo|ve", "Cats", "VeryMuch|"]. We moved the end caret to the end of the string so it's like the user has selected everything.

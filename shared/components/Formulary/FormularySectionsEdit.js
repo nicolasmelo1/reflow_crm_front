@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { View } from 'react-native'
 import FormularySectionEdit from './FormularySectionEdit'
 import { FormulariesEdit, Formularies }  from '../../styles/Formulary'
 import { strings } from '../../utils/constants'
@@ -181,37 +182,47 @@ const FormularySectionsEdit = (props) => {
         }
     }, [props.data.depends_on_form])
     
-    return (
-        <div>
-            <Formularies.EditButton onClick={props.setIsEditing} label={strings['pt-br']['formularyFinishEditButtonLabel']} description={strings['pt-br']['formularyFinishEditButtonDescription']}/>
-            {props.data.depends_on_form ? props.data.depends_on_form.map((section, index)=> (
-                <FormularySectionEdit key={index} 
-                onUpdateSection={onUpdateSection} 
-                onUpdateField={onUpdateField}
-                sectionIndex={index}
-                section={section} 
-                fieldIsMoving={fieldIsMoving}
-                removeSection={removeSection}
-                removeField={removeField}
-                setFieldIsMoving={setFieldIsMoving}
-                isMoving={isMoving}
-                onMoveSection={onMoveSection}
-                onMoveField={onMoveField}
-                setIsMoving={setIsMoving}
-                onAddNewField={onAddNewField}
-                types={props.types} 
-                fieldOptions={fieldOptions}
-                formulariesOptions={props.formulariesOptions}
-                onTestFormularySettingsFormulaField={props.onTestFormularySettingsFormulaField}
-                formName={props.formName}
-                formId={props.formId}
-                userOptions={props.userOptions}
-                />
-            )): ''}
-            <FormulariesEdit.AddNewSectionButton text={strings['pt-br']['formularyEditAddNewSectionButtonLabel']} onClick={e=>{onAddNewSection()}} />
+    const renderMobile = () => {
+        return (
+            <View></View>
+        )
+    }
 
-        </div>
-    )
+    const renderWeb = () => {
+        return (
+            <div>
+                <Formularies.EditButton onClick={props.setIsEditing} label={strings['pt-br']['formularyFinishEditButtonLabel']} description={strings['pt-br']['formularyFinishEditButtonDescription']}/>
+                {props.data.depends_on_form ? props.data.depends_on_form.map((section, index)=> (
+                    <FormularySectionEdit key={index} 
+                    onUpdateSection={onUpdateSection} 
+                    onUpdateField={onUpdateField}
+                    sectionIndex={index}
+                    section={section} 
+                    fieldIsMoving={fieldIsMoving}
+                    removeSection={removeSection}
+                    removeField={removeField}
+                    setFieldIsMoving={setFieldIsMoving}
+                    isMoving={isMoving}
+                    onMoveSection={onMoveSection}
+                    onMoveField={onMoveField}
+                    setIsMoving={setIsMoving}
+                    onAddNewField={onAddNewField}
+                    types={props.types} 
+                    fieldOptions={fieldOptions}
+                    formulariesOptions={props.formulariesOptions}
+                    onTestFormularySettingsFormulaField={props.onTestFormularySettingsFormulaField}
+                    formName={props.formName}
+                    formId={props.formId}
+                    userOptions={props.userOptions}
+                    />
+                )): ''}
+                <FormulariesEdit.AddNewSectionButton text={strings['pt-br']['formularyEditAddNewSectionButtonLabel']} onClick={e=>{onAddNewSection()}} />
+
+            </div>
+        )
+    }
+
+    return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 
 export default FormularySectionsEdit

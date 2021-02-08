@@ -1,4 +1,5 @@
 import React,  { useState, useEffect } from 'react'
+import { View } from 'react-native'
 import { useSelector } from 'react-redux'
 import { types, strings } from '../../../utils/constants'
 import delay from '../../../utils/delay';
@@ -105,60 +106,71 @@ const Number = (props) => {
     }, [])
 
     const formulaVariablesOptions = formularyFields.filter(field=> field.id !== null).map(field => ({ value: field.id.toString(), label: field.label_name, field_name: field.name }))
-    return (
-        <div>
-            <FormulariesEdit.FieldFormFieldContainer>
-                <FormulariesEdit.FieldFormLabel>
-                    {strings['pt-br']['formularyEditFieldNumberTypeSelectorLabel']}
-                </FormulariesEdit.FieldFormLabel>
-                <FormulariesEdit.SelectorContainer>
-                    <Select 
-                        options={numberMaskTypes} 
-                        initialValues={initialNumberMaskType} 
-                        onChange={onChangeFieldNumberMask} 
+    
+    const renderMobile = () => {
+        return (
+            <View></View>
+        )
+    }
+    
+    const renderWeb = () => {
+        return (
+            <div>
+                <FormulariesEdit.FieldFormFieldContainer>
+                    <FormulariesEdit.FieldFormLabel>
+                        {strings['pt-br']['formularyEditFieldNumberTypeSelectorLabel']}
+                    </FormulariesEdit.FieldFormLabel>
+                    <FormulariesEdit.SelectorContainer>
+                        <Select 
+                            options={numberMaskTypes} 
+                            initialValues={initialNumberMaskType} 
+                            onChange={onChangeFieldNumberMask} 
+                        />
+                    </FormulariesEdit.SelectorContainer>
+                </FormulariesEdit.FieldFormFieldContainer>
+                <FormulariesEdit.FieldFormFieldContainer>
+                    <FormulariesEdit.FieldFormLabel>
+                        {strings['pt-br']['formularyEditFieldNumberFormulaLabel']}
+                    </FormulariesEdit.FieldFormLabel>
+                    <FormulariesEdit.InputField
+                    error={isFormulaInvalid}
+                    type="text"
+                    value={props.field.formula_configuration ? formatFormula(props.field.formula_configuration, getFormulaOccurences(props.field.formula_configuration)).userText : ''} 
+                    onChange={e=>onChangeFormula(e.target.value)}
+                    onFocus={e=>setIsEditingFormula(true)} 
+                    onBlur={e=>setIsEditingFormula(false)}
                     />
-                </FormulariesEdit.SelectorContainer>
-            </FormulariesEdit.FieldFormFieldContainer>
-            <FormulariesEdit.FieldFormFieldContainer>
-                <FormulariesEdit.FieldFormLabel>
-                    {strings['pt-br']['formularyEditFieldNumberFormulaLabel']}
-                </FormulariesEdit.FieldFormLabel>
-                <FormulariesEdit.InputField
-                error={isFormulaInvalid}
-                type="text"
-                value={props.field.formula_configuration ? formatFormula(props.field.formula_configuration, getFormulaOccurences(props.field.formula_configuration)).userText : ''} 
-                onChange={e=>onChangeFormula(e.target.value)}
-                onFocus={e=>setIsEditingFormula(true)} 
-                onBlur={e=>setIsEditingFormula(false)}
-                />
-                {isEditingFormula ? (
-                    <FormulariesEdit.FormulaExplanationContainer>
-                        <FormulariesEdit.FormulaExplanationLabel>{strings['pt-br']['formularyEditFieldFormulaExplanationLabel']}:</FormulariesEdit.FormulaExplanationLabel>
-                        <FormulariesEdit.FormulaExplanationDescription>{strings['pt-br']['formularyEditFieldFormulaExplanationDescription1']}</FormulariesEdit.FormulaExplanationDescription>
-                        <FormulariesEdit.FormulaExplanationDescription>{strings['pt-br']['formularyEditFieldFormulaExplanationDescription2']}</FormulariesEdit.FormulaExplanationDescription>
-                        <FormulariesEdit.FormulaExplanationDescription>
-                            {strings['pt-br']['formularyEditFieldFormulaExplanationDescription3Initial']}
-                            <strong style={{color: 'red'}}>{strings['pt-br']['formularyEditFieldFormulaExplanationDescription3Red']}</strong>  
-                            {strings['pt-br']['formularyEditFieldFormulaExplanationDescription3End']}
-                        </FormulariesEdit.FormulaExplanationDescription>
-                        <FormulariesEdit.FormulaExplanationDescription>{strings['pt-br']['formularyEditFieldFormulaExplanationDescription4']}</FormulariesEdit.FormulaExplanationDescription>
-                    </FormulariesEdit.FormulaExplanationContainer>
-                ) : ''}
-                {getFormulaOccurences(props.field.formula_configuration ? props.field.formula_configuration : '').map((variable, index) => {
-                    const initialFormulaVariablesOptions = formulaVariablesOptions.filter(field => field.value.toString() === variable)
-                    return (
-                        <FormulariesEdit.SelectorContainer key={index}>
-                            <Select 
-                                options={formulaVariablesOptions} 
-                                initialValues={initialFormulaVariablesOptions} 
-                                onChange={(data) => onChangeFormulaVariable(index, data)} 
-                            />
-                        </FormulariesEdit.SelectorContainer>
-                    )
-                })}
-            </FormulariesEdit.FieldFormFieldContainer>
-        </div>
-    )
+                    {isEditingFormula ? (
+                        <FormulariesEdit.FormulaExplanationContainer>
+                            <FormulariesEdit.FormulaExplanationLabel>{strings['pt-br']['formularyEditFieldFormulaExplanationLabel']}:</FormulariesEdit.FormulaExplanationLabel>
+                            <FormulariesEdit.FormulaExplanationDescription>{strings['pt-br']['formularyEditFieldFormulaExplanationDescription1']}</FormulariesEdit.FormulaExplanationDescription>
+                            <FormulariesEdit.FormulaExplanationDescription>{strings['pt-br']['formularyEditFieldFormulaExplanationDescription2']}</FormulariesEdit.FormulaExplanationDescription>
+                            <FormulariesEdit.FormulaExplanationDescription>
+                                {strings['pt-br']['formularyEditFieldFormulaExplanationDescription3Initial']}
+                                <strong style={{color: 'red'}}>{strings['pt-br']['formularyEditFieldFormulaExplanationDescription3Red']}</strong>  
+                                {strings['pt-br']['formularyEditFieldFormulaExplanationDescription3End']}
+                            </FormulariesEdit.FormulaExplanationDescription>
+                            <FormulariesEdit.FormulaExplanationDescription>{strings['pt-br']['formularyEditFieldFormulaExplanationDescription4']}</FormulariesEdit.FormulaExplanationDescription>
+                        </FormulariesEdit.FormulaExplanationContainer>
+                    ) : ''}
+                    {getFormulaOccurences(props.field.formula_configuration ? props.field.formula_configuration : '').map((variable, index) => {
+                        const initialFormulaVariablesOptions = formulaVariablesOptions.filter(field => field.value.toString() === variable)
+                        return (
+                            <FormulariesEdit.SelectorContainer key={index}>
+                                <Select 
+                                    options={formulaVariablesOptions} 
+                                    initialValues={initialFormulaVariablesOptions} 
+                                    onChange={(data) => onChangeFormulaVariable(index, data)} 
+                                />
+                            </FormulariesEdit.SelectorContainer>
+                        )
+                    })}
+                </FormulariesEdit.FieldFormFieldContainer>
+            </div>
+        )
+    }
+    
+    return process.env['APP'] === 'web' ? renderWeb() : renderMobile() 
 }
 
 export default Number

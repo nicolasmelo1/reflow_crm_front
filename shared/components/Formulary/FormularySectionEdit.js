@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-
+import { View } from 'react-native'
 import FormularyFieldsEdit from './FormularyFieldsEdit'
 import FormularySectionEditForm from './FormularySectionEditForm'
 import Overlay from '../../styles/Overlay'
@@ -114,95 +114,105 @@ const FormularySectionEdit = (props) => {
         setIsConditional(props.section.conditional_on_field !== null || props.section.conditional_value !== null || props.section.conditional_type !== null)
     }, [props.section])
 
-    return (
-        <FormulariesEdit.Section.Container>
-            <Alert 
-            alertTitle={strings['pt-br']['formularyEditRemoveSectionAlertTitle']} 
-            alertMessage={strings['pt-br']['formularuEditRemoveSectionAlertContent']} 
-            show={showAlert} 
-            onHide={() => {
-                setShowAlert(false)
-            }} 
-            onAccept={() => {
-                setShowAlert(false)
-                onRemoveSection()
-            }}
-            onAcceptButtonLabel={strings['pt-br']['formularuEditRemoveSectionAlertAcceptButtonLabel']}
-            />
-            <FormulariesEdit.Section.TitleAndIconsContainer isConditional={isConditional} className="section-container" onDragOver={e => {onDragOver(e)}} onDrop={e => {onDrop(e)}}>
-                <div style={{height: '1em', margin: '10px 0 0 0'}}>
-                    <Overlay text={strings['pt-br']['formularyEditSectionTrashIconPopover']}>
-                        <FormulariesEdit.Icon.SectionIcon size="sm" icon="trash" onClick={e=> {setShowAlert(true)}} isConditional={isConditional}/>
-                    </Overlay>
-                    <Overlay text={strings['pt-br']['formularyEditSectionEyeIconPopover']}>
-                        <FormulariesEdit.Icon.SectionIcon size="sm" icon="eye" onClick={e=> {onDisableSection(e)}} isConditional={isConditional}/>
-                    </Overlay>
-                    <Overlay text={strings['pt-br']['formularyEditSectionMoveIconPopover']}>
-                        <div style={{ float:'right' }} draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveSection(e)}} onDragEnd={e=>{onDragEnd(e)}}>
-                            <FormulariesEdit.Icon.SectionIcon size="sm" icon="arrows-alt" isConditional={isConditional}/>
-                        </div>
-                    </Overlay>
-                    <Overlay text={strings['pt-br']['formularyEditSectionIsEditingIconPopover']}>
-                        <FormulariesEdit.Icon.SectionIcon size="sm" icon="pencil-alt" onClick={e => {setOpenedSection(!openedSection)}} isEditing={openedSection} isConditional={isConditional}/>
-                    </Overlay>
-                </div>
-                {props.section.enabled ? (
-                    <FormulariesEdit.Section.LabelInput
-                    value={props.section.label_name}
-                    placeholder={strings['pt-br']['formularyEditSectionPlaceholderLabel']} 
-                    onChange={e=> {onChangeSectionName(e)}} 
-                    isConditional={isConditional}
-                    />
-                ) : (
-                    <FormulariesEdit.Section.DisabledLabel 
-                    isConditional={isConditional}
-                    >
-                        {strings['pt-br']['formularyEditSectionDisabledLabel']}
-                    </FormulariesEdit.Section.DisabledLabel>
-                )}
-            </FormulariesEdit.Section.TitleAndIconsContainer>
-            {props.section.enabled && !props.isMoving ? (
-                <div>
-                    {openedSection ? (
-                        <FormulariesEdit.Section.Formulary.Container isConditional={isConditional}>
-                            <FormularySectionEditForm
-                            types={props.types}
-                            isConditional={isConditional}
-                            setIsConditional={setIsConditional}
-                            section={props.section}
-                            sectionIndex={props.sectionIndex}
-                            onUpdateSection={props.onUpdateSection}
-                            fieldOptions={props.fieldOptions}
-                            />
-                        </FormulariesEdit.Section.Formulary.Container>
+    const renderMobile = () => {
+        return (
+            <View></View>
+        )
+    }
+
+    const renderWeb = () => {
+        return (
+            <FormulariesEdit.Section.Container>
+                <Alert 
+                alertTitle={strings['pt-br']['formularyEditRemoveSectionAlertTitle']} 
+                alertMessage={strings['pt-br']['formularuEditRemoveSectionAlertContent']} 
+                show={showAlert} 
+                onHide={() => {
+                    setShowAlert(false)
+                }} 
+                onAccept={() => {
+                    setShowAlert(false)
+                    onRemoveSection()
+                }}
+                onAcceptButtonLabel={strings['pt-br']['formularuEditRemoveSectionAlertAcceptButtonLabel']}
+                />
+                <FormulariesEdit.Section.TitleAndIconsContainer isConditional={isConditional} className="section-container" onDragOver={e => {onDragOver(e)}} onDrop={e => {onDrop(e)}}>
+                    <div style={{height: '1em', margin: '10px 0 0 0'}}>
+                        <Overlay text={strings['pt-br']['formularyEditSectionTrashIconPopover']}>
+                            <FormulariesEdit.Icon.SectionIcon size="sm" icon="trash" onClick={e=> {setShowAlert(true)}} isConditional={isConditional}/>
+                        </Overlay>
+                        <Overlay text={strings['pt-br']['formularyEditSectionEyeIconPopover']}>
+                            <FormulariesEdit.Icon.SectionIcon size="sm" icon="eye" onClick={e=> {onDisableSection(e)}} isConditional={isConditional}/>
+                        </Overlay>
+                        <Overlay text={strings['pt-br']['formularyEditSectionMoveIconPopover']}>
+                            <div style={{ float:'right' }} draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveSection(e)}} onDragEnd={e=>{onDragEnd(e)}}>
+                                <FormulariesEdit.Icon.SectionIcon size="sm" icon="arrows-alt" isConditional={isConditional}/>
+                            </div>
+                        </Overlay>
+                        <Overlay text={strings['pt-br']['formularyEditSectionIsEditingIconPopover']}>
+                            <FormulariesEdit.Icon.SectionIcon size="sm" icon="pencil-alt" onClick={e => {setOpenedSection(!openedSection)}} isEditing={openedSection} isConditional={isConditional}/>
+                        </Overlay>
+                    </div>
+                    {props.section.enabled ? (
+                        <FormulariesEdit.Section.LabelInput
+                        value={props.section.label_name}
+                        placeholder={strings['pt-br']['formularyEditSectionPlaceholderLabel']} 
+                        onChange={e=> {onChangeSectionName(e)}} 
+                        isConditional={isConditional}
+                        />
                     ) : (
-                        <div>
-                            {![null, -1].includes(props.section.id) ? (
-                                <FormulariesEdit.FieldsContainer>
-                                    <FormularyFieldsEdit
-                                    onTestFormularySettingsFormulaField={props.onTestFormularySettingsFormulaField}
-                                    fieldIsMoving={props.fieldIsMoving}
-                                    setFieldIsMoving={props.setFieldIsMoving}
-                                    sectionIndex={props.sectionIndex}
-                                    onMoveField={props.onMoveField}
-                                    types={props.types}
-                                    formName={props.formName}
-                                    formId={props.formId}
-                                    removeField={props.removeField}
-                                    fields={props.section.form_fields}
-                                    onAddNewField={props.onAddNewField}
-                                    onUpdateField={props.onUpdateField}
-                                    userOptions={props.userOptions}
-                                    formulariesOptions={formulariesOptions}
-                                    />
-                                </FormulariesEdit.FieldsContainer>
-                            ) : ''}
-                        </div>
+                        <FormulariesEdit.Section.DisabledLabel 
+                        isConditional={isConditional}
+                        >
+                            {strings['pt-br']['formularyEditSectionDisabledLabel']}
+                        </FormulariesEdit.Section.DisabledLabel>
                     )}
-                </div>
-            ) : ''}
-        </FormulariesEdit.Section.Container>
-    )
+                </FormulariesEdit.Section.TitleAndIconsContainer>
+                {props.section.enabled && !props.isMoving ? (
+                    <div>
+                        {openedSection ? (
+                            <FormulariesEdit.Section.Formulary.Container isConditional={isConditional}>
+                                <FormularySectionEditForm
+                                types={props.types}
+                                isConditional={isConditional}
+                                setIsConditional={setIsConditional}
+                                section={props.section}
+                                sectionIndex={props.sectionIndex}
+                                onUpdateSection={props.onUpdateSection}
+                                fieldOptions={props.fieldOptions}
+                                />
+                            </FormulariesEdit.Section.Formulary.Container>
+                        ) : (
+                            <div>
+                                {![null, -1].includes(props.section.id) ? (
+                                    <FormulariesEdit.FieldsContainer>
+                                        <FormularyFieldsEdit
+                                        onTestFormularySettingsFormulaField={props.onTestFormularySettingsFormulaField}
+                                        fieldIsMoving={props.fieldIsMoving}
+                                        setFieldIsMoving={props.setFieldIsMoving}
+                                        sectionIndex={props.sectionIndex}
+                                        onMoveField={props.onMoveField}
+                                        types={props.types}
+                                        formName={props.formName}
+                                        formId={props.formId}
+                                        removeField={props.removeField}
+                                        fields={props.section.form_fields}
+                                        onAddNewField={props.onAddNewField}
+                                        onUpdateField={props.onUpdateField}
+                                        userOptions={props.userOptions}
+                                        formulariesOptions={formulariesOptions}
+                                        />
+                                    </FormulariesEdit.FieldsContainer>
+                                ) : ''}
+                            </div>
+                        )}
+                    </div>
+                ) : ''}
+            </FormulariesEdit.Section.Container>
+        )
+    }
+
+    return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 
 export default FormularySectionEdit

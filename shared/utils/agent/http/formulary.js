@@ -10,15 +10,15 @@ const FORMULARY = {
     getBuildFormulary: async (source, formName) => {
         return await requests.get(`formulary/${companyId}/${formName}/`, {}, {}, source)
     },
-    createFormularyData: async (body, files, formName) => {
-        return await requests.post(`data/${companyId}/${formName}/`, formEncodeData(`data`, body, files), {'Content-Type': 'multipart/form-data'})
+    createFormularyData: async (body, formName) => {
+        return await requests.post(`data/${companyId}/${formName}/`, body)
     },
     getFormularyData: async (source, formName, formId) => {
         return await requests.get(`data/${companyId}/${formName}/${formId}/`, {}, {}, source)
     },
-    updateFormularyData: async (body, files, formName, formId, duplicate=null) => {
+    updateFormularyData: async (body, formName, formId, duplicate=null) => {
         const duplicateUrl = (duplicate) ? '?duplicate=duplicate' : ''
-        return await requests.post(`data/${companyId}/${formName}/${formId}/${duplicateUrl}`, formEncodeData(`data`, body, files), {'Content-Type': 'multipart/form-data'})
+        return await requests.post(`data/${companyId}/${formName}/${formId}/${duplicateUrl}`, body)
     },
     getFormularyFormFieldOptions: async (source, formName, fieldId, page, search=null, valueId=null) => {
         let params = { page: page }

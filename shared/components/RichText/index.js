@@ -320,7 +320,6 @@ class RichText extends React.Component {
                 }
             ]
         }
-
     }
 
     /**
@@ -329,7 +328,7 @@ class RichText extends React.Component {
      * When we pass the block data to the Block components below we pass a reference.
      * It means we pass the location in memory of this object and not a copy. That's exactly how `useRef()` hook
      * works. It bundles your values to an object. An object is always passed between functions as reference
-     * and not as value.
+     * and not as value so it is the location in memory.
      * 
      * With a reference when the object changes inside of a function, the object outside the scope of
      * this function will also update. 

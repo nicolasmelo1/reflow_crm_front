@@ -1,9 +1,10 @@
 import React from 'react'
 import axios from 'axios'
-import Router from 'next/router'
+import { View } from 'react-native'
 import { connect } from 'react-redux'
 import FormularySections from './FormularySections'
 import FormularySectionsEdit from './FormularySectionsEdit'
+import agent from '../../utils/agent'
 import actions from '../../redux/actions'
 import { strings, paths } from '../../utils/constants'
 import dynamicImport from '../../utils/dynamicImport'
@@ -12,6 +13,7 @@ import { Formularies } from '../../styles/Formulary'
 import { PDFGeneratorButtonInFormulary } from '../../styles/PDFGenerator'
 
 const Spinner = dynamicImport('react-bootstrap', 'Spinner')
+const Router = dynamicImport('next/router')
 
 /**
  * IMPORTANT: You might want to read the README to understand how this and all of it's components work.
@@ -57,7 +59,9 @@ class Formulary extends React.Component {
         this.CancelToken = axios.CancelToken
         this.source = null
         this.formularyId = null
+        this.draftFiles = {}
         this.state = {
+            draftToFileReference: {},
             buildData: {},
             filled: {
                 hasBuiltInitial: false,
@@ -65,8 +69,7 @@ class Formulary extends React.Component {
                 data: {
                     id: null,
                     depends_on_dynamic_form: []
-                },
-                files: []
+                }
             },
             isEditing: false,
             errors: {},
@@ -87,7 +90,14 @@ class Formulary extends React.Component {
     setBuildData = (data) => (this._ismounted) ? this.setState(state => state.buildData = data) : null
     setFilledHasBuiltInitial = (data) => (this._ismounted) ? this.setState(state => state.filled.hasBuiltInitial = data) : null
     setFilledIsAuxOriginalInitial = (data) => (this._ismounted) ? this.setState(state => state.filled.isAuxOriginalInitial = data) : null
-    setFilledFiles = (data) => (this._ismounted) ? this.setState(state => state.filled.files = data) : null
+    setDraftToFileReference = (draftId, fileName) => (this._ismounted) ? this.setState(state => {
+        const draftToFileReference = {...state.draftToFileReference}
+        draftToFileReference[draftId] = fileName
+        return {
+            ...state,
+            draftToFileReference: draftToFileReference
+        }
+    }) : null
 
     setFilledData = (id, sectionsData) => (this._ismounted) ? this.setState(state => 
         state.filled.data = {
@@ -95,12 +105,11 @@ class Formulary extends React.Component {
             depends_on_dynamic_form: [...sectionsData]
         }) : null
         
-    setFilledDataAndBuildData = (id, hasBuiltInitial, isAuxOriginalInitial, filledSectionsData, filledFilesData, buildData) => (this._ismounted) ? this.setState(state=> ({
+    setFilledDataAndBuildData = (id, hasBuiltInitial, isAuxOriginalInitial, filledSectionsData, buildData) => (this._ismounted) ? this.setState(state=> ({
             ...state,
             filled: {
                 hasBuiltInitial: hasBuiltInitial,
                 isAuxOriginalInitial: isAuxOriginalInitial,
-                files: filledFilesData,
                 data: {
                     id: id,
                     depends_on_dynamic_form: [...filledSectionsData]
@@ -137,7 +146,7 @@ class Formulary extends React.Component {
             this.props.onGetFormularySettings(this.source, this.state.buildData.id)
         } else {
             this.props.setFormularySettingsHasBeenUpdated()
-            this.setFilledDataAndBuildData(null, false, false, [], [], {})
+            this.setFilledDataAndBuildData(null, false, false, [], {})
             this.onLoadFormulary(this.props.formName, this.props.formularyId)
         }
         this.setState(state => {
@@ -146,6 +155,33 @@ class Formulary extends React.Component {
                 isEditing: !state.isEditing
             }
         })
+    }
+
+    /**
+     * When the user saves an attachment we automatically upload it to the drafts and send the recieved draft string id back to the 
+     * attachment field component.
+     * 
+     * @param {File} file - The file you are uploading to the draft
+     */
+    onAddFile = async (file) => {
+        let draftStringId = ''
+        const response = await this.props.onCreateDraftFile(file)
+        if (response && response.status === 200) {
+            draftStringId = response.data.data.draft_id
+            // TODO: Delete old draftStringId that references the same file name
+            this.draftFiles[draftStringId] = file
+            this.setDraftToFileReference(draftStringId, file.name)
+            agent.websocket.DRAFT.recieveFileRemoved({
+                blockId: '',
+                callback: (data) => {
+                    if (this._ismounted && [...Object.keys(this.draftFiles)].includes(data.data.draft_string_id)) {
+                        this.addFile(this.draftFiles[data.data.draft_string_id])
+                    }
+                }
+            })
+
+        }
+        return draftStringId
     }
 
     /**
@@ -163,20 +199,14 @@ class Formulary extends React.Component {
             filled: {
                 hasBuiltInitial: hasBuiltInitial,
                 isAuxOriginalInitial: isAuxOriginalInitial, 
-                files: filled.files.map(file=> {
-                    // reference here: https://stackoverflow.com/a/55741583/13158385
-                    let newFile = new Blob([file.file], {type: file.type})
-                    newFile.name = file.file.name
-                    return {
-                        ...file,
-                        file: newFile
-                    }
-                }),
                 data: JSON.parse(JSON.stringify(filled.data))
             }
         }
     }
 
+    /**
+     * When the user clicks to create a pdf template.
+     */
     onClickPDFTemplates = () => {
         Router.push(paths.pdfTemplates().asUrl, paths.pdfTemplates(this.props.formName, this.props.formularyId).asUrl, { shallow: true })
     }
@@ -184,14 +214,16 @@ class Formulary extends React.Component {
     /**
      * Submits the formulary, might be really straight forward. It's only important to understand that
      * when we save and have any `auxOriginalInitial` we go back to the previous formulary.
+     * 
+     * @param {Boolean} duplicate - 
      */
     onSubmit = (duplicate=null) => {
         this.setIsSubmitting(true)
         let request = null
         if (this.state.filled.data.id) {
-            request = this.props.onUpdateFormularyData(this.state.filled.data, this.state.filled.files, this.state.buildData.form_name, this.state.filled.data.id, duplicate)
+            request = this.props.onUpdateFormularyData(this.state.filled.data, this.state.buildData.form_name, this.state.filled.data.id, duplicate)
         } else {
-            request = this.props.onCreateFormularyData(this.state.filled.data, this.state.filled.files,this.state.buildData.form_name)
+            request = this.props.onCreateFormularyData(this.state.filled.data,this.state.buildData.form_name)
         }
         
         if (request) {
@@ -202,6 +234,7 @@ class Formulary extends React.Component {
                 } else if (this.isInConnectedFormulary()) {
                     this.onGoBackFromConnectedForm()
                 } else {
+                    this.removeDrafts()
                     this.setIsOpen()
                 }
             })
@@ -222,8 +255,7 @@ class Formulary extends React.Component {
                 data: {
                     id: null,
                     depends_on_dynamic_form: []
-                },
-                files: []
+                }
             }
         }
         // reset the errors of the formulary, obviously
@@ -234,7 +266,6 @@ class Formulary extends React.Component {
             filled.hasBuiltInitial,
             filled.isAuxOriginalInitial,
             filled.data.depends_on_dynamic_form, 
-            filled.files, 
             buildData
         )
     }
@@ -283,7 +314,7 @@ class Formulary extends React.Component {
                     this.props.onGetFormularyData(this.source, formName, formId, this.props.formularyDefaultData).then(data=> {
                         const id = data.id ? data.id : null
                         const sectionsData = data.depends_on_dynamic_form ? data.depends_on_dynamic_form : []
-                        this.setFilledDataAndBuildData(id, false, false, sectionsData, [], formularyBuildData)
+                        this.setFilledDataAndBuildData(id, false, false, sectionsData, formularyBuildData)
                     })
                 } else {
                     this.onFullResetFormulary(formularyBuildData)
@@ -300,6 +331,17 @@ class Formulary extends React.Component {
     onChangeFormulary = (formName, formId=null) => { 
         this.setAuxOriginalInitial()
         this.onLoadFormulary(formName, formId)
+    }
+
+    /**
+     * Removes the drafts when we are closing or unmouting the formulary
+     */
+    removeDrafts = () => {
+        const draftsToRemove = Object.keys(this.draftFiles)
+        for (let i = 0; i < draftsToRemove.length; i++) {
+            this.props.onRemoveDraft(draftsToRemove[i])
+        }
+        this.draftFiles = {}
     }
 
     /**
@@ -333,6 +375,9 @@ class Formulary extends React.Component {
     componentDidMount = () => {
         this._ismounted = true
         this.onLoadFormulary(this.props.formName, this.props.formularyId)
+        if (process.env['APP'] === 'web') {
+            window.addEventListener('beforeunload', this.onRemoveDraft)
+        }
     }
 
 
@@ -340,6 +385,11 @@ class Formulary extends React.Component {
         this._ismounted = false
         if (this.source) {
             this.source.cancel()
+        }
+
+        this.removeDrafts()
+        if (process.env['APP'] === 'web') {
+            window.removeEventListener('beforeunload', this.onRemoveDraft)
         }
     }
 
@@ -366,7 +416,6 @@ class Formulary extends React.Component {
                 this.source.cancel()
             }
             this.source = this.CancelToken.source()
-            //this.onLoadFormulary(this.props.formName, this.props.formularyId)
             this.props.onGetFormularyData(this.source, this.props.formName, this.props.formularyId, this.props.formularyDefaultData).then(data=> {
                 const id = data.id ? data.id : null
                 const sectionsData = data.depends_on_dynamic_form ? data.depends_on_dynamic_form : []
@@ -377,8 +426,7 @@ class Formulary extends React.Component {
                     data: {
                         id: id,
                         depends_on_dynamic_form: sectionsData
-                    },
-                    files: []
+                    }
                 })
             })
         }
@@ -391,10 +439,17 @@ class Formulary extends React.Component {
             this.resetAuxOriginalInitial([], -1)
             this.props.setFormularyId(null)
             this.props.setFormularyDefaultData([])
+            this.removeDrafts()
         }
     }
 
-    render() {
+    renderMobile = () => {
+        return (
+            <View></View>
+        )
+    }
+
+    renderWeb = () => {
         const sections = (this.state.buildData && this.state.buildData.depends_on_form) ? this.state.buildData.depends_on_form : []
         return (
             <Formularies.Container display={this.props.display}>
@@ -447,17 +502,18 @@ class Formulary extends React.Component {
                                         </PDFGeneratorButtonInFormulary>
                                     ) : ''}
                                     <FormularySections 
+                                    formName={this.state.buildData.form_name}
                                     type={this.props.type}
                                     types={this.props.login.types}
                                     errors={this.state.errors}
                                     onChangeFormulary={this.onChangeFormulary}
                                     data={this.state.filled.data}
-                                    files={this.state.filled.files}
                                     isAuxOriginalInitial={this.state.filled.isAuxOriginalInitial}
                                     setFilledIsAuxOriginalInitial={this.setFilledIsAuxOriginalInitial}
                                     hasBuiltInitial={this.state.filled.hasBuiltInitial}
                                     setFilledHasBuiltInitial={this.setFilledHasBuiltInitial}
-                                    setFilledFiles={this.setFilledFiles}
+                                    draftToFileReference={this.state.draftToFileReference}
+                                    onAddFile={this.onAddFile}
                                     setFilledData={this.setFilledData}
                                     sections={sections}
                                     />
@@ -481,6 +537,10 @@ class Formulary extends React.Component {
                 </Formularies.ContentContainer>
             </Formularies.Container>
         )
+    }
+
+    render = () => {
+        return process.env['APP'] === 'web' ? this.renderWeb() : this.renderMobile()
     }
 }
 

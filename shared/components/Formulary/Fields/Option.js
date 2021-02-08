@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
+import { View } from 'react-native'
 import Field from '../../../styles/Formulary/Field' 
 import Select from '../../Utils/Select'
+
 
 const Option = (props) => {
     const [data, _] = useState(props.field.field_option.map(option => { return {value: option.option, label: option.option} }))
@@ -13,11 +15,21 @@ const Option = (props) => {
     
     const fieldValue =  (props.values.length === 0) ? []: [{ value: props.values[0].value, label: props.values[0].value }]
 
-    return (
-        <Field.Select isOpen={isOpen}>
-            <Select options={data} onChange={onChange} initialValues={fieldValue} setIsOpen={setIsOpen} isOpen={isOpen}/>
-        </Field.Select>
-    )
+    const renderMobile = () => {
+        return (
+            <View></View>
+        )
+    }
+
+    const renderWeb = () => {
+        return (
+            <Field.Select isOpen={isOpen}>
+                <Select options={data} onChange={onChange} initialValues={fieldValue} setIsOpen={setIsOpen} isOpen={isOpen}/>
+            </Field.Select>
+        )
+    }
+
+    return process.env['APP'] === 'web' ? renderWeb() : renderMobile() 
 }
 
 export default Option

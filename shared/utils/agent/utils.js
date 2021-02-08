@@ -1,4 +1,6 @@
 import { BEARER, API } from '../../config'
+import base64 from '../base64'
+
 let AsyncStorage;
 if (process.env['APP'] !== 'web') { 
     AsyncStorage = require('react-native').AsyncStorage
@@ -45,7 +47,7 @@ const formEncodeData = (appendToKey='', body=null, files = []) => {
         formData.append(appendToKey, JSON.stringify(body))
     }
     files.forEach(file=> {
-        formData.append(file.name, file.file)
+        formData.append(base64.encode(file.name), file.file)
     })
     return formData
 }

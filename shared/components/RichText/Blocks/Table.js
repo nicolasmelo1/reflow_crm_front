@@ -573,7 +573,6 @@ const Table = (props) => {
                             {props.block.rich_text_depends_on_blocks.slice(rowIndex * columnsNumber, (rowIndex * columnsNumber) + columnsNumber).map((block, index) => {
                                 const columnIndex = (rowIndex * columnsNumber) + index
                                 block = block ? block : createEmptyTextBlock(rowIndex*columnIndex)
-                                console.log(props.block.table_option.border_color)
                                 return (
                                     <BlockTableCell
                                     key={block.uuid} 

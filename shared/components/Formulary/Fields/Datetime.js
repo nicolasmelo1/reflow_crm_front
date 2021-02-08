@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { View } from 'react-native'
 import Id from './Id'
 import { Field } from '../../../styles/Formulary'
 import DateTimePicker from '../../Utils/DateTimePicker'
@@ -64,25 +65,42 @@ const Datetime = (props) => {
         }
     }, [props.field.date_configuration_date_format_type, props.types.data.field_date_format_type])
 
-    return (
-        <div>
-            {(props.field.date_configuration_auto_update || props.field.date_configuration_auto_create) ? (
-                <Id values={[{value: fieldValue}]}/>
-            ): (
-                <div>
-                    <Field.Text ref={inputRef} type="text" value={fieldValue} readOnly={true}/>
-                    <DateTimePicker 
-                    withoutHourPicker={typeof dateFormat === 'string' && (!(dateFormat.includes('%H') || dateFormat.includes('%M')))}
-                    input={inputRef} 
-                    onChange={onChange} 
-                    initialDay={(fieldValue !== '') ? stringToJsDateFormat(fieldValue, pythonFormatToMomentJSFormat(dateFormat)) : ''}
-                    monthReference={monthReference} 
-                    dayOfTheWeekReference={dayOfTheWeekReference}
-                    />
-                </div>
-            )}
-        </div>
-    )
+    const renderMobile = () => {
+        return (
+            <View>
+                {(props.field.date_configuration_auto_update || props.field.date_configuration_auto_create) ? (
+                    <Id values={[{value: fieldValue}]}/>
+                ): (
+                    <View>
+                    </View>
+                )}
+            </View>
+        )
+    }
+
+    const renderWeb = () => {
+        return (
+            <div>
+                {(props.field.date_configuration_auto_update || props.field.date_configuration_auto_create) ? (
+                    <Id values={[{value: fieldValue}]}/>
+                ): (
+                    <div>
+                        <Field.Text ref={inputRef} type="text" value={fieldValue} readOnly={true}/>
+                        <DateTimePicker 
+                        withoutHourPicker={typeof dateFormat === 'string' && (!(dateFormat.includes('%H') || dateFormat.includes('%M')))}
+                        input={inputRef} 
+                        onChange={onChange} 
+                        initialDay={(fieldValue !== '') ? stringToJsDateFormat(fieldValue, pythonFormatToMomentJSFormat(dateFormat)) : ''}
+                        monthReference={monthReference} 
+                        dayOfTheWeekReference={dayOfTheWeekReference}
+                        />
+                    </div>
+                )}
+            </div>
+        )
+    }
+
+    return process.env['APP'] === 'web' ? renderWeb() : renderMobile() 
 }
 
 export default Datetime

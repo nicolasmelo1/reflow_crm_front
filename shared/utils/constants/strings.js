@@ -117,6 +117,7 @@ const strings = {
         formularyOpenButtonLabel: 'Adicionar',
         formularyLoadingButtonLabel: 'Carregando...',
         formularyMultiFormAddButtonLabel: 'Adicionar',
+        formularyFieldIdEmptyLabel: 'Esse valor é gerado automaticamente',
         formularyFieldAttachmentDefaultLabel: 'Clique para buscar ou arraste arquivos aqui',
         formularyFieldAttachmentAlertTitle: 'Alerta',
         formularyFieldAttachmentAlertContent: 'Você já adicionou esse arquivo.',

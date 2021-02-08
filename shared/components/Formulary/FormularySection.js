@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { View } from 'react-native'
 import Fields from './Fields'
 import { Formularies } from '../../styles/Formulary'
 import dynamicImport from '../../utils/dynamicImport'
@@ -38,55 +39,50 @@ const FormularySection = (props) => {
         props.updateSection(props.sectionData, props.section.id, props.sectionDataIndex)
     }
 
-    const addFieldFile = (fieldName, files) => {
-        files.forEach(file => {
-            props.files.push({
-                file: file,
-                name: fieldName
-            })
-        })
-        props.setFilledFiles([...props.files])
+    const renderMobile = () => {
+        return (
+            <View></View>
+        )
     }
 
-    const removeFieldFile = (fieldName, fileName) => {
-        const indexToRemove = props.files.findIndex(sectionFile => sectionFile.name === fieldName && sectionFile.file.name === fileName)
-        props.files.splice(indexToRemove, 1)
-        props.setFilledFiles([...props.files])
+    const renderWeb = () => {
+        return (
+            <Formularies.FieldsContainer isConditional={props.removeSection !== null}>
+                {props.removeSection ? (
+                    <Row>
+                        <Col>
+                            <Formularies.MultiForm.RemoveButton onClick={e=> {props.removeSection(props.section.id, props.sectionDataIndex)}}>
+                                <FontAwesomeIcon icon="trash"/>
+                            </Formularies.MultiForm.RemoveButton>
+                        </Col>
+                    </Row>
+                ): ''}
+                {props.fields.map((element, index)=>(
+                    <Formularies.FieldContainer key={element.id}>
+                        <Fields 
+                        formName={props.formName}
+                        errors={props.errors}
+                        onChangeFormulary={props.onChangeFormulary}
+                        sectionId={props.sectionData.id}
+                        field={element}
+                        fieldFormValues={getFieldFormValues(element.name)} 
+                        getFieldFormValues={getFieldFormValues}
+                        addFieldFormValue={addFieldFormValue}
+                        removeFieldFormValue={removeFieldFormValue}
+                        updateFieldFormValue={updateFieldFormValue}
+                        draftToFileReference={props.draftToFileReference}
+                        onAddFile={props.onAddFile}
+                        type={props.type}
+                        types={props.types}
+                        isSectionConditional={props.isSectionConditional}
+                        />
+                    </Formularies.FieldContainer>
+                ))}
+            </Formularies.FieldsContainer>
+        )
     }
 
-    return (
-        <Formularies.FieldsContainer isConditional={props.removeSection !== null}>
-            {props.removeSection ? (
-                <Row>
-                    <Col>
-                        <Formularies.MultiForm.RemoveButton onClick={e=> {props.removeSection(props.section.id, props.sectionDataIndex)}}>
-                            <FontAwesomeIcon icon="trash"/>
-                        </Formularies.MultiForm.RemoveButton>
-                    </Col>
-                </Row>
-            ): ''}
-            {props.fields.map((element, index)=>(
-                <Formularies.FieldContainer key={element.id}>
-                    <Fields 
-                    errors={props.errors}
-                    onChangeFormulary={props.onChangeFormulary}
-                    sectionId={props.sectionData.id}
-                    field={element}
-                    fieldFormValues={getFieldFormValues(element.name)} 
-                    getFieldFormValues={getFieldFormValues}
-                    addFieldFormValue={addFieldFormValue}
-                    removeFieldFormValue={removeFieldFormValue}
-                    updateFieldFormValue={updateFieldFormValue}
-                    addFieldFile={addFieldFile}
-                    type={props.type}
-                    types={props.types}
-                    isSectionConditional={props.isSectionConditional}
-                    removeFieldFile={removeFieldFile}
-                    />
-                </Formularies.FieldContainer>
-            ))}
-        </Formularies.FieldsContainer>
-    )
+    return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 
 export default FormularySection

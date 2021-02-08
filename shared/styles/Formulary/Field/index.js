@@ -1,5 +1,6 @@
 import FieldTextInput from './FieldTextInput'
 import FieldAttachmentImage from './FieldAttachmentImage'
+import FieldAttachmentAddNewFileButtonContainer from './FieldAttachmentAddNewFileButtonContainer'
 import FieldAttachmentInput from './FieldAttachmentInput'
 import FieldAttachmentContainer from './FieldAttachmentContainer'
 import FieldAttachmentsContainer from './FieldAttachmentsContainer'
@@ -32,6 +33,7 @@ export default {
         Value: FieldIdValue
     },
     Attachment: {
+        AddNewFileButtonContainer: FieldAttachmentAddNewFileButtonContainer,
         Container: FieldAttachmentsContainer,
         ScrollContainer: FieldAttachmentScrollContainer,
         Button: FieldAttachmentButton,

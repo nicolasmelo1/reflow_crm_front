@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { View } from 'react-native'
 import Number from './Number'
 import Period from './Period'
 import Option from './Option'
@@ -228,102 +229,112 @@ const FormularyFieldEdit = (props) => {
         setInitialFieldType(props.types.data.field_type.filter(fieldType=> fieldType.id === props.field.type).map(fieldType=> { return { value: fieldType.id, label: types('pt-br', 'field_type', fieldType.type) } }))
     }, [props.types.data.field_type, props.field.type])
 
-    return (
-        <FormulariesEdit.FieldContainer className="field-container" onDragOver={e=>{onDragOver(e)}} onDrop={e=>{onDrop(e)}}>
-            <Alert 
-            alertTitle={strings['pt-br']['formularyEditRemoveFieldAlertTitle']} 
-            alertMessage={strings['pt-br']['formularuEditRemoveFieldAlertContent']} 
-            show={showAlert} 
-            onHide={() => {
-                setShowAlert(false)
-            }} 
-            onAccept={() => {
-                setShowAlert(false)
-                onRemoveField()
-            }}
-            onAcceptButtonLabel={strings['pt-br']['formularuEditRemoveFieldAlertAcceptButtonLabel']}
-            />
-            <div style={{height: '1em', margin: '5px'}}>
-                <Overlay text={strings['pt-br']['formularyEditFieldTrashIconPopover']}>
-                    <FormulariesEdit.Icon.FieldIcon size="sm" icon="trash" onClick={e=> {setShowAlert(true)}}/>
-                </Overlay>
-                <Overlay text={strings['pt-br']['formularyEditFieldEyeIconPopover']}>
-                    <FormulariesEdit.Icon.FieldIcon size="sm" icon="eye" onClick={e=> {onDisableField(e)}}/>
-                </Overlay>
-                <Overlay text={strings['pt-br']['formularyEditFieldMoveIconPopover']}>
-                    <div style={{ float:'right' }} draggable="true" onDragStart={e => {onMoveField(e)}} onDrag={e => onDrag(e)} onDragEnd={e => {onDragEnd(e)}}>
-                        <FormulariesEdit.Icon.FieldIcon size="sm" icon="arrows-alt"/>
-                    </div>
-                </Overlay>
-                <Overlay text={(isEditing) ? strings['pt-br']['formularyEditFieldIsNotEditingIconPopover'] : strings['pt-br']['formularyEditFieldIsEditingIconPopover']}>
-                    <FormulariesEdit.Icon.FieldIcon size="sm" icon="pencil-alt" onClick={e=> {setIsEditing(!isEditing)}} isEditing={isEditing}/>
-                </Overlay>
-            </div>
-            {props.field.enabled ? (
-                <div>
-                    {props.field ? (
-                        <div>
-                            <Fields 
-                            userOptions={props.userOptions}
-                            errors={{}}
-                            field={props.field}
-                            types={props.types}
-                            fieldFormValues={[]}
-                            />
+    const renderMobile = () => {
+        return (
+            <View></View>
+        )
+    }
+
+    const renderWeb = () => {
+        return (
+            <FormulariesEdit.FieldContainer className="field-container" onDragOver={e=>{onDragOver(e)}} onDrop={e=>{onDrop(e)}}>
+                <Alert 
+                alertTitle={strings['pt-br']['formularyEditRemoveFieldAlertTitle']} 
+                alertMessage={strings['pt-br']['formularuEditRemoveFieldAlertContent']} 
+                show={showAlert} 
+                onHide={() => {
+                    setShowAlert(false)
+                }} 
+                onAccept={() => {
+                    setShowAlert(false)
+                    onRemoveField()
+                }}
+                onAcceptButtonLabel={strings['pt-br']['formularuEditRemoveFieldAlertAcceptButtonLabel']}
+                />
+                <div style={{height: '1em', margin: '5px'}}>
+                    <Overlay text={strings['pt-br']['formularyEditFieldTrashIconPopover']}>
+                        <FormulariesEdit.Icon.FieldIcon size="sm" icon="trash" onClick={e=> {setShowAlert(true)}}/>
+                    </Overlay>
+                    <Overlay text={strings['pt-br']['formularyEditFieldEyeIconPopover']}>
+                        <FormulariesEdit.Icon.FieldIcon size="sm" icon="eye" onClick={e=> {onDisableField(e)}}/>
+                    </Overlay>
+                    <Overlay text={strings['pt-br']['formularyEditFieldMoveIconPopover']}>
+                        <div style={{ float:'right' }} draggable="true" onDragStart={e => {onMoveField(e)}} onDrag={e => onDrag(e)} onDragEnd={e => {onDragEnd(e)}}>
+                            <FormulariesEdit.Icon.FieldIcon size="sm" icon="arrows-alt"/>
                         </div>
-                    ) : (
-                        <p>
-                            {strings['pt-br']['formularyEditFieldNoFieldTypeLabel']}
-                        </p>
-                    )}
-                    {isEditing ? (
-                        <FormulariesEdit.FieldFormularyContainer>
-                            <FormulariesEdit.FieldFormFieldContainer>
-                                <FormulariesEdit.FieldFormLabel>
-                                    {strings['pt-br']['formularyEditFieldNameInputLabel']}
-                                </FormulariesEdit.FieldFormLabel>
-                                <FormulariesEdit.InputField type="text" value={props.field.label_name} onChange={e=> {onChangeFieldName(e)}}/>
-                            </FormulariesEdit.FieldFormFieldContainer>
-                            {props.field.label_name ? (
-                                <div>
-                                    <FormulariesEdit.FieldFormFieldContainer>
-                                        <FormulariesEdit.FieldFormLabel>
-                                            {strings['pt-br']['formularyEditFieldTypeSelectorLabel']}
-                                        </FormulariesEdit.FieldFormLabel>
-                                        <FormulariesEdit.SelectorContainer isOpen={fieldTypeIsOpen}>
-                                            <Select 
-                                                setIsOpen={setFieldTypeIsOpen}
-                                                isOpen={fieldTypeIsOpen}
-                                                onFilter={onFilterFieldType}
-                                                label={FieldOption}
-                                                options={fieldTypes} 
-                                                initialValues={initialFieldType} 
-                                                onChange={onChangeFieldType} 
-                                            />
-                                        </FormulariesEdit.SelectorContainer>
-                                    </FormulariesEdit.FieldFormFieldContainer>
-                                    <FormulariesEdit.FieldFormFieldContainer>
-                                        <FormulariesEdit.FieldFormCheckbox checked={props.field.required} onChange={onChangeRequired} text={strings['pt-br']['formularyEditFieldIsRequiredCheckboxLabel']}/>
-                                        <FormulariesEdit.FieldFormCheckboxDivider/>
-                                        <FormulariesEdit.FieldFormCheckbox checked={props.field.label_is_hidden} onChange={onChangeLabelIsHidden} text={strings['pt-br']['formularyEditFieldLabelIsVisibleCheckboxLabel']}/>
-                                        <FormulariesEdit.FieldFormCheckboxDivider/>
-                                        <FormulariesEdit.FieldFormCheckbox checked={props.field.field_is_hidden} onChange={onChangeFieldIsHidden} text={strings['pt-br']['formularyEditFieldIsVisibleCheckboxLabel']}/>
-                                        <FormulariesEdit.FieldFormCheckboxDivider/>
-                                        <FormulariesEdit.FieldFormCheckbox checked={props.field.is_unique} onChange={onChangeIsUnique} text={strings['pt-br']['formularyEditFieldIsUniqueCheckboxLabel']}/>
-                                    </FormulariesEdit.FieldFormFieldContainer>
-                                    {formularyItemsForFieldTypes()}
-                                </div>
-                            ) : ''}
-                        </FormulariesEdit.FieldFormularyContainer>
-                    ): ''}
+                    </Overlay>
+                    <Overlay text={(isEditing) ? strings['pt-br']['formularyEditFieldIsNotEditingIconPopover'] : strings['pt-br']['formularyEditFieldIsEditingIconPopover']}>
+                        <FormulariesEdit.Icon.FieldIcon size="sm" icon="pencil-alt" onClick={e=> {setIsEditing(!isEditing)}} isEditing={isEditing}/>
+                    </Overlay>
                 </div>
-            ) : (
-                <p>
-                    {strings['pt-br']['formularyEditFieldDisabledLabel']}
-                </p>
-            )}
-        </FormulariesEdit.FieldContainer>
-    )
+                {props.field.enabled ? (
+                    <div>
+                        {props.field ? (
+                            <div>
+                                <Fields 
+                                userOptions={props.userOptions}
+                                errors={{}}
+                                field={props.field}
+                                types={props.types}
+                                fieldFormValues={[]}
+                                />
+                            </div>
+                        ) : (
+                            <p>
+                                {strings['pt-br']['formularyEditFieldNoFieldTypeLabel']}
+                            </p>
+                        )}
+                        {isEditing ? (
+                            <FormulariesEdit.FieldFormularyContainer>
+                                <FormulariesEdit.FieldFormFieldContainer>
+                                    <FormulariesEdit.FieldFormLabel>
+                                        {strings['pt-br']['formularyEditFieldNameInputLabel']}
+                                    </FormulariesEdit.FieldFormLabel>
+                                    <FormulariesEdit.InputField type="text" value={props.field.label_name} onChange={e=> {onChangeFieldName(e)}}/>
+                                </FormulariesEdit.FieldFormFieldContainer>
+                                {props.field.label_name ? (
+                                    <div>
+                                        <FormulariesEdit.FieldFormFieldContainer>
+                                            <FormulariesEdit.FieldFormLabel>
+                                                {strings['pt-br']['formularyEditFieldTypeSelectorLabel']}
+                                            </FormulariesEdit.FieldFormLabel>
+                                            <FormulariesEdit.SelectorContainer isOpen={fieldTypeIsOpen}>
+                                                <Select 
+                                                    setIsOpen={setFieldTypeIsOpen}
+                                                    isOpen={fieldTypeIsOpen}
+                                                    onFilter={onFilterFieldType}
+                                                    label={FieldOption}
+                                                    options={fieldTypes} 
+                                                    initialValues={initialFieldType} 
+                                                    onChange={onChangeFieldType} 
+                                                />
+                                            </FormulariesEdit.SelectorContainer>
+                                        </FormulariesEdit.FieldFormFieldContainer>
+                                        <FormulariesEdit.FieldFormFieldContainer>
+                                            <FormulariesEdit.FieldFormCheckbox checked={props.field.required} onChange={onChangeRequired} text={strings['pt-br']['formularyEditFieldIsRequiredCheckboxLabel']}/>
+                                            <FormulariesEdit.FieldFormCheckboxDivider/>
+                                            <FormulariesEdit.FieldFormCheckbox checked={props.field.label_is_hidden} onChange={onChangeLabelIsHidden} text={strings['pt-br']['formularyEditFieldLabelIsVisibleCheckboxLabel']}/>
+                                            <FormulariesEdit.FieldFormCheckboxDivider/>
+                                            <FormulariesEdit.FieldFormCheckbox checked={props.field.field_is_hidden} onChange={onChangeFieldIsHidden} text={strings['pt-br']['formularyEditFieldIsVisibleCheckboxLabel']}/>
+                                            <FormulariesEdit.FieldFormCheckboxDivider/>
+                                            <FormulariesEdit.FieldFormCheckbox checked={props.field.is_unique} onChange={onChangeIsUnique} text={strings['pt-br']['formularyEditFieldIsUniqueCheckboxLabel']}/>
+                                        </FormulariesEdit.FieldFormFieldContainer>
+                                        {formularyItemsForFieldTypes()}
+                                    </div>
+                                ) : ''}
+                            </FormulariesEdit.FieldFormularyContainer>
+                        ): ''}
+                    </div>
+                ) : (
+                    <p>
+                        {strings['pt-br']['formularyEditFieldDisabledLabel']}
+                    </p>
+                )}
+            </FormulariesEdit.FieldContainer>
+        )
+    }
+
+    return process.env['APP'] === 'web' ? renderWeb() : renderMobile() 
 }
 
 export default FormularyFieldEdit

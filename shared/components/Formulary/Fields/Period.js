@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { TextInput } from 'react-native'
 import { Field } from '../../../styles/Formulary'
 import { types } from '../../../utils/constants'
 
@@ -43,9 +44,20 @@ const Period = (props) => {
 
 
     const fieldValue = (props.values.length === 0) ? '': props.values[0].value
-    return (
-        <Field.Text type="text" value={fieldValue} ref={input} onChange={e => {onChangePeriodValue(e)}}/>
-    )
+
+    const renderMobile = () => {
+        return (
+            <TextInput value={fieldValue}/>
+        )
+    }
+
+    const renderWeb = () => {
+        return (
+            <Field.Text type="text" value={fieldValue} ref={input} onChange={e => {onChangePeriodValue(e)}}/>
+        )
+    }
+
+    return process.env['APP'] === 'web' ? renderWeb() : renderMobile() 
 }
 
 export default Period

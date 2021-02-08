@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react'
+import { View } from 'react-native'
 import axios from 'axios'
-import { useRouter } from 'next/router'
 import Select from '../../Utils/Select'
 import agent from '../../../utils/agent'
 import isEqual from '../../../utils/isEqual'
 import { Field } from '../../../styles/Formulary'
 
-
 const Form = (props) => {
     const [initialValue, setInitialValue] = useState([])
     const [searchValue, setSearchValue] = useState(null)
     const [options, setOptions] = useState([])
-    const router = useRouter()
     const [isOpen, setIsOpen] = useState(false)
     const [page, setPage] = useState({
         current: 1,
@@ -40,7 +38,7 @@ const Form = (props) => {
                 updateInitialValueState(initialValue, fieldValue)
             } else if (!isRequestingInitial.current) {
                 isRequestingInitial.current = true
-                agent.http.FORMULARY.getFormularyFormFieldOptions(sourceRef.current, router.query.form, props.field.id, 1, null, props.values[0].value.toString()).then(response => {
+                agent.http.FORMULARY.getFormularyFormFieldOptions(sourceRef.current, props.formName, props.field.id, 1, null, props.values[0].value.toString()).then(response => {
                     isRequestingInitial.current = false
                     if (response && response.status === 200 && response.data.data.length > 0) {
                         fieldValue = [{ value: response.data.data[0].form_id, label: response.data.data[0].value }]
@@ -60,7 +58,7 @@ const Form = (props) => {
     const fetchMoreOptions = async () => {
         if (page.current < page.total) {
             page.current = page.current+1
-            const response = await agent.http.FORMULARY.getFormularyFormFieldOptions(sourceRef.current, router.query.form, props.field.id, page.current, searchValue)
+            const response = await agent.http.FORMULARY.getFormularyFormFieldOptions(sourceRef.current, props.formName, props.field.id, page.current, searchValue)
             if (response && response.status === 200) {
                 const newOptions = response.data.data.map(option => { return {value: option.form_id, label: option.value} })
                 setOptions([...options.concat(newOptions)])
@@ -72,7 +70,7 @@ const Form = (props) => {
 
     const onFilter = async (value) => {
         value = ![null, ''].includes(value) ? value : null
-        const response = await agent.http.FORMULARY.getFormularyFormFieldOptions(sourceRef.current, router.query.form, props.field.id, 1, value)
+        const response = await agent.http.FORMULARY.getFormularyFormFieldOptions(sourceRef.current, props.formName, props.field.id, 1, value)
         setSearchValue(value)
         if (response && response.status === 200) {
             const newOptions = response.data.data.map(option => { return {value: option.form_id, label: option.value} })
@@ -93,7 +91,7 @@ const Form = (props) => {
 
         async function fetchFormOptions() {
             try {
-                const response = await agent.http.FORMULARY.getFormularyFormFieldOptions(sourceRef.current, router.query.form, props.field.id, page.current);
+                const response = await agent.http.FORMULARY.getFormularyFormFieldOptions(sourceRef.current, props.formName, props.field.id, page.current);
                 if (!didCancel) {
                     const options = response.data.data.map(option => { return {value: option.form_id, label: option.value} })
                     setOptions(options)
@@ -117,19 +115,29 @@ const Form = (props) => {
         onUpdateInitialValues(options)
     }, [props.values, options])
 
-    return (
-        <Field.Select isOpen={isOpen}>
-            <Select 
-            options={options} 
-            onChange={onChange} 
-            initialValues={initialValue} 
-            isOpen={isOpen} 
-            onFilter={onFilter}
-            setIsOpen={setIsOpen}
-            onScrollBottom={fetchMoreOptions}
-            />
-        </Field.Select>
-    )
+    const renderMobile = () => {
+        return (
+            <View></View>
+        )
+    }
+
+    const renderWeb = () => {
+        return (
+            <Field.Select isOpen={isOpen}>
+                <Select 
+                options={options} 
+                onChange={onChange} 
+                initialValues={initialValue} 
+                isOpen={isOpen} 
+                onFilter={onFilter}
+                setIsOpen={setIsOpen}
+                onScrollBottom={fetchMoreOptions}
+                />
+            </Field.Select>
+        )
+    }
+
+    return process.env['APP'] === 'web' ? renderWeb() : renderMobile() 
 }
 
 export default Form

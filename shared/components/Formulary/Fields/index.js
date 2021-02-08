@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { View } from 'react-native'
 import Text from './Text'
 import Number from './Number'
 import Datetime from './Datetime'
@@ -28,6 +29,7 @@ import isEqual from '../../../utils/isEqual'
  * 2 - All of the functionality for this field should be inside the new file `Maps.js`
  * 3 - Don't forget to register the field in `.getFieldType()` function in order to be rendered correctly.
  * 
+ * @param {String} formName - The currently form opened form_name 
  * @param {Object} errors - An object with errors for each field.
  * @param {Function} onChangeFormulary - Function to be fired when the user clicks "Add New" or "Edit" in 
  * Form/Connection type of field. It changes the formulary automatically.
@@ -43,10 +45,7 @@ import isEqual from '../../../utils/isEqual'
  * @param {Function} addFieldFormValue - Function to add form value to the parent state.
  * @param {Function} removeFieldFormValue - Function to remove form value from the parent state.
  * @param {Function} updateFieldFormValue - Function to add formValue from the parent state.
- * @param {Function} addFieldFile - Function to add new file, this function was defined in Formulary component and is used here
- * to add new files.
  * @param {Boolean} isSectionConditional - True or false if the section is conditional or not, usually used for styling.
- * @param {Function} removeFieldFile - Function to remove a file from the files array in `index.js` in `shared/components/Formulary`.
  * @param {String} type - The type of the formulary, check `index.js` in `shared/components/Formulary`.
  * @param {Array<Object>} types - Array of objects about types. I think by now you might understand what it is, but anyway.
  * Types are used as default and required data used for everything around our application.
@@ -133,7 +132,14 @@ const Fields = (props) => {
     const renderFieldType = () => {
         const Component = getFieldType()
         if (Component) {
-            return (<Component values={values} setValues={setValues} singleValueFieldsHelper={singleValueFieldsHelper} multipleValueFieldHelper={multipleValueFieldHelper} {...props}/>)
+            return (
+                <Component 
+                values={values} 
+                setValues={setValues} 
+                singleValueFieldsHelper={singleValueFieldsHelper} 
+                multipleValueFieldHelper={multipleValueFieldHelper} 
+                {...props}
+                />)
         } else {
             return ''
         }
@@ -183,29 +189,39 @@ const Fields = (props) => {
         }
     })
 
-    return (
-        <Field.Container ref={fieldContainerRef} invalid={checkErrors()}>
-            <div>
-                {(props.field.label_is_hidden) ? '' : (
-                    <Field.FieldTitle.Label>
-                        { props.field.label_name }
-                        <Field.FieldTitle.Required>{(props.field.required) ? '*': ''}</Field.FieldTitle.Required>
-                        {typeName === 'form' && props.type !== 'embbed' && props.field?.form_field_as_option ? (
-                            <Field.FieldTitle.FormButton 
-                            onClick={e => {props.type === 'full' ? props.onChangeFormulary(props.field.form_field_as_option.form_name, (values.length > 0) ? values[0].value: null) : () => {}}}
-                            >
-                                {formFieldLabelButtonText()}
-                            </Field.FieldTitle.FormButton>
-                        ) : ''}
-                    </Field.FieldTitle.Label>
-                )}
-                {props.field.field_is_hidden ? null : renderFieldType()}
-            </div>
-            {(checkErrors()) ? (
-                <Field.Errors>{errors('pt-br', props.errors.reason[0])}</Field.Errors>
-            ) : ''}
-        </Field.Container>
-    )
+    const renderMobile = () => {
+        return (
+            <View></View>
+        )
+    }
+
+    const renderWeb = () => {
+        return (
+            <Field.Container ref={fieldContainerRef} invalid={checkErrors()}>
+                <div>
+                    {(props.field.label_is_hidden) ? '' : (
+                        <Field.FieldTitle.Label>
+                            { props.field.label_name }
+                            <Field.FieldTitle.Required>{(props.field.required) ? '*': ''}</Field.FieldTitle.Required>
+                            {typeName === 'form' && props.type !== 'embbed' && props.field?.form_field_as_option ? (
+                                <Field.FieldTitle.FormButton 
+                                onClick={e => {props.type === 'full' ? props.onChangeFormulary(props.field.form_field_as_option.form_name, (values.length > 0) ? values[0].value: null) : () => {}}}
+                                >
+                                    {formFieldLabelButtonText()}
+                                </Field.FieldTitle.FormButton>
+                            ) : ''}
+                        </Field.FieldTitle.Label>
+                    )}
+                    {props.field.field_is_hidden ? null : renderFieldType()}
+                </div>
+                {(checkErrors()) ? (
+                    <Field.Errors>{errors('pt-br', props.errors.reason[0])}</Field.Errors>
+                ) : ''}
+            </Field.Container>
+        )
+    }
+
+    return process.env['APP'] === 'web' ? renderWeb() : renderMobile() 
 }
 
 export default Fields
