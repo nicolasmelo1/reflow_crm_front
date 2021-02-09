@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import KanbanDimension from './KanbanDimension'
+import delay from '../../utils/delay'
+
+const makeDelay = delay(1000)
 
 /**
  * This is a component that is used to control the dimensions.
@@ -22,9 +25,12 @@ import KanbanDimension from './KanbanDimension'
  * order in the redux store.
  */
 const KanbanTable = (props) => {
+    const screenWidth = process.env['APP'] === 'web' ? document.body.offsetWidth : 280
+    const dimensionsWidth = process.env['APP'] === 'web' ? 280 : 280
     const oldDimensionOrdersRef = React.useRef()
     const oldFormNameRef = React.useRef()
     const kanbanHolderRef = React.useRef()
+    const kanbanTable = React.useRef()
     const isMountedRef = React.useRef(false)
     const dataSource = React.useRef(props.cancelToken.source())
     const cardFields = (props.card) ? props.card.kanban_card_fields: []
@@ -50,22 +56,89 @@ const KanbanTable = (props) => {
             kanbanHolderRef.current.scrollLeft += 5;
         }
     }
+    
+    /**
+     * When the user loads the kanban we change the current dimensions shown in the screen this way whenever we are loading
+     * the data for the kanban we will load ONLY the shown dimension options.
+     * 
+     * @param {Array<Object>} dimensionOrders - {
+     *      options {String}: A string of the dimension name.
+     * }
+     */
+    const onChangeDimensionsToShow = (dimensionOrders) => {
+        const dimensionsToShow = dimensionOrders.slice(0, Math.ceil(screenWidth/dimensionsWidth))
+        props.onChangeDimensionsToShow(dataSource.current, props.formName, dimensionsToShow)
+    }
+    
+    /**
+     * Responsible for paginating the columns to show. First thing to understand is that we change the pagination as
+     * the user scrolls horizontally, and since we don't want to retrieve the data everytime he scrolls we make a delay
+     * of 1 second, so when the user stops scrolling for at least 1 second we will retrieve the data for the columns he is currently seeing.
+     * 
+     * This is really good for performance since we will ONLY retrieve those columns that the user is already seeing.
+     * Other columns will not be loaded so we don't force much the backend
+     * 
+     * @param {BigInteger} scrollWidthPosition - An integer representing where the scroll is in the view.
+     * @param {BigInteger} scrollContainerWidth - An integer that represents the TOTAL width of the scroll container. (Not the scroll container,
+     * but the width of the scroll inside of the view, and not it's scroll width)
+     */
+    const onScrollHorizontalKanban = (scrollWidthPosition, scrollContainerWidth) => {
+        makeDelay(() => {
+            if (isMountedRef.current) {
+                let endDimensionIndexToRetrieveDataFor = null
+                let startDimensionIndexToRetrieveDataFor = null
+                let stackedMaximumNumberOfDimensionsToShowWidth = dimensionsWidth
+                // We loop through each dimensionOrder to get the startIndex and the endIndex of the columns we want to retrieve
+                for (let i=0; i<props.dimensionOrders.length; i++) {
+                    if (stackedMaximumNumberOfDimensionsToShowWidth >= scrollContainerWidth + scrollWidthPosition) {
+                        endDimensionIndexToRetrieveDataFor = i
+                        break
+                    } else if (stackedMaximumNumberOfDimensionsToShowWidth >= scrollWidthPosition && startDimensionIndexToRetrieveDataFor === null) {
+                        startDimensionIndexToRetrieveDataFor = i
+                    } 
+                    stackedMaximumNumberOfDimensionsToShowWidth += dimensionsWidth
+                }
+
+                const dimensionsToGetDataFor = props.dimensionOrders.slice(startDimensionIndexToRetrieveDataFor, endDimensionIndexToRetrieveDataFor + 1)
+                props.onChangeDimensionsToShow(dataSource.current, props.formName, dimensionsToGetDataFor, false)
+            }
+        })
+    }
+
+    /**
+     * When the user resizes the screen we need to load more data on the shown columns. It's like the user had scrolled
+     * 
+     * @param {SyntheticEvent} e - The event object emited by 'resize' window event
+     */
+    const onResizeWeb = (e) => {
+        onScrollHorizontalKanban(kanbanHolderRef.current.scrollLeft, kanbanHolderRef.current.offsetWidth)
+    }
 
     useEffect(() => {
         isMountedRef.current = true
         dataSource.current = props.cancelToken.source()
+        if (props.dimensionOrders.length > 0) {
+            onChangeDimensionsToShow(props.dimensionOrders)
+        }
+        if (process.env['APP'] === 'web') { 
+            window.addEventListener('resize', onResizeWeb)
+        }
         return () => {
             if(dataSource.current) {
                 dataSource.current.cancel()
             }
             isMountedRef.current = false
+            if (process.env['APP'] === 'web') { 
+                window.removeEventListener('resize', onResizeWeb)
+            }
         }
     }, [])
 
     useEffect(() => {
         if (!hasFiredDimensionOrdersRef.current && props.defaultKanbanCardId && props.defaultDimensionId && isMountedRef.current) {
             setHasFiredDimensionOrders(true)
-            props.onGetDimensionOrders(dataSource.current, props.formName, props.defaultDimensionId).then(_ => {
+            props.onGetDimensionOrders(dataSource.current, props.formName, props.defaultDimensionId).then(dimensionOrders => {
+                onChangeDimensionsToShow(dimensionOrders)
                 if (isMountedRef.current) {
                     setHasFiredDimensionOrders(false)
                 }
@@ -93,13 +166,19 @@ const KanbanTable = (props) => {
     })
 
     return (
-        <div style={{overflowX: 'auto', transform: 'rotateX(180deg)'}} ref={kanbanHolderRef} onDragOver={e=> {onDragOverTable(e)}}>
+        <div 
+        ref={kanbanHolderRef} 
+        onDragOver={e=> {onDragOverTable(e)}}
+        onScroll={(e) => onScrollHorizontalKanban(e.target.scrollLeft, e.target.offsetWidth)}
+        style={{overflowX: 'auto', transform: 'rotateX(180deg)'}}
+        >
             {props.defaultKanbanCardId && props.defaultDimensionId ? (
-                <table style={{ transform: 'rotateX(180deg)'}}>
+                <table ref={kanbanTable} style={{ transform: 'rotateX(180deg)'}}>
                     <tbody>
                         <KanbanDimension
                         formName={props.formName}
                         cancelToken={props.cancelToken}
+                        dimensionsWidth={dimensionsWidth} 
                         defaultDimensionId={props.defaultDimensionId}
                         onChangeDimensionOrdersState={props.onChangeDimensionOrdersState}
                         onChangeKanbanData={props.onChangeKanbanData}

@@ -107,20 +107,24 @@ const AttachmentFile = (props) => {
                         {itemValue}
                     </Field.Attachment.Text>
                 </Field.Attachment.Label>
-                <Field.Attachment.Button onClick={e=> {props.removeFile()}}> 
+                <Field.Attachment.Button 
+                onClick={e=> {props.removeFile()}}
+                > 
                     <FontAwesomeIcon icon="trash"/> 
                 </Field.Attachment.Button>
                 <Field.Attachment.PreviewContainer isOpen={isFilePreviewOpen}>
                     <div>
-                        <div style={{width: '100%', display: 'flex', direction: 'rtl', marginBottom: '10px'}}>
-                            <button onClick={(e) => onClickClosePreview()}style={{ border: '0', backgroundColor: 'transparent', color: '#17242D'}}> 
+                        <Field.Attachment.PreviewTopButtonsContainer>
+                            <Field.Attachment.PreviewCloseButton 
+                            onClick={(e) => onClickClosePreview()}
+                            > 
                                 <FontAwesomeIcon icon={'times'} style={{fontSize: '50px'}}/>
-                            </button>
-                        </div>
+                            </Field.Attachment.PreviewCloseButton>
+                        </Field.Attachment.PreviewTopButtonsContainer>
                         {isFilePreviewOpen ? (
-                            <div style={{width: '100%', height: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                            <Field.Attachment.PreviewImageContainer>
                                 <img src={fileUrl}/>
-                            </div>
+                            </Field.Attachment.PreviewImageContainer>
                         ) : ''}
                     </div> 
                 </Field.Attachment.PreviewContainer>

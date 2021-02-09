@@ -3,7 +3,8 @@ import {
     SET_DATA_KANBAN,
     SET_DIMENSION_ORDER,
     SET_CARDS,
-    SET_KANBAN_IGNORE_WEBSOCKET
+    SET_KANBAN_IGNORE_WEBSOCKET,
+    SET_DIMENSION_IN_SCREEN
 } from '../../types'
 
 let initialState = {
@@ -16,7 +17,10 @@ let initialState = {
         fields: []
     },
     data: [],
-    dimension_order: [],
+    dimension: {
+        order: [],
+        inScreenDimensions: [],
+    },
     cards: [],
 
 }
@@ -47,8 +51,19 @@ const kanbanReducer = (state = initialState, action) => {
         case SET_DIMENSION_ORDER:
             return {
                 ...state,
-                dimension_order: action.payload
+                dimension: {
+                    ...state.dimension,
+                    order: action.payload
+                }
             }
+            case SET_DIMENSION_IN_SCREEN:
+                return {
+                    ...state,
+                    dimension: {
+                        ...state.dimension,
+                        inScreenDimensions: action.payload
+                    }
+                }
         default:
             return state;
     }

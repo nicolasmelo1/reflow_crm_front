@@ -68,7 +68,7 @@ const KanbanCards = (props) => {
 
         params.page = props.pagination.current + 1
         setHasFiredRequestForNewPage(true)
-        props.onGetKanbanData(dataSource.current, params, props.formName, props.dimension).then(_=> {
+        props.onGetKanbanData(dataSource.current, params, props.formName, [props.dimension]).then(_=> {
             setHasFiredRequestForNewPage(false)
         })
     }
@@ -105,41 +105,46 @@ const KanbanCards = (props) => {
                 setIsOverflown(false)
             }
         }
-    }, [props.data])
+    }, [props.data?.data])
 
-    const data = (props.data) ? props.data : []
     return (
         <KanbanCardsContainer ref={kanbanCardContainerRef} onScroll={(e) => {onScrollKanban(e.target)}}>
-            {data.map((card, index) => (
-                <KanbanCardContainer className='kanban-card' key={index} onClick={e=> {
-                    e.preventDefault()
-                    props.setFormularyId(card.id)
-                }}>
-                    <div>
-                        {props.cardIdsInLoadingState.includes(card.id) ? (
+            {props.data ? (
+                <React.Fragment>
+                    {props.data.data.map((card, index) => (
+                        <KanbanCardContainer className='kanban-card' key={index} onClick={e=> {
+                            e.preventDefault()
+                            props.setFormularyId(card.id)
+                        }}>
                             <div>
-                                <Spinner animation="border" />
-                            </div>
-                        ) : (
-                            <div>
-                                <div draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveCard(e, index)}} onDragEnd={e=>{onDragEnd(e)}} >
-                                    <KanbanCardMoveIcon icon="arrows-alt"/>
-                                </div>
-                                {props.cardFields.map((cardField, cardFieldIndex) => (
-                                    <div key={cardFieldIndex}>
-                                        {card.dynamic_form_value.filter(value=> value.field_id === cardField.id).map((field, fieldIndex) => (
-                                            <KanbanCardContents key={fieldIndex} isTitle={cardFieldIndex===0}>
-                                                {field.value}
-                                            </KanbanCardContents>
-                                        ))} 
+                                {props.cardIdsInLoadingState.includes(card.id) ? (
+                                    <div>
+                                        <Spinner animation="border" />
                                     </div>
-                                ))}
+                                ) : (
+                                    <div>
+                                        <div draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveCard(e, index)}} onDragEnd={e=>{onDragEnd(e)}} >
+                                            <KanbanCardMoveIcon icon="arrows-alt"/>
+                                        </div>
+                                        {props.cardFields.map((cardField, cardFieldIndex) => (
+                                            <div key={cardFieldIndex}>
+                                                {card.dynamic_form_value.filter(value=> value.field_id === cardField.id).map((field, fieldIndex) => (
+                                                    <KanbanCardContents key={fieldIndex} isTitle={cardFieldIndex===0}>
+                                                        {field.value}
+                                                    </KanbanCardContents>
+                                                ))} 
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
-                        )}
-                    </div>
-                    
-                </KanbanCardContainer>
-            ))}
+                            
+                        </KanbanCardContainer>
+                    ))}
+                </React.Fragment>
+            ) : (
+                <Spinner animation="border" />
+            )}
             {props.pagination && props.pagination.current < props.pagination.total && !isOverflown ? (
                 <KanbanLoadMoreDataButton onClick={e=> {onClickToGetMoreData()}}>{strings['pt-br']['kanbanLoadMoreButtonLabel']}</KanbanLoadMoreDataButton>
             ): ''}

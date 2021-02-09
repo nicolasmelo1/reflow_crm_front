@@ -176,7 +176,9 @@ class Kanban extends React.Component {
                                             formularySettingsHasBeenUpdated={this.props.formularySettingsHasBeenUpdated}
                                             cancelToken={this.CancelToken}
                                             params={this.getParams()}
-                                            dimensionOrders={this.props.kanban.dimension_order}
+                                            dimensionOrders={this.props.kanban.dimension.order}
+                                            dimensionsToShow={this.props.kanban.dimension.inScreenDimensions}
+                                            onChangeDimensionsToShow={this.props.onChangeDimensionsToShow}
                                             defaultFormName={this.props.kanban.initial.formName}
                                             defaultDimensionId={this.props.kanban.initial.default_dimension_field_id}
                                             defaultKanbanCardId={this.props.kanban.initial.default_kanban_card_id}

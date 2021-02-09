@@ -1,6 +1,7 @@
 import {
     SET_DATA_KANBAN,
     SET_DIMENSION_ORDER,
+    SET_DIMENSION_IN_SCREEN,
     SET_KANBAN_INITIAL,
     SET_KANBAN_IGNORE_WEBSOCKET,
     SET_CARDS
@@ -12,9 +13,9 @@ import delay from '../../../utils/delay'
 const makeDelay = delay(10000)
 
 
-const getKanbanData = async (dispatch, source, state, params, formName, columnName) => {
+const getKanbanData = async (dispatch, source, state, params, formName, columnNames=[]) => {
     const initial = state.home.kanban.initial
-    const dimensionOrders = state.home.kanban.dimension_order
+    const dimensionOrders = state.home.kanban.dimension.inScreenDimensions
     const cards = state.home.kanban.cards
     const data = state.home.kanban.data
 
@@ -29,7 +30,7 @@ const getKanbanData = async (dispatch, source, state, params, formName, columnNa
             search_field: params.search_field.concat(dimension[0].name),
             fields: cardFieldIds,
         }
-        if (!columnName) {
+        if (columnNames.length === 0) {
             const promises = dimensionOrders.map(async (dimensionOrder) => {
                 const parameters = {
                     ...defaultParameters,
@@ -45,28 +46,32 @@ const getKanbanData = async (dispatch, source, state, params, formName, columnNa
                     })
                 }
             })
-            await Promise.all(promises);
+            await Promise.all(promises)
         } else {
-            const parameters = {
-                ...defaultParameters,
-                page: (params.page) ? params.page : 1,
-                search_value: params.search_value.concat(columnName),
-            }
-            response = await agent.http.KANBAN.getData(source, parameters, formName)
-            if (response && response.status === 200) {
-                const dimensionIndexInData = data.findIndex(dimensionData => dimensionData.dimension === columnName)
-                if (dimensionIndexInData !== -1) {
-                    data[dimensionIndexInData].pagination = response.data.pagination
-                    data[dimensionIndexInData].data = data[dimensionIndexInData].data.concat(response.data.data)
-                    payload = [...data]
-                } else {
-                    payload.push({
-                        dimension: columnName, 
-                        pagination: response.data.pagination,
-                        data: response.data.data
-                    })
+            payload = data
+            const promises = columnNames.map(async (columnName) => {
+                const parameters = {
+                    ...defaultParameters,
+                    page: (params.page) ? params.page : 1,
+                    search_value: params.search_value.concat(columnName),
                 }
-            }
+                response = await agent.http.KANBAN.getData(source, parameters, formName)
+                if (response && response.status === 200) {
+                    const dimensionIndexInData = data.findIndex(dimensionData => dimensionData.dimension === columnName)
+                    if (dimensionIndexInData !== -1) {
+                        data[dimensionIndexInData].pagination = response.data.pagination
+                        data[dimensionIndexInData].data = data[dimensionIndexInData].data.concat(response.data.data)
+                        payload = [...data]
+                    } else {
+                        payload.push({
+                            dimension: columnName, 
+                            pagination: response.data.pagination,
+                            data: response.data.data
+                        })
+                    }
+                }
+            })
+            await Promise.all(promises)
         }
         if (response && response.status === 200) {
             dispatch({ type: SET_DATA_KANBAN, payload: payload})
@@ -120,7 +125,6 @@ const onRemoveCard = (formName, cardIndex) => {
                     default_kanban_card_id: null
                 }
                 dispatch({ type: SET_KANBAN_INITIAL, payload: payload })
-
             }
         }
         stateData.splice(cardIndex, 1)
@@ -155,8 +159,44 @@ const onGetDimensionOrders = (source, formName, dimensionId) => {
             if (response.status == 200) {
                 dispatch({ type: SET_DIMENSION_ORDER, payload: response.data.data })
             }
-            return response
-        } catch {}
+            return response.data.data
+        } catch {
+            return []
+        }
+    }
+}
+
+/**
+ * Responsible for setting the dimension options shown in the screen.
+ * 
+ * @param {Object} source - Axios source so we can cancel the request on the fly.
+ * @param {String} formName - The current formName, we use this to retrieve new data.
+ * @param {Array<Object>} dimensionsToLoad - Array of filtered dimension.orders, this array represents the dimensions that
+ * is on the screen at the current time.
+ * @param {Boolean} isInitial - If you are loading this when mounting the component you DO NOT NEED to retrieve the data,
+ * the component will be responsible for it. Otherwise we need to retrieve the kanban data for the new columns
+ */
+const onChangeDimensionsToShow = (source, formName, dimensionsToLoad, isInitial=true) => {
+    return (dispatch, getState) => {
+        if (isInitial) {
+            dispatch({ type: SET_DIMENSION_IN_SCREEN, payload: dimensionsToLoad })
+        } else {
+            const loadedDimensions = getState().home.kanban.data
+            const dimensionNamesShownInScreen = loadedDimensions.map(dimension => dimension.dimension)
+            let dimensionsNamesToLoad = dimensionsToLoad.map(dimension => dimension.options)
+            dimensionsNamesToLoad = dimensionsNamesToLoad.filter(dimensionName => !dimensionNamesShownInScreen.includes(dimensionName))
+
+            const filterParams = getState().home.filter
+            const params = {
+                search_field: filterParams.search_field,
+                search_value: filterParams.search_value,
+                search_exact: filterParams.search_exact
+            }
+            dispatch({ type: SET_DIMENSION_IN_SCREEN, payload: dimensionsToLoad })
+            if (dimensionsNamesToLoad.length > 0) {
+                getKanbanData(dispatch, source, getState(), params, formName, dimensionsNamesToLoad)
+            }
+        }
     }
 }
 
@@ -170,7 +210,7 @@ const onChangeDimensionOrdersState = (dimensionOrders, dimensionId=null, formNam
 }
 
 // if columnName is set get the data for a single column
-const onGetKanbanData = (source, params, formName, columnName = null) => {
+const onGetKanbanData = (source, params, formName, columnNames=[]) => {
     return async (dispatch, getState) => {
         agent.websocket.KANBAN.recieveDataUpdated({
             formName: formName,
@@ -184,7 +224,7 @@ const onGetKanbanData = (source, params, formName, columnName = null) => {
                             search_exact: filterParams.search_exact
                         }
                         try{ 
-                            getKanbanData(dispatch, source, getState(), params, formName, null)
+                            getKanbanData(dispatch, source, getState(), params, formName, [])
                         } catch {}
                     } else {
                         makeDelay(() => {
@@ -195,7 +235,7 @@ const onGetKanbanData = (source, params, formName, columnName = null) => {
                                 search_exact: filterParams.search_exact
                             }
                             try{ 
-                                getKanbanData(dispatch, source, getState(), params, formName, null)
+                                getKanbanData(dispatch, source, getState(), params, formName, [])
                             } catch {}
                         })
                     }
@@ -204,7 +244,7 @@ const onGetKanbanData = (source, params, formName, columnName = null) => {
                 }
             }
         })
-        return getKanbanData(dispatch, source, getState(), params, formName, columnName)
+        return getKanbanData(dispatch, source, getState(), params, formName, columnNames)
     }
 }
 
@@ -235,6 +275,7 @@ export default {
     onChangeKanbanData,
     onChangeCardsState,
     onChangeDefaultState,
+    onChangeDimensionsToShow,
     onCreateOrUpdateCard,
     onGetDimensionOrders,
     onChangeDimensionOrdersState

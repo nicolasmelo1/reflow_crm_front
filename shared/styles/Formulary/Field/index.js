@@ -1,6 +1,9 @@
 import FieldTextInput from './FieldTextInput'
 import FieldAttachmentImage from './FieldAttachmentImage'
 import FieldAttachmentPreviewContainer from './FieldAttachmentPreviewContainer'
+import FieldAttachmentPreviewImageContainer from './FieldAttachmentPreviewImageContainer'
+import FieldAttachmentPreviewTopButtonsContainer from './FieldAttachmentPreviewTopButtonsContainer'
+import FieldAttachmentPreviewCloseButton from './FieldAttachmentPreviewCloseButton'
 import FieldAttachmentAddNewFileButtonContainer from './FieldAttachmentAddNewFileButtonContainer'
 import FieldAttachmentInput from './FieldAttachmentInput'
 import FieldAttachmentContainer from './FieldAttachmentContainer'
@@ -34,6 +37,9 @@ export default {
         Value: FieldIdValue
     },
     Attachment: {
+        PreviewImageContainer: FieldAttachmentPreviewImageContainer,
+        PreviewCloseButton: FieldAttachmentPreviewCloseButton,
+        PreviewTopButtonsContainer: FieldAttachmentPreviewTopButtonsContainer,
         PreviewContainer: FieldAttachmentPreviewContainer,
         AddNewFileButtonContainer: FieldAttachmentAddNewFileButtonContainer,
         Container: FieldAttachmentsContainer,

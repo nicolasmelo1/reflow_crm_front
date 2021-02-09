@@ -1,0 +1,13 @@
+import React from 'react'
+import styled from 'styled-components'
+import { View } from 'react-native'
+
+export default process.env['APP'] === 'web' ?
+styled.div`
+    width: 100%;
+    display: flex;
+    direction: rtl;
+    margin-bottom: 10px
+`
+:
+styled(View)``

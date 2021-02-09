@@ -135,7 +135,11 @@ const KanbanDimension = (props) => {
     return (
         <tr>
             {props.dimensionOrders.map((dimensionOrder, index) => (
-                <td key={index} onDragOver={e => {onDragOver(e)}} onDrop={e => {onDrop(e, index)}}>
+                <td key={index}
+                onDragOver={e => {onDragOver(e)}} 
+                onDrop={e => {onDrop(e, index)}}
+                style={{maxWidth: props.dimensionsWidth, minWidth: props.dimensionsWidth}}
+                >
                     <KanbanDimensionTitleLabel>
                         {dimensionOrder.options}
                         <div draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveDimension(e, index)}} onDragEnd={e=>{onDragEnd(e)}} >
@@ -153,7 +157,7 @@ const KanbanDimension = (props) => {
                     cardIdsInLoadingState={cardIdsInLoadingState}
                     params={props.params}
                     cardFields={props.cardFields}
-                    data={filterData(dimensionOrder.options) ? filterData(dimensionOrder.options).data: []}
+                    data={filterData(dimensionOrder.options)}
                     pagination={filterData(dimensionOrder.options) ? filterData(dimensionOrder.options).pagination: []}
                     />
                 </td>
