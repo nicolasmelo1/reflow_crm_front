@@ -71,7 +71,6 @@ const PDFGeneratorReader = (props) => {
         sourceRef.current = props.cancelToken.source()
         props.onGetPDFGeneratorTempalatesReader(sourceRef.current, props.formName, 1).then(response => {
             if (response && response.status === 200) {
-                console.log(response.data.pagination)
                 setPage(response.data.pagination)
             }
         })       

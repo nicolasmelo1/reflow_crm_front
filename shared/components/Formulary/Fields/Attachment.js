@@ -188,10 +188,6 @@ const Attachment = (props) => {
         const formValues = props.multipleValueFieldHelper(attachmentValues)
         props.setValues([...formValues])
     } 
-
-    useEffect(() => {
-
-    }, [props.draftToFileReference])
     
     const renderMobile = () => {
         return (
@@ -200,8 +196,6 @@ const Attachment = (props) => {
     }
 
     const renderWeb = () => {
-        console.log(isDraggingOver)
-        console.log(props.values.length)
         return (
             <Field.Attachment.Container 
             onDrag={e => preventDefaultAndStopPropagationOfEventWeb(e)} 
