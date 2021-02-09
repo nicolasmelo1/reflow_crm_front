@@ -113,6 +113,14 @@ const base64 = {
         } while (i < input.length)
 
         return output
+    },
+    isBase64: function (input) {
+        try {
+            base64.decode(input)
+            return true
+        } catch {
+            return false
+        }
     }
 }
 

@@ -4,20 +4,87 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import Field from '../../../styles/Formulary/Field'
 import Alert from '../../Utils/Alert'
 import { strings } from '../../../utils/constants'
+import base64 from '../../../utils/base64'
 import agent from '../../../utils/agent'
 
-
+/**
+ * Component responsible for holding each attachment file, a attachment file could be also a draft so be aware of this.
+ * 
+ * @param {*} props 
+ */
 const AttachmentFile = (props) => {
+    const [isFilePreviewOpen, setIsFilePreviewOpen] = useState(false)
+    const [fileUrl, setFileUrl] = useState(null)
+    const sidebarToogleZindex = React.useRef(null)
+    const isMountedRef = React.useRef(null)
     const itemValue = props.draftToFileReference[props.value.value] ? props.draftToFileReference[props.value.value] : props.value.value
     const splittedFullName = (itemValue) ? itemValue.split('.') : []
     const fileFormat = splittedFullName[splittedFullName.length-1]
 
+    /**
+     * Function responsible for retriving if a certain value is a draft, so if the value is a string and it is
+     * a base64 encoded string it could be a draft, if it has draft in it, then it's certainly a draft.
+     * Otherwise it is not a draft
+     * 
+     * @param {String} value - Value to check if it as draft or not
+     */
+    const isDraft = (value) => {
+        if (base64.isBase64(value)) {
+            return base64.decode(value).includes('draft-')
+        } else {
+            return false
+        }
+    }
+
+    /**
+     * Function responsible for handling when the user clicks a file, when the user clicks we can open the
+     * preview of the photo if it is an image or we download it otherwise.
+     * 
+     * IMPORTANT: Notice that we need to change the toolbar toogle zIndex here, if we do not change the sidebar tooggle
+     * will show on top of the image. Be aware that we need to store this value to set it again after closing
+     */
     const onClick = () => {
-        /**  if (![null, undefined, ''].includes(props.value.id)){
-            window.open(await agent.http.FORMULARY.getAttachmentFile(props.formName, props.sectionId, props.field.id, props.value.value))
-        }*/
+        if ((['png', 'jpg', 'jpeg', 'gif'].includes(fileFormat))) {
+            sidebarToogleZindex.current = document.querySelector('.sidebar-toogle').style.zIndex
+            document.querySelector('.sidebar-toogle').style.zIndex = 0
+            setIsFilePreviewOpen(!isFilePreviewOpen)
+        } else if (![null, undefined, ''].includes(fileUrl)){
+            window.open(fileUrl)
+        }
         
     }
+
+    /**
+     * When the user closes the preview we set the zIndex of the sidebar toogle back to normal and also
+     * closes the preview view.
+     */
+    const onClickClosePreview = () => {
+        document.querySelector('.sidebar-toogle').style.zIndex = sidebarToogleZindex.current
+        setIsFilePreviewOpen(!isFilePreviewOpen)
+    }
+
+    useEffect(() => {
+        isMountedRef.current = true
+        return () => {
+            isMountedRef.current = false
+        }
+    }, [])
+
+    useEffect(() => {
+        if (isDraft(props.value.value)) {
+            agent.http.DRAFT.getDraftFile(props.value.value).then(url => {
+                if (isMountedRef.current) {
+                    setFileUrl(url)
+                }
+            })
+        } else {
+            agent.http.FORMULARY.getAttachmentFile(props.formName, props.sectionId, props.field.id, props.value.value).then(url => {
+                if (isMountedRef.current) {
+                    setFileUrl(url)
+                }
+            })
+        }
+    }, [props.value.value])
 
     const renderMobile = () => {
         return (
@@ -33,18 +100,30 @@ const AttachmentFile = (props) => {
                  isSectionConditional={props.isSectionConditional}
                  >
                     <Field.Attachment.Image 
-                    src={(props.isInitial) ? "/add_icon.png" : `/${fileFormat}_icon.png`} 
+                    src={(['png', 'jpg', 'jpeg', 'gif'].includes(fileFormat)) ? fileUrl : `/${fileFormat}_icon.png`} 
                     isSectionConditional={props.isSectionConditional}
                     />
-                    <Field.Attachment.Text 
-                    isInitial={props.isInitial}
-                    >
+                    <Field.Attachment.Text>
                         {itemValue}
                     </Field.Attachment.Text>
                 </Field.Attachment.Label>
                 <Field.Attachment.Button onClick={e=> {props.removeFile()}}> 
                     <FontAwesomeIcon icon="trash"/> 
                 </Field.Attachment.Button>
+                <Field.Attachment.PreviewContainer isOpen={isFilePreviewOpen}>
+                    <div>
+                        <div style={{width: '100%', display: 'flex', direction: 'rtl', marginBottom: '10px'}}>
+                            <button onClick={(e) => onClickClosePreview()}style={{ border: '0', backgroundColor: 'transparent', color: '#17242D'}}> 
+                                <FontAwesomeIcon icon={'times'} style={{fontSize: '50px'}}/>
+                            </button>
+                        </div>
+                        {isFilePreviewOpen ? (
+                            <div style={{width: '100%', height: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                                <img src={fileUrl}/>
+                            </div>
+                        ) : ''}
+                    </div> 
+                </Field.Attachment.PreviewContainer>
             </Field.Attachment.ItemContainer>
         )
     }
@@ -121,6 +200,8 @@ const Attachment = (props) => {
     }
 
     const renderWeb = () => {
+        console.log(isDraggingOver)
+        console.log(props.values.length)
         return (
             <Field.Attachment.Container 
             onDrag={e => preventDefaultAndStopPropagationOfEventWeb(e)} 
@@ -150,53 +231,46 @@ const Attachment = (props) => {
                     setShowAlert(false)
                 }} 
                 />
-                {isDraggingOver ? (
-                    <div>
-                        <p>
-                            {'Solte os arquivos aqui'}
-                        </p>
-                    </div>
-                ) : (
-                    <Field.Attachment.ScrollContainer>
-                        <Field.Attachment.AddNewFileButtonContainer 
-                        isInitial={true}
-                        hasValues={props.values.length !== 0} 
-                        isSectionConditional={props.isSectionConditional} 
-                        isDragging={isDraggingOver}
+                <Field.Attachment.ScrollContainer>
+                    <Field.Attachment.AddNewFileButtonContainer 
+                    isInitial={true}
+                    hasValues={!isDraggingOver ? props.values.length !== 0 : false} 
+                    isSectionConditional={props.isSectionConditional} 
+                    isDragging={isDraggingOver}
+                    >
+                        <Field.Attachment.Label isInitial={true} 
+                        isSectionConditional={props.isSectionConditional}
                         >
-                            <Field.Attachment.Label isInitial={true} 
-                            isSectionConditional={props.isSectionConditional}
-                            >
-                                <Field.Attachment.Image isInitial={true} 
-                                src={(isDraggingOver) ? "/drop_icon.png" : "/add_icon.png"} 
-                                isSectionConditional={props.isSectionConditional}/>
-                                <Field.Attachment.Text isInitial={true}>
-                                    {(isDraggingOver) ? 'Solte os arquivos aqui.' : strings['pt-br']['formularyFieldAttachmentDefaultLabel']}
-                                </Field.Attachment.Text>
-                                <Field.Attachment.Input type="file" 
-                                onChange={e => {        
-                                    e.preventDefault()
-                                    addFile(e.target.files[0]) 
-                                    e.target.value = null
-                                }}
-                                />
-                            </Field.Attachment.Label>
-                        </Field.Attachment.AddNewFileButtonContainer>
-                        {props.values.map((value, index) => (
-                            <AttachmentFile
-                            key={value.value}
-                            removeFieldFile={props.removeFieldFile}
-                            multipleValueFieldHelper={props.multipleValueFieldHelper}
-                            sectionId={props.sectionId}
-                            draftToFileReference={props.draftToFileReference}
-                            field={props.field}
-                            isSectionConditional={props.isSectionConditional} 
-                            value={value}
-                            removeFile={() => removeFile(index)}
+                            <Field.Attachment.Image isInitial={true} 
+                            src={(isDraggingOver) ? "/drop_icon.png" : "/add_icon.png"} 
+                            isSectionConditional={props.isSectionConditional}/>
+                            <Field.Attachment.Text isInitial={true}>
+                                {(isDraggingOver) ? strings['pt-br']['formularyFieldAttachmentDropTheFilesLabel'] : strings['pt-br']['formularyFieldAttachmentDefaultLabel']}
+                            </Field.Attachment.Text>
+                            <Field.Attachment.Input type="file" 
+                            onChange={e => {        
+                                e.preventDefault()
+                                addFile(e.target.files[0]) 
+                                e.target.value = null
+                            }}
                             />
-                        ))}
-                    </Field.Attachment.ScrollContainer>
-                )}
+                        </Field.Attachment.Label>
+                    </Field.Attachment.AddNewFileButtonContainer>
+                    {!isDraggingOver ? props.values.map((value, index) => (
+                        <AttachmentFile
+                        key={value.value}
+                        formName={props.formName}
+                        removeFieldFile={props.removeFieldFile}
+                        multipleValueFieldHelper={props.multipleValueFieldHelper}
+                        sectionId={props.sectionId}
+                        draftToFileReference={props.draftToFileReference}
+                        field={props.field}
+                        isSectionConditional={props.isSectionConditional} 
+                        value={value}
+                        removeFile={() => removeFile(index)}
+                        />
+                    )) : null}
+                </Field.Attachment.ScrollContainer>
             </Field.Attachment.Container>
         )
     }

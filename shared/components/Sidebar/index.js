@@ -106,7 +106,7 @@ class Sidebar extends React.Component {
         return (
             <Row style={{ margin: '0'}}>
                 <Col style={{ padding: '0'}}>
-                    <SidebarToggle onClick={e=>this.props.setSidebarIsOpen(e)} sidebarIsOpen={this.props.sidebarIsOpen}>
+                    <SidebarToggle className="sidebar-toogle" onClick={e=>this.props.setSidebarIsOpen(e)} sidebarIsOpen={this.props.sidebarIsOpen}>
                         {(this.props.sidebarIsOpen) ? '<<<': '>>>'}
                     </SidebarToggle>
                     <SidebarMenu sidebarIsOpen={this.props.sidebarIsOpen} >
