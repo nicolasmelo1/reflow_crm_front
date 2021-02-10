@@ -31,7 +31,7 @@ if (process.env['APP'] === 'web' || typeof document !== 'undefined') {
 
 export const initStore = (initialState = {}) => {
     const isClient = typeof window !== 'undefined'
-    const composeEnhancers = (typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
+    const composeEnhancers = (typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose
     const enhancer = composeEnhancers(
         applyMiddleware(thunk),
     )

@@ -15,14 +15,15 @@ const makeDelay = delay(10000)
 
 const getKanbanData = async (dispatch, source, state, params, formName, columnNames=[]) => {
     const initial = state.home.kanban.initial
-    const dimensionOrders = state.home.kanban.dimension.inScreenDimensions
     const cards = state.home.kanban.cards
     const data = state.home.kanban.data
-
-    let payload = []
+    
+    let payload = (columnNames.length === 0) ? [] : data
+    
     let response = null
-
+    
     if (initial.default_kanban_card_id && initial.default_dimension_field_id) {
+        columnNames = (columnNames.length === 0) ? state.home.kanban.dimension.inScreenDimensions.map(dimensionOrder=> dimensionOrder.options) : columnNames
         const dimension = initial.fields.filter(field=> field.id === initial.default_dimension_field_id)
         const cardFieldIds = cards.filter(card => card.id === initial.default_kanban_card_id)[0].kanban_card_fields.map(field=> field.id).concat(dimension[0].id)
         const defaultParameters = {
@@ -30,49 +31,33 @@ const getKanbanData = async (dispatch, source, state, params, formName, columnNa
             search_field: params.search_field.concat(dimension[0].name),
             fields: cardFieldIds,
         }
-        if (columnNames.length === 0) {
-            const promises = dimensionOrders.map(async (dimensionOrder) => {
-                const parameters = {
-                    ...defaultParameters,
-                    page: 1,
-                    search_value: params.search_value.concat(dimensionOrder.options),
-                }
-                response = await agent.http.KANBAN.getData(source, parameters, formName)
-                if (response && response.status === 200) {
+        const promises = columnNames.map(async (columnName) => {
+            const parameters = {
+                ...defaultParameters,
+                page: (params.page) ? params.page : 1,
+                search_value: params.search_value.concat(columnName),
+            }
+            response = await agent.http.KANBAN.getData(source, parameters, formName)
+            if (response && response.status === 200) {
+                const dimensionIndexInData = payload.findIndex(dimensionData => dimensionData.dimension === columnName)
+                if (dimensionIndexInData !== -1) {
+                    payload[dimensionIndexInData].pagination = response.data.pagination
+                    if (payload[dimensionIndexInData].pagination.current === response.data.pagination.current) {
+                        payload[dimensionIndexInData].data = response.data.data
+                    } else {
+                        payload[dimensionIndexInData].data = payload[dimensionIndexInData].data.concat(response.data.data)
+                    }
+                    payload = [...data]
+                } else {
                     payload.push({
-                        dimension: dimensionOrder.options, 
+                        dimension: columnName, 
                         pagination: response.data.pagination,
                         data: response.data.data
                     })
                 }
-            })
-            await Promise.all(promises)
-        } else {
-            payload = data
-            const promises = columnNames.map(async (columnName) => {
-                const parameters = {
-                    ...defaultParameters,
-                    page: (params.page) ? params.page : 1,
-                    search_value: params.search_value.concat(columnName),
-                }
-                response = await agent.http.KANBAN.getData(source, parameters, formName)
-                if (response && response.status === 200) {
-                    const dimensionIndexInData = data.findIndex(dimensionData => dimensionData.dimension === columnName)
-                    if (dimensionIndexInData !== -1) {
-                        data[dimensionIndexInData].pagination = response.data.pagination
-                        data[dimensionIndexInData].data = data[dimensionIndexInData].data.concat(response.data.data)
-                        payload = [...data]
-                    } else {
-                        payload.push({
-                            dimension: columnName, 
-                            pagination: response.data.pagination,
-                            data: response.data.data
-                        })
-                    }
-                }
-            })
-            await Promise.all(promises)
-        }
+            }
+        })
+        await Promise.all(promises)
         if (response && response.status === 200) {
             dispatch({ type: SET_DATA_KANBAN, payload: payload})
         }

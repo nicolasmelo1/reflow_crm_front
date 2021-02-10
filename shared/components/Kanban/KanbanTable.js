@@ -150,7 +150,7 @@ const KanbanTable = (props) => {
 
     useEffect(() => {
         // this is to make less requests to the backend, we use the sort for when we change the kanban dimension orders, and the oldProps and newProps
-        // is to prevent rerender o rehydratation
+        // is to prevent rerender of rehydratation
         const oldDimensionOrders = oldDimensionOrdersRef.current ? oldDimensionOrdersRef.current.map(dimensionOrder => dimensionOrder.options) : []
         const newDimensionOrders = props.dimensionOrders ? props.dimensionOrders.map(dimensionOrder => dimensionOrder.options) : []
         newDimensionOrders.sort()
