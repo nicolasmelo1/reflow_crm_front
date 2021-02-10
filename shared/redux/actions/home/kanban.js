@@ -177,7 +177,7 @@ const onGetDimensionOrders = (source, formName, dimensionId) => {
  * the component will be responsible for it. Otherwise we need to retrieve the kanban data for the new columns
  */
 const onChangeDimensionsToShow = (source, formName, dimensionsToLoad, isInitial=true) => {
-    return (dispatch, getState) => {
+    return async (dispatch, getState) => {
         if (isInitial) {
             dispatch({ type: SET_DIMENSION_IN_SCREEN, payload: dimensionsToLoad })
         } else {
@@ -194,9 +194,10 @@ const onChangeDimensionsToShow = (source, formName, dimensionsToLoad, isInitial=
             }
             dispatch({ type: SET_DIMENSION_IN_SCREEN, payload: dimensionsToLoad })
             if (dimensionsNamesToLoad.length > 0) {
-                getKanbanData(dispatch, source, getState(), params, formName, dimensionsNamesToLoad)
+                await getKanbanData(dispatch, source, getState(), params, formName, dimensionsNamesToLoad)
             }
         }
+        return true
     }
 }
 

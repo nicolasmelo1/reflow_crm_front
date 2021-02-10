@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import KanbanDimension from './KanbanDimension'
 import delay from '../../utils/delay'
 
-const makeDelay = delay(1000)
+const makeDelay = delay(100)
 
 /**
  * This is a component that is used to control the dimensions.
@@ -28,6 +28,7 @@ const KanbanTable = (props) => {
     const screenWidth = process.env['APP'] === 'web' ? document.body.offsetWidth : 280
     const dimensionsWidth = process.env['APP'] === 'web' ? 280 : 280
     const oldDimensionOrdersRef = React.useRef()
+    const hasLoadedData = React.useRef()
     const oldFormNameRef = React.useRef()
     const kanbanHolderRef = React.useRef()
     const kanbanTable = React.useRef()
@@ -84,7 +85,7 @@ const KanbanTable = (props) => {
      */
     const onScrollHorizontalKanban = (scrollWidthPosition, scrollContainerWidth) => {
         makeDelay(() => {
-            if (isMountedRef.current) {
+            if (isMountedRef.current && hasLoadedData.current) {
                 let endDimensionIndexToRetrieveDataFor = null
                 let startDimensionIndexToRetrieveDataFor = null
                 let stackedMaximumNumberOfDimensionsToShowWidth = dimensionsWidth
@@ -155,7 +156,10 @@ const KanbanTable = (props) => {
         newDimensionOrders.sort()
         oldDimensionOrders.sort()
         if (props.defaultKanbanCardId && props.defaultDimensionId && props.defaultFormName === props.formName && JSON.stringify(oldDimensionOrders) !== JSON.stringify(newDimensionOrders)) {
-            props.onGetKanbanData(dataSource.current, props.params, props.formName)
+            props.onGetKanbanData(dataSource.current, props.params, props.formName).then(response => {
+                hasLoadedData.current = true
+                onScrollHorizontalKanban(kanbanHolderRef.current.scrollLeft, kanbanHolderRef.current.offsetWidth)
+            })
         }
     }, [props.dimensionOrders])
 

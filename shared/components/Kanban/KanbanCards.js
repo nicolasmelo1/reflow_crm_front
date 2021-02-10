@@ -143,7 +143,12 @@ const KanbanCards = (props) => {
                     ))}
                 </React.Fragment>
             ) : (
-                <Spinner animation="border" />
+                <div>
+                    <small>
+                        {"Aguarde enquanto seus dados são carregados."}
+                    </small>
+                    <Spinner animation="border" size="sm"/>
+                </div>
             )}
             {props.pagination && props.pagination.current < props.pagination.total && !isOverflown ? (
                 <KanbanLoadMoreDataButton onClick={e=> {onClickToGetMoreData()}}>{strings['pt-br']['kanbanLoadMoreButtonLabel']}</KanbanLoadMoreDataButton>
