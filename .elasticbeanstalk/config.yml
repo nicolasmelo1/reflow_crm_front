@@ -1,18 +1,14 @@
 branch-defaults:
   master:
-    environment: reflow-front-staging
+    environment: reflow-server-front-staging
 environment-defaults:
-  reflow-front-staging:
-    branch: null
-    repository: null
   reflow-server-front-staging:
     branch: null
     repository: null
 global:
   application_name: reflow-server-front
   default_ec2_keyname: null
-  default_platform: arn:aws:elasticbeanstalk:us-east-1::platform/Docker running on
-    64bit Amazon Linux/2.14.0
+  default_platform: Docker running on 64bit Amazon Linux
   default_region: us-east-1
   include_git_submodules: true
   instance_profile: null
