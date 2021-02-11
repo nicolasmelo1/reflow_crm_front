@@ -86,21 +86,32 @@ const KanbanTable = (props) => {
 
             if (isMountedRef.current) {
                 console.log('onScrollHorizontalKanban component is mounted')
+                console.log(`stackedMaximumNumberOfDimensionsToShowWidth ${stackedMaximumNumberOfDimensionsToShowWidth}`)
+                console.log(`dimensionsWidth ${dimensionsWidth}`)
 
                 let endDimensionIndexToRetrieveDataFor = null
                 let startDimensionIndexToRetrieveDataFor = null
                 let stackedMaximumNumberOfDimensionsToShowWidth = dimensionsWidth
                 // We loop through each dimensionOrder to get the startIndex and the endIndex of the columns we want to retrieve
                 for (let i=0; i<props.dimensionOrders.length; i++) {
+                    console.log(`stackedMaximumNumberOfDimensionsToShowWidth ${stackedMaximumNumberOfDimensionsToShowWidth}`)
+                    console.log(`scrollContainerWidth + scrollWidthPosition ${scrollContainerWidth + scrollWidthPosition}`)
+                    console.log(stackedMaximumNumberOfDimensionsToShowWidth >= scrollWidthPosition)
+                    console.log(startDimensionIndexToRetrieveDataFor === null)
                     if (stackedMaximumNumberOfDimensionsToShowWidth >= scrollContainerWidth + scrollWidthPosition) {
+                        console.log(`has got endDimensionIndexToRetrieveDataFor: ${endDimensionIndexToRetrieveDataFor}`)
                         endDimensionIndexToRetrieveDataFor = i
                         break
                     } else if (stackedMaximumNumberOfDimensionsToShowWidth >= scrollWidthPosition && startDimensionIndexToRetrieveDataFor === null) {
+                        console.log(`has got startDimensionIndexToRetrieveDataFor: ${startDimensionIndexToRetrieveDataFor}`)
                         startDimensionIndexToRetrieveDataFor = i
                     } 
                     stackedMaximumNumberOfDimensionsToShowWidth += dimensionsWidth
                 }
-
+                console.log(`endDimensionIndexToRetrieveDataFor value: ${endDimensionIndexToRetrieveDataFor}`)
+                console.log(`startDimensionIndexToRetrieveDataFor value: ${startDimensionIndexToRetrieveDataFor}`)
+                console.log(`onScrollHorizontalKanban dimensionOrders:`)
+                console.log(JSON.stringify(props.dimensionOrders))
                 const dimensionsToGetDataFor = props.dimensionOrders.slice(startDimensionIndexToRetrieveDataFor, endDimensionIndexToRetrieveDataFor + 1)
                 console.log(`onScrollHorizontalKanban dimensionsToGetDataFor:`)
                 console.log(dimensionsToGetDataFor)
