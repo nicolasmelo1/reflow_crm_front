@@ -18,12 +18,21 @@ const getKanbanData = async (dispatch, source, state, params, formName, columnNa
     const cards = state.home.kanban.cards
     const data = state.home.kanban.data
     
-    let payload = (columnNames.length === 0) ? [] : data
+    let payload = []
+    // we are loading new data 
+    if (columnNames.length === 0) {
+        const onScreenDimensionNames = state.home.kanban.dimension.inScreenDimensions.map(dimensionOrder=> dimensionOrder.options)
+        payload = data.filter(dimensionData => onScreenDimensionNames.includes(dimensionData.dimension))
+        dispatch({ type: SET_DATA_KANBAN, payload: payload})
+    } else {
+        payload = data
+    }
     
     let response = null
     
     if (initial.default_kanban_card_id && initial.default_dimension_field_id) {
         columnNames = (columnNames.length === 0) ? state.home.kanban.dimension.inScreenDimensions.map(dimensionOrder=> dimensionOrder.options) : columnNames
+        
         const dimension = initial.fields.filter(field=> field.id === initial.default_dimension_field_id)
         const cardFieldIds = cards.filter(card => card.id === initial.default_kanban_card_id)[0].kanban_card_fields.map(field=> field.id).concat(dimension[0].id)
         const defaultParameters = {
@@ -45,9 +54,9 @@ const getKanbanData = async (dispatch, source, state, params, formName, columnNa
                     if (payload[dimensionIndexInData].pagination.current === response.data.pagination.current) {
                         payload[dimensionIndexInData].data = response.data.data
                     } else {
-                        payload[dimensionIndexInData].data = payload[dimensionIndexInData].data.concat(response.data.data)
+                        payload[dimensionIndexInData].data = data[dimensionIndexInData].data.concat(response.data.data)
                     }
-                    payload = [...data]
+                    payload = [...payload]
                 } else {
                     payload.push({
                         dimension: columnName, 
