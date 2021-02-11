@@ -1,6 +1,5 @@
 import { API_ROOT, getToken } from './utils'
 import http from './http'
-import { AppState } from 'react-native'
 
 /**
  * This function works like a singleton for the websocket, you can have just ONE websocket running 
