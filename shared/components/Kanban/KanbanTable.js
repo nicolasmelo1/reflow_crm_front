@@ -98,7 +98,7 @@ const KanbanTable = (props) => {
                     console.log(`scrollContainerWidth + scrollWidthPosition ${scrollContainerWidth + scrollWidthPosition}`)
                     console.log(stackedMaximumNumberOfDimensionsToShowWidth >= scrollWidthPosition)
                     console.log(startDimensionIndexToRetrieveDataFor === null)
-                    if (stackedMaximumNumberOfDimensionsToShowWidth >= scrollContainerWidth + scrollWidthPosition) {
+                    if (stackedMaximumNumberOfDimensionsToShowWidth >= scrollContainerWidth + scrollWidthPosition || i === props.dimensionOrders.length - 1) {
                         console.log(`has got endDimensionIndexToRetrieveDataFor: ${endDimensionIndexToRetrieveDataFor}`)
                         endDimensionIndexToRetrieveDataFor = i
                         break
