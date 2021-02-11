@@ -30,7 +30,6 @@ const getKanbanData = async (dispatch, source, state, params, formName, columnNa
     }
     
     let response = null
-    
 
     if (initial.default_kanban_card_id && initial.default_dimension_field_id && card) {
         columnNames = (columnNames.length === 0) ? state.home.kanban.dimension.inScreenDimensions.map(dimensionOrder=> dimensionOrder.options) : columnNames
@@ -180,7 +179,13 @@ const onChangeDimensionsToShow = (source, formName, dimensionsToLoad, isInitial=
             const loadedDimensions = getState().home.kanban.data
             const dimensionNamesShownInScreen = loadedDimensions.map(dimension => dimension.dimension)
             let dimensionsNamesToLoad = dimensionsToLoad.map(dimension => dimension.options)
+            console.log(`onChangeDimensionsToShow`)
+            console.log('dimensions without filtering')
+            console.log(JSON.stringify(dimensionsToLoad))
             dimensionsNamesToLoad = dimensionsNamesToLoad.filter(dimensionName => !dimensionNamesShownInScreen.includes(dimensionName))
+            console.log('dimensions with filtering')
+
+            console.log(JSON.stringify(dimensionsToLoad))
 
             const filterParams = getState().home.filter
             const params = {
