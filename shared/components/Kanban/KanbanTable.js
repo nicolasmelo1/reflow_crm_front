@@ -3,6 +3,10 @@ import KanbanDimension from './KanbanDimension'
 import delay from '../../utils/delay'
 
 const makeDelay = delay(500)
+let savedScrollPosition = {
+    formName: '',
+    scrollPosition: 0
+}
 
 /**
  * This is a component that is used to control the dimensions.
@@ -58,18 +62,6 @@ const KanbanTable = (props) => {
         }
     }
     
-    /**
-     * When the user loads the kanban we change the current dimensions shown in the screen this way whenever we are loading
-     * the data for the kanban we will load ONLY the shown dimension options.
-     * 
-     * @param {Array<Object>} dimensionOrders - {
-     *      options {String}: A string of the dimension name.
-     * }
-     */
-    const onChangeDimensionsToShow = (dimensionOrders) => {
-        const dimensionsToShow = dimensionOrders.slice(0, Math.ceil(screenWidth/dimensionsWidth))
-        props.onChangeDimensionsToShow(dataSource.current, props.formName, dimensionsToShow)
-    }
     
     /**
      * Responsible for paginating the columns to show. First thing to understand is that we change the pagination as
@@ -83,8 +75,13 @@ const KanbanTable = (props) => {
      * @param {BigInteger} scrollContainerWidth - An integer that represents the TOTAL width of the scroll container. (Not the scroll container,
      * but the width of the scroll inside of the view, and not it's scroll width)
      */
-    const onScrollHorizontalKanban = (scrollWidthPosition, scrollContainerWidth) => {
+    const onScrollHorizontalKanban = (scrollWidthPosition, scrollContainerWidth, isInitial=false) => {
         makeDelay(() => {
+            savedScrollPosition = {
+                formName: props.formName,
+                scrollPosition: scrollWidthPosition
+            }
+
             if (isMountedRef.current && hasLoadedData.current) {
                 let endDimensionIndexToRetrieveDataFor = null
                 let startDimensionIndexToRetrieveDataFor = null
@@ -101,7 +98,7 @@ const KanbanTable = (props) => {
                 }
 
                 const dimensionsToGetDataFor = props.dimensionOrders.slice(startDimensionIndexToRetrieveDataFor, endDimensionIndexToRetrieveDataFor + 1)
-                props.onChangeDimensionsToShow(dataSource.current, props.formName, dimensionsToGetDataFor, false)
+                props.onChangeDimensionsToShow(dataSource.current, props.formName, dimensionsToGetDataFor, isInitial)
             }
         })
     }
@@ -112,14 +109,20 @@ const KanbanTable = (props) => {
      * @param {SyntheticEvent} e - The event object emited by 'resize' window event
      */
     const onResizeWeb = (e) => {
-        onScrollHorizontalKanban(kanbanHolderRef.current.scrollLeft, kanbanHolderRef.current.offsetWidth)
+        if (kanbanHolderRef.current) {
+            onScrollHorizontalKanban(kanbanHolderRef.current.scrollLeft, kanbanHolderRef.current.offsetWidth)
+        }
     }
 
     useEffect(() => {
         isMountedRef.current = true
         dataSource.current = props.cancelToken.source()
-        if (props.dimensionOrders.length > 0) {
-            onChangeDimensionsToShow(props.dimensionOrders)
+        if (kanbanHolderRef.current && savedScrollPosition.formName === props.formName) {
+            kanbanHolderRef.current.scrollTo(savedScrollPosition.scrollPosition, 0);
+        }
+        if (props.dimensionOrders.length > 0 && kanbanHolderRef.current) {
+            const scrollPosition = (savedScrollPosition.formName === props.formName) ? savedScrollPosition.scrollPosition : kanbanHolderRef.current.scrollLeft
+            onScrollHorizontalKanban(scrollPosition, kanbanHolderRef.current.offsetWidth, true)
         }
         if (process.env['APP'] === 'web') { 
             window.addEventListener('resize', onResizeWeb)
@@ -139,7 +142,10 @@ const KanbanTable = (props) => {
         if (!hasFiredDimensionOrdersRef.current && props.defaultKanbanCardId && props.defaultDimensionId && isMountedRef.current) {
             setHasFiredDimensionOrders(true)
             props.onGetDimensionOrders(dataSource.current, props.formName, props.defaultDimensionId).then(dimensionOrders => {
-                onChangeDimensionsToShow(dimensionOrders)
+                if (kanbanHolderRef.current) {
+                    const scrollPosition = (savedScrollPosition.formName === props.formName) ? savedScrollPosition.scrollPosition : kanbanHolderRef.current.scrollLeft
+                    onScrollHorizontalKanban(scrollPosition, kanbanHolderRef.current.offsetWidth, true)
+                }
                 if (isMountedRef.current) {
                     setHasFiredDimensionOrders(false)
                 }
@@ -158,7 +164,9 @@ const KanbanTable = (props) => {
         if (props.defaultKanbanCardId && props.defaultDimensionId && props.defaultFormName === props.formName && JSON.stringify(oldDimensionOrders) !== JSON.stringify(newDimensionOrders)) {
             props.onGetKanbanData(dataSource.current, props.params, props.formName).then(response => {
                 hasLoadedData.current = true
-                onScrollHorizontalKanban(kanbanHolderRef.current.scrollLeft, kanbanHolderRef.current.offsetWidth)
+                if (kanbanHolderRef.current) {
+                    onScrollHorizontalKanban(kanbanHolderRef.current.scrollLeft, kanbanHolderRef.current.offsetWidth)
+                }
             })
         }
     }, [props.dimensionOrders])

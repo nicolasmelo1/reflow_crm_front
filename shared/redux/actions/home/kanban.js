@@ -16,6 +16,7 @@ const makeDelay = delay(10000)
 const getKanbanData = async (dispatch, source, state, params, formName, columnNames=[]) => {
     const initial = state.home.kanban.initial
     const cards = state.home.kanban.cards
+    const card = cards.filter(card => card.id === initial?.default_kanban_card_id)[0]
     const data = state.home.kanban.data
     
     let payload = []
@@ -30,11 +31,12 @@ const getKanbanData = async (dispatch, source, state, params, formName, columnNa
     
     let response = null
     
-    if (initial.default_kanban_card_id && initial.default_dimension_field_id) {
+
+    if (initial.default_kanban_card_id && initial.default_dimension_field_id && card) {
         columnNames = (columnNames.length === 0) ? state.home.kanban.dimension.inScreenDimensions.map(dimensionOrder=> dimensionOrder.options) : columnNames
         
         const dimension = initial.fields.filter(field=> field.id === initial.default_dimension_field_id)
-        const cardFieldIds = cards.filter(card => card.id === initial.default_kanban_card_id)[0].kanban_card_fields.map(field=> field.id).concat(dimension[0].id)
+        const cardFieldIds = card.kanban_card_fields.map(field=> field.id).concat(dimension[0].id)
         const defaultParameters = {
             search_exact: params.search_exact.concat(1),
             search_field: params.search_field.concat(dimension[0].name),
