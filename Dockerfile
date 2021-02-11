@@ -4,6 +4,7 @@ WORKDIR /code
 ADD package.json /code/
 ADD merge.js /code/
 ADD web/package.json /code/web/
+
 RUN npm run install:web
 
 # THIS IS FOR PUPPETEER TO WORK, REFER TO: https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md#running-puppeteer-in-docker

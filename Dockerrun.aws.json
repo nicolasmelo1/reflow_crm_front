@@ -1,5 +1,6 @@
 {
   "AWSEBDockerrunVersion": "1",
+  "Command": "sh deploy.sh",
   "Ports": [
     {
       "ContainerPort": "3000"

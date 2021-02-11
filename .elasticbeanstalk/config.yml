@@ -1,7 +1,10 @@
 branch-defaults:
   master:
-    environment: reflow-server-front-staging
+    environment: reflow-front-staging
 environment-defaults:
+  reflow-front-staging:
+    branch: null
+    repository: null
   reflow-server-front-staging:
     branch: null
     repository: null
@@ -15,6 +18,6 @@ global:
   instance_profile: null
   platform_name: null
   platform_version: null
-  profile: eb-cli
+  profile: null
   sc: git
   workspace_type: Application
