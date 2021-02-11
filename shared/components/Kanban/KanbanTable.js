@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import KanbanDimension from './KanbanDimension'
 import delay from '../../utils/delay'
 
-const makeDelay = delay(100)
+const makeDelay = delay(500)
 
 /**
  * This is a component that is used to control the dimensions.
