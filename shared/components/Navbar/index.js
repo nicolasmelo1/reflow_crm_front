@@ -126,16 +126,13 @@ class Navbar extends React.Component {
     }
 
     getToolsDropdown = () => {
-        let toolsDropdown = []
-        if (isAdmin(this.props.login.types?.defaults?.profile_type, this.props.login.user)) {
-            toolsDropdown = [
-                {
-                    label: strings['pt-br']['headerHomePdfGeneratorTools'],
-                    href: '#',
-                    onClick: this.handlePDFTempalte
-                }
-            ]
-        }
+        let toolsDropdown = [
+            {
+                label: strings['pt-br']['headerHomePdfGeneratorTools'],
+                href: '#',
+                onClick: this.handlePDFTempalte
+            }
+        ]
         return toolsDropdown
     }
 
