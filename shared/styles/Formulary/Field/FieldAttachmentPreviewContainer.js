@@ -7,7 +7,11 @@ styled.div`
     background-color: #fff;
     position: fixed;
     z-index: 11;
-    bottom: 0;
+    ${props => props.isOpen ? `
+        bottom: 0;
+    ` : `
+        top: var(--app-height);
+    `}
     left: 0;
     height: ${props => props.isOpen ? 'var(--app-height)': '0'};
     width: var(--app-width);
