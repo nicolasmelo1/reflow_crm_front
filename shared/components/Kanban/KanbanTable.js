@@ -96,12 +96,12 @@ const KanbanTable = (props) => {
                 } 
                 stackedMaximumNumberOfDimensionsToShowWidth += dimensionsWidth
             }
-            let dimensionsToGetDataFor = props.dimensionOrders.slice(startDimensionIndexToRetrieveDataFor, endDimensionIndexToRetrieveDataFor + 1)
-            dimensionsToGetDataFor = dimensionsToGetDataFor.filter(dimension => !fetchingForDimensions.current.includes(dimension.options))
-            const dimensionsToGetDataForNames = dimensionsToGetDataFor.map(dimension => dimension.options)
+            const dimensionsToGetDataFor = props.dimensionOrders.slice(startDimensionIndexToRetrieveDataFor, endDimensionIndexToRetrieveDataFor + 1)
+            const dimensionsToGetDataForFiltered = dimensionsToGetDataFor.filter(dimension => !fetchingForDimensions.current.includes(dimension.options))
+            const dimensionsToGetDataForNames = dimensionsToGetDataForFiltered.map(dimension => dimension.options)
             fetchingForDimensions.current = fetchingForDimensions.current.concat(dimensionsToGetDataForNames)
             
-            props.onChangeDimensionsToShow(dataSource.current, props.formName, dimensionsToGetDataFor, isInitial).then(_ => {
+            props.onChangeDimensionsToShow(dataSource.current, props.formName, dimensionsToGetDataFor, dimensionsToGetDataForFiltered, isInitial).then(_ => {
                 fetchingForDimensions.current = fetchingForDimensions.current.filter(dimension => !dimensionsToGetDataForNames.includes(dimension))
             })
         }

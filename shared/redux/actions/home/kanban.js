@@ -171,10 +171,10 @@ const onGetDimensionOrders = (source, formName, dimensionId) => {
  * @param {Boolean} isInitial - If you are loading this when mounting the component you DO NOT NEED to retrieve the data,
  * the component will be responsible for it. Otherwise we need to retrieve the kanban data for the new columns
  */
-const onChangeDimensionsToShow = (source, formName, dimensionsToLoad, isInitial=true) => {
+const onChangeDimensionsToShow = (source, formName, dimensionsOnScreen, dimensionsToLoad, isInitial=true) => {
     return async (dispatch, getState) => {
         if (isInitial) {
-            dispatch({ type: SET_DIMENSION_IN_SCREEN, payload: dimensionsToLoad })
+            dispatch({ type: SET_DIMENSION_IN_SCREEN, payload: dimensionsOnScreen })
         } else {
             const loadedDimensions = getState().home.kanban.data
             const dimensionNamesShownInScreen = loadedDimensions.map(dimension => dimension.dimension)
@@ -187,7 +187,7 @@ const onChangeDimensionsToShow = (source, formName, dimensionsToLoad, isInitial=
                 search_value: filterParams.search_value,
                 search_exact: filterParams.search_exact
             }
-            dispatch({ type: SET_DIMENSION_IN_SCREEN, payload: dimensionsToLoad })
+            dispatch({ type: SET_DIMENSION_IN_SCREEN, payload: dimensionsOnScreen })
             if (dimensionsNamesToLoad.length > 0) {
                 await getKanbanData(dispatch, source, getState(), params, formName, dimensionsNamesToLoad)
             }
