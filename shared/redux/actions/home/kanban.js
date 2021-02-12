@@ -179,16 +179,8 @@ const onChangeDimensionsToShow = (source, formName, dimensionsToLoad, isInitial=
             const loadedDimensions = getState().home.kanban.data
             const dimensionNamesShownInScreen = loadedDimensions.map(dimension => dimension.dimension)
             let dimensionsNamesToLoad = dimensionsToLoad.map(dimension => dimension.options)
-            
-            console.log(`onChangeDimensionsToShow`)
-            console.log('dimensions without filtering')
-            console.log(JSON.stringify(dimensionsToLoad))
-
             dimensionsNamesToLoad = dimensionsNamesToLoad.filter(dimensionName => !dimensionNamesShownInScreen.includes(dimensionName))
             
-            console.log('dimensions with filtering')
-            console.log(JSON.stringify(dimensionsToLoad))
-
             const filterParams = getState().home.filter
             const params = {
                 search_field: filterParams.search_field,

@@ -32,7 +32,7 @@ const KanbanTable = (props) => {
     const screenWidth = process.env['APP'] === 'web' ? document.body.offsetWidth : 280
     const dimensionsWidth = process.env['APP'] === 'web' ? 280 : 280
     const oldDimensionOrdersRef = React.useRef()
-    const hasLoadedData = React.useRef()
+    const fetchingForDimensions = React.useRef([])
     const oldFormNameRef = React.useRef()
     const kanbanHolderRef = React.useRef()
     const kanbanTable = React.useRef()
@@ -83,38 +83,27 @@ const KanbanTable = (props) => {
         }
 
         if (isMountedRef.current) {
-            console.log('onScrollHorizontalKanban component is mounted')
-            console.log(`stackedMaximumNumberOfDimensionsToShowWidth ${stackedMaximumNumberOfDimensionsToShowWidth}`)
-            console.log(`dimensionsWidth ${dimensionsWidth}`)
-
             let endDimensionIndexToRetrieveDataFor = null
             let startDimensionIndexToRetrieveDataFor = null
             let stackedMaximumNumberOfDimensionsToShowWidth = dimensionsWidth
             // We loop through each dimensionOrder to get the startIndex and the endIndex of the columns we want to retrieve
             for (let i=0; i<props.dimensionOrders.length; i++) {
-                console.log(`stackedMaximumNumberOfDimensionsToShowWidth ${stackedMaximumNumberOfDimensionsToShowWidth}`)
-                console.log(`scrollContainerWidth + scrollWidthPosition ${scrollContainerWidth + scrollWidthPosition}`)
-                console.log(stackedMaximumNumberOfDimensionsToShowWidth >= scrollWidthPosition)
-                console.log(startDimensionIndexToRetrieveDataFor === null)
                 if (stackedMaximumNumberOfDimensionsToShowWidth >= scrollContainerWidth + scrollWidthPosition || i === props.dimensionOrders.length - 1) {
-                    console.log(`has got endDimensionIndexToRetrieveDataFor: ${endDimensionIndexToRetrieveDataFor}`)
                     endDimensionIndexToRetrieveDataFor = i
                     break
                 } else if (stackedMaximumNumberOfDimensionsToShowWidth >= scrollWidthPosition && startDimensionIndexToRetrieveDataFor === null) {
-                    console.log(`has got startDimensionIndexToRetrieveDataFor: ${startDimensionIndexToRetrieveDataFor}`)
                     startDimensionIndexToRetrieveDataFor = i
                 } 
                 stackedMaximumNumberOfDimensionsToShowWidth += dimensionsWidth
             }
-            console.log(`endDimensionIndexToRetrieveDataFor value: ${endDimensionIndexToRetrieveDataFor}`)
-            console.log(`startDimensionIndexToRetrieveDataFor value: ${startDimensionIndexToRetrieveDataFor}`)
-            console.log(`onScrollHorizontalKanban dimensionOrders:`)
-            console.log(JSON.stringify(props.dimensionOrders))
-            const dimensionsToGetDataFor = props.dimensionOrders.slice(startDimensionIndexToRetrieveDataFor, endDimensionIndexToRetrieveDataFor + 1)
-            console.log(`onScrollHorizontalKanban dimensionsToGetDataFor:`)
-            console.log(dimensionsToGetDataFor)
-
-            props.onChangeDimensionsToShow(dataSource.current, props.formName, dimensionsToGetDataFor, isInitial)
+            let dimensionsToGetDataFor = props.dimensionOrders.slice(startDimensionIndexToRetrieveDataFor, endDimensionIndexToRetrieveDataFor + 1)
+            dimensionsToGetDataFor = dimensionsToGetDataFor.filter(dimension => !fetchingForDimensions.current.includes(dimension.options))
+            const dimensionsToGetDataForNames = dimensionsToGetDataFor.map(dimension => dimension.options)
+            fetchingForDimensions.current = fetchingForDimensions.current.concat(dimensionsToGetDataForNames)
+            
+            props.onChangeDimensionsToShow(dataSource.current, props.formName, dimensionsToGetDataFor, isInitial).then(_ => {
+                fetchingForDimensions.current = fetchingForDimensions.current.filter(dimension => !dimensionsToGetDataForNames.includes(dimension))
+            })
         }
     }
 
@@ -136,11 +125,7 @@ const KanbanTable = (props) => {
             kanbanHolderRef.current.scrollTo(savedScrollPosition.scrollPosition, 0);
         }
         if (props.dimensionOrders.length > 0 && kanbanHolderRef.current) {
-            console.log(kanbanHolderRef.current)
             const scrollPosition = (savedScrollPosition.formName === props.formName) ? savedScrollPosition.scrollPosition : kanbanHolderRef.current.scrollLeft
-            console.log('defining onScrollHorizontalKanban when component is mounted')
-            console.log(`scrollPosition: ${scrollPosition}`)
-            console.log(`kanbanHolderOffsetWidth: ${kanbanHolderRef.current.offsetWidth}`)
             onScrollHorizontalKanban(scrollPosition, kanbanHolderRef.current.offsetWidth, true)
         }
         if (process.env['APP'] === 'web') { 
@@ -161,13 +146,8 @@ const KanbanTable = (props) => {
         if (!hasFiredDimensionOrdersRef.current && props.defaultKanbanCardId && props.defaultDimensionId && isMountedRef.current) {
             setHasFiredDimensionOrders(true)
             props.onGetDimensionOrders(dataSource.current, props.formName, props.defaultDimensionId).then(dimensionOrders => {
-                console.log('the kanbanElement when getting dimension orders')
-                console.log(kanbanHolderRef.current)
                 if (kanbanHolderRef.current) {
                     const scrollPosition = (savedScrollPosition.formName === props.formName) ? savedScrollPosition.scrollPosition : kanbanHolderRef.current.scrollLeft
-                    console.log('defining onScrollHorizontalKanban when dimension order is loaded')
-                    console.log(`scrollPosition: ${scrollPosition}`)
-                    console.log(`kanbanHolderOffsetWidth: ${kanbanHolderRef.current.offsetWidth}`)
                     onScrollHorizontalKanban(scrollPosition, kanbanHolderRef.current.offsetWidth, true)
                 }
                 if (isMountedRef.current) {
@@ -187,12 +167,7 @@ const KanbanTable = (props) => {
         oldDimensionOrders.sort()
         if (props.defaultKanbanCardId && props.defaultDimensionId && props.defaultFormName === props.formName && JSON.stringify(oldDimensionOrders) !== JSON.stringify(newDimensionOrders)) {
             props.onGetKanbanData(dataSource.current, props.params, props.formName).then(response => {
-                console.log('the kanbanElement when getting data')
-                console.log(kanbanHolderRef.current)
                 if (kanbanHolderRef.current) {
-                    console.log('defining onScrollHorizontalKanban when data is loaded')
-                    console.log(`scrollPosition: ${kanbanHolderRef.current.scrollLeft}`)
-                    console.log(`kanbanHolderOffsetWidth: ${kanbanHolderRef.current.offsetWidth}`)
                     onScrollHorizontalKanban(kanbanHolderRef.current.scrollLeft, kanbanHolderRef.current.offsetWidth)
                 }
             })
