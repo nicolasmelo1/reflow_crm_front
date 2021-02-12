@@ -18,7 +18,7 @@ const FORMULARY = {
     },
     updateFormularyData: async (body, formName, formId, duplicate=null) => {
         const duplicateUrl = (duplicate) ? '?duplicate=duplicate' : ''
-        return await requests.post(`data/${companyId}/${formName}/${formId}/${duplicateUrl}`, body)
+        return await requests.put(`data/${companyId}/${formName}/${formId}/${duplicateUrl}`, body)
     },
     getFormularyFormFieldOptions: async (source, formName, fieldId, page, search=null, valueId=null) => {
         let params = { page: page }
