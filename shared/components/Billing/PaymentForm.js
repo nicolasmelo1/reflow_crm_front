@@ -72,7 +72,7 @@ const PaymentForm = (props) => {
      * ids can always change. Because of this we use this function so it returns an string with the current selected paymentMethodType name.
      */
     const getPaymentMethodTypeName = () => {
-        const paymentMethodType = props.types.payment_method_type.filter(paymentMethodType => paymentMethodType.id === props.paymentData.payment_method_type_id)
+        const paymentMethodType = (props?.types?.payment_method_type || []).filter(paymentMethodType => paymentMethodType.id === props.paymentData.payment_method_type_id)
         if (paymentMethodType.length > 0) {
             return paymentMethodType[0].name
         } else {
@@ -286,7 +286,7 @@ const PaymentForm = (props) => {
         return (
             <BillingFormularyContainer>
                 <PaymentFormPaymentHorizontalButtonsContainer>
-                    {props.types.payment_method_type.map(paymentMethodType => (
+                    {(props?.types?.payment_method_type || []).map(paymentMethodType => (
                         <PaymentFormPaymentMethodButton 
                         key={paymentMethodType.id}
                         isSelected={paymentMethodType.id === props.paymentData.payment_method_type_id}
@@ -301,7 +301,7 @@ const PaymentForm = (props) => {
                         {strings['pt-br']['billingPaymentFormBillingDateTitleLabel']}
                     </BillingFormularySectionTitleLabel>
                     <PaymentFormPaymentHorizontalButtonsContainer>
-                        {props.types.invoice_date_type.map(invoiceDateType => (
+                        {(props?.types?.invoice_date_type || []).map(invoiceDateType => (
                             <PaymentFormPaymentInvoiceDateButton 
                             key={invoiceDateType.id}
                             isSelected={invoiceDateType.id === props.paymentData.invoice_date_type_id} 
@@ -353,6 +353,7 @@ const PaymentForm = (props) => {
                             </BillingFormularyFieldLabel>
                             <BillingInput 
                             type={'text'}
+                            autoComplete={'whathever'}
                             errors={props.creditCardDataErrors.includes('card_number')}
                             onChange={e=> onChangeCreditCardNumber(e.target.value)} 
                             value={numberMasker(
@@ -374,6 +375,7 @@ const PaymentForm = (props) => {
                                 </BillingFormularyFieldLabel>
                                 <BillingInput 
                                 type={'text'} 
+                                autoComplete={'whathever'}
                                 placeholder="MM/AA"
                                 errors={props.creditCardDataErrors.includes('card_expiration')}
                                 onChange={e=> onChangeCreditCardValidDate(e.target.value)} 
@@ -392,6 +394,7 @@ const PaymentForm = (props) => {
                                 </BillingFormularyFieldLabel>
                                 <BillingInput 
                                 type={'text'} 
+                                autoComplete={'whathever'}
                                 errors={props.creditCardDataErrors.includes('cvv')}
                                 onChange={e=> onChangeCreditCardCVV(e.target.value)} 
                                 value={numberMasker(props.creditCardData.cvv, [...Array(creditCardType(props.creditCardData.card_number)[0].code.size)].map(_ => "0").join(''))}
@@ -410,6 +413,7 @@ const PaymentForm = (props) => {
                             </BillingFormularyFieldLabel>
                             <BillingInput 
                             type={'text'} 
+                            autoComplete={'whathever'}
                             errors={props.creditCardDataErrors.includes('holder_name')}
                             onChange={e=>onChangeHolderName(e.target.value)} 
                             value={props.creditCardData.holder_name}/>

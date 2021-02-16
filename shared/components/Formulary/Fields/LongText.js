@@ -20,7 +20,7 @@ const LongText = (props) => {
 
     const renderWeb = () => {
         return (
-            <Field.Text className="form-control" as="textarea" value={fieldValue} onChange={e=> {onChange(e)}}/>
+            <Field.Text className="form-control" as="textarea" value={fieldValue} onChange={e=> {onChange(e)}} autoComplete={'whathever'}/>
         ) 
     }
 

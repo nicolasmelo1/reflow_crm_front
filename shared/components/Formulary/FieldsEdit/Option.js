@@ -41,7 +41,7 @@ const Option = (props) => {
                     {strings['pt-br']['formularyEditFieldOptionLabel']}
                 </FormulariesEdit.FieldFormLabel>
                 {fieldOptions.map((fieldOption, index) => (
-                    <FormulariesEdit.InputField key={index} type="text" value={fieldOption.option} onChange={e=>{onChangeFieldOption(e, index)}}/>
+                    <FormulariesEdit.InputField key={index} autoComplete={'whathever'} type="text" value={fieldOption.option} onChange={e=>{onChangeFieldOption(e, index)}}/>
                 ))}
             </FormulariesEdit.FieldFormFieldContainer>
         )

@@ -16,7 +16,8 @@ import http from './http'
  */
 class Socket {
     static instance = null
-
+    accessToken = ''
+    socketHost = ''
     domain = API_ROOT.replace('http://', 'ws://').replace('https://', 'wss://')
     registeredSocket = null
     callbacks = {} 
@@ -38,19 +39,37 @@ class Socket {
     }
     
     /**
+     * Sets the host of the websocket, when it changes we reconnect to the client. Usually useful when logging out and logging in again as another user
+     * 
+     * @param {String} socketHost - the new socket host to be used
+     */
+    setSocketHost = (socketHost) => {
+        if (socketHost !== this.socketHost && this.registeredSocket !== null) {
+            this.reconnect()
+        } 
+        this.socketHost = socketHost
+    }
+
+    /**
+     * Gets the access token of the user
+     */
+    async getToken() {
+        await http.LOGIN.testToken()
+        this.accessToken = await getToken()
+    }
+
+    /**
      * Gets the url to connect to the websocket. If the user is logged (so the token is not empty and is defined)
      * the url will contain a query parameter with the token.
      * 
      * Otherwise no query param will be added on the url to make the connection.
      */
     async getUrl() {
-        let token = await getToken()
-        if (token && token !== '') {
-            await http.LOGIN.testToken()
-            token = await getToken()
-            return this.domain + `websocket/?token=${token}`
+        await this.getToken()
+        if (this.accessToken && this.accessToken !== '') {
+            this.setSocketHost(this.domain + `websocket/?token=${this.accessToken}`)
         } else {
-            return this.domain + `websocket/`
+            this.setSocketHost('')
         }
     }
 
@@ -68,6 +87,8 @@ class Socket {
      * to the callback function is actually an object.
      */
     onRecieve() {
+        this.getUrl()
+
         if (this.registeredSocket !== null) {
             this.registeredSocket.onmessage = (e) => {
                 [...Object.values(this.callbacks)].forEach(({ callback, argument }) => {
@@ -121,7 +142,8 @@ class Socket {
      * try.
      */
     async reconnect() {
-        this.registeredSocket = new WebSocket(await this.getUrl())
+        await this.getUrl()
+        this.registeredSocket = new WebSocket(this.socketHost)
 
         setTimeout(() => {
             if (this.registeredSocket.readyState !== 1) {
@@ -139,7 +161,8 @@ class Socket {
 
     async connect() {
         if (this.registeredSocket === null) {
-            this.registeredSocket = new WebSocket(await this.getUrl())
+            await this.getUrl()
+            this.registeredSocket = new WebSocket(this.socketHost)
             this.onClose()
             this.onRecieve()
             this.appStateChanged()

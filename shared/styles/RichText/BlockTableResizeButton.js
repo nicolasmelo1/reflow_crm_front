@@ -71,7 +71,12 @@ styled.button`
     position: absolute;
     ${props => getButtonParams(props.buttonType)}
     padding: 0;
-    border: 0
+    border: 0;
+    background-color: transparent;
+
+    &:hover {
+        background-color: #17242D;
+    }
 `
 :
 styled(StyledPressable)`

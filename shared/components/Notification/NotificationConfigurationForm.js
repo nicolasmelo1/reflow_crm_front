@@ -484,6 +484,7 @@ const NotificationConfigurationForm = (props) => {
                     <NotificationConfigurationFormFieldInput 
                     errors={formErrors.name}
                     type="text" 
+                    autoComplete={'whathever'}
                     placeholder={strings['pt-br']['notificationConfigurationFormNotificationNameInputPlaceholder']}
                     value={props.notificationConfiguration.name} 
                     onChange={e => {onChangeNotificationName(e.target.value)}}
@@ -536,6 +537,7 @@ const NotificationConfigurationForm = (props) => {
                                             <NotificationConfigurationFormFieldInput 
                                             errors={formErrors.text}
                                             type='text'
+                                            autoComplete={'whathever'}
                                             placeholder={strings['pt-br']['notificationConfigurationFormTextPlaceholder']}
                                             value={props.notificationConfiguration.text}
                                             onChange={e=> {onChangeText(e.target.value)}}

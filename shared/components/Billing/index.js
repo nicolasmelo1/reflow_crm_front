@@ -92,7 +92,7 @@ class Billing extends React.Component {
      * card was saved so we need to display it for the user.
      */
     isToShowCreditCardForm = () => {
-        const paymentMethodType = this.props.login.types.billing.payment_method_type.filter(paymentMethodType => paymentMethodType.id === this.props.billing.paymentData.payment_method_type_id)
+        const paymentMethodType = (this.props?.login?.types?.billing?.payment_method_type || []).filter(paymentMethodType => paymentMethodType.id === this.props.billing.paymentData.payment_method_type_id)
         if (paymentMethodType.length > 0 && paymentMethodType[0].name === 'credit_card') {
             if (this.props.billing.paymentData.credit_card_data){
                 return [...Object.entries(this.props.billing.paymentData.credit_card_data)].some(value => ['', null].includes(value[1]))

@@ -20,7 +20,7 @@ const Text = (props) => {
 
     const renderWeb = () => {
         return (
-            <Field.Text type="text" value={fieldValue} onChange={e=> {onChange(e)}}/>
+            <Field.Text type="text" value={fieldValue} onChange={e=> {onChange(e)}} autoComplete={'whathever'}/>
         )
     }
 

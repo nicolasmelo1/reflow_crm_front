@@ -205,6 +205,7 @@ const CompanyForm = (props) => {
                         <BillingInput 
                         errors={Array.from(Object.keys(props.companyDataFormErrors)).includes('cnpj')}
                         type={'text'} 
+                        autoComplete={'whathever'}
                         value={numberMasker(props.companyData.cnpj, getCPForCNPJMask(props.companyData.cnpj))} 
                         onChange={e=> onChangeCompanyDocumentNumber(e.target.value)}
                         />
@@ -222,6 +223,7 @@ const CompanyForm = (props) => {
                         <BillingInput                         
                         errors={Array.from(Object.keys(props.companyDataFormErrors)).includes('street')}
                         type={'text'} 
+                        autoComplete={'whathever'}
                         value={props.companyData.street} 
                         onChange={e=> onChangeStreet(e.target.value)}
                         />
@@ -234,6 +236,7 @@ const CompanyForm = (props) => {
                         <BillingInput                         
                         errors={Array.from(Object.keys(props.companyDataFormErrors)).includes('neighborhood')}
                         type={'text'} 
+                        autoComplete={'whathever'}
                         value={props.companyData.neighborhood} 
                         onChange={e=> onChangeNeighborhood(e.target.value)}
                         />
@@ -246,6 +249,7 @@ const CompanyForm = (props) => {
                         <BillingInput 
                         errors={Array.from(Object.keys(props.companyDataFormErrors)).includes('number')}
                         type={'number'} 
+                        autoComplete={'whathever'}
                         value={props.companyData.number} 
                         onChange={e=> onChangeNumber(e.target.value)}
                         />
@@ -256,6 +260,7 @@ const CompanyForm = (props) => {
                         </BillingFormularyFieldLabel>
                         <BillingInput
                         type={'text'} 
+                        autoComplete={'whathever'}
                         value={props.companyData.additional_details} 
                         onChange={e=> onChangeAdditionalDetails(e.target.value)}
                         />
@@ -268,6 +273,7 @@ const CompanyForm = (props) => {
                         <BillingInput 
                         errors={Array.from(Object.keys(props.companyDataFormErrors)).includes('zip_code')}
                         type={'text'} 
+                        autoComplete={'whathever'}
                         placeholder={'00000-000'} 
                         value={numberMasker(props.companyData.zip_code, '00000-000')} 
                         onChange={e=> onChangeZipCode(e.target.value)}

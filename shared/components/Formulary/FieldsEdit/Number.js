@@ -133,6 +133,7 @@ const Number = (props) => {
                         {strings['pt-br']['formularyEditFieldNumberFormulaLabel']}
                     </FormulariesEdit.FieldFormLabel>
                     <FormulariesEdit.InputField
+                    autoComplete={'whathever'}
                     error={isFormulaInvalid}
                     type="text"
                     value={props.field.formula_configuration ? formatFormula(props.field.formula_configuration, getFormulaOccurences(props.field.formula_configuration)).userText : ''} 

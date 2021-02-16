@@ -63,7 +63,7 @@ const Number = (props) => {
 
     const renderWeb = () => {
         return (
-            <Field.Text type="text" value={fieldValue} ref={input} onChange={e => {onChangeNumberValue(e)}}/>
+            <Field.Text type="text" value={fieldValue} ref={input} onChange={e => {onChangeNumberValue(e)}} autoComplete={'whathever'}/>
         )
     }
 

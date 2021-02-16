@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { View } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { types, strings } from '../../utils/constants'
+import delay from '../../utils/delay'
 import dynamicImport from '../../utils/dynamicImport'
 import {
     BillingFormularyContainer,
@@ -11,10 +12,14 @@ import {
     BillingChargeTableContentElement,
     BillingChargeTotalContainer,
     BillingChargeTotalValueLabel,
+    BillingChargeTableIndividualQuantityContainer,
+    BillingChargeTableIndividualQuantityButton
 } from '../../styles/Billing'
 
 const OverlayTrigger = dynamicImport('react-bootstrap', 'OverlayTrigger')
 const Popover = dynamicImport('react-bootstrap', 'Popover')
+
+const makeDelay = delay(1000)
 
 const PopoverWithAditionalInformation = React.forwardRef(({additionalInformation, ...rest}, ref) => {
     return (
@@ -56,6 +61,8 @@ const ChargeForm = (props) => {
         discounts: 0,
         total_by_name: []
     })
+    const isMountedRef = React.useRef()
+    const isFirstTotalLoad = React.useRef(true)
     const isGettingChargeDataRef = React.useRef(isGettingChargeData)
     const currencyPrefix = '$'
     const additionalInformationByIndividualChargeName = {
@@ -66,50 +73,10 @@ const ChargeForm = (props) => {
     }
 
     const optionsForIndividualChargeTypes = {
-        per_chart_company: [
-            {
-                label: '2', value: '2'
-            },
-            {
-                label: '5', value: '5'
-            },
-            {
-                label: '10', value: '10'
-            }
-        ],
-        per_chart_user: [
-            {
-                label: '2', value: '2'
-            },
-            {
-                label: '5', value: '5'
-            },
-            {
-                label: '10', value: '10'
-            }
-        ],
-        per_pdf_download: [
-            {
-                label: '30', value: '30'
-            },
-            {
-                label: '60', value: '60'
-            },
-            {
-                label: '200', value: '200'
-            }
-        ],
-        per_gb: [
-            {
-                label: '5', value: '5'
-            },
-            {
-                label: '10', value: '10'
-            },
-            {
-                label: '15', value: '15'
-            }
-        ]
+        per_chart_company: [2,5,10],
+        per_chart_user: [2, 5, 10],
+        per_pdf_download: [30, 60, 200],
+        per_gb: [5, 10, 15]
     }
 
     // creating a ref to the state is the only way we can get the state changes in the eventHandler function,
@@ -149,10 +116,62 @@ const ChargeForm = (props) => {
     const onChangeQuantity = (value, name) => {
         props.chargesData.forEach((chargeData, index) => {
             if (chargeData.name === name) {
-                props.chargesData[index].quantity = parseInt(value)
+                props.chargesData[index].quantity = Number.isNaN(parseInt(value)) ? 0 : parseInt(value).toString()
             }
         })
         props.onChangeChargeData([...props.chargesData])
+    }
+
+    /**
+     * When the user clicks the `plus` (+) icon of the individual value charge to increase the number. When the user do this we get one of the default options for him. 
+     * The user can set `free numbers` (numbers that are not pre-defined) if he changes the value directly in the input
+     * 
+     * @param {BigInteger} currentValue - The current value of this individual_value_charge type name.
+     * @param {String} name - Check the redux login.types for details or `optionsForIndividualChargeTypes` object keys for the possible names you can
+     * accept here.
+     */
+    const getNextQuantityForValueName = (currentValue, name) => {
+        if (optionsForIndividualChargeTypes[name]) {
+            const selectedIndex = optionsForIndividualChargeTypes[name].findIndex(option=> option.toString() === currentValue.toString())
+            if (selectedIndex + 1 < optionsForIndividualChargeTypes[name].length) {
+                return optionsForIndividualChargeTypes[name][selectedIndex + 1]
+            } 
+        }
+        return currentValue
+    }
+
+    /**
+     * When the user clicks the `minus` (-) icon of the individual value charge to decrease the number. When the user do this we get one of the default options for him. 
+     * The user can set `free numbers` (numbers that are not pre-defined) if he changes the value directly in the input
+     * 
+     * @param {BigInteger} currentValue - The current value of this individual_value_charge type name.
+     * @param {String} name - Check the redux login.types for details or `optionsForIndividualChargeTypes` object keys for the possible names you can
+     * accept here.
+     */
+    const getPreviousQuantityForValueName = (currentValue, name) => {
+        if (optionsForIndividualChargeTypes[name]) {
+            let selectedIndex = optionsForIndividualChargeTypes[name].findIndex(option=> parseInt(option) === parseInt(currentValue))
+            selectedIndex = selectedIndex === -1 ? optionsForIndividualChargeTypes[name].length : selectedIndex
+            if (selectedIndex - 1 >= 0) {
+                return optionsForIndividualChargeTypes[name][selectedIndex - 1]
+            }
+        }
+        return currentValue
+    }
+
+    /**
+     * Gets the totals by each individual value charge name.
+     */
+    const onGetTotal = () => {
+        setIsGettingChargeData(true)
+        props.onGetTotals(props.chargesData).then(response => {
+            if (isMountedRef.current) {
+                if (response && response.status === 200) {
+                    setTotals(response.data.data)
+                }
+                setIsGettingChargeData(false)
+            }
+        })
     }
 
     /**
@@ -197,56 +216,29 @@ const ChargeForm = (props) => {
         } else {
             return `${currencyPrefix} ${getDecimals('0')}`
         }
-    }
+    }   
+
+    useEffect(() => {
+        isMountedRef.current = true
+        return () => {
+            isMountedRef.current = false
+        }
+    }, [])
 
     useEffect(() => {
         // This effect is fired everytime the user changes the chargesData array of objects. 
         // This effect is used to get the new totals based on his current data selected.
         // There was a bug that was firing the requests nonstop, with a reference we can prevent an infinite loop
         if (!isGettingChargeDataRef.current) {
-            setIsGettingChargeData(true)
-            props.onGetTotals(props.chargesData).then(response => {
-                if (response && response.status === 200) {
-                    setTotals(response.data.data)
-                }
-                setIsGettingChargeData(false)
+            if (isFirstTotalLoad.current) {
+                onGetTotal()
+                isFirstTotalLoad.current = false
+            }
+            makeDelay(() => {
+                onGetTotal()
             })
         }
-
     }, [props.chargesData])
-
-    useEffect(() => {
-        // This effect is for syncing the data from the server and the client side.
-        // Imagine that we have added a new individual_charge_value_type in the backend, if this new type is for each user, we need to create it
-        // for each user and make this new charge type in sync with the number of users. That's exactly what we do here.
-
-        // Since the user cannot edit the individual_charge_value_type we need to handle it on our side. This is something that might not
-        // happen very ofter, but since this could happen it's important that we prevent.
-
-        // TL;DR: we are creating new charge_data for the company if they haven't been created before. This is used on created individual_charge_value_type
-        // that were not assigned for the company.
-        const individualValueChargeNames = props.types.individual_charge_value_type.map(individualChargeValueType => individualChargeValueType.name)
-        const individualValueChargeNamesOfTheCompany = Array.from(new Set(props.chargesData.map(chargeData => chargeData.name)))
-        const chargesPerUser = props.chargesData.filter(chargeData => chargeData.name === 'per_user')
-        
-        if (individualValueChargeNames.length !== individualValueChargeNamesOfTheCompany.length) {
-            let values = []
-            for(let i=0; i<props.types.individual_charge_value_type.length; i++) {
-                // check if company or user type
-                if (!individualValueChargeNamesOfTheCompany.includes(props.types.individual_charge_value_type[i].name)) {
-                    chargesPerUser.forEach(chargePerUser => {
-                        values.push({
-                            name: props.types.individual_charge_value_type[i].name,
-                            quantity: optionsForIndividualChargeTypes[props.types.individual_charge_value_type[i].name][0].value,
-                            user_id: chargePerUser.user_id
-                        })
-                    })
-                }
-            }
-            props.onChangeChargeData([...props.chargesData, ...values])
-        }
-
-    }, [props.chargesData, props.types.individual_charge_value_type])
 
     const renderMobile = () => {
         return (
@@ -269,28 +261,44 @@ const ChargeForm = (props) => {
                             {strings['pt-br']['billingChargeTableHeaderValueLabel']}
                         </BillingChargeTableHeaderElement>
                     </BillingChargeTableRow>
-                    {props.types.individual_charge_value_type.map((individualChargeValueType, index) => (
+                    {(props?.types?.individual_charge_value_type || []).map((individualChargeValueType, index) => (
                         <BillingChargeTableRow key={index}>
                             {individualChargeValueType.name !== 'per_user' ? (
-                                <select 
-                                style={{ width: '100%', border: '0', backgroundColor: 'transparent', userSelect: 'none', margin: '0 5px 1rem 5px', borderBottom: '1px solid #0dbf7e' }}
-                                value={(getCompanyIndividualChargeValueQuantityByName(individualChargeValueType.name)/props.chargesData.filter(chargeData => chargeData.name === individualChargeValueType.name).length).toString()}
-                                onChange={e => onChangeQuantity(e.target.value, individualChargeValueType.name)}
-                                >
-                                    {!optionsForIndividualChargeTypes[individualChargeValueType.name].map(option => option.value).includes(getCompanyIndividualChargeValueQuantityByName(individualChargeValueType.name).toString()) ? 
-                                    [].concat(optionsForIndividualChargeTypes[individualChargeValueType.name], 
-                                    [{
-                                        value: getCompanyIndividualChargeValueQuantityByName(individualChargeValueType.name), 
-                                        label: getCompanyIndividualChargeValueQuantityByName(individualChargeValueType.name)}
-                                    ]).map((option, index) => (
-                                        <option key={index} value={option.value}>{option.label}</option>
-                                    ))
-                                    : optionsForIndividualChargeTypes[individualChargeValueType.name].map((option, index) => (
-                                        <option key={index} value={option.value}>{option.label}</option>
-                                    ))}
-                                </select>
+                                <BillingChargeTableIndividualQuantityContainer>
+                                    <BillingChargeTableIndividualQuantityButton
+                                    onClick={(e) => onChangeQuantity(
+                                        getPreviousQuantityForValueName(
+                                            getCompanyIndividualChargeValueQuantityByName(individualChargeValueType.name), 
+                                            individualChargeValueType.name
+                                        ), 
+                                        individualChargeValueType.name
+                                    )}>
+                                        {'-'}
+                                    </BillingChargeTableIndividualQuantityButton>
+                                    <input 
+                                    style={{
+                                        width: 100,
+                                        border: 0,
+                                        textAlign: 'center'
+                                    }}
+                                    value={getCompanyIndividualChargeValueQuantityByName(individualChargeValueType.name)}
+                                    onChange={(e) => onChangeQuantity(e.target.value, individualChargeValueType.name)}  
+                                    type={'text'} 
+                                    autoComplete={'whathever'}
+                                    />
+                                    <BillingChargeTableIndividualQuantityButton
+                                    onClick={(e) => onChangeQuantity(
+                                        getNextQuantityForValueName(
+                                            getCompanyIndividualChargeValueQuantityByName(individualChargeValueType.name), 
+                                            individualChargeValueType.name
+                                        ), 
+                                        individualChargeValueType.name
+                                    )}>
+                                        {'+'}
+                                    </BillingChargeTableIndividualQuantityButton>
+                                </BillingChargeTableIndividualQuantityContainer>
                             ) : (
-                                <p style={{ width: '100%', margin: '0 5px 1rem 5px'}}>
+                                <p style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                                     {getCompanyIndividualChargeValueQuantityByName(individualChargeValueType.name)}
                                 </p>
                             )}

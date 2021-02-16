@@ -290,7 +290,7 @@ const FormularyFieldEdit = (props) => {
                                     <FormulariesEdit.FieldFormLabel>
                                         {strings['pt-br']['formularyEditFieldNameInputLabel']}
                                     </FormulariesEdit.FieldFormLabel>
-                                    <FormulariesEdit.InputField type="text" value={props.field.label_name} onChange={e=> {onChangeFieldName(e)}}/>
+                                    <FormulariesEdit.InputField autoComplete={'whathever'} type="text" value={props.field.label_name} onChange={e=> {onChangeFieldName(e)}}/>
                                 </FormulariesEdit.FieldFormFieldContainer>
                                 {props.field.label_name ? (
                                     <div>

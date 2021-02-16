@@ -68,6 +68,7 @@ const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 const UsersForm = (props) => {
     // Instead of updating the userData recieved directly we actually separate in different states in this component, this way we keep things
     // separated from the parent component and this component
+    const isMountedRef = React.useRef()
     const sourceRef = React.useRef(null)
     const [profileTypeOptions, setProfileTypeOptions] = useState([])
     const [templatesUserHaveAccess, setTemplatesUserHaveAccess] = useState([])
@@ -348,18 +349,21 @@ const UsersForm = (props) => {
 
     useEffect(() => {
         // set the profileType options for the select component
-        setProfileTypeOptions(
-            props.types.defaults.profile_type.map(profileType => ({ 
-                value: profileType.id, 
-                label: types('pt-br', 'profile_type', profileType.name) 
-            }))
-        )
+        if (isMountedRef.current) {
+            setProfileTypeOptions(
+                (props?.types?.defaults?.profile_type || []).map(profileType => ({ 
+                    value: profileType.id, 
+                    label: types('pt-br', 'profile_type', profileType.name) 
+                }))
+            )
+        }
     }, [props.types])
 
     useEffect(() => {
         sourceRef.current = props.cancelToken.source()
-        
+        isMountedRef.current = true
         return () => {
+            isMountedRef.current = false
             if (sourceRef.current) {
                 sourceRef.current.cancel()
             }

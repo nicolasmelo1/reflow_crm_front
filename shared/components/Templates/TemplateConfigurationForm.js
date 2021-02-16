@@ -136,16 +136,13 @@ const TemplateConfigurationForm = (props) => {
         // on another and so on.
         newSelectedFormulariesIds.forEach(selectedFormularyId => {
             let formularyIdsToVerifyIfDependent = [selectedFormularyId.value]
-            while (
-                formularyIdsToVerifyIfDependent.filter(formularyIdToVerifyIfDependent => 
-                    !dependentFormularyIds.map(dependentFormularyId => dependentFormularyId.value).includes(formularyIdToVerifyIfDependent)).length > 0
-            ) {
-                if (formularyIdsToVerifyIfDependent[0] in props.dependentForms) {
+            while (formularyIdsToVerifyIfDependent.length > 0) {
+                if (Object.keys(props.dependentForms).includes(formularyIdsToVerifyIfDependent[0].toString())) {
                     const dependentFormIdsToAdd = props.dependentForms[formularyIdsToVerifyIfDependent[0]]
                     formularyIdsToVerifyIfDependent = formularyIdsToVerifyIfDependent.concat(dependentFormIdsToAdd)
                     // holds the ids that will be concated on selectedFormulariesIds array.
-                    let dependentFormIdsToAddWithoutDuplicates = dependentFormIdsToAdd
-                        .filter(dependentFormIdToAdd => !dependentFormularyIds.map(dependentFormularyId => dependentFormularyId.value).includes(dependentFormIdToAdd))
+                    let dependentFormIdsToAddWithoutDuplicates = [...new Set(dependentFormIdsToAdd
+                        .filter(dependentFormIdToAdd => !dependentFormularyIds.map(dependentFormularyId => dependentFormularyId.value).includes(dependentFormIdToAdd)))]
                     dependentFormIdsToAddWithoutDuplicates = dependentFormIdsToAddWithoutDuplicates.map(dependentFormIdToAdd => (addSelectedFormularyId(formularyIdsToVerifyIfDependent[0], dependentFormIdToAdd)))
                     dependentFormularyIds = dependentFormularyIds.concat(dependentFormIdsToAddWithoutDuplicates)
                 }

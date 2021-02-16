@@ -351,6 +351,7 @@ const Select = (props) => {
                     <Utils.Select.Input 
                     ref={inputRef} 
                     type="text" 
+                    autoComplete={'whathever'}
                     placeholder={selectedOptions.length === 0 ? props.placeholder: ''}
                     value={searchValue} 
                     searchValueColor={props.searchValueColor}

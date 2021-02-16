@@ -16,6 +16,8 @@ export { default as BillingChargeTotalContainer } from './BillingChargeTotalCont
 export { default as BillingChargeTableRow } from './BillingChargeTableRow'
 export { default as BillingChargeTableHeaderElement } from './BillingChargeTableHeaderElement'
 export { default as BillingChargeTableContentElement } from './BillingChargeTableContentElement'
+export { default as BillingChargeTableIndividualQuantityButton } from './BillingChargeTableIndividualQuantityButton'
+export { default as BillingChargeTableIndividualQuantityContainer } from './BillingChargeTableIndividualQuantityContainer'
 export { default as BillingFormularySectionTitleLabel } from './BillingFormularySectionTitleLabel'
 export { default as BillingFormularyErrorMessage } from './BillingFormularyErrorMessage'
 export { default as BillingFormularyRequiredField } from './BillingFormularyRequiredField'

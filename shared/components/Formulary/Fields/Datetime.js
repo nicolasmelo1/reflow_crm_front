@@ -85,7 +85,7 @@ const Datetime = (props) => {
                     <Id values={[{value: fieldValue}]}/>
                 ): (
                     <div>
-                        <Field.Text ref={inputRef} type="text" value={fieldValue} readOnly={true}/>
+                        <Field.Text ref={inputRef} type="text" value={fieldValue} readOnly={true} autoComplete={'whathever'}/>
                         <DateTimePicker 
                         withoutHourPicker={typeof dateFormat === 'string' && (!(dateFormat.includes('%H') || dateFormat.includes('%M')))}
                         input={inputRef} 
