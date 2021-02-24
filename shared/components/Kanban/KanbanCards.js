@@ -47,7 +47,9 @@ const KanbanCards = (props) => {
 
         const cardContainer = e.currentTarget.closest('.kanban-card')
         const cardRect = cardContainer.getBoundingClientRect()
-        e.dataTransfer.setDragImage(cardContainer, cardRect.width - 5, 20)
+        const elementRect = e.currentTarget.getBoundingClientRect()
+
+        e.dataTransfer.setDragImage(cardContainer, cardRect.width - (cardRect.width - elementRect.width), 20)
         e.dataTransfer.setData('movedCardIndexInDimension', cardIndex.toString())
         e.dataTransfer.setData('movedCardDimension', props.dimension.toString())
     }
@@ -126,9 +128,9 @@ const KanbanCards = (props) => {
                                         <div draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveCard(e, index)}} onDragEnd={e=>{onDragEnd(e)}} >
                                             <KanbanCardMoveIcon icon="arrows-alt"/>
                                         </div>
-                                        {props.cardFields.map((cardField, cardFieldIndex) => (
+                                        {props.defaultKanbanCard.kanbanCardFields.map((cardField, cardFieldIndex) => (
                                             <div key={cardFieldIndex}>
-                                                {card.dynamic_form_value.filter(value=> value.field_id === cardField.id).map((field, fieldIndex) => (
+                                                {card.dynamic_form_value.filter(value=> value.field_id === cardField.field.id).map((field, fieldIndex) => (
                                                     <KanbanCardContents key={fieldIndex} isTitle={cardFieldIndex===0}>
                                                         {field.value}
                                                     </KanbanCardContents>
@@ -144,10 +146,14 @@ const KanbanCards = (props) => {
                 </React.Fragment>
             ) : (
                 <div>
-                    <small>
-                        {"Aguarde enquanto seus dados são carregados."}
-                    </small>
-                    <Spinner animation="border" size="sm"/>
+                    {props.dimension !== '' ? (
+                        <React.Fragment>
+                            <small>
+                                {"Aguarde enquanto seus dados são carregados."}
+                            </small>
+                            <Spinner animation="border" size="sm"/>
+                        </React.Fragment>
+                    ) : ''}
                 </div>
             )}
             {props.pagination && props.pagination.current < props.pagination.total && !isOverflown ? (

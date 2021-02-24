@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import KanbanDimension from './KanbanDimension'
-import delay from '../../utils/delay'
+import deepCopy from '../../utils/deepCopy'
 
-const makeDelay = delay(500)
+
 let savedScrollPosition = {
     formName: '',
     scrollPosition: 0
@@ -11,58 +11,72 @@ let savedScrollPosition = {
 /**
  * This is a component that is used to control the dimensions.
  * 
+ * @param {Object} types - the types state, this types are usually the required data from this system to work. 
+ * Types defines all of the field types, form types, format of numbers and dates and many other stuff
+ * @param {Object} user - The user object of the login redux reducer
  * @param {String} formName - the form name of the current formulary
- * @param {Array<Object>} dimensionOrders - The dimension orders loaded on the redux state, this dimension order
+ * @param {Array<Object>} dimensionPhases - The dimension orders loaded on the redux state, this dimension order
  * holds only the order of each dimension.
  * @param {Interger} defaultDimensionId - The id of the selected dimension.
  * @param {Object} card - the selected card, we use this to get the card fields, this way we can set the titles
  * and the fields data in the card.
  * @param {Array<Object>} data - this is a array with all of the data, this data is used to populate the kanban 
  * cards.
- * @param {Function} onChangeKanbanData - this function is an action used to change the card status,
+ * @param {Function} onMoveKanbanCardBetweenDimensions - this function is an action used to change the card status,
  * between dimension columns.
  * @param {Function} setFormularyDefaultData - the function to define a default data when the user changes 
  * the kanban card to a status with required field data. When the formulary data is loaded we change with this 
  * default data.
  * @param {Function} setFormularyId - the function to define the id of the form to render.
- * @param {Function} onChangeDimensionOrdersState - this function is an redux action used to change the dimension
+ * @param {Function} onChangeDimensionPhases - this function is an redux action used to change the dimension
  * order in the redux store.
  */
 const KanbanTable = (props) => {
-    const screenWidth = process.env['APP'] === 'web' ? document.body.offsetWidth : 280
     const dimensionsWidth = process.env['APP'] === 'web' ? 280 : 280
-    const oldDimensionOrdersRef = React.useRef()
-    const fetchingForDimensions = React.useRef([])
-    const oldFormNameRef = React.useRef()
+    const collapsedDimensionsWidth = process.env['APP'] === 'web' ? 70 : 70
+    const oldDefauldKanbanCard = React.useRef(null)
+    const oldDefaultDimension = React.useRef(null)
+    const retrievedDataForDimensions = React.useRef([])
     const kanbanHolderRef = React.useRef()
-    const kanbanTable = React.useRef()
     const isMountedRef = React.useRef(false)
     const dataSource = React.useRef(props.cancelToken.source())
-    const cardFields = (props.card) ? props.card.kanban_card_fields: []
-    const [hasFiredDimensionOrders, _setHasFiredDimensionOrders] = useState(false)
+    const [isAlertShown, setIsAlertShown] = useState(false)
 
-    // we just fire to get the dimension orders once
-    const hasFiredDimensionOrdersRef = React.useRef(hasFiredDimensionOrders)
-    const setHasFiredDimensionOrders = (data) => {
-        hasFiredDimensionOrdersRef.current = data
-        _setHasFiredDimensionOrders(data)
-    }
-
-    const onDragOverTable = (e) => {
-        e.preventDefault()
-        const totalWidth = kanbanHolderRef.current.offsetWidth / 4
-        const widthToMoveLeft = totalWidth * 2;
-        const widthToMoveRight = kanbanHolderRef.current.offsetWidth - totalWidth;
-        
-        if (e.clientX < widthToMoveLeft) {
-            kanbanHolderRef.current.scrollLeft -= 5;
-        } 
-        if (e.clientX > widthToMoveRight) {
-            kanbanHolderRef.current.scrollLeft += 5;
+    /**
+     * When the kanban has many phases, the kanban can be bigger than the screen of the user. 
+     * To enable the usability of the kanban we add an horizontal scroll so the user can scroll through each phase. 
+     * 
+     * When the user is dragging a card or a dimension on the kanban that doesn't fit the screen and has a scroll, when he drags
+     * to the side of the scroll we need to automatically scroll for him, so it doesn't matter the size of the kanban he can reach the first and
+     * last phases while dragging
+     * 
+     * @param {BigInteger} itemXPosition - The X position of the mouse while he is dragging.
+     */
+    const onDragOverAutomaticScroll = (itemXPosition) => {
+        if (process.env['APP'] === 'web') {
+            const totalWidth = kanbanHolderRef.current.offsetWidth / 4
+            const widthToMoveLeft = totalWidth * 2;
+            const widthToMoveRight = kanbanHolderRef.current.offsetWidth - totalWidth;
+            
+            if (itemXPosition < widthToMoveLeft) {
+                kanbanHolderRef.current.scrollLeft -= 5;
+            } 
+            if (itemXPosition > widthToMoveRight) {
+                kanbanHolderRef.current.scrollLeft += 5;
+            }
+            setShownDimensions(props.collapsedDimensions, props.dimensionPhases, kanbanHolderRef.current.scrollLeft, kanbanHolderRef.current.offsetWidth)
         }
     }
     
-    
+    /**
+     * When the user scrolls horizontally we need to update the shown dimensions of the user
+     * @param {*} scrollWidthPosition 
+     * @param {*} scrollContainerWidth 
+     */
+    const onScrollHorizontalKanban = (scrollWidthPosition, scrollContainerWidth) => {
+        setShownDimensions(props.collapsedDimensions, props.dimensionPhases, scrollWidthPosition, scrollContainerWidth)
+    }
+
     /**
      * Responsible for paginating the columns to show. First thing to understand is that we change the pagination as
      * the user scrolls horizontally, and since we don't want to retrieve the data everytime he scrolls we make a delay
@@ -74,139 +88,148 @@ const KanbanTable = (props) => {
      * @param {BigInteger} scrollWidthPosition - An integer representing where the scroll is in the view.
      * @param {BigInteger} scrollContainerWidth - An integer that represents the TOTAL width of the scroll container. (Not the scroll container,
      * but the width of the scroll inside of the view, and not it's scroll width)
-     * @param {Boolean} isInitial - Defaults to false. This is used so we know if you are setting the dimensions to show when the page is being rendered or not.
      */
-    const onScrollHorizontalKanban = (scrollWidthPosition, scrollContainerWidth, isInitial=false) => {
+    const setShownDimensions = (collapsedPhases, phases, scrollWidthPosition, scrollContainerWidth) => {
         savedScrollPosition = {
             formName: props.formName,
             scrollPosition: scrollWidthPosition
         }
 
+        const isDimensionCollapsed = (dimension) => {
+            if (dimension && collapsedPhases.includes(dimension.id)) {
+                return true
+            }   
+            return false
+        }
+
         if (isMountedRef.current) {
             let endDimensionIndexToRetrieveDataFor = null
             let startDimensionIndexToRetrieveDataFor = null
-            let stackedMaximumNumberOfDimensionsToShowWidth = dimensionsWidth
+            let stackedMaximumNumberOfDimensionsToShowWidth = isDimensionCollapsed(phases[0]) ? collapsedDimensionsWidth : dimensionsWidth
+
             // We loop through each dimensionOrder to get the startIndex and the endIndex of the columns we want to retrieve
-            for (let i=0; i<props.dimensionOrders.length; i++) {
-                if (stackedMaximumNumberOfDimensionsToShowWidth >= scrollContainerWidth + scrollWidthPosition || i === props.dimensionOrders.length - 1) {
+            for (let i=0; i<phases.length; i++) {
+                if (stackedMaximumNumberOfDimensionsToShowWidth >= scrollContainerWidth + scrollWidthPosition || i === phases.length - 1) {
                     endDimensionIndexToRetrieveDataFor = i
                     break
                 } else if (stackedMaximumNumberOfDimensionsToShowWidth >= scrollWidthPosition && startDimensionIndexToRetrieveDataFor === null) {
                     startDimensionIndexToRetrieveDataFor = i
                 } 
-                stackedMaximumNumberOfDimensionsToShowWidth += dimensionsWidth
+                stackedMaximumNumberOfDimensionsToShowWidth += isDimensionCollapsed(phases[i+1]) ? collapsedDimensionsWidth : dimensionsWidth
             }
-            const dimensionsToGetDataFor = props.dimensionOrders.slice(startDimensionIndexToRetrieveDataFor, endDimensionIndexToRetrieveDataFor + 1)
-            const dimensionsToGetDataForFiltered = dimensionsToGetDataFor.filter(dimension => !fetchingForDimensions.current.includes(dimension.options))
-            const dimensionsToGetDataForNames = dimensionsToGetDataForFiltered.map(dimension => dimension.options)
-            fetchingForDimensions.current = fetchingForDimensions.current.concat(dimensionsToGetDataForNames)
+            const dimensionsToGetDataFor = phases.slice(startDimensionIndexToRetrieveDataFor, endDimensionIndexToRetrieveDataFor + 1)
+            const dimensionsToGetDataForFiltered = dimensionsToGetDataFor.filter(dimension => !collapsedPhases.includes(dimension.id))
             
-            props.onChangeDimensionsToShow(dataSource.current, props.formName, dimensionsToGetDataFor, dimensionsToGetDataForFiltered, isInitial).then(_ => {
-                fetchingForDimensions.current = fetchingForDimensions.current.filter(dimension => !dimensionsToGetDataForNames.includes(dimension))
-            })
+            props.onChangeDimensionsToShow(dimensionsToGetDataForFiltered)
         }
+        return null
     }
 
     /**
-     * When the user resizes the screen we need to load more data on the shown columns. It's like the user had scrolled
-     * 
-     * @param {SyntheticEvent} e - The event object emited by 'resize' window event
+     * This is used to update the dimension
      */
-    const onResizeWeb = (e) => {
+    const onUpdateDimensionsOnScreen = () => {
         if (kanbanHolderRef.current) {
-            onScrollHorizontalKanban(kanbanHolderRef.current.scrollLeft, kanbanHolderRef.current.offsetWidth)
+            setShownDimensions(props.collapsedDimensions, props.dimensionPhases, kanbanHolderRef.current.scrollLeft, kanbanHolderRef.current.offsetWidth)
         }
     }
 
     useEffect(() => {
         isMountedRef.current = true
         dataSource.current = props.cancelToken.source()
+        
         if (kanbanHolderRef.current && savedScrollPosition.formName === props.formName) {
             kanbanHolderRef.current.scrollTo(savedScrollPosition.scrollPosition, 0);
         }
-        if (props.dimensionOrders.length > 0 && kanbanHolderRef.current) {
-            const scrollPosition = (savedScrollPosition.formName === props.formName) ? savedScrollPosition.scrollPosition : kanbanHolderRef.current.scrollLeft
-            onScrollHorizontalKanban(scrollPosition, kanbanHolderRef.current.offsetWidth, true)
-        }
+        
         if (process.env['APP'] === 'web') { 
-            window.addEventListener('resize', onResizeWeb)
+            window.addEventListener('resize', onUpdateDimensionsOnScreen)
         }
+
         return () => {
             if(dataSource.current) {
                 dataSource.current.cancel()
             }
             isMountedRef.current = false
             if (process.env['APP'] === 'web') { 
-                window.removeEventListener('resize', onResizeWeb)
+                window.removeEventListener('resize', onUpdateDimensionsOnScreen)
             }
         }
     }, [])
 
     useEffect(() => {
-        if (!hasFiredDimensionOrdersRef.current && props.defaultKanbanCardId && props.defaultDimensionId && isMountedRef.current) {
-            setHasFiredDimensionOrders(true)
-            props.onGetDimensionOrders(dataSource.current, props.formName, props.defaultDimensionId).then(dimensionOrders => {
-                if (kanbanHolderRef.current) {
-                    const scrollPosition = (savedScrollPosition.formName === props.formName) ? savedScrollPosition.scrollPosition : kanbanHolderRef.current.scrollLeft
-                    onScrollHorizontalKanban(scrollPosition, kanbanHolderRef.current.offsetWidth, true)
-                }
-                if (isMountedRef.current) {
-                    setHasFiredDimensionOrders(false)
-                }
-            })
-        }
-    }, [props.defaultDimensionId, props.defaultKanbanCardId])
-
+        retrievedDataForDimensions.current = []
+    }, [props.formName])
 
     useEffect(() => {
-        // this is to make less requests to the backend, we use the sort for when we change the kanban dimension orders, and the oldProps and newProps
-        // is to prevent rerender of rehydratation
-        const oldDimensionOrders = oldDimensionOrdersRef.current ? oldDimensionOrdersRef.current.map(dimensionOrder => dimensionOrder.options) : []
-        const newDimensionOrders = props.dimensionOrders ? props.dimensionOrders.map(dimensionOrder => dimensionOrder.options) : []
-        newDimensionOrders.sort()
-        oldDimensionOrders.sort()
-        if (props.defaultKanbanCardId && props.defaultDimensionId && props.defaultFormName === props.formName && JSON.stringify(oldDimensionOrders) !== JSON.stringify(newDimensionOrders)) {
-            props.onGetKanbanData(dataSource.current, props.params, props.formName).then(response => {
-                if (kanbanHolderRef.current) {
-                    onScrollHorizontalKanban(kanbanHolderRef.current.scrollLeft, kanbanHolderRef.current.offsetWidth)
-                }
-            })
+        if (props.defaultKanbanCard.id !== null && props.defaultDimension.id !== null && isMountedRef.current) {
+            props.onGetDimensionPhases(dataSource.current, props.formName, props.defaultDimension.id)
         }
-    }, [props.dimensionOrders])
-
+    }, [props.defaultDimension])
 
     useEffect(() => {
-        oldDimensionOrdersRef.current = props.dimensionOrders
-        oldFormNameRef.current = props.formName
-    })
+        const scrollPosition = (savedScrollPosition.formName === props.formName) ? savedScrollPosition.scrollPosition : kanbanHolderRef.current.scrollLeft
+        setShownDimensions(props.collapsedDimensions, props.dimensionPhases, scrollPosition, kanbanHolderRef.current.offsetWidth)
+    }, [props.dimensionPhases])
+
+    useEffect(() => {
+        // Handles the first load of columns
+        const didDefaultKanbanCardOrDimensionChanged = JSON.stringify(oldDefaultDimension.current) !== JSON.stringify(props.defaultDimension) || JSON.stringify(props.defaultKanbanCard) !== JSON.stringify(oldDefauldKanbanCard.current)
+        const areDefaultsDefinedAndShownDimensionsSet = props.defaultKanbanCard.id !== null && props.defaultDimension.id !== null && props.dimensionsToShow.length > 0
+        
+        if (areDefaultsDefinedAndShownDimensionsSet && isMountedRef.current) {
+            const columnNames = props.dimensionsToShow.map(phase => phase.option)
+            const loadedPhases = props.data.map(dataForPhase => dataForPhase.dimension)
+            const columnNamesWithoutLoadedPhases = columnNames.filter(columnName=> !loadedPhases.includes(columnName))
+            
+            if (columnNames.length > 0) {
+                if (didDefaultKanbanCardOrDimensionChanged) {
+                    props.onGetKanbanData(dataSource.current, props.params, props.formName, columnNames)                
+                } else if (columnNamesWithoutLoadedPhases.length > 0) {
+                    // only the shown dimensions changed
+                    props.onGetKanbanData(dataSource.current, props.params, props.formName, columnNames.filter(columnName=> !loadedPhases.includes(columnName)))
+                }
+            }
+        }
+        oldDefaultDimension.current = deepCopy(props.defaultDimension)
+        oldDefauldKanbanCard.current = deepCopy(props.defaultKanbanCard)
+    }, [props.defaultDimension, props.defaultKanbanCard, props.dimensionsToShow])
 
     return (
         <div 
         ref={kanbanHolderRef} 
-        onDragOver={e=> {onDragOverTable(e)}}
+        onDragOver={e=> {
+            e.preventDefault()
+            onDragOverAutomaticScroll(e.clientX)
+        }}
         onScroll={(e) => onScrollHorizontalKanban(e.target.scrollLeft, e.target.offsetWidth)}
-        style={{overflowX: 'auto', transform: 'rotateX(180deg)'}}
+        style={{overflowX: 'auto', transform: isAlertShown ? 'none': 'rotateX(180deg)'}}
         >
-            {props.defaultKanbanCardId && props.defaultDimensionId ? (
-                <table ref={kanbanTable} style={{ transform: 'rotateX(180deg)'}}>
-                    <tbody>
-                        <KanbanDimension
-                        formName={props.formName}
-                        cancelToken={props.cancelToken}
-                        dimensionsWidth={dimensionsWidth} 
-                        defaultDimensionId={props.defaultDimensionId}
-                        onChangeDimensionOrdersState={props.onChangeDimensionOrdersState}
-                        onChangeKanbanData={props.onChangeKanbanData}
-                        params={props.params}
-                        onGetKanbanData={props.onGetKanbanData}
-                        setFormularyId={props.setFormularyId}
-                        setFormularyDefaultData={props.setFormularyDefaultData}
-                        dimensionOrders={props.dimensionOrders}
-                        cardFields={cardFields}
-                        data={props.data}
-                        />
-                    </tbody>
-                </table>
+            {props.defaultKanbanCard.id !== null && props.defaultDimension.id !== null ? (
+                    <KanbanDimension
+                    types={props.types}
+                    user={props.user}
+                    cancelToken={props.cancelToken}
+                    isAlertShown={isAlertShown}
+                    setIsAlertShown={setIsAlertShown}
+                    formName={props.formName}
+                    cancelToken={props.cancelToken}
+                    dimensionsWidth={dimensionsWidth} 
+                    defaultKanbanCard={props.defaultKanbanCard}
+                    defaultDimension={props.defaultDimension}
+                    onGetDimensionPhases={props.onGetDimensionPhases}
+                    onCollapseDimension={props.onCollapseDimension}
+                    collapsedDimensions={props.collapsedDimensions}
+                    onChangeDimensionPhases={props.onChangeDimensionPhases}
+                    onUpdateDimensionsOnScreen={onUpdateDimensionsOnScreen}
+                    onMoveKanbanCardBetweenDimensions={props.onMoveKanbanCardBetweenDimensions}
+                    params={props.params}
+                    onGetKanbanData={props.onGetKanbanData}
+                    setFormularyId={props.setFormularyId}
+                    setFormularyDefaultData={props.setFormularyDefaultData}
+                    dimensionPhases={props.dimensionPhases}
+                    data={props.data}
+                    />
             ) : ''}
         </div>
     )

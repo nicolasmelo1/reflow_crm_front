@@ -91,7 +91,6 @@ const Form = (props) => {
         async function fetchFormOptions() {
             try {
                 const response = await agent.http.FORMULARY.getFormularyFormFieldOptions(sourceRef.current, props.formName, props.field.id, page.current);
-                console.log('teste')
                 if (!didCancel) {
                     const options = response.data.data.map(option => { return {value: option.form_id, label: option.value} })
                     setOptions(options)

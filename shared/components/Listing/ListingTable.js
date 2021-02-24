@@ -90,7 +90,7 @@ const ListingTable = (props) => {
     return (
         <div>
             {!isMobile ? (
-                <div style={{ width: '100%', overflowY: 'hidden', overflowX: 'scroll', height:'20px' }} 
+                <div style={{ width: '99%', overflowY: 'hidden', overflowX: 'scroll', height:'20px' }} 
                 ref={scrollWrapperRef} 
                 onScroll={(e) => onScrollerScroll(e.target)}
                 >

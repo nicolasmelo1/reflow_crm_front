@@ -1,24 +1,32 @@
 import {
-    SET_KANBAN_INITIAL,
+    SET_KANBAN_DEFAULT_DATA,
     SET_DATA_KANBAN,
-    SET_DIMENSION_ORDER,
+    SET_DIMENSION_PHASES,
+    SET_KANBAN_FIELDS,
     SET_CARDS,
-    SET_KANBAN_IGNORE_WEBSOCKET,
-    SET_DIMENSION_IN_SCREEN
+    SET_DIMENSION_IN_SCREEN,
+    SET_DIMENSION_COLLAPSED
 } from '../../types'
 
 let initialState = {
-    ignoreWebSocket: false,
     initial: {
-        formName: null,
-        default_kanban_card_id: null,
-        default_dimension_field_id: null,
-        dimension_fields: [],
-        fields: []
+        defaultKanbanCard: {
+            id: null,
+            kanbanCardFields: []
+        },
+        defaultDimensionField: {
+            id: null,
+            name: null
+        }
+    },
+    updateSettings: {
+        fieldsForDimension: [],
+        fieldsForCard: [],
     },
     data: [],
     dimension: {
-        order: [],
+        collapsed: [],
+        phases: [],
         inScreenDimensions: [],
     },
     cards: [],
@@ -27,20 +35,20 @@ let initialState = {
 
 const kanbanReducer = (state = initialState, action) => {
     switch (action.type) {
-        case SET_KANBAN_INITIAL:
+        case SET_KANBAN_DEFAULT_DATA:
             return {
                 ...state,
                 initial: action.payload
+            }
+        case SET_KANBAN_FIELDS:
+            return {
+                ...state,
+                updateSettings: action.payload
             }
         case SET_CARDS:
             return {
                 ...state,
                 cards: action.payload
-            }
-        case SET_KANBAN_IGNORE_WEBSOCKET: 
-            return {
-                ...state,
-                ignoreWebSocket: action.payload
             }
         case SET_DATA_KANBAN:
             return {
@@ -48,22 +56,30 @@ const kanbanReducer = (state = initialState, action) => {
                 data: action.payload
 
             }
-        case SET_DIMENSION_ORDER:
+        case SET_DIMENSION_PHASES:
             return {
                 ...state,
                 dimension: {
                     ...state.dimension,
-                    order: action.payload
+                    phases: action.payload
                 }
             }
-            case SET_DIMENSION_IN_SCREEN:
-                return {
-                    ...state,
-                    dimension: {
-                        ...state.dimension,
-                        inScreenDimensions: action.payload
-                    }
+        case SET_DIMENSION_IN_SCREEN:
+            return {
+                ...state,
+                dimension: {
+                    ...state.dimension,
+                    inScreenDimensions: action.payload
                 }
+            }
+        case SET_DIMENSION_COLLAPSED: 
+            return {
+                ...state,
+                dimension: {
+                    ...state.dimension,
+                    collapsed: action.payload
+                }
+            }
         default:
             return state;
     }

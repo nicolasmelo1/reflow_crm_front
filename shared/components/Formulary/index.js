@@ -6,7 +6,8 @@ import FormularySections from './FormularySections'
 import FormularySectionsEdit from './FormularySectionsEdit'
 import agent from '../../utils/agent'
 import actions from '../../redux/actions'
-import { strings, paths } from '../../utils/constants'
+import delay from '../../utils/delay'
+import { strings, paths } from '../../utils/constants' 
 import dynamicImport from '../../utils/dynamicImport'
 import isAdmin from '../../utils/isAdmin'
 import { Formularies } from '../../styles/Formulary'
@@ -15,6 +16,7 @@ import { PDFGeneratorButtonInFormulary } from '../../styles/PDFGenerator'
 const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 const Router = dynamicImport('next/router')
 
+const makeDelay = delay(10000)
 /**
  * IMPORTANT: You might want to read the README to understand how this and all of it's components work.
  * 
@@ -59,6 +61,7 @@ class Formulary extends React.Component {
         this.CancelToken = axios.CancelToken
         this.source = null
         this.formularyId = null
+        this.updateFormularyWhenClose = false
         this.draftFiles = {}
         this.state = {
             draftToFileReference: {},
@@ -168,7 +171,6 @@ class Formulary extends React.Component {
         const response = await this.props.onCreateDraftFile(file)
         if (response && response.status === 200) {
             draftStringId = response.data.data.draft_id
-            // TODO: Delete old draftStringId that references the same file name
             this.draftFiles[draftStringId] = file
             this.setDraftToFileReference(draftStringId, file.name)
             agent.websocket.DRAFT.recieveFileRemoved({
@@ -260,7 +262,6 @@ class Formulary extends React.Component {
         }
         // reset the errors of the formulary, obviously
         this.setErrors({})
-
         this.setFilledDataAndBuildData(
             filled.data.id, 
             filled.hasBuiltInitial,
@@ -292,6 +293,42 @@ class Formulary extends React.Component {
         this.resetAuxOriginalInitial(auxOriginalInitialCopy, this.state.auxOriginalInitialIndex-1)
     }
 
+    /** 
+     * Retrieves the data to build the formulary and adds a websocket so we can subscribe to changes in the formulary and retrive the changes.
+     * 
+     * It's important to notice that we only change the formulary when it's on closed state, NEVER while it is open. This way we prevent to update the formulary
+     * as a user is adding new information.
+     * 
+     * IMPORTANT: if the formulary is open we don't make changes as said before. What we do is postpone the update for when the formulary is being closed
+     */
+    getBuildFormulary = async (formName, forceUpdateState=false) => {
+        const formularyBuildData = await this.props.onGetBuildFormulary(this.source, formName)
+        const subscribeToChangesOfFormularyId = this.state.auxOriginalInitial.length > 0 ? this.state.auxOriginalInitial[0].buildData.id : formularyBuildData.id
+        
+        agent.websocket.FORMULARY.recieveFormularyUpdated({
+            formId: subscribeToChangesOfFormularyId,
+            callback: (data) => {
+                makeDelay(() => {
+                    if (data.data.form_id === subscribeToChangesOfFormularyId && !this.state.isEditing && !this.props.formulary.isOpen) {
+                        this.getBuildFormulary(formName, true)
+                    } else if (this.props.formulary.isOpen) {
+                        this.updateFormularyWhenClose = true
+                    }
+                })
+            }
+        })
+        if (forceUpdateState && this._ismounted) {
+            this.setFilledDataAndBuildData(
+                this.state.filled.data.id, 
+                false,
+                this.state.filled.isAuxOriginalInitial,
+                this.state.filled.data.depends_on_dynamic_form, 
+                formularyBuildData
+            )
+        }
+        return formularyBuildData
+    }
+
     /**
      * This function is responsible to load the formulary data inside of the formulary, sometimes you can load the data externally, usually when displaying
      * as a preview or some sort.
@@ -300,15 +337,13 @@ class Formulary extends React.Component {
      * @param {Interger} formId - If you are loading from an already existing data and not a new. Set this argument.
      */
     onLoadFormulary = async (formName, formId=null) => {
-        this.source = this.CancelToken.source()
-
         // you can build the data outside of the formulary, so you can use this to render other formularies (like themes for example)
         if (this.props.buildData) {
             this.onFullResetFormulary(this.props.buildData)
         // this part is used when loading from the home page for example
         } else {
             this.setIsLoading(true)
-            this.props.onGetBuildFormulary(this.source, formName).then(formularyBuildData => {
+            this.getBuildFormulary(formName).then(formularyBuildData => {
                 this.setIsLoading(false)
                 if (formId) {
                     this.props.onGetFormularyData(this.source, formName, formId, this.props.formularyDefaultData).then(data=> {
@@ -373,6 +408,7 @@ class Formulary extends React.Component {
     }
 
     componentDidMount = () => {
+        this.source = this.CancelToken.source()
         this._ismounted = true
         this.onLoadFormulary(this.props.formName, this.props.formularyId)
         if (process.env['APP'] === 'web') {
@@ -395,6 +431,8 @@ class Formulary extends React.Component {
 
 
     componentDidUpdate = (oldProps) => {
+        const formularyIsClosing = oldProps.formulary.isOpen !== this.props.formulary.isOpen && oldProps.formulary.isOpen
+
         // the data is reset with 2 conditions:
         // - first the formName has changed,
         // - second the props.formulary.isOpen has changed.
@@ -404,6 +442,7 @@ class Formulary extends React.Component {
             if (this.source) {
                 this.source.cancel()
             }
+            this.source = this.CancelToken.source()
             if (this.state.isEditing) this.setIsEditing()
             // reset the Original initial, because we don't need it anymore since we are loading a new formulary
             // not reseting can cause a bug if the user is in a connected formulary and changes the page.
@@ -431,15 +470,25 @@ class Formulary extends React.Component {
             })
         }
         // The formulary is closing
-        if (oldProps.formulary.isOpen !== this.props.formulary.isOpen && oldProps.formulary.isOpen) {
+        if (formularyIsClosing) {
             const buildData = (this.state.auxOriginalInitial[0] && 
                                 this.state.auxOriginalInitial[0].filled && 
                                 this.state.auxOriginalInitial[0].buildData) ? this.state.auxOriginalInitial[0].buildData : this.state.buildData
-            this.onFullResetFormulary(buildData)
-            this.resetAuxOriginalInitial([], -1)
-            this.props.setFormularyId(null)
-            this.props.setFormularyDefaultData([])
-            this.removeDrafts()
+            
+            if (this.updateFormularyWhenClose) {
+                this.getBuildFormulary(this.props.formName, true).then(_ => {
+                    this.resetAuxOriginalInitial([], -1)
+                    this.props.setFormularyId(null)
+                    this.props.setFormularyDefaultData([])
+                    this.removeDrafts()
+                })
+            } else {
+                this.onFullResetFormulary(buildData)
+                this.resetAuxOriginalInitial([], -1)
+                this.props.setFormularyId(null)
+                this.props.setFormularyDefaultData([])
+                this.removeDrafts()
+            }
         }
     }
 

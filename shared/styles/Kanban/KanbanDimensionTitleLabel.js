@@ -1,13 +1,19 @@
 import React from 'react'
 import styled from 'styled-components'
-import { View } from 'react-native'
+import { Text } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
-styled.div`
+styled.p`
+    margin: 0px;
+    color: ${props => props.isCollapsed || props.isNullId ? '#bfbfbf': '#17242D'};
+    font-weight: ${props => props.isCollapsed ? 'normal' : 'bold'};
+    width: ${props => props.isCollapsed ? '40px' : '100%'}; 
+    text-align: ${props => props.isCollapsed ? 'right': 'left'}; 
+    transform: ${props => props.isCollapsed ? 'rotate(-90deg)': 'none'};
+    direction: ${props => props.isCollapsed ? 'rtl': 'unset'};
     display: flex;
-    justify-content: space-between;
-    margin: 10px;
-    font-weight: bold;
+    white-space: ${props => props.isCollapsed ? 'nowrap' : 'wrap'};
+    align-items: center
 `
 :
-styled(View)``
+styled(Text)``

@@ -1,5 +1,4 @@
 import { API_ROOT, getToken } from './utils'
-import http from './http'
 
 /**
  * This function works like a singleton for the websocket, you can have just ONE websocket running 
@@ -51,21 +50,13 @@ class Socket {
     }
 
     /**
-     * Gets the access token of the user
-     */
-    async getToken() {
-        await http.LOGIN.testToken()
-        this.accessToken = await getToken()
-    }
-
-    /**
      * Gets the url to connect to the websocket. If the user is logged (so the token is not empty and is defined)
      * the url will contain a query parameter with the token.
      * 
      * Otherwise no query param will be added on the url to make the connection.
      */
     async getUrl() {
-        await this.getToken()
+        this.accessToken = await getToken()
         if (this.accessToken && this.accessToken !== '') {
             this.setSocketHost(this.domain + `websocket/?token=${this.accessToken}`)
         } else {

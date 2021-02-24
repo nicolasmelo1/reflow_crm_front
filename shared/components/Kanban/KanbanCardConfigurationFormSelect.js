@@ -17,8 +17,10 @@ import { strings } from '../../utils/constants'
 const KanbanCardConfigurationFormSelect = (props) => {
     const [fieldSelectIsOpen, setFieldSelectIsOpen] = useState(false) 
     const onChangeCardField = (data) => {
-        props.onChangeCardFields(props.index, data)
+        props.onChangeCardFields(data)
     } 
+
+    const isInitialValueAnEmptyObject = Object.keys(props.selectedField).length === 0
 
     return (
         <KanbanConfigurationFormSelectContainer isOpen={fieldSelectIsOpen}>
@@ -28,7 +30,7 @@ const KanbanCardConfigurationFormSelect = (props) => {
             placeholder={props.index === 0 ? strings['pt-br']['kanbanConfigurationFormCardFieldSelectPlaceholderTitle'] : strings['pt-br']['kanbanConfigurationFormCardFieldSelectPlaceholderField']}
             options={props.fieldOptions} 
             onChange={onChangeCardField}
-            initialValues={props.selectedField}
+            initialValues={isInitialValueAnEmptyObject ? [] : [props.selectedField]}
             />
         </KanbanConfigurationFormSelectContainer>
     )

@@ -4,6 +4,7 @@ import KANBAN from './kanban'
 import LISTING from './listing'
 import COMPANY from './company'
 import DRAFT from './draft'
+import FORMULARY from './formulary'
 
 export default {
     NOTIFICATION,
@@ -11,5 +12,6 @@ export default {
     KANBAN,
     LISTING,
     COMPANY,
-    DRAFT
+    DRAFT,
+    FORMULARY
 }

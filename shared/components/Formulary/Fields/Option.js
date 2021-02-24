@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View } from 'react-native'
 import Field from '../../../styles/Formulary/Field' 
 import Select from '../../Utils/Select'
 
 
 const Option = (props) => {
-    const [data, _] = useState(props.field.field_option.map(option => { return {value: option.option, label: option.option} }))
+    const [options, setOptions] = useState(props.field.field_option.map(option => { return {value: option.option, label: option.option} }))
     const [isOpen, setIsOpen] = useState(false)
     
     const onChange = (newData) => {
@@ -14,6 +14,10 @@ const Option = (props) => {
     }
     
     const fieldValue =  (props.values.length === 0) ? []: [{ value: props.values[0].value, label: props.values[0].value }]
+
+    useEffect(() => {
+        setOptions(props.field.field_option.map(option => { return {value: option.option, label: option.option} }))
+    }, [props.field.field_option])
 
     const renderMobile = () => {
         return (
@@ -24,7 +28,7 @@ const Option = (props) => {
     const renderWeb = () => {
         return (
             <Field.Select isOpen={isOpen}>
-                <Select options={data} onChange={onChange} initialValues={fieldValue} setIsOpen={setIsOpen} isOpen={isOpen}/>
+                <Select options={options} onChange={onChange} initialValues={fieldValue} setIsOpen={setIsOpen} isOpen={isOpen}/>
             </Field.Select>
         )
     }

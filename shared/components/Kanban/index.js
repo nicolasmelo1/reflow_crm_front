@@ -39,10 +39,19 @@ class Kanban extends React.Component {
         this.source = null
         this.state = {
             configurationIsOpen: false,
-            isLoadingData: false
+            isLoadingData: true
         }
     }
-
+    
+    setConfigurationIsOpen = (configurationIsOpen) => {
+        this.setState(state=> {
+            return {
+                ...state,
+                configurationIsOpen: configurationIsOpen
+            }
+        })
+    }
+    
     // If the data is being loaded by the visualization
     setIsLoadingData = (isLoading) => {
         this.setState(state => {
@@ -62,11 +71,7 @@ class Kanban extends React.Component {
     }
 
     getNewDataFromUpdatedParams = async (params) => {
-        if (this.props.kanban.initial.default_dimension_field_id && this.props.kanban.initial.default_kanban_card_id) {
-            if (this.source){
-                this.source.cancel()
-            }
-            this.source = this.CancelToken.source()
+        if (this.props.kanban.initial.defaultDimensionField.id && this.props.kanban.initial.defaultKanbanCard.id) {
             return this.props.onGetKanbanData(this.source, params ,this.props.router.form)
         }
         return Promise.resolve(null)
@@ -86,19 +91,58 @@ class Kanban extends React.Component {
         })
     }
 
-    setConfigurationIsOpen = (configurationIsOpen) => {
-        this.setState(state=> {
-            return {
-                ...state,
-                configurationIsOpen: configurationIsOpen
+    /**
+     * Used when the user opens or closes the configuration of the kanban. notice that when we open the configuration formulary
+     * we get the fields, and after getting the fields we set isLoading state to false so it means we are not retrieving data anymore. If you
+     * don't do this we will never show to the user that the formulary he's in DOES NOT support building a kanban since it does not have and 
+     * field of `option` type
+     * 
+     * @param {Boolaen} isOpen - true if the configuration formulary is open or false if not
+     */
+    onOpenOrCloseConfiguration = (isOpen) => {
+        if (isOpen) {
+            console.log('source cancelled')
+            this.props.onGetCards(this.source, this.props.router.form)
+            this.props.onGetKanbanFields(this.source, this.props.router.form).then(_ => {
+                this.setIsLoadingData(false)
+            })
+        }
+        this.setConfigurationIsOpen(isOpen)
+    }
+    
+    /**
+     * Loads the data needed for rendering the kanban,
+     * @param {*} isChangingFormName 
+     */
+    onGetKanbanInitialData = (isChangingFormName=false) => {
+        if (isChangingFormName) {
+            this.setConfigurationIsOpen(false)
+            this.setIsLoadingData(true)
+        }
+        this.props.onRenderKanban(this.source, this.props.router.form).then(response => {
+
+            const areDefaultsNotSet = (data) => {
+                return data.kanban_card === null || data.kanban_dimension === null || data.kanban_card.id === null || data.kanban_dimension.id === null 
+            } 
+            if (response && response.status === 200 && areDefaultsNotSet(response.data.data)) {
+                this.onOpenOrCloseConfiguration(true)
+            } else {
+                this.props.onGetKanbanFields(this.source, this.props.router.form)
+                this.setIsLoadingData(false)
             }
         })
     }
-    
+
+    doesKanbanCantBeBuilt = () => {
+        return !this.state.isLoadingData &&
+        this.props.kanban.initial.defaultKanbanCard.id === null && 
+        this.props.kanban.initial.defaultDimensionField.id === null &&
+        this.props.kanban.updateSettings.fieldsForDimension.length === 0
+    }
+
     componentDidMount() {
         this.source = this.CancelToken.source()
-        this.props.onRenderKanban(this.source, this.props.router.form)
-        this.props.onGetCards(this.source, this.props.router.form).then()
+        this.onGetKanbanInitialData()
     }
 
     componentDidUpdate(prevProps) {
@@ -107,11 +151,14 @@ class Kanban extends React.Component {
                 this.source.cancel()
             }
             this.source = this.CancelToken.source()
-            this.props.onChangeDimensionOrdersState([])
-            this.props.onRenderKanban(this.source, this.props.router.form)
-            this.props.onGetCards(this.source, this.props.router.form)
+            this.props.onChangeDimensionPhases([])
+            this.onGetKanbanInitialData(true)
         }
         if (this.props.formularySettingsHasBeenUpdated !== prevProps.formularySettingsHasBeenUpdated) {
+            if (this.source) {
+                this.source.cancel()
+            }
+            this.source = this.CancelToken.source()
             this.props.onRenderKanban(this.source, this.props.router.form)
         }
     }
@@ -123,85 +170,91 @@ class Kanban extends React.Component {
     }
     
     render() {
-        const selectedCard = (this.props.kanban.initial && this.props.kanban.cards) ? this.props.kanban.cards.filter(card => card.id === this.props.kanban.initial.default_kanban_card_id) : []
-
+        const selectedCard = (this.props.kanban.initial && this.props.kanban.cards) ? this.props.kanban.cards.filter(card => card.id === this.props.kanban.initial.defaultKanbanCard.id) : []
+        const areDefaultsNotDefined = this.props.kanban.initial.defaultKanbanCard.id === null || this.props.kanban.initial.defaultDimensionField.id === null
+        const isKanbanConfigurationFormOpen = (this.state.configurationIsOpen || areDefaultsNotDefined) && !this.state.isLoadingData
+        
         return (
             <div>
-                {this.props.kanban.initial.formName !== this.props.router.form ? '' : (
-                    <div>
-                        {!this.props.kanban.initial || !this.props.kanban.initial.dimension_fields || this.props.kanban.initial.dimension_fields.length === 0 ? (
-                            <p>
-                                {strings['pt-br']['kanbanCannotBuildMessage']}
-                            </p>
-                        ) : (
-                            <div>
-                                <Row>
-                                    <Col>
-                                        <KanbanConfigurationButton onClick={e=> {this.setConfigurationIsOpen(!this.state.configurationIsOpen)}}>
-                                            {this.state.configurationIsOpen ? strings['pt-br']['kanbanObligatorySettingIsOpenButtonLabel'] :  strings['pt-br']['kanbanObligatorySettingIsClosedButtonLabel']}
+                <div>
+                    {this.doesKanbanCantBeBuilt() ? (
+                        <p>
+                            {strings['pt-br']['kanbanCannotBuildMessage']}
+                        </p>
+                    ) : (
+                        <div>
+                            <Row>
+                                <Col>
+                                    {!areDefaultsNotDefined ? (
+                                        <KanbanConfigurationButton onClick={(e) => this.onOpenOrCloseConfiguration(!this.state.configurationIsOpen)}>
+                                        {isKanbanConfigurationFormOpen ? strings['pt-br']['kanbanObligatorySettingIsOpenButtonLabel'] :  strings['pt-br']['kanbanObligatorySettingIsClosedButtonLabel']}
                                         </KanbanConfigurationButton>
-                                        {this.state.configurationIsOpen ? '' : (
-                                            <Filter
-                                            isLoading={this.state.isLoadingData}
-                                            fields={(this.props.kanban.initial.fields) ? this.props.kanban.initial.fields.map(field=> ({ name: field.name, label: field.label_name, type: field.type })) : []}
-                                            params={this.getParams()} 
-                                            onFilter={this.onFilter}
-                                            types={this.props.types}
-                                            container={KanbanFilterHolder}
-                                            filterButton={KanbanFilterButton}
-                                            filterContainer={KanbanFilterContainer}
-                                            filterButtonIcon={<KanbanFilterIcon icon="filter"/>}
-                                            />
-                                        )}
-                                    </Col>
-                                </Row>
-                                <Row style={{ margin: '10px -15px 0 -15px' }}>
-                                    <Col>
-                                        {this.state.configurationIsOpen ? (
-                                            <KanbanConfigurationForm 
-                                            formName={this.props.router.form}
-                                            onRemoveCard={this.props.onRemoveCard}
-                                            onChangeDefaultState={this.props.onChangeDefaultState}
-                                            onCreateOrUpdateCard={this.props.onCreateOrUpdateCard}
-                                            onChangeCardsState={this.props.onChangeCardsState}
-                                            fields={this.props.kanban.initial.fields}
-                                            dimensionFields={this.props.kanban.initial.dimension_fields}
-                                            defaultKanbanCardId={this.props.kanban.initial.default_kanban_card_id}
-                                            defaultDimensionId={this.props.kanban.initial.default_dimension_field_id}
-                                            cards={this.props.kanban.cards}
-                                            />
-                                        ): (
-                                            <KanbanTable
-                                            formName={this.props.router.form}
-                                            formularySettingsHasBeenUpdated={this.props.formularySettingsHasBeenUpdated}
-                                            cancelToken={this.CancelToken}
-                                            params={this.getParams()}
-                                            dimensionOrders={this.props.kanban.dimension.order}
-                                            dimensionsToShow={this.props.kanban.dimension.inScreenDimensions}
-                                            onChangeDimensionsToShow={this.props.onChangeDimensionsToShow}
-                                            defaultFormName={this.props.kanban.initial.formName}
-                                            defaultDimensionId={this.props.kanban.initial.default_dimension_field_id}
-                                            defaultKanbanCardId={this.props.kanban.initial.default_kanban_card_id}
-                                            onGetDimensionOrders={this.props.onGetDimensionOrders}
-                                            card={(selectedCard.length > 0) ? selectedCard[0] : null}
-                                            data={this.props.kanban.data}
-                                            onGetKanbanData={this.props.onGetKanbanData}
-                                            onChangeKanbanData={this.props.onChangeKanbanData}
-                                            setFormularyDefaultData={this.props.setFormularyDefaultData}
-                                            setFormularyId={this.props.setFormularyId}
-                                            onChangeDimensionOrdersState={this.props.onChangeDimensionOrdersState}
-                                            />
-                                        )}
-                                    </Col>
-                                </Row>
-                            </div>
-                        )}
-                    </div>
-                )}
+                                    ) : ''}
+                                    {isKanbanConfigurationFormOpen ? '' : (
+                                        <Filter
+                                        isLoading={this.state.isLoadingData}
+                                        fields={(this.props.kanban.updateSettings.fieldsForCard) ? this.props.kanban.updateSettings.fieldsForCard.map(field=> ({ name: field.name, label: field.label_name, type: field.type_id })) : []}
+                                        params={this.getParams()} 
+                                        onFilter={this.onFilter}
+                                        types={this.props.types}
+                                        container={KanbanFilterHolder}
+                                        filterButton={KanbanFilterButton}
+                                        filterContainer={KanbanFilterContainer}
+                                        filterButtonIcon={<KanbanFilterIcon icon="filter"/>}
+                                        />
+                                    )}
+                                </Col>
+                            </Row>
+                            <Row style={{ margin: '10px -15px 0 -15px' }}>
+                                <Col>
+                                    {isKanbanConfigurationFormOpen ? (
+                                        <KanbanConfigurationForm 
+                                        source={this.source}
+                                        onGetCards={this.props.onGetCards}
+                                        formName={this.props.router.form}
+                                        onRemoveCard={this.props.onRemoveCard}
+                                        onChangeDefaultState={this.props.onChangeDefaultState}
+                                        onCreateKanbanCard={this.props.onCreateKanbanCard}
+                                        onUpdateKanbanCard={this.props.onUpdateKanbanCard}
+                                        fields={this.props.kanban.updateSettings.fieldsForCard}
+                                        dimensionFields={this.props.kanban.updateSettings.fieldsForDimension}
+                                        defaultKanbanCard={this.props.kanban.initial.defaultKanbanCard}
+                                        defaultDimension={this.props.kanban.initial.defaultDimensionField}
+                                        cards={this.props.kanban.cards}
+                                        />
+                                    ): (
+                                        <KanbanTable
+                                        types={this.props.types}
+                                        user={this.props.user}
+                                        formName={this.props.router.form}
+                                        formularySettingsHasBeenUpdated={this.props.formularySettingsHasBeenUpdated}
+                                        cancelToken={this.CancelToken}
+                                        params={this.getParams()}
+                                        dimensionPhases={this.props.kanban.dimension.phases}
+                                        dimensionsToShow={this.props.kanban.dimension.inScreenDimensions}
+                                        onChangeDimensionsToShow={this.props.onChangeDimensionsToShow}
+                                        defaultKanbanCard={this.props.kanban.initial.defaultKanbanCard}
+                                        defaultDimension={this.props.kanban.initial.defaultDimensionField}                                        onGetDimensionPhases={this.props.onGetDimensionPhases}
+                                        card={(selectedCard.length > 0) ? selectedCard[0] : null}
+                                        data={this.props.kanban.data}
+                                        onGetKanbanData={this.props.onGetKanbanData}
+                                        collapsedDimensions={this.props.kanban.dimension.collapsed}
+                                        onCollapseDimension={this.props.onCollapseDimension}
+                                        onMoveKanbanCardBetweenDimensions={this.props.onMoveKanbanCardBetweenDimensions}
+                                        setFormularyDefaultData={this.props.setFormularyDefaultData}
+                                        setFormularyId={this.props.setFormularyId}
+                                        onChangeDimensionPhases={this.props.onChangeDimensionPhases}
+                                        />
+                                    )}
+                                </Col>
+                            </Row>
+                        </div>
+                    )}
+                </div>
             </div>
         )
 
     }
 }
 
-export default connect(state => ({ filter: state.home.filter, kanban: state.home.kanban, types: state.login.types }), actions)(Kanban)
+export default connect(state => ({ filter: state.home.filter, kanban: state.home.kanban, types: state.login.types, user: state.login.user }), actions)(Kanban)

@@ -66,11 +66,15 @@ const Spinner = dynamicImport('react-bootstrap', 'Spinner')
  * @param {Function} onCloseFormulary - Function from the parent component used to close the user formulary.
  */
 const UsersForm = (props) => {
+    console.log(props?.types?.defaults?.profile_type )
     // Instead of updating the userData recieved directly we actually separate in different states in this component, this way we keep things
     // separated from the parent component and this component
     const isMountedRef = React.useRef()
     const sourceRef = React.useRef(null)
-    const [profileTypeOptions, setProfileTypeOptions] = useState([])
+    const [profileTypeOptions, setProfileTypeOptions] = useState((props?.types?.defaults?.profile_type || []).map(profileType => ({ 
+        value: profileType.id, 
+        label: types('pt-br', 'profile_type', profileType.name) 
+    })))
     const [templatesUserHaveAccess, setTemplatesUserHaveAccess] = useState([])
     const [formulariesUserHaveAccess, setFormulariesUserHaveAccess] = useState([])
     const [optionsUserHaveAccess, setOptionsUserHaveAccess] = useState([])

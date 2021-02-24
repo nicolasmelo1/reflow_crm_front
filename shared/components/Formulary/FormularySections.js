@@ -92,11 +92,10 @@ const FormularySections = (props) => {
         const conditionalsNotToToggleIds = conditionalsToToggle
             .filter(conditionalToToggle => !conditionalToToggle.show)
             .map(conditionalToToggle => conditionalToToggle.id)
+        
         setSectionsToLoad(props.sections.filter(section => !conditionalsNotToToggleIds.includes(section.id)))
-
         return newSectionsData
     }
-
 
     function getNewSectionData() {
         return props.sections
@@ -160,6 +159,7 @@ const FormularySections = (props) => {
             if (JSON.stringify(conditionalSections) !== JSON.stringify(conditionals)) {
                 setConditionalSections(conditionals)
             }
+
             // Okay, so here we really need to be REALLLY careful, because really easily we can enter
             // on an infinite loop. If you see, we always finish the conditional here changing the state
             // that`s because on a second pass, the state is not valid to enter the conditional again.

@@ -3,8 +3,11 @@ import { companyId } from '../utils'
 
 
 const KANBAN = {
-    getRenderData: async (source, formName) => {
-        return await requests.get(`kanban/${companyId}/${formName}/`, {}, {}, source)
+    getDefaultDimensionAndKanbanCard: async (source, formName) => {
+        return await requests.get(`kanban/${companyId}/${formName}/default/`, {}, {}, source)
+    },
+    getDimensionAndCardFields: async (source, formName) => {
+        return await requests.get(`kanban/${companyId}/${formName}/settings/fields/`, {}, {}, source)
     },
     getCards: async (source, formName) => {
         return await requests.get(`kanban/${companyId}/${formName}/settings/card/`, {}, {}, source)
@@ -18,14 +21,14 @@ const KANBAN = {
     removeCard: async(formName, kanbanCardId) => {
         return await requests.delete(`kanban/${companyId}/${formName}/settings/card/${kanbanCardId}/`)
     },
-    updateDefaults: async (body, formName) => {
-        return await requests.put(`kanban/${companyId}/${formName}/settings/defaults/`, body)
+    updateDefault: async (body, formName) => {
+        return await requests.put(`kanban/${companyId}/${formName}/settings/default/`, body)
     },
-    getDimensionOrders: async (source, formName, dimensionId) => {
+    getDimensionPhases: async (source, formName, dimensionId) => {
         return await requests.get(`kanban/${companyId}/${formName}/dimension/${dimensionId}/`, {}, {}, source)
     },
-    updateDimensionOrders: async (body, formName, dimensionId) => {
-        return await requests.put(`kanban/${companyId}/${formName}/dimension/${dimensionId}/`, body)
+    updateDimensionPhases: async (body, formName, dimensionId) => {
+        return await requests.put(`kanban/${companyId}/${formName}/settings/dimension/${dimensionId}/`, body)
     },
     getData: async (source, params, formName) => {
         return await requests.get(`data/${companyId}/${formName}/all/`, params, {}, source)
