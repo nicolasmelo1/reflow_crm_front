@@ -413,9 +413,30 @@ const onGetKanbanData = (source, params, formName, columnNames=[]) => {
  * @param {Array<BigInteger>} collapsedDimensionIds - All of the dimension phase ids that ARE collapsed. In other words
  * each field_option_id that is collapsed in the kanban.
  */
-const onCollapseDimension = (collapsedDimensionIds) => {
+const onCollapseDimension = (collapsedDimensionIds, formName, dimensionId) => {
     return (dispatch) => {
+        agent.http.KANBAN.updateCollapsedDimensionPhases(collapsedDimensionIds.map(collapsedDimensionId => ({ field_option_id: collapsedDimensionId})), formName, dimensionId)
         dispatch({type: SET_DIMENSION_COLLAPSED, payload: collapsedDimensionIds })
+    }
+}
+
+/**
+ * Retrieves all of the collapsed dimensions
+ * 
+ * @param {Object} source - An axios source object user on axios.cancelToken.source() so we can cancel a request
+ * @param {BigInteger} dimensionId - The id of the dimension that you are changing, the field_id you are changing and updating
+ * @param {String} formName - The name of the current opened formulary.
+ */
+const onGetCollapsedDimensionPhases = (source, formName, dimensionId) => {
+    return async (dispatch) => {
+        return agent.http.KANBAN.getCollapsedDimensionPhases(source, formName, dimensionId).then(response => {
+            let collapsedDimensionIds = []
+            if (response && response.status === 200) {
+                collapsedDimensionIds = response.data.data.map(collapsed => collapsed.field_option_id)
+                dispatch({type: SET_DIMENSION_COLLAPSED, payload: collapsedDimensionIds })
+            }
+            return collapsedDimensionIds
+        })
     }
 }
 
@@ -448,6 +469,7 @@ const onMoveKanbanCardBetweenDimensions = (body, formName, data) => {
 }
 
 export default {
+    onGetCollapsedDimensionPhases,
     onCollapseDimension,
     onGetKanbanDefaults,
     onGetKanbanFields,
@@ -461,4 +483,4 @@ export default {
     onUpdateKanbanCard,
     onGetDimensionPhases,
     onChangeDimensionPhases
-};
+}

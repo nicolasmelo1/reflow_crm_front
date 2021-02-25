@@ -24,6 +24,12 @@ const KANBAN = {
     updateDefault: async (body, formName) => {
         return await requests.put(`kanban/${companyId}/${formName}/settings/default/`, body)
     },
+    getCollapsedDimensionPhases: async (source, formName, dimensionId) => {
+        return await requests.get(`kanban/${companyId}/${formName}/collapsed/${dimensionId}/`, {}, {}, source)
+    },
+    updateCollapsedDimensionPhases: async (body, formName, dimensionId) => {
+        return await requests.post(`kanban/${companyId}/${formName}/collapsed/${dimensionId}/`, body)
+    },
     getDimensionPhases: async (source, formName, dimensionId) => {
         return await requests.get(`kanban/${companyId}/${formName}/dimension/${dimensionId}/`, {}, {}, source)
     },

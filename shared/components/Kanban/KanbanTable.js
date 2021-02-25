@@ -180,8 +180,12 @@ const KanbanTable = (props) => {
      * For that we need to guarantee that the dimensionPhases were loaded and the kanban is actually mounted on screen
      */
     useEffect(() => {
-        const scrollPosition = (savedScrollPosition.formName === props.formName) ? savedScrollPosition.scrollPosition : kanbanHolderRef.current.scrollLeft
-        setShownDimensions(props.collapsedDimensions, props.dimensionPhases, scrollPosition, kanbanHolderRef.current.offsetWidth)
+        if (props.defaultDimension.id) {
+            const scrollPosition = (savedScrollPosition.formName === props.formName) ? savedScrollPosition.scrollPosition : kanbanHolderRef.current.scrollLeft
+            props.onGetCollapsedDimensionPhases(dataSource.current, props.formName, props.defaultDimension.id).then(collapsedDimensionIds => {
+                setShownDimensions(collapsedDimensionIds, props.dimensionPhases, scrollPosition, kanbanHolderRef.current.offsetWidth)
+            })
+        }
     }, [props.dimensionPhases])
 
     /**

@@ -248,6 +248,7 @@ class Kanban extends React.Component {
                                         params={this.getParams()}
                                         dimensionPhases={this.props.kanban.dimension.phases}
                                         dimensionsToShow={this.props.kanban.dimension.inScreenDimensions}
+                                        onGetCollapsedDimensionPhases={this.props.onGetCollapsedDimensionPhases}
                                         onChangeDimensionsToShow={this.props.onChangeDimensionsToShow}
                                         defaultKanbanCard={this.props.kanban.initial.defaultKanbanCard}
                                         defaultDimension={this.props.kanban.initial.defaultDimensionField}                                        onGetDimensionPhases={this.props.onGetDimensionPhases}

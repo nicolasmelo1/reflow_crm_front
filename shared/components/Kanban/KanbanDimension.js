@@ -206,7 +206,7 @@ const KanbanDimension = (props) => {
             } else {
                 props.collapsedDimensions.push(phaseId)
             }
-            props.onCollapseDimension([...props.collapsedDimensions])
+            props.onCollapseDimension([...props.collapsedDimensions], props.formName, props.defaultDimension.id)
             props.onUpdateDimensionsOnScreen()
         }
     }
