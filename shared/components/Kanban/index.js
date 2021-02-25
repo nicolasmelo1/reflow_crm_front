@@ -1,4 +1,5 @@
 import React from 'react'
+import { View } from 'react-native'
 import axios from 'axios'
 import { connect } from 'react-redux'
 import KanbanConfigurationForm from './KanbanConfigurationForm'
@@ -101,7 +102,6 @@ class Kanban extends React.Component {
      */
     onOpenOrCloseConfiguration = (isOpen) => {
         if (isOpen) {
-            console.log('source cancelled')
             this.props.onGetCards(this.source, this.props.router.form)
             this.props.onGetKanbanFields(this.source, this.props.router.form).then(_ => {
                 this.setIsLoadingData(false)
@@ -111,15 +111,20 @@ class Kanban extends React.Component {
     }
     
     /**
-     * Loads the data needed for rendering the kanban,
-     * @param {*} isChangingFormName 
+     * Loads the data needed for rendering the kanban.
+     * Those are:
+     *  - The defaults, the fields (used for filtering and to check if the kanban can be built or not),
+     * and only this, the rest is handled by the children components. Mostly kanbanTable and KanbanDimension components.
+     * for loading more data.
+     * 
+     * @param {Boolean} isChangingFormName - If the formname was changed we force to rerender the hole kanban again.
      */
     onGetKanbanInitialData = (isChangingFormName=false) => {
         if (isChangingFormName) {
             this.setConfigurationIsOpen(false)
             this.setIsLoadingData(true)
         }
-        this.props.onRenderKanban(this.source, this.props.router.form).then(response => {
+        this.props.onGetKanbanDefaults(this.source, this.props.router.form).then(response => {
 
             const areDefaultsNotSet = (data) => {
                 return data.kanban_card === null || data.kanban_dimension === null || data.kanban_card.id === null || data.kanban_dimension.id === null 
@@ -133,6 +138,11 @@ class Kanban extends React.Component {
         })
     }
 
+    /**
+     * Make checks if the kanban can be built for this formulary or not, if not we display a message for
+     * the user, if it can but no default is defined we open directly in the KanbanConfigurationForm so the user
+     * can quickly configure his kanban
+     */
     doesKanbanCantBeBuilt = () => {
         return !this.state.isLoadingData &&
         this.props.kanban.initial.defaultKanbanCard.id === null && 
@@ -140,11 +150,19 @@ class Kanban extends React.Component {
         this.props.kanban.updateSettings.fieldsForDimension.length === 0
     }
 
+    /**
+     * Retrieves initial data and sets a cancel token so we can cancel requests on the fly
+     */
     componentDidMount() {
         this.source = this.CancelToken.source()
         this.onGetKanbanInitialData()
     }
 
+    /**
+     * Handles if the user has changed a from a form to another or not.
+     * 
+     * @param {Object} prevProps - This is all of the previous props before the update.
+     */
     componentDidUpdate(prevProps) {
         if (prevProps.router.form !== this.props.router.form) { 
             if (this.source) {
@@ -154,13 +172,6 @@ class Kanban extends React.Component {
             this.props.onChangeDimensionPhases([])
             this.onGetKanbanInitialData(true)
         }
-        if (this.props.formularySettingsHasBeenUpdated !== prevProps.formularySettingsHasBeenUpdated) {
-            if (this.source) {
-                this.source.cancel()
-            }
-            this.source = this.CancelToken.source()
-            this.props.onRenderKanban(this.source, this.props.router.form)
-        }
     }
 
     componentWillUnmount() {
@@ -169,8 +180,13 @@ class Kanban extends React.Component {
         }
     }
     
-    render() {
-        const selectedCard = (this.props.kanban.initial && this.props.kanban.cards) ? this.props.kanban.cards.filter(card => card.id === this.props.kanban.initial.defaultKanbanCard.id) : []
+    renderMobile = () => {
+        return (
+            <View></View>
+        )
+    }
+
+    renderWeb = () => {
         const areDefaultsNotDefined = this.props.kanban.initial.defaultKanbanCard.id === null || this.props.kanban.initial.defaultDimensionField.id === null
         const isKanbanConfigurationFormOpen = (this.state.configurationIsOpen || areDefaultsNotDefined) && !this.state.isLoadingData
         
@@ -213,7 +229,7 @@ class Kanban extends React.Component {
                                         onGetCards={this.props.onGetCards}
                                         formName={this.props.router.form}
                                         onRemoveCard={this.props.onRemoveCard}
-                                        onChangeDefaultState={this.props.onChangeDefaultState}
+                                        onChangeDefault={this.props.onChangeDefault}
                                         onCreateKanbanCard={this.props.onCreateKanbanCard}
                                         onUpdateKanbanCard={this.props.onUpdateKanbanCard}
                                         fields={this.props.kanban.updateSettings.fieldsForCard}
@@ -235,7 +251,6 @@ class Kanban extends React.Component {
                                         onChangeDimensionsToShow={this.props.onChangeDimensionsToShow}
                                         defaultKanbanCard={this.props.kanban.initial.defaultKanbanCard}
                                         defaultDimension={this.props.kanban.initial.defaultDimensionField}                                        onGetDimensionPhases={this.props.onGetDimensionPhases}
-                                        card={(selectedCard.length > 0) ? selectedCard[0] : null}
                                         data={this.props.kanban.data}
                                         onGetKanbanData={this.props.onGetKanbanData}
                                         collapsedDimensions={this.props.kanban.dimension.collapsed}
@@ -253,7 +268,10 @@ class Kanban extends React.Component {
                 </div>
             </div>
         )
+    }
 
+    render() {
+        return process.env['APP'] === 'web' ? this.renderWeb() : this.renderMobile()
     }
 }
 

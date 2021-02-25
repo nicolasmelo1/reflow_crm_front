@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { View } from 'react-native'
 import { Select } from '../Utils'
 import { KanbanConfigurationFormSelectContainer } from '../../styles/Kanban'
 import { strings } from '../../utils/constants'
@@ -16,24 +17,32 @@ import { strings } from '../../utils/constants'
  */
 const KanbanCardConfigurationFormSelect = (props) => {
     const [fieldSelectIsOpen, setFieldSelectIsOpen] = useState(false) 
-    const onChangeCardField = (data) => {
-        props.onChangeCardFields(data)
-    } 
 
     const isInitialValueAnEmptyObject = Object.keys(props.selectedField).length === 0
 
-    return (
-        <KanbanConfigurationFormSelectContainer isOpen={fieldSelectIsOpen}>
-            <Select
-            isOpen={fieldSelectIsOpen}
-            setIsOpen={setFieldSelectIsOpen}
-            placeholder={props.index === 0 ? strings['pt-br']['kanbanConfigurationFormCardFieldSelectPlaceholderTitle'] : strings['pt-br']['kanbanConfigurationFormCardFieldSelectPlaceholderField']}
-            options={props.fieldOptions} 
-            onChange={onChangeCardField}
-            initialValues={isInitialValueAnEmptyObject ? [] : [props.selectedField]}
-            />
-        </KanbanConfigurationFormSelectContainer>
-    )
+    const renderMobile = () => {
+        return (
+            <View></View>
+        )
+    }
+
+    const renderWeb = () => {
+        return (
+            <KanbanConfigurationFormSelectContainer isOpen={fieldSelectIsOpen}>
+                <Select
+                isOpen={fieldSelectIsOpen}
+                setIsOpen={setFieldSelectIsOpen}
+                placeholder={props.index === 0 ? strings['pt-br']['kanbanConfigurationFormCardFieldSelectPlaceholderTitle'] : strings['pt-br']['kanbanConfigurationFormCardFieldSelectPlaceholderField']}
+                options={props.fieldOptions} 
+                onChange={props.onChangeCardFields}
+                initialValues={isInitialValueAnEmptyObject ? [] : [props.selectedField]}
+                />
+            </KanbanConfigurationFormSelectContainer>
+        )
+    }
+
+    return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
+    
 }
 
 export default KanbanCardConfigurationFormSelect

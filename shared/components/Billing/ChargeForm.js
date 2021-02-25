@@ -18,6 +18,8 @@ import {
 
 const OverlayTrigger = dynamicImport('react-bootstrap', 'OverlayTrigger')
 const Popover = dynamicImport('react-bootstrap', 'Popover')
+const Spinner = dynamicImport('react-bootstrap', 'Spinner')
+
 
 const makeDelay = delay(1000)
 
@@ -163,7 +165,6 @@ const ChargeForm = (props) => {
      * Gets the totals by each individual value charge name.
      */
     const onGetTotal = () => {
-        setIsGettingChargeData(true)
         props.onGetTotals(props.chargesData).then(response => {
             if (isMountedRef.current) {
                 if (response && response.status === 200) {
@@ -230,6 +231,7 @@ const ChargeForm = (props) => {
         // This effect is used to get the new totals based on his current data selected.
         // There was a bug that was firing the requests nonstop, with a reference we can prevent an infinite loop
         if (!isGettingChargeDataRef.current) {
+            setIsGettingChargeData(true)
             if (isFirstTotalLoad.current) {
                 onGetTotal()
                 isFirstTotalLoad.current = false
@@ -332,7 +334,11 @@ const ChargeForm = (props) => {
                 <BillingFormularySectionContainer>
                     <BillingChargeTotalContainer>
                         {strings['pt-br']['billingChargeTotalHeaderLabel']}
-                        <BillingChargeTotalValueLabel>{`${currencyPrefix} ${getDecimals(totals.total)}`}</BillingChargeTotalValueLabel>
+                        <BillingChargeTotalValueLabel>
+                            {isGettingChargeData ? (
+                                <Spinner animation={'border'}/>
+                            ) : `${currencyPrefix} ${getDecimals(totals.total)}`}
+                        </BillingChargeTotalValueLabel>
                     </BillingChargeTotalContainer>
                 </BillingFormularySectionContainer>
             </BillingFormularyContainer>

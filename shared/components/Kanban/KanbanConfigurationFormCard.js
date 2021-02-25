@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { View } from 'react-native'
 import { strings } from '../../utils/constants'
 import Alert from '../Utils/Alert'
 import { 
@@ -24,44 +25,54 @@ import {
 const KanbanConfigurationFormCard = (props) => {
     const [kanbanCardIdToRemove, setKanbanCardIdToRemove] = useState(null)
 
-    return (
-        <KanbanConfigurationFormCardsContainer>
-            <Alert 
-            alertTitle={strings['pt-br']['kanbanConfigurationFormDeleteCardAlertTitle']} 
-            alertMessage={strings['pt-br']['kanbanConfigurationFormDeleteCardAlertContent']} 
-            show={kanbanCardIdToRemove !== null} 
-            onHide={() => {
-                setKanbanCardIdToRemove(null)
-            }} 
-            onAccept={() => {
-                props.onRemoveCard(kanbanCardIdToRemove)
-                setKanbanCardIdToRemove(null)
-            }}
-            onAcceptButtonLabel={strings['pt-br']['kanbanConfigurationFormDeleteCardAlertAcceptButton']}
-            />
-            {props.cards.map((card, index) => (
-                <KanbanConfigurationFormCardContainer key={card.id} isSelected={parseInt(card.id) === props.defaultKanbanCardId}>
-                    <div onClick={e=> {props.onSelectDefaultCard(card)}}>
-                    {card.kanban_card_fields.map((field, fieldIndex) => (
-                        <KanbanCardContents key={fieldIndex} isTitle={fieldIndex===0}>
-                            {field.field.label_name}
-                        </KanbanCardContents>
-                    ))}
-                    </div>
-                    <div>
-                        <KanbanConfigurationFormCardButton onClick={e=> {props.setCardToEdit(card)}}>
-                            <KanbanConfigurationFormCardEditIcon isSelected={parseInt(card.id) === props.defaultKanbanCardId} icon="pencil-alt"/>
-                        </KanbanConfigurationFormCardButton>
-                        <KanbanConfigurationFormCardButton>
-                            <KanbanConfigurationFormCardRemoveIcon icon="trash" onClick={e=> {
-                                setKanbanCardIdToRemove(card.id)
-                            }}/>
-                        </KanbanConfigurationFormCardButton>
-                    </div>
-                </KanbanConfigurationFormCardContainer>
-            ))}
-        </KanbanConfigurationFormCardsContainer>
-    )
+    const renderMobile = () => {
+        return (
+            <View></View>
+        )
+    }
+
+    const renderWeb = () => {
+        return (
+            <KanbanConfigurationFormCardsContainer>
+                <Alert 
+                alertTitle={strings['pt-br']['kanbanConfigurationFormDeleteCardAlertTitle']} 
+                alertMessage={strings['pt-br']['kanbanConfigurationFormDeleteCardAlertContent']} 
+                show={kanbanCardIdToRemove !== null} 
+                onHide={() => {
+                    setKanbanCardIdToRemove(null)
+                }} 
+                onAccept={() => {
+                    props.onRemoveCard(kanbanCardIdToRemove)
+                    setKanbanCardIdToRemove(null)
+                }}
+                onAcceptButtonLabel={strings['pt-br']['kanbanConfigurationFormDeleteCardAlertAcceptButton']}
+                />
+                {props.cards.map((card, index) => (
+                    <KanbanConfigurationFormCardContainer key={card.id} isSelected={parseInt(card.id) === props.defaultKanbanCardId}>
+                        <div onClick={e=> {props.onSelectDefaultCard(card)}}>
+                        {card.kanban_card_fields.map((field, fieldIndex) => (
+                            <KanbanCardContents key={fieldIndex} isTitle={fieldIndex===0}>
+                                {field.field.label_name}
+                            </KanbanCardContents>
+                        ))}
+                        </div>
+                        <div>
+                            <KanbanConfigurationFormCardButton onClick={e=> {props.setCardToEdit(card)}}>
+                                <KanbanConfigurationFormCardEditIcon isSelected={parseInt(card.id) === props.defaultKanbanCardId} icon="pencil-alt"/>
+                            </KanbanConfigurationFormCardButton>
+                            <KanbanConfigurationFormCardButton>
+                                <KanbanConfigurationFormCardRemoveIcon icon="trash" onClick={e=> {
+                                    setKanbanCardIdToRemove(card.id)
+                                }}/>
+                            </KanbanConfigurationFormCardButton>
+                        </div>
+                    </KanbanConfigurationFormCardContainer>
+                ))}
+            </KanbanConfigurationFormCardsContainer>
+        )
+    }
+
+    return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 
 export default KanbanConfigurationFormCard

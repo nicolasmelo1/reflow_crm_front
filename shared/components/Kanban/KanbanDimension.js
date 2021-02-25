@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { View } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import KanbanCards from './KanbanCards'
 import isAdmin from '../../utils/isAdmin'
@@ -52,14 +53,48 @@ const KanbanDimension = (props) => {
     const [cardIdsInLoadingState, setCardIdsInLoadingState] = useState([])
     const [isEditingDimensionIndex, setIsEditingDimensionIndex] = useState(null)
     
-    const filterDimensionIndex = (dimension) => {
-        return props.data.findIndex(element=> element.dimension === dimension)
+    /**
+     * Gets the index of the dimension phase from our data array.
+     * This is used when moving a kanban card data along phases, when we drop we need to get the data array from where this data left
+     * and where it is going, so we can actually change the data itself.
+     * 
+     * The data prop is an array of arrays where the main array is each dimension and the array inside of the array is the actuall data
+     * It looks something like:
+     * [{
+     *      dimension: 'dimensionPhase1',
+     *      pagination: {
+     *          current: 1,
+     *          total: 2
+     *      },
+     *      data: [... objects of each kanban data on this phase]
+     * }]
+     * 
+     * @param {String} dimensionPhase - The string of the dimensionPhase you want to find the index for in the data array.
+     */
+    const filterDimensionPhaseIndex = (dimensionPhase) => {
+        return props.data.findIndex(element=> element.dimension === dimensionPhase)
     }
 
-    const filterData = (dimension) => {
-        return props.data.filter(element=> element.dimension === dimension)[0]
+    /**
+     * As said on `filterDimensionPhaseIndex()` function on how data is organized in redux, this is used to get the data of a 
+     * particular dimension phase so we display them to the user.
+     * 
+     * @param {String} dimensionPhase - The dimensionPhase you want to retrieve the data for
+     */
+    const filterDataDimensionPhase = (dimensionPhase) => {
+        return props.data.filter(element=> element.dimension === dimensionPhase)[0]
     }
 
+    /**
+     * When the user starts dragging an dimension phase for reordering on the kanban
+     * we use this function. Like `onMoveCard` function in KanbanCards component we also need to make sure
+     * that the image is lined perfeclty with the cursor position.
+     * 
+     * Here we just need to sed the movedDimensionIndex to the datatransfer
+     * 
+     * @param {import('react').SyntheticEvent} e - The SyntheticEvent fired by React on onDragStart event
+     * @param {BigInteger} index - The index of the dimension on `dimensionPhases` prop
+     */
     const onMoveDimension = (e, index) => {
         e.dataTransfer.clearData(['movedDimensionIndex', 'movedCardIndexInDimension', 'movedCardDimension'])
 
@@ -73,17 +108,19 @@ const KanbanDimension = (props) => {
     /**
      * Change the background color when the dimension and the cards are moving.
      * 
-     * @param {*} e - is the event object
-     * @param {*} isMoving - defaults to true - a boolean that says if the card or the
+     * @param {HTMLElement} dimensionPhaseElementFromTheDOM - The HTMLElement of the dom that is the dimension phase container 
+     * that holds all of the cards with the actual data for a particular phase. With this we can set the backgroundColor of this
+     * element when the user is dragging over the element.
+     * @param {Boolean} isMoving - defaults to true - a boolean that says if the card or the
      * dimension is being moved or if it has ended.
      */
-    const cleanDimensionColors = (e, isMoving=true) => {
-        const dimensions = Array.prototype.slice.call(e.currentTarget.closest('tr').querySelectorAll('td'))
+    const cleanDimensionColors = (dimensionPhaseElementFromTheDOM, isMoving=true) => {
+        const dimensions = Array.prototype.slice.call(dimensionPhaseElementFromTheDOM.closest('tr').querySelectorAll('td'))
         dimensions.map(dimension => {
             dimension.style.backgroundColor = 'transparent'
         })
         if (isMoving) {
-            e.currentTarget.style.backgroundColor = '#f2f2f2'
+            dimensionPhaseElementFromTheDOM.style.backgroundColor = '#f2f2f2'
         }
     }
 
@@ -140,13 +177,15 @@ const KanbanDimension = (props) => {
      * 
      * The same principle for `onChangePhaseName` is applied here: You ALWAYS need to send all of the possible options of 
      * this dimension, this is because for the backend we are changing only the options of a field.
+     * 
+     * When we add a new phase we need to ignore the websocket updates and also toggle the editmode for this new phase, so he adds
+     * editing the phase.
      */
     const onAddPhase = () => {
         props.dimensionPhases.push({
             id: null, 
             option: strings['pt-br']['kanbanNewPhaseDefaultText']
         })
-        setIsEditingDimensionIndex(props.dimensionPhases.length - 1)
         onToggleEditMode(props.dimensionPhases.length - 1)
         ignoreWebSocketRef.current = true
         props.onChangeDimensionPhases([...props.dimensionPhases], props.formName, props.defaultDimension.id).then(_ => {
@@ -155,7 +194,7 @@ const KanbanDimension = (props) => {
     }
 
     /**
-     * Collapses a phase in the kanban so it's not shown to the user.
+     * Collapses a phase in the kanban so it's contents are not shown to the user and he can organize the kanban easier
      * 
      * @param {BigInteger} phaseId - The id of the phase you want to collapse or to show.
      */
@@ -172,26 +211,23 @@ const KanbanDimension = (props) => {
         }
     }
 
-    const onDrag = (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-    }
-
-    const onDragEnd = (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        cleanDimensionColors(e, false)
-    }
-
-    const onDragOver = (e) => {
-        e.preventDefault()
-        cleanDimensionColors(e)
-    }
-
+    /**
+     * This handles when the user drops a kanban card or a reorder a kanban dimension phase.
+     * It's important to understand this because this means we handle two things in 1 function so you should be aware of this.
+     * 
+     * Check the `onMoveDimension` function in this component and check the `onMoveCard` in KanbanCard component. You will notice
+     * that what we set to the dataTransfer is different for both cases. We use this to understanding if you are droping a kanbanCard
+     * or a kanbanDimension phase.
+     * 
+     * When we are dragging a kanban dimension phase we set: `movedDimensionIndex`, and when it's a kanbanCard we set `movedCardIndexInDimension`
+     * and `movedCardDimension`
+     *  
+     * @param {import('react').SyntheticEvent} e - The event object fired by react on onDrop event. 
+     * @param {BigInteger} targetDimensionIndex - The index of the dimension phase in `dimensionPhases` prop so we can know to what dimension you are dropping
+     * this kanbanCard or kanban dimension phase
+     */
     const onDrop = (e, targetDimensionIndex) => {
-        e.preventDefault()
-        e.stopPropagation()
-        cleanDimensionColors(e, false)
+        cleanDimensionColors(e.currentTarget, false)
 
         // we need JSON.parse with JSON.stringfy this to make a deep copy of the array, because we are encountering a 
         // problem with array inside arrays read this for more info: https://medium.com/@gamshan001/javascript-deep-copy-for-array-and-object-97e3d4bc401a
@@ -215,8 +251,8 @@ const KanbanDimension = (props) => {
                    ![null, undefined, '', 'undefined'].includes(e.dataTransfer.getData('movedCardDimension'))) {
 
             const movedCardIndexInDimension = parseInt(e.dataTransfer.getData('movedCardIndexInDimension'))
-            const movedDimensionIndexInData = filterDimensionIndex(e.dataTransfer.getData('movedCardDimension'))
-            const targetDimensionIndexInData = filterDimensionIndex(dimensionPhases[targetDimensionIndex].option)
+            const movedDimensionIndexInData = filterDimensionPhaseIndex(e.dataTransfer.getData('movedCardDimension'))
+            const targetDimensionIndexInData = filterDimensionPhaseIndex(dimensionPhases[targetDimensionIndex].option)
             
             if (movedDimensionIndexInData !== -1 && targetDimensionIndexInData !== -1 && movedDimensionIndexInData !== targetDimensionIndexInData) {
                 const cardData = {...data[movedDimensionIndexInData].data[movedCardIndexInDimension]}
@@ -246,7 +282,9 @@ const KanbanDimension = (props) => {
     }
 
     /**
-     * Websocket used for updating in real time as updates are being made in the formulary. Or in the kanban by the admin of the company.
+     * Websocket used for updating in real time as updates are being made in the formulary.
+     * Those changes are like: adding a new field, editing the phases or removing a field or a phase
+     * of the kanban. We wait for 5 seconds, when no more changes are made we update the kanban. 
      */
     useEffect(() => {
         agent.websocket.KANBAN.recieveFormularyUpdated({
@@ -275,105 +313,138 @@ const KanbanDimension = (props) => {
         }
     }, [])
     
-    return (
-        <React.Fragment>
-            <Alert
-            alertTitle={strings['pt-br']['kanbanRemoveDimensionAlertTitle']} 
-            alertMessage={strings['pt-br']['kanbanRemoveDimensionAlertContent']} 
-            show={showAlert} 
-            onHide={() => {
-                setDimensionIndexToRemove(null)
-                props.setIsAlertShown(false)
-                setShowAlert(false)
-            }} 
-            onAccept={() => {
-                setShowAlert(false)
-                props.setIsAlertShown(false)
-                onRemovePhase()
-            }}
-            onAcceptButtonLabel={strings['pt-br']['kanbanRemoveDimensionAlertAcceptButton']}
-            />
-            <table style={{ transform: props.isAlertShown ? 'none': 'rotateX(180deg)'}}>
-                    <tbody>
-                    <tr>
-                        {props.dimensionPhases.map((dimensionOrder, index) => (
-                            <td key={index}
-                            onDragOver={e => {onDragOver(e)}} 
-                            onDrop={e => {onDrop(e, index)}}
-                            style={{
-                                maxWidth: props.collapsedDimensions.includes(dimensionOrder.id) ? 70 : props.dimensionsWidth, 
-                                minWidth: props.collapsedDimensions.includes(dimensionOrder.id) ? 70 : props.dimensionsWidth,
-                            }}
-                            >
-                                <KanbanDimensionTitleContainer
-                                isCollapsed={props.collapsedDimensions.includes(dimensionOrder.id)}
+    const renderMobile = () => {
+        return (
+            <View></View>
+        )
+    }
+
+    const renderWeb = () => {
+        return (
+            <React.Fragment>
+                <Alert
+                alertTitle={strings['pt-br']['kanbanRemoveDimensionAlertTitle']} 
+                alertMessage={strings['pt-br']['kanbanRemoveDimensionAlertContent']} 
+                show={showAlert} 
+                onHide={() => {
+                    setDimensionIndexToRemove(null)
+                    props.setIsAlertShown(false)
+                    setShowAlert(false)
+                }} 
+                onAccept={() => {
+                    setShowAlert(false)
+                    props.setIsAlertShown(false)
+                    onRemovePhase()
+                }}
+                onAcceptButtonLabel={strings['pt-br']['kanbanRemoveDimensionAlertAcceptButton']}
+                />
+                <table style={{ transform: props.isAlertShown ? 'none': 'rotateX(180deg)'}}>
+                        <tbody>
+                        <tr>
+                            {props.dimensionPhases.map((dimensionOrder, index) => (
+                                <td key={index}
+                                onDragOver={e => {
+                                    e.preventDefault()
+                                    cleanDimensionColors(e.currentTarget)
+                                }} 
+                                onDrop={e => {
+                                    e.preventDefault()
+                                    e.stopPropagation()
+                                    onDrop(e, index)
+                                }}
+                                style={{
+                                    maxWidth: props.collapsedDimensions.includes(dimensionOrder.id) ? 70 : props.dimensionsWidth, 
+                                    minWidth: props.collapsedDimensions.includes(dimensionOrder.id) ? 70 : props.dimensionsWidth,
+                                }}
                                 >
-                                    {isAdmin(props?.types?.defaults?.profile_type, props?.user) && isEditingDimensionIndex === index ? (
-                                        <KanbanEditDimensionInput type={'text'} 
-                                        placeholder={strings['pt-br']['kanbanEditPhaseNameInputPlaceholder']}
-                                        value={dimensionOrder.option}
-                                        autoComplete="whathever"
-                                        onChange={(e) => onChangePhaseName(index, e.target.value)}
-                                        />
-                                    ) : (
-                                        <KanbanCollapseDimensionButton
-                                        isCollapsed={props.collapsedDimensions.includes(dimensionOrder.id)} 
-                                        onClick={(e) => onCollapsePhase(dimensionOrder.id)}
-                                        >
-                                            <KanbanDimensionTitleLabel
-                                            isCollapsed={props.collapsedDimensions.includes(dimensionOrder.id)}
-                                            isNullId={dimensionOrder.id === null}
+                                    <KanbanDimensionTitleContainer
+                                    isCollapsed={props.collapsedDimensions.includes(dimensionOrder.id)}
+                                    >
+                                        {isAdmin(props?.types?.defaults?.profile_type, props?.user) && isEditingDimensionIndex === index ? (
+                                            <KanbanEditDimensionInput type={'text'} 
+                                            placeholder={strings['pt-br']['kanbanEditPhaseNameInputPlaceholder']}
+                                            value={dimensionOrder.option}
+                                            autoComplete="whathever"
+                                            onChange={(e) => onChangePhaseName(index, e.target.value)}
+                                            />
+                                        ) : (
+                                            <KanbanCollapseDimensionButton
+                                            isCollapsed={props.collapsedDimensions.includes(dimensionOrder.id)} 
+                                            onClick={(e) => onCollapsePhase(dimensionOrder.id)}
                                             >
-                                                {dimensionOrder.option}
-                                            </KanbanDimensionTitleLabel>
-                                        </KanbanCollapseDimensionButton>
-                                    )}
-                                    {isAdmin(props?.types?.defaults?.profile_type, props?.user) && !props.collapsedDimensions.includes(dimensionOrder.id) ? (
-                                        <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
-                                            {isEditingDimensionIndex === index ? (
-                                                <KanbanDimensionRemoveIcon icon="trash" onClick={e => {
-                                                    setShowAlert(true)
-                                                    props.setIsAlertShown(true)
-                                                    setDimensionIndexToRemove(index)
-                                                }}/>
-                                            ) : ''}
-                                            <KanbanDimensionEditIcon icon="pencil-alt" onClick={e => onToggleEditMode(isEditingDimensionIndex === index ? null : index)}/>
-                                            <div draggable="true" onDrag={e=>{onDrag(e)}} onDragStart={e=>{onMoveDimension(e, index)}} onDragEnd={e=>{onDragEnd(e)}} >
-                                                <KanbanDimensionMoveIcon icon="bars"/>
+                                                <KanbanDimensionTitleLabel
+                                                isCollapsed={props.collapsedDimensions.includes(dimensionOrder.id)}
+                                                isNullId={dimensionOrder.id === null}
+                                                >
+                                                    {dimensionOrder.option}
+                                                </KanbanDimensionTitleLabel>
+                                            </KanbanCollapseDimensionButton>
+                                        )}
+                                        {isAdmin(props?.types?.defaults?.profile_type, props?.user) && !props.collapsedDimensions.includes(dimensionOrder.id) ? (
+                                            <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+                                                {isEditingDimensionIndex === index ? (
+                                                    <KanbanDimensionRemoveIcon 
+                                                    icon="trash" 
+                                                    onClick={e => {
+                                                        setShowAlert(true)
+                                                        props.setIsAlertShown(true)
+                                                        setDimensionIndexToRemove(index)
+                                                    }}/>
+                                                ) : ''}
+                                                <KanbanDimensionEditIcon 
+                                                icon={isEditingDimensionIndex === index ? 'check' : 'pencil-alt'} 
+                                                onClick={e => onToggleEditMode(isEditingDimensionIndex === index ? null : index)}
+                                                />
+                                                <div 
+                                                draggable="true" 
+                                                onDrag={e=>{
+                                                    e.preventDefault()
+                                                    e.stopPropagation()
+                                                }} 
+                                                onDragStart={e=>{onMoveDimension(e, index)}} 
+                                                onDragEnd={e=>{
+                                                    e.preventDefault()
+                                                    e.stopPropagation()
+                                                    cleanDimensionColors(e.currentTarget, false)
+                                                }} >
+                                                    <KanbanDimensionMoveIcon icon="bars"/>
+                                                </div>
                                             </div>
-                                        </div>
-                                    ) : ''}
-                                </KanbanDimensionTitleContainer>
-                                {!props.collapsedDimensions.includes(dimensionOrder.id) ? (
-                                    <KanbanCards
-                                    setFormularyId={props.setFormularyId}
-                                    dimension={dimensionOrder.option}
-                                    cancelToken={props.cancelToken}
-                                    defaultKanbanCard={props.defaultKanbanCard}
-                                    cleanDimensionColors={cleanDimensionColors}
-                                    formName={props.formName}
-                                    onGetKanbanData={props.onGetKanbanData}
-                                    onMoveKanbanCardBetweenDimensions={props.onMoveKanbanCardBetweenDimensions}
-                                    cardIdsInLoadingState={cardIdsInLoadingState}
-                                    params={props.params}
-                                    data={filterData(dimensionOrder.option)}
-                                    pagination={filterData(dimensionOrder.option) ? filterData(dimensionOrder.option).pagination: []}
-                                    />
-                                ): ''}
-                            </td>
-                        ))}
-                        {isAdmin(props?.types?.defaults?.profile_type, props?.user) ? (
-                            <td style={{ height: '100%', minWidth: props.dimensionsWidth}}>
-                                <KanbanAddNewDimensionButton onClick={(e) => onAddPhase()}>
-                                    <FontAwesomeIcon icon={'plus-circle'}/>
-                                </KanbanAddNewDimensionButton>
-                            </td>
-                        ) : ''}
-                    </tr>
-                </tbody>
-            </table>
-        </React.Fragment>
-    )
+                                        ) : ''}
+                                    </KanbanDimensionTitleContainer>
+                                    {!props.collapsedDimensions.includes(dimensionOrder.id) ? (
+                                        <KanbanCards
+                                        setFormularyId={props.setFormularyId}
+                                        dimension={dimensionOrder.option}
+                                        cancelToken={props.cancelToken}
+                                        defaultKanbanCard={props.defaultKanbanCard}
+                                        cleanDimensionColors={cleanDimensionColors}
+                                        formName={props.formName}
+                                        onGetKanbanData={props.onGetKanbanData}
+                                        onMoveKanbanCardBetweenDimensions={props.onMoveKanbanCardBetweenDimensions}
+                                        cardIdsInLoadingState={cardIdsInLoadingState}
+                                        params={props.params}
+                                        data={filterDataDimensionPhase(dimensionOrder.option)}
+                                        pagination={filterDataDimensionPhase(dimensionOrder.option) ? filterDataDimensionPhase(dimensionOrder.option).pagination: []}
+                                        />
+                                    ): ''}
+                                </td>
+                            ))}
+                            {isAdmin(props?.types?.defaults?.profile_type, props?.user) ? (
+                                <td style={{ height: '100%', minWidth: props.dimensionsWidth}}>
+                                    <KanbanAddNewDimensionButton onClick={(e) => onAddPhase()}>
+                                        <FontAwesomeIcon icon={'plus-circle'}/>
+                                    </KanbanAddNewDimensionButton>
+                                </td>
+                            ) : ''}
+                        </tr>
+                    </tbody>
+                </table>
+            </React.Fragment>
+        )
+    }
+
+    return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 
 export default KanbanDimension

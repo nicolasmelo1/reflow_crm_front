@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { TextInput } from 'react-native'
 import { Field } from '../../../styles/Formulary'
 import formatNumber from '../../../utils/formatNumber'
+import Id from './Id'
 
 
 const Number = (props) => {
@@ -63,7 +64,13 @@ const Number = (props) => {
 
     const renderWeb = () => {
         return (
-            <Field.Text type="text" value={fieldValue} ref={input} onChange={e => {onChangeNumberValue(e)}} autoComplete={'whathever'}/>
+            <React.Fragment>
+                {['', null].includes(props.field.formula_configuration) ? (
+                    <Field.Text type="text" value={fieldValue} ref={input} onChange={e => {onChangeNumberValue(e)}} autoComplete={'whathever'}/>
+                ) : (
+                    <Id values={fieldValue && fieldValue !== '' && fieldValue !== null ? [{value: fieldValue}] : []}/>
+                )}
+            </React.Fragment>
         )
     }
 
