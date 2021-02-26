@@ -316,24 +316,6 @@ const onGetDimensionPhases = (source, formName, dimensionId) => {
 }
 
 /**
- * Responsible for setting the dimension options shown in the screen. To improve performance, we just load
- * the data for the dimensions that are shown in screen for the user, so when the user scrolls we retrieve the data
- * for the other dimensions.
- * 
- * @param {Array<Object>} dimensionsOnScreen - Array of unfiltered dimension.phases, this array represents the dimensions that
- * is on the screen at the current time but are not filtered, they could be collapsed.
- */
-const onChangeDimensionsToShow = (dimensionsOnScreen) => {
-    return (dispatch, getState) => {
-        const dimensionsShown = getState().home.kanban.dimension.inScreenDimensions
-        
-        if (!isEqual(dimensionsShown, dimensionsOnScreen)) {
-            dispatch({ type: SET_DIMENSION_IN_SCREEN, payload: dimensionsOnScreen })
-        }
-    }
-}
-
-/**
  * When a dimension phase is deleted, renamed, moved, or created we always use this same function, for our backend
  * it's like we were editing a field only.
  * 
@@ -350,6 +332,24 @@ const onChangeDimensionPhases = (dimensionPhases, formName=null, dimensionId=nul
 
         if (dimensionId && formName) {
             await agent.http.KANBAN.updateDimensionPhases(dimensionPhases, formName, dimensionId)
+        }
+    }
+}
+
+/**
+ * Responsible for setting the dimension options shown in the screen. To improve performance, we just load
+ * the data for the dimensions that are shown in screen for the user, so when the user scrolls we retrieve the data
+ * for the other dimensions.
+ * 
+ * @param {Array<Object>} dimensionsOnScreen - Array of unfiltered dimension.phases, this array represents the dimensions that
+ * is on the screen at the current time but are not filtered, they could be collapsed.
+ */
+const onChangeDimensionsToShow = (dimensionsOnScreen) => {
+    return (dispatch, getState) => {
+        const dimensionsShown = getState().home.kanban.dimension.inScreenDimensions
+        
+        if (!isEqual(dimensionsShown, dimensionsOnScreen)) {
+            dispatch({ type: SET_DIMENSION_IN_SCREEN, payload: dimensionsOnScreen })
         }
     }
 }
