@@ -155,6 +155,7 @@ const FormularySectionEdit = (props) => {
                     </div>
                     {props.section.enabled ? (
                         <FormulariesEdit.Section.LabelInput
+                        autoComplete={'whathever'} 
                         value={props.section.label_name}
                         placeholder={strings['pt-br']['formularyEditSectionPlaceholderLabel']} 
                         onChange={e=> {onChangeSectionName(e)}} 

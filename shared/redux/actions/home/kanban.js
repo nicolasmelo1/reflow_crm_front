@@ -344,12 +344,12 @@ const onChangeDimensionsToShow = (dimensionsOnScreen) => {
  * @param {BigInteger} dimensionId - The id of the dimension that you are changing, the field_id you are changing and updating
  * @param {String} formName - The name of the current opened formulary.
  */
-const onChangeDimensionPhases = (dimensionPhases, dimensionId=null, formName=null) => {
+const onChangeDimensionPhases = (dimensionPhases, formName=null, dimensionId=null) => {
     return async (dispatch) => {
         dispatch({ type: SET_DIMENSION_PHASES, payload: dimensionPhases })
 
         if (dimensionId && formName) {
-            await agent.http.KANBAN.updateDimensionPhases(dimensionPhases, dimensionId, formName)
+            await agent.http.KANBAN.updateDimensionPhases(dimensionPhases, formName, dimensionId)
         }
     }
 }

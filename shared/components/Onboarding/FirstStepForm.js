@@ -194,6 +194,7 @@ const FirstStepForm = (props) => {
             <OnboardingFormContainer showForm={props.showForm}>
                 <OnboardingLabel>{strings['pt-br']['onboardingNameAndLastNameLabel']}<OnboardingRequiredLabel>*</OnboardingRequiredLabel></OnboardingLabel>
                 <OnboardingInput
+                    autoComplete={'whathever'} 
                     error={props.errors.hasOwnProperty('name')} 
                     type='text' 
                     value={props.name} 
@@ -206,6 +207,7 @@ const FirstStepForm = (props) => {
                 <OnboardingError>{props.errors.hasOwnProperty('name') ? props.errors['name'] : ''}</OnboardingError>
                 <OnboardingLabel>{strings['pt-br']['onboardingPhoneLabel']}<OnboardingRequiredLabel>*</OnboardingRequiredLabel></OnboardingLabel>
                 <OnboardingInput 
+                    autoComplete={'whathever'} 
                     error={props.errors.hasOwnProperty('phone')} 
                     type='text' 
                     value={numberMasker(props.phone, props.getPhoneNumberMask(props.phone))} 
@@ -230,6 +232,7 @@ const FirstStepForm = (props) => {
                 <OnboardingError>{props.errors.hasOwnProperty('email') ? props.errors['email'] : ''}</OnboardingError>
                 <OnboardingLabel>{strings['pt-br']['onboardingConfirmEmailLabel']}<OnboardingRequiredLabel>*</OnboardingRequiredLabel></OnboardingLabel>
                 <OnboardingInput 
+                    autoComplete={'whathever'} 
                     error={props.errors.hasOwnProperty('confirmEmail')} 
                     type='text' 
                     value={props.confirmEmail} 

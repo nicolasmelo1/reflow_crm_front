@@ -547,6 +547,7 @@ const UsersForm = (props) => {
                             {strings['pt-br']['userConfigurationFormularyNameLabel']}
                         </UsersFormularyFieldLabel>
                         <UsersFormularyFieldInput 
+                        autoComplete={'whathever'} 
                         errors={errors.hasOwnProperty('name')} 
                         type={'text'} 
                         onChange={e => {onChangeName(e.target.value)}}
@@ -563,6 +564,7 @@ const UsersForm = (props) => {
                             {strings['pt-br']['userConfigurationFormularyEmailLabel']}
                         </UsersFormularyFieldLabel>
                         <UsersFormularyFieldInput 
+                        autoComplete={'whathever'} 
                         type={'text'} 
                         errors={errors.hasOwnProperty('email')} 
                         onChange={e => {onChangeEmail(e.target.value)}}

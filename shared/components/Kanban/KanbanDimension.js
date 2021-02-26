@@ -5,6 +5,7 @@ import KanbanCards from './KanbanCards'
 import isAdmin from '../../utils/isAdmin'
 import delay from '../../utils/delay'
 import agent from '../../utils/agent'
+import generateUUID from '../../utils/generateUUID'
 import { strings } from '../../utils/constants'
 import Alert from '../Utils/Alert'
 import { 
@@ -137,8 +138,11 @@ const KanbanDimension = (props) => {
         const hasFinishedEditing = data === null
 
         if (hasFinishedEditing) {
-            props.onGetDimensionPhases(sourceRef.current, props.formName, props.defaultDimension.id).then(_ => {
-                props.onGetKanbanData(sourceRef.current, props.params, props.formName,  [props.dimensionPhases[isEditingDimensionIndex].option])
+            // Commit the changes to the backend and load the kanban
+            props.onChangeDimensionPhases([...props.dimensionPhases], props.formName, props.defaultDimension.id).then(_ => {
+                props.onGetDimensionPhases(sourceRef.current, props.formName, props.defaultDimension.id).then(_ => {
+                    props.onGetKanbanData(sourceRef.current, props.params, props.formName,  [props.dimensionPhases[isEditingDimensionIndex].option])
+                })
             })
         }
         setIsEditingDimensionIndex(data)
@@ -155,7 +159,7 @@ const KanbanDimension = (props) => {
     const onChangePhaseName = (index, newName) => {
         props.dimensionPhases[index].option = newName
         ignoreWebSocketRef.current = true
-        props.onChangeDimensionPhases([...props.dimensionPhases], props.formName, props.defaultDimension.id)
+        props.onChangeDimensionPhases([...props.dimensionPhases])
     }
 
     /**
@@ -184,7 +188,8 @@ const KanbanDimension = (props) => {
     const onAddPhase = () => {
         props.dimensionPhases.push({
             id: null, 
-            option: strings['pt-br']['kanbanNewPhaseDefaultText']
+            option: strings['pt-br']['kanbanNewPhaseDefaultText'],
+            uuid: generateUUID()
         })
         onToggleEditMode(props.dimensionPhases.length - 1)
         ignoreWebSocketRef.current = true

@@ -112,6 +112,7 @@ const SecondStepForm = (props) => {
             <OnboardingFormContainer showForm={props.showForm}>
                 <OnboardingLabel>{strings['pt-br']['onboardingPasswordLabel']}<OnboardingRequiredLabel>*</OnboardingRequiredLabel></OnboardingLabel>
                 <OnboardingInput
+                    autoComplete={'whathever'} 
                     error={props.errors.hasOwnProperty('password')} 
                     type={visiblePassword ? 'text' : 'password'}
                     value={props.password} 
@@ -124,6 +125,7 @@ const SecondStepForm = (props) => {
                 <OnboardingError>{props.errors.hasOwnProperty('password') ? props.errors['password'] : ''}</OnboardingError>
                 <OnboardingLabel>{strings['pt-br']['onboardingConfirmPasswordLabel']}<OnboardingRequiredLabel>*</OnboardingRequiredLabel></OnboardingLabel>
                 <OnboardingInput 
+                    autoComplete={'whathever'} 
                     error={props.errors.hasOwnProperty('confirmPassword')} 
                     type={visiblePassword ? 'text' : 'password'}
                     value={props.confirmPassword} 
