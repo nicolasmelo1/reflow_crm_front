@@ -75,7 +75,7 @@ const KanbanCardConfigurationForm = (props) => {
             const selectedField = props.fields.filter(field => selectedKanbanCardFieldIds[i] === field.id)
             if (selectedField.length > 0) {
                 selectedFields.push({
-                    field: selectedField
+                    field: selectedField[0]
                 })
             }
         }
