@@ -68,7 +68,17 @@ const KanbanCardConfigurationForm = (props) => {
     const onCreateOrUpdateCard = async () => {
         const kanbanCardId = props.cardToEdit.id
         const selectedKanbanCardFieldIds = kanbanCardFieldOptions.filter(kanbanCardField => Object.keys(kanbanCardField).length !== 0).map(kanbanCardField=> kanbanCardField.value)
-        const selectedFields = props.fields.filter(field => selectedKanbanCardFieldIds.includes(field.id)).map(field=> ({field: field}))
+        let selectedFields = []
+        // We need to do this that way because we need to append the fields in order in `selectedFields` variable.
+        // keep the `kanbanCardFieldOptions` is crucial for this to work.
+        for (let i=0; i<selectedKanbanCardFieldIds.length; i++) {
+            const selectedField = props.fields.filter(field => selectedKanbanCardFieldIds[i] === field.id)
+            if (selectedField.length > 0) {
+                selectedFields.push({
+                    field: selectedField
+                })
+            }
+        }
         const body = {
             id: kanbanCardId,
             kanban_card_fields: selectedFields
