@@ -14,7 +14,7 @@ const Overlay = (props) => {
         <OverlayTrigger 
         trigger={['hover', 'focus']} 
         placement="bottom" 
-        delay={{ show: props.delay ? props.delay : 250, hide: props.delay ? props.delay : 250 }} 
+        delay={{ show: props.delay ? props.delay : 250, hide: props.delay ? props.delay : 100 }} 
         overlay={<Tooltip>{props.text}</Tooltip>}  
         popperConfig={{
             modifiers: [

@@ -202,6 +202,12 @@ const strings = {
         kanbanRemoveDimensionAlertAcceptButton: 'Entendi',
         kanbanEditPhaseNameInputPlaceholder: 'Nome da fase',
         kanbanNewPhaseDefaultText: 'Nova fase',
+        kanbanOverlayCollapseDimensionShowColumnText: 'Mostrar coluna',
+        kanbanOverlayCollapseDimensionHideColumnText: 'Ocultar coluna',
+        kanbanOverlayDimensionPhaseEditButtonText: 'Editar coluna',
+        kanbanOverlayDimensionPhaseConfirmEditionButtonText: 'Confirmar alterações',
+        kanbanOverlayDimensionPhaseMoveButtonText: 'Mover coluna',
+
         kanbanCannotBuildMessage: 'Não é possivel visualizar os dados dessa página em formato de kanban. O formulário da página deve conter campos de opção.',
         kanbanObligatorySettingIsClosedButtonLabel: 'Configurações obrigatórias',
         kanbanObligatorySettingIsOpenButtonLabel: 'Fechar configurações obrigatórias',

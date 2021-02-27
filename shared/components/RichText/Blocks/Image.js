@@ -88,7 +88,7 @@ const ImageBlock = (props) => {
      * You can see it here: https://docs.expo.io/versions/latest/sdk/imagepicker/
      */
     const getPermissionAsyncMobile = async () => {
-        if (Platform.OS !== 'web' && process.env['APP'] !== 'web') {
+        if (process.env['APP'] !== 'web' && Platform.OS !== 'web') {
             const { status } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY)
             if (status !== 'granted') {
                 alert('Sorry, we need camera roll permissions to make this work!')

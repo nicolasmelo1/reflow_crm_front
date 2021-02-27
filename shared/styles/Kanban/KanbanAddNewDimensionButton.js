@@ -12,15 +12,14 @@ styled.button`
     align-items: center;
     justify-content: center;
     background-color: transparent;
+    margin-top: 10px; 
+    @media(min-width: 641px) {
+        height: calc(var(--app-height) - 280px);
+    }
 
-    @media(max-width:420px) {
+    @media(max-width: 640px) {
         height: calc(var(--app-height) - 320px);
     }
-
-    @media(min-width:421px) {
-        height: calc(var(--app-height) - 265px);
-    }
-    
 
     &:hover {
         color: #0dbf7e;
