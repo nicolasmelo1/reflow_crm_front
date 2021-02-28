@@ -13,7 +13,6 @@ styled.div`
         cursor: pointer;
         border-radius: 20px;
         background-color: #f2f2f250;
-        height: calc(var(--app-height) - 254px);
         
         &:hover {
             background-color: #f2f2f2;

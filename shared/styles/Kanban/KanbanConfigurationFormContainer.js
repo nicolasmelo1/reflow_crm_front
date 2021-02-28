@@ -11,6 +11,9 @@ styled.div`
     height: calc(var(--app-height) - 250px);
     position: relative;
 
+    scrollbar-color: #bfbfbf transparent;
+    scrollbar-width: thin;
+    
     &::-webkit-scrollbar-thumb {
         background: #bfbfbf;
         border-radius: 5px;

@@ -14,6 +14,9 @@ styled.div`
     padding: 12px 16px;
     z-index: 1;
 
+    scrollbar-color: #bfbfbf transparent;
+    scrollbar-width: thin;
+    
     &::-webkit-scrollbar-thumb {
         background: #bfbfbf;
         border-radius: 5px;

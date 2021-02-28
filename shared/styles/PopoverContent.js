@@ -9,7 +9,12 @@ export default process.env['APP'] === 'web' && Popover ?
 styled(Popover.Content)`
     overflow: auto;
     max-height: calc(var(--app-height) - 50px);
+    scrollbar-color: #bfbfbf transparent;
+    scrollbar-width: thin;
 
+    scrollbar-color: #bfbfbf transparent;
+    scrollbar-width: thin;
+    
     &::-webkit-scrollbar-thumb {
         background: #bfbfbf;
         border-radius: 5px;

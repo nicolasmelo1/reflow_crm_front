@@ -14,6 +14,9 @@ styled.div`
     transition: bottom 0.3s ease-in-out, padding 0.3s ease-in-out;
     z-index: 20;
 
+    scrollbar-color: #bfbfbf transparent;
+    scrollbar-width: thin;
+    
     &::-webkit-scrollbar-thumb {
         background: #bfbfbf;
         border-radius: 5px;

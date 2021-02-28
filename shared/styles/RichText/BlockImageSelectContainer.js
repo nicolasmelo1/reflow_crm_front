@@ -13,6 +13,9 @@ styled.div`
     position: absolute;
     width: calc(100% - 20px);
 
+    scrollbar-color: #bfbfbf transparent;
+    scrollbar-width: thin;
+    
     &::-webkit-scrollbar-thumb {
         background: #bfbfbf;
         border-radius: 5px;

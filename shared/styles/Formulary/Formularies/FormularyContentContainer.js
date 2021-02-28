@@ -12,6 +12,9 @@ export default styled(({isOpen, height,...rest}) => <div {...rest}/>)`
     padding: ${props=> props.isOpen || props.display !== 'bottom' ? '10px' : '0'};
     transition: height 0.3s ease-in-out, padding 0.3s ease-in-out;
 
+    scrollbar-color: #bfbfbf transparent;
+    scrollbar-width: thin;
+    
     &::-webkit-scrollbar-thumb {
         background: #bfbfbf;
         border-radius: 5px;

@@ -7,6 +7,9 @@ styled.div`
     height: calc(100vh - 150px);
     overflow-y: auto;
 
+    scrollbar-color: #bfbfbf transparent;
+    scrollbar-width: thin;
+    
     &::-webkit-scrollbar-thumb {
         background: #bfbfbf;
         border-radius: 5px;

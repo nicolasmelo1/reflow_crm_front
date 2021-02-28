@@ -16,6 +16,9 @@ styled(({sidebarIsOpen, ...rest}) => <nav {...rest}/>)`
     transition: width 0.3s ease-in-out;
     box-shadow: 0 4px 20px 0 #17242D;
 
+    scrollbar-color: #bfbfbf transparent;
+    scrollbar-width: thin;
+    
     &::-webkit-scrollbar-thumb {
         background: #bfbfbf;
         border-radius: 5px;

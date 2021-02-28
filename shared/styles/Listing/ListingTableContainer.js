@@ -9,6 +9,9 @@ styled.div`
     overflow-y: auto;
     position: relative;
     
+    scrollbar-color: #bfbfbf transparent;
+    scrollbar-width: thin;
+    
     &::-webkit-scrollbar-thumb {
         background: #bfbfbf;
         border-radius: 5px;
