@@ -27,7 +27,7 @@ import {
 const Toolbar = (props) => {
     const toolbarRef = React.useRef(null)
     const [webToolbarWidth, setWebToolbarWidth] = useState(0)
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Fired when the user resizes the window in web so we can make the toolbar shrink it's size.
      * 
@@ -36,7 +36,7 @@ const Toolbar = (props) => {
     const onResizeRichTextWeb = (e) => {
         setWebToolbarWidth(toolbarRef.current.closest('.rich-text-container').offsetWidth)
     } 
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         if (process.env['APP'] === 'web') { 
             setWebToolbarWidth(toolbarRef.current.closest('.rich-text-container').offsetWidth)
@@ -48,7 +48,7 @@ const Toolbar = (props) => {
             }
         }
     }, [])
-
+    //########################################################################################//
     const renderMobile = () => {
         return (
             <ToolbarFullContainer>
@@ -75,7 +75,7 @@ const Toolbar = (props) => {
 
         )
     }
-
+    //########################################################################################//
     const renderWeb = () => {
         return (
             <ToolbarFullContainer 
@@ -115,6 +115,7 @@ const Toolbar = (props) => {
             </ToolbarFullContainer>
         )
     }
+    //########################################################################################//
     if (props.isBlockActive) {
         return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
     } else {

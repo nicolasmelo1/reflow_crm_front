@@ -54,7 +54,7 @@ const KanbanDimension = (props) => {
     const [showAlert, setShowAlert] = useState(false)
     const [cardIdsInLoadingState, setCardIdsInLoadingState] = useState([])
     const [isEditingDimensionIndex, setIsEditingDimensionIndex] = useState(null)
-    
+    // ------------------------------------------------------------------------------------------
     /**
      * Gets the index of the dimension phase from our data array.
      * This is used when moving a kanban card data along phases, when we drop we need to get the data array from where this data left
@@ -76,7 +76,7 @@ const KanbanDimension = (props) => {
     const filterDimensionPhaseIndex = (dimensionPhase) => {
         return props.data.findIndex(element=> element.dimension === dimensionPhase)
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * As said on `filterDimensionPhaseIndex()` function on how data is organized in redux, this is used to get the data of a 
      * particular dimension phase so we display them to the user.
@@ -86,7 +86,7 @@ const KanbanDimension = (props) => {
     const filterDataDimensionPhase = (dimensionPhase) => {
         return props.data.filter(element=> element.dimension === dimensionPhase)[0]
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * When the user starts dragging an dimension phase for reordering on the kanban
      * we use this function. Like `onMoveCard` function in KanbanCards component we also need to make sure
@@ -107,6 +107,7 @@ const KanbanDimension = (props) => {
         e.dataTransfer.setDragImage(dimensionContainer, dimensionRect.width - elementRect.width, 20)
         e.dataTransfer.setData('movedDimensionIndex', index.toString())
     }
+    // ------------------------------------------------------------------------------------------
     /**
      * Change the background color when the dimension and the cards are moving.
      * 
@@ -125,7 +126,7 @@ const KanbanDimension = (props) => {
             dimensionPhaseElementFromTheDOM.style.backgroundColor = '#f2f2f2'
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * This is used for retriving the changed data from the backend, when we remove a phase, add a new phase or rename a phase we need to retrieve the dimension
      * id in order to be able to collapse it. So this is exactly what we do. 
@@ -148,7 +149,7 @@ const KanbanDimension = (props) => {
         }
         setIsEditingDimensionIndex(data)
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Used when the user changes the name of a phase. When this happens we update the state and also update the backend with the change.
      * The backend process everything the same way, weather you changed a phase name, deleted, moved or added a new phase column. You ALWAYS need to send
@@ -162,7 +163,7 @@ const KanbanDimension = (props) => {
         ignoreWebSocketRef.current = true
         props.onChangeDimensionPhases([...props.dimensionPhases])
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Removes a phase from a dimension. This means that we are only removing the option of an existing field.
      * 
@@ -176,7 +177,7 @@ const KanbanDimension = (props) => {
         setDimensionIndexToRemove(null)
         setIsEditingDimensionIndex(null)
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Adds a phase on a dimension. This means that we are only adding an option of an existing field.
      * 
@@ -198,7 +199,7 @@ const KanbanDimension = (props) => {
             props.onGetDimensionPhases(sourceRef.current, props.formName, props.defaultDimension.id)
         })
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Collapses a phase in the kanban so it's contents are not shown to the user and he can organize the kanban easier
      * 
@@ -216,7 +217,7 @@ const KanbanDimension = (props) => {
             props.onUpdateDimensionsOnScreen()
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * This handles when the user drops a kanban card or a reorder a kanban dimension phase.
      * It's important to understand this because this means we handle two things in 1 function so you should be aware of this.
@@ -286,7 +287,8 @@ const KanbanDimension = (props) => {
             }
         }
     }
-
+    // ------------------------------------------------------------------------------------------
+    /////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Websocket used for updating in real time as updates are being made in the formulary.
      * Those changes are like: adding a new field, editing the phases or removing a field or a phase
@@ -306,7 +308,7 @@ const KanbanDimension = (props) => {
             }
         })
     }, [props.defaultDimension, props.formName])
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         isMountedRef.current = true
         sourceRef.current = props.cancelToken.source()
@@ -318,13 +320,14 @@ const KanbanDimension = (props) => {
             }
         }
     }, [])
-    
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //########################################################################################//
     const renderMobile = () => {
         return (
             <View></View>
         )
     }
-
+    //########################################################################################//
     const renderWeb = () => {
         return (
             <React.Fragment>
@@ -461,7 +464,7 @@ const KanbanDimension = (props) => {
             </React.Fragment>
         )
     }
-
+    //########################################################################################//
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 

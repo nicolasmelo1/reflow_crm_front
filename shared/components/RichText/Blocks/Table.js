@@ -75,7 +75,7 @@ const Table = (props) => {
         _setRowDimensions(data)
         rowDimensionsRef.current = data
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Adds the table toolbar when the user clicks on one of the table edges.
      * 
@@ -92,7 +92,7 @@ const Table = (props) => {
         }
         props.addToolbar({...props.toolbarProps})
     }
-    
+    // ------------------------------------------------------------------------------------------
     /**
      * The special options of the table block
      * 
@@ -109,8 +109,7 @@ const Table = (props) => {
             text_table_option_column_dimensions: columnDimensionsRef.current,
             text_table_option_row_dimensions: rowDimensionsRef.current
     })
-
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Adds the order parameter correctly for each block
      */
@@ -119,7 +118,7 @@ const Table = (props) => {
             props.block.rich_text_depends_on_blocks[i].order = i
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Every cell of the table is initialy a normal Text block. This way we do not need to redo any funcionality 
      * for the table to be able to write, handle arrow navigation and add images. So when adding a new table, when adding 
@@ -139,7 +138,7 @@ const Table = (props) => {
             }
         })
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * To understand this you need to understand how we build the tables in the '.render()' function:
      * 
@@ -165,7 +164,7 @@ const Table = (props) => {
     const findRowOfBlockByBlockIndex = (blockIndex) => {
         return Math.floor(blockIndex/props.block.table_option.text_table_option_column_dimensions.length)
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Read the explanation on `.findRowOfBlockByBlockIndex()` to understand how we render functions first and
      * how we find the row index
@@ -188,7 +187,7 @@ const Table = (props) => {
         const rowIndex = findRowOfBlockByBlockIndex(blockIndex)
         return blockIndex - (props.block.table_option.text_table_option_column_dimensions.length*rowIndex)
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * This function is used to check if the block has table options, if not we insert it.
      * 
@@ -211,7 +210,8 @@ const Table = (props) => {
             }
             props.updateBlocks(props.block.uuid)
         }
-    }   
+    } 
+    // ------------------------------------------------------------------------------------------
     /**
      * This gets the index of the block that the caret should go when the user press the arrow key down or right
      * 
@@ -241,7 +241,7 @@ const Table = (props) => {
         }
         return nextTextBlockIndex
     }
-    
+    // ------------------------------------------------------------------------------------------
     /**
      * This gets the index of the block that the caret should go when the user press the arrow key up or left
      * 
@@ -272,6 +272,7 @@ const Table = (props) => {
         }
         return previousTextBlockIndex
     }
+    // ------------------------------------------------------------------------------------------
     /**
      * Resizes the table column and also it's row. It's important to notice that hen resizing columns we only accept resizing the midle columns
      * For resizing rows we use pixels normally so no special attention is needed, for resizing columns however we use percentages.
@@ -306,7 +307,7 @@ const Table = (props) => {
             setRowDimensions([...rowDimensionsRef.current])
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * When the user release the mouse button we reset the isResizingref and resizingRef references and set the 
      * the column dimension and row dimension to the block.
@@ -322,7 +323,7 @@ const Table = (props) => {
             props.updateBlocks(props.block.uuid)
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * When the user clicks with the mouse on one of the edge buttons
      * 
@@ -332,7 +333,7 @@ const Table = (props) => {
         resizingRef.current = {pageX: e.pageX, pageY: e.pageY}
         isResizing.current = true
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * We don't want tables to exist inside another table, so to prevent this we use this function that
      * gets by each block_type what block_types it can contain, with this we filter the blockTypes option on the children blocks.
@@ -345,7 +346,7 @@ const Table = (props) => {
             return props.blockTypes
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Fired from the toolbar to change the color of the borders of the table.
      * 
@@ -358,7 +359,7 @@ const Table = (props) => {
         props.block.table_option.border_color = newBorderColor
         props.updateBlocks(props.block.uuid)
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Function for handling when the user clicks to add a new column or a new row.
      * 
@@ -403,7 +404,7 @@ const Table = (props) => {
         reorderBlocks()
         props.updateBlocks(props.block.uuid)
     }
-    
+    // ------------------------------------------------------------------------------------------
     /**
      * Really similar to `.onAddNewRowOrColumn()` function. Excpet we are removing a column or a row.
      * 
@@ -444,7 +445,7 @@ const Table = (props) => {
             }
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * When the user clicks to delete a children block in the toolbar we use this function, so we can create a new 
      * empty text block in its place
@@ -459,7 +460,7 @@ const Table = (props) => {
             props.updateBlocks(newBlock.uuid)
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Duplicates the children blocks, when each of the children wants to be duplicated this function takes over and handle
      * the duplication for them. This way we can set special conditions for different types of blocks when duplicating
@@ -492,7 +493,7 @@ const Table = (props) => {
             props.updateBlocks(null)
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * This handles when the user clicks enter on the Text block, instead of using the default behaviour, with this we
      * create a new block and go to the line right below it.
@@ -521,7 +522,7 @@ const Table = (props) => {
             props.updateBlocks(blockToFocus)
         }
     }
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         // When mounting this component we check if it has the table options, otherwise we need to create it.
         // With this we can then mount the table on the screen.
@@ -548,13 +549,13 @@ const Table = (props) => {
             }
         }
     }, [])
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         addToolbar()
     }, [props.activeBlock, selectedEdge])
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     const columnsNumber = (props.block?.table_option?.text_table_option_column_dimensions || []).length
-
+    //########################################################################################//
     const renderMobile = () => {
         return (
             <ScrollView horizontal={true} 
@@ -673,7 +674,7 @@ const Table = (props) => {
             </ScrollView>
         )
     }
-    
+    //########################################################################################//
     const renderWeb = () => {
         return (
             <BlockTableTable>
@@ -800,7 +801,7 @@ const Table = (props) => {
             </BlockTableTable>
         )
     }
-
+    //########################################################################################//
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 

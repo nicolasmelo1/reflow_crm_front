@@ -46,23 +46,23 @@ const FormularySectionEdit = (props) => {
     const [openedSection, setOpenedSection] = useState(false)
     const [isConditional, setIsConditional] = useState(false)
     const [showAlert, setShowAlert] = useState(false)
-
+    // ------------------------------------------------------------------------------------------
     const onChangeSectionName = (e) => {
         e.preventDefault()
         e.stopPropagation()
         props.section.label_name = e.target.value
         props.onUpdateSection(props.sectionIndex, {...props.section})
     }
-
+    // ------------------------------------------------------------------------------------------
     const onDisableSection = (e) => {
         props.section.enabled = !props.section.enabled 
         props.onUpdateSection(props.sectionIndex, {...props.section})
     }
-
+    // ------------------------------------------------------------------------------------------
     const onRemoveSection = () => {
         props.removeSection(props.sectionIndex)
     }
-
+    // ------------------------------------------------------------------------------------------
     // THIS IS REQUIRED BECAUSE OF YOUR BELOVED TRASH GOOGLE CHROME, IF WE DISMISS THE SCROLL DIRECTLY WHEN THE USER
     // MOVES IT CAUSES A BUG. The bug is: the scroll goes back to the top and the drag is dismissed.
     const setIsMoving = (data) => {
@@ -72,7 +72,7 @@ const FormularySectionEdit = (props) => {
             props.setIsMoving(false)
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     const onMoveSection = (e) => {
         let sectionContainer = e.currentTarget.closest('.section-container')
         let elementRect = sectionContainer.getBoundingClientRect()
@@ -82,7 +82,7 @@ const FormularySectionEdit = (props) => {
         isMoving.current = true
         setIsMoving(isMoving.current)
     }
-
+    // ------------------------------------------------------------------------------------------
     const onDrop = (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -91,35 +91,36 @@ const FormularySectionEdit = (props) => {
             props.onMoveSection(movedSectionIndex, props.sectionIndex)
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     const onDrag = (e) => {
         e.preventDefault()
         e.stopPropagation()
     }
-
+    // ------------------------------------------------------------------------------------------
     const onDragOver = (e) => {
         e.preventDefault()
         e.stopPropagation()
     }
-
+    // ------------------------------------------------------------------------------------------
     const onDragEnd = (e) => {
         e.preventDefault()
         e.stopPropagation()
         isMoving.current = false
         setIsMoving(isMoving.current)
     }
-
-
+    // ------------------------------------------------------------------------------------------
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(()=>{
         setIsConditional(props.section.conditional_on_field !== null || props.section.conditional_value !== null || props.section.conditional_type !== null)
     }, [props.section])
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //########################################################################################//
     const renderMobile = () => {
         return (
             <View></View>
         )
     }
-
+    //########################################################################################//
     const renderWeb = () => {
         return (
             <FormulariesEdit.Section.Container>
@@ -212,7 +213,7 @@ const FormularySectionEdit = (props) => {
             </FormulariesEdit.Section.Container>
         )
     }
-
+    //########################################################################################//
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 

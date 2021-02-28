@@ -19,13 +19,13 @@ const KanbanCardConfigurationFormSelect = (props) => {
     const [fieldSelectIsOpen, setFieldSelectIsOpen] = useState(false) 
 
     const isInitialValueAnEmptyObject = Object.keys(props.selectedField).length === 0
-
+    //########################################################################################//
     const renderMobile = () => {
         return (
             <View></View>
         )
     }
-
+    //########################################################################################//
     const renderWeb = () => {
         return (
             <KanbanConfigurationFormSelectContainer isOpen={fieldSelectIsOpen}>
@@ -40,7 +40,7 @@ const KanbanCardConfigurationFormSelect = (props) => {
             </KanbanConfigurationFormSelectContainer>
         )
     }
-
+    //########################################################################################//
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
     
 }

@@ -86,7 +86,7 @@ const Text = (props) => {
     const [isToolbarModalOpen, setToolbarIsModalOpen] = useState(false)
     const [stateOfSelection, setStateOfSelection] = useState(stateOfSelectionData)
 
-
+    // ------------------------------------------------------------------------------------------
     /**
      * THis is a function for adding the toolbar in the root of the page.
      * With this simple function we can maintain a simple API for the components to follow and also allow
@@ -95,7 +95,7 @@ const Text = (props) => {
      * So let's start. HOW THE F•C* does this work?
      * - First things first: On the parent component we do not keep the state but instead we keep everything inside
      * of a ref. This way we can prevent rerendering stuff and just rerender when needed.
-     * - Second of all you need to add this function on a useEffect hook or a componentDidUpdate, this way after every
+     * - Second: all you need is to add this function on a useEffect hook or a componentDidUpdate, this way after every
      * rerender of your component we can keep track on what is changing and force the rerender of the hole page tree.
      * - Third but not least we save all of the data needed to render a Toolbar. This means we need the following parameters:
      *  - `blockUUID` - The uuid of the current block
@@ -131,7 +131,7 @@ const Text = (props) => {
             )
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Gets alignment type name by it's id, we need this because we only have the id of the alignmentType but not
      * 
@@ -147,7 +147,7 @@ const Text = (props) => {
         } 
         return ''
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Check if the position of the caret is on a custom content, if it is we need to select the hole content so the
      * user cannot edit the middle of it
@@ -178,8 +178,7 @@ const Text = (props) => {
             }
         }
     }
-
-
+    // ------------------------------------------------------------------------------------------
     /**
      * On the browser, when we update the state, the caret jumps (it means it disappear) so the user needs 
      * to click the element again to make a second edit and so on. It obviously becomes kind of annoying for the user
@@ -233,7 +232,7 @@ const Text = (props) => {
             }
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Is explained well in `caretIsInHighestOrLowestPositionWeb` function. Read the docs there to understand
      * how we know that the caret is on the top of the content and how we know it is on the bottom.
@@ -253,6 +252,7 @@ const Text = (props) => {
      * Be aware that before going to the next block we update the page state with setArrowNavigation signaling the X position of the caret.
      */
     const handleArrowNavigationWeb = () => {
+        // ------------------------------------------------------------------------------------------
         const getNextBlockIndex = (isDownOrRight) => {
             let nextTextBlockIndex = -1
             if (props.handleArrowNavigationNextBlockIndex) {
@@ -268,7 +268,7 @@ const Text = (props) => {
             }
             return nextTextBlockIndex
         } 
-
+        // ------------------------------------------------------------------------------------------
         const getPreviousBlockIndex = (isUpOrLeft) => {
             let previousTextBlockIndex = -1
             if (props.handleArrowNavigationPreviousBlockIndex) {
@@ -284,7 +284,7 @@ const Text = (props) => {
             }
             return previousTextBlockIndex
         }
-
+        // ------------------------------------------------------------------------------------------
         if (typeof(keyDownPressedRef.current) === 'string' && keyDownPressedRef.current.toLowerCase().includes('arrow')){
             const caretIndexPosition = getSelectionSelectCursorPositionWeb(inputRef.current)
             const text = inputRef.current.innerText.substring(inputRef.current.innerText.length-1, inputRef.current.innerText.length) === '\n' ? 
@@ -331,7 +331,7 @@ const Text = (props) => {
             keyDownPressedRef.current = null
         }
     }
-    
+    // ------------------------------------------------------------------------------------------    
     /**
      * WORKS ONLY ON WEB 
      * 
@@ -361,8 +361,7 @@ const Text = (props) => {
         isInCompositionRef.current = false
         onInput(inputRef.current.innerText, 'inputText', insertedText)
     }
-
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Retrieves the selected contents from the selection.
      * Suppose you have the phrase: "ILoveCats" in which "I" is a content in the array,
@@ -429,7 +428,7 @@ const Text = (props) => {
         }
         return selectedContentsArray
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Deletes the content when the text inside of the content is a '' (empty string).
      * Otherwise we keep the content.
@@ -453,7 +452,7 @@ const Text = (props) => {
             props.onRemoveUnmanagedContent(removedCustomContents)
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Suppose we have the following contents ["I", "Love", "Cats"] and the type of them are like
      * [not-bold, bold, not-bold] when we turn "Cats" content to bold what we need to do is merge index 1 and index 2
@@ -513,7 +512,7 @@ const Text = (props) => {
         if (newContents.length === 1 && newContents[0].text === '') newContents[0] = props.createNewContent({order: 0, text: ''})
         return newContents
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * The name of this function is mostly self explanatory but anyway
      * 
@@ -577,7 +576,7 @@ const Text = (props) => {
             }
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * This function is used to delete the contents from the state and merge together equal contents
      * 
@@ -588,7 +587,7 @@ const Text = (props) => {
         props.block.rich_text_block_contents = mergeEqualContentsSideBySide(props.block.rich_text_block_contents)
         updateWhereCaretPositionShouldGo(insertedText)
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Suppose you selected the bold option and now you are inserting the letter: "a"
      * But you are inserting it in the middle of "Cats" content which is not bold so the content becomes: ["Ca", "a", "ts"]
@@ -664,7 +663,7 @@ const Text = (props) => {
         })
         return [contentLeft, newContent, contentRight]
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Removes the Text of the contets selected. 
      * You might already know the phrase by now: ["I", "Love", "Cats"] (i actually prefer dogs)
@@ -693,7 +692,7 @@ const Text = (props) => {
             }
         })
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Used for inserting text in content or creating new contents.
      * 
@@ -754,7 +753,7 @@ const Text = (props) => {
             }
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * This is fired when the user makes a selection or set the caret to a certain position.
      * 
@@ -790,7 +789,7 @@ const Text = (props) => {
             })
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     // When the user unselect the input we need to set the state of selection back to null, so all of the buttons
     // appear as unselected
     const onBlur = () => {
@@ -802,7 +801,7 @@ const Text = (props) => {
             props.updateBlocks(null)
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * When we focus the input we check if the current active block is this block, if this block is not the active one we 
      * make it active updating the block, and last but not least we set the caret position in the input. We need to set the caret position
@@ -822,7 +821,7 @@ const Text = (props) => {
             setCaretPositionInInput(props.block.uuid)
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * This function is fired whenever the user makes a selection on the text. It can be either be a click event
      * or select a range. 
@@ -883,8 +882,7 @@ const Text = (props) => {
             }
         }
     }
-
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Exactly the same as `onFocus`, this handles when the user clicks the text. Nothing fancy.
      * 
@@ -897,7 +895,7 @@ const Text = (props) => {
             props.updateBlocks(props.block.uuid)
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /*********************************
      * UNHANDLED CONTENT STARTS HERE *
      *********************************
@@ -934,6 +932,7 @@ const Text = (props) => {
      * be only the letter "a" 
      * */
     const onInput = (text, inputType, insertedText=null) => {
+        // ------------------------------------------------------------------------------------------
         const getInsertedText = (insertedText, inputType) => {
             if (insertedText === null && inputType === 'insertReplacementText') {
                 const splittedInsertedText = text.substring(caretPositionRef.current.start, text.length).split(' ')
@@ -954,8 +953,7 @@ const Text = (props) => {
             }
             return ''
         }
-        
-
+        // ------------------------------------------------------------------------------------------
         const fixCaretPositionIfDelete = (inputType, text, oldText) => {
             const isRangeSelection = caretPositionRef.current.start !== caretPositionRef.current.end
             // User has set the caret to a certain position and did not made a selection.
@@ -969,7 +967,7 @@ const Text = (props) => {
                 }  
             } 
         }
-
+        // ------------------------------------------------------------------------------------------
         insertedText = getInsertedText(insertedText, inputType)
         let contents = JSON.parse(JSON.stringify(props.block.rich_text_block_contents))
         // Checks if last character of the last content is a linebreak there is a bug that happens when you do this on normal browsers
@@ -1011,8 +1009,7 @@ const Text = (props) => {
             props.updateBlocks(props.activeBlock)
         }
     }
-
-
+    // ------------------------------------------------------------------------------------------
     /**
      * When you press enter we send the props upper in the chain of blocks. So if you are pressing enter here but this component
      * is inside a Table block, we will activate the table block enter and not this.
@@ -1077,7 +1074,7 @@ const Text = (props) => {
             }
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /** 
      * This is really similar to `onRemoveCurrent` but instead of removing the block you are currently in, removes the block after the one you are
      * currently in. It is fired when the user press DELETE on the last caret position of the contents (it means the caret is on the end of the string).
@@ -1125,7 +1122,7 @@ const Text = (props) => {
             }
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * This is fired whenever the user press backspace and is on the caret position 0 on the start and end.
      * 
@@ -1193,7 +1190,7 @@ const Text = (props) => {
             }
         }
     }
-    
+    // ------------------------------------------------------------------------------------------  
     /**
      * Fired when the user presses the keydown, this runs before the KeyUp event that we use to change the text.
      * Because of this we can cancel the keyUp event here, like "Enter" for creating new blocks.
@@ -1242,7 +1239,7 @@ const Text = (props) => {
             props.openBlockSelection()
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Resets the states from the refs when the user releases the key
      * 
@@ -1259,7 +1256,7 @@ const Text = (props) => {
             isLeftPressed: false
         })
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * This function is kinda simple, first what we do is change the state after the user has clicked a button
      * or not.
@@ -1309,9 +1306,11 @@ const Text = (props) => {
                     // delete contents
 
                     // ONLY ON WEB. Since the last element is always \n we remove it from the text to be ready to append the new content.
-                    contents[contents.length-1].text = (contents[contents.length-1].text.substring(contents[contents.length-1].text.length-1,contents[contents.length-1].text.length) === '\n') ? contents[contents.length-1].text.substring(
-                        0, contents[contents.length-1].text.length-1
-                    ) : contents[contents.length-1].text
+                    if (process.env['APP'] === 'web') {
+                        contents[contents.length-1].text = (contents[contents.length-1].text.substring(contents[contents.length-1].text.length-1,contents[contents.length-1].text.length) === '\n') ? contents[contents.length-1].text.substring(
+                            0, contents[contents.length-1].text.length-1
+                        ) : contents[contents.length-1].text
+                    }
                     const contentCurrentText = contents[content.contentIndex].text
                     const toChangeContentText = contentCurrentText.substring(content.startIndexToSelectTextInContent, content.endIndexToSelectTextInContent)
                     // We need to know what has changed to change it inside of the content, this way we can keep unchanged states.
@@ -1348,7 +1347,7 @@ const Text = (props) => {
             } 
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Just a boolean function used to verify if it needs to show to the user a placeholder
      */
@@ -1359,7 +1358,7 @@ const Text = (props) => {
         (props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text === '\n' ||
         props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text === '')
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Changes the alignment of the text to the right, to the center or to the middle.
      * This changes the alignment on the hole block.
@@ -1372,7 +1371,7 @@ const Text = (props) => {
         }
         props.updateBlocks(props.activeBlock)
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Used when user paste on the text content we fire this function. To understand on how we get data from the clipboard here you should check 
      * the following: https://developer.mozilla.org/en-US/docs/Web/API/DataTransferItem/getAsFile
@@ -1410,14 +1409,15 @@ const Text = (props) => {
             onInput(textWithPastedData, '', clipboardText)
         }
     }
-
+    // ------------------------------------------------------------------------------------------
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         isMountedRef.current = true
         return () => {
             isMountedRef.current = false
         }
     }, [])
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         // WEB ONLY
         if (process.env['APP'] === 'web') {
@@ -1440,7 +1440,12 @@ const Text = (props) => {
             setInnerHtml(innerHtmlText)
         }
     })
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    useEffect(() => {
+        // WEB ONLY
+        setCaretPositionInInput(props.activeBlock)
+    }, [innerHtml])
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         if (isWaitingForCustomInput.current || props.activeBlock === null) {
             inputRef.current.blur()
@@ -1450,11 +1455,11 @@ const Text = (props) => {
             inputRef.current.focus()
         }
     }, [props.activeBlock, props.unmanagedContentValue, props.isUnmanagedContentSelectorOpen])
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         addToolbar()
     }, [props, stateOfSelection])
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         // handles unmanaged content. When the user types a key it opens a box so the user can select the options
         // When the user selects an option we change the props of the value, than we this Effect runs.
@@ -1499,11 +1504,8 @@ const Text = (props) => {
             props.updateBlocks(props.block.uuid)
         }
     }, [props.unmanagedContentValue])
-
-    useEffect(() => {
-        setCaretPositionInInput(props.activeBlock)
-    }, [innerHtml])
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //########################################################################################//
     const renderMobile = () => {
         return (
             <KeyboardAvoidingView>
@@ -1551,7 +1553,7 @@ const Text = (props) => {
             </KeyboardAvoidingView>
         )
     }
-
+    //########################################################################################//
     const renderWeb = () => {
         return (
             <div>
@@ -1595,7 +1597,7 @@ const Text = (props) => {
             </div>
         )
     }
-
+    //########################################################################################//
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 

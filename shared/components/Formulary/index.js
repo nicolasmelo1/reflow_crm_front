@@ -83,16 +83,23 @@ class Formulary extends React.Component {
             auxOriginalInitial: []
         }
     }
-    
+    // ------------------------------------------------------------------------------------------
     setIsOpen = () => (this._ismounted) ? this.props.onOpenOrCloseFormulary(!this.props.formulary.isOpen) : null
-    
+    // ------------------------------------------------------------------------------------------
     setAuxOriginalInitialIndex = (data) => (this._ismounted) ? this.setState(state => state.auxOriginalInitialIndex = data) : null
+    // ------------------------------------------------------------------------------------------
     setIsSubmitting = (data) => (this._ismounted) ? this.setState(state => state.isSubmitting = data) : null
+    // ------------------------------------------------------------------------------------------
     setIsLoading = (data) => (this._ismounted) ? this.setState(state => state.isLoading = data): null
+    // ------------------------------------------------------------------------------------------
     setErrors = (errors) => (this._ismounted) ? this.setState(state => state.errors = errors) : null
+    // ------------------------------------------------------------------------------------------
     setBuildData = (data) => (this._ismounted) ? this.setState(state => state.buildData = data) : null
+    // ------------------------------------------------------------------------------------------
     setFilledHasBuiltInitial = (data) => (this._ismounted) ? this.setState(state => state.filled.hasBuiltInitial = data) : null
+    // ------------------------------------------------------------------------------------------
     setFilledIsAuxOriginalInitial = (data) => (this._ismounted) ? this.setState(state => state.filled.isAuxOriginalInitial = data) : null
+    // ------------------------------------------------------------------------------------------
     setDraftToFileReference = (draftId, fileName) => (this._ismounted) ? this.setState(state => {
         const draftToFileReference = {...state.draftToFileReference}
         draftToFileReference[draftId] = fileName
@@ -101,13 +108,13 @@ class Formulary extends React.Component {
             draftToFileReference: draftToFileReference
         }
     }) : null
-
+    // ------------------------------------------------------------------------------------------
     setFilledData = (id, sectionsData) => (this._ismounted) ? this.setState(state => 
         state.filled.data = {
             id: id,
             depends_on_dynamic_form: [...sectionsData]
         }) : null
-        
+    // ------------------------------------------------------------------------------------------     
     setFilledDataAndBuildData = (id, hasBuiltInitial, isAuxOriginalInitial, filledSectionsData, buildData) => (this._ismounted) ? this.setState(state=> ({
             ...state,
             filled: {
@@ -121,13 +128,13 @@ class Formulary extends React.Component {
             buildData: buildData
         })) : null
     
-    
+    // ------------------------------------------------------------------------------------------
     resetAuxOriginalInitial = (newAuxOriginalInitial, newAuxOriginalInitialIndex) => (this._ismounted) ? this.setState(state => ({
         ...state, 
         auxOriginalInitial: newAuxOriginalInitial, 
         auxOriginalInitialIndex: newAuxOriginalInitialIndex
     })) : null
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Set index and updates the array of `auxOriginalInitial`. The index holds an interger 
      * that representes to what index we want to go back to when we leave this conected form.
@@ -139,7 +146,7 @@ class Formulary extends React.Component {
         auxOriginalInitialIndex: state.auxOriginalInitialIndex + 1,
         auxOriginalInitial: state.auxOriginalInitial.concat(this.deepCopyFormularyData(this.state.buildData, this.state.filled, true, true))
     })) : null
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Goes to editing mode only, nothing much. When we go back from the editing mode we load the formulary again.
      */
@@ -159,7 +166,7 @@ class Formulary extends React.Component {
             }
         })
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * When the user saves an attachment we automatically upload it to the drafts and send the recieved draft string id back to the 
      * attachment field component.
@@ -185,7 +192,7 @@ class Formulary extends React.Component {
         }
         return draftStringId
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Handy function to make a deepCopy of the formulary data, we use this for going forward and going back
      * the list of connected formularies.
@@ -205,14 +212,14 @@ class Formulary extends React.Component {
             }
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * When the user clicks to create a pdf template.
      */
     onClickPDFTemplates = () => {
         Router.push(paths.pdfTemplates().asUrl, paths.pdfTemplates(this.props.formName, this.props.formularyId).asUrl, { shallow: true })
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Submits the formulary, might be really straight forward. It's only important to understand that
      * when we save and have any `auxOriginalInitial` we go back to the previous formulary.
@@ -242,7 +249,7 @@ class Formulary extends React.Component {
             })
         }
     }
-    
+    // ------------------------------------------------------------------------------------------
     /**
      * Full reset of the formulary is reset the errors and set `buildData` and `filled` with new data. 
      * That's it. super simple, but we do this all in one go.
@@ -270,7 +277,7 @@ class Formulary extends React.Component {
             buildData
         )
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * When we are in a connected formulary we load it directly on the form we are working on. On the exact same component.
      * Because of this we actually need to save the reference from the data we are working on. We save it in a list so the user can walk
@@ -292,7 +299,7 @@ class Formulary extends React.Component {
         
         this.resetAuxOriginalInitial(auxOriginalInitialCopy, this.state.auxOriginalInitialIndex-1)
     }
-
+    // ------------------------------------------------------------------------------------------
     /** 
      * Retrieves the data to build the formulary and adds a websocket so we can subscribe to changes in the formulary and retrive the changes.
      * 
@@ -328,7 +335,7 @@ class Formulary extends React.Component {
         }
         return formularyBuildData
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * This function is responsible to load the formulary data inside of the formulary, sometimes you can load the data externally, usually when displaying
      * as a preview or some sort.
@@ -357,7 +364,7 @@ class Formulary extends React.Component {
             })
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * When the user clicks "add new" or "edit" on the connection field, a new form is loaded in this component without losing 
      * the data of the previous form component loaded. For this to work we save the current data of the form he is in a list. So 
@@ -367,7 +374,7 @@ class Formulary extends React.Component {
         this.setAuxOriginalInitial()
         this.onLoadFormulary(formName, formId)
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Removes the drafts when we are closing or unmouting the formulary
      */
@@ -378,7 +385,7 @@ class Formulary extends React.Component {
         }
         this.draftFiles = {}
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Handy function just used for rendering stuff in the big green button of the page.
      */
@@ -392,21 +399,22 @@ class Formulary extends React.Component {
             return strings['pt-br']['formularyOpenButtonLabel']
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     showToEdit = () => {
         // we can only edit the form if the form you are in is not an embbeded or in preview, 
         // and if it is not a connected formulary.
         return this.state.buildData && this.state.buildData.group_id && this.state.buildData.id &&
                !this.isInConnectedFormulary() && isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user)
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * This function is used to tell us if we are in a connected formulary.
      */
     isInConnectedFormulary = () => {
         return this.state.auxOriginalInitialIndex !== -1 && this.props.type === 'full'
     }
-
+    // ------------------------------------------------------------------------------------------
+    /////////////////////////////////////////////////////////////////////////////////////////////
     componentDidMount = () => {
         this.source = this.CancelToken.source()
         this._ismounted = true
@@ -415,8 +423,7 @@ class Formulary extends React.Component {
             window.addEventListener('beforeunload', this.onRemoveDraft)
         }
     }
-
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     componentWillUnmount = () => {
         this._ismounted = false
         if (this.source) {
@@ -428,8 +435,7 @@ class Formulary extends React.Component {
             window.removeEventListener('beforeunload', this.onRemoveDraft)
         }
     }
-
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     componentDidUpdate = (oldProps) => {
         const formularyIsClosing = oldProps.formulary.isOpen !== this.props.formulary.isOpen && oldProps.formulary.isOpen
 
@@ -491,13 +497,14 @@ class Formulary extends React.Component {
             }
         }
     }
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //########################################################################################//
     renderMobile = () => {
         return (
             <View></View>
         )
     }
-
+    //########################################################################################//
     renderWeb = () => {
         const sections = (this.state.buildData && this.state.buildData.depends_on_form) ? this.state.buildData.depends_on_form : []
         return (
@@ -587,7 +594,7 @@ class Formulary extends React.Component {
             </Formularies.Container>
         )
     }
-
+    //########################################################################################//
     render = () => {
         return process.env['APP'] === 'web' ? this.renderWeb() : this.renderMobile()
     }

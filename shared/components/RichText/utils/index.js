@@ -4,7 +4,7 @@ import {
     setCaretPositionIfArrowNavigationWeb 
 } from './handleArrowNavigation'
 
-
+// ------------------------------------------------------------------------------------------
  /**
  * WORKS ONLY FOR WEB
  * - We check if the browser has support for both getSelection and createRange (only IE9 does not support these)
@@ -72,7 +72,7 @@ const setCaretPositionWeb = (inputElement, arrowNavigation, isFocus, startConten
         selection.addRange(range)
     }
 }
-
+// ------------------------------------------------------------------------------------------
 /**
  * WORKS ONLY ON WEB 
  * 
@@ -128,7 +128,7 @@ const getSelectionSelectCursorPositionWeb = (element) => {
         }
     }
 }
-
+// ------------------------------------------------------------------------------------------
 export {
     getCaretCoordinatesWeb,
     caretIsInHighestOrLowestPositionWeb,

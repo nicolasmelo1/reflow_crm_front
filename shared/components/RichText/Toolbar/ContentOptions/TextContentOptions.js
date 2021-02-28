@@ -89,7 +89,7 @@ const TextContentOptions = (props) => {
         '#579cfc50',
         '#66ccff50'
     ]
-    
+    // ------------------------------------------------------------------------------------------
     /**
      * This sets that the TextColor selection is open so the user can select the new color of the text.
      * 
@@ -106,7 +106,7 @@ const TextContentOptions = (props) => {
             }
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * This sets if the marker color options container is open or closed. If it's closed the user is not able to 
      * select colors on the rich text.
@@ -121,7 +121,7 @@ const TextContentOptions = (props) => {
             setIsMarkerColorOptionOpen(isOpen)
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * The maximum text size of the text is 400 pt. This function is fired when the user clicks the plus(+) icon
      * in to set the size of the text.
@@ -131,7 +131,7 @@ const TextContentOptions = (props) => {
             props.onChangeSelectionState('textSize', null, '', parseInt(props.stateOfSelection.textSize) + 1)
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * The maximum text size of the text is 1 pt. This function is fired when the user clicks the minus(-) icon
      * in to set the size of the text.
@@ -141,14 +141,14 @@ const TextContentOptions = (props) => {
             props.onChangeSelectionState('textSize', null, '', parseInt(props.stateOfSelection.textSize) - 1)
         }
     }
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         isMounted.current = true
         return () => {
             isMounted.current = false
         }
     }, [])
-
+    //########################################################################################//
     const renderMobile = () => {
         return (
             <View style={{flexDirection: 'row'}}>
@@ -253,7 +253,7 @@ const TextContentOptions = (props) => {
             </View>
         )
     }
-
+    //########################################################################################//
     const renderWeb = () => {
         return (
             <div>
@@ -372,9 +372,9 @@ const TextContentOptions = (props) => {
                     ) : ''}
                 </TextContentOptionMarkerColorContainer>
             </div>
-    )
+        )
     }
-
+    //########################################################################################//
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 
