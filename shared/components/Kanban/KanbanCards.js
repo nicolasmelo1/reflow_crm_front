@@ -7,6 +7,7 @@ import {
     KanbanCardMoveIcon,
     KanbanLoadMoreDataButton
 } from '../../styles/Kanban'
+import Overlay from '../../styles/Overlay'
 import { strings } from '../../utils/constants'
 import dynamicImport from '../../utils/dynamicImport'
 
@@ -183,9 +184,11 @@ const KanbanCards = (props) => {
                                             {props.defaultKanbanCard.kanbanCardFields.map((cardField, cardFieldIndex) => (
                                                 <div key={cardFieldIndex}>
                                                     {card.dynamic_form_value.filter(value=> value.field_id === cardField.field.id).map((field, fieldIndex) => (
-                                                        <KanbanCardContents key={fieldIndex} isTitle={cardFieldIndex===0}>
-                                                            {field.value}
-                                                        </KanbanCardContents>
+                                                        <Overlay key={fieldIndex} text={cardField.field.label_name}>
+                                                            <KanbanCardContents isTitle={cardFieldIndex===0}>
+                                                                {field.value}
+                                                            </KanbanCardContents>
+                                                        </Overlay>
                                                     ))} 
                                                 </div>
                                             ))}

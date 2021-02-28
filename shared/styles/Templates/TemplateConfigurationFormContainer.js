@@ -16,6 +16,18 @@ styled.div`
     transition: bottom 0.3s ease-in-out, padding 0.3s ease-in-out;
     transform: translate3d(0,0,0);
     overflow: auto;
+
+    &::-webkit-scrollbar-thumb {
+        background: #bfbfbf;
+        border-radius: 5px;
+    }
+
+    &::-webkit-scrollbar {
+        -webkit-appearance: none;
+        width: 8px;
+        height: 8px;
+        background-color: transparent;
+    }
 `
 :
 styled(SafeAreaView)`

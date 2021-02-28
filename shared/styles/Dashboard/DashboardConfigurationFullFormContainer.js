@@ -14,6 +14,18 @@ styled.div`
     transition: bottom 0.3s ease-in-out, padding 0.3s ease-in-out;
     z-index: 20;
 
+    &::-webkit-scrollbar-thumb {
+        background: #bfbfbf;
+        border-radius: 5px;
+    }
+
+    &::-webkit-scrollbar {
+        -webkit-appearance: none;
+        width: 8px;
+        height: 8px;
+        background-color: transparent;
+    }
+    
     @media(max-width: 640px) {
         overflow: auto;
     }

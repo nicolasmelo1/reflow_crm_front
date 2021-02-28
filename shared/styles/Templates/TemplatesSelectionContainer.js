@@ -8,6 +8,18 @@ styled.div`
     padding: 10px;
     overflow-y: auto;
 
+    &::-webkit-scrollbar-thumb {
+        background: #bfbfbf;
+        border-radius: 5px;
+    }
+
+    &::-webkit-scrollbar {
+        -webkit-appearance: none;
+        width: 8px;
+        height: 8px;
+        background-color: transparent;
+    }
+    
     @media(max-width: 492px) {
         max-height: calc(var(--app-height) - 207px)
     }

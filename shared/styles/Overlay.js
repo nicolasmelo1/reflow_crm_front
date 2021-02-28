@@ -12,9 +12,9 @@ const Tooltip = dynamicImport('react-bootstrap', 'Tooltip')
 const Overlay = (props) => {
     return (
         <OverlayTrigger 
-        trigger={['hover', 'focus']} 
+        trigger={['hover', 'hover']} 
         placement="bottom" 
-        delay={{ show: props.delay ? props.delay : 250, hide: props.delay ? props.delay : 250 }} 
+        delay={{ show: props.delay ? props.delay : 250, hide: props.delay ? props.delay : 100 }} 
         overlay={<Tooltip>{props.text}</Tooltip>}  
         popperConfig={{
             modifiers: [

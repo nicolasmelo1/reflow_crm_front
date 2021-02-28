@@ -5,7 +5,19 @@ import { View } from 'react-native'
 export default process.env['APP'] === 'web' ?
 styled.div`
     overflow-y: auto;
-    height: calc(var(--app-height) - 140px)
+    height: calc(var(--app-height) - 140px);
+
+    &::-webkit-scrollbar-thumb {
+        background: #bfbfbf;
+        border-radius: 5px;
+    }
+
+    &::-webkit-scrollbar {
+        -webkit-appearance: none;
+        width: 8px;
+        height: 8px;
+        background-color: transparent;
+    }
 `
 :
 styled(View)``

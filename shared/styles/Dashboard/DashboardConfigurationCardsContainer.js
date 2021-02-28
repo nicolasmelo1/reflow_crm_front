@@ -20,6 +20,18 @@ styled.div`
         justify-content: center;
         align-items: center;
         height: calc(var(--app-height) - 240px);
+    };
+
+    &::-webkit-scrollbar-thumb {
+        background: #bfbfbf;
+        border-radius: 5px;
+    }
+
+    &::-webkit-scrollbar {
+        -webkit-appearance: none;
+        width: 8px;
+        height: 8px;
+        background-color: transparent;
     }
 `
 :

@@ -27,4 +27,4 @@ export { default as KanbanFilterButton } from './KanbanFilterButton'
 export { default as KanbanFilterContainer } from './KanbanFilterContainer'
 export { default as KanbanFilterHolder } from './KanbanFilterHolder'
 export { default as KanbanFilterIcon } from './KanbanFilterIcon'
-
+export { default as KanbanContainer } from './KanbanContainer'

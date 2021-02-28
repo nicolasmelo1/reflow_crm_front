@@ -7,6 +7,18 @@ styled.div`
     width: 100%;
     height: calc(var(--app-height) - 50px);
     overflow: auto;
+
+    &::-webkit-scrollbar-thumb {
+        background: #bfbfbf;
+        border-radius: 5px;
+    }
+
+    &::-webkit-scrollbar {
+        -webkit-appearance: none;
+        width: 8px;
+        height: 8px;
+        background-color: transparent;
+    }
 `
 :
 styled(ScrollView)`

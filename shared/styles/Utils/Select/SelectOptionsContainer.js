@@ -9,6 +9,18 @@ styled(React.forwardRef(({optionBackgroundColor, maximumHeight, optionColor, ...
     color: ${props => props.optionColor ? props.optionColor: '#f2f2f2'};
     overflow-y: auto;
     
+    &::-webkit-scrollbar-thumb {
+        background: #bfbfbf;
+        border-radius: 5px;
+    }
+
+    &::-webkit-scrollbar {
+        -webkit-appearance: none;
+        width: 8px;
+        height: 8px;
+        background-color: transparent;
+    }
+    
     @media(max-width: 420px) {
         height: 100vh;
         float: bottom;

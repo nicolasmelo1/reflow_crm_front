@@ -8,6 +8,7 @@ import agent from '../../utils/agent'
 import generateUUID from '../../utils/generateUUID'
 import { strings } from '../../utils/constants'
 import Alert from '../Utils/Alert'
+import Overlay from '../../styles/Overlay'
 import { 
     KanbanDimensionTitleLabel,
     KanbanDimensionTitleContainer, 
@@ -344,7 +345,7 @@ const KanbanDimension = (props) => {
                 onAcceptButtonLabel={strings['pt-br']['kanbanRemoveDimensionAlertAcceptButton']}
                 />
                 <table style={{ transform: props.isAlertShown ? 'none': 'rotateX(180deg)'}}>
-                        <tbody>
+                    <tbody>
                         <tr>
                             {props.dimensionPhases.map((dimensionOrder, index) => (
                                 <td key={index}
@@ -373,17 +374,21 @@ const KanbanDimension = (props) => {
                                             onChange={(e) => onChangePhaseName(index, e.target.value)}
                                             />
                                         ) : (
-                                            <KanbanCollapseDimensionButton
-                                            isCollapsed={props.collapsedDimensions.includes(dimensionOrder.id)} 
-                                            onClick={(e) => onCollapsePhase(dimensionOrder.id)}
-                                            >
-                                                <KanbanDimensionTitleLabel
-                                                isCollapsed={props.collapsedDimensions.includes(dimensionOrder.id)}
-                                                isNullId={dimensionOrder.id === null}
+                                            <Overlay text={props.collapsedDimensions.includes(dimensionOrder.id) ? 
+                                                strings['pt-br']['kanbanOverlayCollapseDimensionShowColumnText'] : 
+                                                strings['pt-br']['kanbanOverlayCollapseDimensionHideColumnText']}>
+                                                <KanbanCollapseDimensionButton
+                                                isCollapsed={props.collapsedDimensions.includes(dimensionOrder.id)} 
+                                                onClick={(e) => onCollapsePhase(dimensionOrder.id)}
                                                 >
-                                                    {dimensionOrder.option}
-                                                </KanbanDimensionTitleLabel>
-                                            </KanbanCollapseDimensionButton>
+                                                    <KanbanDimensionTitleLabel
+                                                    isCollapsed={props.collapsedDimensions.includes(dimensionOrder.id)}
+                                                    isNullId={dimensionOrder.id === null}
+                                                    >
+                                                        {dimensionOrder.option}
+                                                    </KanbanDimensionTitleLabel>
+                                                </KanbanCollapseDimensionButton>
+                                            </Overlay>
                                         )}
                                         {isAdmin(props?.types?.defaults?.profile_type, props?.user) && !props.collapsedDimensions.includes(dimensionOrder.id) ? (
                                             <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
@@ -396,10 +401,16 @@ const KanbanDimension = (props) => {
                                                         setDimensionIndexToRemove(index)
                                                     }}/>
                                                 ) : ''}
-                                                <KanbanDimensionEditIcon 
-                                                icon={isEditingDimensionIndex === index ? 'check' : 'pencil-alt'} 
-                                                onClick={e => onToggleEditMode(isEditingDimensionIndex === index ? null : index)}
-                                                />
+                                                <Overlay text={isEditingDimensionIndex === index ? 
+                                                    strings['pt-br']['kanbanOverlayDimensionPhaseConfirmEditionButtonText'] : 
+                                                    strings['pt-br']['kanbanOverlayDimensionPhaseEditButtonText']
+                                                }>
+                                                    <KanbanDimensionEditIcon 
+                                                    isEditing={isEditingDimensionIndex === index}
+                                                    icon={isEditingDimensionIndex === index ? 'check' : 'pencil-alt'} 
+                                                    onClick={e => onToggleEditMode(isEditingDimensionIndex === index ? null : index)}
+                                                    />
+                                                </Overlay>  
                                                 <div 
                                                 draggable="true" 
                                                 onDrag={e=>{
@@ -412,7 +423,9 @@ const KanbanDimension = (props) => {
                                                     e.stopPropagation()
                                                     cleanDimensionColors(e.currentTarget, false)
                                                 }} >
-                                                    <KanbanDimensionMoveIcon icon="bars"/>
+                                                    <Overlay text={strings['pt-br']['kanbanOverlayDimensionPhaseMoveButtonText']}>
+                                                        <KanbanDimensionMoveIcon icon="bars"/>
+                                                    </Overlay>  
                                                 </div>
                                             </div>
                                         ) : ''}

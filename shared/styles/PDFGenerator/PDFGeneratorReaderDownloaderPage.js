@@ -11,6 +11,18 @@ styled.div`
     background-color: #fff;
     margin: auto;
     overflow: auto;
+
+    &::-webkit-scrollbar-thumb {
+        background: #bfbfbf;
+        border-radius: 5px;
+    }
+
+    &::-webkit-scrollbar {
+        -webkit-appearance: none;
+        width: 8px;
+        height: 8px;
+        background-color: transparent;
+    }
 `
 :
 styled(View)``

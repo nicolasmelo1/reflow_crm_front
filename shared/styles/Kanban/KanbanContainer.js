@@ -1,12 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
-import { ScrollView } from 'react-native'
+import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
-    overflow-x: auto;
-    white-space: nowrap;
-    max-width: calc(var(--app-width) - 20px);
+    overflow-x: auto; 
+    transform: ${props => props.isAlertShown ? 'none': 'rotateX(180deg)'};
 
     &::-webkit-scrollbar-thumb {
         background: #bfbfbf;
@@ -21,7 +20,4 @@ styled.div`
     }
 `
 :
-styled(ScrollView)`
-    flex-direction: row;
-    margin: 0 10px;
-`
+styled(View)``

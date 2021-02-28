@@ -6,7 +6,19 @@ export default process.env['APP'] === 'web' ?
 styled.table`
     width: 100%;
     overflow: auto;
-    max-height: calc(var(--app-height) - 120px)
+    max-height: calc(var(--app-height) - 120px);
+
+    &::-webkit-scrollbar-thumb {
+        background: #bfbfbf;
+        border-radius: 5px;
+    }
+
+    &::-webkit-scrollbar {
+        -webkit-appearance: none;
+        width: 8px;
+        height: 8px;
+        background-color: transparent;
+    }
 `
 :
 styled(View)`

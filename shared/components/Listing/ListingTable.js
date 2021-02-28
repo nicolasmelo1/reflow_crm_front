@@ -4,6 +4,7 @@ import ListingTableHeader from './ListingTableHeader'
 import mobilecheck from '../../utils/mobilecheck'
 import dynamicImport from '../../utils/dynamicImport'
 import { 
+    ListingScrollWrapper,
     ListingTableContainer, 
     ListingTableLoaderContainer 
 } from '../../styles/Listing'
@@ -90,12 +91,12 @@ const ListingTable = (props) => {
     return (
         <div>
             {!isMobile ? (
-                <div style={{ width: '99%', overflowY: 'hidden', overflowX: 'scroll', height:'20px' }} 
+                <ListingScrollWrapper
                 ref={scrollWrapperRef} 
                 onScroll={(e) => onScrollerScroll(e.target)}
                 >
                     <div style={{ height:'20px'}} ref={scrollRef}></div>
-                </div>
+                </ListingScrollWrapper>
             ): ''}
             <ListingTableContainer ref={tableRef} onScroll={(e) => onScrollTable(e.target)} isMobile={isMobile}>
                 <Table>

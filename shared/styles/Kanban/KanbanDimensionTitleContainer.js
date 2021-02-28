@@ -14,9 +14,17 @@ styled.div`
         border-radius: 20px;
         background-color: #f2f2f250;
         height: calc(var(--app-height) - 254px);
-
+        
         &:hover {
             background-color: #f2f2f2;
+        }
+
+        @media(min-width: 641px) {
+            height: calc(var(--app-height) - 280px);
+        }
+
+        @media(max-width: 640px) {
+            height: calc(var(--app-height) - 320px);
         }
     ` : ''}
 `

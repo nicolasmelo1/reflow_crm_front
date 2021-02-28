@@ -16,6 +16,18 @@ styled(({sidebarIsOpen, ...rest}) => <nav {...rest}/>)`
     transition: width 0.3s ease-in-out;
     box-shadow: 0 4px 20px 0 #17242D;
 
+    &::-webkit-scrollbar-thumb {
+        background: #bfbfbf;
+        border-radius: 5px;
+    }
+
+    &::-webkit-scrollbar {
+        -webkit-appearance: none;
+        width: 8px;
+        height: 8px;
+        background-color: transparent;
+    }
+    
     @media(max-width: 420px) {
         z-index: 4;
     }
