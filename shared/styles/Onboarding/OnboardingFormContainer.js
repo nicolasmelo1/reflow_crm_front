@@ -14,6 +14,9 @@ styled.div`
     max-height: calc(var(--app-height) - 30px);
     overflow: auto;
 
+    scrollbar-color: #bfbfbf transparent;
+    scrollbar-width: thin;
+    
     &::-webkit-scrollbar-thumb {
         background: #bfbfbf;
         border-radius: 5px;

@@ -185,7 +185,9 @@ const KanbanTable = (props) => {
         if (props.defaultDimension.id) {
             const scrollPosition = (savedScrollPosition.formName === props.formName) ? savedScrollPosition.scrollPosition : kanbanHolderRef.current.scrollLeft
             props.onGetCollapsedDimensionPhases(dataSource.current, props.formName, props.defaultDimension.id).then(collapsedDimensionIds => {
-                setShownDimensions(collapsedDimensionIds, props.dimensionPhases, scrollPosition, kanbanHolderRef.current.offsetWidth)
+                if (isMountedRef.current && kanbanHolderRef.current) {
+                    setShownDimensions(collapsedDimensionIds, props.dimensionPhases, scrollPosition, kanbanHolderRef.current.offsetWidth)
+                }
             })
         }
     }, [props.dimensionPhases])

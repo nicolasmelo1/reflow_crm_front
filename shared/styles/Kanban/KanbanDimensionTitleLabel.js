@@ -8,6 +8,7 @@ styled.p`
     color: ${props => props.isCollapsed || props.isNullId ? '#bfbfbf': '#17242D'};
     font-weight: ${props => props.isCollapsed ? 'normal' : 'bold'};
     width: ${props => props.isCollapsed ? '40px' : '100%'}; 
+    height: ${props => props.isCollapsed ? '40px' : '100%'}; 
     text-align: ${props => props.isCollapsed ? 'right': 'left'}; 
     transform: ${props => props.isCollapsed ? 'rotate(-90deg)': 'none'};
     direction: ${props => props.isCollapsed ? 'rtl': 'unset'};

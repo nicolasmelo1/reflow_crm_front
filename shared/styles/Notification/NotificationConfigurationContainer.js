@@ -32,6 +32,9 @@ styled.div`
     overflow-y: auto;
     height: calc(var(--app-height) - 112px);
 
+    scrollbar-color: #bfbfbf transparent;
+    scrollbar-width: thin;
+    
     &::-webkit-scrollbar-thumb {
         background: #bfbfbf;
         border-radius: 5px;

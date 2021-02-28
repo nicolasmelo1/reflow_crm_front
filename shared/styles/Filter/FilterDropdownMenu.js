@@ -10,6 +10,9 @@ styled(Dropdown.Menu)`
     overflow-y: auto;
     max-height: calc(calc(var(--app-height) - 50px) / 2);
 
+    scrollbar-color: #bfbfbf transparent;
+    scrollbar-width: thin;
+    
     &::-webkit-scrollbar-thumb {
         background: #bfbfbf;
         border-radius: 5px;

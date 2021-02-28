@@ -8,6 +8,9 @@ styled.div`
     margin-bottom: 20px;
     overflow: auto; 
     
+    scrollbar-color: #bfbfbf transparent;
+    scrollbar-width: thin;
+    
     &::-webkit-scrollbar-thumb {
         background: #bfbfbf;
         border-radius: 5px;

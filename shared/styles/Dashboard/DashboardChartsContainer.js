@@ -9,6 +9,9 @@ styled.div`
     position: relative;
     width: calc(var(--app-width) - 40px);
 
+    scrollbar-color: #bfbfbf transparent;
+    scrollbar-width: thin;
+    
     &::-webkit-scrollbar-thumb {
         background: #bfbfbf;
         border-radius: 5px;

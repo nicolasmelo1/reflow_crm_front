@@ -44,6 +44,7 @@ class Socket {
      */
     setSocketHost = (socketHost) => {
         if (socketHost !== this.socketHost && this.registeredSocket !== null) {
+            this.registeredSocket.close()
             this.reconnect()
         } 
         this.socketHost = socketHost
@@ -79,7 +80,6 @@ class Socket {
      */
     onRecieve() {
         this.getUrl()
-
         if (this.registeredSocket !== null) {
             this.registeredSocket.onmessage = (e) => {
                 [...Object.values(this.callbacks)].forEach(({ callback, argument }) => {
