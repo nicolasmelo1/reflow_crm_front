@@ -13,6 +13,18 @@ styled.div`
     transition: opacity 1s ease-in-out; 
     max-height: calc(var(--app-height) - 30px);
     overflow: auto;
+
+    &::-webkit-scrollbar-thumb {
+        background: #bfbfbf;
+        border-radius: 5px;
+    }
+
+    &::-webkit-scrollbar {
+        -webkit-appearance: none;
+        width: 8px;
+        height: 8px;
+        background-color: transparent;
+    }
 `
 :
 styled(ScrollView)`

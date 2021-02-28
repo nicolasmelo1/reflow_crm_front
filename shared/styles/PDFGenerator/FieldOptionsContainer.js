@@ -24,6 +24,18 @@ styled.div`
     border-radius: 5px;
     height: 400px;
     z-index: 5;
+
+    &::-webkit-scrollbar-thumb {
+        background: #bfbfbf;
+        border-radius: 5px;
+    }
+
+    &::-webkit-scrollbar {
+        -webkit-appearance: none;
+        width: 8px;
+        height: 8px;
+        background-color: transparent;
+    }
 `
 :
 styled(ScrollView)`

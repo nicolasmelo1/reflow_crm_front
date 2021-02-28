@@ -8,6 +8,18 @@ styled.div`
     margin-bottom: 20px;
     overflow: auto; 
     
+    &::-webkit-scrollbar-thumb {
+        background: #bfbfbf;
+        border-radius: 5px;
+    }
+
+    &::-webkit-scrollbar {
+        -webkit-appearance: none;
+        width: 8px;
+        height: 8px;
+        background-color: transparent;
+    }
+    
     &:last-child {
         margin-bottom: 110px
     }

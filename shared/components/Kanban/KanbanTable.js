@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { View } from 'react-native'
 import KanbanDimension from './KanbanDimension'
 import deepCopy from '../../utils/deepCopy'
-
+import {
+    KanbanContainer
+} from '../../styles/Kanban'
 
 let savedScrollPosition = {
     formName: '',
@@ -227,14 +229,14 @@ const KanbanTable = (props) => {
 
     const renderWeb = () => {
         return (
-            <div 
+            <KanbanContainer 
             ref={kanbanHolderRef} 
             onDragOver={e=> {
                 e.preventDefault()
                 onDragOverAutomaticScroll(e.clientX)
             }}
             onScroll={(e) => onScrollHorizontalKanban(e.target.scrollLeft, e.target.offsetWidth)}
-            style={{overflowX: 'auto', transform: isAlertShown ? 'none': 'rotateX(180deg)'}}
+            isAlertShown={isAlertShown}
             >
                 {props.defaultKanbanCard.id !== null && props.defaultDimension.id !== null ? (
                         <KanbanDimension
@@ -262,7 +264,7 @@ const KanbanTable = (props) => {
                         data={props.data}
                         />
                 ) : ''}
-            </div>
+            </KanbanContainer>
         )   
     }
 

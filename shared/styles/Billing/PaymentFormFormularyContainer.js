@@ -11,6 +11,18 @@ styled.div`
     background-color: #fff;
     padding: 10px;
     height: calc(var(--app-height) - 200px);
+
+    &::-webkit-scrollbar-thumb {
+        background: #bfbfbf;
+        border-radius: 5px;
+    }
+
+    &::-webkit-scrollbar {
+        -webkit-appearance: none;
+        width: 8px;
+        height: 8px;
+        background-color: transparent;
+    }
 `
 :
 styled(View)``

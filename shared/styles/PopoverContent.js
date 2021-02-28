@@ -8,7 +8,19 @@ const Popover = dynamicImport('react-bootstrap', 'Popover')
 export default process.env['APP'] === 'web' && Popover ?
 styled(Popover.Content)`
     overflow: auto;
-    max-height: calc(var(--app-height) - 50px)
+    max-height: calc(var(--app-height) - 50px);
+
+    &::-webkit-scrollbar-thumb {
+        background: #bfbfbf;
+        border-radius: 5px;
+    }
+
+    &::-webkit-scrollbar {
+        -webkit-appearance: none;
+        width: 8px;
+        height: 8px;
+        background-color: transparent;
+    }
 `
 :
 styled(View)``

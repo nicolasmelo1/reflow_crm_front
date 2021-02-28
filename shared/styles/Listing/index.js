@@ -24,3 +24,4 @@ export { default as ListingExtractUpdateDateInput } from './ListingExtractUpdate
 export { default as ListingExtractUpdateDateTitle } from './ListingExtractUpdateDateTitle'
 export { default as ListingExtractUpdateDateContainer } from './ListingExtractUpdateDateContainer'
 export { default as ListingButtonsContainer } from './ListingButtonsContainer'
+export { default as ListingScrollWrapper } from './ListingScrollWrapper'

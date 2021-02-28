@@ -11,7 +11,19 @@ styled.div`
     overflow: auto;
     padding: 5px;
     position: absolute;
-    width: calc(100% - 20px)
+    width: calc(100% - 20px);
+
+    &::-webkit-scrollbar-thumb {
+        background: #bfbfbf;
+        border-radius: 5px;
+    }
+
+    &::-webkit-scrollbar {
+        -webkit-appearance: none;
+        width: 8px;
+        height: 8px;
+        background-color: transparent;
+    }
 `
 :
 styled(View)``

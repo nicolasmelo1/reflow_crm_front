@@ -16,6 +16,18 @@ styled.div`
     margin-left: auto;
     margin-right: auto;
 
+    &::-webkit-scrollbar-thumb {
+        background: #bfbfbf;
+        border-radius: 5px;
+    }
+
+    &::-webkit-scrollbar {
+        -webkit-appearance: none;
+        width: 8px;
+        height: 8px;
+        background-color: transparent;
+    }
+    
     @media(min-width: 564px) {
         width: 462px;
     }

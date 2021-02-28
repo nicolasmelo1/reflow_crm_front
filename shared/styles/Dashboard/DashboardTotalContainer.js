@@ -10,6 +10,18 @@ styled.div`
     border-bottom: 1px solid #bfbfbf;
     border-top: 1px solid #bfbfbf;
     padding: 10px;
+
+    &::-webkit-scrollbar-thumb {
+        background: #bfbfbf;
+        border-radius: 5px;
+    }
+
+    &::-webkit-scrollbar {
+        -webkit-appearance: none;
+        width: 8px;
+        height: 8px;
+        background-color: transparent;
+    }
 `
 :
 styled(View)`

@@ -6,6 +6,18 @@ export default process.env['APP'] === 'web' ?
 styled.div`
     overflow-y: auto;
 
+    &::-webkit-scrollbar-thumb {
+        background: #bfbfbf;
+        border-radius: 5px;
+    }
+
+    &::-webkit-scrollbar {
+        -webkit-appearance: none;
+        width: 8px;
+        height: 8px;
+        background-color: transparent;
+    }
+    
     @media(min-width: 900px) {
         max-height: calc(var(--app-height) - 105px);
     }

@@ -18,6 +18,18 @@ styled(Dropdown.Menu)`
     @media(min-width: 640px) {
         max-height: calc(var(--app-height) - 191px);
     };
+
+    &::-webkit-scrollbar-thumb {
+        background: #bfbfbf;
+        border-radius: 5px;
+    }
+
+    &::-webkit-scrollbar {
+        -webkit-appearance: none;
+        width: 8px;
+        height: 8px;
+        background-color: transparent;
+    }
 `
 :
 styled(View)``
