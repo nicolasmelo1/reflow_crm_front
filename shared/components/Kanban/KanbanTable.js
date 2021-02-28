@@ -21,10 +21,16 @@ let savedScrollPosition = {
  * @param {Array<Object>} dimensionPhases - The dimension orders loaded on the redux state, this dimension order
  * holds only the order of each dimension.
  * @param {Interger} defaultDimensionId - The id of the selected dimension.
- * @param {Object} card - the selected card, we use this to get the card fields, this way we can set the titles
- * and the fields data in the card.
  * @param {Array<Object>} data - this is a array with all of the data, this data is used to populate the kanban 
- * cards.
+ * cards. It looks something like:
+ * [{
+ *      dimension: 'dimensionPhase1',
+ *      pagination: {
+ *          current: 1,
+ *          total: 2
+ *      },
+ *      data: [... objects of each kanban data on this phase]
+ * }]
  * @param {Function} onMoveKanbanCardBetweenDimensions - this function is an action used to change the card status,
  * between dimension columns.
  * @param {Function} setFormularyDefaultData - the function to define a default data when the user changes 
