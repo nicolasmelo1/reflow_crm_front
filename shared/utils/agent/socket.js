@@ -1,4 +1,4 @@
-import { API_ROOT, getToken } from './utils'
+import { API_ROOT, getToken, publicAccessKey } from './utils'
 
 /**
  * This function works like a singleton for the websocket, you can have just ONE websocket running 
@@ -58,8 +58,10 @@ class Socket {
      */
     async getUrl() {
         this.accessToken = await getToken()
-        if (this.accessToken && this.accessToken !== '') {
-            this.setSocketHost(this.domain + `websocket/?token=${this.accessToken}`)
+        if (publicAccessKey !== null) {
+            this.setSocketHost(this.domain + `websocket/public/?public_key=${publicAccessKey}`)
+        } else if (this.accessToken && this.accessToken !== '') {
+            this.setSocketHost(this.domain + `websocket/user/?token=${this.accessToken}`)
         } else {
             this.setSocketHost('')
         }
@@ -133,25 +135,27 @@ class Socket {
      * try.
      */
     async reconnect() {
-        await this.getUrl()
-        this.registeredSocket = new WebSocket(this.socketHost)
+        if (this.socketHost !== '') {
+            await this.getUrl()
+            this.registeredSocket = new WebSocket(this.socketHost)
 
-        setTimeout(() => {
-            if (this.registeredSocket.readyState !== 1) {
-                if (process.env.NODE_ENV !== 'production') console.log('Could not connect to server, trying again...')
-                this.registeredSocket.close()
-                this.reconnect()
-            } else {
-                if (process.env.NODE_ENV !== 'production') console.log('Reconnected.')
-                this.onClose()
-                this.onRecieve()
-                this.appStateChanged()
-            }
-        }, 10000);
+            setTimeout(() => {
+                if (this.registeredSocket.readyState !== 1) {
+                    if (process.env.NODE_ENV !== 'production') console.log('Could not connect to server, trying again...')
+                    this.registeredSocket.close()
+                    this.reconnect()
+                } else {
+                    if (process.env.NODE_ENV !== 'production') console.log('Reconnected.')
+                    this.onClose()
+                    this.onRecieve()
+                    this.appStateChanged()
+                }
+            }, 10000);
+        }
     }
 
     async connect() {
-        if (this.registeredSocket === null) {
+        if (this.registeredSocket === null && this.socketHost !== '') {
             await this.getUrl()
             this.registeredSocket = new WebSocket(this.socketHost)
             this.onClose()

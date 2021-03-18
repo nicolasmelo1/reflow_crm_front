@@ -4,7 +4,10 @@ import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
-    border-top: 2px solid #bfbfbf;
+    ${props => props.isEditing ? `
+        border-left: 5px solid #17242D;
+    `: ''}
+    border-bottom: 1px dashed #bfbfbf;
     padding: 5px
 `
 :

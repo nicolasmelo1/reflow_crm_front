@@ -4,7 +4,9 @@
   "description": "A minimal Electron application",
   "main": "main.js",
   "scripts": {
-    "dev": "concurrently --kill-others \"npm run dev --prefix ../web\" \"electron .\""
+    "dev": "concurrently --kill-others \"npm run dev --prefix ../web\" \"electron .\"",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "repository": "https://github.com/electron/electron-quick-start",
   "keywords": [
@@ -20,6 +22,13 @@
     "electron": "^8.2.4"
   },
   "dependencies": {
-    "concurrently": "^5.2.0"
+    "concurrently": "^5.2.0",
+    "electron-builder": "^22.10.5"
+  },
+  "build": {
+    "appId": "br.com.reflow.app",
+    "mac": {
+      "category": "your.app.category.type"
+    }
   }
 }

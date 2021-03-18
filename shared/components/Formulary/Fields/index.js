@@ -197,7 +197,11 @@ const Fields = (props) => {
 
     const renderWeb = () => {
         return (
-            <Field.Container ref={fieldContainerRef} invalid={checkErrors()}>
+            <Field.Container ref={fieldContainerRef} 
+            invalid={checkErrors()} 
+            labelIsHidden={props.field.label_is_hidden} 
+            fieldIsHidden={props.field.field_is_hidden}
+            >
                 <div>
                     {(props.field.label_is_hidden) ? '' : (
                         <Field.FieldTitle.Label>

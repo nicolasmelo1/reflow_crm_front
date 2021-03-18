@@ -1,3 +1,5 @@
+import { companyId } from '../agent/utils'
+
 
 /**
  * Since usually paths to navigate to are constants we define them here.
@@ -184,7 +186,21 @@ const paths = {
                 nested: {}
             }
         }
-    }
+    },
+    publicFormulary(form) {
+        return { 
+            asUrl: form && companyId ? `/public/form/${companyId}/${form}` : `/public/form/[companyId]/[form]`,
+            adminOnly: false,
+            webOnly: false,
+            loginOnly: false,
+            asReactNavigationPath: {
+                root: 'public',
+                nested: {
+                    screen: 'form'
+                }
+            }
+        }
+    },
 }
 
 const pathsAsArray = Object.getOwnPropertyNames(paths).map(functionName => paths[functionName]())

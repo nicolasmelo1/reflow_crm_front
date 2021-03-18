@@ -1,5 +1,13 @@
 import axios from 'axios'
-import { getToken, setHeader, API_ROOT, logoutFunctionForView, setStorageToken, permissionsHandlerForView } from './utils'
+import { 
+    publicAccessKey,
+    getToken, 
+    setHeader, 
+    API_ROOT, 
+    logoutFunctionForView, 
+    setStorageToken, 
+    permissionsHandlerForView 
+} from './utils'
 
 
 /**
@@ -71,6 +79,17 @@ const exceptionHandler = async (response, callback, url, params, headers) => {
     return response
 }
 
+const getUrl = (path) => {
+    let url = `${API_ROOT}${path}`
+    if (![null].includes(publicAccessKey)) {
+        if (url.includes('?')) {
+            url = url + `&public_key=${publicAccessKey}`
+        } else {
+            url = url + `?public_key=${publicAccessKey}`
+        }
+    }
+    return url
+}
 
 /***
  * The main object functions for api requests to our backend, PLEASE use this instead of calling the apis directly.
@@ -86,7 +105,7 @@ const requests = {
             source = new CancelToken(function (_) {})
         }
         try {
-            return await axios.delete(`${API_ROOT}${url}`, {
+            return await axios.delete(getUrl(url), {
                 params: params,
                 headers: Object.assign(setHeader(await getToken()), headers),
                 cancelToken: source.token
@@ -106,7 +125,7 @@ const requests = {
             source = new CancelToken(function (_) {})
         }
         try {
-            return await axios.get(`${API_ROOT}${url}`, {
+            return await axios.get(getUrl(url), {
                 params: params,
                 headers: Object.assign(setHeader(await getToken()), headers),
                 cancelToken: source.token
@@ -124,7 +143,7 @@ const requests = {
             source = new CancelToken(function (_) {})
         }
         try {
-            return await axios.put(`${API_ROOT}${url}`, body, { 
+            return await axios.put(getUrl(url), body, { 
                 headers: Object.assign(setHeader(await getToken()), headers),
                 cancelToken: source.token
             })
@@ -139,7 +158,7 @@ const requests = {
             source = new CancelToken(function (_) {})
         }
         try {
-            return await axios.post(`${API_ROOT}${url}`, body, { 
+            return await axios.post(getUrl(url), body, { 
                 headers: Object.assign(setHeader(await getToken()), headers),
                 cancelToken: source.token
             })

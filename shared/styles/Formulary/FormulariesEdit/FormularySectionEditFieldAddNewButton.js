@@ -7,10 +7,14 @@ const StyledButtonContainer = process.env['APP'] === 'web' ?
 styled.button`
     text-align: center;
     border: 0;
-    background-color: #0dbf7e;
-    border-radius: 5px;
+    background-color: #fff;
+    border-radius: 0 0 7px 7px;
     padding: 5px;
-    width: 100%
+    width: 100%;
+
+    &:hover {
+        background-color: #0dbf7e;
+    }
 `
 :
 styled(TouchableOpacity)
@@ -19,14 +23,14 @@ const StyledButtonText = process.env['APP'] === 'web' ?
 styled.p`
     margin: 0;
     padding: 0;
-    color: #fff
+    color: #17242D
 `
 :
 styled(Text)``
 
 const StyledPlusIcon = process.env['APP'] === 'web' ?
 styled.svg`
-    fill: #fff
+    fill: #17242D
 `
 :
 null

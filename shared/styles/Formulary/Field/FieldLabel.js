@@ -9,6 +9,7 @@ export default process.env['APP'] === 'web' && Form ?
 styled(Form.Label)`
     display: inline-block;
     margin: 0;
+    color: #17242D;
     font-weight: 600;
 `
 :

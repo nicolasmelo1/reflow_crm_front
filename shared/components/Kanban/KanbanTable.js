@@ -144,6 +144,7 @@ const KanbanTable = (props) => {
             setShownDimensions(props.collapsedDimensions, props.dimensionPhases, kanbanHolderRef.current.scrollLeft, kanbanHolderRef.current.offsetWidth)
         }
     }
+    // ------------------------------------------------------------------------------------------
     /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         isMountedRef.current = true

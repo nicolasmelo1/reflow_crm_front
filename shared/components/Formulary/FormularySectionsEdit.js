@@ -193,33 +193,36 @@ const FormularySectionsEdit = (props) => {
     const renderWeb = () => {
         return (
             <div>
-                <Formularies.EditButton onClick={props.setIsEditing} label={strings['pt-br']['formularyFinishEditButtonLabel']} description={strings['pt-br']['formularyFinishEditButtonDescription']}/>
                 {props.data.depends_on_form ? props.data.depends_on_form.map((section, index)=> (
-                    <FormularySectionEdit key={index} 
-                    onUpdateSection={onUpdateSection} 
-                    onUpdateField={onUpdateField}
-                    sectionIndex={index}
-                    section={section} 
-                    fieldIsMoving={fieldIsMoving}
-                    removeSection={removeSection}
-                    removeField={removeField}
-                    setFieldIsMoving={setFieldIsMoving}
-                    isMoving={isMoving}
-                    onMoveSection={onMoveSection}
-                    onMoveField={onMoveField}
-                    setIsMoving={setIsMoving}
-                    onAddNewField={onAddNewField}
-                    types={props.types} 
-                    fieldOptions={fieldOptions}
-                    formulariesOptions={props.formulariesOptions}
-                    onTestFormularySettingsFormulaField={props.onTestFormularySettingsFormulaField}
-                    formName={props.formName}
-                    formId={props.formId}
-                    userOptions={props.userOptions}
-                    />
+                    <React.Fragment key={index}>
+                        <FormularySectionEdit
+                        onUpdateSection={onUpdateSection} 
+                        onUpdateField={onUpdateField}
+                        sectionIndex={index}
+                        section={section} 
+                        fieldIsMoving={fieldIsMoving}
+                        removeSection={removeSection}
+                        removeField={removeField}
+                        setFieldIsMoving={setFieldIsMoving}
+                        isMoving={isMoving}
+                        onMoveSection={onMoveSection}
+                        onMoveField={onMoveField}
+                        setIsMoving={setIsMoving}
+                        onAddNewField={onAddNewField}
+                        types={props.types} 
+                        fieldOptions={fieldOptions}
+                        formulariesOptions={props.formulariesOptions}
+                        onTestFormularySettingsFormulaField={props.onTestFormularySettingsFormulaField}
+                        formName={props.formName}
+                        formId={props.formId}
+                        userOptions={props.userOptions}
+                        />
+                        <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}}>
+                            <div style={{ width: '100%', border: '1px dashed #bfbfbf'}}/>
+                        </div>
+                    </React.Fragment>
                 )): ''}
                 <FormulariesEdit.AddNewSectionButton text={strings['pt-br']['formularyEditAddNewSectionButtonLabel']} onClick={e=>{onAddNewSection()}} />
-
             </div>
         )
     }

@@ -23,7 +23,7 @@ const getShadow = (props) => {
 
 export default process.env['APP'] === 'web' && Col ? 
 styled(React.forwardRef(({isOpen, isConditional, ...rest}, ref) => <Col {...rest} ref={ref}/>))`
-    color: ${props=> props.isConditional ? '#f2f2f2': '#17242D'};
+    color: ${props=> props.isConditional ? '#fff': '#17242D'};
     border-radius: 5px;
     margin: 10px 10px;
     box-shadow: ${props=> getShadow(props)};
@@ -32,7 +32,7 @@ styled(React.forwardRef(({isOpen, isConditional, ...rest}, ref) => <Col {...rest
     background-color: ${props=> props.isConditional ? '#fffff': 'transparent'};
 
     &:hover {
-        background-color: ${props=> props.isConditional ? '#0f181e' : '#f2f2f2'};
+        background-color: ${props=> props.isConditional ? '#0f181e' : '#fff'};
     }
 `
 :

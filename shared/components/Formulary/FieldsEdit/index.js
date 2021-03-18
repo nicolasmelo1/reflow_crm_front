@@ -237,7 +237,12 @@ const FormularyFieldEdit = (props) => {
 
     const renderWeb = () => {
         return (
-            <FormulariesEdit.FieldContainer className="field-container" onDragOver={e=>{onDragOver(e)}} onDrop={e=>{onDrop(e)}}>
+            <FormulariesEdit.FieldContainer 
+            className="field-container" 
+            isEditing={isEditing}
+            onDragOver={e=>{onDragOver(e)}} 
+            onDrop={e=>{onDrop(e)}}
+            >
                 <Alert 
                 alertTitle={strings['pt-br']['formularyEditRemoveFieldAlertTitle']} 
                 alertMessage={strings['pt-br']['formularuEditRemoveFieldAlertContent']} 
@@ -255,8 +260,8 @@ const FormularyFieldEdit = (props) => {
                     <Overlay text={strings['pt-br']['formularyEditFieldTrashIconPopover']}>
                         <FormulariesEdit.Icon.FieldIcon size="sm" icon="trash" onClick={e=> {setShowAlert(true)}}/>
                     </Overlay>
-                    <Overlay text={strings['pt-br']['formularyEditFieldEyeIconPopover']}>
-                        <FormulariesEdit.Icon.FieldIcon size="sm" icon="eye" onClick={e=> {onDisableField(e)}}/>
+                    <Overlay text={(props.field.enabled) ? strings['pt-br']['formularyEditFieldEyeIconPopover'] : strings['pt-br']['formularyEditFieldEyeSlashIconPopover']}>
+                        <FormulariesEdit.Icon.FieldIcon size="sm" icon={(props.field.enabled) ? 'eye' : 'eye-slash'} onClick={e=> {onDisableField(e)}}/>
                     </Overlay>
                     <Overlay text={strings['pt-br']['formularyEditFieldMoveIconPopover']}>
                         <div style={{ float:'right' }} draggable="true" onDragStart={e => {onMoveField(e)}} onDrag={e => onDrag(e)} onDragEnd={e => {onDragEnd(e)}}>
@@ -290,7 +295,12 @@ const FormularyFieldEdit = (props) => {
                                     <FormulariesEdit.FieldFormLabel>
                                         {strings['pt-br']['formularyEditFieldNameInputLabel']}
                                     </FormulariesEdit.FieldFormLabel>
-                                    <FormulariesEdit.InputField autoComplete={'whathever'} type="text" value={props.field.label_name} onChange={e=> {onChangeFieldName(e)}}/>
+                                    <FormulariesEdit.InputField 
+                                    autoComplete={'whathever'} 
+                                    type="text" 
+                                    value={props.field.label_name} 
+                                    onChange={e=> {onChangeFieldName(e)}}
+                                    />
                                 </FormulariesEdit.FieldFormFieldContainer>
                                 {props.field.label_name ? (
                                     <div>

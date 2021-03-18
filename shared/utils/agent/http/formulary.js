@@ -1,6 +1,5 @@
 import requests from '../requests'
-import LOGIN from './login'
-import { getToken, companyId, API_ROOT, formEncodeData } from '../utils'
+import { companyId, API_ROOT, appendTokenInUrlByQueryParam } from '../utils'
 
 
 const FORMULARY = {
@@ -31,9 +30,7 @@ const FORMULARY = {
         return await requests.get(`formulary/${companyId}/${formName}/${fieldId}/form/options/`, params, {}, source)
     },
     getAttachmentFile: async (formName, formularyId, fieldId, fileName) => {
-        await LOGIN.testToken()
-        const token = await getToken()
-        return `${API_ROOT}data/${companyId}/${formName}/${formularyId}/${fieldId}/${fileName}/?token=${token}`
+        return await appendTokenInUrlByQueryParam(`${API_ROOT}data/${companyId}/${formName}/${formularyId}/${fieldId}/${fileName}/`)
     },
     getFormularySettingsData: async (source, formId) => {
         return await requests.get(`formulary/${companyId}/settings/forms/${formId}/`, {}, {}, source)
@@ -58,6 +55,15 @@ const FORMULARY = {
     },
     testFormularyFormulaField: async (source, formId, text) => {
         return await requests.get(`formula/${companyId}/${formId}/`, { text: text }, {}, source)
+    },
+    getFieldOptions: async (formId) => {
+        return await requests.get(`formulary/${companyId}/settings/${formId}/field_options/`)
+    },
+    updatePublicFormularySettings: async (body, formId) => {
+        return await requests.post(`formulary/${companyId}/settings/${formId}/public/`, body)
+    },
+    getPublicFormularySettings: async (source, formId) => {
+        return await requests.get(`formulary/${companyId}/settings/${formId}/public/`, {}, {}, source)
     }
 }
 

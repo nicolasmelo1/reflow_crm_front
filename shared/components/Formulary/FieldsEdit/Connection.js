@@ -64,7 +64,7 @@ const Connection = (props) => {
         async function fetchFieldOptions() {
             if (selectedForm) {
                 try {
-                    const response = await agent.http.SIDEBAR.getFieldOptions(selectedForm)
+                    const response = await agent.http.FORMULARY.getFieldOptions(selectedForm)
                     if (!didCancel && response.status === 200) {
                         setFields(response.data.data)
                     }

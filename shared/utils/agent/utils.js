@@ -1,5 +1,6 @@
 import { BEARER, API } from '../../config'
 import base64 from '../base64'
+import LOGIN from './http/login'
 
 let AsyncStorage;
 if (process.env['APP'] !== 'web') { 
@@ -10,6 +11,7 @@ const API_ROOT = API;
 let companyId = null
 let logoutFunctionForView = null
 let permissionsHandlerForView = null
+let publicAccessKey = null
 
 const setStorageToken = async (tokenValue, refreshTokenValue) => {
     if (process.env['APP'] === 'web') {
@@ -30,6 +32,33 @@ const setHeader = (token) => {
     return {
         'Authorization': `${BEARER} ${token}`
     }
+}
+
+/**
+ * This is responsible for adding the `token` param to the url. Sometimes we cannot authenticate via the header (for example, we
+ * are retrieving an image from the server in a img html tag). On this example we cannot access the header of the request. So we need to
+ * add the token as a query parameter in the request. This way we are able to authenticate even if the request does not have a bearer Header.
+ * 
+ * @param {String} url - The url you want to append the token to
+ * 
+ * @returns {String} - The url with the token appendend
+ */
+const appendTokenInUrlByQueryParam = async (url) => {
+    if (publicAccessKey === null) {
+        await LOGIN.testToken()
+        const token = await getToken()
+        if (url.includes('?')) {
+            url = url + `&token=${token}`
+        } else {
+            url = url + `?token=${token}`
+        }
+    } else if (url.includes('?')) {
+        url = url + `&public_key=${publicAccessKey}`
+    } else {
+        url = url + `?public_key=${publicAccessKey}`
+    }
+        
+    return url 
 }
 
 const getToken = async () => {
@@ -53,7 +82,7 @@ const formEncodeData = (appendToKey='', body=null, files = []) => {
 }
 
 /**
- * This might be confusing at first for some new comers, but this function,`setLogout` and `setPermissionsHandler` functions
+ * This might be confusing at first for some new comers, but this function,`setLogout`, `setPublicAccessKey` and `setPermissionsHandler` functions
  * are injecting data to this file. So when we import the values we actually have access to the injected values.
  * 
  * WHAT? When we render the Layout component, we inject values to the `companyId`, the `logoutFunctionForView` and `permissionsHandlerForView` variables. 
@@ -64,6 +93,10 @@ const setCompanyId = (_companyId) => {
     companyId = _companyId
 }
 
+const setPublicAccessKey = (_publicAccessKey) => {
+    publicAccessKey = _publicAccessKey
+}
+
 const setLogout = (_logoutFunctionForView) => {
     logoutFunctionForView = _logoutFunctionForView
 }
@@ -72,7 +105,9 @@ const setPermissionsHandler = (_permissionsHandlerForView) => {
     permissionsHandlerForView = _permissionsHandlerForView
 }
 
-export { 
+export {
+    appendTokenInUrlByQueryParam,
+    setPublicAccessKey,
     setStorageToken,
     setPermissionsHandler,
     setLogout,
@@ -80,6 +115,7 @@ export {
     permissionsHandlerForView,
     logoutFunctionForView,
     companyId,
+    publicAccessKey,
     formEncodeData,
     getToken,
     setHeader,

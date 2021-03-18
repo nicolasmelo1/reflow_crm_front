@@ -170,9 +170,9 @@ const FormularySections = (props) => {
             // to the original initial formulary, you need to load the data, the problem is, we already built the form
             // so we actually don't want to build again, but instead, load the data that we saved in the variable.
             if (!props.hasBuiltInitial || props.isAuxOriginalInitial) {
-                if (props.data.id === null && !props.isAuxOriginalInitial) {
+                if (props.data.depends_on_dynamic_form.length === 0 && !props.isAuxOriginalInitial) {
                     buildInitialData(conditionals)
-                } else if (props.data.id || props.isAuxOriginalInitial) {
+                } else if (props.data.id !== null || props.data.depends_on_dynamic_form.length > 0 || props.isAuxOriginalInitial) {
                     onLoadData(props.data.depends_on_dynamic_form, conditionals)
                 }
                 if (!props.hasBuiltInitial) props.setFilledHasBuiltInitial(true)

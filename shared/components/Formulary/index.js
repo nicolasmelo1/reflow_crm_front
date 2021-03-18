@@ -2,6 +2,9 @@ import React from 'react'
 import axios from 'axios'
 import { View } from 'react-native'
 import { connect } from 'react-redux'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import FormularyPublicEdit from './FormularyPublicEdit'
+import FormularyToolbar from './FormularyToolbar'
 import FormularySections from './FormularySections'
 import FormularySectionsEdit from './FormularySectionsEdit'
 import agent from '../../utils/agent'
@@ -11,7 +14,6 @@ import { strings, paths } from '../../utils/constants'
 import dynamicImport from '../../utils/dynamicImport'
 import isAdmin from '../../utils/isAdmin'
 import { Formularies } from '../../styles/Formulary'
-import { PDFGeneratorButtonInFormulary } from '../../styles/PDFGenerator'
 
 const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 const Router = dynamicImport('next/router')
@@ -40,6 +42,8 @@ const makeDelay = delay(10000)
  * it deactivates funcionalities like: add new or edit connection field is not available, cannot edit.
  * - preview - the formulary is fully functional, except it doesn't have a save button
  * - full - usually the formulary that is used in the home page.
+ * @param {Function} onSaveFormulary - (optional) - This function is fired whenever the user saves the formulary, this way, on the parent component
+ * we can display something, or do some sideeffect.
  * @param {String} formName - the current formName, you can get this by the url or it is the primaryForm in login's react redux
  * @param {Object} buildData - (optional) - usually used in themes, sometimes you want to display a formulary, but you don`t want to load it
  * inside of this component, you can use this props to send the build data for the form to be rendered.
@@ -74,6 +78,7 @@ class Formulary extends React.Component {
                     depends_on_dynamic_form: []
                 }
             },
+            isEditingShare: false,
             isEditing: false,
             errors: {},
             isLoading: false,
@@ -84,13 +89,15 @@ class Formulary extends React.Component {
         }
     }
     // ------------------------------------------------------------------------------------------
-    setIsOpen = () => (this._ismounted) ? this.props.onOpenOrCloseFormulary(!this.props.formulary.isOpen) : null
+    setIsOpen = () => (this._ismounted && this.props.display === 'bottom') ? this.props.onOpenOrCloseFormulary(!this.props.formulary.isOpen) : null
     // ------------------------------------------------------------------------------------------
     setAuxOriginalInitialIndex = (data) => (this._ismounted) ? this.setState(state => state.auxOriginalInitialIndex = data) : null
     // ------------------------------------------------------------------------------------------
     setIsSubmitting = (data) => (this._ismounted) ? this.setState(state => state.isSubmitting = data) : null
     // ------------------------------------------------------------------------------------------
     setIsLoading = (data) => (this._ismounted) ? this.setState(state => state.isLoading = data): null
+    // ------------------------------------------------------------------------------------------
+    setIsEditingShare = (data) => (this._ismounted) ? this.setState(state => state.isEditingShare = data) : null
     // ------------------------------------------------------------------------------------------
     setErrors = (errors) => (this._ismounted) ? this.setState(state => state.errors = errors) : null
     // ------------------------------------------------------------------------------------------
@@ -180,11 +187,12 @@ class Formulary extends React.Component {
             draftStringId = response.data.data.draft_id
             this.draftFiles[draftStringId] = file
             this.setDraftToFileReference(draftStringId, file.name)
+
             agent.websocket.DRAFT.recieveFileRemoved({
                 blockId: '',
                 callback: (data) => {
                     if (this._ismounted && [...Object.keys(this.draftFiles)].includes(data.data.draft_string_id)) {
-                        this.addFile(this.draftFiles[data.data.draft_string_id])
+                        this.onAddFile(this.draftFiles[data.data.draft_string_id])
                     }
                 }
             })
@@ -221,6 +229,22 @@ class Formulary extends React.Component {
     }
     // ------------------------------------------------------------------------------------------
     /**
+     * When the user clicks to share the formulary.
+     */
+    onClickShare = () => {
+        if (this.state.isEditingShare) {
+            this.setFilledDataAndBuildData(
+                this.state.filled.data.id, 
+                false, 
+                false, 
+                this.state.filled.data.depends_on_dynamic_form, 
+                this.state.buildData
+            )
+        }
+        this.setIsEditingShare(!this.state.isEditingShare)
+    }
+    // ------------------------------------------------------------------------------------------
+    /**
      * Submits the formulary, might be really straight forward. It's only important to understand that
      * when we save and have any `auxOriginalInitial` we go back to the previous formulary.
      * 
@@ -242,11 +266,38 @@ class Formulary extends React.Component {
                     this.setErrors(response.data.error)
                 } else if (this.isInConnectedFormulary()) {
                     this.onGoBackFromConnectedForm()
+                } else if (this.props.onSaveFormulary) {
+                    this.removeDrafts()
+                    this.props.onSaveFormulary()
                 } else {
                     this.removeDrafts()
                     this.setIsOpen()
                 }
             })
+        }
+    }
+    // ------------------------------------------------------------------------------------------
+    /**
+     * Resets the hole formulary, it's build data and the form data, usually used while closing the formulary.
+     */
+    resetFormulary = () => {
+        const buildData = (this.state.auxOriginalInitial[0] && 
+            this.state.auxOriginalInitial[0].filled && 
+            this.state.auxOriginalInitial[0].buildData) ? this.state.auxOriginalInitial[0].buildData : this.state.buildData
+
+        if (this.updateFormularyWhenClose) {
+            this.getBuildFormulary(this.props.formName, true).then(_ => {
+            this.resetAuxOriginalInitial([], -1)
+            this.props.setFormularyId(null)
+            this.props.setFormularyDefaultData([])
+            this.removeDrafts()
+        })
+        } else {
+            this.onFullResetFormulary(buildData)
+            this.resetAuxOriginalInitial([], -1)
+            this.props.setFormularyId(null)
+            this.props.setFormularyDefaultData([])
+            this.removeDrafts()
         }
     }
     // ------------------------------------------------------------------------------------------
@@ -400,11 +451,12 @@ class Formulary extends React.Component {
         }
     }
     // ------------------------------------------------------------------------------------------
-    showToEdit = () => {
+    isToShowToEdit = () => {
         // we can only edit the form if the form you are in is not an embbeded or in preview, 
         // and if it is not a connected formulary.
         return this.state.buildData && this.state.buildData.group_id && this.state.buildData.id &&
-               !this.isInConnectedFormulary() && isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user)
+                this.props.type === 'full' && !this.isInConnectedFormulary() && 
+                isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user)
     }
     // ------------------------------------------------------------------------------------------
     /**
@@ -477,24 +529,7 @@ class Formulary extends React.Component {
         }
         // The formulary is closing
         if (formularyIsClosing) {
-            const buildData = (this.state.auxOriginalInitial[0] && 
-                                this.state.auxOriginalInitial[0].filled && 
-                                this.state.auxOriginalInitial[0].buildData) ? this.state.auxOriginalInitial[0].buildData : this.state.buildData
-            
-            if (this.updateFormularyWhenClose) {
-                this.getBuildFormulary(this.props.formName, true).then(_ => {
-                    this.resetAuxOriginalInitial([], -1)
-                    this.props.setFormularyId(null)
-                    this.props.setFormularyDefaultData([])
-                    this.removeDrafts()
-                })
-            } else {
-                this.onFullResetFormulary(buildData)
-                this.resetAuxOriginalInitial([], -1)
-                this.props.setFormularyId(null)
-                this.props.setFormularyDefaultData([])
-                this.removeDrafts()
-            }
+            this.resetFormulary()
         }
     }
     /////////////////////////////////////////////////////////////////////////////////////////////
@@ -515,7 +550,25 @@ class Formulary extends React.Component {
                     </Formularies.Button>
                 ) : ''}
                 <Formularies.ContentContainer isOpen={this.props.formulary.isOpen} display={this.props.display}>
-                    {(this.state.isEditing) ? (
+                    <FormularyToolbar
+                    isEditing={this.state.isEditing}
+                    isEditingShare={this.state.isEditingShare}
+                    isLoading={this.state.isLoading}
+                    isToShowToEdit={this.isToShowToEdit()}
+                    isInConnectedFormulary={this.isInConnectedFormulary()}
+                    formularyId={this.props.formularyId}
+                    setIsEditing={this.setIsEditing}
+                    onClickShare={this.onClickShare}
+                    onClickPDFTemplates={this.onClickPDFTemplates}
+                    formularyType={this.props.type}
+                    />
+                    {this.state.isEditingShare ? (
+                        <FormularyPublicEdit
+                        onGetPublicFormulary={this.props.onGetPublicFormulary}
+                        onUpdatePublicFormulary={this.props.onUpdatePublicFormulary}
+                        formularyBuildData={this.state.buildData}
+                        />
+                    ) : this.state.isEditing ? (
                         <div>
                             <FormularySectionsEdit
                             formName={this.props.formName}
@@ -537,26 +590,16 @@ class Formulary extends React.Component {
                         <div>
                             {this.state.isLoading ? '' : (
                                 <div>
-                                    {this.showToEdit() ? (
-                                        <Formularies.EditButton onClick={e => this.setIsEditing()} label={strings['pt-br']['formularyEditButtonLabel']} description={strings['pt-br']['formularyEditButtonDescription']}/>
-                                    ) : ''}
                                     {this.isInConnectedFormulary() ? (
                                         <Formularies.Navigator 
                                         onClick={e => {
                                             this.onGoBackFromConnectedForm()
                                         }}
                                         >
-                                            &lt;&nbsp;{(this.state.auxOriginalInitial[this.state.auxOriginalInitialIndex].buildData) ? 
+                                            <FontAwesomeIcon icon={'chevron-left'}/>&nbsp;{(this.state.auxOriginalInitial[this.state.auxOriginalInitialIndex].buildData) ? 
                                                         this.state.auxOriginalInitial[this.state.auxOriginalInitialIndex].buildData.label_name : ''}
                                         </Formularies.Navigator>
                                     ) : ''}   
-                                    {!this.isInConnectedFormulary() && this.props.formularyId ? (
-                                        <PDFGeneratorButtonInFormulary 
-                                        onClick={(e) => this.onClickPDFTemplates()}
-                                        >
-                                            PDF
-                                        </PDFGeneratorButtonInFormulary>
-                                    ) : ''}
                                     <FormularySections 
                                     formName={this.state.buildData.form_name}
                                     type={this.props.type}
