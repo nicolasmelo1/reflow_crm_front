@@ -1,6 +1,7 @@
 import React, { useEffect, useState} from 'react'
 import axios from 'axios'
 import { View } from 'react-native'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { strings, paths } from '../../utils/constants'
 import delay from '../../utils/delay'
 import { FRONT_END_HOST } from '../../config'
@@ -57,6 +58,30 @@ const FormularyPublicEdit = (props) => {
         element.style.height = (element.scrollHeight)+"px";    
     }
     // ------------------------------------------------------------------------------------------
+    const onCopyLinkWeb = (link) => {
+        if (process.env['APP'] === 'web') {
+            const copyText = document.createElement('textarea')
+            
+            copyText.value = link
+            copyText.setAttribute('readonly', '')
+            copyText.style.position = 'absolute'
+
+            document.body.appendChild(copyText)
+
+            copyText.select()
+            copyText.setSelectionRange(0, 99999)
+
+            document.execCommand('copy')
+
+            document.body.removeChild(copyText)
+        }
+    }
+    // ------------------------------------------------------------------------------------------
+    /**
+     * Adds the greetings message after the user has submited the formulary.
+     * 
+     * @param {String} text - The greetings text message, this can be multiline
+     */
     const onChangeGreetingsMessage = (text) => {
         text = (text === '') ? null : text
         makeDelay(() => {
@@ -71,6 +96,11 @@ const FormularyPublicEdit = (props) => {
         setGreetingsText(text)
     } 
     // ------------------------------------------------------------------------------------------
+    /**
+     * Adds a descripition message on the top of the formulary so the user knows what he will fill.
+     * 
+     * @param {String} text - The description text message, this can be multiline
+     */
     const onChangeDescriptionMessage = (text) => {
         text = (text === '') ? null : text
         makeDelay(() => {
@@ -126,6 +156,11 @@ const FormularyPublicEdit = (props) => {
                             {strings['pt-br']['formularyPublicEditLinkToPublicFormTitle']}
                         </Formularies.PublicEdit.FormTitle>
                         <Formularies.PublicEdit.LinkAnchorContainer>
+                            <Formularies.PublicEdit.LinkCopyButton
+                            onClick={(e) => onCopyLinkWeb(publicFormularyUrl)}
+                            >
+                                <FontAwesomeIcon icon={'copy'} style={{ color: '#0dbf7e' }}/>
+                            </Formularies.PublicEdit.LinkCopyButton>
                             <Formularies.PublicEdit.LinkAnchor 
                             href={publicFormularyUrl} 
                             target="_blank"
@@ -138,26 +173,6 @@ const FormularyPublicEdit = (props) => {
                         {strings['pt-br']['formularyPublicEditFormIsNotPublicTitle']}
                     </Formularies.PublicEdit.FormTitle>
                 )}
-                <Formularies.PublicEdit.FieldSelector.Container>
-                    <Formularies.PublicEdit.FormTitle>
-                        {strings['pt-br']['formularyPublicEditSelectFieldsTitle']}
-                    </Formularies.PublicEdit.FormTitle>
-                    {fields.map(field => (
-                        <Formularies.PublicEdit.FieldSelector.Button 
-                        key={field.id}
-                        isSelected={selectedFields.includes(field.id)}
-                        onClick={(e) => onSelectField(field.id)}
-                        >
-                            <Formularies.PublicEdit.FieldSelector.Label>
-                                {field.label_name}
-                            </Formularies.PublicEdit.FieldSelector.Label>
-                            <Formularies.PublicEdit.FieldSelector.Icon
-                            icon={selectedFields.includes(field.id) ? 'check': 'times'} 
-                            isSelected={selectedFields.includes(field.id)}
-                            />
-                        </Formularies.PublicEdit.FieldSelector.Button>
-                    ))}
-                </Formularies.PublicEdit.FieldSelector.Container>
                 <Formularies.PublicEdit.FormTitle>
                     {strings['pt-br']['formularyPublicEditAditionalSettingsTitle']}
                 </Formularies.PublicEdit.FormTitle>
@@ -194,7 +209,7 @@ const FormularyPublicEdit = (props) => {
                     />
                 </div>
                 <div>
-                    <label style={{userSelect: 'none', cursor: 'pointer'}}>
+                    <label style={{userSelect: 'none', cursor: 'pointer', marginBottom: '30px'}}>
                         <input
                         style={{marginRight: '5px'}}
                         type={'checkbox'} 
@@ -213,6 +228,26 @@ const FormularyPublicEdit = (props) => {
                         {strings['pt-br']['formularyPublicEditIsToShowAnotherCheckboxLabel']}
                     </label>
                 </div>
+                <Formularies.PublicEdit.FieldSelector.Container>
+                    <Formularies.PublicEdit.FormTitle>
+                        {strings['pt-br']['formularyPublicEditSelectFieldsTitle']}
+                    </Formularies.PublicEdit.FormTitle>
+                    {fields.map(field => (
+                        <Formularies.PublicEdit.FieldSelector.Button 
+                        key={field.id}
+                        isSelected={selectedFields.includes(field.id)}
+                        onClick={(e) => onSelectField(field.id)}
+                        >
+                            <Formularies.PublicEdit.FieldSelector.Label>
+                                {field.label_name}
+                            </Formularies.PublicEdit.FieldSelector.Label>
+                            <Formularies.PublicEdit.FieldSelector.Icon
+                            icon={selectedFields.includes(field.id) ? 'check': 'times'} 
+                            isSelected={selectedFields.includes(field.id)}
+                            />
+                        </Formularies.PublicEdit.FieldSelector.Button>
+                    ))}
+                </Formularies.PublicEdit.FieldSelector.Container>
             </Formularies.PublicEdit.Container>
         )
     }

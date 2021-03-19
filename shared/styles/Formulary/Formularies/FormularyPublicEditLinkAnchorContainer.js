@@ -9,6 +9,7 @@ styled.div`
     border-radius: 5px;
     padding: 5px;
     display: flex;
+    align-items: center
 `
 :
 styled(View)``

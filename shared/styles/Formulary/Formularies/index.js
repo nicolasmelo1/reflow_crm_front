@@ -20,6 +20,7 @@ import FormularyPublicEditFieldSelectorButton from './FormularyPublicEditFieldSe
 import FormularyPublicEditFieldSelectorLabel from './FormularyPublicEditFieldSelectorLabel'
 import FormularyPublicEditFieldSelectorIcon from './FormularyPublicEditFieldSelectorIcon'
 import FormularyPublicEditLinkAnchorContainer from './FormularyPublicEditLinkAnchorContainer'
+import FormularyPublicEditLinkCopyButton from './FormularyPublicEditLinkCopyButton'
 import FormularyPublicEditLinkAnchor from './FormularyPublicEditLinkAnchor'
 import FormularyPublicEditInput from './FormularyPublicEditInput'
 import FormularyPublicEditContainer from './FormularyPublicEditContainer'
@@ -46,6 +47,7 @@ export default {
         },
         Container: FormularyPublicEditContainer,
         Input: FormularyPublicEditInput,
+        LinkCopyButton: FormularyPublicEditLinkCopyButton,
         LinkAnchor: FormularyPublicEditLinkAnchor,
         LinkAnchorContainer: FormularyPublicEditLinkAnchorContainer,
         LinkContainer: FormularyPublicEditLinkContainer,

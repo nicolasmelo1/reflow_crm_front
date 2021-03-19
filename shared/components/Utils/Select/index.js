@@ -76,9 +76,9 @@ const Select = (props) => {
     // so we can use it for the mousedown eventListenet function
     // NOTE: THIS IS ONLY FOR CLASS BASED COMPONENTS THAT USE HOOKS, class based might
     // work normally
-    const setIsOpenRef = React.useRef(isOpen)
+    const isOpenRef = React.useRef(isOpen)
     const setIsOpen = data => {
-        setIsOpenRef.current = data
+        isOpenRef.current = data
         _setIsOpen(data)
         defineHeight()
     }
@@ -101,7 +101,7 @@ const Select = (props) => {
         if (process.env['APP'] === 'web') {
             if (selectRef.current && selectRef.current.contains(e.target)) {
                 setIsOpen(true)
-            } else if (setIsOpenRef.current) {
+            } else if (isOpenRef.current) {
                 setIsOpen(false)
                 onClickSelectedOption()
             }

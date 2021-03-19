@@ -204,7 +204,9 @@ const Fields = (props) => {
             >
                 <div>
                     {(props.field.label_is_hidden) ? '' : (
-                        <Field.FieldTitle.Label>
+                        <Field.FieldTitle.Label
+                        isConditional={props.isSectionConditional}
+                        >
                             { props.field.label_name }
                             <Field.FieldTitle.Required>{(props.field.required) ? '*': ''}</Field.FieldTitle.Required>
                             {typeName === 'form' && props.type !== 'embbed' && props.field?.form_field_as_option ? (

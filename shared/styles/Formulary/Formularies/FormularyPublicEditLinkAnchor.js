@@ -11,7 +11,8 @@ styled.a`
     white-space: nowrap;
     word-wrap: normal;
     color: #0dbf7e;
-
+    margin-left: 10px;
+    
     &:hover {
         color: #17242D50;
         text-decoration: underline;
