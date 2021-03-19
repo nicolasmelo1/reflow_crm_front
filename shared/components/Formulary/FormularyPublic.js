@@ -99,7 +99,7 @@ class FormularyPublic extends React.Component {
                     <Error404/>
                 ) : this.state.hasSubmittedForm ? (
                         <Formularies.Public.GreetingsContainer>
-                            <div>
+                            <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'center' }}>
                                 <Formularies.Public.Title>
                                     {'Obrigado!'}
                                 </Formularies.Public.Title>
