@@ -129,7 +129,7 @@ const strings = {
         formularyFormFieldEditButtonLabel: 'Editar',
         formularyPublicEditLinkToPublicFormTitle: 'Link para o formulário público',
         formularyPublicEditFormIsNotPublicTitle: 'Este formulário não é público',
-        formularyPublicEditSelectFieldsTitle: 'Selecionar os campos do formulário público',
+        formularyPublicEditSelectFieldsTitle: 'Selecione os campos que aparecerão no formulário público',
         formularyPublicEditAditionalSettingsTitle: 'Configurações adicionais',
         formularyPublicEditGreetingsInputLabel: 'Editar mensagem de agradecimento',
         formularyPublicEditGreetingsInputPlaceholder: 'Insira aqui o texto de agradecimento',
