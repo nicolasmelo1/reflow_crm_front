@@ -167,10 +167,12 @@ const Attachment = (props) => {
         
         if (!isNotAcceptedFile) {
             const draftStringId = await props.onAddFile(file)
-            const formValues = props.multipleValueFieldHelper(attachmentValues.concat(draftStringId))
-            uploadedFileNames.push(file.name)
-            props.setValues([...formValues])
-            setUploadedFileNames([...uploadedFileNames])
+            if (draftStringId !== '') {
+                const formValues = props.multipleValueFieldHelper(attachmentValues.concat(draftStringId))
+                uploadedFileNames.push(file.name)
+                props.setValues([...formValues])
+                setUploadedFileNames([...uploadedFileNames])
+            }
         } else {
             setShowAlert(true)
         }
