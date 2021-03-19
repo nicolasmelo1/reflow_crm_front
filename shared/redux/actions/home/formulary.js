@@ -173,10 +173,13 @@ const onGetPublicFormulary = (source, formId) => {
     }
 }
 
-const onUpdatePublicFormulary = (formId, fieldIds) => {
+const onUpdatePublicFormulary = (formId, greetingsText, descriptionText, isToShowSubmitAnotherButton, fieldIds) => {
     return (_) => {
         const body = {
             form_id: formId,
+            greetings_message: greetingsText,
+            description_message: descriptionText,
+            is_to_submit_another_response_button: isToShowSubmitAnotherButton,
             public_access_form_public_access_fields: fieldIds.map(fieldId => ({ field_id: fieldId }))
         }
         return agent.http.FORMULARY.updatePublicFormularySettings(body, formId)

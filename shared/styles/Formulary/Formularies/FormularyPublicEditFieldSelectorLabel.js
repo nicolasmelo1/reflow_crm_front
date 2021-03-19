@@ -3,10 +3,10 @@ import styled from 'styled-components'
 import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
-styled.div`
-    display: flex;
-    flex-direction: column; 
-    margin-bottom: 30px
+styled.p`
+    user-select: none;
+    margin: 0;
+    padding: 5px;
 `
 :
 styled(View)``

@@ -64,6 +64,9 @@ const FORMULARY = {
     },
     getPublicFormularySettings: async (source, formId) => {
         return await requests.get(`formulary/${companyId}/settings/${formId}/public/`, {}, {}, source)
+    },
+    getPublicFormularyData: async (source, formName) => {
+        return await requests.get(`formulary/public/${companyId}/form/${formName}/`, {}, {}, source)
     }
 }
 

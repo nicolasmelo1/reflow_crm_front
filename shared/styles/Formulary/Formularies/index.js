@@ -15,9 +15,39 @@ import FormularyToolbarButton from './FormularyToolbarButton'
 import FormularyToolbarSeparator from './FormularyToolbarSeparator'
 import FormularyPublicEditLinkContainer from './FormularyPublicEditLinkContainer'
 import FormularyPublicEditFormTitle from './FormularyPublicEditFormTitle'
+import FormularyPublicEditFieldSelectorContainer from './FormularyPublicEditFieldSelectorContainer'
+import FormularyPublicEditFieldSelectorButton from './FormularyPublicEditFieldSelectorButton'
+import FormularyPublicEditFieldSelectorLabel from './FormularyPublicEditFieldSelectorLabel'
+import FormularyPublicEditFieldSelectorIcon from './FormularyPublicEditFieldSelectorIcon'
+import FormularyPublicEditLinkAnchorContainer from './FormularyPublicEditLinkAnchorContainer'
+import FormularyPublicEditLinkAnchor from './FormularyPublicEditLinkAnchor'
+import FormularyPublicEditInput from './FormularyPublicEditInput'
+import FormularyPublicEditContainer from './FormularyPublicEditContainer'
+import FormularyPublicSubmitAnotherResponseButton from './FormularyPublicSubmitAnotherResponseButton'
+import FormularyPublicTitle from './FormularyPublicTitle'
+import FormularyPublicDescription from './FormularyPublicDescription'
+import FormularyPublicGreetingsContainer from './FormularyPublicGreetingsContainer'
+import FormularyPublicContainer from './FormularyPublicContainer'
 
 export default {
+    Public: {
+        Container: FormularyPublicContainer,
+        GreetingsContainer: FormularyPublicGreetingsContainer,
+        Description: FormularyPublicDescription,
+        Title: FormularyPublicTitle,
+        SubmitAnotherResponseButton: FormularyPublicSubmitAnotherResponseButton,
+    },
     PublicEdit: {
+        FieldSelector: {
+            Container: FormularyPublicEditFieldSelectorContainer,
+            Icon: FormularyPublicEditFieldSelectorIcon,
+            Button: FormularyPublicEditFieldSelectorButton,
+            Label: FormularyPublicEditFieldSelectorLabel
+        },
+        Container: FormularyPublicEditContainer,
+        Input: FormularyPublicEditInput,
+        LinkAnchor: FormularyPublicEditLinkAnchor,
+        LinkAnchorContainer: FormularyPublicEditLinkAnchorContainer,
         LinkContainer: FormularyPublicEditLinkContainer,
         FormTitle: FormularyPublicEditFormTitle
     },

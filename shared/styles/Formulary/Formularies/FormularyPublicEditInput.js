@@ -2,12 +2,12 @@ import React from 'react'
 import styled from 'styled-components'
 import { TextInput } from 'react-native'
 
-export default process.env['APP'] === 'web' ? 
-styled.input`
+export default process.env['APP'] === 'web' ?
+styled.textarea`
     border: 0;
     background-color: white !important;
     color: #17242D;
-    border: 2px solid ${props=> props.errors ? 'red': '#f2f2f2'};
+    border: 2px solid #f2f2f2;
     display: block;
     width: 100%;
     height: calc(1.5em + .75rem + 2px);
@@ -28,11 +28,4 @@ styled.input`
     }
 `
 :
-styled(TextInput)`
-    background-color: white !important;
-    border-radius: 4px;
-    padding: 5px;
-    min-height: 30px;
-    color: #17242D;
-    border: 1px solid ${props=> props.errors ? 'red': '#f2f2f2'};
-`
+styled(TextInput)``
