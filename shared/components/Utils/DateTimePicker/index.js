@@ -27,6 +27,7 @@ import Utils from '../../../styles/Utils'
  * please use 3 characters maximum on each String 
  * @param {Array<String>} monthReference - __(optional)__ - If you want to override the default month names reference to 
  * display for the user
+ * @param {Boolean} focusOnInput - __(optional)__ - Defaults to false. Set to true if you want to focus on the input when clicking the input element.
  * @param {Boolean} closeWhenSelected - __(optional)__ - This closes the component after the user has selected a date.
  * @param {Date} initialDay - The initial Date selected, don't forget to send a Date type value
  * @param {function} onChange - The function to be called when the user changes the date
@@ -56,8 +57,8 @@ const DateTimePicker = (props) => {
     // check Select Component in components/utils
      const isOpenRef = React.useRef(isOpen);
      const setIsOpen = data => {
-         isOpenRef.current = data;
-         _setIsOpen(data);
+         isOpenRef.current = data
+         _setIsOpen(data)
      };
 
     // we define this way because it needs for the JS compiler,
@@ -105,10 +106,12 @@ const DateTimePicker = (props) => {
     }
 
     const onInputClick = (e) => {
-        e.stopPropagation();
         if ((props.input.current && props.input.current.contains(e.target)) || (datePickerRef.current && datePickerRef.current.contains(e.target))) {
             setIsOpen(true)
             topOrDown(e)
+            if (props.focusOnInput === true) {
+                props.input.current.focus()
+            }
         } else if (isOpenRef.current) {
             setHourPickerIsOpen(false)
             setIsOpen(false)
@@ -139,7 +142,10 @@ const DateTimePicker = (props) => {
     useEffect(() => {
         const dateToConsider = (props.initialDay && props.initialDay !== '') ? props.initialDay : today
         setSelectedDay(dateToConsider)
-        updateMonthDetails(dateToConsider.getFullYear(), dateToConsider.getMonth(), dateToConsider.getHours(), dateToConsider.getMinutes())
+        console.log(dateToConsider)
+        if (!Number.isNaN(dateToConsider.getFullYear()) && !Number.isNaN(dateToConsider.getMonth())) {
+            updateMonthDetails(dateToConsider.getFullYear(), dateToConsider.getMonth(), dateToConsider.getHours(), dateToConsider.getMinutes())
+        }
     }, [props.initialDay])
 
     return (

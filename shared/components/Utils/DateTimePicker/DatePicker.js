@@ -73,7 +73,7 @@ const DatePickerCalendar = (props) => {
         }) : []
     }
     const isCurrentMonth = (monthToCheck) => monthToCheck === props.month
-    const isSelectedDay = (dayToCheck) => selectedDaysRef.current.find(selectedDay => typeof selectedDay === 'object' && selectedDay.getDate() === dayToCheck.getDate() && selectedDay.getMonth() === dayToCheck.getMonth() && selectedDay.getFullYear() === dayToCheck.getFullYear()) !== undefined
+    const isSelectedDay = (dayToCheck) => props.selectedDays.find(selectedDay => typeof selectedDay === 'object' && selectedDay.getDate() === dayToCheck.getDate() && selectedDay.getMonth() === dayToCheck.getMonth() && selectedDay.getFullYear() === dayToCheck.getFullYear()) !== undefined
     const inBetweenDate = (dayToCheck, betweenDates) => betweenDates.find(betweenDay => betweenDay.getDate() === dayToCheck.getDate() && betweenDay.getMonth() === dayToCheck.getMonth() && betweenDay.getFullYear() === dayToCheck.getFullYear()) !== undefined
     const isToday = (dayToCheck) => props.today.getDate() === dayToCheck.getDate() && props.today.getMonth() === dayToCheck.getMonth() && props.today.getFullYear() === dayToCheck.getFullYear()
 
@@ -114,7 +114,7 @@ const DatePickerCalendar = (props) => {
             }
         }
     })
-
+    console.log(props.selectedDays)
     return (
         <Utils.Datepicker.Table ref={dateTableRef}>
             <thead>

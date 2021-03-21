@@ -4,16 +4,18 @@ import Id from './Id'
 import { Field } from '../../../styles/Formulary'
 import DateTimePicker from '../../Utils/DateTimePicker'
 import { strings } from '../../../utils/constants'
+import { numberUnmasker, numberMasker } from '../../../utils/numberMasker'
 import {
     pythonFormatToMomentJSFormat, 
     stringToJsDateFormat,
-    jsDateToStringFormat
+    jsDateToStringFormat,
+    pythonFormatToNumberMarkerFormat
 } from '../../../utils/dates'
 
 const Datetime = (props) => {
     const [dateFormat, setDateFormat] = useState('')
     const inputRef = React.useRef(null)
-
+    // ------------------------------------------------------------------------------------------
     const monthReference = [
         strings['pt-br']['calendarMonthReferenceJanuary'],
         strings['pt-br']['calendarMonthReferenceFebruary'],
@@ -28,7 +30,7 @@ const Datetime = (props) => {
         strings['pt-br']['calendarMonthReferenceNovember'],
         strings['pt-br']['calendarMonthReferenceDecember']
     ]
-
+    // ------------------------------------------------------------------------------------------
     const dayOfTheWeekReference = [
         strings['pt-br']['calendardayOfTheWeekReferenceSunday'],
         strings['pt-br']['calendardayOfTheWeekReferenceMonday'],
@@ -38,14 +40,22 @@ const Datetime = (props) => {
         strings['pt-br']['calendardayOfTheWeekReferenceFriday'],
         strings['pt-br']['calendardayOfTheWeekReferenceSaturday']
     ]
-
-
+    // ------------------------------------------------------------------------------------------
     const onChange = (dateValue) => {
-        const stringValue = jsDateToStringFormat(dateValue, pythonFormatToMomentJSFormat(dateFormat))
-        const newValue = props.singleValueFieldsHelper(stringValue)
-        props.setValues(newValue)
+        // Reference: https://stackoverflow.com/a/643827
+        if (Object.prototype.toString.call(dateValue) === '[object Date]') {
+            const stringValue = jsDateToStringFormat(dateValue, pythonFormatToMomentJSFormat(dateFormat))
+            const newValue = props.singleValueFieldsHelper(stringValue)
+            props.setValues(newValue)
+        } else {
+            const numberFormat = pythonFormatToNumberMarkerFormat(dateFormat)
+            const unmaskedValue = numberUnmasker(dateValue, numberFormat)
+            const maskedValue = numberMasker(unmaskedValue, numberFormat)
+            const newValue = props.singleValueFieldsHelper(maskedValue)
+            props.setValues(newValue)
+        }
     }
-
+    // ------------------------------------------------------------------------------------------
     let fieldValue = (props.values.length === 0) ? '': props.values[0].value
 
     if (props.field.date_configuration_auto_update) {
@@ -55,7 +65,9 @@ const Datetime = (props) => {
         const today = new Date()
         fieldValue = jsDateToStringFormat(today, pythonFormatToMomentJSFormat(dateFormat))
     }
-
+    console.log(fieldValue)
+    // ------------------------------------------------------------------------------------------
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         if (props.field.date_configuration_date_format_type !== null && props.types.data.field_date_format_type !== null) {
             const format = props.types.data.field_date_format_type.filter(dateFormatType => dateFormatType.id === props.field.date_configuration_date_format_type)
@@ -64,7 +76,8 @@ const Datetime = (props) => {
             }
         }
     }, [props.field.date_configuration_date_format_type, props.types.data.field_date_format_type])
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //########################################################################################//
     const renderMobile = () => {
         return (
             <View>
@@ -77,7 +90,7 @@ const Datetime = (props) => {
             </View>
         )
     }
-
+    //########################################################################################//
     const renderWeb = () => {
         return (
             <div>
@@ -85,9 +98,10 @@ const Datetime = (props) => {
                     <Id values={[{value: fieldValue}]}/>
                 ): (
                     <div>
-                        <Field.Text ref={inputRef} type="text" value={fieldValue} readOnly={true} autoComplete={'whathever'}/>
+                        <Field.Text ref={inputRef} type="text" value={fieldValue} onChange={(e) => onChange(e.target.value)} autoComplete={'whathever'}/>
                         <DateTimePicker 
-                        withoutHourPicker={typeof dateFormat === 'string' && (!(dateFormat.includes('%H') || dateFormat.includes('%M')))}
+                        focusOnInput={true}
+                        withoutHourPicker={typeof(dateFormat) === 'string' && (!(dateFormat.includes('%H') || dateFormat.includes('%M')))}
                         input={inputRef} 
                         onChange={onChange} 
                         initialDay={(fieldValue !== '') ? stringToJsDateFormat(fieldValue, pythonFormatToMomentJSFormat(dateFormat)) : ''}
@@ -99,7 +113,7 @@ const Datetime = (props) => {
             </div>
         )
     }
-
+    //########################################################################################//
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile() 
 }
 
