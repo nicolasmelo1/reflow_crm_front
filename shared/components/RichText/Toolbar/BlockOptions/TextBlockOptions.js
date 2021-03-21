@@ -15,6 +15,7 @@ import {
  * Types defines all of the field types, form types, format of numbers and dates and many other stuff 
  */
 const TextBlockOptions = (props) => {
+    // ------------------------------------------------------------------------------------------
     const getIconFromAlignmentTypeName = (name) => {
         switch (name) {
             case 'left':
@@ -25,7 +26,7 @@ const TextBlockOptions = (props) => {
                 return 'align-right'
         }
     }
-
+    //########################################################################################//
     const renderMobile = () => {
         return (
             <View style={{ flexDirection: 'row' }}>
@@ -43,7 +44,7 @@ const TextBlockOptions = (props) => {
             </View>
         )
     }
-
+    //########################################################################################//
     const renderWeb = () => {
         return (
             <div>
@@ -61,7 +62,7 @@ const TextBlockOptions = (props) => {
             </div>
         )
     }
-
+    //########################################################################################//
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 

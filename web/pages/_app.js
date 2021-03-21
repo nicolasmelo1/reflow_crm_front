@@ -17,9 +17,16 @@ const store = initStore()
 class MyApp extends App {
     constructor(props) {
         super(props)
+        let isPublicUrl = false
+        if (typeof window !== "undefined") {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('public_access_key')) {
+                isPublicUrl = true
+            }
+        }
         this.state = {
             showLogo: false,
-            showSplashScreen: true,
+            showSplashScreen: !isPublicUrl,
             showSetPushNotificationAlert: false
         }
     }

@@ -8,7 +8,13 @@ styled.button`
     color: #0dbf7e;
     border: 0;
     font-size: 25px;
-    margin-bottom: 10px
+    margin-bottom: 10px;
+
+    &:hover {
+        color: #17242D;
+        background-color: #bfbfbf50;
+        border-radius: 5px;
+    }
 `
 :
 styled(TouchableOpacity)``

@@ -2,7 +2,6 @@ import React from 'react'
 import { View, KeyboardAvoidingView, Keyboard } from 'react-native'
 import axios from 'axios'
 import { connect } from 'react-redux'
-import dynamicImport from '../../utils/dynamicImport'
 import generateUUID from '../../utils/generateUUID'
 import isEqual from '../../utils/isEqual'
 import deepCopy from '../../utils/deepCopy'
@@ -29,7 +28,7 @@ const makeDelay = delay(150)
  * we can create it fully native so it works on mobile. 
  * So having full control over the funcionality, as tedious as it might be, is crucial for the success of Reflow.
  * With stuff like this we can: 
- * - Share the same code and keep the same functionality between React Native and React. (I haven't fount any
+ * - Share the same code and keep the same functionality between React Native and React. (I haven't found any
  * library for rich text in React that could support both platforms, on React Native we would need to use a WebView
  * which is far from ideal)
  * - We can further create a docs view in which we can compete as close as possible to Notion and Coda and even
@@ -69,7 +68,7 @@ const makeDelay = delay(150)
  * `createNewPage()` function to get the structure expected.) And returns a Object with a `component` and `text` keys.
  * The `component` is the component that will be rendered in the middle of the text of a `text` block and `text` is
  * the text that will be inside of this component.
- * @param {Function} handleUnmanagedContent - This is an object where each key of the object is a character that should
+ * @param {Object} handleUnmanagedContent - This is an object where each key of the object is a character that should
  * be typed in the rich text in order to do something. `@` in some contexts might be to show a list of users, in others
  * it might be to show a list of fields. If `@` is being used, you can use `#`, '$', and other to open other options. 
  * The combinations are infinite. The value of each key is a callback function which recieves the X and Y position of the caret
@@ -117,7 +116,7 @@ class RichText extends React.Component {
                   JSON.parse(JSON.stringify(this.props.initialData)) : this.createNewPage()
         }
     }
-    
+    // ------------------------------------------------------------------------------------------
     /**
      * Why do we need this?
      * 
@@ -145,7 +144,7 @@ class RichText extends React.Component {
             }))
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Gets the block id by its name
      * 
@@ -161,7 +160,7 @@ class RichText extends React.Component {
             }
         }
     } 
-    
+    // ------------------------------------------------------------------------------------------
     /**
      * Returns the block name by the id of the block
      * 
@@ -179,7 +178,7 @@ class RichText extends React.Component {
         }
         return null
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Gets the alignment type by the name of the alignment
      * 
@@ -195,7 +194,7 @@ class RichText extends React.Component {
         } 
         return null
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * ONLY ON MOBILE
      * 
@@ -211,7 +210,7 @@ class RichText extends React.Component {
             }))
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * WORKS ONLY ON MOBILE
      * 
@@ -238,7 +237,7 @@ class RichText extends React.Component {
             }))
         }
     }
-    
+    // ------------------------------------------------------------------------------------------
     /**
      * ONLY ON MOBILE
      * 
@@ -252,7 +251,7 @@ class RichText extends React.Component {
             mobileKeyboardHeight: height,
         }))
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Event fired when the keyboard or mobile is shown to the user.
      * 
@@ -261,7 +260,7 @@ class RichText extends React.Component {
     onKeyboardDidShow = (e) => {
         this.setKeyboardHeight(e.endCoordinates.height)
     }
-    
+    // ------------------------------------------------------------------------------------------
     /**
      * Event fired when the keyboard or mobile is hidden to the user.
      * 
@@ -270,7 +269,7 @@ class RichText extends React.Component {
     onKeyboardDidHide = () => {
         this.setKeyboardHeight(0)
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Creates a new Page if none was defined by `initialData` props.
      * 
@@ -321,7 +320,7 @@ class RichText extends React.Component {
             ]
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * We update the state by reference, it means this might work like a blackBox for some people.
      * Reference: https://stackoverflow.com/questions/373419/whats-the-difference-between-passing-by-reference-vs-passing-by-value
@@ -348,15 +347,14 @@ class RichText extends React.Component {
         // want this from happening, when we set the next active block to null we put this change in a delay, if the state changes before it
         // we don't set it to null.
         this.nextActiveBlock = activeBlock
-
+        // ------------------------------------------------------------------------------------------
         const checkIfLastPageBlockIsEmptyTextAndIfNotAddIt = () => {
             const lastBlockOfPage = this.state.data.rich_text_page_blocks[this.state.data.rich_text_page_blocks.length - 1]
-            if (
-                this.getBlockTypeNameById(lastBlockOfPage.block_type) !== 'text' || 
-                lastBlockOfPage.rich_text_block_contents.length > 1 || 
-                lastBlockOfPage.rich_text_block_contents[0] === undefined || 
-                !['', '\n'].includes(lastBlockOfPage.rich_text_block_contents[0].text)
-            ) {
+            const lastBlockIsNotAnEmptyTextBlock = this.getBlockTypeNameById(lastBlockOfPage.block_type) !== 'text' || 
+            lastBlockOfPage.rich_text_block_contents.length > 1 || 
+            lastBlockOfPage.rich_text_block_contents[0] === undefined || 
+            !['', '\n'].includes(lastBlockOfPage.rich_text_block_contents[0].text)
+            if (lastBlockIsNotAnEmptyTextBlock) {
                 const alignmentType = this.getAligmentTypeIdByName('left')
                 const blockType = this.getBlockTypeIdByName('text')
                 this.state.data.rich_text_page_blocks.push({
@@ -393,7 +391,7 @@ class RichText extends React.Component {
                 })
             }
         }
-
+        // ------------------------------------------------------------------------------------------
         const update = (activeBlock) => {
             if (this.props.onStateChange) {
                 this.props.onStateChange({...this.state.data})
@@ -407,7 +405,7 @@ class RichText extends React.Component {
                 }))
             }
         }
-
+        // ------------------------------------------------------------------------------------------
         if (isFocus === true) {
             // the focus heap prevents us from changing the focus too much, when too much onFocus is being fired at once
             // we keep the activeBlock on the heap, so during this time, if the user tries to change the focus of the element
@@ -438,7 +436,7 @@ class RichText extends React.Component {
             update(activeBlock)
         }      
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Used for setting the initial data to the 'data' state inside of this component. 
      * 
@@ -450,7 +448,7 @@ class RichText extends React.Component {
             data: data
         }))
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * When the user is uploading a file we usually save a draft, a draft is a temporary file that will only be available
      * for a short period of time.
@@ -482,7 +480,7 @@ class RichText extends React.Component {
         }
         return draftStringId
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * If the allowedBlockTypeIds is defined it means not all blocks should be available in this context, so what we do is filter 
      * the block_types with only the ones that are allowed in the current context. 
@@ -500,7 +498,7 @@ class RichText extends React.Component {
             return (this.props.types?.rich_text?.block_type || [])
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * This function might be a little confusing about how we add the toolbar to the rich text. But the overall idea is simple:
      * 
@@ -565,53 +563,7 @@ class RichText extends React.Component {
             }
         }
     }
-
-    componentDidMount = () => {
-        this._isMounted = true
-        this.source = this.cancelToken.source()
-        // When we create a new data rich text we automatically set the initial. 
-        // because of this we need to propagate this new data to the parent.
-        if (this.props.onStateChange) {
-            this.props.onStateChange({...this.state.data})
-        }
-        this.props.onGetBlockCanContainBlock(this.source)
-        if (process.env['APP'] !== 'web') {
-            Keyboard.addListener('keyboardDidShow', this.onKeyboardDidShow)
-            Keyboard.addListener('keyboardDidHide', this.onKeyboardDidHide)  
-        }
-    }
-
-    componentDidUpdate = (prevProps) => {
-        // checks if initialData has changed, than checks if it is the same state defined here
-        // and then checks if it is an object. This is used so when we propagate the data to the parent
-        // it does not propagate back.
-        if (
-            !isEqual(this.props.initialData, prevProps.initialData) &&
-            !isEqual(this.props.initialData, this.state.data) &&
-            this.props.initialData && 
-            Object.keys(this.props.initialData).length !== 0
-        ) {
-            this.setUpdateData(JSON.parse(JSON.stringify(this.props.initialData)))
-        }
-    }
-
-    componentWillUnmount = () => {
-        this._isMounted = false
-        if (process.env['APP'] !== 'web') {
-            Keyboard.removeListener('keyboardDidShow', this.onKeyboardDidShow)
-            Keyboard.removeListener('keyboardDidHide', this.onKeyboardDidHide)  
-        }
-        if (this.source) {
-            this.source.cancel()
-        }
-
-        // Remove drafts, since we will not be using them anymore when unmounting this component
-        const draftsToRemove = Object.keys(this.drafts)
-        for (let i = 0; i < draftsToRemove.length; i++) {
-            this.props.onRemoveDraft(draftsToRemove[i])
-        }
-    }
-
+    // ------------------------------------------------------------------------------------------
     getToolbarProps = () => {
         const ContentOptionComponent = this.toolbar.current.contentOptionComponent
         const BlockOptionComponent = this.toolbar.current.blockOptionComponent
@@ -630,7 +582,54 @@ class RichText extends React.Component {
         }
         return toolbarProps
     }
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    componentDidMount = () => {
+        this._isMounted = true
+        this.source = this.cancelToken.source()
+        // When we create a new data rich text we automatically set the initial. 
+        // because of this we need to propagate this new data to the parent.
+        if (this.props.onStateChange) {
+            this.props.onStateChange({...this.state.data})
+        }
+        this.props.onGetBlockCanContainBlock(this.source)
+        if (process.env['APP'] !== 'web') {
+            Keyboard.addListener('keyboardDidShow', this.onKeyboardDidShow)
+            Keyboard.addListener('keyboardDidHide', this.onKeyboardDidHide)  
+        }
+    }
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    componentDidUpdate = (prevProps) => {
+        // checks if initialData has changed, than checks if it is the same state defined here
+        // and then checks if it is an object. This is used so when we propagate the data to the parent
+        // it does not propagate back.
+        if (
+            !isEqual(this.props.initialData, prevProps.initialData) &&
+            !isEqual(this.props.initialData, this.state.data) &&
+            this.props.initialData && 
+            Object.keys(this.props.initialData).length !== 0
+        ) {
+            this.setUpdateData(JSON.parse(JSON.stringify(this.props.initialData)))
+        }
+    }
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    componentWillUnmount = () => {
+        this._isMounted = false
+        if (process.env['APP'] !== 'web') {
+            Keyboard.removeListener('keyboardDidShow', this.onKeyboardDidShow)
+            Keyboard.removeListener('keyboardDidHide', this.onKeyboardDidHide)  
+        }
+        if (this.source) {
+            this.source.cancel()
+        }
 
+        // Remove drafts, since we will not be using them anymore when unmounting this component
+        const draftsToRemove = Object.keys(this.drafts)
+        for (let i = 0; i < draftsToRemove.length; i++) {
+            this.props.onRemoveDraft(draftsToRemove[i])
+        }
+    }
+    //########################################################################################//
     renderMobile = () => {
         return (
             <RichTextContainer height={this.props.height} onLayout={(e) => this.setRichTextHeight(e.nativeEvent.layout.height)}>
@@ -691,7 +690,7 @@ class RichText extends React.Component {
             </RichTextContainer>
         )
     }
-    
+    //########################################################################################//
     renderWeb = () => {
         return (
             <RichTextContainer className={'rich-text-container'} height={this.props.height}>
@@ -735,7 +734,7 @@ class RichText extends React.Component {
             </RichTextContainer>
         )
     }
-
+    //########################################################################################//
     render = () => {
         return process.env['APP'] === 'web' ? this.renderWeb() : this.renderMobile()
     }

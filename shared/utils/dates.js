@@ -8,23 +8,31 @@ const momentJSDateFormat = {
     '%M': 'mm',
     '%S': 'ss'
 }
-
+// ------------------------------------------------------------------------------------------
+const pythonFormatToNumberMarkerFormat = (pythonFormat) => {
+    let dateFormat = pythonFormat
+    for (let key in momentJSDateFormat) {
+        const newFormat = momentJSDateFormat[key].replace(new RegExp(momentJSDateFormat[key].charAt(0), 'g'), '0')
+        dateFormat = dateFormat.replace(key, newFormat)
+    }
+    return dateFormat
+}
+// ------------------------------------------------------------------------------------------
 const pythonFormatToMomentJSFormat = (pythonFormat) => {
     let format = pythonFormat
-    for (var key in momentJSDateFormat) {
+    for (let key in momentJSDateFormat) {
         if (momentJSDateFormat.hasOwnProperty(key)) {
             format = format.replace(key, momentJSDateFormat[key])
         }
     }
     return format
 }
-
-
+// ------------------------------------------------------------------------------------------
 const stringToJsDateFormat = (date, format) => {
     date = moment(date, format);
     return date.toDate()
 }
-
+// ------------------------------------------------------------------------------------------
 const jsDateToStringFormat = (date, format) => {
     let newValue = format
     if (typeof newValue === 'string') {
@@ -55,7 +63,8 @@ const jsDateToStringFormat = (date, format) => {
     }
     return newValue
 }
-
+// ------------------------------------------------------------------------------------------
 export {pythonFormatToMomentJSFormat}
 export {stringToJsDateFormat}
 export {jsDateToStringFormat}
+export { pythonFormatToNumberMarkerFormat }

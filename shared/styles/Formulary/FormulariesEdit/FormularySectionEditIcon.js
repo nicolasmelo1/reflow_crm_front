@@ -8,7 +8,7 @@ const getColor = (props) => {
     } else if (props.isEditing && props.isConditional) {
         return '#0dbf7e'
     } else {
-        return '#f2f2f2'
+        return '#fff'
     }
 }
 

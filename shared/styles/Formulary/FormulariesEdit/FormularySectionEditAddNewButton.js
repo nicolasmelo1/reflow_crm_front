@@ -8,11 +8,12 @@ styled.button`
     text-align: center;
     border: 0;
     padding: 5px;
-    background-color: #0E5741;
+    background-color: #0dbf7e;
     border-radius: 5px;
     padding: 5px;
     width: 100%;
     font-size: 25px;
+    margin-top: 50px;
     margin-bottom: 10px;
 `
 :

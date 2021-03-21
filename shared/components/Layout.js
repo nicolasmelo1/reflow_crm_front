@@ -27,6 +27,9 @@ import {
     faCopy,
     faCog, 
     faBell, 
+    faFileAlt,
+    faShareAlt,
+    faFilePdf,
     faArrowsAlt, 
     faArrowLeft,
     faBars,
@@ -67,11 +70,14 @@ library.add(
     faBell, 
     faBorderAll,
     faArrowsAlt, 
+    faShareAlt,
     faArrowLeft,
     faBars,
     faPen, 
     faFont,
     faList,
+    faFileAlt,
+    faFilePdf,
     faImage,
     faTable,
     faFilter, 
@@ -97,6 +103,10 @@ library.add(
  * IMPORTANT: When you create a new Page, PLEASE use this component as the first tag of your page.
  * 
  * @param {String} title - (ONLY WEB) - Defines the title tag of the page
+ * @param {String} companyId - (Optional). Defines the companyId, usually this is retrieved when the user logs in, so no need for this props.
+ * But sometimes the user is not logged in and we might want to display a formulary or some other thing to the user, on those times we can send a props
+ * so with it we automatically set the companyId.
+ * @param {String} publicAccessKey - Optional.
  * @param {Boolean} isNotLogged - (ONLY MOBILE) - Defines that the user is not logged in.
  * @param {Boolean} addTemplates - If set to true we will load a modal for the user to select the templates, otherwise we show the contents normally.
  * @param {Boolean} hideNavBar - (optional) (ONLY WEB) - Hides the navbar header
@@ -134,6 +144,20 @@ class Layout extends React.Component {
             this.setState(state => state.tokenLoaded = true)
         }
         return token
+    }
+
+    setCompanyId = () => {
+        if (this.props?.login?.companyId) {
+            agent.setCompanyId(this.props.login.companyId)
+        } else {
+            agent.setCompanyId(this.props.companyId)
+        }
+    }
+
+    setPublicAccessKey = () => {
+        if (this.props.publicAccessKey) {
+            agent.setPublicAccessKey(this.props.publicAccessKey)
+        }
     }
 
     checkIfUserInAdminUrl = () => {
@@ -175,7 +199,8 @@ class Layout extends React.Component {
     }
 
     setLogout = (data) => {
-        if (data && !this.props.isNotLogged) {
+        const currentUrl = Router.pathname
+        if (data && pathsAsArray.filter(path => path.loginOnly === true).map(path => path.asUrl).includes(currentUrl).length > 0) {
             if (process.env['APP'] === 'web') {
                 Router.push(paths.login().asUrl, paths.login().asUrl,{ shallow: true })
             } else {
@@ -186,13 +211,15 @@ class Layout extends React.Component {
     }
 
     componentDidUpdate = () => {
-        agent.setCompanyId(this.props.login.companyId)
+        this.setCompanyId()
+        this.setPublicAccessKey()
     }
 
     componentDidMount = () => {
         this._ismounted = true
         this.checkIfUserInAdminUrl()
-        agent.setCompanyId(this.props.login.companyId)
+        this.setCompanyId()
+        this.setPublicAccessKey()
         agent.setLogout(this.setLogout)
         agent.setPermissionsHandler(this.permissionsHandler)
         this.props.getDataTypes()

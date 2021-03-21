@@ -197,10 +197,16 @@ const Fields = (props) => {
 
     const renderWeb = () => {
         return (
-            <Field.Container ref={fieldContainerRef} invalid={checkErrors()}>
+            <Field.Container ref={fieldContainerRef} 
+            invalid={checkErrors()} 
+            labelIsHidden={props.field.label_is_hidden} 
+            fieldIsHidden={props.field.field_is_hidden}
+            >
                 <div>
                     {(props.field.label_is_hidden) ? '' : (
-                        <Field.FieldTitle.Label>
+                        <Field.FieldTitle.Label
+                        isConditional={props.isSectionConditional}
+                        >
                             { props.field.label_name }
                             <Field.FieldTitle.Required>{(props.field.required) ? '*': ''}</Field.FieldTitle.Required>
                             {typeName === 'form' && props.type !== 'embbed' && props.field?.form_field_as_option ? (

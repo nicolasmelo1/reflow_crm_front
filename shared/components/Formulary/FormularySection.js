@@ -49,13 +49,13 @@ const FormularySection = (props) => {
         return (
             <Formularies.FieldsContainer isConditional={props.removeSection !== null}>
                 {props.removeSection ? (
-                    <Row>
-                        <Col>
-                            <Formularies.MultiForm.RemoveButton onClick={e=> {props.removeSection(props.section.id, props.sectionDataIndex)}}>
-                                <FontAwesomeIcon icon="trash"/>
-                            </Formularies.MultiForm.RemoveButton>
-                        </Col>
-                    </Row>
+                    <div style={{ display: 'flex', flexDirection: 'row-reverse'}}>
+                        <Formularies.MultiForm.RemoveButton 
+                        onClick={e=> {props.removeSection(props.section.id, props.sectionDataIndex)}}
+                        >
+                            <FontAwesomeIcon icon="trash"/>
+                        </Formularies.MultiForm.RemoveButton>
+                    </div>
                 ): ''}
                 {props.fields.map((element, index)=>(
                     <Formularies.FieldContainer key={element.id}>

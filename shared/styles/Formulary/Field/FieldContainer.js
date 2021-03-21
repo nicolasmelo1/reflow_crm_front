@@ -5,7 +5,7 @@ import { View } from 'react-native'
 export default process.env['APP'] === 'web' ?
 styled.div`
     border-radius: 10px;
-    padding: 5px;
+    padding: ${props => props.fieldIsHidden && props.labelIsHidden ? '0' : '5px'};
     ${props => props.invalid ? 'border: 1px solid red;': ''}
 `
 :

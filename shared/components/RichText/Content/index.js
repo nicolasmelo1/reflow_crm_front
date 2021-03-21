@@ -16,6 +16,7 @@ import {
  * structure.
  */
 const Content = (props) => {
+    //########################################################################################//
     const renderMobile = () => {
         return (
             <ContentText 
@@ -32,7 +33,7 @@ const Content = (props) => {
             </ContentText>
         )
     }
-
+    //########################################################################################//
     const renderWeb = () => {
         return (
             <ContentText 
@@ -49,7 +50,7 @@ const Content = (props) => {
             </ContentText>
         )
     }
-
+    //########################################################################################//
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 

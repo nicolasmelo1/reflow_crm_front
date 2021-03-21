@@ -1,3 +1,4 @@
+// ------------------------------------------------------------------------------------------
 /** 
  * WORKS ONLY FOR WEB
  * 
@@ -29,7 +30,7 @@ const getCaretCoordinatesWeb = () => {
         }   
     }
 }
-
+// ------------------------------------------------------------------------------------------
 /**
  * Got this directly from Notion actually. Saw that they used this for handling the arrow navigation (at least that's what i understood)
  * The idea is that when we move we update the arrowNavigation state object on the rich text component. This state holds the information
@@ -105,8 +106,7 @@ const setCaretPositionIfArrowNavigationWeb = (inputElement, newRange, arrowNavig
     )
     newRange.collapse(true)
 }
-
-
+// ------------------------------------------------------------------------------------------
 /**
  * This function is used to calculate the highest and lowest spans in the text.
  * 
@@ -192,7 +192,7 @@ const getHighestAndLowestBiggerContents = (inputElement) => {
         lowest: lowest
     }
 }
-
+// ------------------------------------------------------------------------------------------
 /**
  * This checks if the caret is in highest or lowest position, highest position means the caret is in the first line (doesn't matter
  * the size of the text in this line). And lowest position means the caret is in the last line of the text.
@@ -241,7 +241,7 @@ const caretIsInHighestOrLowestPositionWeb = (inputElement) => {
     }
     return isHighestOrLowest
 }
-
+// ------------------------------------------------------------------------------------------
 
 export {
     getCaretCoordinatesWeb,

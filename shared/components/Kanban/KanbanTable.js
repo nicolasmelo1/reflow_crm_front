@@ -51,6 +51,7 @@ const KanbanTable = (props) => {
     const dataSource = React.useRef(props.cancelToken.source())
     const [isAlertShown, setIsAlertShown] = useState(false)
 
+    // ------------------------------------------------------------------------------------------
     /**
      * When the kanban has many phases, the kanban can be bigger than the screen of the user. 
      * To enable the usability of the kanban we add an horizontal scroll so the user can scroll through each phase. 
@@ -76,7 +77,7 @@ const KanbanTable = (props) => {
             setShownDimensions(props.collapsedDimensions, props.dimensionPhases, kanbanHolderRef.current.scrollLeft, kanbanHolderRef.current.offsetWidth)
         }
     }
-    
+    // ------------------------------------------------------------------------------------------
     /**
      * When the user scrolls horizontally we need to update the shown dimensions of the user
      * @param {BigInteger} scrollWidthPosition - Where the scroll is positioned in the screen
@@ -85,7 +86,7 @@ const KanbanTable = (props) => {
     const onScrollHorizontalKanban = (scrollWidthPosition, scrollContainerWidth) => {
         setShownDimensions(props.collapsedDimensions, props.dimensionPhases, scrollWidthPosition, scrollContainerWidth)
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Responsible for paginating the columns to show. First thing to understand is that we change the pagination as
      * the user scrolls horizontally, and since we don't want to retrieve the data everytime he scrolls we make a delay
@@ -103,14 +104,14 @@ const KanbanTable = (props) => {
             formName: props.formName,
             scrollPosition: scrollWidthPosition
         }
-
+        // ------------------------------------------------------------------------------------------
         const isDimensionCollapsed = (dimension) => {
             if (dimension && collapsedPhases.includes(dimension.id)) {
                 return true
             }   
             return false
         }
-
+        // ------------------------------------------------------------------------------------------
         if (isMountedRef.current) {
             let endDimensionIndexToRetrieveDataFor = null
             let startDimensionIndexToRetrieveDataFor = null
@@ -133,7 +134,7 @@ const KanbanTable = (props) => {
         }
         return null
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * This is used to update the dimensions shown to the user in the screen, it's just used to update for what dimensions should we
      * retrieve data and which not. This is usually used when the user collapses a dimension.
@@ -143,7 +144,8 @@ const KanbanTable = (props) => {
             setShownDimensions(props.collapsedDimensions, props.dimensionPhases, kanbanHolderRef.current.scrollLeft, kanbanHolderRef.current.offsetWidth)
         }
     }
-
+    // ------------------------------------------------------------------------------------------
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         isMountedRef.current = true
         dataSource.current = props.cancelToken.source()
@@ -166,14 +168,14 @@ const KanbanTable = (props) => {
             }
         }
     }, [])
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * When the formName changes it's like we haven't retrieved no data. So we start fresh.
      */
     useEffect(() => {
         retrievedDataForDimensions.current = []
     }, [props.formName])
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * When the defaultDimension changes this means that we need to load all of the data of the phases of this dimension.
      */
@@ -182,7 +184,7 @@ const KanbanTable = (props) => {
             props.onGetDimensionPhases(dataSource.current, props.formName, props.defaultDimension.id)
         }
     }, [props.defaultDimension])
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * When the dimensionPhases are loaded, we need to set what is shown in screen and what is NOT shown.
      * For that we need to guarantee that the dimensionPhases were loaded and the kanban is actually mounted on screen
@@ -197,7 +199,7 @@ const KanbanTable = (props) => {
             })
         }
     }, [props.dimensionPhases])
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * When the dimensions shown on screen changed, the default dimension change or the default kanban card change
      * we load the data for the kanban. This only handles the FIRST LOAD OF DATA. So if you already loaded the data, this will not load the data again.
@@ -228,13 +230,14 @@ const KanbanTable = (props) => {
         oldDefaultDimension.current = deepCopy(props.defaultDimension)
         oldDefauldKanbanCard.current = deepCopy(props.defaultKanbanCard)
     }, [props.defaultDimension, props.defaultKanbanCard, props.dimensionsToShow])
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //########################################################################################//
     const renderMobile = () => {
         return (
             <View></View>
         )
     }
-
+    //########################################################################################//
     const renderWeb = () => {
         return (
             <KanbanContainer 
@@ -275,7 +278,7 @@ const KanbanTable = (props) => {
             </KanbanContainer>
         )   
     }
-
+    //########################################################################################//
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 

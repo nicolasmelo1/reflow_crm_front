@@ -30,7 +30,7 @@ const KanbanConfigurationForm = (props) => {
     const [dimensionSelectIsOpen, setDimensionSelectIsOpen] = useState(false)
     const [dimensionOptions, setDimensionOptions] = useState([])
     const [cardToEdit, setCardToEdit] = useState(null)
-
+    // ------------------------------------------------------------------------------------------
     /**
      * When you create a new kanbanCard we need to create the start data of the 
      * kanban card so the kanbanCardConfigurationForm can handle. 
@@ -40,7 +40,7 @@ const KanbanConfigurationForm = (props) => {
         id: null,
         kanban_card_fields: []
     })
-
+    // ------------------------------------------------------------------------------------------
     /**
      * When you select or unselect a dimension we need to set the defaults. That's exaclty what this does.
      * This just update the defaults for the Dimension when it changes in the selection.
@@ -67,7 +67,7 @@ const KanbanConfigurationForm = (props) => {
             props.formName
         )
     }
-    
+    // ------------------------------------------------------------------------------------------
     /**
      * When the user clicks the card that he wants to use we fire this function so this way we set the id of the kanban
      * card to use as default and it's fields.
@@ -98,7 +98,7 @@ const KanbanConfigurationForm = (props) => {
             )
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Function fired when the user clicks the trash icon to delete a kanban card.
      * We recieve a kanban card id and removes it from the cards array in redux.
@@ -119,7 +119,8 @@ const KanbanConfigurationForm = (props) => {
             props.formName
         )    
     }
-
+    // ------------------------------------------------------------------------------------------
+    /////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Sets the options for the dimensionSelect. This is all of the fields the user can select as dimension. 
      * Right now the user can only select fields that are of type `option`.
@@ -128,16 +129,16 @@ const KanbanConfigurationForm = (props) => {
         const dimensionsOptions = props.dimensionFields.map(dimensionField=> ({value: dimensionField.id, label:dimensionField.label_name}))
         setDimensionOptions(dimensionsOptions)
     }, [props.dimensionFields])
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     // is the kanbanCardForm open or not
     const cardFormIsOpen = cardToEdit !== null
-
+    //########################################################################################//
     const renderMobile = () => {
         return (
             <View></View>
         )
     }
-
+    //########################################################################################//
     const renderWeb = () => {
         return (
             <KanbanConfigurationFormContainer>
@@ -183,7 +184,7 @@ const KanbanConfigurationForm = (props) => {
             </KanbanConfigurationFormContainer>
         )
     }
-
+    //########################################################################################//
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 

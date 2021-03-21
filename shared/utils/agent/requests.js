@@ -1,7 +1,15 @@
 import axios from 'axios'
-import { getToken, setHeader, API_ROOT, logoutFunctionForView, setStorageToken, permissionsHandlerForView } from './utils'
+import { 
+    publicAccessKey,
+    getToken, 
+    setHeader, 
+    API_ROOT, 
+    logoutFunctionForView, 
+    setStorageToken, 
+    permissionsHandlerForView 
+} from './utils'
 
-
+// ------------------------------------------------------------------------------------------
 /**
  * Function that fires when a exception is catched in the requests object functions.
  * This is only for retrieving a new token while firing a request. This way, the token is refreshed 
@@ -46,7 +54,7 @@ const refreshToken = async (response, callback, url, params, headers) => {
     } 
     return response
 }
-
+// ------------------------------------------------------------------------------------------
 /**
  * This function is responsible for handling all of the exceptions of a request, if it is something about the login or about
  * jwt_token, we handle it here, otherwise we 
@@ -70,9 +78,35 @@ const exceptionHandler = async (response, callback, url, params, headers) => {
 
     return response
 }
-
-
-/***
+// ------------------------------------------------------------------------------------------
+/**
+ * Checks if the public access key is defined, if it is we bypass everything and adds the public_key parameter to
+ * the request. This way we don't have to change anything when making public requests from when making private requests.
+ * 
+ * If you don't know yet, if the public_key is defined, we can access, by the same url private data that otherwise would
+ * be available only for authenticated users. For example, when exposing a formulary for unauthenticated users we don't 
+ * have to rewrite everything twice we only append the public_key to the request so users not logged in, can access the formulary data.
+ * 
+ * Obviously this data will be retrieved modified when retrieved publicly, but its easier to manage than have to places to make changes to
+ * when applying changes.
+ * 
+ * @param {String} path - The Path to append the `public_key` query parameter to.
+ * 
+ * @returns {String} - The url with the parameter to call, or the url unmodified. 
+ */
+const getUrl = (path) => {
+    let url = `${API_ROOT}${path}`
+    if (![null].includes(publicAccessKey)) {
+        if (url.includes('?')) {
+            url = url + `&public_key=${publicAccessKey}`
+        } else {
+            url = url + `?public_key=${publicAccessKey}`
+        }
+    }
+    return url
+}
+// ------------------------------------------------------------------------------------------
+/**
  * The main object functions for api requests to our backend, PLEASE use this instead of calling the apis directly.
  * It contains 4 main functions for the 4 main request methods: GET, POST, DELETE and PUT.
  * Usage example:
@@ -86,7 +120,7 @@ const requests = {
             source = new CancelToken(function (_) {})
         }
         try {
-            return await axios.delete(`${API_ROOT}${url}`, {
+            return await axios.delete(getUrl(url), {
                 params: params,
                 headers: Object.assign(setHeader(await getToken()), headers),
                 cancelToken: source.token
@@ -106,7 +140,7 @@ const requests = {
             source = new CancelToken(function (_) {})
         }
         try {
-            return await axios.get(`${API_ROOT}${url}`, {
+            return await axios.get(getUrl(url), {
                 params: params,
                 headers: Object.assign(setHeader(await getToken()), headers),
                 cancelToken: source.token
@@ -124,7 +158,7 @@ const requests = {
             source = new CancelToken(function (_) {})
         }
         try {
-            return await axios.put(`${API_ROOT}${url}`, body, { 
+            return await axios.put(getUrl(url), body, { 
                 headers: Object.assign(setHeader(await getToken()), headers),
                 cancelToken: source.token
             })
@@ -139,7 +173,7 @@ const requests = {
             source = new CancelToken(function (_) {})
         }
         try {
-            return await axios.post(`${API_ROOT}${url}`, body, { 
+            return await axios.post(getUrl(url), body, { 
                 headers: Object.assign(setHeader(await getToken()), headers),
                 cancelToken: source.token
             })
@@ -151,5 +185,5 @@ const requests = {
         }
     }
 }
-
+// ------------------------------------------------------------------------------------------
 export default requests

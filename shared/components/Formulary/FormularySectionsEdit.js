@@ -31,7 +31,7 @@ const FormularySectionsEdit = (props) => {
     const [isMoving, setIsMoving] = useState(false)
     const [fieldIsMoving, setFieldIsMoving] = useState(false)
     const [fieldOptions, setFieldOptions] = useState([])
-
+    // ------------------------------------------------------------------------------------------
     const reorder = () => {
         props.data.depends_on_form = props.data.depends_on_form.map((section, sectionIndex) => {
             section.form_fields = section.form_fields.map((field, fieldIndex) => {
@@ -42,7 +42,7 @@ const FormularySectionsEdit = (props) => {
             return section
         })
     }
-
+    // ------------------------------------------------------------------------------------------
     // almost equal as the onDrop() function in SidebarFormEdit component in the Sidebar folder
     const onMoveField = (movedSectionFieldIndex, movedFieldIndex, targetSectionFieldIndex, targetFieldIndex) => {
         const movedElement = {...props.data.depends_on_form[movedSectionFieldIndex].form_fields[movedFieldIndex]}
@@ -64,8 +64,8 @@ const FormularySectionsEdit = (props) => {
             props.onChangeFormularySettingsState({...props.data})
         }
     }
-
-     // almost equal as the onDrop() function in SidebarGroupEdit component in the Sidebar folder
+    // ------------------------------------------------------------------------------------------
+    // almost equal as the onDrop() function in SidebarGroupEdit component in the Sidebar folder
     const onMoveSection = (movedSectionIndex, targetSectionIndex) => {
         let newArrayWithoutMoved = props.data.depends_on_form.filter((_, index) => index !== movedSectionIndex)
         newArrayWithoutMoved.splice(targetSectionIndex, 0, props.data.depends_on_form[movedSectionIndex])
@@ -76,7 +76,7 @@ const FormularySectionsEdit = (props) => {
             props.onUpdateFormularySettingsSection(props.data.depends_on_form[targetSectionIndex], props.formId, props.data.depends_on_form[targetSectionIndex].id)
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     const onAddNewSection = () => {
         const defaultSectionData = {
             id:	null,
@@ -96,7 +96,7 @@ const FormularySectionsEdit = (props) => {
         reorder()
         props.onChangeFormularySettingsState({...props.data})
     }
-
+    // ------------------------------------------------------------------------------------------
     const onAddNewField = (sectionIndex) => {
         const defaultFieldData = {
             id: null,
@@ -134,7 +134,7 @@ const FormularySectionsEdit = (props) => {
         reorder()
         props.onChangeFormularySettingsState({...props.data})
     }
-
+    // ------------------------------------------------------------------------------------------
     const removeSection = (sectionIndex) => {
         const sectionId = {...props.data.depends_on_form[sectionIndex]}
         props.data.depends_on_form.splice(sectionIndex, 1)
@@ -144,7 +144,7 @@ const FormularySectionsEdit = (props) => {
             props.onRemoveFormularySettingsSection(props.formId, sectionId.id)
         }
     } 
-
+    // ------------------------------------------------------------------------------------------
     const removeField = (sectionIndex, fieldIndex) => {
         const fieldId = {...props.data.depends_on_form[sectionIndex].form_fields[fieldIndex]}
         props.data.depends_on_form[sectionIndex].form_fields.splice(fieldIndex, 1)
@@ -154,7 +154,7 @@ const FormularySectionsEdit = (props) => {
             props.onRemoveFormularySettingsField(props.formId, fieldId.id)
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     const onUpdateField = (sectionIndex, fieldIndex, newFieldData) => {
         props.data.depends_on_form[sectionIndex].form_fields[fieldIndex] = newFieldData
         if (![null, -1].includes(newFieldData.id)) {
@@ -164,7 +164,7 @@ const FormularySectionsEdit = (props) => {
             props.onCreateFormularySettingsField(newFieldData, props.formId, sectionIndex, fieldIndex)
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     const onUpdateSection = (sectionIndex, newSectionData) => {
         props.data.depends_on_form[sectionIndex] = newSectionData
         if (![null, -1].includes(newSectionData.id)) {
@@ -174,54 +174,59 @@ const FormularySectionsEdit = (props) => {
             props.onCreateFormularySettingsSection(newSectionData, props.formId, sectionIndex)
         }
     }
-    
+    // ------------------------------------------------------------------------------------------
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         if (props.data.depends_on_form) {
             const sectionsData = [...props.data.depends_on_form]
             setFieldOptions([].concat.apply([], sectionsData.map(section => section.form_fields.filter(field => field && field.id))))
         }
     }, [props.data.depends_on_form])
-    
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //########################################################################################//
     const renderMobile = () => {
         return (
             <View></View>
         )
     }
-
+    //########################################################################################//
     const renderWeb = () => {
         return (
             <div>
-                <Formularies.EditButton onClick={props.setIsEditing} label={strings['pt-br']['formularyFinishEditButtonLabel']} description={strings['pt-br']['formularyFinishEditButtonDescription']}/>
                 {props.data.depends_on_form ? props.data.depends_on_form.map((section, index)=> (
-                    <FormularySectionEdit key={index} 
-                    onUpdateSection={onUpdateSection} 
-                    onUpdateField={onUpdateField}
-                    sectionIndex={index}
-                    section={section} 
-                    fieldIsMoving={fieldIsMoving}
-                    removeSection={removeSection}
-                    removeField={removeField}
-                    setFieldIsMoving={setFieldIsMoving}
-                    isMoving={isMoving}
-                    onMoveSection={onMoveSection}
-                    onMoveField={onMoveField}
-                    setIsMoving={setIsMoving}
-                    onAddNewField={onAddNewField}
-                    types={props.types} 
-                    fieldOptions={fieldOptions}
-                    formulariesOptions={props.formulariesOptions}
-                    onTestFormularySettingsFormulaField={props.onTestFormularySettingsFormulaField}
-                    formName={props.formName}
-                    formId={props.formId}
-                    userOptions={props.userOptions}
-                    />
+                    <React.Fragment key={index}>
+                        <FormularySectionEdit
+                        onUpdateSection={onUpdateSection} 
+                        onUpdateField={onUpdateField}
+                        sectionIndex={index}
+                        section={section} 
+                        fieldIsMoving={fieldIsMoving}
+                        removeSection={removeSection}
+                        removeField={removeField}
+                        setFieldIsMoving={setFieldIsMoving}
+                        isMoving={isMoving}
+                        onMoveSection={onMoveSection}
+                        onMoveField={onMoveField}
+                        setIsMoving={setIsMoving}
+                        onAddNewField={onAddNewField}
+                        types={props.types} 
+                        fieldOptions={fieldOptions}
+                        formulariesOptions={props.formulariesOptions}
+                        onTestFormularySettingsFormulaField={props.onTestFormularySettingsFormulaField}
+                        formName={props.formName}
+                        formId={props.formId}
+                        userOptions={props.userOptions}
+                        />
+                        <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}}>
+                            <div style={{ width: '100%', border: '1px dashed #bfbfbf'}}/>
+                        </div>
+                    </React.Fragment>
                 )): ''}
                 <FormulariesEdit.AddNewSectionButton text={strings['pt-br']['formularyEditAddNewSectionButtonLabel']} onClick={e=>{onAddNewSection()}} />
-
             </div>
         )
     }
-
+    //########################################################################################//
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 

@@ -8,6 +8,10 @@ styled.button`
     background-color: transparet;
     color: red;
     border: 0;
+
+    &:hover {
+        color: #17242D;
+    }
 `
 :
 styled(TouchableOpacity)``

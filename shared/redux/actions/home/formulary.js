@@ -167,6 +167,24 @@ const onTestFormularySettingsFormulaField = (source, formId, text) => {
     }
 }
 
+const onGetPublicFormulary = (source, formId) => {
+    return (_) => {
+        return agent.http.FORMULARY.getPublicFormularySettings(source, formId)
+    }
+}
+
+const onUpdatePublicFormulary = (formId, greetingsText, descriptionText, isToShowSubmitAnotherButton, fieldIds) => {
+    return (_) => {
+        const body = {
+            form_id: formId,
+            greetings_message: greetingsText,
+            description_message: descriptionText,
+            is_to_submit_another_response_button: isToShowSubmitAnotherButton,
+            public_access_form_public_access_fields: fieldIds.map(fieldId => ({ field_id: fieldId }))
+        }
+        return agent.http.FORMULARY.updatePublicFormularySettings(body, formId)
+    }
+}
 
 export default {
     onOpenFormulary,
@@ -183,5 +201,7 @@ export default {
     onCreateFormularySettingsField,
     onUpdateFormularySettingsField,
     onRemoveFormularySettingsField,
-    onTestFormularySettingsFormulaField
+    onTestFormularySettingsFormulaField,
+    onUpdatePublicFormulary,
+    onGetPublicFormulary
 }

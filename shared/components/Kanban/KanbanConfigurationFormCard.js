@@ -24,13 +24,13 @@ import {
  */
 const KanbanConfigurationFormCard = (props) => {
     const [kanbanCardIdToRemove, setKanbanCardIdToRemove] = useState(null)
-
+    //########################################################################################//
     const renderMobile = () => {
         return (
             <View></View>
         )
     }
-
+    //########################################################################################//
     const renderWeb = () => {
         return (
             <KanbanConfigurationFormCardsContainer>
@@ -71,7 +71,7 @@ const KanbanConfigurationFormCard = (props) => {
             </KanbanConfigurationFormCardsContainer>
         )
     }
-
+    //########################################################################################//
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 

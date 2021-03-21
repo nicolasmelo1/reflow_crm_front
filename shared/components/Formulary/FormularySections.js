@@ -32,7 +32,7 @@ import { strings } from '../../utils/constants'
 const FormularySections = (props) => {
     const [conditionalSections,  setConditionalSections] = useState([])
     const [sectionsToLoad, setSectionsToLoad] = useState([])
-
+    // ------------------------------------------------------------------------------------------
     const addNewSectionsData = (sectionId) => {
         return {
             id: null,
@@ -40,12 +40,12 @@ const FormularySections = (props) => {
             dynamic_form_value: []
         }
     }
-    
+    // ------------------------------------------------------------------------------------------
     const onChangeSectionData = (sectionsData, conditionals=conditionalSections) => {
         const newSectionsData = toggleConditionals(sectionsData, conditionals)
         props.setFilledData(props.data.id, [...newSectionsData])
     }
-
+    // ------------------------------------------------------------------------------------------
     const toggleConditionals = (sectionsData, conditionals) => {
         let newSectionsData = [...sectionsData]
         let formValues = sectionsData.map(sectionData=> sectionData.dynamic_form_value)
@@ -96,13 +96,13 @@ const FormularySections = (props) => {
         setSectionsToLoad(props.sections.filter(section => !conditionalsNotToToggleIds.includes(section.id)))
         return newSectionsData
     }
-
+    // ------------------------------------------------------------------------------------------
     function getNewSectionData() {
         return props.sections
             .filter(section => !(!['', null].includes(section.conditional_value) || section.form_type==='multi-form'))
             .map(section=> addNewSectionsData(section.id))
     }
-
+    // ------------------------------------------------------------------------------------------
     function onLoadData(sectionsData, conditionals) {
         let newSectionsData = getNewSectionData()
         const sectionsDataIds = sectionsData.map(sectionData=> sectionData.form_id)
@@ -116,12 +116,12 @@ const FormularySections = (props) => {
         props.setFilledData(props.data.id, [...newSectionsData])
         //onChangeSectionData(sectionsData, conditionals)
     }
-
+    // ------------------------------------------------------------------------------------------
     function buildInitialData(conditionals) {
         const newSectionsData = getNewSectionData()
         onChangeSectionData(newSectionsData, conditionals)
     }
-
+    // ------------------------------------------------------------------------------------------
     const addSection = (e, section) => {
         e.preventDefault()
         if (section.form_type === 'multi-form') {
@@ -131,7 +131,7 @@ const FormularySections = (props) => {
         }
         props.setFilledData(props.data.id, [...props.data.depends_on_dynamic_form])
     }
-
+    // ------------------------------------------------------------------------------------------
     const updateSection = (newData, sectionId, sectionDataIndex) => {
         let changedData = props.data.depends_on_dynamic_form.filter(sectionData=> sectionId.toString() === sectionData.form_id.toString())
         const unchangedData = props.data.depends_on_dynamic_form.filter(sectionData=> sectionId.toString() !== sectionData.form_id.toString())
@@ -141,7 +141,7 @@ const FormularySections = (props) => {
 
         onChangeSectionData(changedData)
     }
-
+    // ------------------------------------------------------------------------------------------
     const removeSection = (sectionId, sectionDataIndex) => {
         let changedData = props.data.depends_on_dynamic_form.filter(sectionData=> sectionId.toString() === sectionData.form_id.toString())
         const unChangedData = props.data.depends_on_dynamic_form.filter(sectionData=> sectionId.toString() !== sectionData.form_id.toString())
@@ -151,8 +151,8 @@ const FormularySections = (props) => {
 
         onChangeSectionData(changedData)
     }
-
-
+    // ------------------------------------------------------------------------------------------
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect (() => {
         if (props.sections.length > 0) {
             const conditionals = props.sections.filter(section => !['', null].includes(section.conditional_value))
@@ -170,9 +170,9 @@ const FormularySections = (props) => {
             // to the original initial formulary, you need to load the data, the problem is, we already built the form
             // so we actually don't want to build again, but instead, load the data that we saved in the variable.
             if (!props.hasBuiltInitial || props.isAuxOriginalInitial) {
-                if (props.data.id === null && !props.isAuxOriginalInitial) {
+                if (props.data.depends_on_dynamic_form.length === 0 && !props.isAuxOriginalInitial) {
                     buildInitialData(conditionals)
-                } else if (props.data.id || props.isAuxOriginalInitial) {
+                } else if (props.data.id !== null || props.data.depends_on_dynamic_form.length > 0 || props.isAuxOriginalInitial) {
                     onLoadData(props.data.depends_on_dynamic_form, conditionals)
                 }
                 if (!props.hasBuiltInitial) props.setFilledHasBuiltInitial(true)
@@ -180,13 +180,14 @@ const FormularySections = (props) => {
             }
         }
     }, [props.sections, props.data])
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //########################################################################################//
     const renderMobile = () => {
         return (
             <View></View>
         )
     }
-
+    //########################################################################################//
     const renderWeb = () => {
         return (
             <div>
@@ -222,7 +223,7 @@ const FormularySections = (props) => {
             </div>
         )
     }
-
+    //########################################################################################//
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 

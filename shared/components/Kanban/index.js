@@ -43,7 +43,7 @@ class Kanban extends React.Component {
             isLoadingData: true
         }
     }
-    
+    // ------------------------------------------------------------------------------------------
     setConfigurationIsOpen = (configurationIsOpen) => {
         this.setState(state=> {
             return {
@@ -52,7 +52,7 @@ class Kanban extends React.Component {
             }
         })
     }
-    
+    // ------------------------------------------------------------------------------------------
     // If the data is being loaded by the visualization
     setIsLoadingData = (isLoading) => {
         this.setState(state => {
@@ -62,7 +62,7 @@ class Kanban extends React.Component {
             }
         })
     }
-
+    // ------------------------------------------------------------------------------------------
     getParams = () => {
         return {
             search_value: this.props.filter.search_value,
@@ -70,14 +70,14 @@ class Kanban extends React.Component {
             search_exact: this.props.filter.search_exact
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     getNewDataFromUpdatedParams = async (params) => {
         if (this.props.kanban.initial.defaultDimensionField.id && this.props.kanban.initial.defaultKanbanCard.id) {
             return this.props.onGetKanbanData(this.source, params ,this.props.router.form)
         }
         return Promise.resolve(null)
     }
-
+    // ------------------------------------------------------------------------------------------
     onFilter = (searchInstances) => {
         this.setIsLoadingData(true)
         const searchParams = this.props.onSetSearch(searchInstances.map(
@@ -91,7 +91,7 @@ class Kanban extends React.Component {
             this.setIsLoadingData(false)
         })
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Used when the user opens or closes the configuration of the kanban. notice that when we open the configuration formulary
      * we get the fields, and after getting the fields we set isLoading state to false so it means we are not retrieving data anymore. If you
@@ -109,7 +109,7 @@ class Kanban extends React.Component {
         }
         this.setConfigurationIsOpen(isOpen)
     }
-    
+    // ------------------------------------------------------------------------------------------
     /**
      * Loads the data needed for rendering the kanban.
      * Those are:
@@ -137,7 +137,7 @@ class Kanban extends React.Component {
             }
         })
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Make checks if the kanban can be built for this formulary or not, if not we display a message for
      * the user, if it can but no default is defined we open directly in the KanbanConfigurationForm so the user
@@ -149,7 +149,8 @@ class Kanban extends React.Component {
         this.props.kanban.initial.defaultDimensionField.id === null &&
         this.props.kanban.updateSettings.fieldsForDimension.length === 0
     }
-
+    // ------------------------------------------------------------------------------------------
+    /////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Retrieves initial data and sets a cancel token so we can cancel requests on the fly
      */
@@ -157,7 +158,7 @@ class Kanban extends React.Component {
         this.source = this.CancelToken.source()
         this.onGetKanbanInitialData()
     }
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Handles if the user has changed a from a form to another or not.
      * 
@@ -173,19 +174,20 @@ class Kanban extends React.Component {
             this.onGetKanbanInitialData(true)
         }
     }
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     componentWillUnmount() {
         if (this.source) {
             this.source.cancel()
         }
     }
-    
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //########################################################################################//
     renderMobile = () => {
         return (
             <View></View>
         )
     }
-
+    //########################################################################################//
     renderWeb = () => {
         const areDefaultsNotDefined = this.props.kanban.initial.defaultKanbanCard.id === null || this.props.kanban.initial.defaultDimensionField.id === null
         const isKanbanConfigurationFormOpen = (this.state.configurationIsOpen || areDefaultsNotDefined) && !this.state.isLoadingData
@@ -270,7 +272,7 @@ class Kanban extends React.Component {
             </div>
         )
     }
-
+    //########################################################################################//
     render() {
         return process.env['APP'] === 'web' ? this.renderWeb() : this.renderMobile()
     }

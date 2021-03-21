@@ -8,9 +8,6 @@ const SIDEBAR = {
     getUpdateForms: async () => {
         return await requests.get(`formulary/${companyId}/settings/groups/`)
     },
-    getFieldOptions: async (formId) => {
-        return await requests.get(`formulary/${companyId}/settings/${formId}/field_options/`)
-    },
     updateGroup: async (body, groupId) => {
         return await requests.put(`formulary/${companyId}/settings/groups/${groupId}/`, body)
     },

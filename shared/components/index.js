@@ -1,4 +1,5 @@
 import Formulary from './Formulary'
+import FormularyPublic from './Formulary/FormularyPublic'
 import Layout from './Layout'
 import Notify from './Notify'
 import Listing from './Listing'
@@ -22,6 +23,7 @@ export { Notification }
 export { Error404 }
 export { Kanban }
 export { Listing }
+export { FormularyPublic }
 export { Formulary }
 export { Layout }
 export { Notify }

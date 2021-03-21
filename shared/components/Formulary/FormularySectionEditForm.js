@@ -28,33 +28,32 @@ const FormularySectionEditForm = (props) => {
     const [initialConditionalFieldOption, setInitialConditionalFieldOption] = useState([])
     const [conditionalTypesOptions, setConditionalTypesOptions] = useState([])
     const [initialConditionalType, setInitialConditionalType] = useState([])
-
-
+    // ------------------------------------------------------------------------------------------
     const onSetFormType = (formTypeId) => {
         props.section.type = formTypeId;
         props.onUpdateSection(props.sectionIndex, {...props.section});
     }
-
+    // ------------------------------------------------------------------------------------------
     const getFixedFormType = (formType) => {
         return (formType ==='multi-form') ? 'multi_form': formType;
     }
-
+    // ------------------------------------------------------------------------------------------
     const onChangeConditionalField = (data) => {
         props.section.conditional_on_field = data[0]
         props.onUpdateSection(props.sectionIndex, {...props.section})
     }
-
+    // ------------------------------------------------------------------------------------------
     const onChangeConditionalValue = (e) => {
         e.preventDefault();
         props.section.conditional_value = e.target.value
         props.onUpdateSection(props.sectionIndex, {...props.section})
     }
-
+    // ------------------------------------------------------------------------------------------
     const onChangeConditionalType = (data) => {
         props.section.conditional_type = data[0]
         props.onUpdateSection(props.sectionIndex, {...props.section})
     }
-    
+    // ------------------------------------------------------------------------------------------
     const onChangeIsConditional = (e) => {
         if (props.isConditional) {
             props.section.conditional_on_field = null
@@ -65,29 +64,31 @@ const FormularySectionEditForm = (props) => {
         }
         props.setIsConditional(!props.isConditional)
     } 
-
+    // ------------------------------------------------------------------------------------------
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         setConditionalFieldOptions(props.fieldOptions.map(fieldOption => { return { value: fieldOption.id, label: fieldOption.label_name } }))
     }, [props.fieldOptions])
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         setInitialConditionalFieldOption(props.fieldOptions.filter(fieldOption=> fieldOption.id === props.section.conditional_on_field).map(fieldOption=> { return { value: fieldOption.id, label: fieldOption.label_name } }))
     }, [props.fieldOptions, props.section.conditional_on_field])
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         setConditionalTypesOptions(props.types.data.conditional_type.map(conditional=> { return { value: conditional.id, label: types('pt-br', 'conditional_type', conditional.type) } }))
     }, [props.types.data.conditional_type])
-    
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         setInitialConditionalType(props.types.data.conditional_type.filter(conditional=> conditional.id === props.section.conditional_type).map(conditional=> { return { value: conditional.id, label: types('pt-br', 'conditional_type', conditional.type) } }))
     }, [props.section.conditional_type, props.types.data.conditional_type])
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //########################################################################################//
     const renderMobile = () => {
         return (
             <View></View>
         )
     }
-
+    //########################################################################################//
     const renderWeb = () => {
         return (
             <div>
@@ -155,7 +156,7 @@ const FormularySectionEditForm = (props) => {
             </div>
         )
     }
-
+    //########################################################################################//
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 

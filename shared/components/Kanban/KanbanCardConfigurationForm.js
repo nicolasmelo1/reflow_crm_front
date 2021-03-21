@@ -24,7 +24,7 @@ const KanbanCardConfigurationForm = (props) => {
     const [kanbanCardFieldOptions, setKanbanCardFieldOptions] = useState(
         props.cardToEdit.kanban_card_fields.map(kanbanCardField => ({value: kanbanCardField.field.id, label: kanbanCardField.field.label_name})).concat({})
     )
-
+    // ------------------------------------------------------------------------------------------
     /**
      * This is used when you select or remove a field from a single KanbanCardConfigurationFormSelect. With this
      * we can add, change or remove the fields of a kanbanCard using this function.
@@ -53,7 +53,7 @@ const KanbanCardConfigurationForm = (props) => {
 
         setKanbanCardFieldOptions([...kanbanCardFieldOptions])
     }   
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Creates or updates a kanbanCard.
      * 
@@ -98,7 +98,8 @@ const KanbanCardConfigurationForm = (props) => {
             }
         } catch {}
     }
-    
+    // ------------------------------------------------------------------------------------------   
+    /////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Effect for setting the fieldOptions that the user can select in each KanbanCardConfigurationFormSelect.
      * This is only fired when the fields that the user can select, changes.
@@ -106,7 +107,7 @@ const KanbanCardConfigurationForm = (props) => {
     useEffect(() => {
         setFieldOptions(props.fields.map(field => ({value: field.id, label: field.label_name})))
     }, [props.fields])
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Effect for setting the kanbanCardFieldOptions that the user had selected for EACH KanbanCardConfigurationFormSelect.
      * In other words, this sets the initialValue for each `KanbanCardConfigurationFormSelect`
@@ -115,13 +116,14 @@ const KanbanCardConfigurationForm = (props) => {
         const newKanbanCardFieldOptions = props.cardToEdit.kanban_card_fields.map(kanbanCardField => ({value: kanbanCardField.field.id, label: kanbanCardField.field.label_name})).concat({})
         setKanbanCardFieldOptions(newKanbanCardFieldOptions)
     }, [props.cardToEditToEdit, props.fields])
-    
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //########################################################################################//
     const renderMobile = () => {
         return (
             <View></View>
         )
     }
-
+    //########################################################################################//
     const renderWeb = () => {
         return (
             <div>
@@ -143,7 +145,7 @@ const KanbanCardConfigurationForm = (props) => {
             </div>
         )
     }
-
+    //########################################################################################//
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 

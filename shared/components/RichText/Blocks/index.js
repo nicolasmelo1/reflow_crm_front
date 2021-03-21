@@ -81,7 +81,7 @@ const Block = (props) => {
     const [isBlockSelectionOpen, setIsBlockSelectionOpen] = useState(false)
     const [imageFile, setImageFile] = useState(null)
     const [customBlockOptions, __] = useState(['image_option', 'list_option', 'table_option', 'text_option'])
-    
+    // ------------------------------------------------------------------------------------------
     /**
      * Important: This has the same name as the addToolbar from the page component, so when a block is calling addToolbar
      * he is calling this function and not the function from the page component. 
@@ -127,14 +127,14 @@ const Block = (props) => {
             })
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Opens the selection of possible blocks that a user can select.
      */
     const openBlockSelection = () => {
         setIsBlockSelectionOpen(true)
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Creates a new content with options if they are defined.
      * 
@@ -188,7 +188,7 @@ const Block = (props) => {
             text_color: textColor ? textColor : '',
         }
     }
-    
+    // ------------------------------------------------------------------------------------------
     /**
      * Used for creating a new block.
      * 
@@ -224,7 +224,7 @@ const Block = (props) => {
         }
         return block
     }
-
+    // ------------------------------------------------------------------------------------------
     /** 
      * Deletes the current block of the context ONLY if it is not the LAST block of the content.
      * If your block contains other blocks, please implement onDeleteBlock function so you handle the deletion
@@ -241,7 +241,7 @@ const Block = (props) => {
             }
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Duplicates this current block to a new block below it. When we duplicate we DO NOT automatically select
      * the next one.
@@ -274,7 +274,7 @@ const Block = (props) => {
             props.updateBlocks(null)
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /** 
      * This is used so we can change the current block type of a block. Notice that when we change the block type
      * we actually change the hole structure of the block data and it cannot be retrieved.
@@ -286,7 +286,7 @@ const Block = (props) => {
         setIsBlockSelectionOpen(false)
         props.updateBlocks(props.block.uuid)
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Used when the user pastes a image in the text block. We automatically convert it to a image block and add this image
      * to the block. We make all of this in this component because what should handle this special use case is the block itself.
@@ -298,7 +298,8 @@ const Block = (props) => {
         setImageFile(file)
         props.updateBlocks(props.block.uuid)
     }
-
+    // ------------------------------------------------------------------------------------------
+    
     const blocks = {
         image: require('./Image'),
         text: require('./Text'),
@@ -307,6 +308,7 @@ const Block = (props) => {
 
     const Container = process.env['APP'] === 'web' ? `div`: View
     const Component = blocks[props.getBlockTypeNameById(props.block.block_type)] ? blocks[props.getBlockTypeNameById(props.block.block_type)].default : null
+    //########################################################################################//
     return (
         <Container key={props.block.uuid}>
             {isBlockSelectionOpen ? (
@@ -338,6 +340,7 @@ const Block = (props) => {
             ) : null}
         </Container>
     )
+    //########################################################################################//
 }
 
 /**

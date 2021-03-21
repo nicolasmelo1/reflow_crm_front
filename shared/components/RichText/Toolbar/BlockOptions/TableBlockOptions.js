@@ -54,7 +54,7 @@ const TableBlockOptions = (props) => {
         '#579cfc',
         '#66ccff'
     ]
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Used when rendering the toolbar of the table. If the row edge is selected we show to add a new row,
      * otherwise we show to add a column. This is just for changing the text of the button.
@@ -66,7 +66,7 @@ const TableBlockOptions = (props) => {
             return strings['pt-br']['richTextTableToolbarAddColumnButtonLabel']
         }
     } 
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Similar to `.getAddButtonLabel()` but it's the opposite, when the row is selected we show to delete the column
      * and when the column is selected we show to delete the row. This is just for changing the text of the button.
@@ -78,7 +78,7 @@ const TableBlockOptions = (props) => {
             return strings['pt-br']['richTextTableToolbarRemoveRowButtonLabel']
         }
     }
-
+    //########################################################################################//
     const renderMobile = () => {
         return (
             <View style={{ flexDirection: 'row'}}>
@@ -135,7 +135,7 @@ const TableBlockOptions = (props) => {
             </View>
         )
     }
-
+    //########################################################################################//
     const renderWeb = () => {
         return (
             <div>
@@ -175,7 +175,7 @@ const TableBlockOptions = (props) => {
             </div>
         )
     }
-
+    //########################################################################################//
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 

@@ -32,7 +32,7 @@ const KanbanCards = (props) => {
     const [isOverflown, setIsOverflown] = useState(false)
     const [hasFiredRequestForNewPage, setHasFiredRequestForNewPage] = useState(false)
     const kanbanCardContainerRef = React.useRef()
-    
+    // ------------------------------------------------------------------------------------------
     /**
      * This function is used when the card starts moving on the drag action.
      * What we do is set the drag image exactly where the cursor is at, and for that we use getBoundingClientRect function
@@ -54,6 +54,7 @@ const KanbanCards = (props) => {
         e.dataTransfer.setData('movedCardIndexInDimension', cardIndex.toString())
         e.dataTransfer.setData('movedCardDimension', props.dimension.toString())
     }
+    // ------------------------------------------------------------------------------------------
     /**
      * This is a function that is fired when the drag ends. In other words, when stop the dragging operation. (This is NOT FIRED
      * WHEN WE DROP, we have a handler for the drop in KanbanDimension component)
@@ -71,7 +72,7 @@ const KanbanCards = (props) => {
     const onDragEnd = (dimensionPhaseElementFromTheDOM) => {
         props.cleanDimensionColors(dimensionPhaseElementFromTheDOM, false)
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * This is a separate functions because we handle also when the kanban is TOO BIG that the number of cards is less than the
      * height of the kanban dimension phase container.
@@ -93,7 +94,7 @@ const KanbanCards = (props) => {
             setHasFiredRequestForNewPage(false)
         })
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * This is used if the kanban dimension phase container has so many cards that it doesn't fit the screen.
      * If that's the case, the phase has a scrollbar. So when the user scrolls to the bottom we will fetch more data for this
@@ -109,7 +110,7 @@ const KanbanCards = (props) => {
             getMoreData()
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * As said before, if the kanban is too big, and you are working in a really large screen the scroll will not show, with this button
      * if that's the case we show a button to the user so he can fetch for more data.
@@ -117,7 +118,8 @@ const KanbanCards = (props) => {
     const onClickToGetMoreData = () => {
         getMoreData()
     }
-
+    // ------------------------------------------------------------------------------------------
+    /////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Sets the sourceRef when the component is mounted so we can cancel requests if we unmount the component.
      */
@@ -129,7 +131,7 @@ const KanbanCards = (props) => {
             }
         }
     }, [])
-    
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         // if the page is to big for the pagination and the scroll is not active we add a 'load more' button in the bottom of the kanban dimension phase column
         if (props.pagination && props.pagination.current < props.pagination.total) {
@@ -140,13 +142,14 @@ const KanbanCards = (props) => {
             }
         }
     }, [props.data?.data])
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //########################################################################################//
     const renderMobile = () => {
         return (
             <View></View>
         )
     }
-
+    //########################################################################################//
     const renderWeb = () => {
         return (
             <KanbanCardsContainer ref={kanbanCardContainerRef} onScroll={(e) => {onScrollKanban(e.target)}}>
@@ -220,7 +223,7 @@ const KanbanCards = (props) => {
             </KanbanCardsContainer>
         )
     }
-
+    //########################################################################################//
     return process.env['APP'] === 'web' ?  renderWeb() : renderMobile()
     
 }

@@ -59,17 +59,17 @@ const ImageBlock = (props) => {
         imageLink: false
     })
     const [imageUrl, _setImageUrl] = useState(null)
-
+    // ------------------------------------------------------------------------------------------
     const setImageUrl = (data) => {
         imageUrlRef.current = data
         _setImageUrl(data)
     }
-
+    // ------------------------------------------------------------------------------------------
     const setSizeRelativeToView = (data) => {
         sizeRelativeToViewRef.current = data
         _setSizeRelativeToView(data)
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Each block has it's own options, the options of the image block are like the following.
      */
@@ -82,7 +82,7 @@ const ImageBlock = (props) => {
             file_name: null
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Ask permission to access the camera roll
      * You can see it here: https://docs.expo.io/versions/latest/sdk/imagepicker/
@@ -95,7 +95,7 @@ const ImageBlock = (props) => {
             }
         }
     }
-    
+    // ------------------------------------------------------------------------------------------
     const pickImageOnMobile = async () => {
         try {
             const result = await ImagePicker.launchImageLibraryAsync({
@@ -112,7 +112,7 @@ const ImageBlock = (props) => {
             return null
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * When the user clicks anywhere outside of the block container we dismiss the container that displays the button for the user
      * to select the image in his computer.
@@ -124,7 +124,7 @@ const ImageBlock = (props) => {
             props.updateBlocks(null)
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * WORKS ONLY ON WEB
      * 
@@ -143,7 +143,7 @@ const ImageBlock = (props) => {
             props.updateBlocks(props.block.uuid)
         }
     }
-    
+    // ------------------------------------------------------------------------------------------
     /**
      * WORKS ONLY ON WEB
      * 
@@ -178,7 +178,7 @@ const ImageBlock = (props) => {
             }
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * When the user adds a new file what we do is save a draft so when the user saves this edition it becomes a lot easier and faster
      * to save the file, since we will not need to upload everything at once.
@@ -204,7 +204,7 @@ const ImageBlock = (props) => {
             setIsUploading(false)
         })
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Handles when the user uses a link to the image instead of an image file
      * 
@@ -216,7 +216,7 @@ const ImageBlock = (props) => {
         props.updateBlocks(props.block.uuid)
 
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * This function is used when the component is mounted. when the component is mounted and we have a `link`
      * or a `file_name` defined we add a new image link to the component so the image is loaded.
@@ -257,7 +257,7 @@ const ImageBlock = (props) => {
             }
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * This is used when the component is mounted. What we do is check if the component is mounted 
      * and if it has the image_option parameter defined, if not we define it.
@@ -267,7 +267,7 @@ const ImageBlock = (props) => {
             props.block.image_option = imageOptions()
         }
     }
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         isMountedRef.current = true
         if (process.env['APP'] === 'web') {
@@ -293,12 +293,12 @@ const ImageBlock = (props) => {
             }
         }
     }, [])
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         props.addToolbar()
         activeBlockRef.current = props.activeBlock
     }, [props.activeBlock])
-    
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         // When we duplicate a file, like an image or a attachment, whatever. We actually create a new reference for the same object (not literally)
         // So what this means is, when we upload a file we create a draft in our database, and when we duplicate this image or file we are creating
@@ -309,7 +309,7 @@ const ImageBlock = (props) => {
             props.updateBlocks(props.activeBlock)
         }
     }, [props.draftMapHeap])
-
+    //########################################################################################//
     const renderMobile = () => {
         return (
             <View>
@@ -382,7 +382,7 @@ const ImageBlock = (props) => {
             </View>
         )
     }
-
+    //########################################################################################//
     const renderWeb = () => {
         return (
             <div ref={imageBlockRef}>
@@ -450,7 +450,7 @@ const ImageBlock = (props) => {
             </div>
         )
     }
-
+    //########################################################################################//
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 

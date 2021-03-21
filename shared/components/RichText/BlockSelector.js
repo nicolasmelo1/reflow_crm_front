@@ -29,7 +29,7 @@ import {
  */
 const BlockSelector = (props) => {
     const blockSelectorRef = React.useRef(null)
-    
+    // ------------------------------------------------------------------------------------------
     /**
      * Gets each icon to show next to the block label for each block type
      * 
@@ -46,7 +46,7 @@ const BlockSelector = (props) => {
             table: 'table',
         }[blockName]
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * This is for closing the block selector container when the user clicks outside of the block selector.
      * 
@@ -57,7 +57,7 @@ const BlockSelector = (props) => {
             props.setIsBlockSelectionOpen(false)
         }
     }
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         if (process.env['APP'] === 'web') {
             document.addEventListener("mousedown", onMouseDownWeb)
@@ -68,7 +68,7 @@ const BlockSelector = (props) => {
             } 
         }
     }, [])
-
+    //########################################################################################//
     const renderMobile = () => {
         return (
             <Modal animationType="slide">
@@ -93,7 +93,7 @@ const BlockSelector = (props) => {
             </Modal>
         )
     }
-
+    //########################################################################################//
     const renderWeb = () => {
         return (
             <BlockSelectorContainer ref={blockSelectorRef}>
@@ -108,6 +108,7 @@ const BlockSelector = (props) => {
             </BlockSelectorContainer>
         )
     }
+    //########################################################################################//
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 

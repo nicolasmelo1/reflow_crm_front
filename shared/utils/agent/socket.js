@@ -1,4 +1,4 @@
-import { API_ROOT, getToken } from './utils'
+import { API_ROOT, getToken, publicAccessKey } from './utils'
 
 /**
  * This function works like a singleton for the websocket, you can have just ONE websocket running 
@@ -21,7 +21,7 @@ class Socket {
     registeredSocket = null
     callbacks = {} 
     registering = false
-
+    // ------------------------------------------------------------------------------------------
     static async getInstance() {
         // socket is a function, when you run this function it automatically connects to the server because
         // `registeredSocket` is null and it is not `registering` anything
@@ -36,7 +36,7 @@ class Socket {
 
         return this.instance
     }
-    
+    // ------------------------------------------------------------------------------------------
     /**
      * Sets the host of the websocket, when it changes we reconnect to the client. Usually useful when logging out and logging in again as another user
      * 
@@ -49,7 +49,7 @@ class Socket {
         } 
         this.socketHost = socketHost
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Gets the url to connect to the websocket. If the user is logged (so the token is not empty and is defined)
      * the url will contain a query parameter with the token.
@@ -58,13 +58,15 @@ class Socket {
      */
     async getUrl() {
         this.accessToken = await getToken()
-        if (this.accessToken && this.accessToken !== '') {
-            this.setSocketHost(this.domain + `websocket/?token=${this.accessToken}`)
+        if (publicAccessKey !== null) {
+            this.setSocketHost(this.domain + `websocket/public/?public_key=${publicAccessKey}`)
+        } else if (this.accessToken && this.accessToken !== '') {
+            this.setSocketHost(this.domain + `websocket/user/?token=${this.accessToken}`)
         } else {
             this.setSocketHost('')
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Adds the "onmessage" event listener to the websocket. We call each each registered callback
      * whenever we recieve a message.
@@ -88,7 +90,7 @@ class Socket {
             }
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Adds a callback function to be fired when you recieve a new message.
      * Push the function to callbacks if the function is different from the already existing function
@@ -113,8 +115,7 @@ class Socket {
         this.callbacks[callbackName] = callbackObject
         this.onRecieve()
     }
-
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Register the onclose event listener on the socket.
      */
@@ -127,31 +128,33 @@ class Socket {
             this.reconnect()
         }
     }
-
+    // ------------------------------------------------------------------------------------------
      /**
      * Tries to reconnect to the server when the connection is closed. It waits 10 seconds for every
      * try.
      */
     async reconnect() {
-        await this.getUrl()
-        this.registeredSocket = new WebSocket(this.socketHost)
+        if (this.socketHost !== '') {
+            await this.getUrl()
+            this.registeredSocket = new WebSocket(this.socketHost)
 
-        setTimeout(() => {
-            if (this.registeredSocket.readyState !== 1) {
-                if (process.env.NODE_ENV !== 'production') console.log('Could not connect to server, trying again...')
-                this.registeredSocket.close()
-                this.reconnect()
-            } else {
-                if (process.env.NODE_ENV !== 'production') console.log('Reconnected.')
-                this.onClose()
-                this.onRecieve()
-                this.appStateChanged()
-            }
-        }, 10000);
+            setTimeout(() => {
+                if (this.registeredSocket.readyState !== 1) {
+                    if (process.env.NODE_ENV !== 'production') console.log('Could not connect to server, trying again...')
+                    this.registeredSocket.close()
+                    this.reconnect()
+                } else {
+                    if (process.env.NODE_ENV !== 'production') console.log('Reconnected.')
+                    this.onClose()
+                    this.onRecieve()
+                    this.appStateChanged()
+                }
+            }, 10000);
+        }
     }
-
+    // ------------------------------------------------------------------------------------------
     async connect() {
-        if (this.registeredSocket === null) {
+        if (this.registeredSocket === null && this.socketHost !== '') {
             await this.getUrl()
             this.registeredSocket = new WebSocket(this.socketHost)
             this.onClose()
@@ -160,7 +163,7 @@ class Socket {
         }
         this.registering = false
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * MOBILE ONLY. When the user closes the app on mobile, it disconnects from the websocket connection
      * and it only opens again when the user opens the app again.
@@ -174,10 +177,11 @@ class Socket {
             })
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     send = (data={}) => {
         this.registeredSocket.send(JSON.stringify(data))
     }
+    // ------------------------------------------------------------------------------------------
 }
 
 

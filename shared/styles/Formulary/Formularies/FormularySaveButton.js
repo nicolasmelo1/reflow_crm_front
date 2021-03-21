@@ -4,16 +4,17 @@ export default process.env['APP'] === 'web' ?
 styled.button`
     width: 100%;
     padding: 5px;
-    color: #0dbf7e;
+    font-weight: bold;
+    color: #17242D;
     border: 1px solid #0dbf7e;
     border-radius: 20px;
     margin-bottom: 10px;
-    background-color: transparent;
+    background-color: #0dbf7e;
     
     &:hover {
-        background-color: #0dbf7e;
-        border: 1px solid #0dbf7e;
-        color: #17242D;
+        background-color: #17242D;
+        border: 1px solid #17242D;
+        color: #0dbf7e;
     }
 `
 :

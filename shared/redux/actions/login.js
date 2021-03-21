@@ -1,6 +1,6 @@
 import { DEAUTHENTICATE, AUTHENTICATE, SET_PRIMARY_FORM, DATA_TYPES, SET_USER } from '../types'
 import agent from '../../utils/agent'
-import { setStorageToken } from '../../utils/agent/utils'
+import { getToken, setStorageToken } from '../../utils/agent/utils'
 import isEqual from '../../utils/isEqual'
 import initializeConpass from '../../utils/conpass'
 
@@ -53,10 +53,15 @@ const onUpdatePrimaryForm = (formName) => {
 
 const getDataTypes = () => {
     return async (dispatch, getState) => {
+        const token = await getToken()
         const stateData = getState().login
         const response = await agent.http.LOGIN.getDataTypes()
-        if (response && response.status === 200 && !isEqual(response.data.data, stateData.types)) {
-            dispatch({ type: DATA_TYPES, payload: response.data.data })
+        const isLoggedIn = !['', null, undefined].includes(token)
+        if (response && response.status === 200) {
+            const isLastTypesDifferentFromNewTypes = JSON.stringify(response.data.data) !== JSON.stringify(stateData.types)
+            if (!isLoggedIn || (isLoggedIn && isLastTypesDifferentFromNewTypes)) {
+                dispatch({ type: DATA_TYPES, payload: response.data.data })
+            }
         }
         return response
     }
