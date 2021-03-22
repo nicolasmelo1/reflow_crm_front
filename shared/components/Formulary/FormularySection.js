@@ -74,7 +74,8 @@ const FormularySection = (props) => {
                         onAddFile={props.onAddFile}
                         type={props.type}
                         types={props.types}
-                        isSectionConditional={props.isSectionConditional && ![null, undefined].includes(props.removeSection)}
+                        isMultiForm={![null, undefined].includes(props.removeSection)}
+                        isSectionConditional={props.isSectionConditional}
                         />
                     </Formularies.FieldContainer>
                 ))}

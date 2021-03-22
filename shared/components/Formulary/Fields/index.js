@@ -205,7 +205,7 @@ const Fields = (props) => {
                 <div>
                     {(props.field.label_is_hidden) ? '' : (
                         <Field.FieldTitle.Label
-                        isConditional={props.isSectionConditional}
+                        isConditional={props.isSectionConditional && !props.isMultiForm}
                         >
                             { props.field.label_name }
                             <Field.FieldTitle.Required>{(props.field.required) ? '*': ''}</Field.FieldTitle.Required>
