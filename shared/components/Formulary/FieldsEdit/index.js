@@ -9,6 +9,7 @@ import Fields from '../Fields'
 import Select from '../../Utils/Select'
 import { FormulariesEdit }  from '../../../styles/Formulary'
 import { types, strings } from '../../../utils/constants'
+import deepCopy from '../../../utils/deepCopy'
 import Overlay from '../../../styles/Overlay'
 import Alert from '../../Utils/Alert'
 
@@ -50,6 +51,15 @@ const FormularyFieldEdit = (props) => {
     const [fieldTypes, setFieldTypes] = useState([])
     const [initialFieldType, setInitialFieldType] = useState([])
     const [showAlert, setShowAlert] = useState(false)
+
+    const getFieldTypeName = () => {
+        const fieldType = props.types.data.field_type.filter(fieldType => fieldType.id === props.field.type)
+        if (fieldType.length > 0) {
+            return fieldType[0].type
+        } else {
+            return ''
+        }
+    }
 
     const onMoveField = (e) => {
         let fieldContainer = e.currentTarget.closest('.field-container')
@@ -148,13 +158,60 @@ const FormularyFieldEdit = (props) => {
         props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
     }
 
-    const formularyItemsForFieldTypes = () => {
-        const fieldType = props.types.data.field_type.filter(fieldType => fieldType.id === props.field.type)[0]
-        if (!fieldType) {
-            return ''
+    const onAddDefaultFieldValue = (__, value) => {
+        if (value != '') {
+            props.field.field_default_field_values.push({
+                id: null,
+                value: value
+            })
+            props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
         }
+    }
 
-        if (['option', 'multi_option'].includes(fieldType.type)) {
+    const onRemoveDefaultFieldValue = (__, value) => {
+        props.field.field_default_field_values = props.field.field_default_field_values.filter(defaultFieldValue => defaultFieldValue.value !== value)
+        props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
+    }
+
+    const onUpdateDefaultFieldValue = (__, oldValue, newValue) => {
+        for (let i = 0; i<props.field.field_default_field_values.length; i++) {
+            if (props.field.field_default_field_values[i].value === oldValue) {
+                props.field.field_default_field_values[i].value = newValue
+            }
+        }
+        props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
+    }
+
+    const getDefaultFieldValueInput = () => {
+        const fieldData = deepCopy(props.field)
+        fieldData.label_is_hidden = true
+        
+        const fieldFormValues = props.field.field_default_field_values.map(defaultFieldValue => ({
+            id: null,
+            field_id: props.field.id,
+            field_name: props.field.name,
+            value: defaultFieldValue.value
+        }))
+
+        return (
+            <Fields 
+            userOptions={props.userOptions}
+            errors={{}}
+            field={fieldData}
+            types={props.types}
+            fieldFormValues={fieldFormValues}
+            addFieldFormValue={onAddDefaultFieldValue}
+            removeFieldFormValue={onRemoveDefaultFieldValue}
+            updateFieldFormValue={onUpdateDefaultFieldValue}
+            getFieldFormValues={() => {return fieldFormValues}}
+            />
+        )
+    }
+
+    const formularyItemsForFieldTypes = () => {
+        const fieldType = getFieldTypeName()
+
+        if (['option', 'multi_option'].includes(fieldType)) {
             return (
                 <Option
                 field={props.field}
@@ -164,7 +221,7 @@ const FormularyFieldEdit = (props) => {
                 fieldIndex={props.fieldIndex}
                 />
             )
-        } else if (fieldType.type === 'number') {
+        } else if (fieldType === 'number') {
             return (
                 <Number
                 field={props.field}
@@ -176,7 +233,7 @@ const FormularyFieldEdit = (props) => {
                 onTestFormularySettingsFormulaField={props.onTestFormularySettingsFormulaField}
                 />
             )
-        } else if (fieldType.type === 'period') {
+        } else if (fieldType === 'period') {
             return (
                 <Period
                 field={props.field}
@@ -186,7 +243,7 @@ const FormularyFieldEdit = (props) => {
                 fieldIndex={props.fieldIndex}
                 />
             )
-        } else if (fieldType.type === 'date') {
+        } else if (fieldType === 'date') {
             return (
                 <Datetime
                 field={props.field}
@@ -196,7 +253,7 @@ const FormularyFieldEdit = (props) => {
                 fieldIndex={props.fieldIndex}
                 />
             )
-        } else if (fieldType.type === 'form') {
+        } else if (fieldType === 'form') {
             return (
                 <Connection
                 formName={props.formName}
@@ -228,6 +285,7 @@ const FormularyFieldEdit = (props) => {
     useEffect(() => {
         setInitialFieldType(props.types.data.field_type.filter(fieldType=> fieldType.id === props.field.type).map(fieldType=> { return { value: fieldType.id, label: types('pt-br', 'field_type', fieldType.type) } }))
     }, [props.types.data.field_type, props.field.type])
+
 
     const renderMobile = () => {
         return (
@@ -304,6 +362,32 @@ const FormularyFieldEdit = (props) => {
                                 </FormulariesEdit.FieldFormFieldContainer>
                                 {props.field.label_name ? (
                                     <div>
+                                        <FormulariesEdit.FieldFormFieldContainer>
+                                            <FormulariesEdit.FieldFormLabel>
+                                                {strings['pt-br']['formularyEditFieldTypeSelectorLabel']}
+                                            </FormulariesEdit.FieldFormLabel>
+                                            <FormulariesEdit.SelectorContainer isOpen={fieldTypeIsOpen}>
+                                                <Select 
+                                                    setIsOpen={setFieldTypeIsOpen}
+                                                    isOpen={fieldTypeIsOpen}
+                                                    onFilter={onFilterFieldType}
+                                                    label={FieldOption}
+                                                    options={fieldTypes} 
+                                                    initialValues={initialFieldType} 
+                                                    onChange={onChangeFieldType} 
+                                                />
+                                            </FormulariesEdit.SelectorContainer>
+                                        </FormulariesEdit.FieldFormFieldContainer>
+                                        {getFieldTypeName() !== 'form' ? (
+                                            <FormulariesEdit.FieldFormFieldContainer>
+                                                <FormulariesEdit.FieldFormLabel>
+                                                    {'Valor padrão'}
+                                                </FormulariesEdit.FieldFormLabel>
+                                                <div style={{ margin: '-5px' }}>
+                                                    {getDefaultFieldValueInput()}
+                                                </div>
+                                            </FormulariesEdit.FieldFormFieldContainer>
+                                        ) : ''}
                                         <FormulariesEdit.FieldFormFieldContainer>
                                             <FormulariesEdit.FieldFormLabel>
                                                 {strings['pt-br']['formularyEditFieldTypeSelectorLabel']}

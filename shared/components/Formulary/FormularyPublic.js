@@ -9,6 +9,7 @@ import { Formulary, Error404 } from '../'
 import { Formularies } from '../../styles/Formulary'
 
 const Spinner = dynamicImport('react-bootstrap', 'Spinner')
+
 /**
  * {Description of your component, what does it do}
  * @param {Type} props - {go in detail about every prop it recieves}

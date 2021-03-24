@@ -114,7 +114,6 @@ const DatePickerCalendar = (props) => {
             }
         }
     })
-    console.log(props.selectedDays)
     return (
         <Utils.Datepicker.Table ref={dateTableRef}>
             <thead>

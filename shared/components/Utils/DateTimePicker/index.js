@@ -142,7 +142,6 @@ const DateTimePicker = (props) => {
     useEffect(() => {
         const dateToConsider = (props.initialDay && props.initialDay !== '') ? props.initialDay : today
         setSelectedDay(dateToConsider)
-        console.log(dateToConsider)
         if (!Number.isNaN(dateToConsider.getFullYear()) && !Number.isNaN(dateToConsider.getMonth())) {
             updateMonthDetails(dateToConsider.getFullYear(), dateToConsider.getMonth(), dateToConsider.getHours(), dateToConsider.getMinutes())
         }

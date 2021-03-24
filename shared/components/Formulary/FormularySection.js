@@ -13,22 +13,24 @@ const Row = dynamicImport('react-bootstrap', 'Row')
  */
 const FormularySection = (props) => {
     // used by each field, to not become a tedius and repetitive job doing this on each field, we only pass the function
-    const getFieldFormValues = (field_name) => {
-        return props.sectionData.dynamic_form_value.filter(sectionFormValue=> sectionFormValue.field_name === field_name)
+    const getFieldFormValues = (fieldName) => {
+        return props.sectionData.dynamic_form_value.filter(sectionFormValue=> sectionFormValue.field_name === fieldName)
     }
 
-    const addFieldFormValue = (field_name, field_id, value) => {
+    const addFieldFormValue = (fieldName, value) => {
+        let fieldId = props.fields.filter(field => field.name === fieldName)
+        fieldId = fieldId.length > 0 ? fieldId[0].id : null
         props.sectionData.dynamic_form_value.push({
             'id': null,
             'value': value,
-            'field_id': field_id,
-            'field_name': field_name
+            'field_id': fieldId,
+            'field_name': fieldName
         })
         props.updateSection(props.sectionData, props.section.id, props.sectionDataIndex)
     }
 
-    const removeFieldFormValue = (field_name, value) => {
-        const indexToRemove = props.sectionData.dynamic_form_value.findIndex(sectionFormValue=> sectionFormValue.field_name === field_name && sectionFormValue.value === value)
+    const removeFieldFormValue = (fieldName, value) => {
+        const indexToRemove = props.sectionData.dynamic_form_value.findIndex(sectionFormValue=> sectionFormValue.field_name === fieldName && sectionFormValue.value === value)
         props.sectionData.dynamic_form_value.splice(indexToRemove, 1)
         props.updateSection(props.sectionData, props.section.id, props.sectionDataIndex)
     }

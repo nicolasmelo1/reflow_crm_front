@@ -65,7 +65,6 @@ const Datetime = (props) => {
         const today = new Date()
         fieldValue = jsDateToStringFormat(today, pythonFormatToMomentJSFormat(dateFormat))
     }
-    console.log(fieldValue)
     // ------------------------------------------------------------------------------------------
     /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
