@@ -53,6 +53,7 @@ const FormularyFieldEdit = (props) => {
     const [initialFieldType, setInitialFieldType] = useState([])
     const [showAlert, setShowAlert] = useState(false)
     const [draftToFileReference, setDraftToFileReference] = useState({})
+    const [defaultValueIsOpen, setDefaultValueIsOpen] = useState(false)
 
     const getFieldTypeName = () => {
         const fieldType = props.types.data.field_type.filter(fieldType => fieldType.id === props.field.type)
@@ -103,26 +104,26 @@ const FormularyFieldEdit = (props) => {
         e.preventDefault()
         e.stopPropagation()
     }
-
+    // ------------------------------------------------------------------------------------------
     const onDisableField = (e) => {
         let fieldData = {...props.field}
         fieldData.enabled = !fieldData.enabled
         props.onUpdateField(props.sectionIndex, props.fieldIndex, fieldData)
     }
-
+    // ------------------------------------------------------------------------------------------
     const onChangeFieldName = (e) => {
         e.preventDefault();
         let fieldData = {...props.field}
         fieldData.label_name = e.target.value
         props.onUpdateField(props.sectionIndex, props.fieldIndex, fieldData)
     }
-
+    // ------------------------------------------------------------------------------------------
     const onChangeFieldType = (data) => {
         let fieldData = {...props.field}
         fieldData.type = data[0]
         props.onUpdateField(props.sectionIndex, props.fieldIndex, {...fieldData})
     }
-    
+    // ------------------------------------------------------------------------------------------
     const onFilterFieldType = (value) => {
         return (props.types && props.types.data && props.types.data.field_type) ? props.types.data.field_type
         .filter(fieldType=> types('pt-br', 'field_type', fieldType.type).includes(value))
@@ -139,22 +140,22 @@ const FormularyFieldEdit = (props) => {
             }
         ): []
     }
-
+    // ------------------------------------------------------------------------------------------
     const onChangeRequired = () => {
         props.field.required = !props.field.required
         props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
     }
-
+    // ------------------------------------------------------------------------------------------
     const onChangeIsUnique = () => {
         props.field.is_unique = !props.field.is_unique
         props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
     }
-
+    // ------------------------------------------------------------------------------------------
     const onChangeLabelIsHidden = () => {
         props.field.label_is_hidden = !props.field.label_is_hidden
         props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
     }
-
+    // ------------------------------------------------------------------------------------------
     const onChangeFieldIsHidden = () => {
         props.field.field_is_hidden = !props.field.field_is_hidden
         props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
@@ -216,6 +217,13 @@ const FormularyFieldEdit = (props) => {
         return ''
     }
     // ------------------------------------------------------------------------------------------
+    /**
+     * Retrieves the attachment url to use on the attachments.
+     * 
+     * @param {String} fileName - The name of the file you want to retrieve the url for
+     * 
+     * @returns {String} - The url to retrieve the fil
+     */
     const onGetAttachmentUrl = async (__, fileName) => {
         return await agent.http.FORMULARY.getFormularySettingsDefaultAttachmentFile(props.formId, props.field.id, fileName)
     }
@@ -237,6 +245,7 @@ const FormularyFieldEdit = (props) => {
             userOptions={props.userOptions}
             errors={{}}
             field={fieldData}
+            formName={props.formName}
             types={props.types}
             draftToFileReference={draftToFileReference}
             fieldFormValues={fieldFormValues}
@@ -312,6 +321,24 @@ const FormularyFieldEdit = (props) => {
     // ------------------------------------------------------------------------------------------
     /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
+        if (isEditing === false) {
+            if (props.field.field_default_field_values.length > 0) {
+                setDefaultValueIsOpen(true)
+            } else {
+                setDefaultValueIsOpen(false)
+            }
+        }
+    }, [isEditing])
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    useEffect(() => {
+        if (props.field.field_default_field_values.length > 0) {
+            setDefaultValueIsOpen(true)
+        } else {
+            setDefaultValueIsOpen(false)
+        }
+    }, [props.field.field_default_field_values])
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    useEffect(() => {
         setFieldTypes(props.types.data.field_type.map(fieldType=> { 
             return { 
                 value: fieldType.id, 
@@ -379,6 +406,7 @@ const FormularyFieldEdit = (props) => {
                                 <Fields 
                                 userOptions={props.userOptions}
                                 errors={{}}
+                                formName={props.formName}
                                 field={props.field}
                                 types={props.types}
                                 fieldFormValues={[]}
@@ -423,11 +451,24 @@ const FormularyFieldEdit = (props) => {
                                         {getFieldTypeName() !== 'form' ? (
                                             <FormulariesEdit.FieldFormFieldContainer>
                                                 <FormulariesEdit.FieldFormLabel>
-                                                    {'Valor padrão'}
+                                                    {strings['pt-br']['formularyEditFieldDefaultValuesLabel']}
                                                 </FormulariesEdit.FieldFormLabel>
-                                                <div style={{ margin: '-5px' }}>
-                                                    {getDefaultFieldValueInput()}
-                                                </div>
+                                                {defaultValueIsOpen ? (
+                                                    <div style={{ margin: '-5px' }}>
+                                                        {getDefaultFieldValueInput()}
+                                                    </div>
+                                                ) : (
+                                                    <div>
+                                                        <small style={{ color: '#6a7074'}}>
+                                                            {strings['pt-br']['formularyEditFieldDefaultValuesExplanation']}
+                                                        </small>
+                                                        <div>
+                                                            <FormulariesEdit.FieldFormAddDefaultValueButton onClick={(e) => setDefaultValueIsOpen(true)}>
+                                                                {strings['pt-br']['formularyEditFieldDefaultValuesButton']}
+                                                            </FormulariesEdit.FieldFormAddDefaultValueButton>
+                                                        </div>
+                                                    </div>
+                                                )}
                                             </FormulariesEdit.FieldFormFieldContainer>
                                         ) : ''}
                                         <FormulariesEdit.FieldFormFieldContainer>
