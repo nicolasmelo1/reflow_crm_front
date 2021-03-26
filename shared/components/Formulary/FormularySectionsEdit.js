@@ -101,6 +101,7 @@ const FormularySectionsEdit = (props) => {
         const defaultFieldData = {
             id: null,
             field_option: [],
+            field_default_field_values: [],
             form_field_as_option : {
                 id: null,
                 form_depends_on_id: null,
@@ -211,6 +212,7 @@ const FormularySectionsEdit = (props) => {
                         onAddNewField={onAddNewField}
                         types={props.types} 
                         fieldOptions={fieldOptions}
+                        onCreateDraftFile={props.onCreateDraftFile}
                         formulariesOptions={props.formulariesOptions}
                         onTestFormularySettingsFormulaField={props.onTestFormularySettingsFormulaField}
                         formName={props.formName}

@@ -35,7 +35,6 @@ const Connection = (props) => {
         props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
     }
     
-    
     let formOptions = []
     let initialForm = []
 

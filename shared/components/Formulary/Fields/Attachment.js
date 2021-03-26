@@ -71,18 +71,20 @@ const AttachmentFile = (props) => {
     }, [])
 
     useEffect(() => {
-        if (isDraft(props.value.value)) {
-            agent.http.DRAFT.getDraftFile(props.value.value).then(url => {
-                if (isMountedRef.current) {
-                    setFileUrl(url)
-                }
-            })
-        } else {
-            agent.http.FORMULARY.getAttachmentFile(props.formName, props.sectionId, props.field.id, props.value.value).then(url => {
-                if (isMountedRef.current) {
-                    setFileUrl(url)
-                }
-            })
+        if (!['', null].includes(props.value.value)) {
+            if (isDraft(props.value.value)) {
+                agent.http.DRAFT.getDraftFile(props.value.value).then(url => {
+                    if (isMountedRef.current) {
+                        setFileUrl(url)
+                    }
+                })
+            } else {
+                props.getAttachmentUrl(props.field.id, props.value.value).then(url => {
+                    if (isMountedRef.current) {
+                        setFileUrl(url)
+                    }
+                })
+            }
         }
     }, [props.value.value])
 
@@ -165,7 +167,7 @@ const Attachment = (props) => {
         const attachmentValues = props.values.map(value => value.value)
         const isNotAcceptedFile = uploadedFileNames.some(fileName => fileName === file.name) || props.values.some(value => value.value === file.name)
         
-        if (!isNotAcceptedFile) {
+        if (!isNotAcceptedFile && props.onAddFile) {
             const draftStringId = await props.onAddFile(file)
             if (draftStringId !== '') {
                 const formValues = props.multipleValueFieldHelper(attachmentValues.concat(draftStringId))
@@ -231,7 +233,9 @@ const Attachment = (props) => {
                     setShowAlert(false)
                 }} 
                 />
-                <Field.Attachment.ScrollContainer>
+                <Field.Attachment.ScrollContainer
+                isSectionConditional={props.isSectionConditional} 
+                >
                     <Field.Attachment.AddNewFileButtonContainer 
                     isInitial={true}
                     hasValues={!isDraggingOver ? props.values.length !== 0 : false} 
@@ -267,6 +271,7 @@ const Attachment = (props) => {
                         field={props.field}
                         isSectionConditional={props.isSectionConditional} 
                         value={value}
+                        getAttachmentUrl={props.getAttachmentUrl}
                         removeFile={() => removeFile(index)}
                         />
                     )) : null}

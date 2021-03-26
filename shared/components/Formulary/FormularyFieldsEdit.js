@@ -38,6 +38,7 @@ const FormularyFieldsEdit = (props) => {
                     <FormularyFieldEdit
                     key={index}
                     field={field}
+                    onCreateDraftFile={props.onCreateDraftFile}
                     types={props.types}
                     removeField={props.removeField}
                     fieldIsMoving={props.fieldIsMoving}

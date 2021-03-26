@@ -196,7 +196,6 @@ class Formulary extends React.Component {
                     }
                 }
             })
-
         }
         return draftStringId
     }
@@ -572,6 +571,7 @@ class Formulary extends React.Component {
                         <div>
                             <FormularySectionsEdit
                             formName={this.props.formName}
+                            onCreateDraftFile={this.props.onCreateDraftFile}
                             onRemoveFormularySettingsField={this.props.onRemoveFormularySettingsField}
                             onUpdateFormularySettingsField={this.props.onUpdateFormularySettingsField}
                             onCreateFormularySettingsField={this.props.onCreateFormularySettingsField}

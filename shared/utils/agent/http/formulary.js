@@ -53,6 +53,9 @@ const FORMULARY = {
     removeFormularySettingsField: async (formId, fieldId) => {
         return await requests.delete(`formulary/${companyId}/settings/fields/${formId}/${fieldId}/`)
     },
+    getFormularySettingsDefaultAttachmentFile: async (formId, fieldId, fileName) => {
+        return await appendTokenInUrlByQueryParam(`${API_ROOT}formulary/${companyId}/settings/fields/${formId}/${fieldId}/defaults/${fileName}/`)
+    }, 
     testFormularyFormulaField: async (source, formId, text) => {
         return await requests.get(`formula/${companyId}/${formId}/`, { text: text }, {}, source)
     },

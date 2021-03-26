@@ -4,9 +4,9 @@ import { View } from 'react-native'
 import Fields from './Fields'
 import { Formularies } from '../../styles/Formulary'
 import dynamicImport from '../../utils/dynamicImport'
+import base64 from '../../utils/base64'
+import agent from '../../utils/agent'
 
-const Col = dynamicImport('react-bootstrap', 'Col')
-const Row = dynamicImport('react-bootstrap', 'Row')
 
 /**
  * This Components controls each section individually
@@ -28,6 +28,18 @@ const FormularySection = (props) => {
         })
         props.updateSection(props.sectionData, props.section.id, props.sectionDataIndex)
     }
+    
+    /**
+     * Retrieve the attachment url so we are able to show and download the file in the attachments
+     * @param {BigInteger} fieldId - The field instance id.
+     * @param {String} value - The file name 
+     * 
+     * @returns {String} - The url to retrieve the file
+     */
+    const getAttachmentUrl = async (fieldId, value) => {
+        return await agent.http.FORMULARY.getAttachmentFile(props.formName, props.sectionId, fieldId, value)
+    }
+
 
     const removeFieldFormValue = (fieldName, value) => {
         const indexToRemove = props.sectionData.dynamic_form_value.findIndex(sectionFormValue=> sectionFormValue.field_name === fieldName && sectionFormValue.value === value)
@@ -67,6 +79,7 @@ const FormularySection = (props) => {
                         onChangeFormulary={props.onChangeFormulary}
                         sectionId={props.sectionData.id}
                         field={element}
+                        getAttachmentUrl={getAttachmentUrl}
                         fieldFormValues={getFieldFormValues(element.name)} 
                         getFieldFormValues={getFieldFormValues}
                         addFieldFormValue={addFieldFormValue}

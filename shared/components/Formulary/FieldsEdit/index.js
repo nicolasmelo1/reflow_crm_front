@@ -12,6 +12,7 @@ import { types, strings } from '../../../utils/constants'
 import deepCopy from '../../../utils/deepCopy'
 import Overlay from '../../../styles/Overlay'
 import Alert from '../../Utils/Alert'
+import agent from '../../../utils/agent'
 
 /**
  * We created this component because probably each selection item will be styled
@@ -51,6 +52,7 @@ const FormularyFieldEdit = (props) => {
     const [fieldTypes, setFieldTypes] = useState([])
     const [initialFieldType, setInitialFieldType] = useState([])
     const [showAlert, setShowAlert] = useState(false)
+    const [draftToFileReference, setDraftToFileReference] = useState({})
 
     const getFieldTypeName = () => {
         const fieldType = props.types.data.field_type.filter(fieldType => fieldType.id === props.field.type)
@@ -157,7 +159,13 @@ const FormularyFieldEdit = (props) => {
         props.field.field_is_hidden = !props.field.field_is_hidden
         props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
     }
-
+    // ------------------------------------------------------------------------------------------
+    /**
+     * This is needed because we use the Field component to update the default values, this way we don't
+     * need to any special logic to add default values
+     * 
+     * @param {String} value - The value as string to add.
+     */
     const onAddDefaultFieldValue = (__, value) => {
         if (value != '') {
             props.field.field_default_field_values.push({
@@ -167,12 +175,27 @@ const FormularyFieldEdit = (props) => {
             props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
         }
     }
-
+    // ------------------------------------------------------------------------------------------
+    /**
+     * Similar to `onAddDefaultFieldValue` function. We need this because we use this to remove values from
+     * the fields, the fields are used on the formularies, but on this context we just simulate this for adding
+     * default fields.
+     * 
+     * @param {String} value - The removed value
+     */
     const onRemoveDefaultFieldValue = (__, value) => {
         props.field.field_default_field_values = props.field.field_default_field_values.filter(defaultFieldValue => defaultFieldValue.value !== value)
         props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
     }
-
+    // ------------------------------------------------------------------------------------------
+    /**
+     * Similar to both `onRemoveDefaultFieldValue` and `onAddDefaultFieldValue` functions. We need this because on the fields
+     * we can have many values for a single field, with this we are able to mimic and use this funcionality to add default
+     * values to the fields. This function is used to update a field.
+     * 
+     * @param {String} oldValue - The old value as string that needs to be changed
+     * @param {String} newValue - The new value to change the old value to
+     */
     const onUpdateDefaultFieldValue = (__, oldValue, newValue) => {
         for (let i = 0; i<props.field.field_default_field_values.length; i++) {
             if (props.field.field_default_field_values[i].value === oldValue) {
@@ -181,10 +204,26 @@ const FormularyFieldEdit = (props) => {
         }
         props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
     }
-
+    // ------------------------------------------------------------------------------------------
+    const onAddDefaultFileAttachment = async (file) => {
+        const response = await props.onCreateDraftFile(file)
+        if (response && response.status === 200) {
+            const draftStringId = response.data.data.draft_id
+            draftToFileReference[draftStringId] = file.name
+            setDraftToFileReference({...draftToFileReference})
+            return draftStringId
+        }
+        return ''
+    }
+    // ------------------------------------------------------------------------------------------
+    const onGetAttachmentUrl = async (__, fileName) => {
+        return await agent.http.FORMULARY.getFormularySettingsDefaultAttachmentFile(props.formId, props.field.id, fileName)
+    }
+    // ------------------------------------------------------------------------------------------
     const getDefaultFieldValueInput = () => {
         const fieldData = deepCopy(props.field)
         fieldData.label_is_hidden = true
+        fieldData.field_is_hidden = false
         
         const fieldFormValues = props.field.field_default_field_values.map(defaultFieldValue => ({
             id: null,
@@ -199,15 +238,18 @@ const FormularyFieldEdit = (props) => {
             errors={{}}
             field={fieldData}
             types={props.types}
+            draftToFileReference={draftToFileReference}
             fieldFormValues={fieldFormValues}
+            getAttachmentUrl={onGetAttachmentUrl}
             addFieldFormValue={onAddDefaultFieldValue}
             removeFieldFormValue={onRemoveDefaultFieldValue}
             updateFieldFormValue={onUpdateDefaultFieldValue}
             getFieldFormValues={() => {return fieldFormValues}}
+            onAddFile={onAddDefaultFileAttachment}
             />
         )
     }
-
+    // ------------------------------------------------------------------------------------------
     const formularyItemsForFieldTypes = () => {
         const fieldType = getFieldTypeName()
 
@@ -267,8 +309,8 @@ const FormularyFieldEdit = (props) => {
             )
         }
     }
-
-
+    // ------------------------------------------------------------------------------------------
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         setFieldTypes(props.types.data.field_type.map(fieldType=> { 
             return { 
@@ -281,18 +323,18 @@ const FormularyFieldEdit = (props) => {
             }
         }))
     }, [props.types.data.field_type])
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         setInitialFieldType(props.types.data.field_type.filter(fieldType=> fieldType.id === props.field.type).map(fieldType=> { return { value: fieldType.id, label: types('pt-br', 'field_type', fieldType.type) } }))
     }, [props.types.data.field_type, props.field.type])
-
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //#########################################################################################//
     const renderMobile = () => {
         return (
             <View></View>
         )
     }
-
+    //#########################################################################################//
     const renderWeb = () => {
         return (
             <FormulariesEdit.FieldContainer 
@@ -389,22 +431,6 @@ const FormularyFieldEdit = (props) => {
                                             </FormulariesEdit.FieldFormFieldContainer>
                                         ) : ''}
                                         <FormulariesEdit.FieldFormFieldContainer>
-                                            <FormulariesEdit.FieldFormLabel>
-                                                {strings['pt-br']['formularyEditFieldTypeSelectorLabel']}
-                                            </FormulariesEdit.FieldFormLabel>
-                                            <FormulariesEdit.SelectorContainer isOpen={fieldTypeIsOpen}>
-                                                <Select 
-                                                    setIsOpen={setFieldTypeIsOpen}
-                                                    isOpen={fieldTypeIsOpen}
-                                                    onFilter={onFilterFieldType}
-                                                    label={FieldOption}
-                                                    options={fieldTypes} 
-                                                    initialValues={initialFieldType} 
-                                                    onChange={onChangeFieldType} 
-                                                />
-                                            </FormulariesEdit.SelectorContainer>
-                                        </FormulariesEdit.FieldFormFieldContainer>
-                                        <FormulariesEdit.FieldFormFieldContainer>
                                             <FormulariesEdit.FieldFormCheckbox checked={props.field.required} onChange={onChangeRequired} text={strings['pt-br']['formularyEditFieldIsRequiredCheckboxLabel']}/>
                                             <FormulariesEdit.FieldFormCheckboxDivider/>
                                             <FormulariesEdit.FieldFormCheckbox checked={props.field.label_is_hidden} onChange={onChangeLabelIsHidden} text={strings['pt-br']['formularyEditFieldLabelIsVisibleCheckboxLabel']}/>
@@ -427,7 +453,7 @@ const FormularyFieldEdit = (props) => {
             </FormulariesEdit.FieldContainer>
         )
     }
-
+    //#########################################################################################//
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile() 
 }
 
