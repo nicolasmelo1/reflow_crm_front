@@ -3,8 +3,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { View } from 'react-native'
 import Fields from './Fields'
 import { Formularies } from '../../styles/Formulary'
-import dynamicImport from '../../utils/dynamicImport'
-import base64 from '../../utils/base64'
 import agent from '../../utils/agent'
 
 
@@ -37,7 +35,7 @@ const FormularySection = (props) => {
      * @returns {String} - The url to retrieve the file
      */
     const getAttachmentUrl = async (fieldId, value) => {
-        return await agent.http.FORMULARY.getAttachmentFile(props.formName, props.sectionId, fieldId, value)
+        return await agent.http.FORMULARY.getAttachmentFile(props.formName, props.sectionData.id, fieldId, value)
     }
 
 
@@ -74,7 +72,9 @@ const FormularySection = (props) => {
                 {props.fields.map((element, index)=>(
                     <Formularies.FieldContainer key={element.id}>
                         <Fields 
+                        isFormOpen={props.isFormOpen}
                         formName={props.formName}
+                        formularyDataId={props.formularyDataId}
                         errors={props.errors}
                         onChangeFormulary={props.onChangeFormulary}
                         sectionId={props.sectionData.id}

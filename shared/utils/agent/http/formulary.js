@@ -3,6 +3,9 @@ import { companyId, API_ROOT, appendTokenInUrlByQueryParam } from '../utils'
 
 
 const FORMULARY = {
+    getDraftStringIdFromDefaultAttachment: async (source, formName, fieldId, fileName) => {
+        return await requests.get(`formulary/${companyId}/${formName}/${fieldId}/defaults/draft/${fileName}/`, {}, {}, source)
+    },
     getFormularyUserOptions: async (source, formName, fieldId) => {
         return await requests.get(`formulary/${companyId}/${formName}/${fieldId}/user/options/`, {}, {}, source)
     },

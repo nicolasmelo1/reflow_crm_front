@@ -54,7 +54,7 @@ const FormularyFieldEdit = (props) => {
     const [showAlert, setShowAlert] = useState(false)
     const [draftToFileReference, setDraftToFileReference] = useState({})
     const [defaultValueIsOpen, setDefaultValueIsOpen] = useState(false)
-
+    // ------------------------------------------------------------------------------------------
     const getFieldTypeName = () => {
         const fieldType = props.types.data.field_type.filter(fieldType => fieldType.id === props.field.type)
         if (fieldType.length > 0) {
@@ -63,7 +63,7 @@ const FormularyFieldEdit = (props) => {
             return ''
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     const onMoveField = (e) => {
         let fieldContainer = e.currentTarget.closest('.field-container')
         let elementRect = e.currentTarget.getBoundingClientRect()
@@ -72,14 +72,12 @@ const FormularyFieldEdit = (props) => {
         e.dataTransfer.setData('fieldIndexToMove', JSON.stringify(props.fieldIndex))
         props.setFieldIsMoving(true)
     }
-
+    // ------------------------------------------------------------------------------------------
     const onRemoveField = () => {
         props.removeField(props.sectionIndex, props.fieldIndex)
     }
-
+    // ------------------------------------------------------------------------------------------
     const onDrop = (e) => {
-        e.preventDefault()
-        e.stopPropagation()
         let movedFieldSectionIndex = e.dataTransfer.getData('fieldSectionIndexToMove')
         let movedFieldIndex = e.dataTransfer.getData('fieldIndexToMove')
         if (movedFieldIndex !== '' && movedFieldSectionIndex !== '') {
@@ -88,21 +86,9 @@ const FormularyFieldEdit = (props) => {
             props.onMoveField(movedFieldSectionIndex, movedFieldIndex, props.sectionIndex, props.fieldIndex)
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     const onDragEnd = (e) => {
-        e.preventDefault()
-        e.stopPropagation()
         props.setFieldIsMoving(false)
-    }
-
-    const onDrag = (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-    }
-
-    const onDragOver = (e) => {
-        e.preventDefault()
-        e.stopPropagation()
     }
     // ------------------------------------------------------------------------------------------
     const onDisableField = (e) => {
@@ -111,10 +97,9 @@ const FormularyFieldEdit = (props) => {
         props.onUpdateField(props.sectionIndex, props.fieldIndex, fieldData)
     }
     // ------------------------------------------------------------------------------------------
-    const onChangeFieldName = (e) => {
-        e.preventDefault();
+    const onChangeFieldName = (fieldName) => {
         let fieldData = {...props.field}
-        fieldData.label_name = e.target.value
+        fieldData.label_name = fieldName
         props.onUpdateField(props.sectionIndex, props.fieldIndex, fieldData)
     }
     // ------------------------------------------------------------------------------------------
@@ -209,7 +194,7 @@ const FormularyFieldEdit = (props) => {
     const onAddDefaultFileAttachment = async (file) => {
         const response = await props.onCreateDraftFile(file)
         if (response && response.status === 200) {
-            const draftStringId = response.data.data.draft_id
+            const draftStringId = response.data.data.draft_string_id
             draftToFileReference[draftStringId] = file.name
             setDraftToFileReference({...draftToFileReference})
             return draftStringId
@@ -367,8 +352,15 @@ const FormularyFieldEdit = (props) => {
             <FormulariesEdit.FieldContainer 
             className="field-container" 
             isEditing={isEditing}
-            onDragOver={e=>{onDragOver(e)}} 
-            onDrop={e=>{onDrop(e)}}
+            onDragOver={e=>{
+                e.preventDefault()
+                e.stopPropagation()
+            }} 
+            onDrop={e=>{
+                e.preventDefault()
+                e.stopPropagation()
+                onDrop(e)
+            }}
             >
                 <Alert 
                 alertTitle={strings['pt-br']['formularyEditRemoveFieldAlertTitle']} 
@@ -383,21 +375,38 @@ const FormularyFieldEdit = (props) => {
                 }}
                 onAcceptButtonLabel={strings['pt-br']['formularuEditRemoveFieldAlertAcceptButtonLabel']}
                 />
-                <div style={{height: '1em', margin: '5px'}}>
-                    <Overlay text={strings['pt-br']['formularyEditFieldTrashIconPopover']}>
-                        <FormulariesEdit.Icon.FieldIcon size="sm" icon="trash" onClick={e=> {setShowAlert(true)}}/>
-                    </Overlay>
-                    <Overlay text={(props.field.enabled) ? strings['pt-br']['formularyEditFieldEyeIconPopover'] : strings['pt-br']['formularyEditFieldEyeSlashIconPopover']}>
-                        <FormulariesEdit.Icon.FieldIcon size="sm" icon={(props.field.enabled) ? 'eye' : 'eye-slash'} onClick={e=> {onDisableField(e)}}/>
-                    </Overlay>
-                    <Overlay text={strings['pt-br']['formularyEditFieldMoveIconPopover']}>
-                        <div style={{ float:'right' }} draggable="true" onDragStart={e => {onMoveField(e)}} onDrag={e => onDrag(e)} onDragEnd={e => {onDragEnd(e)}}>
-                            <FormulariesEdit.Icon.FieldIcon size="sm" icon="arrows-alt"/>
-                        </div>
-                    </Overlay>
-                    <Overlay text={(isEditing) ? strings['pt-br']['formularyEditFieldIsNotEditingIconPopover'] : strings['pt-br']['formularyEditFieldIsEditingIconPopover']}>
-                        <FormulariesEdit.Icon.FieldIcon size="sm" icon="pencil-alt" onClick={e=> {setIsEditing(!isEditing)}} isEditing={isEditing}/>
-                    </Overlay>
+                <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center'}}>
+                    {props.field.label_is_hidden ? (
+                        <small style={{color: '#bfbfbf', margin: '0'}}>{props.field.label_name}</small>
+                    ) : <small/>}
+                    <div style={{height: '1em', margin: '5px'}}>
+                        <Overlay text={strings['pt-br']['formularyEditFieldTrashIconPopover']}>
+                            <FormulariesEdit.Icon.FieldIcon size="sm" icon="trash" onClick={e=> {setShowAlert(true)}}/>
+                        </Overlay>
+                        <Overlay text={(props.field.enabled) ? strings['pt-br']['formularyEditFieldEyeIconPopover'] : strings['pt-br']['formularyEditFieldEyeSlashIconPopover']}>
+                            <FormulariesEdit.Icon.FieldIcon size="sm" icon={(props.field.enabled) ? 'eye' : 'eye-slash'} onClick={e=> {onDisableField(e)}}/>
+                        </Overlay>
+                        <Overlay text={strings['pt-br']['formularyEditFieldMoveIconPopover']}>
+                            <div 
+                            style={{ float:'right' }} 
+                            draggable="true" 
+                            onDragStart={e => {onMoveField(e)}} 
+                            onDrag={e => {
+                                e.preventDefault()
+                                e.stopPropagation()
+                            }} 
+                            onDragEnd={e => {
+                                e.preventDefault()
+                                e.stopPropagation()
+                                onDragEnd(e)
+                            }}>
+                                <FormulariesEdit.Icon.FieldIcon size="sm" icon="arrows-alt"/>
+                            </div>
+                        </Overlay>
+                        <Overlay text={(isEditing) ? strings['pt-br']['formularyEditFieldIsNotEditingIconPopover'] : strings['pt-br']['formularyEditFieldIsEditingIconPopover']}>
+                            <FormulariesEdit.Icon.FieldIcon size="sm" icon="pencil-alt" onClick={e=> {setIsEditing(!isEditing)}} isEditing={isEditing}/>
+                        </Overlay>
+                    </div>
                 </div>
                 {props.field.enabled ? (
                     <div>
@@ -427,7 +436,7 @@ const FormularyFieldEdit = (props) => {
                                     autoComplete={'whathever'} 
                                     type="text" 
                                     value={props.field.label_name} 
-                                    onChange={e=> {onChangeFieldName(e)}}
+                                    onChange={e=> {onChangeFieldName(e.target.value)}}
                                     />
                                 </FormulariesEdit.FieldFormFieldContainer>
                                 {props.field.label_name ? (

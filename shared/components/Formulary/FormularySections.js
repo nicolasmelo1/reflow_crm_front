@@ -203,6 +203,8 @@ const FormularySections = (props) => {
                             <FormularySection 
                             formName={props.formName}
                             isSectionConditional={section.conditional_value !== null}
+                            formularyDataId={props.data.id}
+                            isFormOpen={props.isFormOpen}
                             type={props.type}
                             types={props.types}
                             errors={props.errors}

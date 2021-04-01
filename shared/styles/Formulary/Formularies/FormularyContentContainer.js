@@ -9,7 +9,6 @@ export default styled(({isOpen, height,...rest}) => <div {...rest}/>)`
     display: block;
     position: relative;
     padding: ${props=> props.isOpen || props.display !== 'bottom' ? '10px' : '0'};
-    transition: height 0.3s ease-in-out, padding 0.3s ease-in-out;
 
     scrollbar-color: #bfbfbf transparent;
     scrollbar-width: thin;

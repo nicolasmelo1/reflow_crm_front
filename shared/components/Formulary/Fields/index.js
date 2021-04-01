@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { View } from 'react-native'
+import axios from 'axios'
 import Text from './Text'
 import Number from './Number'
 import Datetime from './Datetime'
@@ -15,6 +16,8 @@ import Form from './Form'
 import { Field } from '../../../styles/Formulary'
 import { errors, strings } from '../../../utils/constants'
 import isEqual from '../../../utils/isEqual'
+import agent from '../../../utils/agent'
+
 
 /**
  * This component controls each field individually, it's the parent component for all of the field types.
@@ -54,12 +57,15 @@ const Fields = (props) => {
     const [values, setValues] = useState([])
     const typeId = (props.field.type?.type) ? props.field.type.type : props.field.type
     const fieldContainerRef = React.useRef(null)
+    const isUploadingDefaultAttachmentsRef = React.useRef(false)
 
-    let typeName = (props.types.data) ? props.types.data.field_type.filter(fieldType => fieldType.id === typeId): []
-    typeName = (typeName.length !== 0) ? typeName[0].type : ''
+    const getCurrentFieldTypeName = () => {
+        let typeName = (props.types.data) ? props.types.data.field_type.filter(fieldType => fieldType.id === typeId): []
+        return (typeName.length !== 0) ? typeName[0].type : ''
+    }
 
     const getFieldType = () => {
-        switch (typeName) {
+        switch (getCurrentFieldTypeName()) {
             case "id":
                 return Id
             case "text":
@@ -187,7 +193,40 @@ const Fields = (props) => {
         if (checkErrors() && fieldContainerRef.current) {
             fieldContainerRef.current.scrollIntoView()
         }
-    })
+    }, [props.errors])
+
+    useEffect(() => {
+        const retrieveAttachmentsDraftFromDefaults = async () => {
+            if (props.fieldFormValues.length === 0 && props.formularyDataId === null && props.isFormOpen) {
+                isUploadingDefaultAttachmentsRef.current = true
+                let values = []
+                for (let i=0; i < props.field.field_default_field_values.length; i++) {
+                    const draftStringId = await props.onAddFile(props.field.field_default_field_values[i].value, props.field.id)
+                    values.push(draftStringId)
+                }
+                multipleValueFieldHelper(values)
+                isUploadingDefaultAttachmentsRef.current = false
+            }
+        }
+
+        if (props.fieldFormValues.length === 0 && props.formularyDataId === null && props.isFormOpen) {
+            if (getCurrentFieldTypeName() !== 'attachment') {
+                // Be cautious, the order of this conditional is important (what condition comes first and what comes second)
+                if (props.field.field_default_field_values.length > 1) {
+                    const values = props.field.field_default_field_values.map(defaultFieldValue => defaultFieldValue.value)
+                    multipleValueFieldHelper(values)
+                } else if (props.field.field_default_field_values.length > 0) {
+                    const value = props.field.field_default_field_values.map(defaultFieldValue => defaultFieldValue.value)[0]
+                    singleValueFieldsHelper(value)
+                }
+            } else {
+                if (!isUploadingDefaultAttachmentsRef.current) {
+                    retrieveAttachmentsDraftFromDefaults()
+                }
+            }
+        }
+        
+    }, [props.fieldFormValues])
 
     const renderMobile = () => {
         return (
@@ -209,7 +248,7 @@ const Fields = (props) => {
                         >
                             { props.field.label_name }
                             <Field.FieldTitle.Required>{(props.field.required) ? '*': ''}</Field.FieldTitle.Required>
-                            {typeName === 'form' && props.type !== 'embbed' && props.field?.form_field_as_option ? (
+                            {getCurrentFieldTypeName() === 'form' && props.type !== 'embbed' && props.field?.form_field_as_option ? (
                                 <Field.FieldTitle.FormButton 
                                 onClick={e => {props.type === 'full' ? props.onChangeFormulary(props.field.form_field_as_option.form_name, (values.length > 0) ? values[0].value: null) : () => {}}}
                                 >

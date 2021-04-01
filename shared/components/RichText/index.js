@@ -464,7 +464,7 @@ class RichText extends React.Component {
         let draftStringId = ''
         const response = await this.props.onCreateDraftFile(file)
         if (response && response.status === 200) {
-            draftStringId = response.data.data.draft_id
+            draftStringId = response.data.data.draft_string_id
             this.setDraftMapHeap(oldDraftId, draftStringId)
             this.drafts[draftStringId] = file
 

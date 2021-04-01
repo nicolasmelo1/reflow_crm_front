@@ -66,7 +66,7 @@ class Formulary extends React.Component {
         this.source = null
         this.formularyId = null
         this.updateFormularyWhenClose = false
-        this.draftFiles = {}
+        this.draftFilesOrDefaultAttachments = {}
         this.state = {
             draftToFileReference: {},
             buildData: {},
@@ -180,23 +180,43 @@ class Formulary extends React.Component {
      * 
      * @param {File} file - The file you are uploading to the draft
      */
-    onAddFile = async (file) => {
+    onAddFile = async (fileName, fieldId, file=null) => {
         let draftStringId = ''
-        const response = await this.props.onCreateDraftFile(file)
+        let response = null
+        if (file !== null) {
+            response = await this.props.onCreateDraftFile(file)
+        } else {
+            response = await agent.http.FORMULARY.getDraftStringIdFromDefaultAttachment(
+                this.source,
+                this.props.formName,
+                fieldId,
+                fileName
+            )
+        }
         if (response && response.status === 200) {
-            draftStringId = response.data.data.draft_id
-            this.draftFiles[draftStringId] = file
-            this.setDraftToFileReference(draftStringId, file.name)
+            draftStringId = response.data.data.draft_string_id
+            this.draftFilesOrDefaultAttachments[draftStringId] = {
+                fileName: fileName,
+                fieldId: fieldId,
+                file: file
+            }
+            this.setDraftToFileReference(draftStringId, fileName)
 
             agent.websocket.DRAFT.recieveFileRemoved({
                 blockId: '',
                 callback: (data) => {
-                    if (this._ismounted && [...Object.keys(this.draftFiles)].includes(data.data.draft_string_id)) {
-                        this.onAddFile(this.draftFiles[data.data.draft_string_id])
+                    if (this._ismounted && [...Object.keys(this.draftFilesOrDefaultAttachments)].includes(data.data.draft_string_id)) {
+                        const draft = this.draftFilesOrDefaultAttachments[data.data.draft_string_id]
+                        const fileName = draft.fileName
+                        const fieldId = draft.fieldId
+                        const file = draft.file
+
+                        this.onAddFile(fileName, fieldId, file)
                     }
                 }
             })
         }
+       
         return draftStringId
     }
     // ------------------------------------------------------------------------------------------
@@ -394,6 +414,15 @@ class Formulary extends React.Component {
      * @param {Interger} formId - If you are loading from an already existing data and not a new. Set this argument.
      */
     onLoadFormulary = async (formName, formId=null) => {
+        // This is needed to set the formId first so the default fields are NOT loaded when the
+        // form id is defined, if we don't do this, the default data will be loaded in the formulary
+        this.setFilledDataAndBuildData(
+            formId, 
+            this.state.filled.hasBuiltInitial,
+            this.state.filled.isAuxOriginalInitial,
+            this.state.filled.data.depends_on_dynamic_form,
+            this.state.buildData
+        )
         // you can build the data outside of the formulary, so you can use this to render other formularies (like themes for example)
         if (this.props.buildData) {
             this.onFullResetFormulary(this.props.buildData)
@@ -429,11 +458,11 @@ class Formulary extends React.Component {
      * Removes the drafts when we are closing or unmouting the formulary
      */
     removeDrafts = () => {
-        const draftsToRemove = Object.keys(this.draftFiles)
+        const draftsToRemove = Object.keys(this.draftFilesOrDefaultAttachments)
         for (let i = 0; i < draftsToRemove.length; i++) {
             this.props.onRemoveDraft(draftsToRemove[i])
         }
-        this.draftFiles = {}
+        this.draftFilesOrDefaultAttachments = {}
     }
     // ------------------------------------------------------------------------------------------
     /**
@@ -529,6 +558,14 @@ class Formulary extends React.Component {
         // The formulary is closing
         if (formularyIsClosing) {
             this.resetFormulary()
+            if (this.state.isEditing) {
+                this.setState(state => {
+                    return {
+                        ...state,
+                        isEditing: !state.isEditing
+                    }
+                })
+            }
         }
     }
     /////////////////////////////////////////////////////////////////////////////////////////////
@@ -601,6 +638,7 @@ class Formulary extends React.Component {
                                         </Formularies.Navigator>
                                     ) : ''}   
                                     <FormularySections 
+                                    isFormOpen={this.props.display === 'bottom' ? this.props.formulary.isOpen : true}
                                     formName={this.state.buildData.form_name}
                                     type={this.props.type}
                                     types={this.props.login.types}

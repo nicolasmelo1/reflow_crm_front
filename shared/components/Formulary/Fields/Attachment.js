@@ -20,7 +20,7 @@ const AttachmentFile = (props) => {
     const itemValue = props.draftToFileReference[props.value.value] ? props.draftToFileReference[props.value.value] : props.value.value
     const splittedFullName = (itemValue) ? itemValue.split('.') : []
     const fileFormat = splittedFullName[splittedFullName.length-1]
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Function responsible for retriving if a certain value is a draft, so if the value is a string and it is
      * a base64 encoded string it could be a draft, if it has draft in it, then it's certainly a draft.
@@ -35,7 +35,7 @@ const AttachmentFile = (props) => {
             return false
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Function responsible for handling when the user clicks a file, when the user clicks we can open the
      * preview of the photo if it is an image or we download it otherwise.
@@ -53,7 +53,7 @@ const AttachmentFile = (props) => {
         }
         
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * When the user closes the preview we set the zIndex of the sidebar toogle back to normal and also
      * closes the preview view.
@@ -62,14 +62,15 @@ const AttachmentFile = (props) => {
         document.querySelector('.sidebar-toogle').style.zIndex = sidebarToogleZindex.current
         setIsFilePreviewOpen(!isFilePreviewOpen)
     }
-
+    // ------------------------------------------------------------------------------------------
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         isMountedRef.current = true
         return () => {
             isMountedRef.current = false
         }
     }, [])
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         if (!['', null].includes(props.value.value)) {
             if (isDraft(props.value.value)) {
@@ -87,13 +88,14 @@ const AttachmentFile = (props) => {
             }
         }
     }, [props.value.value])
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //########################################################################################//
     const renderMobile = () => {
         return (
             <View></View>
         )
     }
-
+    //########################################################################################//
     const renderWeb = () => {
         return (
             <Field.Attachment.ItemContainer>
@@ -133,6 +135,7 @@ const AttachmentFile = (props) => {
             </Field.Attachment.ItemContainer>
         )
     }
+    //########################################################################################//
 
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
@@ -145,7 +148,7 @@ const Attachment = (props) => {
     const [uploadedFileNames, setUploadedFileNames] = useState([])
     const [isDraggingOver, setIsDraggingOver] = useState(false)
     const [showAlert, setShowAlert] = useState(false)
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Just to prevent default and stop propagation of a particular event on the web.
      * 
@@ -157,7 +160,7 @@ const Attachment = (props) => {
             event.stopPropagation()
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Add file to the draft
      * 
@@ -168,7 +171,7 @@ const Attachment = (props) => {
         const isNotAcceptedFile = uploadedFileNames.some(fileName => fileName === file.name) || props.values.some(value => value.value === file.name)
         
         if (!isNotAcceptedFile && props.onAddFile) {
-            const draftStringId = await props.onAddFile(file)
+            const draftStringId = await props.onAddFile(file.name, props.field.id, file)
             if (draftStringId !== '') {
                 const formValues = props.multipleValueFieldHelper(attachmentValues.concat(draftStringId))
                 uploadedFileNames.push(file.name)
@@ -179,7 +182,7 @@ const Attachment = (props) => {
             setShowAlert(true)
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * remove a file based on its index
      * 
@@ -196,13 +199,14 @@ const Attachment = (props) => {
         const formValues = props.multipleValueFieldHelper(attachmentValues)
         props.setValues([...formValues])
     } 
-    
+    // ------------------------------------------------------------------------------------------
+    //########################################################################################//
     const renderMobile = () => {
         return (
             <View></View>
         )
     }
-
+    //########################################################################################//
     const renderWeb = () => {
         return (
             <Field.Attachment.Container 
@@ -279,7 +283,7 @@ const Attachment = (props) => {
             </Field.Attachment.Container>
         )
     }
-
+    //########################################################################################//
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 
