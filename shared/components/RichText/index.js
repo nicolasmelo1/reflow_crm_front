@@ -464,12 +464,9 @@ class RichText extends React.Component {
         let draftStringId = ''
         const response = await this.props.onCreateDraftFile(file)
         if (response && response.status === 200) {
-            console.log(response)
             draftStringId = response.data.data.draft_string_id
-            console.log(draftStringId)
             this.setDraftMapHeap(oldDraftId, draftStringId)
             this.drafts[draftStringId] = file
-            console.log(this.drafts)
             agent.websocket.DRAFT.recieveFileRemoved({
                 blockId: '',
                 callback: (data) => {
