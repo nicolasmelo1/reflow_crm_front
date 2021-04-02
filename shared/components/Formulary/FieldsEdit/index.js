@@ -191,7 +191,14 @@ const FormularyFieldEdit = (props) => {
         props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
     }
     // ------------------------------------------------------------------------------------------
-    const onAddDefaultFileAttachment = async (file) => {
+    /**
+     * Adds a new default file attachment value
+     * 
+     * @param {Blob} file - The file object to add as a default value
+     * 
+     * @returns {String} - Returns a draft string id
+     */
+    const onAddDefaultFileAttachment = async (fileName, fieldId, file) => {
         const response = await props.onCreateDraftFile(file)
         if (response && response.status === 200) {
             const draftStringId = response.data.data.draft_string_id
@@ -304,6 +311,10 @@ const FormularyFieldEdit = (props) => {
         }
     }
     // ------------------------------------------------------------------------------------------
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    useEffect(() => {
+
+    }, [props.field])
     /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         if (isEditing === false) {

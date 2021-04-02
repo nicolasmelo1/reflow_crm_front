@@ -6,6 +6,7 @@ const DRAFT = {
         return await appendTokenInUrlByQueryParam(`${API_ROOT}draft/${companyId}/file/${draftStringId}/`)
     },
     createDraftFile: async (file) => {
+        console.log(file)
         return await requests.post(`draft/${companyId}/file/`, formEncodeData(``, null, [{name: file.name, file: file}]), {'Content-Type': 'multipart/form-data'})
     },
     removeDraft: async (draftStringId) => {

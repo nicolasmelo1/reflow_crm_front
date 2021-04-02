@@ -305,11 +305,13 @@ class Formulary extends React.Component {
             this.state.auxOriginalInitial[0].buildData) ? this.state.auxOriginalInitial[0].buildData : this.state.buildData
 
         if (this.updateFormularyWhenClose) {
+            this.updateFormularyWhenClose = false
             this.getBuildFormulary(this.props.formName, true).then(_ => {
-            this.resetAuxOriginalInitial([], -1)
-            this.props.setFormularyId(null)
-            this.props.setFormularyDefaultData([])
-            this.removeDrafts()
+                this.onFullResetFormulary(buildData)
+                this.resetAuxOriginalInitial([], -1)
+                this.props.setFormularyId(null)
+                this.props.setFormularyDefaultData([])
+                this.removeDrafts()
         })
         } else {
             this.onFullResetFormulary(buildData)

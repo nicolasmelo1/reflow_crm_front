@@ -77,6 +77,7 @@ const formEncodeData = (appendToKey='', body=null, files = []) => {
     if (appendToKey !== '' && body !== null) {
         formData.append(appendToKey, JSON.stringify(body))
     }
+    console.log(files)
     files.forEach(file=> {
         formData.append(base64.encode(file.name), file.file)
     })

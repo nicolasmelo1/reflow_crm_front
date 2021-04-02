@@ -141,25 +141,32 @@ const PDFGeneratorReaderDownloader = (props) => {
                 </body>
             </html>
         `
-        
-        props.onCheckIfCanDownloadPDF(sourceRef.current, props.formName, props.templateData.id).then(response => {
-            if (response && response.status === 200) {
-                axios.post(`${FRONT_END_HOST}api/generate_pdf`, {html: page}, {
-                    responseType: 'blob'
-                }).then(response => {
-                    const blob = new Blob([response.data], {type: 'application/pdf'})
-                    const link = document.createElement('a')
-                    link.href = window.URL.createObjectURL(blob)
-                    link.download = `${props.templateData.name}.pdf`
-                    link.click()
-                    link.remove()
+        try {
+            props.onCheckIfCanDownloadPDF(sourceRef.current, props.formName, props.templateData.id).then(response => {
+                if (response && response.status === 200) {
+                    axios.post(`${FRONT_END_HOST}api/generate_pdf`, {html: page}, {
+                        responseType: 'blob'
+                    }).then(response => {
+                        const blob = new Blob([response.data], {type: 'application/pdf'})
+                        const link = document.createElement('a')
+                        link.href = window.URL.createObjectURL(blob)
+                        link.download = `${props.templateData.name}.pdf`
+                        link.click()
+                        link.remove()
+                        setIsDownloadingFile(false)
+                    })
+                } else {
+                    props.onAddNotification(strings['pt-br']['pdfGeneratorDownloaderErrorMessage'], 'error')
                     setIsDownloadingFile(false)
-                })
-            } else {
+                }
+            }).catch(error => {
                 props.onAddNotification(strings['pt-br']['pdfGeneratorDownloaderErrorMessage'], 'error')
                 setIsDownloadingFile(false)
-            }
-        })
+            })
+        } catch {
+            props.onAddNotification(strings['pt-br']['pdfGeneratorDownloaderErrorMessage'], 'error')
+            setIsDownloadingFile(false)
+        }
     }
 
     /**

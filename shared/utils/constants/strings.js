@@ -169,7 +169,7 @@ const strings = {
         formularyEditFieldNoFieldTypeLabel: 'Selecione um tipo de campo',
         formularyEditFieldHiddenFieldLabel: 'O campo está escondido',
         formularyEditFieldDefaultValuesLabel: 'Valor Padrão',
-        formularyEditFieldDefaultValuesExplanation: 'Valores que serão inseridos automaticamente quando o valor do campo estiver vazio.',
+        formularyEditFieldDefaultValuesExplanation: 'Valores que serão inseridos automaticamente no campo ao criar um novo registro.',
         formularyEditFieldDefaultValuesButton: 'Setar valor padrão',
         formularyEditFieldDisabledLabel: 'O campo está desativado',
         formularyEditSectionPlaceholderLabel: 'Insira o nome da seção',
