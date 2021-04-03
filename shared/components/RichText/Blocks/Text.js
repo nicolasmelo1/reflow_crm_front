@@ -206,7 +206,10 @@ const Text = (props) => {
                         whereCaretPositionShouldGoAfterUpdateRef.current.contentIndex, 
                         whereCaretPositionShouldGoAfterUpdateRef.current.positionInContent
                     )
-                } else if (caretPositionRef.current.start !== null && caretPositionRef.current.end !== null) {
+                } else {
+                    if (caretPositionRef.current.start === null && caretPositionRef.current.end === null) {
+                        caretPositionRef.current = getSelectionSelectCursorPositionWeb(inputRef.current)
+                    }
                     const selectedContents = getSelectedContents()
                     if (selectedContents[0]) {
                         setCaretPositionWeb(
@@ -218,8 +221,17 @@ const Text = (props) => {
                             selectedContents[selectedContents.length-1].contentIndex,
                             selectedContents[selectedContents.length-1].endIndexToSelectTextInContent
                         )
+                    } else {
+                        const contents = props.block.rich_text_block_contents
+                        setCaretPositionWeb(
+                            inputRef.current,
+                            props.arrowNavigation,
+                            isFocusingRef.current,
+                            contents.length - 1, 
+                            contents[contents.length - 1].text.substring(contents[contents.length - 1].text.length-1, contents[contents.length - 1].text.length) === '\n' ? contents[contents.length - 1].text.length-1 : contents[contents.length - 1].text.length
+                        )
                     }
-                }
+                } 
                 isFocusingRef.current = false
                 whereCaretPositionShouldGoAfterUpdateRef.current = {
                     contentIndex: null,

@@ -91,6 +91,7 @@ class RichText extends React.Component {
         this.drafts = {}
         this.onFocusHeap = []
         this.nextActiveBlock = null
+        this.history = []
         this.toolbar.current = {
             blockUUID: null,
             contentOptionComponent: null,
@@ -112,8 +113,25 @@ class RichText extends React.Component {
                 isRightPressed: false,
                 isLeftPressed: false
             },
-            data: this.props.initialData && Object.keys(this.props.initialData).length !== 0 ? 
-                  JSON.parse(JSON.stringify(this.props.initialData)) : this.createNewPage()
+            data: this.initializeRichTextPage()
+        }
+    }
+    // ------------------------------------------------------------------------------------------
+    /**
+     * Initialize the rich text, this defines what goes in the 'data' state key when we render this formulary the first time
+     * 
+     * @returns {Object} - see `createNewPage()` function to understand the structure expected of the data
+     */
+    initializeRichTextPage = () => {
+        const hasInitialData = this.props.initialData && Object.keys(this.props.initialData).length !== 0
+        if (hasInitialData) {
+            const data = JSON.parse(JSON.stringify(this.props.initialData))
+            this.appendHistory(null, data)
+            return data
+        } else {
+            const data = this.createNewPage()
+            this.appendHistory(null, data)
+            return data
         }
     }
     // ------------------------------------------------------------------------------------------
@@ -253,6 +271,8 @@ class RichText extends React.Component {
     }
     // ------------------------------------------------------------------------------------------
     /**
+     * ONLY ON MOBILE
+     * 
      * Event fired when the keyboard or mobile is shown to the user.
      * 
      * @param {object} e - The event API, check for explanation: https://reactnative.dev/docs/keyboard#addlistener
@@ -262,12 +282,47 @@ class RichText extends React.Component {
     }
     // ------------------------------------------------------------------------------------------
     /**
+     * ONLY ON MOBILE
+     * 
      * Event fired when the keyboard or mobile is hidden to the user.
      * 
      * @param {object} e - The event API, check for explanation: https://reactnative.dev/docs/keyboard#addlistener
      */
     onKeyboardDidHide = () => {
         this.setKeyboardHeight(0)
+    }
+    // ------------------------------------------------------------------------------------------
+    /**
+     * Adds the history to the rich text, so when the user press ctrl + z it can go back to the previous data
+     * 
+     * @param {String} activeBlock - The current active block uuid
+     * @param {Object} historyData - The data of the page to save on the history 
+     */
+    appendHistory = (activeBlock, historyData) => {
+        if (this.history.length > 0 && JSON.stringify(historyData) !== JSON.stringify(this.history[0]) && activeBlock !== null || this.history.length === 0) {
+            this.history.splice(0, this.history.length >= 1000 ? 1 : 0, { activeBlock: activeBlock, data: deepCopy(historyData)})
+        }
+    }
+    // ------------------------------------------------------------------------------------------
+    /**
+     * Handles the history of the rich text, so the user can press ctrl + z and the state changes as it was before
+     * 
+     * @param {SyntheticEvent} browserEvent - The event sent by the browser when the user press ctrl + z
+     */
+    handleHistory = (browserEvent) => {
+        if (process.env['APP'] === 'web') {
+            const isMac = /mac/i.test(navigator.platform)
+            if (browserEvent.keyCode === 90 && (isMac ? browserEvent.metaKey : browserEvent.ctrlKey) && this.history.length > 0 && this.state.activeBlock !== null) {
+                const indexToUse = this.history.length > 10 ? 10 : this.history.length > 5 ? 5 : this.history.length - 1
+                const richTextData = JSON.parse(JSON.stringify(this.history[indexToUse]))
+                this.history = this.history.slice(indexToUse, this.history.length)
+                this.setState(state => ({
+                    ...state,
+                    activeBlock: richTextData.activeBlock,
+                    data: richTextData.data
+                }))
+            }
+        }
     }
     // ------------------------------------------------------------------------------------------
     /**
@@ -398,6 +453,7 @@ class RichText extends React.Component {
             }
             if (this._isMounted) {
                 checkIfLastPageBlockIsEmptyTextAndIfNotAddIt()
+                this.appendHistory(activeBlock, JSON.parse(JSON.stringify(this.state.data)))
                 this.setState(state => ({
                     ...state,
                     activeBlock: activeBlock,
@@ -594,6 +650,9 @@ class RichText extends React.Component {
         if (process.env['APP'] !== 'web') {
             Keyboard.addListener('keyboardDidShow', this.onKeyboardDidShow)
             Keyboard.addListener('keyboardDidHide', this.onKeyboardDidHide)  
+        } else {
+            // IMPORTANT: TODO: This is adding the event on the document, but needs to specify better
+            document.addEventListener('keydown', this.handleHistory)
         }
     }
     
@@ -617,6 +676,8 @@ class RichText extends React.Component {
         if (process.env['APP'] !== 'web') {
             Keyboard.removeListener('keyboardDidShow', this.onKeyboardDidShow)
             Keyboard.removeListener('keyboardDidHide', this.onKeyboardDidHide)  
+        } else {
+            document.removeEventListener('keydown', this.handleHistory)
         }
         if (this.source) {
             this.source.cancel()

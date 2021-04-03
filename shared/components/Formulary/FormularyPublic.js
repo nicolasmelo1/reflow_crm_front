@@ -4,6 +4,7 @@ import axios from 'axios'
 import { connect } from 'react-redux'
 import actions from '../../redux/actions'
 import agent from '../../utils/agent'
+import { strings } from '../../utils/constants'
 import dynamicImport from '../../utils/dynamicImport'
 import { Formulary, Error404 } from '../'
 import { Formularies } from '../../styles/Formulary'
@@ -102,7 +103,7 @@ class FormularyPublic extends React.Component {
                         <Formularies.Public.GreetingsContainer>
                             <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'center' }}>
                                 <Formularies.Public.Title>
-                                    {'Obrigado!'}
+                                    {strings['pt-br']['formularyPublicGreetingsMessageTitle']}
                                 </Formularies.Public.Title>
                                 <Formularies.Public.Description>
                                     {this.state.greetingsMessage !== null ? this.state.greetingsMessage : ''}
@@ -111,16 +112,13 @@ class FormularyPublic extends React.Component {
                                     <Formularies.Public.SubmitAnotherResponseButton 
                                     onClick={(e) => this.setHasSubmittedForm(false)}
                                     >
-                                        {'Enviar outra resposta'}
+                                        {strings['pt-br']['formularyPublicGreetingsSubmitAnotherButton']}
                                     </Formularies.Public.SubmitAnotherResponseButton>
                                 ) : ''}
                             </div>
                         </Formularies.Public.GreetingsContainer>
                 ) : (
                     <Formularies.Public.Container>
-                        <Formularies.Public.Title>
-                            {this.state.formLabelName}
-                        </Formularies.Public.Title>
                         <Formularies.Public.Description>
                             {this.state.description !== null ? this.state.description : ''}
                         </Formularies.Public.Description>

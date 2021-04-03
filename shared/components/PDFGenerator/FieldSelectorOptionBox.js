@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Modal, SafeAreaView, View, Text } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { 
     FieldOptionsContainer, 
     FieldOptionsButtons,
     FieldOptionsFormularyTitle,
+    FieldOptionsSearchBox,
     PDFGeneratorCreatorEditorButtonsContainer,
     PDFGeneratorCreatorEditorTemplateCancelButton
 } from '../../styles/PDFGenerator'
@@ -31,6 +32,14 @@ import {
  * the modal next to the caret. This represents the number of pixels the element should be from the left.
  */
 const FieldSelectorOptionBox = (props) => {
+    const [search, setSearch] = useState('')
+
+    useEffect(() => {
+        if (process.env['APP'] === 'web') {
+            
+        }
+    }, [])
+
     const renderMobile = () => {
         return (
             <Modal animationType={'slide'}>
@@ -77,8 +86,15 @@ const FieldSelectorOptionBox = (props) => {
             top={props.top}
             left={props.left}
             >
+                <FieldOptionsSearchBox 
+                placeholder='Buscar'
+                autoFocus={true} 
+                type="text" 
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                />
                 {props.fieldOptions.map(formOption=> (
-                    <div key={formOption.id}>
+                    <div key={`${formOption.id}${formOption?.form_from_connected_field?.label_name}`}>
                         <div style={{borderBottom: '1px solid #bfbfbf'}}>
                             <FieldOptionsFormularyTitle>
                                 {formOption.label_name}
@@ -87,9 +103,9 @@ const FieldSelectorOptionBox = (props) => {
                                 <small style={{ margin: '0 5px', color: '#0dbf7e', fontSize: 10}}>{`Do campo `}<strong style={{ color: '#0dbf7e' }}>{formOption.form_from_connected_field.label_name}</strong></small>
                             ) : ''}
                         </div>
-                        {formOption.form_fields.map(fieldOption => (
+                        {formOption.form_fields.filter(fieldOption => search !== '' ? fieldOption.label_name.includes(search) : true).map(fieldOption => (
                             <FieldOptionsButtons 
-                            key={fieldOption.id} 
+                            key={`${formOption.id}${fieldOption.id}`} 
                             onClick={(e) => {props.onClickOption(`fieldVariable-${fieldOption.id} fromConnectedField-${formOption.form_from_connected_field ? formOption.form_from_connected_field.id : ''}`)}}
                             >
                                 {fieldOption.label_name}

@@ -38,11 +38,16 @@ const setCaretPositionWeb = (inputElement, arrowNavigation, isFocus, startConten
         } else if (endContentIndex === null && endPositionInContent === null) {
             const node = inputElement.childNodes[startContentIndex]
             const nodePosition = startPositionInContent
-            if (node) {
+            if (node && node.firstChild) {
                 const nodeText = node.firstChild ? node.firstChild : node
+                let offset = nodePosition
+                if (nodePosition > nodeText.length) {
+                    offset = nodeText.textContent.substring(nodeText.textContent.length-1, nodeText.textContent.length) === '\n' ? nodeText.textContent.length-1 :  nodeText.textContent.length
+                }
+                if (offset > nodeText.textContent.length) offset = 0
                 range.setStart(
                     nodeText, 
-                    nodePosition > nodeText.length ? nodeText.length : nodePosition
+                    offset
                 )
                 range.collapse(true)
             } else {

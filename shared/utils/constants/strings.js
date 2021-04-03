@@ -127,6 +127,8 @@ const strings = {
         formularyUniqueFieldError: 'Os valores deste campo são unicos, tente inserir outro valor',
         formularyFormFieldAddNewButtonLabel: 'Adicionar novo',
         formularyFormFieldEditButtonLabel: 'Editar',
+        formularyPublicGreetingsMessageTitle: 'Obrigado!',
+        formularyPublicGreetingsSubmitAnotherButton: 'Enviar outra resposta',
         formularyPublicEditLinkToPublicFormTitle: 'Link para o formulário público',
         formularyPublicEditFormIsNotPublicTitle: 'Este formulário não é público',
         formularyPublicEditSelectFieldsTitle: 'Selecione os campos que aparecerão no formulário público',

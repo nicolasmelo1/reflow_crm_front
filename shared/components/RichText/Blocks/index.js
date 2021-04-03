@@ -359,24 +359,28 @@ const Block = (props) => {
  * @returns {Boolean} - Returns true or false whether the props are equal or not.
  */
 const areEqual = (prevProps, nextProps) => {
-    if (Object.keys(previousBlockProps).includes(prevProps.block.uuid)) prevProps = previousBlockProps[prevProps.block.uuid]
     let areThemEqual = true
-    for (let key of Object.keys(prevProps)) {
-        // This is a special case, we only update if the uuids have changed or if the length had changed
-        if (key === 'contextBlocks') {
-            const prevPropsBlocksUUID = prevProps[key].map(block => block.uuid)
-            const nextPropsBlocksUUID = nextProps[key].map(block => block.uuid)
-            if (!isEqual(nextPropsBlocksUUID, prevPropsBlocksUUID)){
+    if (Object.keys(previousBlockProps).includes(prevProps.block.uuid)) prevProps = previousBlockProps[prevProps.block.uuid]
+    // This might seem confusing at first, but nextProps or prevProps will be referencing the SAME block.uuid, the activeBlock on the otherhand will always
+    // change, so we need to check if THIS BLOCK IS or WAS the activeBlock, the others can remain untouched.
+    if (nextProps.block.uuid === prevProps.activeBlock || nextProps.block.uuid === nextProps.activeBlock) {
+        for (let key of Object.keys(prevProps)) {
+            // This is a special case, we only update if the uuids have changed or if the length had changed
+            if (key === 'contextBlocks') {
+                const prevPropsBlocksUUID = prevProps[key].map(block => block.uuid)
+                const nextPropsBlocksUUID = nextProps[key].map(block => block.uuid)
+                if (!isEqual(nextPropsBlocksUUID, prevPropsBlocksUUID)){
+                    areThemEqual = false
+                    break
+                }
+            } else if (Object.prototype.toString.call(prevProps[key]) === '[object Function]' && prevProps[key] !== null && nextProps[key] !== null && prevProps[key].toString() !== nextProps[key].toString())  {
                 areThemEqual = false
                 break
-            }
-        } else if (Object.prototype.toString.call(prevProps[key]) === '[object Function]' && prevProps[key] !== null && nextProps[key] !== null && prevProps[key].toString() !== nextProps[key].toString())  {
-            areThemEqual = false
-            break
-        } else if (JSON.stringify(prevProps[key]) !== JSON.stringify(nextProps[key])) {
-            areThemEqual = false
-            break
-        }   
+            } else if (JSON.stringify(prevProps[key]) !== JSON.stringify(nextProps[key])) {
+                areThemEqual = false
+                break
+            }   
+        }
     }
     previousBlockProps[nextProps.block.uuid] = deepCopy(nextProps)
     return areThemEqual

@@ -1,6 +1,7 @@
 export { default as FieldOptionsContainer } from './FieldOptionsContainer'
 export { default as FieldOptionsButtons } from './FieldOptionsButtons'
 export { default as FieldOptionsFormularyTitle } from './FieldOptionsFormularyTitle'
+export { default as FieldOptionsSearchBox } from './FieldOptionsSearchBox'
 export { default as PDFGeneratorButtonInFormulary } from './PDFGeneratorButtonInFormulary'
 export { default as PDFGeneratorCreatorTemplateCardContainer } from './PDFGeneratorCreatorTemplateCardContainer'
 export { default as PDFGeneratorCreatorTemplatesContainer } from './PDFGeneratorCreatorTemplatesContainer'
