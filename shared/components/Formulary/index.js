@@ -429,7 +429,6 @@ class Formulary extends React.Component {
             }
 
         }))
-        console.log(formId)
         // you can build the data outside of the formulary, so you can use this to render other formularies (like themes for example)
         if (this.props.buildData) {
             this.onFullResetFormulary(this.props.buildData)
@@ -458,7 +457,6 @@ class Formulary extends React.Component {
      */
     onChangeFormulary = (formName, formId=null) => { 
         this.setAuxOriginalInitial()
-        console.log(formId)
         this.onLoadFormulary(formName, formId)
     }
     // ------------------------------------------------------------------------------------------
