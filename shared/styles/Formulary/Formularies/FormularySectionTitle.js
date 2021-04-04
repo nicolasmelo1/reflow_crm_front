@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Text } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
-styled.h2`
+styled(React.forwardRef(({isConditional, ...rest}, ref) => <h2 {...rest} ref={ref}/>))`
     color: ${props => props.isConditional ? '#f2f2f2' : '#17242D'}; 
     font-weight: normal;
     letter-spacing: 0.5px;

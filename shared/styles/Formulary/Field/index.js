@@ -6,6 +6,7 @@ import FieldAttachmentPreviewTopButtonsContainer from './FieldAttachmentPreviewT
 import FieldAttachmentPreviewCloseButton from './FieldAttachmentPreviewCloseButton'
 import FieldAttachmentAddNewFileButtonContainer from './FieldAttachmentAddNewFileButtonContainer'
 import FieldAttachmentInput from './FieldAttachmentInput'
+import FieldAttachmentLoadingContainer from './FieldAttachmentLoadingContainer'
 import FieldAttachmentContainer from './FieldAttachmentContainer'
 import FieldAttachmentsContainer from './FieldAttachmentsContainer'
 import FieldAttachmentScrollContainer from './FieldAttachmentScrollContainer'
@@ -43,6 +44,7 @@ export default {
         PreviewContainer: FieldAttachmentPreviewContainer,
         AddNewFileButtonContainer: FieldAttachmentAddNewFileButtonContainer,
         Container: FieldAttachmentsContainer,
+        LoadingContainer: FieldAttachmentLoadingContainer,
         ScrollContainer: FieldAttachmentScrollContainer,
         Button: FieldAttachmentButton,
         Image: FieldAttachmentImage,

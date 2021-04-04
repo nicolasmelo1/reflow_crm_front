@@ -49,15 +49,35 @@ const FormularySections = (props) => {
     const toggleConditionals = (sectionsData, conditionals) => {
         let newSectionsData = [...sectionsData]
         let formValues = sectionsData.map(sectionData=> sectionData.dynamic_form_value)
-        formValues = [].concat(...formValues);
+        formValues = [].concat(...formValues)
 
+        const getConditionalsToToggle = (conditionalToValidateIndex, conditionalsToToggle=[]) => {
+            const conditionalSection = conditionals[conditionalToValidateIndex]
+            
+            const filteredFormValues = formValues.filter(formValue => conditionalSection.conditional_on_field_name === formValue.field_name)
+            conditionalsToToggle.push(
+                {
+                    id: conditionalSection.id,
+                    form_type: conditionalSection.form_type,
+                    show: filteredFormValues.some(formValue => {
+                        // IMPORTANT: for new conditional types you might want to change this
+                        switch (conditionalSection.conditional_type_type) {
+                            case 'equal':
+                                return formValue.value === conditionalSection.conditional_value
+                        }
+                    })
+                }
+            )
+        }
         // for conditionals we run through all sections formvalues, filter the conditionals with the field and checks if the value
         // matches the conditional value telling if it is to show the conditional or not
-        const conditionalsToToggle = conditionals.map(conditionalSection => {
+        let conditionalsToToggle = conditionals.map(conditionalSection => {
             const filteredFormValues = formValues.filter(formValue => conditionalSection.conditional_on_field_name === formValue.field_name)
+            const filteredSection= props.sections.filter(section=> section.form_fields.filter(field => conditionalSection.conditional_on_field_name === field.name).length > 0)
             return {
                 id: conditionalSection.id,
                 form_type: conditionalSection.form_type,
+                conditional_set_from_section: filteredSection[0] ? filteredSection[0] : null,
                 show: filteredFormValues.some(formValue => {
                     // IMPORTANT: for new conditional types you might want to change this
                     switch (conditionalSection.conditional_type_type) {
@@ -71,9 +91,31 @@ const FormularySections = (props) => {
         // sectionIds are all sectionIds shown in the current state
         const sectionDataIds = newSectionsData.map(sectionData=> sectionData.form_id.toString())
 
+        // Recursive function to get the conditionals up in the chain of conditionals. With this we can get the first conditional that is false
+        // in the chain, so a conditional inside a conditional, inside a conditional should work as expected
+        const getConditionalParent = (sectionId) => {
+            const conditionalToToggleOfParent = conditionalsToToggle.filter(conditionalToFilter => conditionalToFilter.id === sectionId)
+            if (conditionalToToggleOfParent.length > 0 && !['', null].includes(conditionalToToggleOfParent[0].conditional_set_from_section.conditional_value) && conditionalToToggleOfParent[0].show) {
+                return getConditionalParent(conditionalToToggleOfParent[0].conditional_set_from_section.id)
+            } else {
+                return conditionalToToggleOfParent
+            }
+        }
+
+        conditionalsToToggle = conditionalsToToggle.map(conditionalToToggle => {
+            if (!['', null].includes(conditionalToToggle.conditional_set_from_section)) {
+                const conditionalToToggleOfParent = getConditionalParent(conditionalToToggle.conditional_set_from_section.id)
+                if (conditionalToToggleOfParent.length > 0 && conditionalToToggleOfParent[0].show === false) {
+                    conditionalToToggle.show = false
+                } 
+            }
+            return conditionalToToggle
+        })
+
         // this appends or removes the conditionals from the  sectionsData state, if the show is set to false we remove,
         // otherwise we add a new sectionData
         conditionalsToToggle.forEach(conditionalToToggle => {
+            
             if (conditionalToToggle.show && conditionalsToToggle.form_type !== 'multi-form') {
                 // we check if the sectionId is already in the sectionData array and if the section is a multiForm, 
                 // this way we can safely append a new sectionData

@@ -16,6 +16,7 @@ import {
     BlockImageResizeContainer
 } from '../../../styles/RichText'
 
+const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 const ImagePicker = dynamicImport('expo-image-picker', '')
 const Permissions = dynamicImport('expo-permissions', '')
 
@@ -202,6 +203,8 @@ const ImageBlock = (props) => {
             setImageUrl(imageUrl)
             props.updateBlocks(props.block.uuid)
             setIsUploading(false)
+        }).catch(_ => {
+            setIsUploading(false)
         })
     }
     // ------------------------------------------------------------------------------------------
@@ -386,6 +389,7 @@ const ImageBlock = (props) => {
     const renderWeb = () => {
         return (
             <div ref={imageBlockRef}>
+                
                 {imageUrl === null ? (
                     <BlockImageButton 
                     onClick={(e) => {props.isEditable ? props.updateBlocks(props.block.uuid) : null}}
@@ -416,35 +420,43 @@ const ImageBlock = (props) => {
                 )}
                 {props.block.uuid === props.activeBlock && imageUrl === null ? (
                     <BlockImageSelectContainer>
-                        <div style={{ display: 'flex', flexDirection: 'row' }}>
-                            <BlockImageSelectImageTypeButton 
-                            isSelected={activeImageType.imageFile}
-                            onClick={(e) => setActiveImageType({imageFile:true, imageLink: false})}
-                            >
-                                {strings['pt-br']['richTextImageBlockSelectFileTypeButtonLabel']}
-                            </BlockImageSelectImageTypeButton>
-                            <BlockImageSelectImageTypeButton 
-                            isSelected={activeImageType.imageLink}
-                            onClick={(e) => setActiveImageType({imageFile:false, imageLink: true})}
-                            >
-                                {strings['pt-br']['richTextImageBlockSelectLinkTypeButtonLabel']}
-                            </BlockImageSelectImageTypeButton>
-                        </div>
-                        <BlockImageSelectImageContainer>
-                            {activeImageType.imageFile ? (
-                                <BlockImageSelectImageButton>
-                                    {strings['pt-br']['richTextImageBlockSelectImagesButtonLabel']}
-                                    <input type={'file'} style={{ display: 'none' }} accept={'image/*'} onChange={(e) => onUploadFile(e.target.files)}/>
-                                </BlockImageSelectImageButton>
-                            ) : (
-                                <input 
-                                type={'text'} 
-                                style={{ width: '95%'}} 
-                                onChange={(e)=> {onAddLink(e.target.value)}} 
-                                placeholder={strings['pt-br']['richTextImageBlockSelectLinkTypePlaceholder']}
-                                />
-                            )}
-                        </BlockImageSelectImageContainer>
+                        {isUploading ? (
+                            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', color: '#0dbf7e', justifyContent: 'center', height: '50px'}}>
+                                <Spinner animation="border"/>
+                            </div>
+                        ) : (
+                            <React.Fragment>
+                                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                                    <BlockImageSelectImageTypeButton 
+                                    isSelected={activeImageType.imageFile}
+                                    onClick={(e) => setActiveImageType({imageFile:true, imageLink: false})}
+                                    >
+                                        {strings['pt-br']['richTextImageBlockSelectFileTypeButtonLabel']}
+                                    </BlockImageSelectImageTypeButton>
+                                    <BlockImageSelectImageTypeButton 
+                                    isSelected={activeImageType.imageLink}
+                                    onClick={(e) => setActiveImageType({imageFile:false, imageLink: true})}
+                                    >
+                                        {strings['pt-br']['richTextImageBlockSelectLinkTypeButtonLabel']}
+                                    </BlockImageSelectImageTypeButton>
+                                </div>
+                                <BlockImageSelectImageContainer>
+                                    {activeImageType.imageFile ? (
+                                        <BlockImageSelectImageButton>
+                                            {strings['pt-br']['richTextImageBlockSelectImagesButtonLabel']}
+                                            <input type={'file'} style={{ display: 'none' }} accept={'image/*'} onChange={(e) => onUploadFile(e.target.files)}/>
+                                        </BlockImageSelectImageButton>
+                                    ) : (
+                                        <input 
+                                        type={'text'} 
+                                        style={{ width: '95%'}} 
+                                        onChange={(e)=> {onAddLink(e.target.value)}} 
+                                        placeholder={strings['pt-br']['richTextImageBlockSelectLinkTypePlaceholder']}
+                                        />
+                                    )}
+                                </BlockImageSelectImageContainer>
+                            </React.Fragment>
+                        )}
                     </BlockImageSelectContainer>
                 ) : ''}
             </div>

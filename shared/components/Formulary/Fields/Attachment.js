@@ -6,6 +6,10 @@ import Alert from '../../Utils/Alert'
 import { strings } from '../../../utils/constants'
 import base64 from '../../../utils/base64'
 import agent from '../../../utils/agent'
+import dynamicImport from '../../../utils/dynamicImport'
+import Overlay from '../../../styles/Overlay'
+
+const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 
 /**
  * Component responsible for holding each attachment file, a attachment file could be also a draft so be aware of this.
@@ -99,18 +103,21 @@ const AttachmentFile = (props) => {
     const renderWeb = () => {
         return (
             <Field.Attachment.ItemContainer>
-                <Field.Attachment.Label
-                 onClick={e=> {onClick()}} 
-                 isSectionConditional={props.isSectionConditional}
-                 >
-                    <Field.Attachment.Image 
-                    src={(['png', 'jpg', 'jpeg', 'gif'].includes(fileFormat)) ? fileUrl : `/${fileFormat}_icon.png`} 
+                <Overlay
+                text={itemValue}>
+                    <Field.Attachment.Label
+                    onClick={e=> {onClick()}} 
                     isSectionConditional={props.isSectionConditional}
-                    />
-                    <Field.Attachment.Text>
-                        {itemValue}
-                    </Field.Attachment.Text>
-                </Field.Attachment.Label>
+                    >
+                        <Field.Attachment.Image 
+                        src={(['png', 'jpg', 'jpeg', 'gif'].includes(fileFormat)) ? fileUrl : `/${fileFormat}_icon.png`} 
+                        isSectionConditional={props.isSectionConditional}
+                        />
+                        <Field.Attachment.Text>
+                            {itemValue}
+                        </Field.Attachment.Text>
+                    </Field.Attachment.Label>
+                </Overlay>
                 <Field.Attachment.Button 
                 onClick={e=> {props.removeFile()}}
                 > 
@@ -140,11 +147,13 @@ const AttachmentFile = (props) => {
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 
+
 /**
  * {Description of your component, what does it do}
  * @param {Type} props - {go in detail about every prop it recieves}
  */
 const Attachment = (props) => {
+    const [isUploading, setIsUploading] = useState()
     const [uploadedFileNames, setUploadedFileNames] = useState([])
     const [isDraggingOver, setIsDraggingOver] = useState(false)
     const [showAlert, setShowAlert] = useState(false)
@@ -169,18 +178,23 @@ const Attachment = (props) => {
     const addFile = async (file) => {        
         const attachmentValues = props.values.map(value => value.value)
         const isNotAcceptedFile = uploadedFileNames.some(fileName => fileName === file.name) || props.values.some(value => value.value === file.name)
-        
+        setIsUploading(true)
         if (!isNotAcceptedFile && props.onAddFile) {
-            const draftStringId = await props.onAddFile(file.name, props.field.id, file)
-            if (draftStringId !== '') {
-                const formValues = props.multipleValueFieldHelper(attachmentValues.concat(draftStringId))
-                uploadedFileNames.push(file.name)
-                props.setValues([...formValues])
-                setUploadedFileNames([...uploadedFileNames])
+            try {
+                const draftStringId = await props.onAddFile(file.name, props.field.id, file)
+                if (draftStringId !== '') {
+                    const formValues = props.multipleValueFieldHelper(attachmentValues.concat(draftStringId))
+                    uploadedFileNames.push(file.name)
+                    props.setValues([...formValues])
+                    setUploadedFileNames([...uploadedFileNames])
+
+                }
             }
+            catch {}
         } else {
             setShowAlert(true)
         }
+        setIsUploading(false)
     }
     // ------------------------------------------------------------------------------------------
     /**
@@ -240,45 +254,54 @@ const Attachment = (props) => {
                 <Field.Attachment.ScrollContainer
                 isSectionConditional={props.isSectionConditional} 
                 >
-                    <Field.Attachment.AddNewFileButtonContainer 
-                    isInitial={true}
-                    hasValues={!isDraggingOver ? props.values.length !== 0 : false} 
-                    isSectionConditional={props.isSectionConditional} 
-                    isDragging={isDraggingOver}
-                    >
-                        <Field.Attachment.Label isInitial={true} 
-                        isSectionConditional={props.isSectionConditional}
-                        >
-                            <Field.Attachment.Image isInitial={true} 
-                            src={(isDraggingOver) ? "/drop_icon.png" : "/add_icon.png"} 
-                            isSectionConditional={props.isSectionConditional}/>
-                            <Field.Attachment.Text isInitial={true}>
-                                {(isDraggingOver) ? strings['pt-br']['formularyFieldAttachmentDropTheFilesLabel'] : strings['pt-br']['formularyFieldAttachmentDefaultLabel']}
-                            </Field.Attachment.Text>
-                            <Field.Attachment.Input type="file" 
-                            onChange={e => {        
-                                e.preventDefault()
-                                addFile(e.target.files[0]) 
-                                e.target.value = null
-                            }}
-                            />
-                        </Field.Attachment.Label>
-                    </Field.Attachment.AddNewFileButtonContainer>
-                    {!isDraggingOver ? props.values.map((value, index) => (
-                        <AttachmentFile
-                        key={value.value}
-                        formName={props.formName}
-                        removeFieldFile={props.removeFieldFile}
-                        multipleValueFieldHelper={props.multipleValueFieldHelper}
-                        sectionId={props.sectionId}
-                        draftToFileReference={props.draftToFileReference}
-                        field={props.field}
-                        isSectionConditional={props.isSectionConditional} 
-                        value={value}
-                        getAttachmentUrl={props.getAttachmentUrl}
-                        removeFile={() => removeFile(index)}
-                        />
-                    )) : null}
+                    {isUploading ? (
+                        <Field.Attachment.LoadingContainer>
+                            <Spinner animation="border"/>
+                        </Field.Attachment.LoadingContainer>
+                    ) : (
+                        <React.Fragment>
+                            <Field.Attachment.AddNewFileButtonContainer 
+                            isInitial={true}
+                            hasValues={!isDraggingOver ? props.values.length !== 0 : false} 
+                            isSectionConditional={props.isSectionConditional} 
+                            isDragging={isDraggingOver}
+                            >
+                                <Field.Attachment.Label isInitial={true} 
+                                isSectionConditional={props.isSectionConditional}
+                                >
+                                    <Field.Attachment.Image isInitial={true} 
+                                    src={(isDraggingOver) ? "/drop_icon.png" : "/add_icon.png"} 
+                                    isSectionConditional={props.isSectionConditional}/>
+                                    <Field.Attachment.Text isInitial={true}>
+                                        {(isDraggingOver) ? strings['pt-br']['formularyFieldAttachmentDropTheFilesLabel'] : strings['pt-br']['formularyFieldAttachmentDefaultLabel']}
+                                    </Field.Attachment.Text>
+                                    <Field.Attachment.Input type="file" 
+                                    onChange={e => {        
+                                        e.preventDefault()
+                                        addFile(e.target.files[0]) 
+                                        e.target.value = null
+                                    }}
+                                    />
+                                </Field.Attachment.Label>
+                            </Field.Attachment.AddNewFileButtonContainer>
+                            {!isDraggingOver ? props.values.map((value, index) => (
+                                <AttachmentFile
+                                key={value.value}
+                                formName={props.formName}
+                                removeFieldFile={props.removeFieldFile}
+                                multipleValueFieldHelper={props.multipleValueFieldHelper}
+                                sectionId={props.sectionId}
+                                draftToFileReference={props.draftToFileReference}
+                                field={props.field}
+                                isSectionConditional={props.isSectionConditional} 
+                                value={value}
+                                getAttachmentUrl={props.getAttachmentUrl}
+                                removeFile={() => removeFile(index)}
+                                />
+                            )) : null}
+                        </React.Fragment>
+                    )}
+
                 </Field.Attachment.ScrollContainer>
             </Field.Attachment.Container>
         )

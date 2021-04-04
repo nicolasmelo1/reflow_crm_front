@@ -420,7 +420,7 @@ const Table = (props) => {
             if (props.block.table_option.text_table_option_column_dimensions.length > 1) {
                 columnDimensions.splice(selectedEdge.column.index, 1)
                 props.block.table_option.text_table_option_column_dimensions = columnDimensions
-
+                    
                 for (let i=0; i<props.block.table_option.text_table_option_row_dimensions.length; i++) {
                     props.block.rich_text_depends_on_blocks.splice(selectedEdge.column.index + (props.block.table_option.text_table_option_column_dimensions.length * i),1)
                 }
@@ -572,7 +572,7 @@ const Table = (props) => {
                         }}
                         >
                             {props.block.rich_text_depends_on_blocks.slice(rowIndex * columnsNumber, (rowIndex * columnsNumber) + columnsNumber).map((block, index) => {
-                                const columnIndex = (rowIndex * columnsNumber) + index
+                                const columnIndex = index
                                 block = block ? block : createEmptyTextBlock(rowIndex*columnIndex)
                                 return (
                                     <BlockTableCell
@@ -682,7 +682,7 @@ const Table = (props) => {
                     {(props.block?.table_option?.text_table_option_row_dimensions || []).map((_, rowIndex) => (
                         <tr key={rowIndex}>
                             {props.block.rich_text_depends_on_blocks.slice(rowIndex * columnsNumber, (rowIndex * columnsNumber) + columnsNumber).map((block, index) => {
-                                const columnIndex = (rowIndex * columnsNumber) + index
+                                const columnIndex = index
                                 block = block ? block : createEmptyTextBlock(rowIndex*columnIndex)
                                 return (
                                     <BlockTableCell 

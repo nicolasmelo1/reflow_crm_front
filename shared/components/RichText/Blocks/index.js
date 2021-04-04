@@ -361,9 +361,10 @@ const Block = (props) => {
 const areEqual = (prevProps, nextProps) => {
     let areThemEqual = true
     if (Object.keys(previousBlockProps).includes(prevProps.block.uuid)) prevProps = previousBlockProps[prevProps.block.uuid]
+    const childrenBlocksUUIDs = nextProps.block.rich_text_depends_on_blocks.map(block => block.uuid)
     // This might seem confusing at first, but nextProps or prevProps will be referencing the SAME block.uuid, the activeBlock on the otherhand will always
     // change, so we need to check if THIS BLOCK IS or WAS the activeBlock, the others can remain untouched.
-    if (nextProps.block.uuid === prevProps.activeBlock || nextProps.block.uuid === nextProps.activeBlock) {
+    if (nextProps.block.uuid === prevProps.activeBlock || nextProps.block.uuid === nextProps.activeBlock || childrenBlocksUUIDs.includes(nextProps.activeBlock)) {
         for (let key of Object.keys(prevProps)) {
             // This is a special case, we only update if the uuids have changed or if the length had changed
             if (key === 'contextBlocks') {
