@@ -233,7 +233,7 @@ const Fields = (props) => {
             <View></View>
         )
     }
-
+    console.log(values)
     const renderWeb = () => {
         return (
             <Field.Container ref={fieldContainerRef} 

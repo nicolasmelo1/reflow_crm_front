@@ -418,13 +418,18 @@ class Formulary extends React.Component {
     onLoadFormulary = async (formName, formId=null) => {
         // This is needed to set the formId first so the default fields are NOT loaded when the
         // form id is defined, if we don't do this, the default data will be loaded in the formulary
-        this.setFilledDataAndBuildData(
-            formId, 
-            this.state.filled.hasBuiltInitial,
-            this.state.filled.isAuxOriginalInitial,
-            this.state.filled.data.depends_on_dynamic_form,
-            this.state.buildData
-        )
+        this.setState(state => ({
+            ...state,
+            filled: {
+                ...state.filled,
+                data: {
+                    ...state.filled.data,
+                    id: formId
+                }
+            }
+
+        }))
+        console.log(formId)
         // you can build the data outside of the formulary, so you can use this to render other formularies (like themes for example)
         if (this.props.buildData) {
             this.onFullResetFormulary(this.props.buildData)
@@ -453,6 +458,7 @@ class Formulary extends React.Component {
      */
     onChangeFormulary = (formName, formId=null) => { 
         this.setAuxOriginalInitial()
+        console.log(formId)
         this.onLoadFormulary(formName, formId)
     }
     // ------------------------------------------------------------------------------------------
