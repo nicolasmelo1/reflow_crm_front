@@ -21,7 +21,7 @@ import {
 } from '../../styles/PDFGenerator'
 
 const Swipeable = dynamicImport('react-native-gesture-handler', 'Swipeable')
-
+const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 
 /**
  * This component is responsible for holding the data of all of the pdf templates. And we use this data
@@ -48,6 +48,7 @@ const PDFGeneratorCreator = (props) => {
         current: 1,
         total: 1
     })
+    const [isLoading, setIsLoading] = useState(false)
     const [templateIndexToRemove, setTemplateIndexToRemove] = useState(null)
     const [formAndFieldOptions, setFormAndFieldOptions] = useState([])
     const [selectedTemplateIndex, setSelectedTemplateIndex] = useState(null)
@@ -121,11 +122,14 @@ const PDFGeneratorCreator = (props) => {
     const onClickLoadMoreButton = () => {
         const newPage = page.current + 1
         if (newPage <= page.total) {
+            setIsLoading(true)
             props.onGetPDFGeneratorTemplatesConfiguration(sourceRef.current, props.formName, newPage).then(response => {
                 if (response && response.status === 200) {
                     setPage(response.data.pagination)
+                } else {
+                    setIsLoading(false)
                 }
-            })
+            }).catch(__ => setIsLoading(false))
         }
     }
 
@@ -152,16 +156,25 @@ const PDFGeneratorCreator = (props) => {
         // When the user opens this component we get all of the template configuration for the current formName
         // Not only this, we also get all of the field options the user can select as variables.
         sourceRef.current = props.cancelToken.source()
+        setIsLoading(true)
         props.onGetPDFGeneratorTemplatesConfiguration(sourceRef.current, props.formName, 1).then(response => {
             if (response && response.status === 200) {
                 setPage(response.data.pagination)
+                props.onGetPDFGeneratorTempalatesConfigurationFieldOptions(sourceRef.current, props.formName).then(response => {
+                    if (response && response.status === 200) {
+                        setFormAndFieldOptions(response.data.data)
+                    }
+                    setIsLoading(false)
+                }).catch(__ => {
+                    setIsLoading(false)
+                })
+            } else {
+                setIsLoading(false)
             }
+        }).catch(__ => {
+            setIsLoading(false)
         })
-        props.onGetPDFGeneratorTempalatesConfigurationFieldOptions(sourceRef.current, props.formName).then(response => {
-            if (response && response.status === 200) {
-                setFormAndFieldOptions(response.data.data)
-            }
-        })
+
         return () => {
             if(sourceRef.current) {
                 sourceRef.current.cancel()
@@ -279,7 +292,11 @@ const PDFGeneratorCreator = (props) => {
                             </PDFGeneratorCreatorCreateNewButton>
                         </PDFGeneratorCreatorButtonsContainer>
                         <PDFGeneratorCreatorTemplatesContainer>
-                            {props.templates.map((pdfTemplate, index) => (
+                            {isLoading ? (
+                                <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0dbf7e', marginTop: '10px'}}>
+                                    <Spinner animation="border"/>
+                                </div>
+                            ) : props.templates.map((pdfTemplate, index) => (
                                 <PDFGeneratorCreatorTemplateCardContainer key={pdfTemplate.id}>
                                     <PDFGeneratorCreatorTemplateTitle>
                                         {pdfTemplate.name}
