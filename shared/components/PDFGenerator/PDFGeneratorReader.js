@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { View, Text } from 'react-native'
 import Router from 'next/router'
 import { paths, strings } from '../../utils/constants'
+import dynamicImport from '../../utils/dynamicImport'
 import PDFGeneratorReaderDownloader from './PDFGeneratorReaderDownloader'
 import { 
     PDFGeneratorReaderTopButtonsContainer,
@@ -12,6 +13,8 @@ import {
     PDFGeneratorReaderTemplatesContainer
 } from '../../styles/PDFGenerator'
 
+
+const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 
 /**
  * This component holds all of the template options for downloading. This is a sibling of PDFGeneratorCreator component. It is really similar
@@ -38,6 +41,7 @@ const PDFGeneratorReader = (props) => {
         current: 1,
         total: 1
     })
+    const [isLoading, setIsLoading] = useState(false)
     const [selectedTemplateIndex, setSelectedTemplateIndex] = useState(null)
 
     /**
@@ -57,11 +61,13 @@ const PDFGeneratorReader = (props) => {
     const onClickLoadMoreButton = () => {
         const newPage = page.current + 1
         if (newPage <= page.total) {
+            setIsLoading(true)
             props.onGetPDFGeneratorTempalatesReader(sourceRef.current, props.formName, newPage).then(response => {
                 if (response && response.status === 200) {
                     setPage(response.data.pagination)
                 }
-            })
+                setIsLoading(false)
+            }).catch(__ => setIsLoading(false))
         }
     }
 
@@ -69,11 +75,15 @@ const PDFGeneratorReader = (props) => {
         // When the component is loaded we just fetch for the templates. 
         // Nothing really fancy about it.
         sourceRef.current = props.cancelToken.source()
+
+        setIsLoading(true)
         props.onGetPDFGeneratorTempalatesReader(sourceRef.current, props.formName, 1).then(response => {
             if (response && response.status === 200) {
                 setPage(response.data.pagination)
             }
-        })       
+            setIsLoading(false)
+        }).catch(__ => setIsLoading(false))
+
         return () => {
             if (sourceRef.current) {
                 sourceRef.current.cancel()
@@ -141,7 +151,11 @@ const PDFGeneratorReader = (props) => {
                             </PDFGeneratorReaderGoBackButton>
                         </PDFGeneratorReaderTopButtonsContainer>
                         <PDFGeneratorReaderTemplatesContainer>
-                            {props.templates.map((pdfTemplate, index) => (
+                            {isLoading ? (
+                                <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0dbf7e', marginTop: '10px'}}>
+                                    <Spinner animation="border"/>
+                                </div>
+                            ) : props.templates.map((pdfTemplate, index) => (
                                 <PDFGeneratorReaderTemplateButton 
                                 key={pdfTemplate.id} 
                                 onClick={(e) => setSelectedTemplateIndex(index)} 

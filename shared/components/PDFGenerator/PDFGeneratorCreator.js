@@ -126,9 +126,8 @@ const PDFGeneratorCreator = (props) => {
             props.onGetPDFGeneratorTemplatesConfiguration(sourceRef.current, props.formName, newPage).then(response => {
                 if (response && response.status === 200) {
                     setPage(response.data.pagination)
-                } else {
-                    setIsLoading(false)
-                }
+                } 
+                setIsLoading(false)
             }).catch(__ => setIsLoading(false))
         }
     }
