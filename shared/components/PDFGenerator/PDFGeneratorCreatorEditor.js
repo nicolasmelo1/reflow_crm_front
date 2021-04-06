@@ -260,7 +260,9 @@ const PDFGeneratorCreatorEditor = (props) => {
                 ) : ''}
                 <PDFGeneratorCreatorEditorRichTextContainer>
                     {isLoading ? (
-                        <Spinner animation="border"/>
+                        <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                            <Spinner animation="border"/>
+                        </div>
                     ) : (
                         <React.Fragment>
                             {templateData?.rich_text_page ? (
