@@ -226,7 +226,6 @@ const PDFGeneratorCreatorEditor = (props) => {
     }
     //########################################################################################//
     const renderWeb = () => {
-        console.log(templateData?.rich_text_page)
         return (
             <div>
                 <PDFGeneratorCreatorTemplateTitleContainer>

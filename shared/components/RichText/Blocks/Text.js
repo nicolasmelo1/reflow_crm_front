@@ -5,6 +5,7 @@ import Content from '../Content'
 import { TextBlockOptions } from '../Toolbar/BlockOptions'
 import { TextContentOptions } from '../Toolbar/ContentOptions'
 import { strings } from '../../../utils/constants'
+import delay from  '../../../utils/delay'
 import {
     getCaretCoordinatesWeb,
     caretIsInHighestOrLowestPositionWeb,
@@ -17,6 +18,8 @@ import {
     BlockTextPlaceholderText
 } from '../../../styles/RichText'
 
+
+const makeDelay = delay(1000)
 
 /**
  * This is the Text component, one of the most important blocks of the RichText, it is the main block of our richText.
@@ -60,7 +63,7 @@ const Text = (props) => {
         textColor: '',
         textSize: 12
     }
-    
+
     const isInCompositionRef = React.useRef(false)
     const isMountedRef = React.useRef(false)
     const wasKeyDownPressedRef = React.useRef(false)
@@ -82,10 +85,19 @@ const Text = (props) => {
     })
     const isWaitingForCustomInput = React.useRef(false)
     const customInputCaretPosition = React.useRef(caretPositionRef)
+    const [block, setBlock] = useState(JSON.parse(JSON.stringify(props.block)))
     const [innerHtml, setInnerHtml] = useState('')
     const [isToolbarModalOpen, setToolbarIsModalOpen] = useState(false)
     const [stateOfSelection, setStateOfSelection] = useState(stateOfSelectionData)
 
+    // ------------------------------------------------------------------------------------------
+    const blockStateToPropsBlock = () => {
+        const copiedBlock = JSON.parse(JSON.stringify(block))
+        const keys = Object.keys(props.block)
+        for (let i=0; i<keys.length; i++) {
+            props.block[keys[i]] = copiedBlock[keys[i]]
+        }
+    }
     // ------------------------------------------------------------------------------------------
     /**
      * THis is a function for adding the toolbar in the root of the page.
@@ -122,7 +134,7 @@ const Text = (props) => {
                 stateOfSelection: stateOfSelection
             }
             props.toolbarProps.blockOptionProps = {
-                alignmentTypeId: props.block.text_option?.alignment_type,
+                alignmentTypeId: block.text_option?.alignment_type,
                 onChangeAlignmentType: onChangeAlignmentType,
                 types: props.types
             }
@@ -196,7 +208,7 @@ const Text = (props) => {
      * @param {String} activeBlock - THe current active block in the page.
      */
     const setCaretPositionInInput = (activeBlock) => {
-        if (activeBlock === props.block.uuid && !isWaitingForCustomInput.current) {
+        if (activeBlock === block.uuid && !isWaitingForCustomInput.current) {
             if (process.env['APP'] === 'web') {
                 if (whereCaretPositionShouldGoAfterUpdateRef.current.contentIndex !== null && whereCaretPositionShouldGoAfterUpdateRef.current.positionInContent !== null) {
                     setCaretPositionWeb(
@@ -222,7 +234,7 @@ const Text = (props) => {
                             selectedContents[selectedContents.length-1].endIndexToSelectTextInContent
                         )
                     } else {
-                        const contents = props.block.rich_text_block_contents
+                        const contents = block.rich_text_block_contents
                         setCaretPositionWeb(
                             inputRef.current,
                             props.arrowNavigation,
@@ -268,9 +280,9 @@ const Text = (props) => {
         const getNextBlockIndex = (isDownOrRight) => {
             let nextTextBlockIndex = -1
             if (props.handleArrowNavigationNextBlockIndex) {
-                nextTextBlockIndex = props.handleArrowNavigationNextBlockIndex(props.block.uuid, isDownOrRight)
+                nextTextBlockIndex = props.handleArrowNavigationNextBlockIndex(block.uuid, isDownOrRight)
             } else {
-                const indexOfCurrentBlock = props.contextBlocks.findIndex(block => block.uuid === props.block.uuid)
+                const indexOfCurrentBlock = props.contextBlocks.findIndex(block => block.uuid === block.uuid)
                 for (let i = 0; i < props.contextBlocks.length; i++) {
                     if (props.contextBlocks[i].block_type === props.getBlockTypeIdByName('text') && i > indexOfCurrentBlock) {
                         nextTextBlockIndex = i
@@ -284,9 +296,9 @@ const Text = (props) => {
         const getPreviousBlockIndex = (isUpOrLeft) => {
             let previousTextBlockIndex = -1
             if (props.handleArrowNavigationPreviousBlockIndex) {
-                previousTextBlockIndex = props.handleArrowNavigationPreviousBlockIndex(props.block.uuid, isUpOrLeft)
+                previousTextBlockIndex = props.handleArrowNavigationPreviousBlockIndex(block.uuid, isUpOrLeft)
             } else {
-                const indexOfCurrentBlock = props.contextBlocks.findIndex(block => block.uuid === props.block.uuid)
+                const indexOfCurrentBlock = props.contextBlocks.findIndex(block => block.uuid === block.uuid)
                 for (let i = indexOfCurrentBlock; i >= 0; i--) {
                     if (props.contextBlocks[i].block_type === props.getBlockTypeIdByName('text') && i < indexOfCurrentBlock) {
                         previousTextBlockIndex = i
@@ -303,6 +315,8 @@ const Text = (props) => {
                 inputRef.current.innerText.substring(0, inputRef.current.innerText.length-1) : inputRef.current.innerText
             const caretPosition = getCaretCoordinatesWeb()            
 
+            blockStateToPropsBlock()
+
             if (keyDownPressedRef.current === 'ArrowDown' && caretIsInHighestOrLowestPositionWeb(inputRef.current).isLowest) {    
                 props.setArrowNavigation({
                     focusX: caretPosition.x,
@@ -311,6 +325,7 @@ const Text = (props) => {
 
                 const nextTextBlockIndex = getNextBlockIndex({isDownPressed: true})
                 if (nextTextBlockIndex !== -1) {
+                    setBlock({...block})
                     props.updateBlocks(props.contextBlocks[nextTextBlockIndex].uuid)
                 }
             } else if (keyDownPressedRef.current === 'ArrowUp' && caretIsInHighestOrLowestPositionWeb(inputRef.current).isHighest) {
@@ -320,6 +335,7 @@ const Text = (props) => {
                 })
                 const previousTextBlockIndex = getPreviousBlockIndex({isUpPressed: true})
                 if (previousTextBlockIndex !== -1) {
+                    setBlock({...block})
                     props.updateBlocks(props.contextBlocks[previousTextBlockIndex].uuid)
                 }
             } else if (keyDownPressedRef.current === 'ArrowRight' && caretIsInHighestOrLowestPositionWeb(inputRef.current).isLowest && caretIndexPosition.start >= text.length) {
@@ -328,6 +344,7 @@ const Text = (props) => {
                 })
                 const nextTextBlockIndex = getNextBlockIndex({isRightPressed: true})
                 if (nextTextBlockIndex !== -1) {
+                    setBlock({...block})
                     props.updateBlocks(props.contextBlocks[nextTextBlockIndex].uuid)
                 }
             } else if (keyDownPressedRef.current === 'ArrowLeft' && caretIsInHighestOrLowestPositionWeb(inputRef.current).isHighest && caretIndexPosition.start === 0) {
@@ -337,6 +354,7 @@ const Text = (props) => {
                 })
                 const previousTextBlockIndex = getPreviousBlockIndex({isLeftPressed: true})
                 if (previousTextBlockIndex !== -1) {
+                    setBlock({...block})
                     props.updateBlocks(props.contextBlocks[previousTextBlockIndex].uuid)
                 }
             }
@@ -397,7 +415,7 @@ const Text = (props) => {
     const getSelectedContents = () => {
         let stackedNumberOfWords = 0
         let selectedContentsArray = []
-        const contents = props.block.rich_text_block_contents
+        const contents = block.rich_text_block_contents
         for (let contentIndex=0; contentIndex < contents.length; contentIndex++) {
             const lengthOfContent = contents[contentIndex].text.length
             const stackedNumberOfWordsWithLengthOfContent = stackedNumberOfWords + lengthOfContent
@@ -450,15 +468,15 @@ const Text = (props) => {
     const deleteEmptyContents = () => {
         let contentsToConsider = []
         let removedCustomContents = []
-        for (let i=0; i < props.block.rich_text_block_contents.length; i++) {
-            if (props.block.rich_text_block_contents[i].text !== '') {
-                contentsToConsider.push(props.block.rich_text_block_contents[i])
-            } else if (props.block.rich_text_block_contents[i].is_custom) {
-                removedCustomContents.push(JSON.parse(JSON.stringify(props.block.rich_text_block_contents[i])))
+        for (let i=0; i < block.rich_text_block_contents.length; i++) {
+            if (block.rich_text_block_contents[i].text !== '') {
+                contentsToConsider.push(block.rich_text_block_contents[i])
+            } else if (block.rich_text_block_contents[i].is_custom) {
+                removedCustomContents.push(JSON.parse(JSON.stringify(block.rich_text_block_contents[i])))
             }
         }
 
-        props.block.rich_text_block_contents = contentsToConsider
+        block.rich_text_block_contents = contentsToConsider
 
         if (props.onRemoveUnmanagedContent) {
             props.onRemoveUnmanagedContent(removedCustomContents)
@@ -567,13 +585,13 @@ const Text = (props) => {
         const caretPositionIndex = caretPositionRef.current.start + insertedText.length
         
         if (process.env['APP'] === 'web') {
-            for (let i=0; i < props.block.rich_text_block_contents.length; i++) {
-                if (stackedNumberOfWords <= caretPositionIndex && props.block.rich_text_block_contents[i].text.length + stackedNumberOfWords >= caretPositionIndex) {
+            for (let i=0; i < block.rich_text_block_contents.length; i++) {
+                if (stackedNumberOfWords <= caretPositionIndex && block.rich_text_block_contents[i].text.length + stackedNumberOfWords >= caretPositionIndex) {
                     whereCaretPositionShouldGoAfterUpdateRef.current.contentIndex = i
                     whereCaretPositionShouldGoAfterUpdateRef.current.positionInContent = caretPositionIndex - stackedNumberOfWords
                     break
                 }
-                stackedNumberOfWords = props.block.rich_text_block_contents[i].text.length + stackedNumberOfWords
+                stackedNumberOfWords = block.rich_text_block_contents[i].text.length + stackedNumberOfWords
             }
         } else {
             if (whereCaretPositionShouldGoAfterUpdateRef.current.start !== null && whereCaretPositionShouldGoAfterUpdateRef.current.end !== null) {
@@ -596,7 +614,7 @@ const Text = (props) => {
      */
     const mergeEqualDeleteEmptyAndSetWhereCaretPositionShouldGo = (insertedText) => {
         deleteEmptyContents()
-        props.block.rich_text_block_contents = mergeEqualContentsSideBySide(props.block.rich_text_block_contents)
+        block.rich_text_block_contents = mergeEqualContentsSideBySide(block.rich_text_block_contents)
         updateWhereCaretPositionShouldGo(insertedText)
     }
     // ------------------------------------------------------------------------------------------
@@ -697,10 +715,10 @@ const Text = (props) => {
         selectedContents.forEach(content => {
             // delete contents
             if (hasDeletedSomeContent) {
-                const newText = props.block.rich_text_block_contents[content.contentIndex].text
-                    .substr(0, content.startIndexToSelectTextInContent) + props.block.rich_text_block_contents[content.contentIndex].text
+                const newText = block.rich_text_block_contents[content.contentIndex].text
+                    .substr(0, content.startIndexToSelectTextInContent) + block.rich_text_block_contents[content.contentIndex].text
                     .substr(content.endIndexToSelectTextInContent)
-                props.block.rich_text_block_contents[content.contentIndex].text = newText
+                block.rich_text_block_contents[content.contentIndex].text = newText
             }
         })
     }
@@ -744,10 +762,10 @@ const Text = (props) => {
                                                     stateOfSelection.textSize === contentToInsertText.content.text_size &&
                                                     stateOfSelection.markerColor === contentToInsertText.content.marker_color
 
-            const currentText = props.block.rich_text_block_contents[contentToInsertText.contentIndex].text
+            const currentText = block.rich_text_block_contents[contentToInsertText.contentIndex].text
             
             if ((isContentStateSameAsStateSelection && !isRangeSelected) || isRangeSelected) {
-                props.block.rich_text_block_contents[contentToInsertText.contentIndex].text = currentText.slice(0, contentToInsertText.startIndexToSelectTextInContent) + 
+                block.rich_text_block_contents[contentToInsertText.contentIndex].text = currentText.slice(0, contentToInsertText.startIndexToSelectTextInContent) + 
                     insertedText + currentText.slice(contentToInsertText.startIndexToSelectTextInContent)
             } else if (!isRangeSelected) {
                 // The text you are inserting have different types (bold, italic, underline) of the selected content
@@ -759,9 +777,9 @@ const Text = (props) => {
                     insertedText,
                     stateOfSelection
                 )
-                props.block.rich_text_block_contents[contentToInsertText.contentIndex] = contentsToAddInIndex
+                block.rich_text_block_contents[contentToInsertText.contentIndex] = contentsToAddInIndex
                 // Reference: https://stackoverflow.com/questions/10865025/merge-flatten-an-array-of-arrays
-                props.block.rich_text_block_contents = [].concat.apply([], props.block.rich_text_block_contents)
+                block.rich_text_block_contents = [].concat.apply([], block.rich_text_block_contents)
             }
         }
     }
@@ -807,9 +825,11 @@ const Text = (props) => {
     const onBlur = () => {
         // if we are waiting for a custom content we don't dismiss the active block so this way we know that is 
         // exactly THIS block that will contain the content.
-        if (props.activeBlock === props.block.uuid && 
+        if (props.activeBlock === block.uuid && 
             isWaitingForCustomInput.current === false && 
             isToolbarModalOpen === false) {
+            blockStateToPropsBlock()
+            setBlock({...block})    
             props.updateBlocks(null)
         }
     }
@@ -824,13 +844,15 @@ const Text = (props) => {
         if (props.isUnmanagedContentSelectorOpen) {
             props.onOpenUnmanagedContentSelector(false)
         }
-        if (props.activeBlock !== props.block.uuid) {
-            props.updateBlocks(props.block.uuid, true, props.blockIndex)
+        if (props.activeBlock !== block.uuid) {
+            blockStateToPropsBlock()
+            setBlock({...block})
+            props.updateBlocks(block.uuid, true, props.blockIndex)
         }
         isWaitingForCustomInput.current = false
         if (process.env['APP'] === 'web') {
             isFocusingRef.current = true
-            setCaretPositionInInput(props.block.uuid)
+            setCaretPositionInInput(block.uuid)
         }
     }
     // ------------------------------------------------------------------------------------------
@@ -882,8 +904,10 @@ const Text = (props) => {
                 checkStateOfSelectedElementAndUpdateState()
                 checkIfCaretPositionIsCustomFixAndSetCaretPosition()
             }
-            if (props.activeBlock !== props.block.uuid) {
-                props.updateBlocks(props.block.uuid)
+            if (props.activeBlock !== block.uuid) {
+                blockStateToPropsBlock()
+                setBlock({...block})
+                props.updateBlocks(block.uuid)
             }
         } else {
             if (!wasKeyDownPressedRef.current) {
@@ -903,8 +927,10 @@ const Text = (props) => {
     const onClickText = (e) => {
         caretPositionRef.current = getSelectionSelectCursorPositionWeb(inputRef.current)
         checkStateOfSelectedElementAndUpdateState()
-        if (props.activeBlock !== props.block.uuid) {
-            props.updateBlocks(props.block.uuid)
+        if (props.activeBlock !== block.uuid) {
+            blockStateToPropsBlock()
+            setBlock({...block})
+            props.updateBlocks(block.uuid)
         }
     }
     // ------------------------------------------------------------------------------------------
@@ -981,17 +1007,17 @@ const Text = (props) => {
         }
         // ------------------------------------------------------------------------------------------
         insertedText = getInsertedText(insertedText, inputType)
-        let contents = JSON.parse(JSON.stringify(props.block.rich_text_block_contents))
+        let contents = JSON.parse(JSON.stringify(block.rich_text_block_contents))
         // Checks if last character of the last content is a linebreak there is a bug that happens when you do this on normal browsers
         // it adds line breaks at the same time.
         // WEB ONLY, on mobile no such thing happens
         if (process.env['APP'] === 'web') {
             if (contents[contents.length-1].text.substring(contents[contents.length-1].text.length-1,contents[contents.length-1].text.length) === '\n') {
-                props.block.rich_text_block_contents[contents.length-1].text = contents[contents.length-1].text.substring(0, contents[contents.length-1].text.length-1)
+                block.rich_text_block_contents[contents.length-1].text = contents[contents.length-1].text.substring(0, contents[contents.length-1].text.length-1)
             }
             text = text.substring(text.length-1, text.length) === '\n' ? text.substring(0, text.length-1) : text
         }
-        let oldText = props.block.rich_text_block_contents.map(content => content.text).join('')
+        let oldText = block.rich_text_block_contents.map(content => content.text).join('')
 
         fixCaretPositionIfDelete(inputType, text, oldText)
         
@@ -1013,12 +1039,16 @@ const Text = (props) => {
         // Has removed last line break so we need to insert it again, only needed on web, on mobile
         // no such thing is needed
         if (process.env['APP'] === 'web') {
-            props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text = 
-            props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text + '\n'
+            block.rich_text_block_contents[block.rich_text_block_contents.length-1].text = 
+            block.rich_text_block_contents[block.rich_text_block_contents.length-1].text + '\n'
         }
         wasKeyDownPressedRef.current = false
         if (!isSpecialKeydownPressed.current) {
-            props.updateBlocks(props.activeBlock)
+            setBlock({...block})
+            makeDelay(() => {
+                blockStateToPropsBlock()
+                props.updateBlocks(props.activeBlock)
+            })
         }
     }
     // ------------------------------------------------------------------------------------------
@@ -1049,9 +1079,9 @@ const Text = (props) => {
      */
     const onEnter = () => {
         if (props.onEnter) {
-            props.onEnter(props.block.uuid)
+            props.onEnter(block.uuid)
         } else {
-            const oldText = props.block.rich_text_block_contents.map(content => content.text).join('')
+            const oldText = block.rich_text_block_contents.map(content => content.text).join('')
             const selectedContentsForCurrentSelection = getSelectedContents()
             if (selectedContentsForCurrentSelection[selectedContentsForCurrentSelection.length-1] !== undefined) {
                 const firstContentToTheNextBlock = JSON.parse(JSON.stringify(selectedContentsForCurrentSelection[selectedContentsForCurrentSelection.length-1]))
@@ -1059,18 +1089,18 @@ const Text = (props) => {
                 firstContentToTheNextBlock.content.text = `${firstContentToTheNextBlock.content.text}`.substring(
                     firstContentToTheNextBlock.endIndexToSelectTextInContent, firstContentToTheNextBlock.content.text.length
                 )
-                const subsequentContentsToTheNextBlock = JSON.parse(JSON.stringify(props.block.rich_text_block_contents.slice(firstContentToTheNextBlock.contentIndex+1, props.block.rich_text_block_contents.length)))
+                const subsequentContentsToTheNextBlock = JSON.parse(JSON.stringify(block.rich_text_block_contents.slice(firstContentToTheNextBlock.contentIndex+1, block.rich_text_block_contents.length)))
                 const contentsOfNextBlock = [firstContentToTheNextBlock.content, ...subsequentContentsToTheNextBlock]
                 
                 caretPositionRef.current.end = oldText.length
                 const selectedContents = getSelectedContents()
                 removeTextInContent(selectedContents)
                 deleteEmptyContents()
-                props.block.rich_text_block_contents = mergeEqualContentsSideBySide(props.block.rich_text_block_contents)
+                block.rich_text_block_contents = mergeEqualContentsSideBySide(block.rich_text_block_contents)
 
                 caretPositionRef.current.end = caretPositionRef.current.start
 
-                const indexOfBlockInContext = props.contextBlocks.findIndex(block => block.uuid === props.block.uuid)
+                const indexOfBlockInContext = props.contextBlocks.findIndex(block => block.uuid === block.uuid)
                 const newBlock = props.createNewBlock({ 
                     order: props.contextBlocks.length+1, 
                     richTextBlockContents: contentsOfNextBlock,
@@ -1082,6 +1112,8 @@ const Text = (props) => {
                 })
                 props.contextBlocks.splice(indexOfBlockInContext + 1, 0, newBlock)
                 activeBlockRef.current = newBlock.uuid
+                blockStateToPropsBlock()
+                setBlock({...block})
                 props.updateBlocks(newBlock.uuid)
             }
         }
@@ -1116,7 +1148,7 @@ const Text = (props) => {
         if (props.onRemoveAfter) {
             props.onRemoveAfter()
         } else { 
-            const indexOfBlockInContext = props.contextBlocks.findIndex(block => block.uuid === props.block.uuid)
+            const indexOfBlockInContext = props.contextBlocks.findIndex(block => block.uuid === block.uuid)
             if (props.contextBlocks.length - 1 > indexOfBlockInContext+1) {
                 const contentsToAppendOnCurrentBlock = JSON.parse(JSON.stringify(props.contextBlocks[indexOfBlockInContext+1].rich_text_block_contents))
                 const currentBlockContents = props.contextBlocks[indexOfBlockInContext].rich_text_block_contents
@@ -1127,10 +1159,13 @@ const Text = (props) => {
                         0, props.contextBlocks[indexOfBlockInContext].rich_text_block_contents[currentBlockContents.length-1].text.length-1
                     )
                 }
-                props.block.rich_text_block_contents = props.block.rich_text_block_contents.concat(contentsToAppendOnCurrentBlock)
-                props.block.rich_text_block_contents = mergeEqualContentsSideBySide(props.block.rich_text_block_contents)
+                block.rich_text_block_contents = block.rich_text_block_contents.concat(contentsToAppendOnCurrentBlock)
+                block.rich_text_block_contents = mergeEqualContentsSideBySide(block.rich_text_block_contents)
                 props.contextBlocks.splice(indexOfBlockInContext+1, 1)
-                props.updateBlocks(props.block.uuid)
+
+                blockStateToPropsBlock()
+                setBlock({...block})
+                props.updateBlocks(block.uuid)
             }
         }
     }
@@ -1166,7 +1201,7 @@ const Text = (props) => {
         if (props.onRemoveCurrent) {
             props.onRemoveCurrent()
         } else {
-            const indexOfBlockInContext = props.contextBlocks.findIndex(block => block.uuid === props.block.uuid)
+            const indexOfBlockInContext = props.contextBlocks.findIndex(block => block.uuid === block.uuid)
             const contentsForNextBlock = JSON.parse(JSON.stringify(props.contextBlocks[indexOfBlockInContext].rich_text_block_contents))
             // get previous block to focus
             if (indexOfBlockInContext !== 0) {
@@ -1183,10 +1218,14 @@ const Text = (props) => {
 
                 props.contextBlocks[indexOfBlockInContext - 1].rich_text_block_contents = previousBlockContents.concat(contentsForNextBlock)
                 props.contextBlocks[indexOfBlockInContext - 1].rich_text_block_contents = mergeEqualContentsSideBySide(props.contextBlocks[indexOfBlockInContext - 1].rich_text_block_contents)
+                
+                blockStateToPropsBlock()
                 if (process.env['APP'] == 'web') {
                     props.contextBlocks.splice(indexOfBlockInContext, 1)
+                    setBlock({...block})
                     props.updateBlocks(uuidToFocusAfterUpdate)
                 } else {
+                    setBlock({...block})
                     props.updateBlocks(uuidToFocusAfterUpdate)
                     setTimeout(() => {
                         if (isMountedRef.current) {
@@ -1229,7 +1268,7 @@ const Text = (props) => {
             wasKeyDownPressedRef.current = true
         }
     
-        const oldText = props.block.rich_text_block_contents.map(content => content.text).join('')
+        const oldText = block.rich_text_block_contents.map(content => content.text).join('')
         if ((process.env['APP'] === 'web' && keyDownPressedRef.current === 'Enter' && !event.shiftKey)|| (process.env['APP'] !== 'web' && keyDownPressedRef.current === 'Enter')) {
             event.preventDefault()
             event.stopPropagation()
@@ -1283,7 +1322,7 @@ const Text = (props) => {
      * @param {String} color - Some contents are colors so we use
      */
     const onChangeSelectionState = (type, isActive=false, color='', textSize=12) => {
-        const elementIsFocused = process.env['APP'] ? props.activeBlock === props.block.uuid : true
+        const elementIsFocused = process.env['APP'] ? props.activeBlock === block.uuid : true
         if (elementIsFocused) {
             // user has not selected a range but had just set the caret to a position
             switch (type) {
@@ -1312,7 +1351,7 @@ const Text = (props) => {
             setStateOfSelection({...stateOfSelection})
             if (caretPositionRef.current.start !== caretPositionRef.current.end) {
                 const selectedContents = getSelectedContents()
-                let contents = [...props.block.rich_text_block_contents]
+                let contents = [...block.rich_text_block_contents]
                 let changedText = ''
                 selectedContents.forEach(content => {
                     // delete contents
@@ -1346,16 +1385,16 @@ const Text = (props) => {
                             markerColor: type === 'markerColor' ? stateOfSelection.markerColor : content.content.marker_color
                         }
                     )
-                    // with this the type of the data in the contentIndex of props.block.rich_text_block_contents chages from object to array
+                    // with this the type of the data in the contentIndex of block.rich_text_block_contents chages from object to array
                     // we need to do this because we do it on a for loop, which might affect the further index updates in the array.
                     // You will see that after the forEach we flatten the array of a arrays to a single array.
-                    props.block.rich_text_block_contents[content.contentIndex] = contentsToAddInIndex
+                    block.rich_text_block_contents[content.contentIndex] = contentsToAddInIndex
                     changedText = changedText + toChangeContentText
                 })
                 // Reference: https://stackoverflow.com/questions/10865025/merge-flatten-an-array-of-arrays
-                props.block.rich_text_block_contents = [].concat.apply([], props.block.rich_text_block_contents)
+                block.rich_text_block_contents = [].concat.apply([], block.rich_text_block_contents)
                 deleteEmptyContents()
-                props.block.rich_text_block_contents = mergeEqualContentsSideBySide(props.block.rich_text_block_contents)
+                block.rich_text_block_contents = mergeEqualContentsSideBySide(block.rich_text_block_contents)
             } 
         }
     }
@@ -1364,11 +1403,11 @@ const Text = (props) => {
      * Just a boolean function used to verify if it needs to show to the user a placeholder
      */
     const isToShowPlaceholder = () => {
-        return props.block.rich_text_block_contents.length === 1 && 
-        props.activeBlock === props.block.uuid &&
+        return block.rich_text_block_contents.length === 1 && 
+        props.activeBlock === block.uuid &&
         props.isEditable &&
-        (props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text === '\n' ||
-        props.block.rich_text_block_contents[props.block.rich_text_block_contents.length-1].text === '')
+        (block.rich_text_block_contents[block.rich_text_block_contents.length-1].text === '\n' ||
+        block.rich_text_block_contents[block.rich_text_block_contents.length-1].text === '')
     }
     // ------------------------------------------------------------------------------------------
     /**
@@ -1378,9 +1417,11 @@ const Text = (props) => {
      * @param {BigInteger} alignmentId - The new id of the alignment type to use.
      */
     const onChangeAlignmentType = (alignmentId) => {
-        if (props.activeBlock === props.block.uuid) {
-            props.block.text_option.alignment_type = alignmentId
+        if (props.activeBlock === block.uuid) {
+            block.text_option.alignment_type = alignmentId
         }
+        blockStateToPropsBlock()
+        setBlock({...block})
         props.updateBlocks(props.activeBlock)
     }
     // ------------------------------------------------------------------------------------------
@@ -1434,10 +1475,10 @@ const Text = (props) => {
         // WEB ONLY
         if (process.env['APP'] === 'web') {
             let innerHtmlText = ''
-            props.block.rich_text_block_contents.forEach((content, index) => {
+            block.rich_text_block_contents.forEach((content, index) => {
                 if (content.is_custom) {
                     const { component, text } = props.renderCustomContent(content)
-                    props.block.rich_text_block_contents[index].text = text
+                    block.rich_text_block_contents[index].text = text
                     const CustomContent = component 
                     innerHtmlText = innerHtmlText + renderToString(<CustomContent key={index} content={content}/>)
                 } else {
@@ -1462,7 +1503,7 @@ const Text = (props) => {
         if (isWaitingForCustomInput.current || props.activeBlock === null) {
             inputRef.current.blur()
         }
-        if (props.activeBlock === props.block.uuid && (!isWaitingForCustomInput.current || !props.isUnmanagedContentSelectorOpen)) {
+        if (props.activeBlock === block.uuid && (!isWaitingForCustomInput.current || !props.isUnmanagedContentSelectorOpen)) {
             isWaitingForCustomInput.current = false
             inputRef.current.focus()
         }
@@ -1477,7 +1518,7 @@ const Text = (props) => {
         // When the user selects an option we change the props of the value, than we this Effect runs.
         // We remove the key that he had typed '@', '#' or any other particular key.
         // And insert this new custom_value in the middle of the content
-        if (isWaitingForCustomInput.current && props.activeBlock === props.block.uuid) {
+        if (isWaitingForCustomInput.current && props.activeBlock === block.uuid) {
             caretPositionRef.current = JSON.parse(JSON.stringify(customInputCaretPosition.current))
             isWaitingForCustomInput.current = false
             let selectedContents = getSelectedContents()
@@ -1507,13 +1548,15 @@ const Text = (props) => {
             // (remember that when it is a custom content, we select the hole element)
             // got this idea from Notion.so
             contentsToAddInIndex.splice(2, 0, props.createNewContent({text: ' ', order: 0}))
-            props.block.rich_text_block_contents[content.contentIndex] = contentsToAddInIndex
-            props.block.rich_text_block_contents = [].concat.apply([], props.block.rich_text_block_contents)
+            block.rich_text_block_contents[content.contentIndex] = contentsToAddInIndex
+            block.rich_text_block_contents = [].concat.apply([], block.rich_text_block_contents)
             mergeEqualDeleteEmptyAndSetWhereCaretPositionShouldGo('')
             // resets the value so we can handle further prop changes.
             props.onChangeUnmanagedContentValue(null)
             props.onOpenUnmanagedContentSelector(false)
-            props.updateBlocks(props.block.uuid)
+            blockStateToPropsBlock()
+            setBlock({...block})
+            props.updateBlocks(block.uuid)
         }
     }, [props.unmanagedContentValue])
     /////////////////////////////////////////////////////////////////////////////////////////////
@@ -1536,25 +1579,25 @@ const Text = (props) => {
                 onChangeText={(text) => {
                     onInput(text, keyDownPressedRef.current, keyDownPressedRef.current)  
                 }}
-                textAlign={getAlignmentTypeNameById(props.block.text_option?.alignment_type)}
+                textAlign={getAlignmentTypeNameById(block.text_option?.alignment_type)}
                 value={''}
                 >
-                    {props.block.rich_text_block_contents.map((content, index) => {
-                        if (index === props.block.rich_text_block_contents.length - 1 && content.text.substring(content.text.length-1, content.text.length) === '\n') {
-                            props.block.rich_text_block_contents[index].text = content.text.substring(0, content.text.length-1)
+                    {block.rich_text_block_contents.map((content, index) => {
+                        if (index === block.rich_text_block_contents.length - 1 && content.text.substring(content.text.length-1, content.text.length) === '\n') {
+                            block.rich_text_block_contents[index].text = content.text.substring(0, content.text.length-1)
                         }
                         if (content.is_custom) {
                             const { component, text } = props.renderCustomContent(content)
-                            props.block.rich_text_block_contents[index].text = text
+                            block.rich_text_block_contents[index].text = text
                             const CustomContent = component 
                             return (
-                                <CustomContent key={content.uuid} content={props.block.rich_text_block_contents[index]}/>
+                                <CustomContent key={content.uuid} content={block.rich_text_block_contents[index]}/>
                             )
                         } else if (content.text !== '') {
                             return (
                                 <Content 
                                 key={content.uuid} 
-                                content={props.block.rich_text_block_contents[index]} 
+                                content={block.rich_text_block_contents[index]} 
                                 />
                             )
                         } else {
@@ -1581,7 +1624,7 @@ const Text = (props) => {
                 className={'notranslate'}
                 spellCheck={true}
                 caretColor={(![null, ''].includes(stateOfSelection.textColor) ? stateOfSelection.textColor : '#000')}
-                alignmentType={getAlignmentTypeNameById(props.block.text_option?.alignment_type)}
+                alignmentType={getAlignmentTypeNameById(block.text_option?.alignment_type)}
                 onBlur={(e) => onBlur()}
                 onPaste={(e) => onPaste(e)}
                 onFocus={(e) => onFocus()}
