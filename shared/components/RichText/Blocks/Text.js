@@ -282,7 +282,7 @@ const Text = (props) => {
             if (props.handleArrowNavigationNextBlockIndex) {
                 nextTextBlockIndex = props.handleArrowNavigationNextBlockIndex(block.uuid, isDownOrRight)
             } else {
-                const indexOfCurrentBlock = props.contextBlocks.findIndex(block => block.uuid === block.uuid)
+                const indexOfCurrentBlock = props.contextBlocks.findIndex(contextBlock => contextBlock.uuid === block.uuid)
                 for (let i = 0; i < props.contextBlocks.length; i++) {
                     if (props.contextBlocks[i].block_type === props.getBlockTypeIdByName('text') && i > indexOfCurrentBlock) {
                         nextTextBlockIndex = i
@@ -298,7 +298,7 @@ const Text = (props) => {
             if (props.handleArrowNavigationPreviousBlockIndex) {
                 previousTextBlockIndex = props.handleArrowNavigationPreviousBlockIndex(block.uuid, isUpOrLeft)
             } else {
-                const indexOfCurrentBlock = props.contextBlocks.findIndex(block => block.uuid === block.uuid)
+                const indexOfCurrentBlock = props.contextBlocks.findIndex(contextBlock => contextBlock.uuid === block.uuid)
                 for (let i = indexOfCurrentBlock; i >= 0; i--) {
                     if (props.contextBlocks[i].block_type === props.getBlockTypeIdByName('text') && i < indexOfCurrentBlock) {
                         previousTextBlockIndex = i
@@ -325,7 +325,6 @@ const Text = (props) => {
 
                 const nextTextBlockIndex = getNextBlockIndex({isDownPressed: true})
                 if (nextTextBlockIndex !== -1) {
-                    setBlock({...block})
                     props.updateBlocks(props.contextBlocks[nextTextBlockIndex].uuid)
                 }
             } else if (keyDownPressedRef.current === 'ArrowUp' && caretIsInHighestOrLowestPositionWeb(inputRef.current).isHighest) {
@@ -335,7 +334,6 @@ const Text = (props) => {
                 })
                 const previousTextBlockIndex = getPreviousBlockIndex({isUpPressed: true})
                 if (previousTextBlockIndex !== -1) {
-                    setBlock({...block})
                     props.updateBlocks(props.contextBlocks[previousTextBlockIndex].uuid)
                 }
             } else if (keyDownPressedRef.current === 'ArrowRight' && caretIsInHighestOrLowestPositionWeb(inputRef.current).isLowest && caretIndexPosition.start >= text.length) {
@@ -344,7 +342,6 @@ const Text = (props) => {
                 })
                 const nextTextBlockIndex = getNextBlockIndex({isRightPressed: true})
                 if (nextTextBlockIndex !== -1) {
-                    setBlock({...block})
                     props.updateBlocks(props.contextBlocks[nextTextBlockIndex].uuid)
                 }
             } else if (keyDownPressedRef.current === 'ArrowLeft' && caretIsInHighestOrLowestPositionWeb(inputRef.current).isHighest && caretIndexPosition.start === 0) {
@@ -354,7 +351,6 @@ const Text = (props) => {
                 })
                 const previousTextBlockIndex = getPreviousBlockIndex({isLeftPressed: true})
                 if (previousTextBlockIndex !== -1) {
-                    setBlock({...block})
                     props.updateBlocks(props.contextBlocks[previousTextBlockIndex].uuid)
                 }
             }
@@ -829,7 +825,6 @@ const Text = (props) => {
             isWaitingForCustomInput.current === false && 
             isToolbarModalOpen === false) {
             blockStateToPropsBlock()
-            setBlock({...block})    
             props.updateBlocks(null)
         }
     }
@@ -846,7 +841,6 @@ const Text = (props) => {
         }
         if (props.activeBlock !== block.uuid) {
             blockStateToPropsBlock()
-            setBlock({...block})
             props.updateBlocks(block.uuid, true, props.blockIndex)
         }
         isWaitingForCustomInput.current = false
@@ -906,7 +900,6 @@ const Text = (props) => {
             }
             if (props.activeBlock !== block.uuid) {
                 blockStateToPropsBlock()
-                setBlock({...block})
                 props.updateBlocks(block.uuid)
             }
         } else {
@@ -929,7 +922,6 @@ const Text = (props) => {
         checkStateOfSelectedElementAndUpdateState()
         if (props.activeBlock !== block.uuid) {
             blockStateToPropsBlock()
-            setBlock({...block})
             props.updateBlocks(block.uuid)
         }
     }
@@ -1100,7 +1092,7 @@ const Text = (props) => {
 
                 caretPositionRef.current.end = caretPositionRef.current.start
 
-                const indexOfBlockInContext = props.contextBlocks.findIndex(block => block.uuid === block.uuid)
+                const indexOfBlockInContext = props.contextBlocks.findIndex(contextBlock => contextBlock.uuid === block.uuid)
                 const newBlock = props.createNewBlock({ 
                     order: props.contextBlocks.length+1, 
                     richTextBlockContents: contentsOfNextBlock,
@@ -1112,8 +1104,8 @@ const Text = (props) => {
                 })
                 props.contextBlocks.splice(indexOfBlockInContext + 1, 0, newBlock)
                 activeBlockRef.current = newBlock.uuid
+                console.log(props.contextBlocks)
                 blockStateToPropsBlock()
-                setBlock({...block})
                 props.updateBlocks(newBlock.uuid)
             }
         }
@@ -1148,7 +1140,7 @@ const Text = (props) => {
         if (props.onRemoveAfter) {
             props.onRemoveAfter()
         } else { 
-            const indexOfBlockInContext = props.contextBlocks.findIndex(block => block.uuid === block.uuid)
+            const indexOfBlockInContext = props.contextBlocks.findIndex(contextBlock => contextBlock.uuid === block.uuid)
             if (props.contextBlocks.length - 1 > indexOfBlockInContext+1) {
                 const contentsToAppendOnCurrentBlock = JSON.parse(JSON.stringify(props.contextBlocks[indexOfBlockInContext+1].rich_text_block_contents))
                 const currentBlockContents = props.contextBlocks[indexOfBlockInContext].rich_text_block_contents
@@ -1164,7 +1156,6 @@ const Text = (props) => {
                 props.contextBlocks.splice(indexOfBlockInContext+1, 1)
 
                 blockStateToPropsBlock()
-                setBlock({...block})
                 props.updateBlocks(block.uuid)
             }
         }
@@ -1201,7 +1192,7 @@ const Text = (props) => {
         if (props.onRemoveCurrent) {
             props.onRemoveCurrent()
         } else {
-            const indexOfBlockInContext = props.contextBlocks.findIndex(block => block.uuid === block.uuid)
+            const indexOfBlockInContext = props.contextBlocks.findIndex(contextBlock => contextBlock.uuid === block.uuid)
             const contentsForNextBlock = JSON.parse(JSON.stringify(props.contextBlocks[indexOfBlockInContext].rich_text_block_contents))
             // get previous block to focus
             if (indexOfBlockInContext !== 0) {
@@ -1222,10 +1213,8 @@ const Text = (props) => {
                 blockStateToPropsBlock()
                 if (process.env['APP'] == 'web') {
                     props.contextBlocks.splice(indexOfBlockInContext, 1)
-                    setBlock({...block})
                     props.updateBlocks(uuidToFocusAfterUpdate)
                 } else {
-                    setBlock({...block})
                     props.updateBlocks(uuidToFocusAfterUpdate)
                     setTimeout(() => {
                         if (isMountedRef.current) {
@@ -1421,7 +1410,6 @@ const Text = (props) => {
             block.text_option.alignment_type = alignmentId
         }
         blockStateToPropsBlock()
-        setBlock({...block})
         props.updateBlocks(props.activeBlock)
     }
     // ------------------------------------------------------------------------------------------
@@ -1555,7 +1543,6 @@ const Text = (props) => {
             props.onChangeUnmanagedContentValue(null)
             props.onOpenUnmanagedContentSelector(false)
             blockStateToPropsBlock()
-            setBlock({...block})
             props.updateBlocks(block.uuid)
         }
     }, [props.unmanagedContentValue])
