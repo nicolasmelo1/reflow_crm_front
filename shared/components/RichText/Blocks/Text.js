@@ -309,6 +309,9 @@ const Text = (props) => {
             return previousTextBlockIndex
         }
         // ------------------------------------------------------------------------------------------
+        console.log(typeof(keyDownPressedRef.current) === 'string' && keyDownPressedRef.current.toLowerCase().includes('arrow'))
+        console.log(keyDownPressedRef.current === 'ArrowUp' && caretIsInHighestOrLowestPositionWeb(inputRef.current).isHighest)
+
         if (typeof(keyDownPressedRef.current) === 'string' && keyDownPressedRef.current.toLowerCase().includes('arrow')){
             const caretIndexPosition = getSelectionSelectCursorPositionWeb(inputRef.current)
             const text = inputRef.current.innerText.substring(inputRef.current.innerText.length-1, inputRef.current.innerText.length) === '\n' ? 
@@ -316,8 +319,8 @@ const Text = (props) => {
             const caretPosition = getCaretCoordinatesWeb()            
 
             blockStateToPropsBlock()
-
-            if (keyDownPressedRef.current === 'ArrowDown' && caretIsInHighestOrLowestPositionWeb(inputRef.current).isLowest) {    
+            const isFirstContent = block.rich_text_block_contents.length === 1 && (block.rich_text_block_contents[0].text === '' || block.rich_text_block_contents[0].text === '\n')
+            if (keyDownPressedRef.current === 'ArrowDown' && (caretIsInHighestOrLowestPositionWeb(inputRef.current).isLowest || isFirstContent)) {    
                 props.setArrowNavigation({
                     focusX: caretPosition.x,
                     isDownPressed: true
@@ -327,7 +330,7 @@ const Text = (props) => {
                 if (nextTextBlockIndex !== -1) {
                     props.updateBlocks(props.contextBlocks[nextTextBlockIndex].uuid)
                 }
-            } else if (keyDownPressedRef.current === 'ArrowUp' && caretIsInHighestOrLowestPositionWeb(inputRef.current).isHighest) {
+            } else if (keyDownPressedRef.current === 'ArrowUp' && (caretIsInHighestOrLowestPositionWeb(inputRef.current).isHighest || isFirstContent)) {
                 props.setArrowNavigation({
                     focusX: caretPosition.x,
                     isUpPressed: true
@@ -336,7 +339,7 @@ const Text = (props) => {
                 if (previousTextBlockIndex !== -1) {
                     props.updateBlocks(props.contextBlocks[previousTextBlockIndex].uuid)
                 }
-            } else if (keyDownPressedRef.current === 'ArrowRight' && caretIsInHighestOrLowestPositionWeb(inputRef.current).isLowest && caretIndexPosition.start >= text.length) {
+            } else if (keyDownPressedRef.current === 'ArrowRight' && ((caretIsInHighestOrLowestPositionWeb(inputRef.current).isLowest && caretIndexPosition.start >= text.length) || isFirstContent)) {
                 props.setArrowNavigation({
                     isRightPressed: true
                 })
@@ -344,7 +347,7 @@ const Text = (props) => {
                 if (nextTextBlockIndex !== -1) {
                     props.updateBlocks(props.contextBlocks[nextTextBlockIndex].uuid)
                 }
-            } else if (keyDownPressedRef.current === 'ArrowLeft' && caretIsInHighestOrLowestPositionWeb(inputRef.current).isHighest && caretIndexPosition.start === 0) {
+            } else if (keyDownPressedRef.current === 'ArrowLeft' && ((caretIsInHighestOrLowestPositionWeb(inputRef.current).isHighest && caretIndexPosition.start === 0) || isFirstContent)) {
                 props.setArrowNavigation({
                     focusX: caretPosition.x,
                     isLeftPressed: true
