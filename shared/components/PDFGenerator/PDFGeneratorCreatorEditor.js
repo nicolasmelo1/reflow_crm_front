@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import { Modal, TextInput, SafeAreaView, useWindowDimensions } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import RichText from '../RichText'
@@ -52,9 +53,11 @@ const Custom = (props) => {
  * for the user
  */
 const PDFGeneratorCreatorEditor = (props) => {
+    const sourceRef = React.useRef(null)
     const isMountedRef = React.useRef(true)
     const mobileWindowHeight = useWindowDimensions().height
     const [isLoading, setIsLoading] = useState(false)
+    const [isSubmitting, setisSubmitting] = useState(false)
     const [templateData, setTemplateData] = useState({...props.templateData})
     const [unmanagedFieldSelectedValue, setUnmanagedFieldSelectedValue] = useState(null)
     const [isUnmanagedFieldSelectorOpen, setIsUnmanagedFieldSelectorOpen] = useState(false)
@@ -62,12 +65,13 @@ const PDFGeneratorCreatorEditor = (props) => {
         x: 0,
         y: 0
     })
+    // ------------------------------------------------------------------------------------------
     // we use this to tell the rich text that when the user types this character we will handle the insertion of the content on this component and not
     // on the rich text itself
     const unmanaged = {
         '@': setUnmanagedFieldSelectorPosition
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
     * This function is used for validating if the data the user inserted in a field name is valid or not. You will notice that this is a switch
     * with a set of statements. Each return case is a different condition to check if the data is valid.
@@ -85,8 +89,7 @@ const PDFGeneratorCreatorEditor = (props) => {
                 return true
         }
     }
-
-
+    // ------------------------------------------------------------------------------------------
     /**
      * When the rich text renders a custom content it doesn't know what to render, since it is not handled inside of the rich text itself.
      * Because of this we need this function to tell it what it should render when it encounter a custom content.
@@ -109,7 +112,7 @@ const PDFGeneratorCreatorEditor = (props) => {
             text: text
         }
     }
-    
+    // ------------------------------------------------------------------------------------------
     /**
      * This function is responsible for handling when state changes in the rich text. The rich text changes as the user
      * types but the data doesn't propagate back down, it stays at this component.
@@ -127,7 +130,7 @@ const PDFGeneratorCreatorEditor = (props) => {
             })
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Used for when the user changes the name of the template. It is mostly really simple, just changes the templateData state 
      * `name` parameter
@@ -140,30 +143,44 @@ const PDFGeneratorCreatorEditor = (props) => {
             name: templateName
         })
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
-     * Submits the template data to the backend, when we submit we change the isLoading so 
+     * Submits the template data to the backend, when we submit we change the isSubmitting so 
      * the user cannot make any interaction on the buttons while it is loading.
      */
     const onSubmit = () => {
-        setIsLoading(true)
+        setisSubmitting(true)
         props.onUpdateOrCreatePDFTemplateConfiguration({...templateData}).then(response => {
             if (([undefined, null].includes(response) || response.status !== 200) && isMountedRef.current) {
                 if (response.data?.error?.reason && response.data.error.reason.includes('invalid_rich_text')) {
                     props.onAddNotification(strings['pt-br']['pdfGeneratorOnSubmitErrorMessage'], 'error')
                 }
-                setIsLoading(false)
+                setisSubmitting(false)
             }
         })
     }
-
+    // ------------------------------------------------------------------------------------------
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         isMountedRef.current = true
+        sourceRef.current = axios.CancelToken.source()
+        setIsLoading(true)
+        props.onGetPDFGeneratorTemplateConfiguration(sourceRef.current, props.formName, props.templateData.id).then(response => {
+            if (response && response.status === 200) {
+                setTemplateData(response.data.data)
+            }
+            setIsLoading(false)
+        }).catch(__ => setIsLoading(false))
+
         return () => {
             isMountedRef.current = false
-        }
+            if (sourceRef.current) { 
+                sourceRef.current.cancel()
+            }
+        }   
     }, [])
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //########################################################################################//
     const renderMobile = () => {
         return (
             <Modal animationType="slide">
@@ -184,25 +201,32 @@ const PDFGeneratorCreatorEditor = (props) => {
                     <PDFGeneratorCreatorEditorRichTextContainer
                     height={mobileWindowHeight}
                     >
-                        <RichText 
-                        initialText={strings['pt-br']['pdfGeneratorEditorRichTextInitialText']}
-                        initialData={props.templateData?.rich_text_page}
-                        allowedBlockTypeIds={props.allowedRichTextBlockIds}
-                        onStateChange={onRichTextStateChange}
-                        renderCustomContent={renderCustomContent} 
-                        handleUnmanagedContent={unmanaged} 
-                        onOpenUnmanagedContentSelector={setIsUnmanagedFieldSelectorOpen}
-                        isUnmanagedContentSelectorOpen={isUnmanagedFieldSelectorOpen}
-                        onChangeUnmanagedContentValue={setUnmanagedFieldSelectedValue}
-                        unmanagedContentValue={unmanagedFieldSelectedValue}
-                        />
+                        {isLoading ? null : (
+                            <React.Fragment>
+                                {templateData?.rich_text_page ? (
+                                    <RichText 
+                                    initialText={strings['pt-br']['pdfGeneratorEditorRichTextInitialText']}
+                                    initialData={templateData?.rich_text_page}
+                                    allowedBlockTypeIds={props.allowedRichTextBlockIds}
+                                    onStateChange={onRichTextStateChange}
+                                    renderCustomContent={renderCustomContent} 
+                                    handleUnmanagedContent={unmanaged} 
+                                    onOpenUnmanagedContentSelector={setIsUnmanagedFieldSelectorOpen}
+                                    isUnmanagedContentSelectorOpen={isUnmanagedFieldSelectorOpen}
+                                    onChangeUnmanagedContentValue={setUnmanagedFieldSelectedValue}
+                                    unmanagedContentValue={unmanagedFieldSelectedValue}
+                                    />
+                                ) : null }
+                            </React.Fragment>
+                        )}
                     </PDFGeneratorCreatorEditorRichTextContainer>
                 </SafeAreaView>
             </Modal>
         )
     }
-
+    //########################################################################################//
     const renderWeb = () => {
+        console.log(templateData?.rich_text_page)
         return (
             <div>
                 <PDFGeneratorCreatorTemplateTitleContainer>
@@ -214,14 +238,14 @@ const PDFGeneratorCreatorEditor = (props) => {
                 <PDFGeneratorCreatorEditorButtonsContainer> 
                     <PDFGeneratorCreatorEditorTemplateSaveButton
                     isValid={isValid('name', templateData.name)}
-                    onClick={(e) => isLoading || !isValid('name', templateData.name)  ? null : onSubmit({...templateData})}
+                    onClick={(e) => isSubmitting || !isValid('name', templateData.name)  ? null : onSubmit({...templateData})}
                     > 
-                        {isLoading ? (
+                        {isSubmitting ? (
                             <Spinner animation="border" size="sm"/>
                         ): strings['pt-br']['pdfGeneratorEditorSaveButtonLabel']}
                     </PDFGeneratorCreatorEditorTemplateSaveButton>
                     <PDFGeneratorCreatorEditorTemplateCancelButton 
-                    onClick={(e) => isLoading ? null : props.setSelectedTemplateIndex(null)}
+                    onClick={(e) => isSubmitting ? null : props.setSelectedTemplateIndex(null)}
                     >
                         {strings['pt-br']['pdfGeneratorEditorCancelButtonLabel']}
                     </PDFGeneratorCreatorEditorTemplateCancelButton>
@@ -235,23 +259,31 @@ const PDFGeneratorCreatorEditor = (props) => {
                     />
                 ) : ''}
                 <PDFGeneratorCreatorEditorRichTextContainer>
-                    <RichText 
-                    initialText={strings['pt-br']['pdfGeneratorEditorRichTextInitialText']}
-                    initialData={props.templateData?.rich_text_page}
-                    allowedBlockTypeIds={props.allowedRichTextBlockIds}
-                    onStateChange={onRichTextStateChange}
-                    renderCustomContent={renderCustomContent} 
-                    handleUnmanagedContent={unmanaged} 
-                    onOpenUnmanagedContentSelector={setIsUnmanagedFieldSelectorOpen}
-                    isUnmanagedContentSelectorOpen={isUnmanagedFieldSelectorOpen}
-                    onChangeUnmanagedContentValue={setUnmanagedFieldSelectedValue}
-                    unmanagedContentValue={unmanagedFieldSelectedValue}
-                    />
+                    {isLoading ? (
+                        <Spinner animation="border"/>
+                    ) : (
+                        <React.Fragment>
+                            {templateData?.rich_text_page ? (
+                                <RichText 
+                                initialText={strings['pt-br']['pdfGeneratorEditorRichTextInitialText']}
+                                initialData={templateData?.rich_text_page}
+                                allowedBlockTypeIds={props.allowedRichTextBlockIds}
+                                onStateChange={onRichTextStateChange}
+                                renderCustomContent={renderCustomContent} 
+                                handleUnmanagedContent={unmanaged} 
+                                onOpenUnmanagedContentSelector={setIsUnmanagedFieldSelectorOpen}
+                                isUnmanagedContentSelectorOpen={isUnmanagedFieldSelectorOpen}
+                                onChangeUnmanagedContentValue={setUnmanagedFieldSelectedValue}
+                                unmanagedContentValue={unmanagedFieldSelectedValue}
+                                />
+                            ) : ''}
+                        </React.Fragment>
+                    )}
                 </PDFGeneratorCreatorEditorRichTextContainer>
             </div>
         )
     }
-
+    //########################################################################################//
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 

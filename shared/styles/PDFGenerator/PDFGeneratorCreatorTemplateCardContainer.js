@@ -7,7 +7,14 @@ styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between
+    justify-content: space-between;
+    margin: 5px 0;
+    padding: 5px; 
+    border-radius: 5px;
+
+    &:hover{
+        background-color: #f2f2f280
+    }
 `
 :
 styled(View)`

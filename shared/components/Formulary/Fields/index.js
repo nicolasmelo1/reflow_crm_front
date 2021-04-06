@@ -197,7 +197,7 @@ const Fields = (props) => {
 
     useEffect(() => {
         const retrieveAttachmentsDraftFromDefaults = async () => {
-            if (props.fieldFormValues.length === 0 && props.formularyDataId === null && props.isFormOpen) {
+            if (props.fieldFormValues.length === 0 && props.formularyDataId === null && props.isFormOpen && props?.field?.field_default_field_values) {
                 isUploadingDefaultAttachmentsRef.current = true
                 let values = []
                 for (let i=0; i < props.field.field_default_field_values.length; i++) {
@@ -212,10 +212,10 @@ const Fields = (props) => {
         if (props.fieldFormValues.length === 0 && props.formularyDataId === null && props.isFormOpen) {
             if (getCurrentFieldTypeName() !== 'attachment') {
                 // Be cautious, the order of this conditional is important (what condition comes first and what comes second)
-                if (props.field.field_default_field_values.length > 1) {
+                if ((props?.field?.field_default_field_values || []).length > 1) {
                     const values = props.field.field_default_field_values.map(defaultFieldValue => defaultFieldValue.value)
                     multipleValueFieldHelper(values)
-                } else if (props.field.field_default_field_values.length > 0) {
+                } else if ((props?.field?.field_default_field_values || []).length > 0) {
                     const value = props.field.field_default_field_values.map(defaultFieldValue => defaultFieldValue.value)[0]
                     singleValueFieldsHelper(value)
                 }

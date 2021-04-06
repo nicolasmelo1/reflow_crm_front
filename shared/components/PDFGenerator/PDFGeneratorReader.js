@@ -43,7 +43,7 @@ const PDFGeneratorReader = (props) => {
     })
     const [isLoading, setIsLoading] = useState(false)
     const [selectedTemplateIndex, setSelectedTemplateIndex] = useState(null)
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Fires when the user clicks cancel on this page, we return the user to an empty page so it automatically returns the user to the page
      * he was in. We actually don't need this.
@@ -53,7 +53,7 @@ const PDFGeneratorReader = (props) => {
             Router.push(paths.empty().asUrl, paths.empty().asUrl,{ shallow: true })
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * We only load 5 templates, so we display a button to load more templates in the bottom of the list.
      * This handles when the user clicks to load more template.
@@ -70,7 +70,8 @@ const PDFGeneratorReader = (props) => {
             }).catch(__ => setIsLoading(false))
         }
     }
-
+    // ------------------------------------------------------------------------------------------
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         // When the component is loaded we just fetch for the templates. 
         // Nothing really fancy about it.
@@ -90,7 +91,8 @@ const PDFGeneratorReader = (props) => {
             }
         }
     }, [])
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //########################################################################################//
     const renderMobile = () => {
         return (
             <View>
@@ -101,6 +103,7 @@ const PDFGeneratorReader = (props) => {
                     formName={props.formName}
                     templateData={props.templates[selectedTemplateIndex]}
                     setSelectedTemplateIndex={setSelectedTemplateIndex}
+                    onGetPDFGeneratorTempalateReader={props.onGetPDFGeneratorTempalateReader}
                     onGetPDFGeneratorValuesReader={props.onGetPDFGeneratorValuesReader}
                     onCheckIfCanDownloadPDF={props.onCheckIfCanDownloadPDF}
                     onAddNotification={props.onAddNotification}
@@ -127,7 +130,7 @@ const PDFGeneratorReader = (props) => {
             </View>
         )
     }
-
+    //########################################################################################//
     const renderWeb = () => {
         return (
             <div>
@@ -139,6 +142,7 @@ const PDFGeneratorReader = (props) => {
                     templateData={props.templates[selectedTemplateIndex]}
                     setSelectedTemplateIndex={setSelectedTemplateIndex}
                     onGetPDFGeneratorValuesReader={props.onGetPDFGeneratorValuesReader}
+                    onGetPDFGeneratorTempalateReader={props.onGetPDFGeneratorTempalateReader}
                     onCheckIfCanDownloadPDF={props.onCheckIfCanDownloadPDF}
                     onAddNotification={props.onAddNotification}
                     allowedBlockTypeIds={props.allowedRichTextBlockIds}
@@ -151,7 +155,7 @@ const PDFGeneratorReader = (props) => {
                             </PDFGeneratorReaderGoBackButton>
                         </PDFGeneratorReaderTopButtonsContainer>
                         <PDFGeneratorReaderTemplatesContainer>
-                            {isLoading ? (
+                            {isLoading && props.templates.length === 0 ? (
                                 <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0dbf7e', marginTop: '10px'}}>
                                     <Spinner animation="border"/>
                                 </div>
@@ -167,11 +171,15 @@ const PDFGeneratorReader = (props) => {
                             ))}
                             {page.current < page.total ? (
                                 <PDFGeneratorGetMoreTemplatesButtonContainer>
-                                    <PDFGeneratorGetMoreTemplatesButton
-                                    onClick={(e) => onClickLoadMoreButton()} 
-                                    >
-                                        {strings['pt-br']['pdfGeneratorLoadMoreButtonLabel']}
-                                    </PDFGeneratorGetMoreTemplatesButton>
+                                    {isLoading ? (
+                                        <Spinner animation="border"/>
+                                    ) : (
+                                        <PDFGeneratorGetMoreTemplatesButton
+                                        onClick={(e) => onClickLoadMoreButton()} 
+                                        >
+                                            {strings['pt-br']['pdfGeneratorLoadMoreButtonLabel']}
+                                        </PDFGeneratorGetMoreTemplatesButton>
+                                    )}
                                 </PDFGeneratorGetMoreTemplatesButtonContainer>
                             ) : ''}
                         </PDFGeneratorReaderTemplatesContainer>
@@ -180,7 +188,7 @@ const PDFGeneratorReader = (props) => {
             </div>
         )
     }
-
+    //########################################################################################//
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 

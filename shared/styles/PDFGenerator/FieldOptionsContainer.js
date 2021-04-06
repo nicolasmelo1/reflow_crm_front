@@ -16,6 +16,7 @@ styled.div`
     background-color: #ffffff;
     overflow-y: auto;
     position: absolute;
+    transform: translate3d(0px, ${props=> props.translate.toString()}px, 0px);
     top: ${props => props.top}px;
     left: ${props => calculateLeft(props.left)}px;
     box-shadow: rgba(15, 15, 15, 0.05) 0px 0px 0px 1px, rgba(15, 15, 15, 0.1) 0px 3px 6px, rgba(15, 15, 15, 0.2) 0px 9px 24px;

@@ -32,11 +32,39 @@ import {
  * the modal next to the caret. This represents the number of pixels the element should be from the left.
  */
 const FieldSelectorOptionBox = (props) => {
+    const fieldSelectorBoxRef = React.useRef()
     const [search, setSearch] = useState('')
+    const [translate3D, setTranslate3D] = useState(0)
+
+    /**
+     * WEB ONLY
+     * 
+     * This is used to render the fieldSelector option box on the top or down if the field is close to the bottom of
+     * the page we move the selector up, otherwise we keep it down.
+     *
+     * @param {Event} e - The event object emitted by the browser from the "scroll" event.
+     */
+    const topOrDown = (e) => {
+        if (e) e.preventDefault()
+        if(fieldSelectorBoxRef.current){
+            const rect = fieldSelectorBoxRef.current.getBoundingClientRect();
+            if (rect.top + fieldSelectorBoxRef.current.offsetHeight > window.innerHeight){
+                setTranslate3D(-fieldSelectorBoxRef.current.offsetHeight + 20)
+            } else {
+                setTranslate3D(0)
+            }
+        }
+    }
 
     useEffect(() => {
         if (process.env['APP'] === 'web') {
-            
+            topOrDown()
+            document.addEventListener("scroll", topOrDown)
+        }
+        return () => {
+            if (process.env['APP'] === 'web') {
+                document.removeEventListener("scroll", topOrDown)
+            }
         }
     }, [])
 
@@ -85,6 +113,8 @@ const FieldSelectorOptionBox = (props) => {
             <FieldOptionsContainer 
             top={props.top}
             left={props.left}
+            translate={translate3D}
+            ref={fieldSelectorBoxRef}
             >
                 <FieldOptionsSearchBox 
                 placeholder='Buscar'

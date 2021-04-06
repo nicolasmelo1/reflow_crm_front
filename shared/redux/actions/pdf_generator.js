@@ -26,6 +26,12 @@ const onGetPDFGeneratorTemplatesConfiguration = (source, formName, page) => {
     }
 }
 
+const onGetPDFGeneratorTemplateConfiguration = (source, formName, pdfTemplateConfigurationId) => {
+    return (_) => {
+        return agent.http.PDF_GENERATOR.getTemplateSettings(source, formName, pdfTemplateConfigurationId) 
+    }
+}
+
 const onChangePDFGeneratorTemplatesConfigurationState = (data) => {
     return (dispatch) => {
         dispatch({ type: SET_PDF_GENERATOR_CREATOR_TEMPLATES, payload: {...data}})
@@ -68,6 +74,12 @@ const onGetPDFGeneratorTempalatesReader = (source, formName, page) => {
     }
 }
 
+const onGetPDFGeneratorTempalateReader = (source, formName, pdfTemplateConfigurationId) => {
+    return (_) => {
+        return agent.http.PDF_GENERATOR.getPDFTemplate(source, formName, pdfTemplateConfigurationId)
+    }
+}
+
 const onGetPDFGeneratorValuesReader = (source, formName, pdfTemplateConfigurationId, formId) => {
     return async (_) => {
         return await agent.http.PDF_GENERATOR.getValueOptions(source, formName, pdfTemplateConfigurationId, formId)
@@ -82,8 +94,10 @@ const onCheckIfCanDownloadPDF = (source, formName, pdfTemplateConfigurationId) =
 
 export default {
     onGetAllowedBlocks,
+    onGetPDFGeneratorTempalateReader,
     onGetPDFGeneratorTempalatesReader,
     onGetPDFGeneratorValuesReader,
+    onGetPDFGeneratorTemplateConfiguration,
     onGetPDFGeneratorTemplatesConfiguration,
     onCreatePDFGeneratorTemplateConfiguration,
     onUpdatePDFGeneratorTemplateConfiguration,

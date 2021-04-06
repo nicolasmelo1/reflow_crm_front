@@ -54,6 +54,7 @@ class PDFGenerator extends React.Component {
                     formId={this.props.formId}
                     templates={this.props.pdf_generator.reader.templates}
                     onGetPDFGeneratorValuesReader={this.props.onGetPDFGeneratorValuesReader}
+                    onGetPDFGeneratorTempalateReader={this.props.onGetPDFGeneratorTempalateReader}
                     onGetPDFGeneratorTempalatesReader={this.props.onGetPDFGeneratorTempalatesReader}
                     onCheckIfCanDownloadPDF={this.props.onCheckIfCanDownloadPDF}
                     onAddNotification={this.props.onAddNotification}
@@ -65,6 +66,7 @@ class PDFGenerator extends React.Component {
                     formName={this.props.login.primaryForm}
                     cancelToken={this.cancelToken}
                     templates={this.props.pdf_generator.creator.templates}
+                    onGetPDFGeneratorTemplateConfiguration={this.props.onGetPDFGeneratorTemplateConfiguration}
                     onGetPDFGeneratorTemplatesConfiguration={this.props.onGetPDFGeneratorTemplatesConfiguration}
                     onCreatePDFGeneratorTemplateConfiguration={this.props.onCreatePDFGeneratorTemplateConfiguration}
                     onUpdatePDFGeneratorTemplateConfiguration={this.props.onUpdatePDFGeneratorTemplateConfiguration}
@@ -88,6 +90,7 @@ class PDFGenerator extends React.Component {
                     formId={this.props.formId}
                     templates={this.props.pdf_generator.reader.templates}
                     onGetPDFGeneratorValuesReader={this.props.onGetPDFGeneratorValuesReader}
+                    onGetPDFGeneratorTempalateReader={this.props.onGetPDFGeneratorTempalateReader}
                     onGetPDFGeneratorTempalatesReader={this.props.onGetPDFGeneratorTempalatesReader}
                     onCheckIfCanDownloadPDF={this.props.onCheckIfCanDownloadPDF}
                     onAddNotification={this.props.onAddNotification}
@@ -99,6 +102,7 @@ class PDFGenerator extends React.Component {
                     cancelToken={this.cancelToken}
                     onAddNotification={this.props.onAddNotification}
                     templates={this.props.pdf_generator.creator.templates}
+                    onGetPDFGeneratorTemplateConfiguration={this.props.onGetPDFGeneratorTemplateConfiguration}
                     onGetPDFGeneratorTemplatesConfiguration={this.props.onGetPDFGeneratorTemplatesConfiguration}
                     onCreatePDFGeneratorTemplateConfiguration={this.props.onCreatePDFGeneratorTemplateConfiguration}
                     onUpdatePDFGeneratorTemplateConfiguration={this.props.onUpdatePDFGeneratorTemplateConfiguration}

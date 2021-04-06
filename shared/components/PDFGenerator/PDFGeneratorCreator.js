@@ -52,7 +52,7 @@ const PDFGeneratorCreator = (props) => {
     const [templateIndexToRemove, setTemplateIndexToRemove] = useState(null)
     const [formAndFieldOptions, setFormAndFieldOptions] = useState([])
     const [selectedTemplateIndex, setSelectedTemplateIndex] = useState(null)
-    
+    // ------------------------------------------------------------------------------------------
     /**
      * This is used when rendering the `PDFGeneratorCreatorEditor` component, with this we get the templateData to send to the child component.
      * Since we open the `PDFGeneratorCreatorEditor` component by selecting which index of the 'props.templates' we have selected, this function
@@ -62,7 +62,7 @@ const PDFGeneratorCreator = (props) => {
     const getTemplateData = () => {
         return [undefined, null].includes(props.templates[selectedTemplateIndex]) ? addNewPDFTemplateConfiguration() : props.templates[selectedTemplateIndex]
     }
-    
+    // ------------------------------------------------------------------------------------------
     /**
      * When the user want to create a new Template Configuration we need to return this object. Remember that we open the `PDFGeneratorCreator` 
      * by defining the selected templateconfiguration index? If we set a index that does not exist in the props.templates array we will create
@@ -77,7 +77,7 @@ const PDFGeneratorCreator = (props) => {
         template_configuration_variables: [],
         rich_text_page: null
     })
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Fires when the user clicks cancel on this page, we return the user to an empty page so it automatically returns the user to the page
      * he was in. We actually don't need this.
@@ -87,7 +87,7 @@ const PDFGeneratorCreator = (props) => {
             Router.push(paths.empty().asUrl, paths.empty().asUrl,{ shallow: true })
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Function responsible for creating or updating a PDF template configuration.
      * `templateConfigurationData` is the template data it is used for sending to the backend.
@@ -114,7 +114,7 @@ const PDFGeneratorCreator = (props) => {
         }
         return response
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * We only load 5 templates, so we display a button to load more templates in the bottom of the list.
      * This handles when the user clicks to load more template.
@@ -131,7 +131,7 @@ const PDFGeneratorCreator = (props) => {
             }).catch(__ => setIsLoading(false))
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Removes a PDF Template from the backend by its id, after the PDFTemplate was removed we load the list of templates again.
      * 
@@ -149,8 +149,8 @@ const PDFGeneratorCreator = (props) => {
             }
         })
     }
-
-
+    // ------------------------------------------------------------------------------------------
+    /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         // When the user opens this component we get all of the template configuration for the current formName
         // Not only this, we also get all of the field options the user can select as variables.
@@ -180,7 +180,8 @@ const PDFGeneratorCreator = (props) => {
             }
         }
     }, [])
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //########################################################################################//
     const renderMobile = () => {
         return (
             <View>
@@ -201,6 +202,8 @@ const PDFGeneratorCreator = (props) => {
                 ) : null}
                 {selectedTemplateIndex !== null ? (
                     <PDFGeneratorCreatorEditor
+                    onGetPDFGeneratorTemplateConfiguration={props.onGetPDFGeneratorTemplateConfiguration}
+                    formName={props.formName}
                     allowedRichTextBlockIds={props.allowedRichTextBlockIds}
                     formAndFieldOptions={formAndFieldOptions}
                     templateData={getTemplateData()}
@@ -250,7 +253,7 @@ const PDFGeneratorCreator = (props) => {
             </View>
         )
     }
-
+    //########################################################################################//
     const renderWeb = () => {
         return (
             <div>
@@ -271,6 +274,8 @@ const PDFGeneratorCreator = (props) => {
                 ) : ''}
                 {selectedTemplateIndex !== null ? (
                     <PDFGeneratorCreatorEditor
+                    formName={props.formName}
+                    onGetPDFGeneratorTemplateConfiguration={props.onGetPDFGeneratorTemplateConfiguration}
                     onAddNotification={props.onAddNotification}
                     allowedRichTextBlockIds={props.allowedRichTextBlockIds}
                     formAndFieldOptions={formAndFieldOptions}
@@ -291,7 +296,7 @@ const PDFGeneratorCreator = (props) => {
                             </PDFGeneratorCreatorCreateNewButton>
                         </PDFGeneratorCreatorButtonsContainer>
                         <PDFGeneratorCreatorTemplatesContainer>
-                            {isLoading ? (
+                            {isLoading && props.templates.length === 0 ? (
                                 <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0dbf7e', marginTop: '10px'}}>
                                     <Spinner animation="border"/>
                                 </div>
@@ -317,11 +322,15 @@ const PDFGeneratorCreator = (props) => {
                             ))}
                             {page.current < page.total ? (
                                 <PDFGeneratorGetMoreTemplatesButtonContainer>
-                                    <PDFGeneratorGetMoreTemplatesButton
-                                    onClick={(e) => onClickLoadMoreButton()} 
-                                    >
-                                        {strings['pt-br']['pdfGeneratorLoadMoreButtonLabel']}
-                                    </PDFGeneratorGetMoreTemplatesButton>
+                                    {isLoading ? (
+                                        <Spinner animation="border"/>
+                                    ) : (
+                                        <PDFGeneratorGetMoreTemplatesButton
+                                        onClick={(e) => onClickLoadMoreButton()} 
+                                        >
+                                            {strings['pt-br']['pdfGeneratorLoadMoreButtonLabel']}
+                                        </PDFGeneratorGetMoreTemplatesButton>
+                                    )}
                                 </PDFGeneratorGetMoreTemplatesButtonContainer>
                             ) : ''}
                         </PDFGeneratorCreatorTemplatesContainer>
@@ -330,7 +339,7 @@ const PDFGeneratorCreator = (props) => {
             </div>
         )
     }
-
+    //########################################################################################//
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 

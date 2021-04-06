@@ -66,6 +66,7 @@ const PDFGeneratorReaderDownloader = (props) => {
     const multipleValuesDividerInputRef = React.useRef(null)
     const multipleValuesElementToChange = React.useRef(null)
     const multipleValuesDividerInputContainerRef = React.useRef(null)
+    const [templateData, setTemplateData] = useState({})
     const [isDownloadingFile, setIsDownloadingFile] = useState(false)
     const [valueOptions, setValueOptions] = useState(null)
     const [hasRenderedValueOptions, setHasRenderedValueOptions] = useState(false)
@@ -142,7 +143,7 @@ const PDFGeneratorReaderDownloader = (props) => {
             </html>
         `
         try {
-            props.onCheckIfCanDownloadPDF(sourceRef.current, props.formName, props.templateData.id).then(response => {
+            props.onCheckIfCanDownloadPDF(sourceRef.current, props.formName, templateData.id).then(response => {
                 if (response && response.status === 200) {
                     axios.post(`${FRONT_END_HOST}api/generate_pdf`, {html: page}, {
                         responseType: 'blob'
@@ -150,7 +151,7 @@ const PDFGeneratorReaderDownloader = (props) => {
                         const blob = new Blob([response.data], {type: 'application/pdf'})
                         const link = document.createElement('a')
                         link.href = window.URL.createObjectURL(blob)
-                        link.download = `${props.templateData.name}.pdf`
+                        link.download = `${templateData.name}.pdf`
                         link.click()
                         link.remove()
                         setIsDownloadingFile(false)
@@ -245,11 +246,17 @@ const PDFGeneratorReaderDownloader = (props) => {
         // elements with the `.custom_content`, this event is added on the others
         // useEffects
         sourceRef.current = props.cancelToken.source()
-        props.onGetPDFGeneratorValuesReader(sourceRef.current, props.formName, props.templateData.id, props.formId).then(response => {
+        props.onGetPDFGeneratorTempalateReader(sourceRef.current, props.formName, props.templateData.id).then(response => {
             if (response && response.status === 200) {
-                setValueOptions(response.data.data)
+                setTemplateData(response.data.data)
+                props.onGetPDFGeneratorValuesReader(sourceRef.current, props.formName, props.templateData.id, props.formId).then(response => {
+                    if (response && response.status === 200) {
+                        setValueOptions(response.data.data)
+                    }
+                })
             }
         })
+
         document.addEventListener("mousedown", onClickOutsideCustomElement)
         return () => {
             document.removeEventListener("mousedown", onClickOutsideCustomElement)
@@ -329,10 +336,10 @@ const PDFGeneratorReaderDownloader = (props) => {
                     <div 
                     ref={documentRef}
                     >
-                        {hasRenderedValueOptions ? (
+                        {templateData?.rich_text_page && hasRenderedValueOptions ? (
                             <RichText 
                             isEditable={true}
-                            initialData={props.templateData?.rich_text_page}
+                            initialData={templateData?.rich_text_page}
                             renderCustomContent={renderCustomContent} 
                             allowedBlockTypeIds={props.allowedRichTextBlockIds}
                             />
