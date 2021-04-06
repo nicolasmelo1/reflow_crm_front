@@ -875,7 +875,7 @@ const Text = (props) => {
      */
     const onSelectText = (e) => {
         if (process.env['APP'] === 'web') {    
-            //handleArrowNavigationWeb()
+            handleArrowNavigationWeb()
 
             if (!wasKeyDownPressedRef.current) {
                 caretPositionRef.current = getSelectionSelectCursorPositionWeb(inputRef.current)
@@ -1218,7 +1218,7 @@ const Text = (props) => {
     const onKeyDown = (event, pressedKey) => {
         keyDownPressedRef.current = pressedKey
         if (process.env['APP'] === 'web') {
-            //handleArrowNavigationWeb()
+            handleArrowNavigationWeb()
         }
         // if it's in composition we do not want the caret position to update
         if (!wasKeyDownPressedRef.current && !isInCompositionRef.current) {
