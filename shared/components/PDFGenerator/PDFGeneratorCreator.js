@@ -44,6 +44,7 @@ const Spinner = dynamicImport('react-bootstrap', 'Spinner')
  */
 const PDFGeneratorCreator = (props) => {
     const sourceRef = React.useRef()
+    const formNameRef = React.useRef('')
     const [page, setPage] = useState({
         current: 1,
         total: 1
@@ -155,6 +156,7 @@ const PDFGeneratorCreator = (props) => {
         // When the user opens this component we get all of the template configuration for the current formName
         // Not only this, we also get all of the field options the user can select as variables.
         sourceRef.current = props.cancelToken.source()
+        formNameRef.current = props.formName
         setIsLoading(true)
         props.onGetPDFGeneratorTemplatesConfiguration(sourceRef.current, props.formName, 1).then(response => {
             if (response && response.status === 200) {
@@ -296,7 +298,7 @@ const PDFGeneratorCreator = (props) => {
                             </PDFGeneratorCreatorCreateNewButton>
                         </PDFGeneratorCreatorButtonsContainer>
                         <PDFGeneratorCreatorTemplatesContainer>
-                            {isLoading && props.templates.length === 0 ? (
+                            {isLoading && (props.templates.length === 0 || formNameRef.current !== props.formName) ? (
                                 <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0dbf7e', marginTop: '10px'}}>
                                     <Spinner animation="border"/>
                                 </div>

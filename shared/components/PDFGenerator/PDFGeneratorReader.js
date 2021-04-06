@@ -37,6 +37,7 @@ const Spinner = dynamicImport('react-bootstrap', 'Spinner')
  */
 const PDFGeneratorReader = (props) => {
     const sourceRef = React.useRef(null)
+    const formNameRef = React.useRef('')
     const [page, setPage] = useState({
         current: 1,
         total: 1
@@ -76,7 +77,7 @@ const PDFGeneratorReader = (props) => {
         // When the component is loaded we just fetch for the templates. 
         // Nothing really fancy about it.
         sourceRef.current = props.cancelToken.source()
-
+        formNameRef.current = props.formName
         setIsLoading(true)
         props.onGetPDFGeneratorTempalatesReader(sourceRef.current, props.formName, 1).then(response => {
             if (response && response.status === 200) {
@@ -155,7 +156,7 @@ const PDFGeneratorReader = (props) => {
                             </PDFGeneratorReaderGoBackButton>
                         </PDFGeneratorReaderTopButtonsContainer>
                         <PDFGeneratorReaderTemplatesContainer>
-                            {isLoading && props.templates.length === 0 ? (
+                            {isLoading && (props.templates.length === 0 || formNameRef.current !== props.formName) ? (
                                 <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0dbf7e', marginTop: '10px'}}>
                                     <Spinner animation="border"/>
                                 </div>
