@@ -156,10 +156,10 @@ const PDFGeneratorCreator = (props) => {
         // When the user opens this component we get all of the template configuration for the current formName
         // Not only this, we also get all of the field options the user can select as variables.
         sourceRef.current = props.cancelToken.source()
-        formNameRef.current = props.formName
         setIsLoading(true)
         props.onGetPDFGeneratorTemplatesConfiguration(sourceRef.current, props.formName, 1).then(response => {
             if (response && response.status === 200) {
+                formNameRef.current = props.formName
                 setPage(response.data.pagination)
                 props.onGetPDFGeneratorTempalatesConfigurationFieldOptions(sourceRef.current, props.formName).then(response => {
                     if (response && response.status === 200) {

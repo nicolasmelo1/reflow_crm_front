@@ -77,10 +77,10 @@ const PDFGeneratorReader = (props) => {
         // When the component is loaded we just fetch for the templates. 
         // Nothing really fancy about it.
         sourceRef.current = props.cancelToken.source()
-        formNameRef.current = props.formName
         setIsLoading(true)
         props.onGetPDFGeneratorTempalatesReader(sourceRef.current, props.formName, 1).then(response => {
             if (response && response.status === 200) {
+                formNameRef.current = props.formName
                 setPage(response.data.pagination)
             }
             setIsLoading(false)
