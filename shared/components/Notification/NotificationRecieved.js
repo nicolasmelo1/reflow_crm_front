@@ -3,13 +3,7 @@ import moment from 'moment'
 import { strings, paths } from '../../utils/constants'
 import Router from 'next/router'
 import { View , Text, RefreshControl } from 'react-native'
-import { 
-    NotificationText, 
-    NotificationDate, 
-    NotificationContainer, 
-    NotificationTitle, 
-    NotificationCard 
-} from '../../styles/Notification'
+import Styled from './styles'
 
 
 /**
@@ -136,7 +130,7 @@ const NotificationRecieved = (props) => {
     const renderMobile = () => {
         return(
             <View>
-                <NotificationContainer onScroll={e=> {onScroll(e)}} scrollEventThrottle={16} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
+                <Styled.NotificationContainer onScroll={e=> {onScroll(e)}} scrollEventThrottle={16} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
                     { props.notification && props.notification.data && props.notification.data.length === 0 ? (
                         <View style={{height: 30, alignItems: 'center'}}>
                             <Text style={{ color: '#bfbfbf'}}>
@@ -149,10 +143,10 @@ const NotificationRecieved = (props) => {
                         const splittedNotificationSentences = notificationText.split(/{(.*?)}(?!})/g)
                         const date = moment(notification.created_at).format(props.dateFormat)
                         return (
-                            <NotificationCard key={index} hasRead={notification.has_read} onPress={e=> {onClickNotification(index, notification.form_name, notification.form)}}>
-                                <NotificationDate>
+                            <Styled.NotificationCard key={index} hasRead={notification.has_read} onPress={e=> {onClickNotification(index, notification.form_name, notification.form)}}>
+                                <Styled.NotificationDate>
                                     {date}
-                                </NotificationDate>
+                                </Styled.NotificationDate>
                                 <Text style={{ margin: 0 }}>
                                     {splittedNotificationSentences.map((notificationSentence, notificationSentenceIndex) => {
                                     const notificationIsVariable = isVariable(notificationSentence)
@@ -162,19 +156,19 @@ const NotificationRecieved = (props) => {
                                     }
                                     if (notificationSentence !== '') {
                                         return (
-                                            <NotificationText isVariable={notificationIsVariable} key={notificationSentenceIndex}>
+                                            <Styled.NotificationText isVariable={notificationIsVariable} key={notificationSentenceIndex}>
                                                 {notificationSentence}
-                                            </NotificationText>
+                                            </Styled.NotificationText>
                                         )
                                     } else {
                                         return ''
                                     }
                                     })}
                                 </Text>
-                            </NotificationCard>
+                            </Styled.NotificationCard>
                         )    
                     }) : null}
-                </NotificationContainer>
+                </Styled.NotificationContainer>
             </View>
         )
     }
@@ -182,17 +176,17 @@ const NotificationRecieved = (props) => {
     const renderWeb = () => {
         return (
             <div>
-                <NotificationTitle>{strings['pt-br']['notificationRecievedTitleLabel']}</NotificationTitle>
-                <NotificationContainer ref={notificationContainerRef} onScroll={e => onScroll()}>
+                <Styled.NotificationTitle>{strings['pt-br']['notificationRecievedTitleLabel']}</Styled.NotificationTitle>
+                <Styled.NotificationContainer ref={notificationContainerRef} onScroll={e => onScroll()}>
                     {props.notification.data.map((notification, index)=> {
                         const notificationText = notification.notification
                         const splittedNotificationSentences = notificationText.split(/{(.*?)}(?!})/g)
                         const date = moment(notification.created_at).format(props.dateFormat)
                         return (
-                            <NotificationCard key={notification.id} hasRead={notification.has_read} onClick={e=> {onClickNotification(index, notification.form_name, notification.form)}}>
-                                <NotificationDate>
+                            <Styled.NotificationCard key={notification.id} hasRead={notification.has_read} onClick={e=> {onClickNotification(index, notification.form_name, notification.form)}}>
+                                <Styled.NotificationDate>
                                     {date}
-                                </NotificationDate>
+                                </Styled.NotificationDate>
                                 <p style={{ margin: '0' }}>
                                     {splittedNotificationSentences.map((notificationSentence, notificationSentenceIndex) => {
                                     const notificationIsVariable = isVariable(notificationSentence)
@@ -202,19 +196,19 @@ const NotificationRecieved = (props) => {
                                     }
                                     if (notificationSentence !== '') {
                                         return (
-                                            <NotificationText isVariable={notificationIsVariable} key={notificationSentenceIndex}>
+                                            <Styled.NotificationText isVariable={notificationIsVariable} key={notificationSentenceIndex}>
                                                 {notificationSentence}
-                                            </NotificationText>
+                                            </Styled.NotificationText>
                                         )
                                     } else {
                                         return ''
                                     }
                                     })}
                                 </p>
-                            </NotificationCard>
+                            </Styled.NotificationCard>
                         )    
                     })}
-                </NotificationContainer>
+                </Styled.NotificationContainer>
             </div>
         )
     }

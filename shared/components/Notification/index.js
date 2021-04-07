@@ -7,11 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import NotificationRecieved from './NotificationRecieved'
 import NotificationsConfiguration from './NotificationsConfiguration'
 import { strings } from '../../utils/constants'
-import { 
-    NotificationButton,
-    NotificationTitle, 
-    NotificationHeader 
-} from '../../styles/Notification'
+import Styled from './styles'
 
 /**
  * This component is responsible for loading the notifications on the screen for the user.
@@ -70,12 +66,14 @@ class Notification extends React.Component {
                     />
                 ) : (
                     <View>
-                        <NotificationHeader>
-                            <NotificationTitle>{strings['pt-br']['notificationRecievedTitleLabel']}</NotificationTitle>
-                            <NotificationButton onPress={e=> {this.setIsEditing(true)}}>
+                        <Styled.NotificationHeader>
+                            <Styled.NotificationTitle>
+                                {strings['pt-br']['notificationRecievedTitleLabel']}
+                            </Styled.NotificationTitle>
+                            <Styled.NotificationButton onPress={e=> {this.setIsEditing(true)}}>
                                 <FontAwesomeIcon size={ 24 } icon={'cog'} style={{ color: '#17242D'}}/>
-                            </NotificationButton>
-                        </NotificationHeader>
+                            </Styled.NotificationButton>
+                        </Styled.NotificationHeader>
                         <NotificationRecieved
                         navigation={this.props.navigation}
                         onReadNotifications={this.props.onReadNotifications}
@@ -111,9 +109,9 @@ class Notification extends React.Component {
                     />
                 ) : (
                     <div>
-                        <NotificationButton onClick={e=> {this.setIsEditing(true)}}>
+                        <Styled.NotificationButton onClick={e=> {this.setIsEditing(true)}}>
                             {strings['pt-br']['notificationButtonToConfigurationLabel']}
-                        </NotificationButton>
+                        </Styled.NotificationButton>
                         <NotificationRecieved
                         onReadNotifications={this.props.onReadNotifications}
                         onGetNotifications={this.props.onGetNotifications}

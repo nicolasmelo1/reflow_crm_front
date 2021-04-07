@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
 import { ScrollView, Modal } from 'react-native'
-import { NotificationConfigurationContainer, NotificationHeader, NotificationConfigurationAddNewCardIcon, NotificationConfigurationAddNewCard, NotificationConfigurationAddNewCardText, NotificationConfigurationGoBackButton } from '../../styles/Notification'
 import NotificationConfiguration from './NotificationConfiguration'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { strings } from '../../utils/constants'
+import Styled from './styles'
 
 /**
  * This component holds most of the logins for notification configurations and actually stores all of the Notification Configuration cards.
@@ -118,19 +118,19 @@ const NotificationsConfiguration = (props) => {
             <Modal
             animationType="slide"
             >
-                <NotificationConfigurationContainer>
-                    <NotificationHeader isEditing={true}>
-                        <NotificationConfigurationGoBackButton onPress={e=> {props.setIsEditing(false)}}>
+                <Styled.NotificationConfigurationContainer>
+                    <Styled.NotificationHeader isEditing={true}>
+                        <Styled.NotificationConfigurationGoBackButton onPress={e=> {props.setIsEditing(false)}}>
                             <FontAwesomeIcon icon={'times'}/>
-                        </NotificationConfigurationGoBackButton>
-                    </NotificationHeader>
+                        </Styled.NotificationConfigurationGoBackButton>
+                    </Styled.NotificationHeader>
                     <ScrollView keyboardShouldPersistTaps={'handled'} style={{ height: '93.5%'}}>
-                        <NotificationConfigurationAddNewCard onPress={e=> {addNewNotification()}}>
-                            <NotificationConfigurationAddNewCardIcon icon="plus-circle"/>
-                            <NotificationConfigurationAddNewCardText>
+                        <Styled.NotificationConfigurationAddNewCard onPress={e=> {addNewNotification()}}>
+                            <Styled.NotificationConfigurationAddNewCardIcon icon="plus-circle"/>
+                            <Styled.NotificationConfigurationAddNewCardText>
                                 {strings['pt-br']['notificationConfigurationAddNewCardLabel']}
-                            </NotificationConfigurationAddNewCardText>
-                        </NotificationConfigurationAddNewCard>
+                            </Styled.NotificationConfigurationAddNewCardText>
+                        </Styled.NotificationConfigurationAddNewCard>
                         {props.notificationConfiguration.data.map((notificationConfiguration, index) => (
                             <NotificationConfiguration
                             key={index}
@@ -148,7 +148,7 @@ const NotificationsConfiguration = (props) => {
                             />
                         ))}
                     </ScrollView>
-                </NotificationConfigurationContainer>
+                </Styled.NotificationConfigurationContainer>
             </Modal>
         )
     }
@@ -157,17 +157,17 @@ const NotificationsConfiguration = (props) => {
         return (
             <div>
                 <div>
-                    <NotificationConfigurationGoBackButton onClick={e=> {props.setIsEditing(false)}}>
+                    <Styled.NotificationConfigurationGoBackButton onClick={e=> {props.setIsEditing(false)}}>
                         {strings['pt-br']['notificationConfigurationGoBackButtonLabel']}
-                    </NotificationConfigurationGoBackButton>
+                    </Styled.NotificationConfigurationGoBackButton>
                 </div>
-                <NotificationConfigurationContainer>
-                    <NotificationConfigurationAddNewCard style={{ textAlign: 'center'}} onClick={e=> {addNewNotification()}}>
-                        <NotificationConfigurationAddNewCardIcon icon="plus-circle"/>
-                        <NotificationConfigurationAddNewCardText>
+                <Styled.NotificationConfigurationContainer>
+                    <Styled.NotificationConfigurationAddNewCard style={{ textAlign: 'center'}} onClick={e=> {addNewNotification()}}>
+                        <Styled.NotificationConfigurationAddNewCardIcon icon="plus-circle"/>
+                        <Styled.NotificationConfigurationAddNewCardText>
                             {strings['pt-br']['notificationConfigurationAddNewCardLabel']}
-                        </NotificationConfigurationAddNewCardText>
-                    </NotificationConfigurationAddNewCard>
+                        </Styled.NotificationConfigurationAddNewCardText>
+                    </Styled.NotificationConfigurationAddNewCard>
                     {props.notificationConfiguration.data.map((notificationConfiguration, index) => (
                         <NotificationConfiguration
                         key={index}
@@ -183,7 +183,7 @@ const NotificationsConfiguration = (props) => {
                         notificationConfiguration={notificationConfiguration}
                         />
                     ))}
-                </NotificationConfigurationContainer>
+                </Styled.NotificationConfigurationContainer>
             </div>
         )
     }

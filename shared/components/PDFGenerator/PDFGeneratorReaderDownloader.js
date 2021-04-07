@@ -6,6 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { FRONT_END_HOST } from '../../config'
 import dynamicImport from '../../utils/dynamicImport'
 import { strings } from '../../utils/constants'
+import agent from '../../utils/agent'
+import base64 from '../../utils/base64'
 import { 
     PDFGeneratorReaderTopButtonsContainer,
     PDFGeneratorReaderDownloaderCustomContent,
@@ -20,7 +22,25 @@ import {
 
 const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 
+const Attachment = (props) => {
+    const values = props.content.text.split(', ').map(value => !['', null, undefined].includes(value) ? base64.decode(value) : value)
+    
+    return (
+        <div>
+            {values.map(value => /(http(s?)):\/\//i.test(value) ? (
+                <div style={{ width: '100%'}}>
+                    <img src={value}/>
+                </div>
+            ) : (
+                <Custom {...props}/>
+            ))}
+        </div>
+    )
+}
+
 const Custom = (props) => {
+    const text = props.content.text.split(', ').map(value => !['', null, undefined].includes(value) ? base64.decode(value) : value).join(', ')
+
     return (
         <PDFGeneratorReaderDownloaderCustomContent
         className={'custom_content'}
@@ -34,7 +54,7 @@ const Custom = (props) => {
         markerColor={props.content.marker_color}
         textSize={props.content.text_size}
         >
-            {props.content.text}
+            {text}
         </PDFGeneratorReaderDownloaderCustomContent>
     )
 }
@@ -84,16 +104,30 @@ const PDFGeneratorReaderDownloader = (props) => {
      */
     const renderCustomContent = (content) => {
         let textArray = []
+        let fieldType = ''
         if (valueOptions !== null) {
             for (let valuesIndex = 0; valuesIndex<valueOptions.length; valuesIndex++) {
                 if (`fieldVariable-${valueOptions[valuesIndex].field_id} fromConnectedField-${valueOptions[valuesIndex].form_value_from_connected_field ? valueOptions[valuesIndex].form_value_from_connected_field.id: ''}` === content.custom_value) {
-                    textArray.push(valueOptions[valuesIndex].value)
+                    if (!['', null, undefined].includes(valueOptions[valuesIndex].value)) {
+                        const base64Value = base64.encode(valueOptions[valuesIndex].value)
+                        textArray.push(base64Value)
+                    } else {
+                        textArray.push(valueOptions[valuesIndex].value)
+                    }
+                    fieldType = valueOptions[valuesIndex].field_type
                 }
             }
         }
-        return {
-            component: Custom,
-            text: textArray.join(', ')
+        if (fieldType === 'attachment') {
+            return {
+                component: Attachment,
+                text: textArray.join(', ')
+            }
+        } else {
+            return {
+                component: Custom,
+                text: textArray.join(', ')
+            }
         }
     }
 
@@ -249,9 +283,15 @@ const PDFGeneratorReaderDownloader = (props) => {
         props.onGetPDFGeneratorTempalateReader(sourceRef.current, props.formName, props.templateData.id).then(response => {
             if (response && response.status === 200) {
                 setTemplateData(response.data.data)
-                props.onGetPDFGeneratorValuesReader(sourceRef.current, props.formName, props.templateData.id, props.formId).then(response => {
+                props.onGetPDFGeneratorValuesReader(sourceRef.current, props.formName, props.templateData.id, props.formId).then(async response => {
                     if (response && response.status === 200) {
-                        setValueOptions(response.data.data)
+                        const values = await Promise.all(response.data.data.map(async value => {
+                            if (value.field_type === 'attachment' && !['', null, undefined].includes(value.value) && ['png', 'jpg', 'jpeg', 'gif'].includes(value.value.split('.').pop())) {
+                                value.value = await agent.http.FORMULARY.getAttachmentFile(props.formName, value.form_id, value.field_id, value.value)
+                            }
+                            return value
+                        }))
+                        setValueOptions(values)
                     }
                 })
             }

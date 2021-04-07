@@ -3,11 +3,7 @@ import { TouchableWithoutFeedback, TouchableOpacity , View, Keyboard } from 'rea
 import NotificationConfigurationForm from  './NotificationConfigurationForm'
 import Alert from '../Utils/Alert'
 import { strings } from '../../utils/constants'
-import { 
-    NotificationConfigurationCard, 
-    NotificationConfigurationCardText, 
-    NotificationConfigurationCardIcon 
-} from '../../styles/Notification'
+import Styled from './styles'
 
 /**
  * This component is responsible for holding each notification configuration card and formulary.
@@ -56,18 +52,18 @@ const NotificationConfiguration = (props) => {
                     }}
                     onAcceptButtonLabel={strings['pt-br']['notificationConfigurationRemoveAlertAcceptButtonLabel']}
                     />
-                    <NotificationConfigurationCard formIsOpen={formIsOpen} onPress={e=> {setFormIsOpen(!formIsOpen)}}>
-                        <NotificationConfigurationCardText formIsOpen={formIsOpen} isNew={[null, ''].includes(props.notificationConfiguration.name)}>
+                    <Styled.NotificationConfigurationCard formIsOpen={formIsOpen} onPress={e=> {setFormIsOpen(!formIsOpen)}}>
+                        <Styled.NotificationConfigurationCardText formIsOpen={formIsOpen} isNew={[null, ''].includes(props.notificationConfiguration.name)}>
                             {[null, ''].includes(props.notificationConfiguration.name) ? strings['pt-br']['notificationConfigurationEmptyNameCardLabel'] : props.notificationConfiguration.name}
-                        </NotificationConfigurationCardText>
+                        </Styled.NotificationConfigurationCardText>
                         <TouchableOpacity style={{ height: 40, width: 40, alignItems: 'center', justifyContent:'center'}} onPress={e => {
                             e.stopPropagation()
                             setFormularyIndexToRemove(props.notificationConfigurationIndex)
                             setShowAlert(true)
                         }}>
-                            <NotificationConfigurationCardIcon icon="trash"/>
+                            <Styled.NotificationConfigurationCardIcon icon="trash"/>
                         </TouchableOpacity>
-                    </NotificationConfigurationCard>
+                    </Styled.NotificationConfigurationCard>
                     {formIsOpen ? (
                         <NotificationConfigurationForm
                             types={props.types}
@@ -104,16 +100,16 @@ const NotificationConfiguration = (props) => {
                 }}
                 onAcceptButtonLabel={strings['pt-br']['notificationConfigurationRemoveAlertAcceptButtonLabel']}
                 />
-                <NotificationConfigurationCard formIsOpen={formIsOpen} onClick={e=> {setFormIsOpen(!formIsOpen)}}>
-                    <NotificationConfigurationCardText formIsOpen={formIsOpen} isNew={[null, ''].includes(props.notificationConfiguration.name)}>
+                <Styled.NotificationConfigurationCard formIsOpen={formIsOpen} onClick={e=> {setFormIsOpen(!formIsOpen)}}>
+                    <Styled.NotificationConfigurationCardText formIsOpen={formIsOpen} isNew={[null, ''].includes(props.notificationConfiguration.name)}>
                         {[null, ''].includes(props.notificationConfiguration.name) ? strings['pt-br']['notificationConfigurationEmptyNameCardLabel'] : props.notificationConfiguration.name}
-                        <NotificationConfigurationCardIcon icon="trash" onClick={e => {
+                        <Styled.NotificationConfigurationCardIcon icon="trash" onClick={e => {
                             e.stopPropagation()
                             setFormularyIndexToRemove(props.notificationConfigurationIndex)
                             setShowAlert(true)
                         }}/>
-                    </NotificationConfigurationCardText>
-                </NotificationConfigurationCard>
+                    </Styled.NotificationConfigurationCardText>
+                </Styled.NotificationConfigurationCard>
                 {formIsOpen ? (
                     <NotificationConfigurationForm
                         types={props.types}

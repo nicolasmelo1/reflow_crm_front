@@ -91,6 +91,9 @@ const Text = (props) => {
     const [stateOfSelection, setStateOfSelection] = useState(stateOfSelectionData)
 
     // ------------------------------------------------------------------------------------------
+    /**
+     * This passes the state from the block state to the block props.
+     */
     const blockStateToPropsBlock = () => {
         const copiedBlock = JSON.parse(JSON.stringify(block))
         const keys = Object.keys(props.block)
@@ -309,9 +312,6 @@ const Text = (props) => {
             return previousTextBlockIndex
         }
         // ------------------------------------------------------------------------------------------
-        console.log(typeof(keyDownPressedRef.current) === 'string' && keyDownPressedRef.current.toLowerCase().includes('arrow'))
-        console.log(keyDownPressedRef.current === 'ArrowUp' && caretIsInHighestOrLowestPositionWeb(inputRef.current).isHighest)
-
         if (typeof(keyDownPressedRef.current) === 'string' && keyDownPressedRef.current.toLowerCase().includes('arrow')){
             const caretIndexPosition = getSelectionSelectCursorPositionWeb(inputRef.current)
             const text = inputRef.current.innerText.substring(inputRef.current.innerText.length-1, inputRef.current.innerText.length) === '\n' ? 

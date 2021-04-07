@@ -1,21 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { View, Switch, Text, Picker } from 'react-native'
 import Select from '../Utils/Select'
-import { 
-    NotificationConfigurationFormContainer, 
-    NotificationConfigurationFormCheckboxesContainer, 
-    NotificationConfigurationFormCheckboxText,
-    NotificationConfigurationFormDaysDiffSelect,
-    NotificationConfigurationFormErrors,
-    NotificationConfigurationFormFieldLabel,
-    NotificationConfigurationFormFieldLabelRequired,
-    NotificationConfigurationFormFieldInput,
-    NotificationConfigurationFormFieldContainer,
-    NotificationConfigurationFormSelectContainer,
-    NotificationConfigurationFormVariableContainer,
-    NotificationConfigurationFormSaveButton,
-    NotificationConfigurationForCompanyExplanation
-} from '../../styles/Notification'
+import Styled from './styles'
 import { errors, strings } from '../../utils/constants'
 import isAdmin from '../../utils/isAdmin'
 
@@ -326,24 +312,26 @@ const NotificationConfigurationForm = (props) => {
 
     const renderMobile = () => {
         return (
-            <NotificationConfigurationFormContainer>
+            <Styled.NotificationConfigurationFormContainer>
                 {isAdmin(props.types.defaults?.profile_type, props.user) ? (
-                    <NotificationConfigurationFormFieldContainer>
-                        <NotificationConfigurationFormCheckboxesContainer>
+                    <Styled.NotificationConfigurationFormFieldContainer>
+                        <Styled.NotificationConfigurationFormCheckboxesContainer>
                             <Switch value={props.notificationConfiguration.for_company} onValueChange={value => {onChangeForCompany(value)}}/>
-                            <NotificationConfigurationFormCheckboxText> {strings['pt-br']['notificationConfigurationFormForCompanyLabel']}</NotificationConfigurationFormCheckboxText>
-                            <NotificationConfigurationForCompanyExplanation>
+                            <Styled.NotificationConfigurationFormCheckboxText> 
+                                {` ${strings['pt-br']['notificationConfigurationFormForCompanyLabel']}`}
+                            </Styled.NotificationConfigurationFormCheckboxText>
+                            <Styled.NotificationConfigurationFormForCompanyExplanation>
                                 {strings['pt-br']['notificationConfigurationFormForCompanyExplanation']}
-                            </NotificationConfigurationForCompanyExplanation>
-                        </NotificationConfigurationFormCheckboxesContainer>
-                    </NotificationConfigurationFormFieldContainer>
+                            </Styled.NotificationConfigurationFormForCompanyExplanation>
+                        </Styled.NotificationConfigurationFormCheckboxesContainer>
+                    </Styled.NotificationConfigurationFormFieldContainer>
                 ) : null}
-                <NotificationConfigurationFormFieldContainer>
-                    <NotificationConfigurationFormFieldLabel>
+                <Styled.NotificationConfigurationFormFieldContainer>
+                    <Styled.NotificationConfigurationFormFieldLabel>
                         {strings['pt-br']['notificationConfigurationFormNotificationNameLabel']}
-                        <NotificationConfigurationFormFieldLabelRequired>*</NotificationConfigurationFormFieldLabelRequired>
-                    </NotificationConfigurationFormFieldLabel>
-                    <NotificationConfigurationFormFieldInput 
+                        <Styled.NotificationConfigurationFormFieldLabelRequired>*</Styled.NotificationConfigurationFormFieldLabelRequired>
+                    </Styled.NotificationConfigurationFormFieldLabel>
+                    <Styled.NotificationConfigurationFormFieldInput 
                     errors={formErrors.name}
                     type="text" 
                     placeholder={strings['pt-br']['notificationConfigurationFormNotificationNameInputPlaceholder']}
@@ -351,105 +339,105 @@ const NotificationConfigurationForm = (props) => {
                     onChange={e => {onChangeNotificationName(e.nativeEvent.text)}}
                     />
                     {formErrors.name ? (
-                        <NotificationConfigurationFormErrors>
+                        <Styled.NotificationConfigurationFormErrors>
                             {formErrors.name}
-                        </NotificationConfigurationFormErrors>
+                        </Styled.NotificationConfigurationFormErrors>
                     ) : null}
-                </NotificationConfigurationFormFieldContainer>
+                </Styled.NotificationConfigurationFormFieldContainer>
                 {![null, ''].includes(props.notificationConfiguration.name) ? (
                     <View>
-                        <NotificationConfigurationFormFieldContainer>
-                            <NotificationConfigurationFormFieldLabel>
+                        <Styled.NotificationConfigurationFormFieldContainer>
+                            <Styled.NotificationConfigurationFormFieldLabel>
                                 {strings['pt-br']['notificationConfigurationFormFormularySelectorLabel']}
-                                <NotificationConfigurationFormFieldLabelRequired>*</NotificationConfigurationFormFieldLabelRequired>
-                            </NotificationConfigurationFormFieldLabel>
-                            <NotificationConfigurationFormSelectContainer errors={formErrors.form}>
+                                <Styled.NotificationConfigurationFormFieldLabelRequired>*</Styled.NotificationConfigurationFormFieldLabelRequired>
+                            </Styled.NotificationConfigurationFormFieldLabel>
+                            <Styled.NotificationConfigurationFormSelectContainer errors={formErrors.form}>
                                 <Select options={formulariesOptions} initialValues={initialFormularyOptions} onChange={onChangeFormulary}/>
-                            </NotificationConfigurationFormSelectContainer>
+                            </Styled.NotificationConfigurationFormSelectContainer>
                             {formErrors.form ? (
-                                <NotificationConfigurationFormErrors>
+                                <Styled.NotificationConfigurationFormErrors>
                                     {formErrors.form}
-                                </NotificationConfigurationFormErrors>
+                                </Styled.NotificationConfigurationFormErrors>
                             ) : null}
-                        </NotificationConfigurationFormFieldContainer>
+                        </Styled.NotificationConfigurationFormFieldContainer>
                         {![null, ''].includes(props.notificationConfiguration.form) ? (
                             <View>
-                                <NotificationConfigurationFormFieldContainer>
-                                    <NotificationConfigurationFormFieldLabel>
+                                <Styled.NotificationConfigurationFormFieldContainer>
+                                    <Styled.NotificationConfigurationFormFieldLabel>
                                         {strings['pt-br']['notificationConfigurationFormFieldSelectorLabel']}
-                                        <NotificationConfigurationFormFieldLabelRequired>*</NotificationConfigurationFormFieldLabelRequired>
-                                    </NotificationConfigurationFormFieldLabel>
-                                    <NotificationConfigurationFormSelectContainer errors={formErrors.field}>
+                                        <Styled.NotificationConfigurationFormFieldLabelRequired>*</Styled.NotificationConfigurationFormFieldLabelRequired>
+                                    </Styled.NotificationConfigurationFormFieldLabel>
+                                    <Styled.NotificationConfigurationFormSelectContainer errors={formErrors.field}>
                                         <Select options={notificationFieldOptions} initialValues={initialNotificationFieldOptions} onChange={onChangeField}/>
-                                    </NotificationConfigurationFormSelectContainer>
+                                    </Styled.NotificationConfigurationFormSelectContainer>
                                     {formErrors.field ? (
-                                        <NotificationConfigurationFormErrors>
+                                        <Styled.NotificationConfigurationFormErrors>
                                             {formErrors.field}
-                                        </NotificationConfigurationFormErrors>
+                                        </Styled.NotificationConfigurationFormErrors>
                                     ) : null}
-                                </NotificationConfigurationFormFieldContainer>
+                                </Styled.NotificationConfigurationFormFieldContainer>
                                 {![null, ''].includes(props.notificationConfiguration.field) ? (
                                     <View>
-                                        <NotificationConfigurationFormFieldContainer>
-                                            <NotificationConfigurationFormFieldLabel>
+                                        <Styled.NotificationConfigurationFormFieldContainer>
+                                            <Styled.NotificationConfigurationFormFieldLabel>
                                                 {strings['pt-br']['notificationConfigurationFormTextLabel']}
-                                                <NotificationConfigurationFormFieldLabelRequired>*</NotificationConfigurationFormFieldLabelRequired>
-                                            </NotificationConfigurationFormFieldLabel>
-                                            <NotificationConfigurationFormFieldInput 
+                                                <Styled.NotificationConfigurationFormFieldLabelRequired>*</Styled.NotificationConfigurationFormFieldLabelRequired>
+                                            </Styled.NotificationConfigurationFormFieldLabel>
+                                            <Styled.NotificationConfigurationFormFieldInput 
                                             errors={formErrors.text}
                                             multiline={true}
                                             placeholder={strings['pt-br']['notificationConfigurationFormTextPlaceholder']}
                                             value={notificationConfigurationData.text}
                                             onChange={e=> {onChangeText(e.nativeEvent.text)}}
                                             />
-                                        </NotificationConfigurationFormFieldContainer>
-                                        <NotificationConfigurationFormFieldContainer isVariable={true}>
+                                        </Styled.NotificationConfigurationFormFieldContainer>
+                                        <Styled.NotificationConfigurationFormFieldContainer isVariable={true}>
                                             {occurrences.map((_, occurrenceIndex) => {
                                                 const initialValues = fieldOptions.filter(fieldOption => props.notificationConfiguration.notification_configuration_variables[occurrenceIndex] && fieldOption.value === props.notificationConfiguration.notification_configuration_variables[occurrenceIndex].field_id)
                                                 return (
-                                                    <NotificationConfigurationFormVariableContainer key={occurrenceIndex}>
-                                                        <NotificationConfigurationFormFieldLabel isVariable={true}>
+                                                    <Styled.NotificationConfigurationFormVariableContainer key={occurrenceIndex}>
+                                                        <Styled.NotificationConfigurationFormFieldLabel isVariable={true}>
                                                             {strings['pt-br']['notificationConfigurationFormVariableSelectorLabel']}
-                                                            <NotificationConfigurationFormFieldLabelRequired>*</NotificationConfigurationFormFieldLabelRequired>
-                                                        </NotificationConfigurationFormFieldLabel>
-                                                        <NotificationConfigurationFormSelectContainer errors={formErrors.variable && initialValues.length === 0}>
+                                                            <Styled.NotificationConfigurationFormFieldLabelRequired>*</Styled.NotificationConfigurationFormFieldLabelRequired>
+                                                        </Styled.NotificationConfigurationFormFieldLabel>
+                                                        <Styled.NotificationConfigurationFormSelectContainer errors={formErrors.variable && initialValues.length === 0}>
                                                             <Select 
                                                             key={occurrenceIndex}
                                                             options={fieldOptions}
                                                             initialValues={initialValues} 
                                                             onChange={(data) => onChangeVariable(occurrenceIndex, data)}
                                                             />
-                                                        </NotificationConfigurationFormSelectContainer>
+                                                        </Styled.NotificationConfigurationFormSelectContainer>
                                                         {formErrors.variable && initialValues.length === 0 ? (
-                                                            <NotificationConfigurationFormErrors>
+                                                            <Styled.NotificationConfigurationFormErrors>
                                                                 {formErrors.variable}
-                                                            </NotificationConfigurationFormErrors>
+                                                            </Styled.NotificationConfigurationFormErrors>
                                                         ) : null}
-                                                    </NotificationConfigurationFormVariableContainer>
+                                                    </Styled.NotificationConfigurationFormVariableContainer>
                                                 )
                                             })}
-                                        </NotificationConfigurationFormFieldContainer>
+                                        </Styled.NotificationConfigurationFormFieldContainer>
                                         {![null, ''].includes(props.notificationConfiguration.text) ? (
                                             <View>
-                                                <NotificationConfigurationFormFieldContainer>
-                                                    <NotificationConfigurationFormFieldLabel>
+                                                <Styled.NotificationConfigurationFormFieldContainer>
+                                                    <Styled.NotificationConfigurationFormFieldLabel>
                                                         {strings['pt-br']['notificationConfigurationFormDaysDiffLabel']}
-                                                        <NotificationConfigurationFormFieldLabelRequired>*</NotificationConfigurationFormFieldLabelRequired>
-                                                    </NotificationConfigurationFormFieldLabel>
-                                                    <NotificationConfigurationFormDaysDiffSelect selectedValue={parseInt(props.notificationConfiguration.days_diff)} onValueChange={value => {onChangeDaysDiff(value)}}>
+                                                        <Styled.NotificationConfigurationFormFieldLabelRequired>*</Styled.NotificationConfigurationFormFieldLabelRequired>
+                                                    </Styled.NotificationConfigurationFormFieldLabel>
+                                                    <Styled.NotificationConfigurationFormDaysDiffSelect selectedValue={parseInt(props.notificationConfiguration.days_diff)} onValueChange={value => {onChangeDaysDiff(value)}}>
                                                         {notificationDays.map(notificationDay => (
                                                             <Picker.Item key={notificationDay} label={getDatesSelectLabel(notificationDay)} value={notificationDay}/>
                                                         ))}
-                                                    </NotificationConfigurationFormDaysDiffSelect>
+                                                    </Styled.NotificationConfigurationFormDaysDiffSelect>
                                                             
-                                                </NotificationConfigurationFormFieldContainer>
-                                                <NotificationConfigurationFormFieldContainer>
-                                                    <NotificationConfigurationFormSaveButton onPress={e=> {onSubmit()}}>
+                                                </Styled.NotificationConfigurationFormFieldContainer>
+                                                <Styled.NotificationConfigurationFormFieldContainer>
+                                                    <Styled.NotificationConfigurationFormSaveButton onPress={e=> {onSubmit()}}>
                                                         <Text style={{ color: '#f2f2f2'}}>
-                                                            {strings['pt-br']['notificationConfigurationFormSaveButtonLabel']}
+                                                            {strings['pt-br']['Styled.NotificationConfigurationFormSaveButtonLabel']}
                                                         </Text>
-                                                    </NotificationConfigurationFormSaveButton>
-                                                </NotificationConfigurationFormFieldContainer>
+                                                    </Styled.NotificationConfigurationFormSaveButton>
+                                                </Styled.NotificationConfigurationFormFieldContainer>
                                             </View>
                                         ) : null}
                                     </View>
@@ -458,30 +446,30 @@ const NotificationConfigurationForm = (props) => {
                         ) : null}
                     </View>
                 ) : null}
-            </NotificationConfigurationFormContainer>
+            </Styled.NotificationConfigurationFormContainer>
         )
     }
 
     const renderWeb = () => {
         return (
-            <NotificationConfigurationFormContainer>
+            <Styled.NotificationConfigurationFormContainer>
                 {isAdmin(props.types.defaults?.profile_type, props.user) ? (
-                    <NotificationConfigurationFormFieldContainer>
-                        <NotificationConfigurationFormCheckboxesContainer>
+                    <Styled.NotificationConfigurationFormFieldContainer>
+                        <Styled.NotificationConfigurationFormCheckboxesContainer>
                             <input type="checkbox" checked={props.notificationConfiguration.for_company} onChange={e => {onChangeForCompany(e.target.checked)}}/>
-                            <NotificationConfigurationFormCheckboxText> {strings['pt-br']['notificationConfigurationFormForCompanyLabel']}</NotificationConfigurationFormCheckboxText>
-                            <NotificationConfigurationForCompanyExplanation>
+                            <Styled.NotificationConfigurationFormCheckboxText> {strings['pt-br']['notificationConfigurationFormForCompanyLabel']}</Styled.NotificationConfigurationFormCheckboxText>
+                            <Styled.NotificationConfigurationFormForCompanyExplanation>
                                 {strings['pt-br']['notificationConfigurationFormForCompanyExplanation']}
-                            </NotificationConfigurationForCompanyExplanation>
-                        </NotificationConfigurationFormCheckboxesContainer>
-                    </NotificationConfigurationFormFieldContainer>
+                            </Styled.NotificationConfigurationFormForCompanyExplanation>
+                        </Styled.NotificationConfigurationFormCheckboxesContainer>
+                    </Styled.NotificationConfigurationFormFieldContainer>
                 ) : null}
-                <NotificationConfigurationFormFieldContainer>
-                    <NotificationConfigurationFormFieldLabel>
+                <Styled.NotificationConfigurationFormFieldContainer>
+                    <Styled.NotificationConfigurationFormFieldLabel>
                         {strings['pt-br']['notificationConfigurationFormNotificationNameLabel']}
-                        <NotificationConfigurationFormFieldLabelRequired>*</NotificationConfigurationFormFieldLabelRequired>
-                    </NotificationConfigurationFormFieldLabel>
-                    <NotificationConfigurationFormFieldInput 
+                        <Styled.NotificationConfigurationFormFieldLabelRequired>*</Styled.NotificationConfigurationFormFieldLabelRequired>
+                    </Styled.NotificationConfigurationFormFieldLabel>
+                    <Styled.NotificationConfigurationFormFieldInput 
                     errors={formErrors.name}
                     type="text" 
                     autoComplete={'whathever'}
@@ -490,51 +478,51 @@ const NotificationConfigurationForm = (props) => {
                     onChange={e => {onChangeNotificationName(e.target.value)}}
                     />
                     {formErrors.name ? (
-                        <NotificationConfigurationFormErrors>
+                        <Styled.NotificationConfigurationFormErrors>
                             {formErrors.name}
-                        </NotificationConfigurationFormErrors>
+                        </Styled.NotificationConfigurationFormErrors>
                     ) : ''}
-                </NotificationConfigurationFormFieldContainer>
+                </Styled.NotificationConfigurationFormFieldContainer>
                 {![null, ''].includes(props.notificationConfiguration.name) ? (
                     <div>
-                        <NotificationConfigurationFormFieldContainer>
-                            <NotificationConfigurationFormFieldLabel>
+                        <Styled.NotificationConfigurationFormFieldContainer>
+                            <Styled.NotificationConfigurationFormFieldLabel>
                                 {strings['pt-br']['notificationConfigurationFormFormularySelectorLabel']}
-                                <NotificationConfigurationFormFieldLabelRequired>*</NotificationConfigurationFormFieldLabelRequired>
-                            </NotificationConfigurationFormFieldLabel>
-                            <NotificationConfigurationFormSelectContainer errors={formErrors.form}>
+                                <Styled.NotificationConfigurationFormFieldLabelRequired>*</Styled.NotificationConfigurationFormFieldLabelRequired>
+                            </Styled.NotificationConfigurationFormFieldLabel>
+                            <Styled.NotificationConfigurationFormSelectContainer errors={formErrors.form}>
                                 <Select options={formulariesOptions} initialValues={initialFormularyOptions} onChange={onChangeFormulary}/>
-                            </NotificationConfigurationFormSelectContainer>
+                            </Styled.NotificationConfigurationFormSelectContainer>
                             {formErrors.form ? (
-                                <NotificationConfigurationFormErrors>
+                                <Styled.NotificationConfigurationFormErrors>
                                     {formErrors.form}
-                                </NotificationConfigurationFormErrors>
+                                </Styled.NotificationConfigurationFormErrors>
                             ) : ''}
-                        </NotificationConfigurationFormFieldContainer>
+                        </Styled.NotificationConfigurationFormFieldContainer>
                         {![null, ''].includes(props.notificationConfiguration.form) ? (
                             <div>
-                                <NotificationConfigurationFormFieldContainer>
-                                    <NotificationConfigurationFormFieldLabel>
+                                <Styled.NotificationConfigurationFormFieldContainer>
+                                    <Styled.NotificationConfigurationFormFieldLabel>
                                         {strings['pt-br']['notificationConfigurationFormFieldSelectorLabel']}
-                                        <NotificationConfigurationFormFieldLabelRequired>*</NotificationConfigurationFormFieldLabelRequired>
-                                    </NotificationConfigurationFormFieldLabel>
-                                    <NotificationConfigurationFormSelectContainer errors={formErrors.field}>
+                                        <Styled.NotificationConfigurationFormFieldLabelRequired>*</Styled.NotificationConfigurationFormFieldLabelRequired>
+                                    </Styled.NotificationConfigurationFormFieldLabel>
+                                    <Styled.NotificationConfigurationFormSelectContainer errors={formErrors.field}>
                                         <Select options={notificationFieldOptions} initialValues={initialNotificationFieldOptions} onChange={onChangeField}/>
-                                    </NotificationConfigurationFormSelectContainer>
+                                    </Styled.NotificationConfigurationFormSelectContainer>
                                     {formErrors.field ? (
-                                        <NotificationConfigurationFormErrors>
+                                        <Styled.NotificationConfigurationFormErrors>
                                             {formErrors.field}
-                                        </NotificationConfigurationFormErrors>
+                                        </Styled.NotificationConfigurationFormErrors>
                                     ) : ''}
-                                </NotificationConfigurationFormFieldContainer>
+                                </Styled.NotificationConfigurationFormFieldContainer>
                                 {![null, ''].includes(props.notificationConfiguration.field) ? (
                                     <div>
-                                        <NotificationConfigurationFormFieldContainer>
-                                            <NotificationConfigurationFormFieldLabel>
+                                        <Styled.NotificationConfigurationFormFieldContainer>
+                                            <Styled.NotificationConfigurationFormFieldLabel>
                                                 {strings['pt-br']['notificationConfigurationFormTextLabel']}
-                                                <NotificationConfigurationFormFieldLabelRequired>*</NotificationConfigurationFormFieldLabelRequired>
-                                            </NotificationConfigurationFormFieldLabel>
-                                            <NotificationConfigurationFormFieldInput 
+                                                <Styled.NotificationConfigurationFormFieldLabelRequired>*</Styled.NotificationConfigurationFormFieldLabelRequired>
+                                            </Styled.NotificationConfigurationFormFieldLabel>
+                                            <Styled.NotificationConfigurationFormFieldInput 
                                             errors={formErrors.text}
                                             type='text'
                                             autoComplete={'whathever'}
@@ -543,55 +531,55 @@ const NotificationConfigurationForm = (props) => {
                                             onChange={e=> {onChangeText(e.target.value)}}
                                             />
                                             {formErrors.text ? (
-                                                <NotificationConfigurationFormErrors>
+                                                <Styled.NotificationConfigurationFormErrors>
                                                     {formErrors.text}
-                                                </NotificationConfigurationFormErrors>
+                                                </Styled.NotificationConfigurationFormErrors>
                                             ) : ''}
-                                        </NotificationConfigurationFormFieldContainer>
-                                        <NotificationConfigurationFormFieldContainer isVariable={true}>
+                                        </Styled.NotificationConfigurationFormFieldContainer>
+                                        <Styled.NotificationConfigurationFormFieldContainer isVariable={true}>
                                             {occurrences.map((_, occurrenceIndex) => {
                                                 const initialValues = fieldOptions.filter(fieldOption => props.notificationConfiguration.notification_configuration_variables[occurrenceIndex] && fieldOption.value === props.notificationConfiguration.notification_configuration_variables[occurrenceIndex].field_id)
                                                 return (
-                                                    <NotificationConfigurationFormVariableContainer key={occurrenceIndex}>
-                                                        <NotificationConfigurationFormFieldLabel isVariable={true}>
+                                                    <Styled.NotificationConfigurationFormVariableContainer key={occurrenceIndex}>
+                                                        <Styled.NotificationConfigurationFormFieldLabel isVariable={true}>
                                                             {strings['pt-br']['notificationConfigurationFormVariableSelectorLabel']}
-                                                            <NotificationConfigurationFormFieldLabelRequired>*</NotificationConfigurationFormFieldLabelRequired>
-                                                        </NotificationConfigurationFormFieldLabel>
-                                                        <NotificationConfigurationFormSelectContainer errors={formErrors.variable && initialValues.length === 0}>
+                                                            <Styled.NotificationConfigurationFormFieldLabelRequired>*</Styled.NotificationConfigurationFormFieldLabelRequired>
+                                                        </Styled.NotificationConfigurationFormFieldLabel>
+                                                        <Styled.NotificationConfigurationFormSelectContainer errors={formErrors.variable && initialValues.length === 0}>
                                                             <Select 
                                                             key={occurrenceIndex}
                                                             options={fieldOptions}
                                                             initialValues={initialValues} 
                                                             onChange={(data) => onChangeVariable(occurrenceIndex, data)}
                                                             />
-                                                        </NotificationConfigurationFormSelectContainer>
+                                                        </Styled.NotificationConfigurationFormSelectContainer>
                                                         {formErrors.variable && initialValues.length === 0 ? (
-                                                            <NotificationConfigurationFormErrors>
+                                                            <Styled.NotificationConfigurationFormErrors>
                                                                 {formErrors.variable}
-                                                            </NotificationConfigurationFormErrors>
+                                                            </Styled.NotificationConfigurationFormErrors>
                                                         ) : ''}
-                                                    </NotificationConfigurationFormVariableContainer>
+                                                    </Styled.NotificationConfigurationFormVariableContainer>
                                                 )
                                             })}
-                                        </NotificationConfigurationFormFieldContainer>
+                                        </Styled.NotificationConfigurationFormFieldContainer>
                                         {![null, ''].includes(props.notificationConfiguration.text) ? (
                                             <div>
-                                                <NotificationConfigurationFormFieldContainer>
-                                                    <NotificationConfigurationFormFieldLabel>
+                                                <Styled.NotificationConfigurationFormFieldContainer>
+                                                    <Styled.NotificationConfigurationFormFieldLabel>
                                                         {strings['pt-br']['notificationConfigurationFormDaysDiffLabel']}
-                                                        <NotificationConfigurationFormFieldLabelRequired>*</NotificationConfigurationFormFieldLabelRequired>
-                                                    </NotificationConfigurationFormFieldLabel>
-                                                    <NotificationConfigurationFormFieldInput value={props.notificationConfiguration.days_diff} as="select" onChange={e=> {onChangeDaysDiff(e.target.value)}}>
+                                                        <Styled.NotificationConfigurationFormFieldLabelRequired>*</Styled.NotificationConfigurationFormFieldLabelRequired>
+                                                    </Styled.NotificationConfigurationFormFieldLabel>
+                                                    <Styled.NotificationConfigurationFormFieldInput value={props.notificationConfiguration.days_diff} as="select" onChange={e=> {onChangeDaysDiff(e.target.value)}}>
                                                         {notificationDays.map(notificationDay => (
                                                             <option key={notificationDay} value={notificationDay}>{getDatesSelectLabel(notificationDay)}</option>
                                                         ))}
-                                                    </NotificationConfigurationFormFieldInput>
-                                                </NotificationConfigurationFormFieldContainer>
-                                                <NotificationConfigurationFormFieldContainer>
-                                                    <NotificationConfigurationFormSaveButton onClick={e=> {onSubmit()}}>
-                                                        {strings['pt-br']['notificationConfigurationFormSaveButtonLabel']}
-                                                    </NotificationConfigurationFormSaveButton>
-                                                </NotificationConfigurationFormFieldContainer>
+                                                    </Styled.NotificationConfigurationFormFieldInput>
+                                                </Styled.NotificationConfigurationFormFieldContainer>
+                                                <Styled.NotificationConfigurationFormFieldContainer>
+                                                    <Styled.NotificationConfigurationFormSaveButton onClick={e=> {onSubmit()}}>
+                                                        {strings['pt-br']['Styled.NotificationConfigurationFormSaveButtonLabel']}
+                                                    </Styled.NotificationConfigurationFormSaveButton>
+                                                </Styled.NotificationConfigurationFormFieldContainer>
                                             </div>
                                         ) : ''}
                                     </div>
@@ -600,7 +588,7 @@ const NotificationConfigurationForm = (props) => {
                         ) : ''}
                     </div>
                 ) : ''}
-            </NotificationConfigurationFormContainer>
+            </Styled.NotificationConfigurationFormContainer>
         )
     }
 
