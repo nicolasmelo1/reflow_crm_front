@@ -1290,13 +1290,20 @@ const Text = (props) => {
     const onKeyUp = () => {
         keyDownPressedRef.current = null
         wasKeyDownPressedRef.current = false
-        props.setArrowNavigation({
-            focusX: null,
-            isUpPressed: false,
-            isDownPressed: false,
-            isRightPressed: false,
-            isLeftPressed: false
-        })
+        if (
+            props.arrowNavigation.isUpPressed || 
+            props.arrowNavigation.isDownPressed || 
+            props.arrowNavigation.isRightPressed || 
+            props.arrowNavigation.isLeftPressed
+        ){
+            props.setArrowNavigation({
+                focusX: null,
+                isUpPressed: false,
+                isDownPressed: false,
+                isRightPressed: false,
+                isLeftPressed: false
+            })
+        }
     }
     // ------------------------------------------------------------------------------------------
     /**
