@@ -1107,7 +1107,6 @@ const Text = (props) => {
                 })
                 props.contextBlocks.splice(indexOfBlockInContext + 1, 0, newBlock)
                 activeBlockRef.current = newBlock.uuid
-                console.log(props.contextBlocks)
                 blockStateToPropsBlock()
                 props.updateBlocks(newBlock.uuid)
             }
