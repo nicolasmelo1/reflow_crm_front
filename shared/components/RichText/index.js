@@ -480,6 +480,14 @@ class RichText extends React.Component {
                     this.flatListRef.current.scrollToIndex({index: blockIndex, viewPosition: 0.5, animated: true})
                 }
             }
+        } else if (activeBlock === null) {
+            // When we dismiss the focus it can cause some weird behaviour. Because some blocks, like text, can have an event for blur (so when the user
+            // dismiss the block we update the state here.) 
+            makeDelay(() => {
+                if (this.nextActiveBlock === null) {
+                    update(activeBlock)
+                }
+            })
         } else {
             update(activeBlock)
         }      
