@@ -92,6 +92,7 @@ class RichText extends React.Component {
         this.onFocusHeap = []
         this.nextActiveBlock = null
         this.history = []
+        this.isUnmanagedContentSelectorOpen = false
         this.toolbar.current = {
             blockUUID: null,
             contentOptionComponent: null,
@@ -461,6 +462,10 @@ class RichText extends React.Component {
                 }))
             }
         }
+
+        if (true === this.isUnmanagedContentSelectorOpen && this.state.activeBlock !== activeBlock) {
+            this.props.onOpenUnmanagedContentSelector(false)
+        }
         // ------------------------------------------------------------------------------------------
         if (isFocus === true) {
             // the focus heap prevents us from changing the focus too much, when too much onFocus is being fired at once
@@ -486,7 +491,7 @@ class RichText extends React.Component {
             makeDelay(() => {
                 if (this.nextActiveBlock === null) {
                     update(activeBlock)
-                }
+                } 
             })
         } else {
             update(activeBlock)
@@ -661,6 +666,7 @@ class RichText extends React.Component {
         // checks if initialData has changed, than checks if it is the same state defined here
         // and then checks if it is an object. This is used so when we propagate the data to the parent
         // it does not propagate back.
+        this.isUnmanagedContentSelectorOpen = this.props.isUnmanagedContentSelectorOpen
         if (
             !isEqual(this.props.initialData, prevProps.initialData) &&
             !isEqual(this.props.initialData, this.state.data) &&

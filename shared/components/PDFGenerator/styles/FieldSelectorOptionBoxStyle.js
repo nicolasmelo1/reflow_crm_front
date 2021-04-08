@@ -25,7 +25,7 @@ styled.div`
     padding: 5px 0;
     border-radius: 5px;
     height: 400px;
-    z-index: 5;
+    z-index: 11;
 
     scrollbar-color: #bfbfbf transparent;
     scrollbar-width: thin;

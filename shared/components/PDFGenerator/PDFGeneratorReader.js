@@ -44,7 +44,17 @@ const PDFGeneratorReader = (props) => {
      */
     const onClickCancel = () => {
         if (process.env['APP'] === 'web') {
-            Router.push(paths.empty().asUrl, paths.empty().asUrl,{ shallow: true })
+            Router.push({
+                pathname: paths.home().asUrl,
+                query: {
+                    formId: props.formId
+                }
+            }, {
+                pathname: paths.home(props.formName).asUrl,
+                query: {
+                    formId: props.formId
+                }
+            }, {shallow: true})
         }
     }
     // ------------------------------------------------------------------------------------------

@@ -288,7 +288,7 @@ const PDFGeneratorReaderDownloader = (props) => {
                     if (response && response.status === 200) {
                         const values = await Promise.all(response.data.data.map(async value => {
                             if (value.field_type === 'attachment' && !['', null, undefined].includes(value.value) && ['png', 'jpg', 'jpeg', 'gif'].includes(value.value.split('.').pop())) {
-                                value.value = await agent.http.FORMULARY.getAttachmentFile(props.formName, value.form_id, value.field_id, value.value)
+                                value.value = await agent.http.FORMULARY.getAttachmentFile(value.form_name, value.form_id, value.field_id, value.value)
                             }
                             return value
                         }))

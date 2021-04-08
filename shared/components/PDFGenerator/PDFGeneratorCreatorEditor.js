@@ -50,7 +50,7 @@ const PDFGeneratorCreatorEditor = (props) => {
     const mobileWindowHeight = useWindowDimensions().height
     const [isLoading, setIsLoading] = useState(false)
     const [isSubmitting, setisSubmitting] = useState(false)
-    const [templateData, setTemplateData] = useState({...props.templateData})
+    const [templateData, setTemplateData] = useState({})
     const [unmanagedFieldSelectedValue, setUnmanagedFieldSelectedValue] = useState(null)
     const [isUnmanagedFieldSelectorOpen, setIsUnmanagedFieldSelectorOpen] = useState(false)
     const [unmanagedFieldSelectorPosition, setUnmanagedFieldSelectorPosition] = useState({
