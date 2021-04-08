@@ -1,25 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, Animated } from 'react-native'
-import Router from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import PDFGeneratorCreatorEditor from './PDFGeneratorCreatorEditor'
 import Alert from '../Utils/Alert'
 import dynamicImport from '../../utils/dynamicImport'
 import { paths, strings } from '../../utils/constants'
-import {
-    PDFGeneratorCreatorButtonsContainer,
-    PDFGeneratorCreatorGoBackButton,
-    PDFGeneratorCreatorCreateNewButton,
-    PDFGeneratorCreatorCreateNewButtonLabel,
-    PDFGeneratorCreatorTemplateTitle,
-    PDFGeneratorCreatorEditTemplateButton,
-    PDFGeneratorCreatorRemoveTemplateButton,
-    PDFGeneratorCreatorTemplateCardContainer,
-    PDFGeneratorCreatorTemplatesContainer,
-    PDFGeneratorGetMoreTemplatesButton,
-    PDFGeneratorGetMoreTemplatesButtonContainer
-} from '../../styles/PDFGenerator'
+import Styled from './styles'
 
+const Router = dynamicImport('next/router')
 const Swipeable = dynamicImport('react-native-gesture-handler', 'Swipeable')
 const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 
@@ -214,12 +202,12 @@ const PDFGeneratorCreator = (props) => {
                     />
                 ) : (
                     <View style={{ height: '100%'}}>
-                        <PDFGeneratorCreatorCreateNewButton onPress={(e) => setSelectedTemplateIndex(props.templates.length)}>
-                            <PDFGeneratorCreatorCreateNewButtonLabel>
+                        <Styled.PDFGeneratorCreatorCreateNewButton onPress={(e) => setSelectedTemplateIndex(props.templates.length)}>
+                            <Styled.PDFGeneratorCreatorCreateNewButtonLabel>
                                 {'+'}
-                            </PDFGeneratorCreatorCreateNewButtonLabel>
-                        </PDFGeneratorCreatorCreateNewButton>
-                        <PDFGeneratorCreatorTemplatesContainer>
+                            </Styled.PDFGeneratorCreatorCreateNewButtonLabel>
+                        </Styled.PDFGeneratorCreatorCreateNewButton>
+                        <Styled.PDFGeneratorCreatorTemplatesContainer>
                             {props.templates.map((pdfTemplate, index) => (
                                 <Swipeable 
                                 key={pdfTemplate.id}
@@ -229,27 +217,27 @@ const PDFGeneratorCreator = (props) => {
                                     return (
                                         <View style={{ width: 70, flexDirection: 'row' }}>
                                             <Animated.View style={{ flex: 1, transform: [{ translateX: 0 }]}}>
-                                                <PDFGeneratorCreatorRemoveTemplateButton
+                                                <Styled.PDFGeneratorCreatorRemoveTemplateButton
                                                 onPress={(e)=> setTemplateIndexToRemove(index)}
                                                 >
                                                     <FontAwesomeIcon icon={'trash'}/>
-                                                </PDFGeneratorCreatorRemoveTemplateButton>
+                                                </Styled.PDFGeneratorCreatorRemoveTemplateButton>
                                             </Animated.View>
                                         </View>
                                     )
                                 }}
                                 >
-                                    <PDFGeneratorCreatorTemplateCardContainer>
-                                        <PDFGeneratorCreatorEditTemplateButton onPress={(e)=> setSelectedTemplateIndex(index)}>
-                                            <PDFGeneratorCreatorTemplateTitle>
+                                    <Styled.PDFGeneratorCreatorTemplateCardContainer>
+                                        <Styled.PDFGeneratorCreatorEditTemplateButton onPress={(e)=> setSelectedTemplateIndex(index)}>
+                                            <Styled.PDFGeneratorCreatorCreateNewButton>
                                                 {pdfTemplate.name}
-                                            </PDFGeneratorCreatorTemplateTitle>
-                                        </PDFGeneratorCreatorEditTemplateButton>
+                                            </Styled.PDFGeneratorCreatorCreateNewButton>
+                                        </Styled.PDFGeneratorCreatorEditTemplateButton>
 
-                                    </PDFGeneratorCreatorTemplateCardContainer>
+                                    </Styled.PDFGeneratorCreatorTemplateCardContainer>
                                 </Swipeable>
                             ))}
-                        </PDFGeneratorCreatorTemplatesContainer>
+                        </Styled.PDFGeneratorCreatorTemplatesContainer>
                     </View>
                 )}
             </View>
@@ -287,55 +275,55 @@ const PDFGeneratorCreator = (props) => {
                     />
                 ) : (
                     <div>
-                        <PDFGeneratorCreatorButtonsContainer>
-                            <PDFGeneratorCreatorGoBackButton onClick={(e) => onClickCancel()}>
+                        <Styled.PDFGeneratorCreatorButtonsContainer>
+                            <Styled.PDFGeneratorCreatorGoBackButton onClick={(e) => onClickCancel()}>
                                 {strings['pt-br']['pdfGeneratorCreatorGoBackButtonLabel']}
-                            </PDFGeneratorCreatorGoBackButton>
-                            <PDFGeneratorCreatorCreateNewButton
+                            </Styled.PDFGeneratorCreatorGoBackButton>
+                            <Styled.PDFGeneratorCreatorCreateNewButton
                             onClick={(e) => setSelectedTemplateIndex(props.templates.length)}
                             >
                                 {strings['pt-br']['pdfGeneratorCreatorCreateNewButtonLabel']}
-                            </PDFGeneratorCreatorCreateNewButton>
-                        </PDFGeneratorCreatorButtonsContainer>
-                        <PDFGeneratorCreatorTemplatesContainer>
+                            </Styled.PDFGeneratorCreatorCreateNewButton>
+                        </Styled.PDFGeneratorCreatorButtonsContainer>
+                        <Styled.PDFGeneratorCreatorTemplatesContainer>
                             {isLoading && (props.templates.length === 0 || formNameRef.current !== props.formName) ? (
                                 <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0dbf7e', marginTop: '10px'}}>
                                     <Spinner animation="border"/>
                                 </div>
                             ) : props.templates.map((pdfTemplate, index) => (
-                                <PDFGeneratorCreatorTemplateCardContainer key={pdfTemplate.id}>
-                                    <PDFGeneratorCreatorTemplateTitle>
+                                <Styled.PDFGeneratorCreatorTemplateCardContainer key={pdfTemplate.id}>
+                                    <Styled.PDFGeneratorCreatorTemplateTitle>
                                         {pdfTemplate.name}
-                                    </PDFGeneratorCreatorTemplateTitle>
+                                    </Styled.PDFGeneratorCreatorTemplateTitle>
 
                                     <div>
-                                        <PDFGeneratorCreatorEditTemplateButton 
+                                        <Styled.PDFGeneratorCreatorEditTemplateButton 
                                         onClick={(e)=> setSelectedTemplateIndex(index)}
                                         >
                                             <FontAwesomeIcon icon={'pencil-alt'}/>
-                                        </PDFGeneratorCreatorEditTemplateButton>
-                                        <PDFGeneratorCreatorRemoveTemplateButton 
+                                        </Styled.PDFGeneratorCreatorEditTemplateButton>
+                                        <Styled.PDFGeneratorCreatorRemoveTemplateButton 
                                         onClick={(e)=> setTemplateIndexToRemove(index)}
                                         >
                                             <FontAwesomeIcon icon={'trash'}/>
-                                        </PDFGeneratorCreatorRemoveTemplateButton>
+                                        </Styled.PDFGeneratorCreatorRemoveTemplateButton>
                                     </div>
-                                </PDFGeneratorCreatorTemplateCardContainer>
+                                </Styled.PDFGeneratorCreatorTemplateCardContainer>
                             ))}
                             {page.current < page.total ? (
-                                <PDFGeneratorGetMoreTemplatesButtonContainer>
+                                <Styled.PDFGeneratorGetMoreTemplatesButtonContainer>
                                     {isLoading ? (
                                         <Spinner animation="border"/>
                                     ) : (
-                                        <PDFGeneratorGetMoreTemplatesButton
+                                        <Styled.PDFGeneratorGetMoreTemplatesButton
                                         onClick={(e) => onClickLoadMoreButton()} 
                                         >
                                             {strings['pt-br']['pdfGeneratorLoadMoreButtonLabel']}
-                                        </PDFGeneratorGetMoreTemplatesButton>
+                                        </Styled.PDFGeneratorGetMoreTemplatesButton>
                                     )}
-                                </PDFGeneratorGetMoreTemplatesButtonContainer>
+                                </Styled.PDFGeneratorGetMoreTemplatesButtonContainer>
                             ) : ''}
-                        </PDFGeneratorCreatorTemplatesContainer>
+                        </Styled.PDFGeneratorCreatorTemplatesContainer>
                     </div>
                 )}
             </div>

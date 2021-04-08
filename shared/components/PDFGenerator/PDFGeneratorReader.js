@@ -4,14 +4,7 @@ import Router from 'next/router'
 import { paths, strings } from '../../utils/constants'
 import dynamicImport from '../../utils/dynamicImport'
 import PDFGeneratorReaderDownloader from './PDFGeneratorReaderDownloader'
-import { 
-    PDFGeneratorReaderTopButtonsContainer,
-    PDFGeneratorReaderGoBackButton,
-    PDFGeneratorReaderTemplateButton,
-    PDFGeneratorGetMoreTemplatesButtonContainer,
-    PDFGeneratorGetMoreTemplatesButton,
-    PDFGeneratorReaderTemplatesContainer
-} from '../../styles/PDFGenerator'
+import Styled from './styles'
 
 
 const Spinner = dynamicImport('react-bootstrap', 'Spinner')
@@ -111,20 +104,20 @@ const PDFGeneratorReader = (props) => {
                     />
                 ) : (
                     <View>
-                        <PDFGeneratorReaderTopButtonsContainer>
-                            <PDFGeneratorReaderGoBackButton onClick={(e) => onClickCancel()}>
+                        <Styled.PDFGeneratorReaderTopButtonsContainer>
+                            <Styled.PDFGeneratorReaderGoBackButton onClick={(e) => onClickCancel()}>
                                 {strings['pt-br']['pdfGeneratorReaderGoBackButtonLabel']}
-                            </PDFGeneratorReaderGoBackButton>
-                        </PDFGeneratorReaderTopButtonsContainer>
+                            </Styled.PDFGeneratorReaderGoBackButton>
+                        </Styled.PDFGeneratorReaderTopButtonsContainer>
                         {props.templates.map((pdfTemplate, index) => (
-                            <PDFGeneratorReaderTemplateButton 
+                            <Styled.PDFGeneratorReaderTemplateButton 
                             key={pdfTemplate.id} 
                             onClick={(e) => setSelectedTemplateIndex(index)} 
                             >
                                 <Text>
                                     {pdfTemplate.name}
                                 </Text>
-                            </PDFGeneratorReaderTemplateButton>
+                            </Styled.PDFGeneratorReaderTemplateButton>
                         ))}
                     </View>
                 )}
@@ -150,40 +143,40 @@ const PDFGeneratorReader = (props) => {
                     />
                 ) : (
                     <div>
-                        <PDFGeneratorReaderTopButtonsContainer>
-                            <PDFGeneratorReaderGoBackButton onClick={(e) => onClickCancel()}>
+                        <Styled.PDFGeneratorReaderTopButtonsContainer>
+                            <Styled.PDFGeneratorReaderGoBackButton onClick={(e) => onClickCancel()}>
                                 {strings['pt-br']['pdfGeneratorReaderGoBackButtonLabel']}
-                            </PDFGeneratorReaderGoBackButton>
-                        </PDFGeneratorReaderTopButtonsContainer>
-                        <PDFGeneratorReaderTemplatesContainer>
+                            </Styled.PDFGeneratorReaderGoBackButton>
+                        </Styled.PDFGeneratorReaderTopButtonsContainer>
+                        <Styled.PDFGeneratorReaderTemplatesContainer>
                             {isLoading && (props.templates.length === 0 || formNameRef.current !== props.formName) ? (
                                 <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0dbf7e', marginTop: '10px'}}>
                                     <Spinner animation="border"/>
                                 </div>
                             ) : props.templates.map((pdfTemplate, index) => (
-                                <PDFGeneratorReaderTemplateButton 
+                                <Styled.PDFGeneratorReaderTemplateButton 
                                 key={pdfTemplate.id} 
                                 onClick={(e) => setSelectedTemplateIndex(index)} 
                                 >
                                     <h2>
                                         {pdfTemplate.name}
                                     </h2>
-                                </PDFGeneratorReaderTemplateButton>
+                                </Styled.PDFGeneratorReaderTemplateButton>
                             ))}
                             {page.current < page.total ? (
-                                <PDFGeneratorGetMoreTemplatesButtonContainer>
+                                <Styled.PDFGeneratorGetMoreTemplatesButtonContainer>
                                     {isLoading ? (
                                         <Spinner animation="border"/>
                                     ) : (
-                                        <PDFGeneratorGetMoreTemplatesButton
+                                        <Styled.PDFGeneratorGetMoreTemplatesButton
                                         onClick={(e) => onClickLoadMoreButton()} 
                                         >
                                             {strings['pt-br']['pdfGeneratorLoadMoreButtonLabel']}
-                                        </PDFGeneratorGetMoreTemplatesButton>
+                                        </Styled.PDFGeneratorGetMoreTemplatesButton>
                                     )}
-                                </PDFGeneratorGetMoreTemplatesButtonContainer>
+                                </Styled.PDFGeneratorGetMoreTemplatesButtonContainer>
                             ) : ''}
-                        </PDFGeneratorReaderTemplatesContainer>
+                        </Styled.PDFGeneratorReaderTemplatesContainer>
                     </div>
                 )}
             </div>

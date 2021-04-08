@@ -2,18 +2,7 @@ import React, {useState} from 'react'
 import { TouchableOpacity, Text } from 'react-native'
 import { strings } from '../../utils/constants'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { 
-    OnboardingLabel,
-    OnboardingRequiredLabel,
-    OnboardingInput,
-    OnboardingError,
-    OnboardingFormContainer,
-    OnboardingSubmitButton,
-    OnboardingVisualizePasswordLabel,
-    OnboardingGoBackButton,
-    OnboardingBottomButtonsContainer
-} from '../../styles/Onboarding'
-
+import Styled from './styles'
 
 /**
  * This is the second step of the formulary. Each step is explained in the Onboarding component.
@@ -38,7 +27,7 @@ const SecondStepForm = (props) => {
     const [passwordIsFocused, setPasswordIsFocused] = useState(false)
     const [confirmPasswordIsFocused, setConfirmPasswordIsFocused] = useState(false)
     const [visiblePassword, setVisiblePassword] = useState(false)
-
+    // ------------------------------------------------------------------------------------------
     /**
      * This is to disable of enable the Submit button of the data. If the data is right the user can submit otherwise
      * the user cannot submmit.
@@ -46,12 +35,13 @@ const SecondStepForm = (props) => {
     const submitButtonDisabled = () => {
         return props.errors.hasOwnProperty('confirmPassword') || props.password === '' || props.confirmPassword === ''
     }
-
+    // ------------------------------------------------------------------------------------------
+    //########################################################################################//
     const renderMobile = () => {
         return (
-            <OnboardingFormContainer showForm={props.showForm} contentContainerStyle={{ alignItems: 'center' }}>
-                <OnboardingLabel>{strings['pt-br']['onboardingPasswordLabel']}<OnboardingRequiredLabel>*</OnboardingRequiredLabel></OnboardingLabel>
-                <OnboardingInput
+            <Styled.OnboardingFormFormContainer showForm={props.showForm} contentContainerStyle={{ alignItems: 'center' }}>
+                <Styled.OnboardingFormLabel>{strings['pt-br']['onboardingPasswordLabel']}<Styled.OnboardingFormRequiredLabel>*</Styled.OnboardingFormRequiredLabel></Styled.OnboardingFormLabel>
+                <Styled.OnboardingFormInput
                     isFocused={passwordIsFocused}
                     secureTextEntry={!visiblePassword} 
                     error={props.errors.hasOwnProperty('password')} 
@@ -66,9 +56,9 @@ const SecondStepForm = (props) => {
                         setPasswordIsFocused(false)
                     }}
                 />
-                <OnboardingError>{props.errors.hasOwnProperty('password') ? props.errors['password'] : ''}</OnboardingError>
-                <OnboardingLabel>{strings['pt-br']['onboardingConfirmPasswordLabel']}<OnboardingRequiredLabel>*</OnboardingRequiredLabel></OnboardingLabel>
-                <OnboardingInput 
+                <Styled.OnboardingFormError>{props.errors.hasOwnProperty('password') ? props.errors['password'] : ''}</Styled.OnboardingFormError>
+                <Styled.OnboardingFormLabel>{strings['pt-br']['onboardingConfirmPasswordLabel']}<Styled.OnboardingFormRequiredLabel>*</Styled.OnboardingFormRequiredLabel></Styled.OnboardingFormLabel>
+                <Styled.OnboardingFormInput 
                     isFocused={confirmPasswordIsFocused}
                     secureTextEntry={!visiblePassword} 
                     error={props.errors.hasOwnProperty('confirmPassword')} 
@@ -83,35 +73,34 @@ const SecondStepForm = (props) => {
                         setConfirmPasswordIsFocused(false)
                     }}
                 />
-                <OnboardingError>{props.errors.hasOwnProperty('confirmPassword') ? props.errors['confirmPassword'] : ''}</OnboardingError>
-                <OnboardingVisualizePasswordLabel onPress={e=> setVisiblePassword(!visiblePassword)}>
+                <Styled.OnboardingFormError>{props.errors.hasOwnProperty('confirmPassword') ? props.errors['confirmPassword'] : ''}</Styled.OnboardingFormError>
+                <Styled.OnboardingFormVisualizePasswordLabel onPress={e=> setVisiblePassword(!visiblePassword)}>
                     <FontAwesomeIcon icon={visiblePassword ? 'eye-slash' : 'eye'}/>
                     <Text>
                         &nbsp;{visiblePassword ? strings['pt-br']['onboardingHidePasswordLabel'] : strings['pt-br']['onboardingShowPasswordLabel']}
                     </Text>
-                </OnboardingVisualizePasswordLabel>
-                <OnboardingBottomButtonsContainer> 
-                    <OnboardingSubmitButton disabled={submitButtonDisabled()} onPress={e=> props.onSubmitForm()}>
+                </Styled.OnboardingFormVisualizePasswordLabel>
+                <Styled.OnboardingFormBottomButtonsContainer> 
+                    <Styled.OnboardingFormSubmitButton disabled={submitButtonDisabled()} onPress={e=> props.onSubmitForm()}>
                         <Text>
                         {strings['pt-br']['onboardingSubmitButtonLabel']}
                         </Text>
-                    </OnboardingSubmitButton>
-                    <OnboardingGoBackButton onPress={e=> props.setStep(0)}>
+                    </Styled.OnboardingFormSubmitButton>
+                    <Styled.OnboardingFormGoBackButton onPress={e=> props.setStep(0)}>
                         <Text>
                             {strings['pt-br']['onboardingGobackButtonLabel']}
                         </Text>
-                    </OnboardingGoBackButton>
-                </OnboardingBottomButtonsContainer>
-            </OnboardingFormContainer>
+                    </Styled.OnboardingFormGoBackButton>
+                </Styled.OnboardingFormBottomButtonsContainer>
+            </Styled.OnboardingFormFormContainer>
         )
     }
-    
-
+    //########################################################################################//
     const renderWeb = () => {
         return (
-            <OnboardingFormContainer showForm={props.showForm}>
-                <OnboardingLabel>{strings['pt-br']['onboardingPasswordLabel']}<OnboardingRequiredLabel>*</OnboardingRequiredLabel></OnboardingLabel>
-                <OnboardingInput
+            <Styled.OnboardingFormFormContainer showForm={props.showForm}>
+                <Styled.OnboardingFormLabel>{strings['pt-br']['onboardingPasswordLabel']}<Styled.OnboardingFormRequiredLabel>*</Styled.OnboardingFormRequiredLabel></Styled.OnboardingFormLabel>
+                <Styled.OnboardingFormInput
                     autoComplete={'whathever'} 
                     error={props.errors.hasOwnProperty('password')} 
                     type={visiblePassword ? 'text' : 'password'}
@@ -122,9 +111,9 @@ const SecondStepForm = (props) => {
                     }} 
                     onBlur={e => {props.onValidate('password', e.target.value)}}
                 />
-                <OnboardingError>{props.errors.hasOwnProperty('password') ? props.errors['password'] : ''}</OnboardingError>
-                <OnboardingLabel>{strings['pt-br']['onboardingConfirmPasswordLabel']}<OnboardingRequiredLabel>*</OnboardingRequiredLabel></OnboardingLabel>
-                <OnboardingInput 
+                <Styled.OnboardingFormError>{props.errors.hasOwnProperty('password') ? props.errors['password'] : ''}</Styled.OnboardingFormError>
+                <Styled.OnboardingFormLabel>{strings['pt-br']['onboardingConfirmPasswordLabel']}<Styled.OnboardingFormRequiredLabel>*</Styled.OnboardingFormRequiredLabel></Styled.OnboardingFormLabel>
+                <Styled.OnboardingFormInput 
                     autoComplete={'whathever'} 
                     error={props.errors.hasOwnProperty('confirmPassword')} 
                     type={visiblePassword ? 'text' : 'password'}
@@ -135,24 +124,24 @@ const SecondStepForm = (props) => {
                     }}
                     onBlur={e => {props.onValidate('confirmPassword', e.target.value)}}
                 />
-                <OnboardingError>{props.errors.hasOwnProperty('confirmPassword') ? props.errors['confirmPassword'] : ''}</OnboardingError>
-                <OnboardingVisualizePasswordLabel>
+                <Styled.OnboardingFormError>{props.errors.hasOwnProperty('confirmPassword') ? props.errors['confirmPassword'] : ''}</Styled.OnboardingFormError>
+                <Styled.OnboardingFormVisualizePasswordLabel>
                     <input style={{display:'none'}} type="checkbox" checked={visiblePassword} onChange={e => setVisiblePassword(!visiblePassword)}/>
                     <FontAwesomeIcon icon={visiblePassword ? 'eye-slash' : 'eye'}/>
                     &nbsp;{visiblePassword ? strings['pt-br']['onboardingHidePasswordLabel'] : strings['pt-br']['onboardingShowPasswordLabel']}
-                </OnboardingVisualizePasswordLabel>
-                <OnboardingBottomButtonsContainer> 
-                    <OnboardingGoBackButton onClick={e=> props.setStep(0)}>
+                </Styled.OnboardingFormVisualizePasswordLabel>
+                <Styled.OnboardingFormBottomButtonsContainer> 
+                    <Styled.OnboardingFormGoBackButton onClick={e=> props.setStep(0)}>
                         {strings['pt-br']['onboardingGobackButtonLabel']}
-                    </OnboardingGoBackButton>
-                    <OnboardingSubmitButton disabled={submitButtonDisabled()} onClick={e=> props.onSubmitForm()}>
+                    </Styled.OnboardingFormGoBackButton>
+                    <Styled.OnboardingFormSubmitButton disabled={submitButtonDisabled()} onClick={e=> props.onSubmitForm()}>
                         {strings['pt-br']['onboardingSubmitButtonLabel']}
-                    </OnboardingSubmitButton>
-                </OnboardingBottomButtonsContainer>
-            </OnboardingFormContainer>
+                    </Styled.OnboardingFormSubmitButton>
+                </Styled.OnboardingFormBottomButtonsContainer>
+            </Styled.OnboardingFormFormContainer>
         )
     }
-
+    //########################################################################################//
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 

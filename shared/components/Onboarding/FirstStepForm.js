@@ -2,20 +2,7 @@ import React, { useState } from 'react'
 import { TouchableOpacity, Text } from 'react-native'
 import { strings } from '../../utils/constants'
 import { numberMasker } from '../../utils/numberMasker'
-import { 
-    OnboardingLabel,
-    OnboardingRequiredLabel,
-    OnboardingNonRequiredFieldMessage,
-    OnboardingInput,
-    OnboardingError,
-    OnboardingFormContainer,
-    OnboardingDeclarationInput,
-    OnboardingDeclarationLabel, 
-    OnboardingContinueButton,
-    OnboardingGoBackButton,
-    OnboardingBottomButtonsContainer
-} from '../../styles/Onboarding'
-
+import Styled from './styles'
 
 /**
  * This is the first step of the formulary. It is explained in the Onboarding component.
@@ -57,7 +44,7 @@ const FirstStepForm = (props) => {
     const [emailIsFocused, setEmailIsFocused] = useState(false)
     const [confirmEmailIsFocused, setConfirmEmailIsFocused] = useState(false)
     const [companyNameIsFocused, setCompanyNameIsFocused] = useState(false)
-
+    // ------------------------------------------------------------------------------------------
     /**
      * If we encountered any errors while filling the formulary we prevent the user from continuing to the next step
      * of the onboarding. 
@@ -69,12 +56,13 @@ const FirstStepForm = (props) => {
                 props.errors.hasOwnProperty('phone') || props.errors.hasOwnProperty('confirmEmail') || props.name === '' || 
                 props.email === '' || props.confirmEmail === ''
     }
-
+    // ------------------------------------------------------------------------------------------
+    //########################################################################################//
     const renderMobile = () => {
         return (
-            <OnboardingFormContainer showForm={props.showForm}>
-                <OnboardingLabel>{strings['pt-br']['onboardingNameAndLastNameLabel']}<OnboardingRequiredLabel>*</OnboardingRequiredLabel></OnboardingLabel>
-                <OnboardingInput
+            <Styled.OnboardingFormFormContainer showForm={props.showForm}>
+                <Styled.OnboardingFormLabel>{strings['pt-br']['onboardingNameAndLastNameLabel']}<Styled.OnboardingFormRequiredLabel>*</Styled.OnboardingFormRequiredLabel></Styled.OnboardingFormLabel>
+                <Styled.OnboardingFormInput
                     error={props.errors.hasOwnProperty('name')} 
                     type='text' 
                     isFocused={nameAndLastNameIsFocused}
@@ -89,9 +77,9 @@ const FirstStepForm = (props) => {
                         props.onValidate('name', e.nativeEvent.text)
                     }}
                 />
-                <OnboardingError>{props.errors.hasOwnProperty('name') ? props.errors['name'] : ''}</OnboardingError>
-                <OnboardingLabel>{strings['pt-br']['onboardingPhoneLabel']}<OnboardingRequiredLabel>*</OnboardingRequiredLabel></OnboardingLabel>
-                <OnboardingInput 
+                <Styled.OnboardingFormError>{props.errors.hasOwnProperty('name') ? props.errors['name'] : ''}</Styled.OnboardingFormError>
+                <Styled.OnboardingFormLabel>{strings['pt-br']['onboardingPhoneLabel']}<Styled.OnboardingFormRequiredLabel>*</Styled.OnboardingFormRequiredLabel></Styled.OnboardingFormLabel>
+                <Styled.OnboardingFormInput 
                     error={props.errors.hasOwnProperty('phone')} 
                     type='text' 
                     keyboardType={'number-pad'}
@@ -106,9 +94,9 @@ const FirstStepForm = (props) => {
                         props.onValidate('phone', e.nativeEvent.text)
                     }}
                 />
-                <OnboardingError>{props.errors.hasOwnProperty('phone') ? props.errors['phone'] : ''}</OnboardingError>
-                <OnboardingLabel>{strings['pt-br']['onboardingEmailLabel']}<OnboardingRequiredLabel>*</OnboardingRequiredLabel></OnboardingLabel>
-                <OnboardingInput 
+                <Styled.OnboardingFormError>{props.errors.hasOwnProperty('phone') ? props.errors['phone'] : ''}</Styled.OnboardingFormError>
+                <Styled.OnboardingFormLabel>{strings['pt-br']['onboardingEmailLabel']}<Styled.OnboardingFormRequiredLabel>*</Styled.OnboardingFormRequiredLabel></Styled.OnboardingFormLabel>
+                <Styled.OnboardingFormInput 
                     keyboardType={'email-address'}
                     autoCapitalize='none'
                     error={props.errors.hasOwnProperty('email')} 
@@ -125,9 +113,9 @@ const FirstStepForm = (props) => {
                         props.onValidate('email', e.nativeEvent.text)
                     }}
                 />
-                <OnboardingError>{props.errors.hasOwnProperty('email') ? props.errors['email'] : ''}</OnboardingError>
-                <OnboardingLabel>{strings['pt-br']['onboardingConfirmEmailLabel']}<OnboardingRequiredLabel>*</OnboardingRequiredLabel></OnboardingLabel>
-                <OnboardingInput 
+                <Styled.OnboardingFormError>{props.errors.hasOwnProperty('email') ? props.errors['email'] : ''}</Styled.OnboardingFormError>
+                <Styled.OnboardingFormLabel>{strings['pt-br']['onboardingConfirmEmailLabel']}<Styled.OnboardingFormRequiredLabel>*</Styled.OnboardingFormRequiredLabel></Styled.OnboardingFormLabel>
+                <Styled.OnboardingFormInput 
                     keyboardType={'email-address'}
                     autoCapitalize='none'
                     error={props.errors.hasOwnProperty('confirmEmail')} 
@@ -145,9 +133,9 @@ const FirstStepForm = (props) => {
                     }}
                     onBlur={e => {props.onValidate('confirmEmail',e.nativeEvent.text)}}
                 />
-                <OnboardingError>{props.errors.hasOwnProperty('confirmEmail') ? props.errors['confirmEmail'] : ''}</OnboardingError>
-                <OnboardingLabel>{strings['pt-br']['onboardingCompanyNameLabel']}</OnboardingLabel>
-                <OnboardingInput 
+                <Styled.OnboardingFormError>{props.errors.hasOwnProperty('confirmEmail') ? props.errors['confirmEmail'] : ''}</Styled.OnboardingFormError>
+                <Styled.OnboardingFormLabel>{strings['pt-br']['onboardingCompanyNameLabel']}</Styled.OnboardingFormLabel>
+                <Styled.OnboardingFormInput 
                     type='text' 
                     isFocused={companyNameIsFocused}
                     value={props.companyName} 
@@ -155,9 +143,9 @@ const FirstStepForm = (props) => {
                     onFocus={e=> setConfirmEmailIsFocused(true)}
                     onBlur={e => setCompanyNameIsFocused(false)}
                 />
-                <OnboardingNonRequiredFieldMessage>{strings['pt-br']['onboardingNoCompanyNameMessage']}</OnboardingNonRequiredFieldMessage>
-                <OnboardingDeclarationLabel>
-                    <OnboardingDeclarationInput type="checkbox" value={props.declarationChecked} onChange={e => props.setDeclarationChecked(!props.declarationChecked)}/>
+                <Styled.OnboardingFormNonRequiredFieldMessage>{strings['pt-br']['onboardingNoCompanyNameMessage']}</Styled.OnboardingFormNonRequiredFieldMessage>
+                <Styled.OnboardingFormDeclarationLabel>
+                    <Styled.OnboardingFormDeclarationInput type="checkbox" value={props.declarationChecked} onChange={e => props.setDeclarationChecked(!props.declarationChecked)}/>
                     <Text>
                         {strings['pt-br']['onboardingFirstPartDeclarationLabel']}
                     </Text>
@@ -177,23 +165,23 @@ const FirstStepForm = (props) => {
                     <Text>
                         {strings['pt-br']['onboardingThirdPartDeclarationLabel']}
                     </Text>
-                </OnboardingDeclarationLabel>
-                <OnboardingBottomButtonsContainer> 
-                    <OnboardingContinueButton disabled={continueButtonDisabled()} onPress={e=> props.setStep(1)}>
+                </Styled.OnboardingFormDeclarationLabel>
+                <Styled.OnboardingFormBottomButtonsContainer> 
+                    <Styled.OnboardingFormContinueButton disabled={continueButtonDisabled()} onPress={e=> props.setStep(1)}>
                         <Text>
                             {strings['pt-br']['onboardingCOntinueButtonLabel']}
                         </Text>
-                    </OnboardingContinueButton>
-                </OnboardingBottomButtonsContainer>
-            </OnboardingFormContainer>
+                    </Styled.OnboardingFormContinueButton>
+                </Styled.OnboardingFormBottomButtonsContainer>
+            </Styled.OnboardingFormFormContainer>
         )
     }
-
+    //########################################################################################//
     const renderWeb = () => {
         return (
-            <OnboardingFormContainer showForm={props.showForm}>
-                <OnboardingLabel>{strings['pt-br']['onboardingNameAndLastNameLabel']}<OnboardingRequiredLabel>*</OnboardingRequiredLabel></OnboardingLabel>
-                <OnboardingInput
+            <Styled.OnboardingFormFormContainer showForm={props.showForm}>
+                <Styled.OnboardingFormLabel>{strings['pt-br']['onboardingNameAndLastNameLabel']}<Styled.OnboardingFormRequiredLabel>*</Styled.OnboardingFormRequiredLabel></Styled.OnboardingFormLabel>
+                <Styled.OnboardingFormInput
                     autoComplete={'whathever'} 
                     error={props.errors.hasOwnProperty('name')} 
                     type='text' 
@@ -204,9 +192,9 @@ const FirstStepForm = (props) => {
                     }} 
                     onBlur={e => {props.onValidate('name', e.target.value)}}
                 />
-                <OnboardingError>{props.errors.hasOwnProperty('name') ? props.errors['name'] : ''}</OnboardingError>
-                <OnboardingLabel>{strings['pt-br']['onboardingPhoneLabel']}<OnboardingRequiredLabel>*</OnboardingRequiredLabel></OnboardingLabel>
-                <OnboardingInput 
+                <Styled.OnboardingFormError>{props.errors.hasOwnProperty('name') ? props.errors['name'] : ''}</Styled.OnboardingFormError>
+                <Styled.OnboardingFormLabel>{strings['pt-br']['onboardingPhoneLabel']}<Styled.OnboardingFormRequiredLabel>*</Styled.OnboardingFormRequiredLabel></Styled.OnboardingFormLabel>
+                <Styled.OnboardingFormInput 
                     autoComplete={'whathever'} 
                     error={props.errors.hasOwnProperty('phone')} 
                     type='text' 
@@ -217,9 +205,9 @@ const FirstStepForm = (props) => {
                     }}
                     onBlur={e => {props.onValidate('phone', e.target.value)}}
                 />
-                <OnboardingError>{props.errors.hasOwnProperty('phone') ? props.errors['phone'] : ''}</OnboardingError>
-                <OnboardingLabel>{strings['pt-br']['onboardingEmailLabel']}<OnboardingRequiredLabel>*</OnboardingRequiredLabel></OnboardingLabel>
-                <OnboardingInput 
+                <Styled.OnboardingFormError>{props.errors.hasOwnProperty('phone') ? props.errors['phone'] : ''}</Styled.OnboardingFormError>
+                <Styled.OnboardingFormLabel>{strings['pt-br']['onboardingEmailLabel']}<Styled.OnboardingFormRequiredLabel>*</Styled.OnboardingFormRequiredLabel></Styled.OnboardingFormLabel>
+                <Styled.OnboardingFormInput 
                     error={props.errors.hasOwnProperty('email')} 
                     type='text' 
                     value={props.email} 
@@ -229,9 +217,9 @@ const FirstStepForm = (props) => {
                     }}
                     onBlur={e => {props.onValidate('email', e.target.value)}}
                 />
-                <OnboardingError>{props.errors.hasOwnProperty('email') ? props.errors['email'] : ''}</OnboardingError>
-                <OnboardingLabel>{strings['pt-br']['onboardingConfirmEmailLabel']}<OnboardingRequiredLabel>*</OnboardingRequiredLabel></OnboardingLabel>
-                <OnboardingInput 
+                <Styled.OnboardingFormError>{props.errors.hasOwnProperty('email') ? props.errors['email'] : ''}</Styled.OnboardingFormError>
+                <Styled.OnboardingFormLabel>{strings['pt-br']['onboardingConfirmEmailLabel']}<Styled.OnboardingFormRequiredLabel>*</Styled.OnboardingFormRequiredLabel></Styled.OnboardingFormLabel>
+                <Styled.OnboardingFormInput 
                     autoComplete={'whathever'} 
                     error={props.errors.hasOwnProperty('confirmEmail')} 
                     type='text' 
@@ -242,12 +230,12 @@ const FirstStepForm = (props) => {
                     }}
                     onBlur={e => {props.onValidate('confirmEmail', e.target.value)}}
                 />
-                <OnboardingError>{props.errors.hasOwnProperty('confirmEmail') ? props.errors['confirmEmail'] : ''}</OnboardingError>
-                <OnboardingLabel>{strings['pt-br']['onboardingCompanyNameLabel']}</OnboardingLabel>
-                <OnboardingInput type='text' value={props.companyName} onChange={e=> {props.setCompanyName(e.target.value)}}/>
-                <OnboardingNonRequiredFieldMessage>{strings['pt-br']['onboardingNoCompanyNameMessage']}</OnboardingNonRequiredFieldMessage>
-                <OnboardingDeclarationLabel>
-                    <OnboardingDeclarationInput type="checkbox" checked={props.declarationChecked} onChange={e => props.setDeclarationChecked(!props.declarationChecked)}/>
+                <Styled.OnboardingFormError>{props.errors.hasOwnProperty('confirmEmail') ? props.errors['confirmEmail'] : ''}</Styled.OnboardingFormError>
+                <Styled.OnboardingFormLabel>{strings['pt-br']['onboardingCompanyNameLabel']}</Styled.OnboardingFormLabel>
+                <Styled.OnboardingFormInput type='text' value={props.companyName} onChange={e=> {props.setCompanyName(e.target.value)}}/>
+                <Styled.OnboardingFormNonRequiredFieldMessage>{strings['pt-br']['onboardingNoCompanyNameMessage']}</Styled.OnboardingFormNonRequiredFieldMessage>
+                <Styled.OnboardingFormDeclarationLabel>
+                    <Styled.OnboardingFormDeclarationInput type="checkbox" checked={props.declarationChecked} onChange={e => props.setDeclarationChecked(!props.declarationChecked)}/>
                     &nbsp;{strings['pt-br']['onboardingFirstPartDeclarationLabel']}
                     <a href="https://www.reflow.com.br/termo-de-uso" style={{ color: '#0dbf7e'}} target="_blank">
                         {strings['pt-br']['onboardingTermsOfUsageDeclarationLabel']}
@@ -255,19 +243,19 @@ const FirstStepForm = (props) => {
                     <a href="https://www.reflow.com.br/politicas-de-privacidade" style={{ color: '#0dbf7e'}} target="_blank">
                         {strings['pt-br']['onboardingPrivacyDeclarationLabel']}
                     </a>{strings['pt-br']['onboardingThirdPartDeclarationLabel']}
-                </OnboardingDeclarationLabel>
-                <OnboardingBottomButtonsContainer> 
-                    <OnboardingGoBackButton onClick={e=> props.redirectToLogin()}>
+                </Styled.OnboardingFormDeclarationLabel>
+                <Styled.OnboardingFormBottomButtonsContainer> 
+                    <Styled.OnboardingFormGoBackButton onClick={e=> props.redirectToLogin()}>
                         {strings['pt-br']['onboardingLoginButtonLabel']}
-                    </OnboardingGoBackButton>
-                    <OnboardingContinueButton disabled={continueButtonDisabled()} onClick={e=> props.setStep(1)}>
+                    </Styled.OnboardingFormGoBackButton>
+                    <Styled.OnboardingFormContinueButton disabled={continueButtonDisabled()} onClick={e=> props.setStep(1)}>
                         {strings['pt-br']['onboardingCOntinueButtonLabel']}
-                    </OnboardingContinueButton>
-                </OnboardingBottomButtonsContainer>
-            </OnboardingFormContainer>
+                    </Styled.OnboardingFormContinueButton>
+                </Styled.OnboardingFormBottomButtonsContainer>
+            </Styled.OnboardingFormFormContainer>
         )
     }
-
+    //########################################################################################//
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 

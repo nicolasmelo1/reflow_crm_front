@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Modal, SafeAreaView, View, Text } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { 
-    FieldOptionsContainer, 
-    FieldOptionsButtons,
-    FieldOptionsFormularyTitle,
-    FieldOptionsSearchBox,
-    PDFGeneratorCreatorEditorButtonsContainer,
-    PDFGeneratorCreatorEditorTemplateCancelButton
-} from '../../styles/PDFGenerator'
+import Styled from './styles'
 
 /**
  * This component is responsible for opening a modal in front of the rich text so the user can select the
@@ -72,17 +65,17 @@ const FieldSelectorOptionBox = (props) => {
         return (
             <Modal animationType={'slide'}>
                 <SafeAreaView>
-                    <PDFGeneratorCreatorEditorButtonsContainer>
-                        <PDFGeneratorCreatorEditorTemplateCancelButton onPress={e=>props.setIsUnmanagedFieldSelectorOpen(false)}>
+                    <Styled.PDFGeneratorEditorButtonsContainer>
+                        <Styled.PDFGeneratorEditorTemplateCancelButton onPress={e=>props.setIsUnmanagedFieldSelectorOpen(false)}>
                             <FontAwesomeIcon icon={'times'} />
-                        </PDFGeneratorCreatorEditorTemplateCancelButton>
-                    </PDFGeneratorCreatorEditorButtonsContainer>
-                    <FieldOptionsContainer>
+                        </Styled.PDFGeneratorEditorTemplateCancelButton>
+                    </Styled.PDFGeneratorEditorButtonsContainer>
+                    <Styled.FieldOptionsContainer>
                         {props.fieldOptions.map(formOption=> (
                             <View key={formOption.id}>
-                                <FieldOptionsFormularyTitle>
+                                <Styled.FieldOptionsFormularyTitle>
                                     {formOption.label_name}
-                                </FieldOptionsFormularyTitle>
+                                </Styled.FieldOptionsFormularyTitle>
                                 {formOption.form_from_connected_field ? (
                                     <View>
                                         <Text style={{ margin: '0 5px', color: '#0dbf7e', fontSize: 10}}>{`Do campo `}</Text>
@@ -90,7 +83,7 @@ const FieldSelectorOptionBox = (props) => {
                                     </View>
                                 ) : null}
                                 {formOption.form_fields.map((fieldOption, index) => (
-                                    <FieldOptionsButtons 
+                                    <Styled.FieldOptionsButtons 
                                     isFirst={index === 0}
                                     key={fieldOption.id} 
                                     onPress={(e) => {props.onClickOption(`fieldVariable-${fieldOption.id} fromConnectedField-${formOption.form_from_connected_field ? formOption.form_from_connected_field.id : ''}`)}}
@@ -98,11 +91,11 @@ const FieldSelectorOptionBox = (props) => {
                                         <Text>
                                             {fieldOption.label_name}
                                         </Text>
-                                    </FieldOptionsButtons>
+                                    </Styled.FieldOptionsButtons>
                                 ))}
                             </View>
                         ))}
-                    </FieldOptionsContainer>
+                    </Styled.FieldOptionsContainer>
                 </SafeAreaView>
             </Modal>
         )
@@ -110,13 +103,13 @@ const FieldSelectorOptionBox = (props) => {
 
     const renderWeb = () => {
         return (
-            <FieldOptionsContainer 
+            <Styled.FieldOptionsContainer 
             top={props.top}
             left={props.left}
             translate={translate3D}
             ref={fieldSelectorBoxRef}
             >
-                <FieldOptionsSearchBox 
+                <Styled.FieldOptionsSearchBox 
                 placeholder='Buscar'
                 autoFocus={true} 
                 type="text" 
@@ -126,24 +119,24 @@ const FieldSelectorOptionBox = (props) => {
                 {props.fieldOptions.map(formOption=> (
                     <div key={`${formOption.id}${formOption?.form_from_connected_field?.label_name}`}>
                         <div style={{borderBottom: '1px solid #bfbfbf'}}>
-                            <FieldOptionsFormularyTitle>
+                            <Styled.FieldOptionsFormularyTitle>
                                 {formOption.label_name}
-                            </FieldOptionsFormularyTitle>
+                            </Styled.FieldOptionsFormularyTitle>
                             {formOption.form_from_connected_field ? (
                                 <small style={{ margin: '0 5px', color: '#0dbf7e', fontSize: 10}}>{`Do campo `}<strong style={{ color: '#0dbf7e' }}>{formOption.form_from_connected_field.label_name}</strong></small>
                             ) : ''}
                         </div>
                         {formOption.form_fields.filter(fieldOption => search !== '' ? fieldOption.label_name.includes(search) : true).map(fieldOption => (
-                            <FieldOptionsButtons 
+                            <Styled.FieldOptionsButtons 
                             key={`${formOption.id}${fieldOption.id}`} 
                             onClick={(e) => {props.onClickOption(`fieldVariable-${fieldOption.id} fromConnectedField-${formOption.form_from_connected_field ? formOption.form_from_connected_field.id : ''}`)}}
                             >
                                 {fieldOption.label_name}
-                            </FieldOptionsButtons>
+                            </Styled.FieldOptionsButtons>
                         ))}
                     </div>
                 ))}
-            </FieldOptionsContainer>
+            </Styled.FieldOptionsContainer>
         )
     }
 

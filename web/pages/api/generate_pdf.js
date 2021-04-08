@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer')
 
 let browsers = 0
-const maximumNumberOfBrowsers = 10
+const maximumNumberOfBrowsers = 20
 
 // This is why we use NEXT.js (and love it). By using this we can run puppeteer on the node backend of 
 // the next.js aplication without needing to touch our real backend. With puppeteer we can get a web 
@@ -15,7 +15,7 @@ export default async function handler(req, res) {
                 const browser = await puppeteer.launch({ headless: true, args: ['--disable-dev-shm-usage', '--no-sandbox'] })
                 const page = await browser.newPage()
 
-                await page.setDefaultNavigationTimeout(300000)
+                await page.setDefaultNavigationTimeout(90000)
                 await page.setContent(req.body.html, {waitUntil: 'networkidle0'})
                 await page.emulateMediaType('screen')
                 
@@ -37,7 +37,7 @@ export default async function handler(req, res) {
                 res.setHeader('Content-Type', 'application/json')
                 res.status(400).json({
                     status: 'error',
-                    reason: 'too_much_to_handle'
+                    reason: 'unexpected'
                 })
             }   
         } else {

@@ -1,26 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import { Modal, TextInput, SafeAreaView, useWindowDimensions } from 'react-native'
+import { Modal, SafeAreaView, useWindowDimensions } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import RichText from '../RichText'
 import FieldSelectorOptionBox from './FieldSelectorOptionBox'
 import dynamicImport from '../../utils/dynamicImport'
 import { strings } from '../../utils/constants'
-import { 
-    PDFGeneratorCreatorTemplateTitleContainer,
-    PDFGeneratorCreatorEditorButtonsContainer,
-    PDFGeneratorCreatorEditorTemplateCancelButton,
-    PDFGeneratorCreatorEditorTemplateSaveButton,
-    PDFGeneratorCreatorEditorTemplateTitleInput,
-    PDFGeneratorCreatorEditorCustomContent,
-    PDFGeneratorCreatorEditorRichTextContainer
-} from '../../styles/PDFGenerator'
+import Styled from './styles'
 
 const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 
 const Custom = (props) => {
     return (
-        <PDFGeneratorCreatorEditorCustomContent
+        <Styled.PDFGeneratorCreatorEditorCustomContent
         draggabble="false"
         isItalic={props.content.is_italic}
         isBold={props.content.is_bold}
@@ -31,7 +23,7 @@ const Custom = (props) => {
         textSize={props.content.text_size}
         >
             {props.content.text}
-        </PDFGeneratorCreatorEditorCustomContent>
+        </Styled.PDFGeneratorCreatorEditorCustomContent>
     )
 }
 
@@ -192,13 +184,13 @@ const PDFGeneratorCreatorEditor = (props) => {
                     />
                 ) : null}
                 <SafeAreaView>
-                    <PDFGeneratorCreatorEditorButtonsContainer>
-                        <PDFGeneratorCreatorEditorTemplateTitleInput value={templateData.name} onChange={(e) => onChangeTemplateName(e.nativeEvent.text)}/>
-                        <PDFGeneratorCreatorEditorTemplateCancelButton onPress={e=>props.setSelectedTemplateIndex(null)}>
+                    <Styled.PDFGeneratorEditorButtonsContainer>
+                        <Styled.PDFGeneratorCreatorEditorTemplateTitleInput value={templateData.name} onChange={(e) => onChangeTemplateName(e.nativeEvent.text)}/>
+                        <Styled.PDFGeneratorCreatorEditorTemplateCancelButton onPress={e=>props.setSelectedTemplateIndex(null)}>
                             <FontAwesomeIcon icon={'times'} />
-                        </PDFGeneratorCreatorEditorTemplateCancelButton>
-                    </PDFGeneratorCreatorEditorButtonsContainer>
-                    <PDFGeneratorCreatorEditorRichTextContainer
+                        </Styled.PDFGeneratorCreatorEditorTemplateCancelButton>
+                    </Styled.PDFGeneratorEditorButtonsContainer>
+                    <Styled.PDFGeneratorCreatorEditorRichTextContainer
                     height={mobileWindowHeight}
                     >
                         {isLoading ? null : (
@@ -219,7 +211,7 @@ const PDFGeneratorCreatorEditor = (props) => {
                                 ) : null }
                             </React.Fragment>
                         )}
-                    </PDFGeneratorCreatorEditorRichTextContainer>
+                    </Styled.PDFGeneratorCreatorEditorRichTextContainer>
                 </SafeAreaView>
             </Modal>
         )
@@ -228,27 +220,27 @@ const PDFGeneratorCreatorEditor = (props) => {
     const renderWeb = () => {
         return (
             <div>
-                <PDFGeneratorCreatorTemplateTitleContainer>
-                    <PDFGeneratorCreatorEditorTemplateTitleInput 
+                <Styled.PDFGeneratorCreatorEditorTemplateTitleContainer>
+                    <Styled.PDFGeneratorCreatorEditorTemplateTitleInput 
                     isValid={isValid('name', templateData.name)}
                     value={templateData.name} 
                     onChange={(e) => onChangeTemplateName(e.target.value)}/>
-                </PDFGeneratorCreatorTemplateTitleContainer>
-                <PDFGeneratorCreatorEditorButtonsContainer> 
-                    <PDFGeneratorCreatorEditorTemplateSaveButton
+                </Styled.PDFGeneratorCreatorEditorTemplateTitleContainer>
+                <Styled.PDFGeneratorEditorButtonsContainer> 
+                    <Styled.PDFGeneratorCreatorEditorTemplateSaveButton
                     isValid={isValid('name', templateData.name)}
                     onClick={(e) => isSubmitting || !isValid('name', templateData.name)  ? null : onSubmit({...templateData})}
                     > 
                         {isSubmitting ? (
                             <Spinner animation="border" size="sm"/>
                         ): strings['pt-br']['pdfGeneratorEditorSaveButtonLabel']}
-                    </PDFGeneratorCreatorEditorTemplateSaveButton>
-                    <PDFGeneratorCreatorEditorTemplateCancelButton 
+                    </Styled.PDFGeneratorCreatorEditorTemplateSaveButton>
+                    <Styled.PDFGeneratorCreatorEditorTemplateCancelButton 
                     onClick={(e) => isSubmitting ? null : props.setSelectedTemplateIndex(null)}
                     >
                         {strings['pt-br']['pdfGeneratorEditorCancelButtonLabel']}
-                    </PDFGeneratorCreatorEditorTemplateCancelButton>
-                </PDFGeneratorCreatorEditorButtonsContainer>
+                    </Styled.PDFGeneratorCreatorEditorTemplateCancelButton>
+                </Styled.PDFGeneratorEditorButtonsContainer>
                 {isUnmanagedFieldSelectorOpen ? (
                     <FieldSelectorOptionBox 
                     fieldOptions={props.formAndFieldOptions}
@@ -257,7 +249,7 @@ const PDFGeneratorCreatorEditor = (props) => {
                     onClickOption={setUnmanagedFieldSelectedValue}
                     />
                 ) : ''}
-                <PDFGeneratorCreatorEditorRichTextContainer>
+                <Styled.PDFGeneratorCreatorEditorRichTextContainer>
                     {isLoading ? (
                         <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                             <Spinner animation="border"/>
@@ -280,7 +272,7 @@ const PDFGeneratorCreatorEditor = (props) => {
                             ) : ''}
                         </React.Fragment>
                     )}
-                </PDFGeneratorCreatorEditorRichTextContainer>
+                </Styled.PDFGeneratorCreatorEditorRichTextContainer>
             </div>
         )
     }

@@ -5,19 +5,7 @@ import { strings, paths } from '../../utils/constants'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { connect } from 'react-redux';
 import actions from '../../redux/actions'
-import { 
-    ChangePasswordInput,
-    ChangePasswordLabel,
-    ChangePasswordError,
-    ChangePasswordLogo,
-    ChangePasswordContainer,
-    ChangePasswordFormContainer,
-    ChangePasswordSubmitButton,
-    ChangePasswordVisualizePasswordLabel,
-    ChangePasswordHeader,
-    ChangePasswordGoBackButton
-} from '../../styles/ChangePassword'
-
+import Styled from './styles'
 
 /**
  * This component is just used for the user to change the password, the user don't
@@ -46,23 +34,29 @@ class ChangePassword extends React.Component {
             confirmNewPassword: ''
         }
     }
+    // ------------------------------------------------------------------------------------------
     setCurrentPasswordIsFocused = (data) => this.setState(state => ({...state, currentPasswordIsFocused: data}))
+    // ------------------------------------------------------------------------------------------
     setNewPasswordIsFocused = (data) => this.setState(state => ({...state, newPasswordIsFocused: data}))
+    // ------------------------------------------------------------------------------------------
     setConfirmNewPasswordIsFocused = (data) => this.setState(state => ({...state, confirmNewPasswordIsFocused: data}))
-
+    // ------------------------------------------------------------------------------------------
     setVisiblePassword = (data) => this.setState(state => ({...state, visiblePassword: data}))
-
+    // ------------------------------------------------------------------------------------------
     setConfirmNewPassword = (data) => this.setState(state => ({...state, confirmNewPassword: data}))
+    // ------------------------------------------------------------------------------------------
     setNewPassword = (data) => this.setState(state => ({...state, newPassword: data}))
+    // ------------------------------------------------------------------------------------------
     setCurrentPassword = (data) => this.setState(state => ({...state, currentPassword: data}))
+    // ------------------------------------------------------------------------------------------
     setErrors = (data) => this.setState(state => ({...state, errors: data}))
-
+    // ------------------------------------------------------------------------------------------
     errorMessages = {
         currentPassword: strings['pt-br']['changePasswordTemporaryPasswordError'],
         newPassword: strings['pt-br']['changePasswordNewPasswordError'],
         confirmNewPassword: strings['pt-br']['changePasswordConfirmNewPasswordError']
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Checks if a value that you are inserting on a name (name is a key from the state) is valid or not.
      * 
@@ -81,14 +75,14 @@ class ChangePassword extends React.Component {
                 return true
         }
     }
-
-     /**
-      * Function that checks for errors when you type using the `isValid` function.
-      * The field are actually some keys of the state of this component as string.
-      * 
-      * @param {('currentPassword'|'newPassword'|'confirmNewPassword')} field -  keys of the state of this component as string.
-      * @param {String} value - The value that you want to insert in this attribute of the state. 
-      */
+    // ------------------------------------------------------------------------------------------
+    /**
+     * Function that checks for errors when you type using the `isValid` function.
+     * The field are actually some keys of the state of this component as string.
+     * 
+     * @param {('currentPassword'|'newPassword'|'confirmNewPassword')} field -  keys of the state of this component as string.
+     * @param {String} value - The value that you want to insert in this attribute of the state. 
+     */
      onValidate = (field, value) => {
         if (!this.isValid(field, value)) {
             this.state.errors[field] = this.errorMessages[field]
@@ -97,7 +91,7 @@ class ChangePassword extends React.Component {
         }
         this.setErrors({...this.state.errors})
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * If the data is not valid, the button is disabled so you can't submit anything to the server.
      * When it is valid the button becomes pressable/clickable.
@@ -107,7 +101,7 @@ class ChangePassword extends React.Component {
                this.state.errors.hasOwnProperty('currentPassword') || this.state.confirmNewPassword === '' || this.state.newPassword === '' || 
                this.state.confirmNewPassword === ''
     }
-    
+    // ------------------------------------------------------------------------------------------
     /**
      * Redirects the user to the login page, since on mobile we use React Navigation we don't need to use anything like this.
      */
@@ -116,7 +110,7 @@ class ChangePassword extends React.Component {
             Router.push(paths.login().asUrl, paths.login().asUrl, { shallow: true })
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * This function is fired when the user clicks/presses the `save` button in the screen.
      * 
@@ -143,29 +137,31 @@ class ChangePassword extends React.Component {
             }
         })
     }
-
+    // ------------------------------------------------------------------------------------------
+    /////////////////////////////////////////////////////////////////////////////////////////////
     componentDidMount = () => {
         this._ismounted = true
     }
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     componentWillUnmount = () => {
         this._ismounted = false
     }
- 
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //########################################################################################//
     renderMobile = () => {
         return (
             <Modal animationType="slide">
                 <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-                    <ChangePasswordContainer>
-                        <ChangePasswordHeader>
-                            <ChangePasswordGoBackButton onPress={e=> this.props.goBack()}>
+                    <Styled.ChangePasswordContainer>
+                        <Styled.ChangePasswordHeader>
+                            <Styled.ChangePasswordGoBackButton onPress={e=> this.props.goBack()}>
                                 <FontAwesomeIcon icon={'times'}/>
-                            </ChangePasswordGoBackButton>
-                        </ChangePasswordHeader>
-                        <ChangePasswordLogo source={process.env['APP'] !== 'web' ? require('../../../mobile/assets/complete_logo.png') : ''}/>
-                        <ChangePasswordFormContainer>
-                            <ChangePasswordLabel>{strings['pt-br']['changePasswordTemporaryPasswordLabel']}</ChangePasswordLabel>
-                            <ChangePasswordInput 
+                            </Styled.ChangePasswordGoBackButton>
+                        </Styled.ChangePasswordHeader>
+                        <Styled.ChangePasswordLogo source={process.env['APP'] !== 'web' ? require('../../../mobile/assets/complete_logo.png') : ''}/>
+                        <Styled.ChangePasswordFormContainer>
+                            <Styled.ChangePasswordLabel>{strings['pt-br']['changePasswordTemporaryPasswordLabel']}</Styled.ChangePasswordLabel>
+                            <Styled.ChangePasswordInput 
                             isFocused={this.state.currentPasswordIsFocused}
                             error={this.state.errors.hasOwnProperty('currentPassword')} 
                             secureTextEntry={!this.state.visiblePassword} 
@@ -180,11 +176,11 @@ class ChangePassword extends React.Component {
                                 this.onValidate('currentPassword', e.nativeEvent.text)
                             }}
                             />
-                            <ChangePasswordError>{this.state.errors.hasOwnProperty('currentPassword') ? this.state.errors['currentPassword'] : ''}</ChangePasswordError>
-                        </ChangePasswordFormContainer>
-                        <ChangePasswordFormContainer>
-                            <ChangePasswordLabel>{strings['pt-br']['changePasswordNewPasswordLabel']}</ChangePasswordLabel>
-                            <ChangePasswordInput
+                            <Styled.ChangePasswordError>{this.state.errors.hasOwnProperty('currentPassword') ? this.state.errors['currentPassword'] : ''}</Styled.ChangePasswordError>
+                        </Styled.ChangePasswordFormContainer>
+                        <Styled.ChangePasswordFormContainer>
+                            <Styled.ChangePasswordLabel>{strings['pt-br']['changePasswordNewPasswordLabel']}</Styled.ChangePasswordLabel>
+                            <Styled.ChangePasswordInput
                             isFocused={this.state.newPasswordIsFocused}
                             error={this.state.errors.hasOwnProperty('newPassword')} 
                             secureTextEntry={!this.state.visiblePassword} 
@@ -199,9 +195,9 @@ class ChangePassword extends React.Component {
                                 this.onValidate('newPassword', e.nativeEvent.text)
                             }}
                             />
-                            <ChangePasswordError>{this.state.errors.hasOwnProperty('newPassword') ? this.state.errors['newPassword'] : ''}</ChangePasswordError>
-                            <ChangePasswordLabel>{strings['pt-br']['changePasswordConfirmNewPasswordLabel']}</ChangePasswordLabel>
-                            <ChangePasswordInput
+                            <Styled.ChangePasswordError>{this.state.errors.hasOwnProperty('newPassword') ? this.state.errors['newPassword'] : ''}</Styled.ChangePasswordError>
+                            <Styled.ChangePasswordLabel>{strings['pt-br']['changePasswordConfirmNewPasswordLabel']}</Styled.ChangePasswordLabel>
+                            <Styled.ChangePasswordInput
                             isFocused={this.state.confirmNewPasswordIsFocused}
                             error={this.state.errors.hasOwnProperty('confirmNewPassword')} 
                             secureTextEntry={!this.state.visiblePassword} 
@@ -215,32 +211,32 @@ class ChangePassword extends React.Component {
                                 this.setConfirmNewPasswordIsFocused(false)
                                 this.onValidate('confirmNewPassword', e.nativeEvent.text)
                             }}/>
-                            <ChangePasswordError>{this.state.errors.hasOwnProperty('confirmNewPassword') ? this.state.errors['confirmNewPassword'] : ''}</ChangePasswordError>
-                            <ChangePasswordVisualizePasswordLabel onPress={e=> this.setVisiblePassword(!this.state.visiblePassword)}>
+                            <Styled.ChangePasswordError>{this.state.errors.hasOwnProperty('confirmNewPassword') ? this.state.errors['confirmNewPassword'] : ''}</Styled.ChangePasswordError>
+                            <Styled.ChangePasswordVisualizePasswordLabel onPress={e=> this.setVisiblePassword(!this.state.visiblePassword)}>
                                 <FontAwesomeIcon icon={this.state.visiblePassword ? 'eye-slash' : 'eye'}/>
                                 <Text>
                                     &nbsp;{this.state.visiblePassword ? strings['pt-br']['changePasswordIsVisiblePassword'] : strings['pt-br']['changePasswordIsNotVisiblePassword']}
                                 </Text>
-                            </ChangePasswordVisualizePasswordLabel>
-                        </ChangePasswordFormContainer>
-                        <ChangePasswordSubmitButton disabled={this.submitButtonDisabled()} onPress={e=> this.onSubmit()}>
+                            </Styled.ChangePasswordVisualizePasswordLabel>
+                        </Styled.ChangePasswordFormContainer>
+                        <Styled.ChangePasswordSubmitButton disabled={this.submitButtonDisabled()} onPress={e=> this.onSubmit()}>
                             <Text>
                                 {strings['pt-br']['changePasswordSubmitNewPasswordLabel']}
                             </Text>
-                        </ChangePasswordSubmitButton>
-                    </ChangePasswordContainer>
+                        </Styled.ChangePasswordSubmitButton>
+                    </Styled.ChangePasswordContainer>
                 </TouchableWithoutFeedback>
             </Modal>
         )
     }
-
+    //########################################################################################//
     renderWeb = () => {
         return (
-            <ChangePasswordContainer>
-                <ChangePasswordLogo src="/complete_logo.png"/>
-                <ChangePasswordFormContainer>
-                    <ChangePasswordLabel>{strings['pt-br']['changePasswordTemporaryPasswordLabel']}</ChangePasswordLabel>
-                    <ChangePasswordInput 
+            <Styled.ChangePasswordContainer>
+                <Styled.ChangePasswordLogo src="/complete_logo.png"/>
+                <Styled.ChangePasswordFormContainer>
+                    <Styled.ChangePasswordLabel>{strings['pt-br']['changePasswordTemporaryPasswordLabel']}</Styled.ChangePasswordLabel>
+                    <Styled.ChangePasswordInput 
                     error={this.state.errors.hasOwnProperty('currentPassword')} 
                     type={this.state.visiblePassword ? 'text' : 'password'}
                     value={this.state.currentPassword} 
@@ -250,11 +246,11 @@ class ChangePassword extends React.Component {
                     }} 
                     onBlur={e => {this.onValidate('currentPassword', e.target.value)}}
                     />
-                    <ChangePasswordError>{this.state.errors.hasOwnProperty('currentPassword') ? this.state.errors['currentPassword'] : ''}</ChangePasswordError>
-                </ChangePasswordFormContainer>
-                <ChangePasswordFormContainer>
-                    <ChangePasswordLabel>{strings['pt-br']['changePasswordNewPasswordLabel']}</ChangePasswordLabel>
-                    <ChangePasswordInput
+                    <Styled.ChangePasswordError>{this.state.errors.hasOwnProperty('currentPassword') ? this.state.errors['currentPassword'] : ''}</Styled.ChangePasswordError>
+                </Styled.ChangePasswordFormContainer>
+                <Styled.ChangePasswordFormContainer>
+                    <Styled.ChangePasswordLabel>{strings['pt-br']['changePasswordNewPasswordLabel']}</Styled.ChangePasswordLabel>
+                    <Styled.ChangePasswordInput
                     error={this.state.errors.hasOwnProperty('newPassword')} 
                     type={this.state.visiblePassword ? 'text' : 'password'}
                     value={this.state.newPassword} 
@@ -264,9 +260,9 @@ class ChangePassword extends React.Component {
                     }} 
                     onBlur={e => {this.onValidate('newPassword', e.target.value)}}
                     />
-                    <ChangePasswordError>{this.state.errors.hasOwnProperty('newPassword') ? this.state.errors['newPassword'] : ''}</ChangePasswordError>
-                    <ChangePasswordLabel>{strings['pt-br']['changePasswordConfirmNewPasswordLabel']}</ChangePasswordLabel>
-                    <ChangePasswordInput
+                    <Styled.ChangePasswordError>{this.state.errors.hasOwnProperty('newPassword') ? this.state.errors['newPassword'] : ''}</Styled.ChangePasswordError>
+                    <Styled.ChangePasswordLabel>{strings['pt-br']['changePasswordConfirmNewPasswordLabel']}</Styled.ChangePasswordLabel>
+                    <Styled.ChangePasswordInput
                     error={this.state.errors.hasOwnProperty('confirmNewPassword')} 
                     type={this.state.visiblePassword ? 'text' : 'password'} 
                     value={this.state.confirmNewPassword} 
@@ -275,20 +271,20 @@ class ChangePassword extends React.Component {
                         this.setConfirmNewPassword(e.target.value)
                     }} 
                     onBlur={e => {this.onValidate('confirmNewPassword', e.target.value)}}/>
-                    <ChangePasswordError>{this.state.errors.hasOwnProperty('confirmNewPassword') ? this.state.errors['confirmNewPassword'] : ''}</ChangePasswordError>
-                    <ChangePasswordVisualizePasswordLabel>
+                    <Styled.ChangePasswordError>{this.state.errors.hasOwnProperty('confirmNewPassword') ? this.state.errors['confirmNewPassword'] : ''}</Styled.ChangePasswordError>
+                    <Styled.ChangePasswordVisualizePasswordLabel>
                         <input style={{display:'none'}} type="checkbox" checked={this.state.visiblePassword} onChange={e => this.setVisiblePassword(!this.state.visiblePassword)}/>
                         <FontAwesomeIcon icon={this.state.visiblePassword ? 'eye-slash' : 'eye'}/>
                         &nbsp;{this.state.visiblePassword ? strings['pt-br']['changePasswordIsVisiblePassword'] : strings['pt-br']['changePasswordIsNotVisiblePassword']}
-                    </ChangePasswordVisualizePasswordLabel>
-                </ChangePasswordFormContainer>
-                <ChangePasswordSubmitButton disabled={this.submitButtonDisabled()} onClick={e=> this.onSubmit()}>
+                    </Styled.ChangePasswordVisualizePasswordLabel>
+                </Styled.ChangePasswordFormContainer>
+                <Styled.ChangePasswordSubmitButton disabled={this.submitButtonDisabled()} onClick={e=> this.onSubmit()}>
                     {strings['pt-br']['changePasswordSubmitNewPasswordLabel']}
-                </ChangePasswordSubmitButton>
-            </ChangePasswordContainer>
+                </Styled.ChangePasswordSubmitButton>
+            </Styled.ChangePasswordContainer>
         )
     }
-
+    //########################################################################################//
     render = () => {
         return process.env['APP'] === 'web' ? this.renderWeb() : this.renderMobile()
     }

@@ -6,20 +6,7 @@ import actions from '../../redux/actions'
 import dynamicImport from '../../utils/dynamicImport'
 import agent from '../../utils/agent'
 import { strings, errors, paths } from '../../utils/constants'
-import { 
-    LoginOnboardingButton,
-    LoginContainer, 
-    LoginInput, 
-    LoginButton, 
-    LoginButtonText, 
-    LoginFormContainer, 
-    LoginLogo, 
-    LoginLabel,
-    LoginFieldError,
-    LoginForgotPassword,
-    LoginInputContainer,
-    LoginVisualizePasswordIcon
-} from '../../styles/Login'
+import Styled from './styles'
 
 const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 
@@ -60,9 +47,9 @@ class Login extends React.Component {
             password: process.env.NODE_ENV === 'production' ? '' : 'Mudar123'
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     setIsVerifing = (isVerifying) => this.setState(state => ({...state, isVerifying: isVerifying}))
-
+    // ------------------------------------------------------------------------------------------
     /**
      * We don't have any special screen to send the reset password email to the user, we do this directly in the login screen.
      * 
@@ -89,7 +76,7 @@ class Login extends React.Component {
             this.setState(state => ({ ...state, emailError: strings['pt-br']['loginRedefinePasswordInvalidEmailFieldError'] }))
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Just a handy function to redirect the user from the login page to the onboarding page.
      */
@@ -103,7 +90,7 @@ class Login extends React.Component {
             }
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Most of this function is explained inside but anyway.
      * 
@@ -150,7 +137,8 @@ class Login extends React.Component {
             }
         })
     }
-
+    // ------------------------------------------------------------------------------------------
+    /////////////////////////////////////////////////////////////////////////////////////////////
     componentDidMount = () => {
         this._ismounted = true
         // Used for animating, it's better to use key frames, but i don't actually care.
@@ -167,18 +155,19 @@ class Login extends React.Component {
             }, 1500)
         }
     }
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     componentWillUnmount = () => {
         this._ismounted = false
     }
-    
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //########################################################################################//
     renderMobile() {
         return (
-            <LoginContainer >
-                <LoginLogo source={process.env['APP'] !== 'web' ? require('../../../mobile/assets/complete_logo.png') : ''}/>
-                <LoginFormContainer>
-                    <LoginLabel>{strings['pt-br']['loginEmailLabel']}</LoginLabel>
-                    <LoginInput type={'text'} 
+            <Styled.LoginContainer >
+                <Styled.LoginLogo source={process.env['APP'] !== 'web' ? require('../../../mobile/assets/complete_logo.png') : ''}/>
+                <Styled.LoginFormContainer>
+                    <Styled.LoginLabel>{strings['pt-br']['loginEmailLabel']}</Styled.LoginLabel>
+                    <Styled.LoginInput type={'text'} 
                         autoCapitalize={'none'}
                         keyboardType={'email-address'}
                         ref={this.emailRef} 
@@ -189,10 +178,10 @@ class Login extends React.Component {
                         onFocus={e => this.setState({ isEmailInputFocused: true})}
                         onBlur={e => this.setState({ isEmailInputFocused: false})}
                     />
-                    <LoginFieldError>{![null, undefined, ''].includes(this.state.emailError) ? this.state.emailError : ''}</LoginFieldError>
-                    <LoginLabel>{strings['pt-br']['loginPassLabel']}</LoginLabel>
-                    <LoginInputContainer>
-                        <LoginInput 
+                    <Styled.LoginFieldError>{![null, undefined, ''].includes(this.state.emailError) ? this.state.emailError : ''}</Styled.LoginFieldError>
+                    <Styled.LoginLabel>{strings['pt-br']['loginPassLabel']}</Styled.LoginLabel>
+                    <Styled.LoginInputContainer>
+                        <Styled.LoginInput 
                             isPassword={true}
                             ref={this.passwordRef} 
                             isFocused={this.state.isPasswordInputFocused}
@@ -203,62 +192,62 @@ class Login extends React.Component {
                             onBlur={e => this.setState({ isPasswordInputFocused: false})}
                         />
                         <TouchableOpacity style={{alignItems: 'center', justifyContent:'center', marginLeft: 10, width: 40}} onPress={e=> this.setState(state => ({...state, visualizePassword: !state.visualizePassword}))}>
-                            <LoginVisualizePasswordIcon icon={this.state.visualizePassword ? 'eye-slash' : 'eye'} />
+                            <Styled.LoginVisualizePasswordIcon icon={this.state.visualizePassword ? 'eye-slash' : 'eye'} />
                         </TouchableOpacity>
-                    </LoginInputContainer>
-                    <LoginForgotPassword onPress={e=> this.onClickForgotPassword()}>
+                    </Styled.LoginInputContainer>
+                    <Styled.LoginForgotPassword onPress={e=> this.onClickForgotPassword()}>
                         <Text>
                             {strings['pt-br']['loginRedefinePasswordButtonLabel']}
                         </Text>
-                    </LoginForgotPassword>
-                    <LoginButton type="submit" onPress={e => {
+                    </Styled.LoginForgotPassword>
+                    <Styled.LoginButton type="submit" onPress={e => {
                         this.handleLogin()
                     }}>
                         <Text>
                             {strings['pt-br']['loginSubmitButtonLabel']}
                         </Text>
-                    </LoginButton>
-                    <LoginOnboardingButton onPress={e => {
+                    </Styled.LoginButton>
+                    <Styled.LoginOnboardingButton onPress={e => {
                         this.redirectToOnboarding()
                     }}>
                         <Text>
                             {strings['pt-br']['loginOboardingButtonLabel']}
                         </Text>
-                    </LoginOnboardingButton>
-                </LoginFormContainer>
-            </LoginContainer>
+                    </Styled.LoginOnboardingButton>
+                </Styled.LoginFormContainer>
+            </Styled.LoginContainer>
         )
     }
-
+    //########################################################################################//
     renderWeb() {
         return (
-            <LoginContainer>
-                <LoginLogo src="/complete_logo.png" showLogo={this.state.showLogo} slideLogo={this.state.slideLogo }/>
-                <LoginFormContainer showForm={this.state.showForm}>
-                    <LoginLabel>{strings['pt-br']['loginEmailLabel']}</LoginLabel>
-                    <LoginInput type={'text'} name={'email'} ref={this.emailRef} value={this.state.email} onChange={e => this.setState({ email: e.target.value, emailError: '' })} error={![null, undefined, ''].includes(this.state.emailError)}/>
-                    <LoginFieldError>{![null, undefined, ''].includes(this.state.emailError) ? this.state.emailError : ''}</LoginFieldError>
-                    <LoginLabel>{strings['pt-br']['loginPassLabel']}</LoginLabel>
-                    <LoginInputContainer>
-                        <LoginInput ref={this.passwordRef} name={'password'} type={this.state.visualizePassword ? 'text' : 'password'} value={this.state.password} onChange={e => this.setState({ password: e.target.value })}/>
-                        <LoginVisualizePasswordIcon icon={this.state.visualizePassword ? 'eye-slash' : 'eye'} onClick={e=> this.setState(state => ({...state, visualizePassword: !state.visualizePassword}))}/>
-                    </LoginInputContainer>
-                    <LoginForgotPassword onClick={e=> this.onClickForgotPassword()}>{strings['pt-br']['loginRedefinePasswordButtonLabel']}</LoginForgotPassword>
-                    <LoginButton type="submit" onClick={e => {
+            <Styled.LoginContainer>
+                <Styled.LoginLogo src="/complete_logo.png" showLogo={this.state.showLogo} slideLogo={this.state.slideLogo }/>
+                <Styled.LoginFormContainer showForm={this.state.showForm}>
+                    <Styled.LoginLabel>{strings['pt-br']['loginEmailLabel']}</Styled.LoginLabel>
+                    <Styled.LoginInput type={'text'} name={'email'} ref={this.emailRef} value={this.state.email} onChange={e => this.setState({ email: e.target.value, emailError: '' })} error={![null, undefined, ''].includes(this.state.emailError)}/>
+                    <Styled.LoginFieldError>{![null, undefined, ''].includes(this.state.emailError) ? this.state.emailError : ''}</Styled.LoginFieldError>
+                    <Styled.LoginLabel>{strings['pt-br']['loginPassLabel']}</Styled.LoginLabel>
+                    <Styled.LoginInputContainer>
+                        <Styled.LoginInput ref={this.passwordRef} name={'password'} type={this.state.visualizePassword ? 'text' : 'password'} value={this.state.password} onChange={e => this.setState({ password: e.target.value })}/>
+                        <Styled.LoginVisualizePasswordIcon icon={this.state.visualizePassword ? 'eye-slash' : 'eye'} onClick={e=> this.setState(state => ({...state, visualizePassword: !state.visualizePassword}))}/>
+                    </Styled.LoginInputContainer>
+                    <Styled.LoginForgotPassword onClick={e=> this.onClickForgotPassword()}>{strings['pt-br']['loginRedefinePasswordButtonLabel']}</Styled.LoginForgotPassword>
+                    <Styled.LoginButton type="submit" onClick={e => {
                         this.state.isVerifying ? null : this.handleLogin()
                     }}>
                         {this.state.isVerifying ? (<Spinner animation="border" size="sm"/>) : strings['pt-br']['loginSubmitButtonLabel']}
-                    </LoginButton>
-                    <LoginOnboardingButton onClick={e => {
+                    </Styled.LoginButton>
+                    <Styled.LoginOnboardingButton onClick={e => {
                         this.redirectToOnboarding()
                     }}>
                         {strings['pt-br']['loginOboardingButtonLabel']}
-                    </LoginOnboardingButton>
-                </LoginFormContainer>
-            </LoginContainer>
+                    </Styled.LoginOnboardingButton>
+                </Styled.LoginFormContainer>
+            </Styled.LoginContainer>
         )
     }
-
+    //########################################################################################//
     render() {
         if (process.env['APP'] === 'web') {
             return this.renderWeb()

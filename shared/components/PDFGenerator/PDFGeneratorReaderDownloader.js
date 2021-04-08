@@ -8,32 +8,33 @@ import dynamicImport from '../../utils/dynamicImport'
 import { strings } from '../../utils/constants'
 import agent from '../../utils/agent'
 import base64 from '../../utils/base64'
-import { 
-    PDFGeneratorReaderTopButtonsContainer,
-    PDFGeneratorReaderDownloaderCustomContent,
-    PDFGeneratorReaderDownloaderPage,
-    PDFGeneratorReaderDownloaderMultipleFieldsSeparatorLabel,
-    PDFGeneratorReaderDownloaderMultipleFieldsSeparatorInput,
-    PDFGeneratorReaderDownloaderMultipleFieldsSeparatorInputContainer,
-    PDFGeneratorReaderDownloaderMultipleFieldsSeparatorOkButton,
-    PDFGeneratorReaderDownloaderGoBackButton,
-    PDFGeneratorReaderDownloaderDownloadButton
-} from '../../styles/PDFGenerator'
+import deepCopy from '../../utils/deepCopy'
+import Styled from './styles'
+
 
 const Spinner = dynamicImport('react-bootstrap', 'Spinner')
+
 
 const Attachment = (props) => {
     const values = props.content.text.split(', ').map(value => !['', null, undefined].includes(value) ? base64.decode(value) : value)
     
     return (
         <div>
-            {values.map(value => /(http(s?)):\/\//i.test(value) ? (
-                <div style={{ width: '100%'}}>
-                    <img src={value}/>
-                </div>
-            ) : (
-                <Custom {...props}/>
-            ))}
+            {values.map(value => {
+                if (/(http(s?)):\/\//i.test(value)) {
+                    return (
+                        <div style={{ width: '100%'}}>
+                            <img src={value}/>
+                        </div>
+                    )
+                } else {
+                    let newProps = deepCopy(props)
+                    newProps.content.text = base64.encode(value)
+                    return (
+                        <Custom {...newProps}/>
+                    )
+                }
+            })}
         </div>
     )
 }
@@ -42,7 +43,7 @@ const Custom = (props) => {
     const text = props.content.text.split(', ').map(value => !['', null, undefined].includes(value) ? base64.decode(value) : value).join(', ')
 
     return (
-        <PDFGeneratorReaderDownloaderCustomContent
+        <Styled.PDFGeneratorReaderDownloaderCustomContent
         className={'custom_content'}
         data-custom-value={props.content.custom_value}
         draggabble="false"
@@ -55,7 +56,7 @@ const Custom = (props) => {
         textSize={props.content.text_size}
         >
             {text}
-        </PDFGeneratorReaderDownloaderCustomContent>
+        </Styled.PDFGeneratorReaderDownloaderCustomContent>
     )
 }
 
@@ -341,38 +342,38 @@ const PDFGeneratorReaderDownloader = (props) => {
         return (
             <div>
                 {multipleValuesDividerSetterFieldId !== null ? (
-                    <PDFGeneratorReaderDownloaderMultipleFieldsSeparatorInputContainer
+                    <Styled.PDFGeneratorReaderDownloaderMultipleFieldsSeparatorInputContainer
                     ref={multipleValuesDividerInputContainerRef} 
                     top={multipleValuesDividerOptionPosition.y}
                     left={multipleValuesDividerOptionPosition.x}
                     >
-                        <PDFGeneratorReaderDownloaderMultipleFieldsSeparatorLabel>
+                        <Styled.PDFGeneratorReaderDownloaderMultipleFieldsSeparatorLabel>
                             {strings['pt-br']['pdfGeneratorReaderDownloaderMultipleFieldsSeparatorTitleLabel']}
-                        </PDFGeneratorReaderDownloaderMultipleFieldsSeparatorLabel>
-                        <PDFGeneratorReaderDownloaderMultipleFieldsSeparatorInput 
+                        </Styled.PDFGeneratorReaderDownloaderMultipleFieldsSeparatorLabel>
+                        <Styled.PDFGeneratorReaderDownloaderMultipleFieldsSeparatorInput 
                         ref={multipleValuesDividerInputRef} 
                         placeholder={strings['pt-br']['pdfGeneratorReaderDownloaderMultipleFieldsSeparatorPlaceholder']}
                         type={'text'}
                         />
-                        <PDFGeneratorReaderDownloaderMultipleFieldsSeparatorOkButton onClick={(e) => onClickToChangeCustomElementText()}>
+                        <Styled.PDFGeneratorReaderDownloaderMultipleFieldsSeparatorOkButton onClick={(e) => onClickToChangeCustomElementText()}>
                             {strings['pt-br']['pdfGeneratorReaderDownloaderMultipleFieldsSeparatorButtonLabel']}
-                        </PDFGeneratorReaderDownloaderMultipleFieldsSeparatorOkButton>
-                    </PDFGeneratorReaderDownloaderMultipleFieldsSeparatorInputContainer>
+                        </Styled.PDFGeneratorReaderDownloaderMultipleFieldsSeparatorOkButton>
+                    </Styled.PDFGeneratorReaderDownloaderMultipleFieldsSeparatorInputContainer>
                 ) : ''}
-                <PDFGeneratorReaderTopButtonsContainer>
-                    <PDFGeneratorReaderDownloaderGoBackButton 
+                <Styled.PDFGeneratorReaderTopButtonsContainer>
+                    <Styled.PDFGeneratorReaderDownloaderGoBackButton 
                     onClick={(e) => props.setSelectedTemplateIndex(null)}
                     >
                         <FontAwesomeIcon icon={'chevron-left'}/>
                         &nbsp;{strings['pt-br']['pdfGeneratorReaderDownloaderGoBackButtonLabel']}
-                    </PDFGeneratorReaderDownloaderGoBackButton>
-                    <PDFGeneratorReaderDownloaderDownloadButton 
+                    </Styled.PDFGeneratorReaderDownloaderGoBackButton>
+                    <Styled.PDFGeneratorReaderDownloaderDownloadButton 
                     onClick={(e) => isDownloadingFile ? null : onDownloadDocument()}
                     >
                         {isDownloadingFile ? (<Spinner animation="border" size="sm"/>) : strings['pt-br']['pdfGeneratorReaderDownloaderDownloadButtonLabel']}
-                    </PDFGeneratorReaderDownloaderDownloadButton>
-                </PDFGeneratorReaderTopButtonsContainer>
-                <PDFGeneratorReaderDownloaderPage>
+                    </Styled.PDFGeneratorReaderDownloaderDownloadButton>
+                </Styled.PDFGeneratorReaderTopButtonsContainer>
+                <Styled.PDFGeneratorReaderDownloaderPage>
                     <div 
                     ref={documentRef}
                     >
@@ -389,7 +390,7 @@ const PDFGeneratorReaderDownloader = (props) => {
                             </div>
                         )}
                     </div>
-                </PDFGeneratorReaderDownloaderPage>
+                </Styled.PDFGeneratorReaderDownloaderPage>
             </div>
         )
     }

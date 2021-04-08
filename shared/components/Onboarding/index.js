@@ -6,10 +6,7 @@ import { numberUnmasker } from '../../utils/numberMasker'
 import { strings, paths, errors } from '../../utils/constants'
 import FirstStepForm from './FirstStepForm'
 import SecondStepForm from './SecondStepForm'
-import { 
-    OnboardingLogo,
-    OnboardingContainer
-} from '../../styles/Onboarding'
+import Styled from './styles'
 
 /**
  * This component handles the onboarding of a new user. It is important to understand that right now the onboarding formulary consists of 2 simple steps: 
@@ -55,24 +52,33 @@ class Onboarding extends React.Component {
             confirmPassword: '',
         }
     }
-    
+    // ------------------------------------------------------------------------------------------
     setSlideLogo = (data) => this.setState(state => state.slideLogo = data)
+    // ------------------------------------------------------------------------------------------
     setShowLogo = (data) => this.setState(state => state.showLogo = data)
+    // ------------------------------------------------------------------------------------------
     setShowForm = (data) => this.setState(state => state.showForm = data)
+    // ------------------------------------------------------------------------------------------
     setStep = (data) => this.setState(state => state.step = data)
-
+    // ------------------------------------------------------------------------------------------
     setErrors = (data) => this.setState(state => ({...state, errors: data}))
-
+    // ------------------------------------------------------------------------------------------
     setName = (data) => this.setState(state => ({...state, name: data}))
+    // ------------------------------------------------------------------------------------------
     setPhone = (data) => this.setState(state => ({...state, phone: numberUnmasker(data, this.getPhoneNumberMask(data)).length <= 11 ? numberUnmasker(data, this.getPhoneNumberMask(data)) : this.state.phone}))
+    // ------------------------------------------------------------------------------------------
     setEmail = (data) => this.setState(state => ({...state, email: data}))
+    // ------------------------------------------------------------------------------------------
     setConfirmEmail = (data) => this.setState(state => ({...state, confirmEmail: data}))
+    // ------------------------------------------------------------------------------------------
     setCompanyName = (data) => this.setState(state => ({...state, companyName: data}))
+    // ------------------------------------------------------------------------------------------
     setDeclarationChecked = (data) => this.setState(state => ({...state, declarationChecked: data}))
-
+    // ------------------------------------------------------------------------------------------
     setPassword = (data) => this.setState(state => ({...state, password: data}))
+    // ------------------------------------------------------------------------------------------
     setConfirmPassword = (data) => this.setState(state => ({...state, confirmPassword: data}))
-
+    // ------------------------------------------------------------------------------------------
     /**
      * In Brazil the phone number can have 8 digits (besides the DDD (a 2 digit number of the region)) or 9 digits. With this
      * we can mask it dynamically.
@@ -86,7 +92,7 @@ class Onboarding extends React.Component {
             return '(00) 00000-0000'
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * This function is used for validating if the data the user inserted in a field name is valid or not. You will notice that this is a switch
      * with a set of statements. Each return case is a different condition to check if the data is valid.
@@ -112,7 +118,7 @@ class Onboarding extends React.Component {
                 return true
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * This does two things:
      * - Checks if a field is valid and 
@@ -130,7 +136,7 @@ class Onboarding extends React.Component {
         }
         this.setErrors({...this.state.errors})
     }
-    
+    // ------------------------------------------------------------------------------------------
     /**
      * Submits the data of all of the steps to the backend. This is actually why we need most logic inside of this component.
      * 
@@ -160,7 +166,7 @@ class Onboarding extends React.Component {
             }
         })
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Function used for redirection the user back to the login page.
      * 
@@ -183,7 +189,8 @@ class Onboarding extends React.Component {
             Linking.openURL(Linking.makeUrl(paths.login().asUrl))
         }
     }
-
+    // ------------------------------------------------------------------------------------------
+    /////////////////////////////////////////////////////////////////////////////////////////////
     // most of the logic here is just for showing a simple but nice animation when the user first opens the formulary.
     componentDidMount = () => {
         this._ismounted = true
@@ -199,14 +206,15 @@ class Onboarding extends React.Component {
             }, 1500)
         }
     }
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     componentWillUnmount = () => {
         this._ismounted = false
     }
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //########################################################################################//
     renderMobile = () => {
         return (
-            <OnboardingContainer>
+            <Styled.OnboardingContainer>
                 {this.formularySteps[this.state.step] === 'set-email' ? (
                     <FirstStepForm
                     openLinks={this.props.openLinks}
@@ -242,14 +250,14 @@ class Onboarding extends React.Component {
                     onSubmitForm={this.onSubmitForm}
                     />
                 )}
-            </OnboardingContainer>
+            </Styled.OnboardingContainer>
         )
     }
-
+    //########################################################################################//
     renderWeb = () => {
         return (
-            <OnboardingContainer step={this.state.step}>
-                <OnboardingLogo src="/complete_logo.png" showLogo={this.state.showLogo} slideLogo={this.state.slideLogo} step={this.state.step}/>
+            <Styled.OnboardingContainer step={this.state.step}>
+                <Styled.OnboardingLogo src="/complete_logo.png" showLogo={this.state.showLogo} slideLogo={this.state.slideLogo} step={this.state.step}/>
                 {this.formularySteps[this.state.step] === 'set-email' ? (
                     <FirstStepForm
                     showForm={this.state.showForm}
@@ -284,10 +292,10 @@ class Onboarding extends React.Component {
                     onSubmitForm={this.onSubmitForm}
                     />
                 )}
-            </OnboardingContainer>
+            </Styled.OnboardingContainer>
         )
     }
-
+    //########################################################################################//
     render = () => {
         return process.env['APP'] === 'web' ? this.renderWeb() : this.renderMobile()
     }

@@ -6,18 +6,8 @@ import { connect } from 'react-redux'
 import actions from '../../redux/actions'
 import dynamicImport from '../../utils/dynamicImport'
 import { strings } from '../../utils/constants'
-import {
-    CompanyFormularyContainer,
-    CompanyFormularyFieldContainer,
-    CompanyFormularyFieldInput,
-    CompanyFormularyFieldLabel,
-    CompanyFormularyFieldError,
-    CompanyFormularySaveButton,
-    CompanyFormularySaveButtonText,
-    CompanyFormularyLogoContainer,
-    CompanyFormularyLogoHelperLabel,
-    CompanyFormularyLogo
-} from '../../styles/Company'
+import Styled from './styles'
+
 
 const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 
@@ -43,13 +33,15 @@ class Company extends React.Component {
             errors: {}
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     setLogoFile = (fileName, file) => this.setState(state => ({...state, logoFile: { name: fileName, file: file }}))
+    // ------------------------------------------------------------------------------------------
     setShowAllGoodIcon = (data) => this.setState(state => ({...state, showAllGoodIcon: data }))
+    // ------------------------------------------------------------------------------------------
     setErrors = (data) => {this.setState(state => ({...state, errors: data}))}
+    // ------------------------------------------------------------------------------------------
     setIsSubmitting = (data) => this.setState(state => ({...state, isSubmitting: data}))
-
-
+    // ------------------------------------------------------------------------------------------
     /**
      * This function is used for validating if the data the user inserted in a field is valid or not.
      * @param {String} name - The name is actually a key that we use to reference on what the field you are validating is.
@@ -65,7 +57,7 @@ class Company extends React.Component {
                 return true
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * This does two things:
      * - Checks if a field is valid and 
@@ -85,7 +77,7 @@ class Company extends React.Component {
         this.setErrors(this.state.errors)
         return isValidValue
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Changes the company name and checks if the data being inserted in the state is valid or not. 
      * It's important to notice that this data is in the redux and not inside of this component.
@@ -98,7 +90,7 @@ class Company extends React.Component {
         this.props.company.name = name
         this.props.onChangeCompanyUpdateDataState({...this.props.company})
     }
-
+    // ------------------------------------------------------------------------------------------
     /** 
      * Changes the file of the logo so we can send it to the backend.
      * 
@@ -125,7 +117,7 @@ class Company extends React.Component {
             this.setLogoFile(filename, file)
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * Gets what image to render in the image field for the user. If he has selected a image, needs to show the preview.
      * If he has a image saved, renders the url recieved, otherwise render a default image.
@@ -139,7 +131,7 @@ class Company extends React.Component {
             return process.env['APP'] === 'web' ? '/no_company_logo.png' : require('../../../mobile/assets/no_company_logo.png')
         }
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
      * This function submits the data to the backend, if everything went fine we show an Icon indicationg everything went fine
      * otherwise we update the errors state object indicating the field that had errors. This is similar on how UsersForm component
@@ -168,7 +160,8 @@ class Company extends React.Component {
             this.setIsSubmitting(false)
         })
     }
-
+    // ------------------------------------------------------------------------------------------
+    /////////////////////////////////////////////////////////////////////////////////////////////
     componentDidMount = () => {
         // When we mount gets only the data needed to update. We don't use the one already retrieved since the data to update
         // can be different of the data we use to update. This way we keep stuff separated.
@@ -176,42 +169,43 @@ class Company extends React.Component {
         this.source = this.cancelToken.source()
         this.props.onGetCompanyUpdateData(this.source)
     }
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     componentWillUnmount = () => {
         this._ismounted = false
         if (this.source) {
             this.source.cancel()
         }
     }
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //########################################################################################//
     renderMobile = () => {
         return (
-            <CompanyFormularyContainer>
-                <CompanyFormularyFieldContainer>
-                    <CompanyFormularyFieldLabel>
+            <Styled.CompanyFormularyContainer>
+                <Styled.CompanyFormularyFieldContainer>
+                    <Styled.CompanyFormularyFieldLabel>
                         {strings['pt-br']['companyConfigurationFormularyLogoFieldLabel']}
-                    </CompanyFormularyFieldLabel>
+                    </Styled.CompanyFormularyFieldLabel>
                     <TouchableOpacity onPress={e=> this.props.pickImage().then(file=> this.onChangeCompanyLogo([file]))}>
-                        <CompanyFormularyLogo source={this.getImageToRender()}/>
+                        <Styled.CompanyFormularyLogo source={this.getImageToRender()}/>
                     </TouchableOpacity>
-                </CompanyFormularyFieldContainer>
-                <CompanyFormularyFieldContainer>
-                    <CompanyFormularyFieldLabel>
+                </Styled.CompanyFormularyFieldContainer>
+                <Styled.CompanyFormularyFieldContainer>
+                    <Styled.CompanyFormularyFieldLabel>
                         {strings['pt-br']['companyConfigurationFormularyNameFieldLabel']}
-                    </CompanyFormularyFieldLabel>
-                    <CompanyFormularyFieldInput 
+                    </Styled.CompanyFormularyFieldLabel>
+                    <Styled.CompanyFormularyFieldInput 
                     type={'text'} 
                     value={this.props.company.name} 
                     errors={this.state.errors.hasOwnProperty('name')} 
                     onChange={e=> this.onChangeCompanyName(e.nativeEvent.text)}
                     />
                     {this.state.errors.hasOwnProperty('name') ? (
-                        <CompanyFormularyFieldError>
+                        <Styled.CompanyFormularyFieldError>
                             {this.state.errors.name}
-                        </CompanyFormularyFieldError>
+                        </Styled.CompanyFormularyFieldError>
                     ) : null}
-                </CompanyFormularyFieldContainer>
-                <CompanyFormularySaveButton onPress={e=> {
+                </Styled.CompanyFormularyFieldContainer>
+                <Styled.CompanyFormularySaveButton onPress={e=> {
                     this.state.isSubmitting ? null: this.onSubmit()
                 }}>
                     {this.state.isSubmitting ? (
@@ -219,63 +213,63 @@ class Company extends React.Component {
                     ) : this.state.showAllGoodIcon ? (
                         <FontAwesomeIcon icon="check"/>
                     ) : (
-                        <CompanyFormularySaveButtonText>
+                        <Styled.CompanyFormularySaveButtonText>
                             {strings['pt-br']['companyConfigurationFormularySaveButtonLabel']}
-                        </CompanyFormularySaveButtonText>
+                        </Styled.CompanyFormularySaveButtonText>
                     )}
-                </CompanyFormularySaveButton>
-            </CompanyFormularyContainer>
+                </Styled.CompanyFormularySaveButton>
+            </Styled.CompanyFormularyContainer>
         )
     }
-
+    //########################################################################################//
     renderWeb = () => {
         return (
-            <CompanyFormularyContainer>
-                <CompanyFormularyFieldContainer>
-                    <CompanyFormularyFieldLabel>
+            <Styled.CompanyFormularyContainer>
+                <Styled.CompanyFormularyFieldContainer>
+                    <Styled.CompanyFormularyFieldLabel>
                         {strings['pt-br']['companyConfigurationFormularyLogoFieldLabel']}
-                    </CompanyFormularyFieldLabel>
-                    <CompanyFormularyLogoContainer>
+                    </Styled.CompanyFormularyFieldLabel>
+                    <Styled.Styled.CompanyFormularyLogoContainer>
                         {this.state.logoFile || !['', null].includes(this.props.company.logo_image_url) ? '' : (
-                            <CompanyFormularyLogoHelperLabel>
+                            <Styled.Styled.CompanyFormularyLogoHelperLabel>
                                 {strings['pt-br']['companyConfigurationFormularyLogoHelperFieldLabel']}
-                            </CompanyFormularyLogoHelperLabel>
+                            </Styled.Styled.CompanyFormularyLogoHelperLabel>
                         )}
-                        <CompanyFormularyLogo ref={this.companyLogoRef} src={this.getImageToRender()}/>
+                        <Styled.CompanyFormularyLogo ref={this.companyLogoRef} src={this.getImageToRender()}/>
                         <input type="file" style={{display: 'none'}} onChange={e=>this.onChangeCompanyLogo(e.target.files)}/>
-                    </CompanyFormularyLogoContainer>
-                </CompanyFormularyFieldContainer>
-                <CompanyFormularyFieldContainer>
-                    <CompanyFormularyFieldLabel>
+                    </Styled.Styled.CompanyFormularyLogoContainer>
+                </Styled.CompanyFormularyFieldContainer>
+                <Styled.CompanyFormularyFieldContainer>
+                    <Styled.CompanyFormularyFieldLabel>
                         {strings['pt-br']['companyConfigurationFormularyNameFieldLabel']}
-                    </CompanyFormularyFieldLabel>
-                    <CompanyFormularyFieldInput 
+                    </Styled.CompanyFormularyFieldLabel>
+                    <Styled.CompanyFormularyFieldInput 
                     type={'text'} 
                     value={this.props.company.name} 
                     errors={this.state.errors.hasOwnProperty('name')} 
                     onChange={e=> this.onChangeCompanyName(e.target.value)}
                     />
                     {this.state.errors.hasOwnProperty('name') ? (
-                        <CompanyFormularyFieldError>
+                        <Styled.CompanyFormularyFieldError>
                             {this.state.errors.name}
-                        </CompanyFormularyFieldError>
+                        </Styled.CompanyFormularyFieldError>
                     ) : ''}
-                </CompanyFormularyFieldContainer>
-                <CompanyFormularySaveButton onClick={e=> this.state.isSubmitting ? null: this.onSubmit()}>
+                </Styled.CompanyFormularyFieldContainer>
+                <Styled.CompanyFormularySaveButton onClick={e=> this.state.isSubmitting ? null: this.onSubmit()}>
                     {this.state.isSubmitting ? (
                         <Spinner animation="border" size="sm"/>
                     ) : this.state.showAllGoodIcon ? (
                         <FontAwesomeIcon icon="check"/>
                     ) : (
-                        <CompanyFormularySaveButtonText>
+                        <Styled.CompanyFormularySaveButtonText>
                             {strings['pt-br']['companyConfigurationFormularySaveButtonLabel']}
-                        </CompanyFormularySaveButtonText>
+                        </Styled.CompanyFormularySaveButtonText>
                     )}
-                </CompanyFormularySaveButton>
-            </CompanyFormularyContainer>
+                </Styled.CompanyFormularySaveButton>
+            </Styled.CompanyFormularyContainer>
         )
     }
-
+    //########################################################################################//
     render = () => {
         return process.env['APP'] === 'web' ? this.renderWeb() : this.renderMobile()
     }
