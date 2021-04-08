@@ -1,6 +1,5 @@
 import React, { createRef } from 'react'
 import { Text, TouchableOpacity } from 'react-native'
-import Router from 'next/router'
 import { connect } from 'react-redux';
 import actions from '../../redux/actions'
 import dynamicImport from '../../utils/dynamicImport'
@@ -9,6 +8,7 @@ import { strings, errors, paths } from '../../utils/constants'
 import Styled from './styles'
 
 const Spinner = dynamicImport('react-bootstrap', 'Spinner')
+const Router = dynamicImport('next/router')
 
 
 /**

@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import moment from 'moment'
 import { strings, paths } from '../../utils/constants'
-import Router from 'next/router'
+import dynamicImport from '../../utils/dynamicImport'
 import { View , Text, RefreshControl } from 'react-native'
 import Styled from './styles'
 
+const Router = dynamicImport('next/router')
 
 /**
  * This component is responsible for loading all of the notifications cards that was created for him from all of the formularies and all of the notification

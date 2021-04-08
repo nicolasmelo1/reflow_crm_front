@@ -1,11 +1,13 @@
 import React from 'react'
 import { Modal, Text, TouchableWithoutFeedback, Keyboard } from 'react-native'
-import Router from 'next/router'
+import dynamicImport from '../../utils/dynamicImport'
 import { strings, paths } from '../../utils/constants'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { connect } from 'react-redux';
 import actions from '../../redux/actions'
 import Styled from './styles'
+
+const Router = dynamicImport('next/router')
 
 /**
  * This component is just used for the user to change the password, the user don't

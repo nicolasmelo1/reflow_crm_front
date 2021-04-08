@@ -1,12 +1,14 @@
 import React from 'react'
-import Router from 'next/router'
 import { connect } from 'react-redux';
 import actions from '../../redux/actions'
+import dynamicImport from '../../utils/dynamicImport'
 import { numberUnmasker } from '../../utils/numberMasker'
 import { strings, paths, errors } from '../../utils/constants'
 import FirstStepForm from './FirstStepForm'
 import SecondStepForm from './SecondStepForm'
 import Styled from './styles'
+
+const Router = dynamicImport('next/router')
 
 /**
  * This component handles the onboarding of a new user. It is important to understand that right now the onboarding formulary consists of 2 simple steps: 

@@ -229,15 +229,15 @@ class Company extends React.Component {
                     <Styled.CompanyFormularyFieldLabel>
                         {strings['pt-br']['companyConfigurationFormularyLogoFieldLabel']}
                     </Styled.CompanyFormularyFieldLabel>
-                    <Styled.Styled.CompanyFormularyLogoContainer>
+                    <Styled.CompanyFormularyLogoContainer>
                         {this.state.logoFile || !['', null].includes(this.props.company.logo_image_url) ? '' : (
-                            <Styled.Styled.CompanyFormularyLogoHelperLabel>
+                            <Styled.CompanyFormularyLogoHelperLabel>
                                 {strings['pt-br']['companyConfigurationFormularyLogoHelperFieldLabel']}
-                            </Styled.Styled.CompanyFormularyLogoHelperLabel>
+                            </Styled.CompanyFormularyLogoHelperLabel>
                         )}
                         <Styled.CompanyFormularyLogo ref={this.companyLogoRef} src={this.getImageToRender()}/>
                         <input type="file" style={{display: 'none'}} onChange={e=>this.onChangeCompanyLogo(e.target.files)}/>
-                    </Styled.Styled.CompanyFormularyLogoContainer>
+                    </Styled.CompanyFormularyLogoContainer>
                 </Styled.CompanyFormularyFieldContainer>
                 <Styled.CompanyFormularyFieldContainer>
                     <Styled.CompanyFormularyFieldLabel>

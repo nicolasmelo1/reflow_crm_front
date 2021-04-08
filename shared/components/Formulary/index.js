@@ -438,7 +438,7 @@ class Formulary extends React.Component {
             this.getBuildFormulary(formName).then(formularyBuildData => {
                 this.setIsLoading(false)
                 if (formId) {
-                    this.props.onGetFormularyData(this.source, formName, formId, this.props.formularyDefaultData).then(data=> {
+                    this.props.onGetFormularyData(formName, formId, this.props.formularyDefaultData).then(data=> {
                         const id = data.id ? data.id : null
                         const sectionsData = data.depends_on_dynamic_form ? data.depends_on_dynamic_form : []
                         this.setFilledDataAndBuildData(id, false, false, sectionsData, formularyBuildData)
@@ -547,7 +547,7 @@ class Formulary extends React.Component {
                 this.source.cancel()
             }
             this.source = this.CancelToken.source()
-            this.props.onGetFormularyData(this.source, this.props.formName, this.props.formularyId, this.props.formularyDefaultData).then(data=> {
+            this.props.onGetFormularyData(this.props.formName, this.props.formularyId, this.props.formularyDefaultData).then(data=> {
                 const id = data.id ? data.id : null
                 const sectionsData = data.depends_on_dynamic_form ? data.depends_on_dynamic_form : []
                 // need to set hasBuiltInitial to false in order to update in the sections

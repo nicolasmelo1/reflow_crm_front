@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text } from 'react-native'
-import Router from 'next/router'
 import { paths, strings } from '../../utils/constants'
 import dynamicImport from '../../utils/dynamicImport'
 import PDFGeneratorReaderDownloader from './PDFGeneratorReaderDownloader'
 import Styled from './styles'
 
-
+const Router = dynamicImport('next/router')
 const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 
 /**

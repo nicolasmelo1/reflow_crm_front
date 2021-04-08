@@ -15,8 +15,8 @@ const FORMULARY = {
     createFormularyData: async (body, formName) => {
         return await requests.post(`data/${companyId}/${formName}/`, body)
     },
-    getFormularyData: async (source, formName, formId) => {
-        return await requests.get(`data/${companyId}/${formName}/${formId}/`, {}, {}, source)
+    getFormularyData: async (formName, formId) => {
+        return await requests.get(`data/${companyId}/${formName}/${formId}/`, {}, {}, null)
     },
     updateFormularyData: async (body, formName, formId, duplicate=null) => {
         const duplicateUrl = (duplicate) ? '?duplicate=duplicate' : ''

@@ -1,5 +1,4 @@
 import React from 'react'
-import Router from 'next/router'
 import { connect } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import axios from 'axios'
@@ -7,16 +6,12 @@ import NavbarLink from './NavbarLink'
 import NavbarDropdown from './NavbarDropdown'
 import { strings, paths } from '../../utils/constants'
 import actions from '../../redux/actions'
+import dynamicImport from '../../utils/dynamicImport'
 import isAdmin from '../../utils/isAdmin'
 import isEqual from '../../utils/isEqual'
-import { 
-    NavbarFreeTrialAlertButton, 
-    NavbarFreeTrialAlertText,
-    NavbarLogo, 
-    NavbarToggleButton, 
-    NavbarItemsContainer, 
-    NavbarContainer 
-} from '../../styles/Navbar'
+import Styled from './styles'
+
+const Router = dynamicImport('next/router')
 
 /** 
  * On the browser this component is called inside of the Layout component, but since React Navigation works differently, on mobile 
@@ -180,25 +175,25 @@ class Navbar extends React.Component {
 
     renderWeb = () => {
         return (
-            <NavbarContainer>
-                <NavbarLogo src={!['', null].includes(this.props.company.logo_image_url) ? this.props.company.logo_image_url : '/complete_logo.png'}/>
+            <Styled.NavbarContainer>
+                <Styled.NavbarLogo src={!['', null].includes(this.props.company.logo_image_url) ? this.props.company.logo_image_url : '/complete_logo.png'}/>
                 {this.isFreeTrial() && isAdmin(this.props.login.types?.defaults?.profile_type, this.props.login.user) ? (
-                    <NavbarFreeTrialAlertButton onClick={e=> {this.handleBilling()}}>
-                        <NavbarFreeTrialAlertText isBold={true}>
+                    <Styled.NavbarFreeTrialAlertButton onClick={e=> {this.handleBilling()}}>
+                        <Styled.NavbarFreeTrialAlertText isBold={true}>
                             {`${this.freeTrialRemainingDays()}`}
-                        </NavbarFreeTrialAlertText>
-                        <NavbarFreeTrialAlertText>
+                        </Styled.NavbarFreeTrialAlertText>
+                        <Styled.NavbarFreeTrialAlertText>
                             {strings['pt-br']['headerFreeTrialAlertDaysLabel']}
-                        </NavbarFreeTrialAlertText>
-                        <NavbarFreeTrialAlertText isBold={true}>
+                        </Styled.NavbarFreeTrialAlertText>
+                        <Styled.NavbarFreeTrialAlertText isBold={true}>
                             {strings['pt-br']['headerFreeTrialUpdateNowLabel']}
-                        </NavbarFreeTrialAlertText>
-                    </NavbarFreeTrialAlertButton>
+                        </Styled.NavbarFreeTrialAlertText>
+                    </Styled.NavbarFreeTrialAlertButton>
                 ) : ''}
-                <NavbarToggleButton onClick={e=> {this.setIsOpen(!this.state.isOpen)}}>
+                <Styled.NavbarToggleButton onClick={e=> {this.setIsOpen(!this.state.isOpen)}}>
                     <FontAwesomeIcon icon={this.state.isOpen ? 'times' : 'bars'}/>
-                </NavbarToggleButton>
-                <NavbarItemsContainer isOpen={this.state.isOpen}>
+                </Styled.NavbarToggleButton>
+                <Styled.NavbarItemsContainer isOpen={this.state.isOpen}>
                     {(this.props.navbar.isInHomeScreen && this.state.homeFormularyData !== null) ? (
                         <NavbarDropdown icon='tasks' label={this.state.homeFormularyData.label_name} items={this.getToolsDropdown()}/>
                     ) : (
@@ -206,8 +201,8 @@ class Navbar extends React.Component {
                     )}
                     <NavbarLink badge={this.props.notificationBadge > 0 ? this.props.notificationBadge : null} link={paths.notifications().asUrl} slug={paths.notifications().asUrl} icon='bell' label={strings['pt-br']['headerNotificationLabel']}/>
                     <NavbarDropdown icon='cog' label={strings['pt-br']['headerSettingsLabel']} items={this.getConfigDropdown()}/>
-                </NavbarItemsContainer>
-            </NavbarContainer>
+                </Styled.NavbarItemsContainer>
+            </Styled.NavbarContainer>
         )
     }
 

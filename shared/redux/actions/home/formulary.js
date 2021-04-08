@@ -23,10 +23,10 @@ const onGetBuildFormulary = (source, formName) => {
     }
 }
 
-const onGetFormularyData = (source, formName, formId, defaults=[]) => {
+const onGetFormularyData = (formName, formId, defaults=[]) => {
     return async (_) => {
         let data = {}
-        const response = await agent.http.FORMULARY.getFormularyData(source, formName, formId)
+        const response = await agent.http.FORMULARY.getFormularyData(formName, formId)
         if (response && response.status === 200){
             data = response.data.data
             defaults.forEach(defaultData => {

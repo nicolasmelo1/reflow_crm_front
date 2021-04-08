@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { ActivityIndicator, Modal, Text } from 'react-native'
-import Router from 'next/router'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import Formulary from '../Formulary'
 import { paths, strings } from '../../utils/constants'
@@ -25,6 +24,7 @@ import {
 } from '../../styles/Templates'
 
 const Spinner = dynamicImport('react-bootstrap', 'Spinner')
+const Router = dynamicImport('next/router')
 
 /**
  * This component is  responsible for handling the preview of the formularies.

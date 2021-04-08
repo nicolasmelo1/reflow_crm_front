@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { useRouter } from 'next/router'
 import dynamicImport from '../../utils/dynamicImport'
 import { strings } from '../../utils/constants'
 import Alert from '../Utils/Alert'
@@ -13,6 +12,7 @@ import {
 
 const OverlayTrigger = dynamicImport('react-bootstrap', 'OverlayTrigger')
 const Popover = dynamicImport('react-bootstrap', 'Popover')
+const useRouter = dynamicImport('next/router', 'useRouter')
 
 const PopoverWithContent = React.forwardRef((props, ref) => {
     return (

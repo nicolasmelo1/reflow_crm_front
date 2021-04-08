@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import Router, { useRouter } from 'next/router'
 import SidebarFormEdit from './SidebarFormEdit'
 import Alert from '../Utils/Alert'
+import dynamicImport from '../../utils/dynamicImport'
 import { paths, strings } from '../../utils/constants'
 import { 
     SidebarDisabledGroupLabel, 
@@ -12,6 +12,9 @@ import {
     SidebarAccordion, 
     SidebarCard 
 } from '../../styles/Sidebar'
+
+const Router = dynamicImport('next/router')
+const useRouter = dynamicImport('next/router', 'useRouter')
 
 const SidebarGroupEdit = (props) => {
     const isMoving = React.useRef(false)

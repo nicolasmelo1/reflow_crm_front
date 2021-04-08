@@ -1,6 +1,5 @@
 import React from 'react'
-import Router from 'next/router';
-import { connect } from 'react-redux';
+import { connect } from 'react-redux'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { TouchableWithoutFeedback, Keyboard, SafeAreaView, Platform, View } from 'react-native'
 import Sidebar from './Sidebar'
@@ -8,6 +7,7 @@ import Navbar from './Navbar'
 import Notify from './Notify'
 import Templates from './Templates'
 import actions from '../redux/actions'
+import dynamicImport from '../utils/dynamicImport'
 import agent from '../utils/agent'
 import { pathsAsArray } from '../utils/constants/paths'
 import { paths, errors } from '../utils/constants'
@@ -56,6 +56,7 @@ import {
     faAlignRight
 } from '@fortawesome/free-solid-svg-icons'
 
+const Router = dynamicImport('next/router')
 
 library.add(
     faInfoCircle,
