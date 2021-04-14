@@ -157,12 +157,21 @@ const PDFGeneratorCreatorEditor = (props) => {
         isMountedRef.current = true
         sourceRef.current = axios.CancelToken.source()
         setIsLoading(true)
-        props.onGetPDFGeneratorTemplateConfiguration(sourceRef.current, props.formName, props.templateData.id).then(response => {
-            if (response && response.status === 200) {
-                setTemplateData(response.data.data)
-            }
-            setIsLoading(false)
-        }).catch(__ => setIsLoading(false))
+        if (props.templateData.id) {
+            props.onGetPDFGeneratorTemplateConfiguration(sourceRef.current, props.formName, props.templateData.id).then(response => {
+                if (response && response.status === 200) {
+                    setTemplateData(response.data.data)
+                }
+                setIsLoading(false)
+            }).catch(__ => setIsLoading(false))
+        } else {
+            setTemplateData({
+                id: null,
+                name: 'Novo Template',
+                rich_text_page: {},
+                template_configuration_variables: []
+            })
+        }
 
         return () => {
             isMountedRef.current = false
