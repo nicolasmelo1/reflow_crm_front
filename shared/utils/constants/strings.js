@@ -176,6 +176,7 @@ const strings = {
         formularyEditFieldDisabledLabel: 'O campo está desativado',
         formularyEditSectionPlaceholderLabel: 'Insira o nome da seção',
         formularyEditSectionDisabledLabel: 'A seção está desativada',
+        formularyEditLoadingFormularyData: 'Carregando...',
         formularyEditAddNewSectionButtonLabel: 'Adicionar nova seção',
         formularyEditAddNewFieldButtonLabel: 'Adicionar novo campo',
         formularyEditSectionTrashIconPopover: 'Excluir',

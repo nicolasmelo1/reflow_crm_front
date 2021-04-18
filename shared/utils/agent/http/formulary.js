@@ -62,8 +62,8 @@ const FORMULARY = {
     testFormularyFormulaField: async (source, formId, text) => {
         return await requests.get(`formula/${companyId}/${formId}/`, { text: text }, {}, source)
     },
-    getFieldOptions: async (formId) => {
-        return await requests.get(`formulary/${companyId}/settings/${formId}/field_options/`)
+    getFormularySettingsConnectionFieldOptions: async (source, formId) => {
+        return await requests.get(`formulary/${companyId}/settings/fields/${formId}/form/field_options/`, {}, {}, source)
     },
     updatePublicFormularySettings: async (body, formId) => {
         return await requests.post(`formulary/${companyId}/settings/${formId}/public/`, body)

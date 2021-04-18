@@ -22,7 +22,7 @@ const Option = (props) => {
         } else {
             props.field.field_option.push(getNewFieldOption(value))
         }
-        props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
+        props.onUpdateField(props.field)
     }
 
     let fieldOptions = [...props.field.field_option]

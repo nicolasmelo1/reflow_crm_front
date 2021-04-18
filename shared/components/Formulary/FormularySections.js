@@ -155,8 +155,7 @@ const FormularySections = (props) => {
             }
         })
         newSectionsData = toggleConditionals(sectionsData, conditionals)
-        props.setFilledData(props.data.id, [...newSectionsData])
-        //onChangeSectionData(sectionsData, conditionals)
+        props.setFilledData(props.data.id, sectionsData)
     }
     // ------------------------------------------------------------------------------------------
     function buildInitialData(conditionals) {
@@ -235,7 +234,13 @@ const FormularySections = (props) => {
             <div>
                 {sectionsToLoad.map((section, index) => (
                     <Formularies.SectionContainer key={index} isConditional={section.conditional_value !== null} isMultiSection={section.form_type==='multi-form'}>
-                        <Formularies.TitleLabel isConditional={section.conditional_value !== null}>{ section.label_name }</Formularies.TitleLabel>
+                        {section.show_label_name ? (
+                             <Formularies.TitleLabel 
+                             isConditional={section.conditional_value !== null}
+                             >
+                                 { section.label_name }
+                             </Formularies.TitleLabel>
+                        ) : ''}
                         {section.form_type==='multi-form' ? (
                             <Formularies.MultiForm.AddButton onClick={e=>addSection(e, section)}>
                                 {strings['pt-br']['formularyMultiFormAddButtonLabel']}

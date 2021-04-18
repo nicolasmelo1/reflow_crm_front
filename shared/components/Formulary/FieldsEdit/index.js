@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, memo } from 'react'
 import { View } from 'react-native'
 import Number from './Number'
 import Period from './Period'
@@ -13,6 +13,14 @@ import deepCopy from '../../../utils/deepCopy'
 import Overlay from '../../../styles/Overlay'
 import Alert from '../../Utils/Alert'
 import agent from '../../../utils/agent'
+import isEqual from '../../../utils/isEqual'
+import delay from '../../../utils/delay'
+
+let previousFieldProps = {
+    formName: '',
+    previousProps: {}
+}
+const makeDelay = delay(1000)
 
 /**
  * We created this component because probably each selection item will be styled
@@ -30,120 +38,118 @@ const FieldOption = (props) => {
 /**
  * This component controls a unique and single field.
  * 
- * @param {Boolean} fieldIsMoving - boolean that defines if the field is being dragged or not
- * @param {function} setFieldIsMoving - function to set true or false in the `fieldIsMoving` variable to say
- * if the field is being dragged or not.
- * @param {BigInteger} sectionIndex - the index of the section inside of the section array
- * @param {function} onMoveField - function helper created in the parent component to update 
+ * @param {function} onReorderField - function helper created in the parent component to update 
  * a single field when it has been dragged and dropped
  * @param {object} types - the types state, this types are usually the required data from this system to work. 
  * Types defines all of the field types, form types, format of numbers and dates and many other stuff 
  * @param {function} removeField - function helper created in the parent component to remove a single field
  * @param {Object} field - the object of a single field
- * @param {BigInteger} fieldIndex - the index of this single field in the fields array of the section
- * @param {function} onUpdateField - function helper created in the parent component to 
- * update a single field in the data store, this function is passed to the field directly
- * @param {Array<Object>} formulariesOptions - the formulariesOptions are all of the formularies the user can select when a user selects
- * the `form` field type or when the user creates a conditional section
  */
 const FormularyFieldEdit = (props) => {
+    const isMountedRef = React.useRef(false)
     const [fieldTypeIsOpen, setFieldTypeIsOpen] = useState(false)
-    const [isEditing, setIsEditing] = useState(false)
+    const [isEditing, setIsEditing] = useState(props.field.id === null)
+    const [fieldErrors, setFieldErrors] = useState([])
     const [fieldTypes, setFieldTypes] = useState([])
     const [initialFieldType, setInitialFieldType] = useState([])
     const [showAlert, setShowAlert] = useState(false)
     const [draftToFileReference, setDraftToFileReference] = useState({})
     const [defaultValueIsOpen, setDefaultValueIsOpen] = useState(false)
     // ------------------------------------------------------------------------------------------
-    const getFieldTypeName = () => {
-        const fieldType = props.types.data.field_type.filter(fieldType => fieldType.id === props.field.type)
-        if (fieldType.length > 0) {
-            return fieldType[0].type
-        } else {
-            return ''
+    const onDragFieldStart = (e) => {
+        if (process.env['APP'] === 'web') {
+            let fieldContainer = e.currentTarget.closest('.field-container')
+            let fieldContainerRect = fieldContainer.getBoundingClientRect()
+            let elementRect = e.currentTarget.getBoundingClientRect()
+            e.dataTransfer.setDragImage(fieldContainer, fieldContainerRect.width - ((fieldContainerRect.width + fieldContainerRect.x) - elementRect.x - (elementRect.width)/2), 20)
+            e.dataTransfer.setData('fieldUUIDToMove', JSON.stringify(props.field.uuid))
         }
     }
     // ------------------------------------------------------------------------------------------
-    const onMoveField = (e) => {
-        let fieldContainer = e.currentTarget.closest('.field-container')
-        let elementRect = e.currentTarget.getBoundingClientRect()
-        e.dataTransfer.setDragImage(fieldContainer, elementRect.width-elementRect.left - ( elementRect.right - elementRect.width ), 20)
-        e.dataTransfer.setData('fieldSectionIndexToMove', JSON.stringify(props.sectionIndex))
-        e.dataTransfer.setData('fieldIndexToMove', JSON.stringify(props.fieldIndex))
-        props.setFieldIsMoving(true)
-    }
-    // ------------------------------------------------------------------------------------------
-    const onRemoveField = () => {
-        props.removeField(props.sectionIndex, props.fieldIndex)
-    }
-    // ------------------------------------------------------------------------------------------
-    const onDrop = (e) => {
-        let movedFieldSectionIndex = e.dataTransfer.getData('fieldSectionIndexToMove')
-        let movedFieldIndex = e.dataTransfer.getData('fieldIndexToMove')
-        if (movedFieldIndex !== '' && movedFieldSectionIndex !== '') {
-            movedFieldSectionIndex = JSON.parse(movedFieldSectionIndex)
-            movedFieldIndex = JSON.parse(movedFieldIndex)
-            props.onMoveField(movedFieldSectionIndex, movedFieldIndex, props.sectionIndex, props.fieldIndex)
-        }
-    }
-    // ------------------------------------------------------------------------------------------
-    const onDragEnd = (e) => {
-        props.setFieldIsMoving(false)
-    }
-    // ------------------------------------------------------------------------------------------
-    const onDisableField = (e) => {
-        let fieldData = {...props.field}
-        fieldData.enabled = !fieldData.enabled
-        props.onUpdateField(props.sectionIndex, props.fieldIndex, fieldData)
-    }
-    // ------------------------------------------------------------------------------------------
-    const onChangeFieldName = (fieldName) => {
-        let fieldData = {...props.field}
-        fieldData.label_name = fieldName
-        props.onUpdateField(props.sectionIndex, props.fieldIndex, fieldData)
-    }
-    // ------------------------------------------------------------------------------------------
-    const onChangeFieldType = (data) => {
-        let fieldData = {...props.field}
-        fieldData.type = data[0]
-        props.onUpdateField(props.sectionIndex, props.fieldIndex, {...fieldData})
-    }
-    // ------------------------------------------------------------------------------------------
-    const onFilterFieldType = (value) => {
-        return (props.types && props.types.data && props.types.data.field_type) ? props.types.data.field_type
-        .filter(fieldType=> types('pt-br', 'field_type', fieldType.type).includes(value))
-        .map(fieldType=> 
-            { 
-                return { 
-                    value: fieldType.id, 
-                    label: { 
-                        props: {
-                            name: types('pt-br', 'field_type', fieldType.type) 
-                        } 
+    const onDrop = (movedFieldUUID, targetFieldUUID, targetFieldSectionUUID=null) => {
+        if (movedFieldUUID !== '') {
+            try {
+                movedFieldUUID = JSON.parse(movedFieldUUID)
+            } catch {}
+            if (movedFieldUUID !== targetFieldUUID) {
+                try {
+                    const fieldDataToUpdate = props.onReorderField(movedFieldUUID, targetFieldUUID, targetFieldSectionUUID)
+                    onUpdateField(fieldDataToUpdate)
+                } catch (error) {
+                    if (error instanceof ReferenceError) {
+                        console.warn(error.message)
+                    } else {
+                        throw error
                     }
                 }
             }
-        ): []
+        }
     }
     // ------------------------------------------------------------------------------------------
+    /**
+     * When the user disables a field it is not visible by the users, it's not even loaded from the backend, with this the user
+     * is still able to retrieve the data for this field without deleting it.
+     */
+    const onDisableField = () => {
+        props.field.enabled = !props.field.enabled
+        onUpdateField(props.field)
+    }
+    // ------------------------------------------------------------------------------------------
+    /**
+     * The same as the section label_name, this is not the name (the slug id of the field), it is the actual label_name
+     * that appears on top of the field if `label_is_hidden` is false.
+     * 
+     * @param {String} fieldName - The string representing the name of the field
+     */
+    const onChangeFieldName = (fieldName) => {
+        props.field.label_name = fieldName
+        onUpdateField(props.field)
+    }
+    // ------------------------------------------------------------------------------------------
+    /**
+     * Changes the type of the field, it can be a text, a option, a connection and so on.
+     * 
+     * @param {Array<String>} data 
+     */
+    const onChangeFieldType = (data) => {
+        props.field.type = data[0]
+        onUpdateField(props.field)
+    }
+    // ------------------------------------------------------------------------------------------
+    /**
+     * This is kinda self explanatory, if it's required the user cannot continue without giving a value to it.
+     */
     const onChangeRequired = () => {
         props.field.required = !props.field.required
-        props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
+        onUpdateField(props.field)
+
     }
     // ------------------------------------------------------------------------------------------
+    /**
+     * This changes if the field is unique, if the field is unique, then needs to exist ONE and JUST ONE
+     * data with this value.
+     */
     const onChangeIsUnique = () => {
         props.field.is_unique = !props.field.is_unique
-        props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
+        onUpdateField(props.field)
     }
     // ------------------------------------------------------------------------------------------
+    /**
+     * Label is hidden just hides the label and shows the actual field. So the user just update the field and doesn't see 
+     * the label.
+     */
     const onChangeLabelIsHidden = () => {
         props.field.label_is_hidden = !props.field.label_is_hidden
-        props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
+        onUpdateField(props.field)
     }
     // ------------------------------------------------------------------------------------------
+    /**
+     * Field is hidden just hides the field and shows only the title, this is nice when you want the user to be able to add
+     * new connections, or just want a nice title without the field
+     */
     const onChangeFieldIsHidden = () => {
         props.field.field_is_hidden = !props.field.field_is_hidden
-        props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
+        onUpdateField(props.field)
     }
     // ------------------------------------------------------------------------------------------
     /**
@@ -158,7 +164,7 @@ const FormularyFieldEdit = (props) => {
                 id: null,
                 value: value
             })
-            props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
+            onUpdateField(props.field)
         }
     }
     // ------------------------------------------------------------------------------------------
@@ -171,7 +177,7 @@ const FormularyFieldEdit = (props) => {
      */
     const onRemoveDefaultFieldValue = (__, value) => {
         props.field.field_default_field_values = props.field.field_default_field_values.filter(defaultFieldValue => defaultFieldValue.value !== value)
-        props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
+        onUpdateField(props.field)
     }
     // ------------------------------------------------------------------------------------------
     /**
@@ -188,7 +194,7 @@ const FormularyFieldEdit = (props) => {
                 props.field.field_default_field_values[i].value = newValue
             }
         }
-        props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
+        onUpdateField(props.field)
     }
     // ------------------------------------------------------------------------------------------
     /**
@@ -220,6 +226,100 @@ const FormularyFieldEdit = (props) => {
         return await agent.http.FORMULARY.getFormularySettingsDefaultAttachmentFile(props.formId, props.field.id, fileName)
     }
     // ------------------------------------------------------------------------------------------
+    const onUpdateField = (fieldData) => {
+        props.onUpdateFormularySettingsState()
+        onSubmitFieldChanges(fieldData)
+    }
+    // ------------------------------------------------------------------------------------------
+    /**
+     * When the user edits a field, we automatically save or update the field. We give a delay of 1 second, so
+     * when the user stops updating the field we automatically update it for him, this way whathever he does is automatically commited
+     * without the need of hitting save.
+     * 
+     * We do this because it's easier to manage this way.
+     */
+    const onSubmitFieldChanges = (fieldData) => {
+        const handleErrors = (responseData) => {
+            if (isMountedRef.current) {
+                if (responseData.hasOwnProperty('label_name') && responseData.label_name.reason === 'label_name_already_exists') {
+                    fieldErrors.push(responseData.label_name.reason)
+                    setFieldErrors([...fieldErrors])
+                } 
+            }
+        }
+
+        const dismissErrors = () => {
+            if (isMountedRef.current && fieldErrors.length !== 0) {
+                setFieldErrors([])
+            }
+        }
+
+        makeDelay(() => {
+            // makes a copy of the section
+            const bodyToUpload = deepCopy(fieldData)
+            if (![null, -1].includes(bodyToUpload.id)) {
+                props.onUpdateFormularySettingsField(bodyToUpload, props.formId, bodyToUpload.id).then(response => {
+                    if (response && response.status !== 200 && response?.data?.error) {
+                        handleErrors(response?.data?.error)
+                    } else {
+                        dismissErrors()
+                    }}).catch(_ => dismissErrors())
+            } else {
+                props.onCreateFormularySettingsField(bodyToUpload, props.formId).then(response => {
+                    if (response && response.status === 200 && response.data.data !== null && isMountedRef.current) {
+                        props.field.id = response.data.data.id
+                        props.onUpdateFormularySettingsState()
+                    } else if (response && response.status !== 200 && response?.data?.error) {
+                        handleErrors(response?.data?.error)
+                    } else {
+                        dismissErrors()
+                    }
+                }).catch(_ => dismissErrors())
+            }
+        })
+    }
+    // ------------------------------------------------------------------------------------------
+    /**
+     * Retrieves if the field has any errors
+     * 
+     * @returns {Boolean} - Retrieves if the field has any errors, true if it has, otherwise it doesn't have any
+     */
+    const hasErrors = () => {
+        return fieldErrors.includes('label_name_already_exists')
+    }
+    // ------------------------------------------------------------------------------------------
+    /**
+     * Function used for the Select component so the user can filter all of the field types.
+     * 
+     * @param {String} value - The value that the user is inserting and writing in the input.
+     * 
+     * @returns {Array<Object>} - Array of props.types.data.field_type filtered. 
+     */
+     const onFilterFieldType = (value) => {
+        return (props.types && props.types.data && props.types.data.field_type) ? props.types.data.field_type
+        .filter(fieldType=> types('pt-br', 'field_type', fieldType.type).includes(value))
+        .map(fieldType=> 
+            { 
+                return { 
+                    value: fieldType.id, 
+                    label: { 
+                        props: {
+                            name: types('pt-br', 'field_type', fieldType.type) 
+                        } 
+                    }
+                }
+            }
+        ): []
+    }
+    // ------------------------------------------------------------------------------------------
+    /**
+     * If you look closely, the defaultFieldValue input is simple, it's just a field but where the label is hidden
+     * and the field_is_hidden attribute is set to false.
+     * 
+     * This way whenever a new field type is created we can set the default value without much issue.
+     * 
+     * @returns {React.Component<Field>} - The field component to be rendered
+     */
     const getDefaultFieldValueInput = () => {
         const fieldData = deepCopy(props.field)
         fieldData.label_is_hidden = true
@@ -251,6 +351,18 @@ const FormularyFieldEdit = (props) => {
         )
     }
     // ------------------------------------------------------------------------------------------
+    /**
+     * Handy function used to retrieve the fieldTypeName of the field based on it's id
+     */
+     const getFieldTypeName = () => {
+        const fieldType = props.types.data.field_type.filter(fieldType => fieldType.id === props.field.type)
+        if (fieldType.length > 0) {
+            return fieldType[0].type
+        } else {
+            return ''
+        }
+    }
+    // ------------------------------------------------------------------------------------------
     const formularyItemsForFieldTypes = () => {
         const fieldType = getFieldTypeName()
 
@@ -258,20 +370,17 @@ const FormularyFieldEdit = (props) => {
             return (
                 <Option
                 field={props.field}
-                onUpdateField={props.onUpdateField}
+                onUpdateField={onUpdateField}
                 types={props.types}
-                sectionIndex={props.sectionIndex}
-                fieldIndex={props.fieldIndex}
                 />
             )
         } else if (fieldType === 'number') {
             return (
                 <Number
                 field={props.field}
-                onUpdateField={props.onUpdateField}
+                onUpdateField={onUpdateField}
                 types={props.types}
-                sectionIndex={props.sectionIndex}
-                fieldIndex={props.fieldIndex}
+                retrieveFormularyData={props.retrieveFormularyData}
                 formId={props.formId}
                 onTestFormularySettingsFormulaField={props.onTestFormularySettingsFormulaField}
                 />
@@ -280,32 +389,26 @@ const FormularyFieldEdit = (props) => {
             return (
                 <Period
                 field={props.field}
-                onUpdateField={props.onUpdateField}
+                onUpdateField={onUpdateField}
                 types={props.types}
-                sectionIndex={props.sectionIndex}
-                fieldIndex={props.fieldIndex}
                 />
             )
         } else if (fieldType === 'date') {
             return (
                 <Datetime
                 field={props.field}
-                onUpdateField={props.onUpdateField}
+                onUpdateField={onUpdateField}
                 types={props.types}
-                sectionIndex={props.sectionIndex}
-                fieldIndex={props.fieldIndex}
                 />
             )
         } else if (fieldType === 'form') {
             return (
                 <Connection
                 formName={props.formName}
+                formId={props.formId}
                 field={props.field}
-                onUpdateField={props.onUpdateField}
+                onUpdateField={onUpdateField}
                 types={props.types}
-                sectionIndex={props.sectionIndex}
-                fieldIndex={props.fieldIndex}
-                formulariesOptions={props.formulariesOptions}
                 />
             )
         }
@@ -313,8 +416,22 @@ const FormularyFieldEdit = (props) => {
     // ------------------------------------------------------------------------------------------
     /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
-
-    }, [props.field])
+        isMountedRef.current = true
+        
+        return () => {
+            isMountedRef.current = false
+        }
+    }, [])
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    useEffect(() => {
+        if (props.dropEventForFieldInEmptySection.movedFieldUUID === props.field.uuid)  {
+            onDrop(props.field.uuid, null, props.dropEventForFieldInEmptySection.targetSectionUUID)
+            props.setDropEventForFieldInEmptySection({
+                targetSectionUUID: '',
+                movedFieldUUID: ''
+            })
+        }
+    }, [props.dropEventForFieldInEmptySection])
     /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         if (isEditing === false) {
@@ -370,7 +487,8 @@ const FormularyFieldEdit = (props) => {
             onDrop={e=>{
                 e.preventDefault()
                 e.stopPropagation()
-                onDrop(e)
+                onDrop(e.dataTransfer.getData('fieldUUIDToMove'), props.field.uuid)
+                e.dataTransfer.clearData()
             }}
             >
                 <Alert 
@@ -382,26 +500,38 @@ const FormularyFieldEdit = (props) => {
                 }} 
                 onAccept={() => {
                     setShowAlert(false)
-                    onRemoveField()
+                    props.onRemoveField(props.field.uuid)
                 }}
                 onAcceptButtonLabel={strings['pt-br']['formularuEditRemoveFieldAlertAcceptButtonLabel']}
                 />
                 <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center'}}>
                     {props.field.label_is_hidden ? (
-                        <small style={{color: '#bfbfbf', margin: '0'}}>{props.field.label_name}</small>
+                        <small 
+                        style={{color: '#bfbfbf', margin: '0'}}
+                        >
+                            {props.field.label_name}
+                        </small>
                     ) : <small/>}
                     <div style={{height: '1em', margin: '5px'}}>
                         <Overlay text={strings['pt-br']['formularyEditFieldTrashIconPopover']}>
-                            <FormulariesEdit.Icon.FieldIcon size="sm" icon="trash" onClick={e=> {setShowAlert(true)}}/>
+                            <FormulariesEdit.Icon.FieldIcon 
+                            size="sm" 
+                            icon="trash" 
+                            onClick={e=> setShowAlert(true)}
+                            />
                         </Overlay>
                         <Overlay text={(props.field.enabled) ? strings['pt-br']['formularyEditFieldEyeIconPopover'] : strings['pt-br']['formularyEditFieldEyeSlashIconPopover']}>
-                            <FormulariesEdit.Icon.FieldIcon size="sm" icon={(props.field.enabled) ? 'eye' : 'eye-slash'} onClick={e=> {onDisableField(e)}}/>
+                            <FormulariesEdit.Icon.FieldIcon 
+                            size="sm" 
+                            icon={(props.field.enabled) ? 'eye' : 'eye-slash'} 
+                            onClick={e=> onDisableField()}
+                            />
                         </Overlay>
                         <Overlay text={strings['pt-br']['formularyEditFieldMoveIconPopover']}>
                             <div 
                             style={{ float:'right' }} 
                             draggable="true" 
-                            onDragStart={e => {onMoveField(e)}} 
+                            onDragStart={e => {onDragFieldStart(e)}} 
                             onDrag={e => {
                                 e.preventDefault()
                                 e.stopPropagation()
@@ -409,13 +539,20 @@ const FormularyFieldEdit = (props) => {
                             onDragEnd={e => {
                                 e.preventDefault()
                                 e.stopPropagation()
-                                onDragEnd(e)
                             }}>
-                                <FormulariesEdit.Icon.FieldIcon size="sm" icon="arrows-alt"/>
+                                <FormulariesEdit.Icon.FieldIcon 
+                                size="sm" 
+                                icon="arrows-alt"
+                                />
                             </div>
                         </Overlay>
                         <Overlay text={(isEditing) ? strings['pt-br']['formularyEditFieldIsNotEditingIconPopover'] : strings['pt-br']['formularyEditFieldIsEditingIconPopover']}>
-                            <FormulariesEdit.Icon.FieldIcon size="sm" icon="pencil-alt" onClick={e=> {setIsEditing(!isEditing)}} isEditing={isEditing}/>
+                            <FormulariesEdit.Icon.FieldIcon 
+                            size="sm" 
+                            icon="pencil-alt" 
+                            onClick={e=> setIsEditing(!isEditing)} 
+                            isEditing={isEditing}
+                            />
                         </Overlay>
                     </div>
                 </div>
@@ -448,7 +585,13 @@ const FormularyFieldEdit = (props) => {
                                     type="text" 
                                     value={props.field.label_name} 
                                     onChange={e=> {onChangeFieldName(e.target.value)}}
+                                    errors={hasErrors()}
                                     />
+                                    {hasErrors() ? (
+                                        <small style={{color: 'red'}}>
+                                            O nome do campo deve ser unico
+                                        </small>
+                                    ) : ''}
                                 </FormulariesEdit.FieldFormFieldContainer>
                                 {props.field.label_name ? (
                                     <div>
@@ -518,4 +661,39 @@ const FormularyFieldEdit = (props) => {
     return process.env['APP'] === 'web' ? renderWeb() : renderMobile() 
 }
 
-export default FormularyFieldEdit
+const areEqual = (prevProps, nextProps) => {
+    let areThemEqual = true
+
+    if (nextProps.formName !== previousFieldProps.formName) {
+        previousFieldProps = {
+            formName: nextProps.formName,
+            previousProps: {}
+        }
+    }
+
+    if (Object.keys(previousFieldProps.previousProps).includes(nextProps.field.uuid)) {
+        prevProps = previousFieldProps.previousProps[nextProps.field.uuid]
+    } else {
+        areThemEqual = false
+    }
+
+    if (nextProps.dropEventForFieldInEmptySection.movedFieldUUID === nextProps.field.uuid) {
+        areThemEqual = false
+    }
+
+    let auxiliaryNextProps = deepCopy(nextProps)
+    let auxiliaryPrevProps = deepCopy(prevProps)
+
+    delete auxiliaryNextProps.dropEventForFieldInEmptySection
+    delete auxiliaryPrevProps.dropEventForFieldInEmptySection
+    
+    if (!isEqual(auxiliaryPrevProps, auxiliaryNextProps)) {
+        areThemEqual = false
+    }
+    
+    previousFieldProps.previousProps[nextProps.field.uuid] = deepCopy(nextProps)
+    return areThemEqual
+}
+
+
+export default memo(FormularyFieldEdit, areEqual)

@@ -78,37 +78,16 @@ const onChangeFormularySettingsState = (formSettingsData) => {
     }
 }
 
-
 const onGetFormularySettings = (source, formularyId) => {
-    return async (dispatch) => {
-        try {
-            const response = await agent.http.FORMULARY.getFormularySettingsData(source, formularyId)
-            dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: response.data.data })
-            return response
-        } catch {}
+    return (_) => {
+        return agent.http.FORMULARY.getFormularySettingsData(source, formularyId)
     }
 }
 
 // We use this to lock the user for sending too many post requests, we wait for the function to finish to send again
-const onCreateFormularySettingsSection = (body, formId, sectionIndex) => {
-    return async (dispatch, getState) => {
-        let stateData = getState().home.formulary.update
-        if (body.id === null) {
-            makeDelay(() => { 
-                stateData.depends_on_form[sectionIndex].id = -1
-                agent.http.FORMULARY.createFormularySettingsSection(body, formId).then(response=> {
-                    if (response && response.status === 200){
-                        stateData.depends_on_form[sectionIndex] = response.data.data
-                    } else {
-                        stateData.depends_on_form[sectionIndex].id = null
-                    }
-                    dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: stateData })
-            
-                })
-                dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: stateData })
-            })
-            dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: stateData })
-        }
+const onCreateFormularySettingsSection = (body, formId) => {
+    return (_) => {
+        return agent.http.FORMULARY.createFormularySettingsSection(body, formId)
     }
 }
 
@@ -126,32 +105,15 @@ const onRemoveFormularySettingsSection = (formId, sectionId) => {
     }
 }
 
-const onCreateFormularySettingsField = (body, formId, sectionIndex, fieldIndex) => {
-    return (dispatch, getState) => {
-        let stateData = getState().home.formulary.update
-        if (body.id === null) {
-            makeDelay(() => { 
-                stateData.depends_on_form[sectionIndex].form_fields[fieldIndex].id = -1
-                agent.http.FORMULARY.createFormularySettingsField(body, formId).then(response=> {
-                    if(response.status === 200) {
-                        stateData.depends_on_form[sectionIndex].form_fields[fieldIndex] = response.data.data
-                    } else {
-                        stateData.depends_on_form[sectionIndex].form_fields[fieldIndex].id = null
-                    }
-                    dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: stateData })
-                })
-                dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: stateData })
-            })
-            dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: stateData })
-        }
+const onCreateFormularySettingsField = (body, formId) => {
+    return (_) => {
+        return agent.http.FORMULARY.createFormularySettingsField(body, formId)
     }
 }
 
 const onUpdateFormularySettingsField = (body, formId, fieldId) => {
     return (_) => {
-        makeDelay(() => {
-            agent.http.FORMULARY.updateFormularySettingsField(body, formId, fieldId)
-        })
+        return agent.http.FORMULARY.updateFormularySettingsField(body, formId, fieldId)
     }
 }
 

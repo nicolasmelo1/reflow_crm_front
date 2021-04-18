@@ -45,12 +45,17 @@ const Custom = (props) => {
  * for the user
  */
 const PDFGeneratorCreatorEditor = (props) => {
-    const sourceRef = React.useRef(null)
+    const sourceRef = React.useRef()
     const isMountedRef = React.useRef(true)
     const mobileWindowHeight = useWindowDimensions().height
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
     const [isSubmitting, setisSubmitting] = useState(false)
-    const [templateData, setTemplateData] = useState({})
+    const [templateData, setTemplateData] = useState({
+        id: null,
+        name: strings['pt-br']['pdfGeneratorEditorNewTemplateTitle'],
+        rich_text_page: null,
+        template_configuration_variables: []
+    })
     const [unmanagedFieldSelectedValue, setUnmanagedFieldSelectedValue] = useState(null)
     const [isUnmanagedFieldSelectorOpen, setIsUnmanagedFieldSelectorOpen] = useState(false)
     const [unmanagedFieldSelectorPosition, setUnmanagedFieldSelectorPosition] = useState({
@@ -156,20 +161,22 @@ const PDFGeneratorCreatorEditor = (props) => {
     useEffect(() => {
         isMountedRef.current = true
         sourceRef.current = axios.CancelToken.source()
-        setIsLoading(true)
-        props.onGetPDFGeneratorTemplateConfiguration(sourceRef.current, props.formName, props.templateData.id).then(response => {
-            if (response && response.status === 200) {
-                setTemplateData(response.data.data)
-            }
+        if (props.templateData.id) {
+            props.onGetPDFGeneratorTemplateConfiguration(null, props.formName, props.templateData.id).then(response => {
+                if (response && response.status === 200) {
+                    setTemplateData(response.data.data)
+                }
+                setIsLoading(false)
+            }).catch(__ => setIsLoading(false))
+        } else {
             setIsLoading(false)
-        }).catch(__ => setIsLoading(false))
-
+        }
         return () => {
             isMountedRef.current = false
             if (sourceRef.current) { 
                 sourceRef.current.cancel()
             }
-        }   
+        } 
     }, [])
     /////////////////////////////////////////////////////////////////////////////////////////////
     //########################################################################################//
@@ -195,20 +202,18 @@ const PDFGeneratorCreatorEditor = (props) => {
                     >
                         {isLoading ? null : (
                             <React.Fragment>
-                                {templateData?.rich_text_page ? (
-                                    <RichText 
-                                    initialText={strings['pt-br']['pdfGeneratorEditorRichTextInitialText']}
-                                    initialData={templateData?.rich_text_page}
-                                    allowedBlockTypeIds={props.allowedRichTextBlockIds}
-                                    onStateChange={onRichTextStateChange}
-                                    renderCustomContent={renderCustomContent} 
-                                    handleUnmanagedContent={unmanaged} 
-                                    onOpenUnmanagedContentSelector={setIsUnmanagedFieldSelectorOpen}
-                                    isUnmanagedContentSelectorOpen={isUnmanagedFieldSelectorOpen}
-                                    onChangeUnmanagedContentValue={setUnmanagedFieldSelectedValue}
-                                    unmanagedContentValue={unmanagedFieldSelectedValue}
-                                    />
-                                ) : null }
+                                <RichText 
+                                initialText={strings['pt-br']['pdfGeneratorEditorRichTextInitialText']}
+                                initialData={templateData?.rich_text_page}
+                                allowedBlockTypeIds={props.allowedRichTextBlockIds}
+                                onStateChange={onRichTextStateChange}
+                                renderCustomContent={renderCustomContent} 
+                                handleUnmanagedContent={unmanaged} 
+                                onOpenUnmanagedContentSelector={setIsUnmanagedFieldSelectorOpen}
+                                isUnmanagedContentSelectorOpen={isUnmanagedFieldSelectorOpen}
+                                onChangeUnmanagedContentValue={setUnmanagedFieldSelectedValue}
+                                unmanagedContentValue={unmanagedFieldSelectedValue}
+                                />
                             </React.Fragment>
                         )}
                     </Styled.PDFGeneratorCreatorEditorRichTextContainer>
@@ -256,20 +261,18 @@ const PDFGeneratorCreatorEditor = (props) => {
                         </div>
                     ) : (
                         <React.Fragment>
-                            {templateData?.rich_text_page ? (
-                                <RichText 
-                                initialText={strings['pt-br']['pdfGeneratorEditorRichTextInitialText']}
-                                initialData={templateData?.rich_text_page}
-                                allowedBlockTypeIds={props.allowedRichTextBlockIds}
-                                onStateChange={onRichTextStateChange}
-                                renderCustomContent={renderCustomContent} 
-                                handleUnmanagedContent={unmanaged} 
-                                onOpenUnmanagedContentSelector={setIsUnmanagedFieldSelectorOpen}
-                                isUnmanagedContentSelectorOpen={isUnmanagedFieldSelectorOpen}
-                                onChangeUnmanagedContentValue={setUnmanagedFieldSelectedValue}
-                                unmanagedContentValue={unmanagedFieldSelectedValue}
-                                />
-                            ) : ''}
+                            <RichText 
+                            initialText={strings['pt-br']['pdfGeneratorEditorRichTextInitialText']}
+                            initialData={templateData?.rich_text_page}
+                            allowedBlockTypeIds={props.allowedRichTextBlockIds}
+                            onStateChange={onRichTextStateChange}
+                            renderCustomContent={renderCustomContent} 
+                            handleUnmanagedContent={unmanaged} 
+                            onOpenUnmanagedContentSelector={setIsUnmanagedFieldSelectorOpen}
+                            isUnmanagedContentSelectorOpen={isUnmanagedFieldSelectorOpen}
+                            onChangeUnmanagedContentValue={setUnmanagedFieldSelectedValue}
+                            unmanagedContentValue={unmanagedFieldSelectedValue}
+                            />
                         </React.Fragment>
                     )}
                 </Styled.PDFGeneratorCreatorEditorRichTextContainer>

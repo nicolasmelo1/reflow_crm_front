@@ -20,7 +20,7 @@ styled.input`
     
     &:focus {
         outline: none;
-        border: 2px solid ${props => props.error ? 'red': '#0dbf7e'};
+        border: 2px solid ${props => props.errors ? 'red': '#0dbf7e'};
         box-shadow: none
     }
 `

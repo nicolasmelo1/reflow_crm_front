@@ -9,7 +9,7 @@ const Period = (props) => {
 
     const onChangeFieldPeriodInterval = (data) => {
         props.field.period_configuration_period_interval_type = data[0]
-        props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
+        props.onUpdateField(props.field)
     }
 
     const periodFormatTypes = props.types.data.field_period_interval_type ? 

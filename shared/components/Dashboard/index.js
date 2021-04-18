@@ -127,7 +127,7 @@ class Dashboard extends React.Component {
         }
         this.source = this.CancelToken.source()
         this.onChangeUpdateDates([moment().subtract(59, 'days').toDate(), moment().toDate()])
-        this.props.onGetFieldOptions(this.source, this.props.formName).then(response => {
+        this.props.onGetDashboardFieldOptions(this.source, this.props.formName).then(response => {
             if (response && response.status === 200) {
                 this.setFieldOptions(response.data.data)
             }
@@ -228,7 +228,7 @@ class Dashboard extends React.Component {
                     user={this.props.login.user}
                     types={this.props.login.types}
                     formName={this.props.formName}
-                    onGetFieldOptions={this.props.onGetFieldOptions}
+                    onGetDashboardFieldOptions={this.props.onGetDashboardFieldOptions}
                     onGetDashboardSettings={this.props.onGetDashboardSettings}
                     />
                 ) : (
@@ -329,7 +329,7 @@ class Dashboard extends React.Component {
                     types={this.props.login.types}
                     user={this.props.login.user}
                     formName={this.props.formName}
-                    onGetFieldOptions={this.props.onGetFieldOptions}
+                    onGetDashboardFieldOptions={this.props.onGetDashboardFieldOptions}
                     onGetDashboardSettings={this.props.onGetDashboardSettings}
                     />
                 ): (

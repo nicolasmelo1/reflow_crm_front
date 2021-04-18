@@ -22,7 +22,7 @@ import { strings } from '../../utils/constants'
  * the dashboard data so we can edit it. Since we don't need this data for anything but for this component we keep 
  * the data inside of this component. To maintain the code style we retrieve the data using redux actions.
  * The data is an array of each dashboard charts.
- * @param {Function} onGetFieldOptions - Same as the function `onGetDashboardSettings` above, this is a redux action
+ * @param {Function} onGetDashboardFieldOptions - Same as the function `onGetDashboardSettings` above, this is a redux action
  * to retrive fieldOptions it retrives an array of objects with each object being each field of the formulary. 
  * This is used to populate two selects: the one to select the field to be used as label and the one to 
  * select the field to be used as value
@@ -113,7 +113,7 @@ const DashboardConfiguration = (props) => {
         }
 
         onGetDashboardSettingsData()
-        props.onGetFieldOptions(sourceRef.current, props.formName).then(response => {
+        props.onGetDashboardFieldOptions(sourceRef.current, props.formName).then(response => {
             if (response && response.status === 200) {
                 setFieldOptions(response.data.data)
             }

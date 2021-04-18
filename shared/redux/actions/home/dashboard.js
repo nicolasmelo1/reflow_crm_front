@@ -82,7 +82,7 @@ const onGetDashboardSettings = (source, formName) => {
     }
 }
 
-const onGetFieldOptions = (source, formName) => {
+const onGetDashboardFieldOptions = (source, formName) => {
     return (_) => {
         return agent.http.DASHBOARD.getDashboardSettingsFieldsOptions(source, formName)
     }
@@ -110,7 +110,7 @@ export default {
     setDashboardUpdateDate,
     onGetDashboardCharts,
     onGetDashboardSettings,
-    onGetFieldOptions,
+    onGetDashboardFieldOptions,
     onCreateDashboardSettings,
     onRemoveDashboardSettings,
     onUpdateDashboardSettings

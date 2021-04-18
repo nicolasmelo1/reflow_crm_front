@@ -10,17 +10,17 @@ const Datetime = (props) => {
 
     const onChangeAutoUpdate = () => {
         props.field.date_configuration_auto_update = !props.field.date_configuration_auto_update
-        props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
+        props.onUpdateField(props.field)
     }   
 
     const onChangeAutoCreate = () => {
         props.field.date_configuration_auto_create = !props.field.date_configuration_auto_create
-        props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
+        props.onUpdateField(props.field)
     }
 
     const onChangeDateFormatType = (data) => {
         props.field.date_configuration_date_format_type = data[0]
-        props.onUpdateField(props.sectionIndex, props.fieldIndex, props.field)
+        props.onUpdateField(props.field)
     }
 
     const dateFormatTypes = props.types.data.field_date_format_type ? 

@@ -99,6 +99,8 @@ class Formulary extends React.Component {
     // ------------------------------------------------------------------------------------------
     setIsEditingShare = (data) => (this._ismounted) ? this.setState(state => state.isEditingShare = data) : null
     // ------------------------------------------------------------------------------------------
+    setIsEditing = (isEditing) => (this._ismounted) ? this.setState(state => state.isEditing = isEditing) : null
+    // ------------------------------------------------------------------------------------------
     setErrors = (errors) => (this._ismounted) ? this.setState(state => state.errors = errors) : null
     // ------------------------------------------------------------------------------------------
     setBuildData = (data) => (this._ismounted) ? this.setState(state => state.buildData = data) : null
@@ -107,6 +109,15 @@ class Formulary extends React.Component {
     // ------------------------------------------------------------------------------------------
     setFilledIsAuxOriginalInitial = (data) => (this._ismounted) ? this.setState(state => state.filled.isAuxOriginalInitial = data) : null
     // ------------------------------------------------------------------------------------------
+    /**
+     * Responsible for setting the draftStringId and the file_name to an object, this way we can know
+     * what is the actual name of the file with a draftStringId. With this we can display the file name 
+     * instead of the draftStringId when the user uploads a new file to the draft.
+     * 
+     * @param {String} draftId - The draftStringId it is a base64 string as `draft-{id_of_the_draft}`
+     * it is base64 so we can easily guess it is a draft.
+     * @param {String} fileName - The name of the file, nothing much to add here.
+     */
     setDraftToFileReference = (draftId, fileName) => (this._ismounted) ? this.setState(state => {
         const draftToFileReference = {...state.draftToFileReference}
         draftToFileReference[draftId] = fileName
@@ -116,6 +127,13 @@ class Formulary extends React.Component {
         }
     }) : null
     // ------------------------------------------------------------------------------------------
+    /**
+     * Changes the formulary data filled. This changes the FILLED data only. 
+     * 
+     * @param {BigInteger} id - The id of the formulary data instance
+     * @param {Array<Object>} sectionsData - The depends_on_dynamic_form array
+     * @returns 
+     */
     setFilledData = (id, sectionsData) => (this._ismounted) ? this.setState(state => 
         state.filled.data = {
             id: id,
@@ -157,21 +175,13 @@ class Formulary extends React.Component {
     /**
      * Goes to editing mode only, nothing much. When we go back from the editing mode we load the formulary again.
      */
-    setIsEditing = () => {
-        if (!this.state.isEditing) {
-            this.source = this.CancelToken.source()
-            this.props.onGetFormularySettings(this.source, this.state.buildData.id)
-        } else {
+    onGoToOrLeaveEditing = () => {
+        if (this.state.isEditing) {
             this.props.setFormularySettingsHasBeenUpdated()
             this.setFilledDataAndBuildData(null, false, false, [], {})
             this.onLoadFormulary(this.props.formName, this.props.formularyId)
         }
-        this.setState(state => {
-            return {
-                ...state,
-                isEditing: !state.isEditing
-            }
-        })
+        this.setIsEditing(!this.state.isEditing)
     }
     // ------------------------------------------------------------------------------------------
     /**
@@ -599,7 +609,7 @@ class Formulary extends React.Component {
                     isToShowToEdit={this.isToShowToEdit()}
                     isInConnectedFormulary={this.isInConnectedFormulary()}
                     formularyId={this.props.formularyId}
-                    setIsEditing={this.setIsEditing}
+                    onGoToOrLeaveEditing={this.onGoToOrLeaveEditing}
                     onClickShare={this.onClickShare}
                     onClickPDFTemplates={this.onClickPDFTemplates}
                     formularyType={this.props.type}
@@ -615,6 +625,7 @@ class Formulary extends React.Component {
                             <FormularySectionsEdit
                             formName={this.props.formName}
                             onCreateDraftFile={this.props.onCreateDraftFile}
+                            onGetFormularySettings={this.props.onGetFormularySettings}
                             onRemoveFormularySettingsField={this.props.onRemoveFormularySettingsField}
                             onUpdateFormularySettingsField={this.props.onUpdateFormularySettingsField}
                             onCreateFormularySettingsField={this.props.onCreateFormularySettingsField}
@@ -625,7 +636,6 @@ class Formulary extends React.Component {
                             onTestFormularySettingsFormulaField={this.props.onTestFormularySettingsFormulaField}
                             formId={this.state.buildData.id}
                             types={this.props.login.types}
-                            setIsEditing={this.setIsEditing}
                             data={this.props.formulary.update}
                             />
                         </div>

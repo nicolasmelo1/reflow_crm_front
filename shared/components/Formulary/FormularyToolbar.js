@@ -25,7 +25,7 @@ const FormularyToolbar = (props) => {
                 {isToShowToolbar() ? (
                     <Formularies.Toolbar.Container>
                         {props.isEditingShare ? '' : (
-                            <Formularies.Toolbar.Button onClick={e => props.setIsEditing()}>
+                            <Formularies.Toolbar.Button onClick={e => props.onGoToOrLeaveEditing()}>
                                 <FontAwesomeIcon icon={props.isEditing ? 'chevron-left' : 'pencil-alt'}/>
                                 &nbsp;
                                 {props.isEditing ? strings['pt-br']['formularyFinishEditButtonLabel'] : strings['pt-br']['formularyEditButtonLabel']}
