@@ -161,8 +161,9 @@ const PDFGeneratorCreatorEditor = (props) => {
     useEffect(() => {
         isMountedRef.current = true
         sourceRef.current = axios.CancelToken.source()
+        setIsLoading(true)
         if (props.templateData.id) {
-            props.onGetPDFGeneratorTemplateConfiguration(null, props.formName, props.templateData.id).then(response => {
+            props.onGetPDFGeneratorTemplateConfiguration(sourceRef.current, props.formName, props.templateData.id).then(response => {
                 if (response && response.status === 200) {
                     setTemplateData(response.data.data)
                 }
