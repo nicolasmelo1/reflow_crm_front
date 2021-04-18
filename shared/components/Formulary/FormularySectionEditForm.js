@@ -203,8 +203,7 @@ const FormularySectionEditForm = (props) => {
                                 display: 'flex', 
                                 alignItems: 'center', 
                                 backgroundColor: 'transparent',
-                                width: '100%',
-                                justifyContent: 'space-between'
+                                width: '100%'
                             }}
                             >
                                 <FontAwesomeIcon 

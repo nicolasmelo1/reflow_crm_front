@@ -180,22 +180,6 @@ const FormularyPublicEdit = (props) => {
                     marginBottom: '10px'
                 }}>
                     <label style={{ margin: 0}}>
-                        {strings['pt-br']['formularyPublicEditGreetingsInputLabel']}
-                    </label>
-                    <Formularies.PublicEdit.Input
-                    placeholder={strings['pt-br']['formularyPublicEditGreetingsInputPlaceholder']}
-                    value={greetingsText ? greetingsText : ''}
-                    onChange={(e) => {
-                        autoResizeTextAreaWeb(e.target)
-                        onChangeGreetingsMessage(e.target.value)
-                    }}
-                    rows={1}
-                    />
-                </div>
-                <div style={{
-                    marginBottom: '10px'
-                }}>
-                    <label style={{ margin: 0}}>
                         {strings['pt-br']['formularyPublicEditDescriptionInputLabel']}
                     </label>
                     <Formularies.PublicEdit.Input 
@@ -204,6 +188,22 @@ const FormularyPublicEdit = (props) => {
                     onChange={(e) => {
                         autoResizeTextAreaWeb(e.target)
                         onChangeDescriptionMessage(e.target.value)
+                    }}
+                    rows={1}
+                    />
+                </div>
+                <div style={{
+                    marginBottom: '10px'
+                }}>
+                    <label style={{ margin: 0}}>
+                        {strings['pt-br']['formularyPublicEditGreetingsInputLabel']}
+                    </label>
+                    <Formularies.PublicEdit.Input
+                    placeholder={strings['pt-br']['formularyPublicEditGreetingsInputPlaceholder']}
+                    value={greetingsText ? greetingsText : ''}
+                    onChange={(e) => {
+                        autoResizeTextAreaWeb(e.target)
+                        onChangeGreetingsMessage(e.target.value)
                     }}
                     rows={1}
                     />

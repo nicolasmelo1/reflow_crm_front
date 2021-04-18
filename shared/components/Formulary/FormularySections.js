@@ -146,8 +146,9 @@ const FormularySections = (props) => {
     }
     // ------------------------------------------------------------------------------------------
     function onLoadData(sectionsData, conditionals) {
+        let oldDataByFieldName = {}
         let newSectionsData = getNewSectionData()
-        const sectionsDataIds = sectionsData.map(sectionData=> sectionData.form_id)
+        const sectionsDataIds = sectionsData.map(sectionData => sectionData.form_id)
         
         newSectionsData.forEach(sectionData => {
             if (!sectionsDataIds.includes(sectionData.form_id)) {
@@ -155,7 +156,7 @@ const FormularySections = (props) => {
             }
         })
         newSectionsData = toggleConditionals(sectionsData, conditionals)
-        props.setFilledData(props.data.id, sectionsData)
+        props.setFilledData(props.data.id, newSectionsData)
     }
     // ------------------------------------------------------------------------------------------
     function buildInitialData(conditionals) {
