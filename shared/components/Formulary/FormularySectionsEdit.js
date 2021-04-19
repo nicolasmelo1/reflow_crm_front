@@ -239,6 +239,14 @@ const FormularySectionsEdit = (props) => {
         setFormularySettingsData({...reordededFormularySettingsData})
     }
     // ------------------------------------------------------------------------------------------
+    /**
+     * Handy function used for reordering fields and sections when they change.
+     * 
+     * @param {Object} data - This is the hole formulary data, it usually has the fields 
+     * `id`, `form_name` and `depends_on_form`, the last one is an array of sections.
+     * 
+     * @returns {Object} - Returns the same data, but with the orders updated.
+     */
     const reorder = (data) => {
         data.depends_on_form = data.depends_on_form.map((section, sectionIndex) => {
             section.form_fields = section.form_fields.map((field, fieldIndex) => {
@@ -251,6 +259,14 @@ const FormularySectionsEdit = (props) => {
         return data
     }
     // ------------------------------------------------------------------------------------------
+    /**
+     * This is a callback function used by the views in order to retrieve the data updated. The children
+     * are pure components, this means they don't update when the data changes on this component. So in order 
+     * for the children components to be able to access the data, we make a copy of the data and gives it to the 
+     * children components.
+     * 
+     * @returns {Object} - The formuluary settings data used to build the formulary settings
+     */
     const retrieveFormularyData = () => {
         return deepCopy(formularySettingsData)
     }
@@ -287,10 +303,10 @@ const FormularySectionsEdit = (props) => {
         return (
             <div>
                 {isLoading ? (
-                    <div style={{ display: 'flex', flexDirection: 'column',width: '100%', alignItems: 'center', justifyContent: 'center', color: '#0dbf7e'}}>
+                    <FormulariesEdit.Section.LoaderContainer>
                         <p>{strings['pt-br']['formularyEditLoadingFormularyData']}</p>
                         <Spinner animation="border"/>
-                    </div>
+                    </FormulariesEdit.Section.LoaderContainer>
                 ) : (
                     <React.Fragment>
                         {formularySettingsData.depends_on_form ? formularySettingsData.depends_on_form.map((section, index)=> (
@@ -319,7 +335,7 @@ const FormularySectionsEdit = (props) => {
                                 userOptions={props.userOptions}
                                 />
                                 <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}}>
-                                    <div style={{ width: '100%', border: '1px dashed #bfbfbf'}}/>
+                                    <FormulariesEdit.Section.SectionSeparator/>
                                 </div>
                             </React.Fragment>
                         )): ''}

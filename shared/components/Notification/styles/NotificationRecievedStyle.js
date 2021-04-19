@@ -30,15 +30,27 @@ styled(Text)`
 `
 // ------------------------------------------------------------------------------------------
 export const NotificationContainer = process.env['APP'] === 'web' ? 
-styled.small`
-    color: #bfbfbf
+styled.div`
+    height: calc(100vh - 150px);
+    overflow-y: auto;
+    scrollbar-color: #bfbfbf transparent;
+    scrollbar-width: thin;
+    
+    &::-webkit-scrollbar-thumb {
+        background: #bfbfbf;
+        border-radius: 5px;
+    }
+    &::-webkit-scrollbar {
+        -webkit-appearance: none;
+        width: 8px;
+        height: 8px;
+        background-color: transparent;
+    }
 `
 :
-styled(Text)`
-    font-size: 14px;
-    font-family: Roboto-Regular;
-    color: #bfbfbf;
-    font-size: 10px 
+styled(ScrollView)`
+    min-height: 250px;
+    height: 93.4%;
 `
 // ------------------------------------------------------------------------------------------
 export const NotificationCard = process.env['APP'] === 'web' ? 

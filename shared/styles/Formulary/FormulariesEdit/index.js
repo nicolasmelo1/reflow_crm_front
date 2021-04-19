@@ -17,6 +17,8 @@ import FormularySectionEditSettingIsConditionalFormularyContainer from './Formul
 import FormularyEditSelectorContainer from './FormularyEditSelectorContainer'
 import FormularySectionEditConditionalFormLabel from './FormularySectionEditConditionalFormLabel'
 import FormularyEditInputField from './FormularyEditInputField'
+import FormularySectionEditSectionSeparator from './FormularySectionEditSectionSeparator'
+import FormularySectionEditSectionLoaderContainer from './FormularySectionEditSectionLoaderContainer'
 import FormularySectionEditFieldFormLabel from './FormularySectionEditFieldFormLabel'
 import FormularySectionEditFieldFormFieldContainer from './FormularySectionEditFieldFormFieldContainer'
 import FormularySectionEditFieldAddNewButton from './FormularySectionEditFieldAddNewButton'
@@ -40,6 +42,8 @@ export default {
         Container: FormularySectionEditSectionContainer,
         LabelInput: FormularySectionEditNameInput,
         DisabledLabel: FormularySectionEditSectionDisabledLabelTitle,
+        SectionSeparator: FormularySectionEditSectionSeparator,
+        LoaderContainer: FormularySectionEditSectionLoaderContainer,
         Formulary: {
             Container: FormularySectionEditSettingsContainer,
             FormTypeLabel: FormularySectionEditSettingsFormTypeLabel,
