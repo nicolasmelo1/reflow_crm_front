@@ -146,7 +146,6 @@ const FormularySections = (props) => {
     }
     // ------------------------------------------------------------------------------------------
     function onLoadData(sectionsData, conditionals) {
-        let oldDataByFieldName = {}
         let newSectionsData = getNewSectionData()
         const sectionsDataIds = sectionsData.map(sectionData => sectionData.form_id)
         
