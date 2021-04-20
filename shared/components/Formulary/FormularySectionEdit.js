@@ -22,26 +22,48 @@ const makeDelay = delay(1000)
 /**
  * This component controls the edition state of a SINGLE Section only,
  * it holds the formulary to change the section type and 
- * section conditionals but also holds all of the fields of the section
+ * section conditionals but also holds all of the fields of the section. This section component
+ * also holds most of the logics of the fields like create a new field, delete a field or even a 
+ * simple helper when the field is moved to an empty section
  * 
- * @param {function} onUpdateSection - function helper created in the parent component to 
- * update a single section in the data store
- * @param {Object} section - the SINGLE section data
- * @param {function} removeSection - function helper created in the parent component to remove a single section
- * @param {function} removeField - function helper created in the parent component to remove a single field
- * @param {Boolean} isMoving - boolean that defines if the section is being dragged or not
- * @param {function} setIsMoving - function to set true or false in the `isMoving` variable to say
- * if the section is being dragged or not.
- * @param {function} onReorderSection - function helper created in the parent component to update 
- * a single section when it has been dragged and dropped
- * @param {function} onReorderField - function helper created in the parent component to update 
- * a single field when it has been dragged and dropped
- * @param {function} onAddNewField - function helper created in the parent component to add a new field in the 
- * storage data
- * @param {object} types - the types state, this types are usually the required data from this system to work. 
- * Types defines all of the field types, form types, format of numbers and dates and many other stuff 
- * @param {Array<Object>} fieldOptions - the fieldOptions are all of the fields the user can select when a user selects
- * the `form` field type or when the user creates a conditional section
+ * @param {Function} onUpdateFormularySettingsState - Updates the formulary settings state by 
+ * reference. Update by reference is not used by many react developers and mind seem kinda counter intuitive, 
+ * it is possibly even an antipatern but since we use pure components for sections and fields, update by reference, 
+ * seemed as a good solution. To understand more on how this works read the explanation of the function in `FormularySectionsEdit`
+ * component.
+ * @param {Object} section - Holds the section data, to understand how this data is shaped you might want to look `onAddNewSection()`
+ * function in the `FormularySectionsEdit` component. 
+ * @param {Function} onRemoveSection - Everything like remove, add or move sections are handled by the parent component
+ * since we need to have access of the hole data structure. The function in the parent component takes care of submiting this to the 
+ * backend.
+ * @param {Boolean} isMoving - While we are moving a section, all of the sections collapses its fields, and when we stop moving
+ * the fields shows up again.
+ * @param {Function} onReorderSection - All of the reorders should be handled in the `FormularySectionsEdit` since we need to access the hole
+ * structure of the data in order to make a reorder of fields and sections.
+ * @param {Function} onReorderField - Same as above but for fields instead of sections
+ * @param {Function} setIsMoving - changes the isMoving state
+ * @param {Object} types - the types state, this types are usually the required data from this system to work. 
+ * Types defines all of the field types, form types, format of numbers and dates and many other stuff.
+ * @param {Function} onCreateDraftFile - This function is used to upload and handle drafts, we use this to upload default
+ * values, and since an attachment can contain default values we need to use this in order to upload attachments as a default value.
+ * @param {Object} dropEventForFieldInEmptySection - Usually the user drops fields on other fields, but sometimes what happens is that 
+ * the user wants to drop fields on empty sections, but how can we do that since we update the field INSIDE of the field component? We use props.
+ * This props is an object that hold `movedFieldUUID` and `targetSectionUUID`, with this we can search the indexes of the moved field and the
+ * index of the target section.
+ * @param {Function} setDropEventForFieldInEmptySection - Set the `dropEventForFieldInEmptySection` state. Usually used onDrop event when you drop a field
+ * inside of an empty section.
+ * @param {Function} retrieveFormularyData - This is a pure component, this means it doesn't change when the props change, it only changes when it is open. But sometimes
+ * we want to get the hole data structure updated, how does we do that? With a callback function that returns to us the data, this way we can retrieve the state updated
+ * but without compromising the purity of the components. We usually use this to retrieve field options.
+ * @param {Function} onUpdateFormularySettingsField - Redux action used for updating the field settings in the backend.
+ * @param {Function} onCreateFormularySettingsField - Redux action used for creating a new field in the backend, this just calls an api.
+ * @param {Function} onRemoveFormularySettingsField - Redux action used for removing an existing field from the backend database.
+ * @param {Function} onUpdateFormularySettingsSection - Redux action used for updating an existing section in the backend database.
+ * @param {Function} onCreateFormularySettingsSection - Redux action used for creating a section in the backend database.
+ * @param {Function} onTestFormularySettingsFormulaField - Redux action used for calling the backend to test the formula, this should be deprecated soon.
+ * @param {String} formName - Similar to formId, this is the name of the formulary, this is usually set in the url when in the home screnn.
+ * @param {BigInteger} formId - This is the id of the formulary you are editing.
+ * @param {Array<Object>} userOptions - The user options to display on the user field type, just for this actually.
  */
 const FormularySectionEdit = (props) => {
     const isMountedRef = React.useRef(false)
@@ -188,7 +210,7 @@ const FormularySectionEdit = (props) => {
             let movedSectionUUID = JSON.parse(sectionUUIDToMove)
             try {
                 const sectionDataToUpdate = props.onReorderSection(movedSectionUUID, props.section.uuid)
-                onUpdateField(sectionDataToUpdate)
+                onUpdateSection(sectionDataToUpdate)
             } catch (e) {
                 if (e instanceof ReferenceError) {
                     console.warn(e.message)
@@ -367,13 +389,11 @@ const FormularySectionEdit = (props) => {
                                             {props.section.form_fields.map(field => (
                                                 <FormularyFieldEdit
                                                 key={field.uuid}
-                                                sectionUUID={props.section.uuid}
                                                 field={field}
                                                 onCreateDraftFile={props.onCreateDraftFile}
                                                 types={props.types}
                                                 onRemoveField={onRemoveField}
                                                 onReorderField={props.onReorderField}
-                                                onUpdateField={props.onUpdateField}
                                                 userOptions={props.userOptions}
                                                 formName={props.formName}
                                                 formId={props.formId}

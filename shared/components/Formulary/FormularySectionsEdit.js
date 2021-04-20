@@ -12,22 +12,26 @@ const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 
 /**
  * This component controls all of the sections, we keep most of the primary functions here, since that when we change
- * something we actually change the hole structure of the data, the redux reducer actually keep the complete structure
- * but most of the time we want to change parts of it, we could write many reducers but to keep it simple we prefer to keep
- * the redux dumb, and change always the hole data. This is why we have most functions for sections and fields here.
+ * something we actually change the hole structure of the data. All of the childrens of this component are pure functions, it means
+ * they will only update when absolutely needed.
  * 
+ * This component is used for two things: Create sections, removal of sections, update data (we update always the hole structure since we pass
+ * by reference, more on `onUpdateFormularySettingsState()` function), and move sections. Move of either fields or sections should be handled here 
+ * since we need to have access for the hole data structure.
+ * 
+ * @param {Function} onCreateDraftFile - This function is used to upload and handle drafts, we use this to upload default
+ * values, and since an attachment can contain default values we need to use this in order to upload attachments as a default value.
+ * @param {String} formName - Similar to formId this is the name of the current formulary we are editing, on web this is on the url.
+ * @param {Function} onGetFormularySettings - the function from the redux action to retrieve the formulary data.
  * @param {function} onRemoveFormularySettingsField - the function from the redux action to remove a field
  * @param {function} onUpdateFormularySettingsField - the function from the redux action to update a field
  * @param {function} onCreateFormularySettingsField - the function from the redux action to create a new field  
  * @param {function} onRemoveFormularySettingsSection - the function from the redux action to remove a section
  * @param {function} onUpdateFormularySettingsSection - the function from the redux action to update a section
  * @param {function} onCreateFormularySettingsSection - the function from the redux action to create a new section                   
- * @param {function} onChangeFormularySettingsState - the function from redux action to change the store data, 
- * we don't make any backend calls on this function, just change the state.        
  * @param {BigInteger} formId - the ID of the current formulary we are editing.
  * @param {Object} types - the types state, this types are usually the required data from this system to work. 
  * Types defines all of the field types, form types, format of numbers and dates and many other stuff                        
- * @param {Object} data - this is the main data that we use to update formularies.
  * @param {Array<Object>} formulariesOptions - on field_type === `form` we usually need to connect a field with a 
  * field from another formulary.
  */
@@ -58,7 +62,9 @@ const FormularySectionsEdit = (props) => {
      * @param {String} movedFieldUUID - The uuid of the moved field
      * @param {(null, String)} targetFieldUUID - The uuid of the field where the moved field is being dropped
      * @param {(null, String)} targetSectionUUID - If you are dropping the field on an empty section, this must be defined
-     * @returns 
+     * 
+     * @returns {Object} - The moved field data with it's order and form updated, we will use this to update the state of the formulary
+     * settings data
      */
     const onReorderField = (movedFieldUUID, targetFieldUUID, targetSectionUUID=null) => {
         let movedSectionIndex = null
@@ -125,6 +131,7 @@ const FormularySectionsEdit = (props) => {
      * @param {String} movedSectionUUID - The uuid of the moved section to use, this is the uuid from the section that is being dragged
      * @param {String} targetSectionUUID - The uuid of the moved section target, this is the uuid from the section where you are dropping, the dragged
      * element will assume it's place.
+     * @returns {Object} - The section data with it's order updated, we use this to update the state
      */
     const onReorderSection = (movedSectionUUID, targetSectionUUID) => {
         let movedSectionIndex = null
@@ -132,7 +139,7 @@ const FormularySectionsEdit = (props) => {
 
         // We loop through all of the elements to find the indexes, it's faster than findIndex because we loop
         // just once, and we might endup not having to iterate through all of the items.
-        for (let sectionIndex = 0; sectionIndex < formularySettingsDataRef.current.depends_on_form.length; i++) {
+        for (let sectionIndex = 0; sectionIndex < formularySettingsDataRef.current.depends_on_form.length; sectionIndex++) {
             switch (formularySettingsDataRef.current.depends_on_form[sectionIndex].uuid) {
                 case movedSectionUUID:
                     movedSectionIndex = sectionIndex

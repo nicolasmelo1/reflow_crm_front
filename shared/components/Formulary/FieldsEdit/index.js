@@ -36,14 +36,38 @@ const FieldOption = (props) => {
 }
 
 /**
- * This component controls a unique and single field.
+ * This component is used for updating and controlling a single field. This holds all of the formulary data needed
+ * in order to create fields in reflow.
  * 
- * @param {function} onReorderField - function helper created in the parent component to update 
- * a single field when it has been dragged and dropped
- * @param {object} types - the types state, this types are usually the required data from this system to work. 
- * Types defines all of the field types, form types, format of numbers and dates and many other stuff 
- * @param {function} removeField - function helper created in the parent component to remove a single field
- * @param {Object} field - the object of a single field
+ * @param {Object} field - The object of the field. You can find it's structure in `onAddNewField` function in the 
+ * `FormularySectionEdit` component
+ * @param {Function} onCreateDraftFile - This function is used to upload and handle drafts, we use this to upload default
+ * values, and since an attachment can contain default values we need to use this in order to upload attachments as a default value.
+ * @param {Object} types - the types state, this types are usually the required data from this system to work. 
+ * Types defines all of the field types, form types, format of numbers and dates and many other stuff.
+ * @param {Function} onRemoveField - Function defined in `FormularySectionEdit` component used to remove the field, we need to define
+ * it in the parent component because we need to have access to the hole fields array data structure.
+ * @param {Function} onReorderField - Function defined in `FormularySectionsEdit` component used to reorder field. We defined in the uppermost
+ * component because we need to have access to the hole data structure in order to reorder a field.
+ * @param {Array<Object>} userOptions - The user options to display on the user field type, just for this actually.
+ * @param {String} formName - Similar to formId, this is the name of the formulary, this is usually set in the url when in the home screnn.
+ * @param {BigInteger} formId - This is the id of the formulary you are editing.
+ * @param {Function} retrieveFormularyData - This is a pure component, this means it doesn't change when the props change, it only changes when it is open. But sometimes
+ * we want to get the hole data structure updated, how does we do that? With a callback function that returns to us the data, this way we can retrieve the state updated
+ * but without compromising the purity of the components. We usually use this to retrieve field options.
+ * @param {Function} setDropEventForFieldInEmptySection - Set the `dropEventForFieldInEmptySection` state. Usually used after the `dropEventForFieldInEmptySection` has been 
+ * used.
+ * @param {Object} dropEventForFieldInEmptySection - Usually the user drops fields on other fields, but sometimes what happens is that 
+ * the user wants to drop fields on empty sections, but how can we do that since we update the field INSIDE of the field component? We use props.
+ * This props is an object that hold `movedFieldUUID` and `targetSectionUUID`, with this we can search the indexes of the moved field and the
+ * index of the target section.
+ * @param {Function} onUpdateFormularySettingsState - Updates the formulary settings state by reference. Update by reference 
+ * is not used by many react developers and might seem kinda counter intuitive, it is possibly even an antipatern but since we 
+ * use pure components for sections and fields, update by reference seemed as a good solution. To understand more on how this 
+ * works read the explanation of the function in `FormularySectionsEdit` component.
+ * @param {Function} onUpdateFormularySettingsField - Redux action used for updating the field settings in the backend.
+ * @param {Function} onCreateFormularySettingsField - Redux action used for creating a new field in the backend, this just calls an api.
+ * @param {Function} onTestFormularySettingsFormulaField - Redux action used for calling the backend to test the formula, this should be deprecated soon.
  */
 const FormularyFieldEdit = (props) => {
     const isMountedRef = React.useRef(false)
@@ -226,6 +250,12 @@ const FormularyFieldEdit = (props) => {
         return await agent.http.FORMULARY.getFormularySettingsDefaultAttachmentFile(props.formId, props.field.id, fileName)
     }
     // ------------------------------------------------------------------------------------------
+    /**
+     * Handy function used to update the state and also send the information to the backend about the field.
+     * 
+     * @param {Object} fieldData - The field data, you can see it's structure in `onAddNewField` function in the
+     * `FormularySectionEdit` component
+     */
     const onUpdateField = (fieldData) => {
         props.onUpdateFormularySettingsState()
         onSubmitFieldChanges(fieldData)

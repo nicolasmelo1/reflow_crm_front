@@ -72,12 +72,6 @@ const onUpdateFormularyData = (body, formName, formId, duplicate=null) => {
  *                 *
  *******************/
 
-const onChangeFormularySettingsState = (formSettingsData) => {
-    return (dispatch) => {
-        dispatch({ type: SET_FORMULARY_SETTINGS_DATA, payload: formSettingsData })
-    }
-}
-
 const onGetFormularySettings = (source, formularyId) => {
     return (_) => {
         return agent.http.FORMULARY.getFormularySettingsData(source, formularyId)
@@ -150,7 +144,6 @@ const onUpdatePublicFormulary = (formId, greetingsText, descriptionText, isToSho
 
 export default {
     onOpenFormulary,
-    onChangeFormularySettingsState,
     onGetFormularySettings,
     onGetFormularyUserOptions,
     onGetBuildFormulary,

@@ -10,8 +10,13 @@ import { Formularies } from '../../styles/Formulary'
 
 const makeDelay = delay(2000)
 /**
- * {Description of your component, what does it do}
- * @param {Type} props - {go in detail about every prop it recieves}
+ * This component handles the creation of public formularies. Public formularies are the ones that unlogged users can fill. The user,
+ * can set which fields will be available in this public form, and stuff like greetings message and other stuff.
+ * 
+ * @param {Function} onGetPublicFormulary - Redux action used to retrieve the public formulary data, returns the link and the fields that are public,
+ * with data like, the description, a greetings message and if it's to show a welcome button or not
+ * @param {Function} onUpdatePublicFormulary - Redux action used to update the public formulary in the backend
+ * @param {Object} formularyBuildData - The formulary data used to build the formulary (the how)
  */
 const FormularyPublicEdit = (props) => {
     const sourceRef = React.useRef()
@@ -53,11 +58,21 @@ const FormularyPublicEdit = (props) => {
         })
     }
     // ------------------------------------------------------------------------------------------
+    /**
+     * Auto resizes the text area. Only Works on Web.
+     * 
+     * @param {HTMLElement} element - The textarea element
+     */
     const autoResizeTextAreaWeb = (element) => {
         element.style.height = "5px";
         element.style.height = (element.scrollHeight)+"px";    
     }
     // ------------------------------------------------------------------------------------------
+    /**
+     * Used for copying the link to the clipboard of the user.
+     * 
+     * @param {String} link - Copies the link to the clipboard of the user.
+     */
     const onCopyLinkWeb = (link) => {
         if (process.env['APP'] === 'web') {
             const copyText = document.createElement('textarea')

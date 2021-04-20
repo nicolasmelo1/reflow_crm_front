@@ -10,7 +10,8 @@ const Row = dynamicImport('react-bootstrap', 'Row')
 
 /**
  * This component controls the formulary for the section, the formulary of the section
- * is used to set conditionals and set the section type that right now can be unique or multiple.
+ * is used to set conditionals and set the section type that right now can be either unique or multiple.
+ * This is also used to set if the label_name of the section will be shown or if it will be hidden.
  * 
  * @param {object} types - the types state, this types are usually the required data from this system to work. 
  * Types defines all of the field types, form types, format of numbers and dates and many other stuff
@@ -60,16 +61,37 @@ const FormularySectionEditForm = (props) => {
         props.onUpdateSection(props.section)
     }
     // ------------------------------------------------------------------------------------------
-    const onChangeConditionalType = (data) => {
-        props.section.conditional_type = data[0]
+    /**
+     * Changes the conditional type, right now we just have one, that is equal to value, but in the future
+     * we will support others like greater than, less than, after, before, between and so on.
+     * 
+     * @param {Array<BigInteger>} selectedConditionalTypes - Array of the conditionalType id selected.
+     */
+    const onChangeConditionalType = (selectedConditionalTypes) => {
+        props.section.conditional_type = selectedConditionalTypes.length > 0 ? selectedConditionalTypes[0] : null
         props.onUpdateSection(props.section)
     }
     // ------------------------------------------------------------------------------------------
+    /**
+     * Just a checkbox used for showing or not showing the label_name, the label_name is the name of the label
+     * that goes on the top of the formulary. When true, it shows the label name and when false it does not show.
+     */
     const onChangeShowLabelName = () => {
         props.section.show_label_name = !props.section.show_label_name
         props.onUpdateSection(props.section)
     }
     // ------------------------------------------------------------------------------------------
+    /**
+     * When the user changes the conditional field value we automatically remove the data related to the conditionals for them. This
+     * prevents that.
+     * 
+     * In other words, suppose the following: 
+     * - We have a conditional when the field status is equal to 'perdido', then we show the conditional section:
+     * 'Motivo da Perda'.
+     * 
+     * - When this happens we open a conditional field, but when we move out of `perdido`, this conditional data is not needed 
+     * anymore, so we exclude this data.
+     */
     const onChangeConditionalExcludesDataIfNotSet = () => {
         props.section.conditional_excludes_data_if_not_set = !props.section.conditional_excludes_data_if_not_set
         props.onUpdateSection(props.section)
@@ -135,19 +157,10 @@ const FormularySectionEditForm = (props) => {
     const renderWeb = () => {
         return (
             <div>
-                <button 
+                <FormulariesEdit.Section.Formulary.CheckboxButton 
                 onClick={(e) => onChangeShowLabelName()}
-                style={{ 
-                    color: props.isConditional ? '#f2f2f2' : '#17242D',
-                    border: !props.section.show_label_name ? '1px solid #0dbf7e' : '1px solid red', 
-                    borderRadius: '10px', 
-                    padding: '10px', 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    backgroundColor: 'transparent',
-                    width: '100%',
-                    marginBottom: '10px'
-                }}
+                isConditional={props.isConditional}
+                isSelcted={!props.section.show_label_name}
                 >
                     <FontAwesomeIcon 
                     style={{
@@ -155,8 +168,8 @@ const FormularySectionEditForm = (props) => {
                     }}
                     icon={!props.section.show_label_name ? 'check' : 'times'}
                     />
-                    &nbsp;{'Ocultar titulo da seção'}
-                </button>
+                    &nbsp;{strings['pt-br']['formularyEditSectionShowLabelNameCheckboxLabel']}
+                </FormulariesEdit.Section.Formulary.CheckboxButton >
                 <FormulariesEdit.Section.Formulary.FormTypeLabel>
                     {strings['pt-br']['formularyEditSectionSelectionLabel']}
                 </FormulariesEdit.Section.Formulary.FormTypeLabel>
@@ -193,18 +206,10 @@ const FormularySectionEditForm = (props) => {
                 {props.isConditional ? (
                     <Row>
                         <FormulariesEdit.Section.Formulary.ConditionalFormularyContainer>
-                            <button 
+                            <FormulariesEdit.Section.Formulary.CheckboxButton  
                             onClick={(e) => onChangeConditionalExcludesDataIfNotSet()}
-                            style={{ 
-                                color: props.isConditional ? '#f2f2f2' : '#17242D',
-                                border: props.section.conditional_excludes_data_if_not_set ? '1px solid #0dbf7e' : '1px solid red', 
-                                borderRadius: '10px', 
-                                padding: '10px', 
-                                display: 'flex', 
-                                alignItems: 'center', 
-                                backgroundColor: 'transparent',
-                                width: '100%'
-                            }}
+                            isConditional={props.isConditional}
+                            isSelected={props.section.conditional_excludes_data_if_not_set}
                             >
                                 <FontAwesomeIcon 
                                 style={{
@@ -212,8 +217,8 @@ const FormularySectionEditForm = (props) => {
                                 }}
                                 icon={props.section.conditional_excludes_data_if_not_set ? 'check' : 'times'}
                                 />
-                                {' As informações são excluidas quando a condicional não for satisfeita'}
-                            </button>
+                                &nbsp;{strings['pt-br']['formularyEditSectionConditionalExcludesDataIfNotSetCheckboxLabel']}
+                            </FormulariesEdit.Section.Formulary.CheckboxButton>
                             <FormulariesEdit.Section.Formulary.ConditionalFormLabel>
                                 {strings['pt-br']['formularyEditConditionalFieldSelectorLabel']}
                             </FormulariesEdit.Section.Formulary.ConditionalFormLabel>

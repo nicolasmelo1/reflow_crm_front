@@ -52,11 +52,11 @@ const Connection = (props) => {
     /**
      * When the user changes the selected group in the selector we use this function.
      * 
-     * @param {Array<BigInteger>} data - An array of selected group ids
+     * @param {Array<BigInteger>} selectedGroups - An array of selected group ids
      */
-    const onChangeGroup = (data) => {
-        if (data.length > 1) {
-            setSelectedGroupId(data[0])
+    const onChangeGroup = (selectedGroups) => {
+        if (selectedGroups.length > 0) {
+            setSelectedGroupId(selectedGroups[0])
         } else {
             setSelectedGroupId(null)
         }
@@ -65,24 +65,23 @@ const Connection = (props) => {
     /**
      * When the user changes the selected form in the selector we use this function.
      * 
-     * @param {Array<BigInteger>} data - An array of selected form ids, usually just one.
+     * @param {Array<BigInteger>} selectedForms - An array of selected form ids, usually just one.
      */
-    const onChangeForm = (data) => {
-        if (data.length > 1) {
-            setSelectedFormId(data[0])
+    const onChangeForm = (selectedForms) => {
+        if (selectedForms.length > 0) {
+            setSelectedFormId(selectedForms[0])
         } else {
             setSelectedFormId(null)
         }
-        setSelectedFormId(data[0])
     }
     // ------------------------------------------------------------------------------------------
     /**
      * When the user changes the selected field in the selector we use this function.
      * 
-     * @param {Array<BigInteger>} data - An array of selected field ids, usually just one.
+     * @param {Array<BigInteger>} selectedFields - An array of selected field ids, usually just one.
      */
-    const onChangeField = (data) => {
-        props.field.form_field_as_option = (data.length > 1) ? data[0] : null
+    const onChangeField = (selectedFields) => {
+        props.field.form_field_as_option = (selectedFields.length > 0) ? selectedFields[0] : null
         props.onUpdateField(props.field)
     }
     // ------------------------------------------------------------------------------------------

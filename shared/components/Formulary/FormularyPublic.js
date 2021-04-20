@@ -1,8 +1,6 @@
 import React from 'react'
 import { View } from 'react-native'
 import axios from 'axios'
-import { connect } from 'react-redux'
-import actions from '../../redux/actions'
 import agent from '../../utils/agent'
 import { strings } from '../../utils/constants'
 import dynamicImport from '../../utils/dynamicImport'
@@ -12,8 +10,13 @@ import { Formularies } from '../../styles/Formulary'
 const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 
 /**
- * {Description of your component, what does it do}
- * @param {Type} props - {go in detail about every prop it recieves}
+ * The public formulary component. This component is loaded for unlogged users, this means, users that might not have an
+ * reflow account. And also that can not be identifiable.
+ * What we do to enable this is create a public_access_key that we use to give access for unlogged users to certain areas of our platform. 
+ * This should be all handled by a logged in user, so if a user doesn't want to give public access, the formulary or any other part of the platform
+ * will not be public with his public key.
+ * 
+ * @param {String} formName - {go in detail about every prop it recieves}
  */
 class FormularyPublic extends React.Component {
     constructor(props) {

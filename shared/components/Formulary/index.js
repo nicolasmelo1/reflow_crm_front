@@ -632,11 +632,9 @@ class Formulary extends React.Component {
                             onRemoveFormularySettingsSection={this.props.onRemoveFormularySettingsSection}
                             onUpdateFormularySettingsSection={this.props.onUpdateFormularySettingsSection}
                             onCreateFormularySettingsSection={this.props.onCreateFormularySettingsSection}
-                            onChangeFormularySettingsState={this.props.onChangeFormularySettingsState}
                             onTestFormularySettingsFormulaField={this.props.onTestFormularySettingsFormulaField}
                             formId={this.state.buildData.id}
                             types={this.props.login.types}
-                            data={this.props.formulary.update}
                             />
                         </div>
                     ): (

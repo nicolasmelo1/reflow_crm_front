@@ -12,6 +12,7 @@ import FormularySectionEditSectionContainer from './FormularySectionEditSectionC
 import FormularySectionEditSectionDisabledLabelTitle from './FormularySectionEditSectionDisabledLabelTitle'
 import FormularySectionEditSettingsFormTypeLabel from './FormularySectionEditSettingsFormTypeLabel'
 import FormularySectionEditSettingsIsConditionalButtonContainer from './FormularySectionEditSettingsIsConditionalButtonContainer'
+import FormularySectionEditSettingsCheckboxButton from './FormularySectionEditSettingsCheckboxButton'
 import FormularySectionEditSettingsIsConditionalButton from './FormularySectionEditSettingsIsConditionalButton'
 import FormularySectionEditSettingIsConditionalFormularyContainer from './FormularySectionEditSettingIsConditionalFormularyContainer'
 import FormularyEditSelectorContainer from './FormularyEditSelectorContainer'
@@ -47,6 +48,7 @@ export default {
         Formulary: {
             Container: FormularySectionEditSettingsContainer,
             FormTypeLabel: FormularySectionEditSettingsFormTypeLabel,
+            CheckboxButton: FormularySectionEditSettingsCheckboxButton,
             ConditionalButtonContainer: FormularySectionEditSettingsIsConditionalButtonContainer,
             ConditionalButton: FormularySectionEditSettingsIsConditionalButton,
             ConditionalFormularyContainer: FormularySectionEditSettingIsConditionalFormularyContainer,

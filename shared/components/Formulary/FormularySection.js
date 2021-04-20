@@ -5,7 +5,6 @@ import Fields from './Fields'
 import { Formularies } from '../../styles/Formulary'
 import agent from '../../utils/agent'
 
-
 /**
  * This Components controls each section individually
  */

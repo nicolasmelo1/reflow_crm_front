@@ -5,8 +5,25 @@ import { strings } from '../../utils/constants'
 import { Formularies } from '../../styles/Formulary'
 
 /**
- * {Description of your component, what does it do}
- * @param {Type} props - {go in detail about every prop it recieves}
+ * This toolbar component will contain all of the tools of the formulary, buttons to edit the formulary, button to share, and 
+ * buttons of many more functionalities to come. This is called a toolbar because it was inspired by the rich-text's toolbar.
+ * 
+ * @param {Boolean} isEditing - True if the user is editing the formulary and false if not.
+ * @param {Boolean} isEditingShare - True if the user is editing the public formulary, and false if not
+ * @param {Boolean} isLoading - While we are loading data this is set to true, after that this is set to false.
+ * @param {Boolean} isToShowToEdit - If the form opened is a connected formulary, we should NOT show the button to edit the formulary,
+ * otherwise we should. Also we should only show the button to edit the formulary when the user is an admin.
+ * @param {Boolean} isInConnectedFormulary - Same as before, if the user is in a connected formulary, we DO NOT show the toolbar, otherwise
+ * we show the toolbar.
+ * @param {BigInteger} formularyId - If you are editing some data, this should be defined, if you are creating a new data, it should be null.
+ * @param {Function} onGoToOrLeaveEditing - Go to or Leaves the editing page.
+ * @param {Function} onClickShare - When the user clicks to edit the share formulary.
+ * @param {Function} onClickPDFTemplates - When the user clicks to create a new template with the form data.
+ * @param {('full'|'preview'|'embbed')} formularyType - this have some differeces on what is shown to the user,
+ * - embbed - is the formulary that is used to embed in external websites and urls, so, for the external world. 
+ * it deactivates funcionalities like: add new or edit connection field is not available, cannot edit.
+ * - preview - the formulary is fully functional, except it doesn't have a save button
+ * - full - usually the formulary that is used in the home page.
  */
 const FormularyToolbar = (props) => {
     const isToShowToolbar = () => {
