@@ -40,7 +40,11 @@ const Number = (props) => {
     }
 
     const getFormulaOccurences = (formulaText) => {
-        return (formulaText.match(/{{(\w+)?}}/g) || []).map(variable=> variable.replace('{{', '').replace('}}', ''))
+        const occurrences = (formulaText.match(/{{(\w+)?}}/g) || []).map(variable=> {
+            console.log(variable)
+            return variable.replace('{{', '').replace('}}', '')
+        })
+        return occurrences
     }
 
     const formatFormula = (value, occurences) => {
@@ -51,7 +55,8 @@ const Number = (props) => {
         let counter = 1
 
         for (let i=0; i<occurences.length; i++) {
-            const fieldVariable = getFormularyFields().filter(field => field.value.toString() === occurences[i].toString() || field.name.toString() === occurences[i].toString())
+            const occurrence = [null, undefined].includes(occurences[i]) ? '' : occurences[i].toString() 
+            const fieldVariable = getFormularyFields().filter(field => field.value.toString() === occurrence || field.name.toString() === occurrence)
             if (fieldVariable.length > 0) {
                 backendText.splice(i+counter, 0,`{{${fieldVariable[0].value}}}`)
                 userText.splice(i+counter, 0,`{{${fieldVariable[0].name}}}`)
@@ -62,6 +67,8 @@ const Number = (props) => {
             counter++
 
         }
+
+        console.log(backendText.join(''))
 
         return {
             userText: userText.join(''),
@@ -86,7 +93,7 @@ const Number = (props) => {
     const onChangeFormulaVariable = (index, data) => {
         let formulaText = (props.field.formula_configuration) ? props.field.formula_configuration : ''
         let occurences = getFormulaOccurences(formulaText)
-        occurences[index] = data[0]
+        occurences[index] = data.length > 0 ? data[0] : null
         props.field.formula_configuration = formatFormula(formulaText, occurences).backendText
         testFormula(props.field.formula_configuration)
         props.onUpdateField(props.field)
