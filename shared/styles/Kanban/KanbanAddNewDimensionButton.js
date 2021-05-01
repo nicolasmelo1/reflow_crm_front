@@ -14,11 +14,11 @@ styled.button`
     background-color: transparent;
     margin-top: 10px; 
     @media(min-width: 641px) {
-        height: calc(var(--app-height) - 280px);
+        height: calc(var(--app-height) - var(--app-navbar-height) - 200px);
     }
 
     @media(max-width: 640px) {
-        height: calc(var(--app-height) - 320px);
+        height: calc(var(--app-height) - var(--app-navbar-height) - 240px);
     }
 
     &:hover {

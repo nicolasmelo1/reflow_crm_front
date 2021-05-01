@@ -25,10 +25,10 @@ styled.div`
     }
 
     @media(max-width: 420px) {
-        max-height: calc(var(--app-height) - ${props=> props.isMobile ? '285px' : '305px'});
+        max-height: calc(var(--app-height) - var(--app-navbar-height) - ${props=> props.isMobile ? '210px' : '230px'});
     }
     @media(min-width: 420px) {
-        max-height: calc(var(--app-height) - ${props=> props.isMobile ? '195px' : '215px'})
+        max-height: calc(var(--app-height) - var(--app-navbar-height) - ${props=> props.isMobile ? '130px' : '150px'})
     }
 `
 :

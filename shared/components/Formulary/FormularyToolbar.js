@@ -41,13 +41,13 @@ const FormularyToolbar = (props) => {
             <div>
                 {isToShowToolbar() ? (
                     <Formularies.Toolbar.Container>
-                        {props.isEditingShare ? '' : (
+                        {props.isToShowToEdit ? (
                             <Formularies.Toolbar.Button onClick={e => props.onGoToOrLeaveEditing()}>
                                 <FontAwesomeIcon icon={props.isEditing ? 'chevron-left' : 'pencil-alt'}/>
                                 &nbsp;
                                 {props.isEditing ? strings['pt-br']['formularyFinishEditButtonLabel'] : strings['pt-br']['formularyEditButtonLabel']}
                             </Formularies.Toolbar.Button>
-                        )} 
+                        ) : ''} 
                         {props.isEditing ? '' : (
                             <React.Fragment>
                                 <Formularies.Toolbar.Button onClick={(e) => props.onClickShare()}>

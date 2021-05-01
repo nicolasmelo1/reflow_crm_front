@@ -25,11 +25,11 @@ styled.div`
     }
 
     @media(min-width: 640px) {
-        height: calc(var(--app-height) - 180px);
+        height: calc(var(--app-height) - var(--app-navbar-height) - 130px);
     }
 
     @media(max-width: 640px) {
-        height: calc(var(--app-height) - 200px);
+        height: calc(var(--app-height) - var(--app-navbar-height) - 207px);
     }
     `
 :

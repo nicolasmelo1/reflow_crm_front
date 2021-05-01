@@ -8,7 +8,7 @@ styled.div`
     border-radius: 5px;
     padding: 10px;
     overflow: auto;
-    height: calc(var(--app-height) - 250px);
+    height: calc(var(--app-height) - var(--app-navbar-height) - 178px);
     position: relative;
 
     scrollbar-color: #bfbfbf transparent;

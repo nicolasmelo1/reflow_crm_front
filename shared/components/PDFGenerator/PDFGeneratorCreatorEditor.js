@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { Modal, SafeAreaView, useWindowDimensions } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import RichText from '../RichText'
 import FieldSelectorOptionBox from './FieldSelectorOptionBox'
+import RichText from '../RichText'
+import { FRONT_END_HOST } from '../../config'
 import dynamicImport from '../../utils/dynamicImport'
 import { strings } from '../../utils/constants'
+import { retrieveHTMLWithContentToDownload } from './utils'
 import Styled from './styles'
 
 const Spinner = dynamicImport('react-bootstrap', 'Spinner')
@@ -47,7 +49,10 @@ const Custom = (props) => {
 const PDFGeneratorCreatorEditor = (props) => {
     const sourceRef = React.useRef()
     const isMountedRef = React.useRef(true)
+    const previewContainerRef = React.useRef(null)
+    const documentRef = React.useRef(null)
     const mobileWindowHeight = useWindowDimensions().height
+    const [isPreviewOpen, setIsPreviewOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
     const [isSubmitting, setisSubmitting] = useState(false)
     const [templateData, setTemplateData] = useState({
@@ -157,6 +162,31 @@ const PDFGeneratorCreatorEditor = (props) => {
         })
     }
     // ------------------------------------------------------------------------------------------
+    /**
+     * When the user clicks to generate a preview of the document we open a pdf reader directly in the browser.
+     */
+    const onClickPreview = () => {
+        if (isPreviewOpen) {
+            setIsPreviewOpen(false)
+        } else {
+            const page = retrieveHTMLWithContentToDownload(documentRef.current)
+            setIsPreviewOpen(true)
+            setIsLoading(true)
+
+            axios.post(`${FRONT_END_HOST}api/generate_pdf`, {html: page}, {
+                responseType: 'blob'
+            }).then(response => {
+                setIsLoading(false)
+                
+                const blob = new Blob([response.data], {type: 'application/pdf'})
+                const fileUrl = window.URL.createObjectURL(blob)
+                if (previewContainerRef.current) {
+                    previewContainerRef.current.src = fileUrl
+                }
+            })
+        }
+    }
+    // ------------------------------------------------------------------------------------------
     /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         isMountedRef.current = true
@@ -233,19 +263,26 @@ const PDFGeneratorCreatorEditor = (props) => {
                     onChange={(e) => onChangeTemplateName(e.target.value)}/>
                 </Styled.PDFGeneratorCreatorEditorTemplateTitleContainer>
                 <Styled.PDFGeneratorEditorButtonsContainer> 
-                    <Styled.PDFGeneratorCreatorEditorTemplateSaveButton
-                    isValid={isValid('name', templateData.name)}
-                    onClick={(e) => isSubmitting || !isValid('name', templateData.name)  ? null : onSubmit({...templateData})}
-                    > 
-                        {isSubmitting ? (
-                            <Spinner animation="border" size="sm"/>
-                        ): strings['pt-br']['pdfGeneratorEditorSaveButtonLabel']}
-                    </Styled.PDFGeneratorCreatorEditorTemplateSaveButton>
                     <Styled.PDFGeneratorCreatorEditorTemplateCancelButton 
                     onClick={(e) => isSubmitting ? null : props.setSelectedTemplateIndex(null)}
                     >
                         {strings['pt-br']['pdfGeneratorEditorCancelButtonLabel']}
                     </Styled.PDFGeneratorCreatorEditorTemplateCancelButton>
+                    <div>
+                        <Styled.PDFGeneratorEditorTemplatePreviewButton 
+                        onClick={(e) => onClickPreview()}
+                        >
+                            {isPreviewOpen ? strings['pt-br']['pdfGeneratorEditorClosePreviewButtonLabel'] : strings['pt-br']['pdfGeneratorEditorPreviewButtonLabel']}
+                        </Styled.PDFGeneratorEditorTemplatePreviewButton>
+                        <Styled.PDFGeneratorCreatorEditorTemplateSaveButton
+                        isValid={isValid('name', templateData.name)}
+                        onClick={(e) => isSubmitting || !isValid('name', templateData.name)  ? null : onSubmit({...templateData})}
+                        > 
+                            {isSubmitting ? (
+                                <Spinner animation="border" size="sm"/>
+                            ): strings['pt-br']['pdfGeneratorEditorSaveButtonLabel']}
+                        </Styled.PDFGeneratorCreatorEditorTemplateSaveButton>
+                    </div>
                 </Styled.PDFGeneratorEditorButtonsContainer>
                 {isUnmanagedFieldSelectorOpen ? (
                     <FieldSelectorOptionBox 
@@ -255,28 +292,44 @@ const PDFGeneratorCreatorEditor = (props) => {
                     onClickOption={setUnmanagedFieldSelectedValue}
                     />
                 ) : ''}
-                <Styled.PDFGeneratorCreatorEditorRichTextContainer>
-                    {isLoading ? (
-                        <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                            <Spinner animation="border"/>
-                        </div>
-                    ) : (
-                        <React.Fragment>
-                            <RichText 
-                            initialText={strings['pt-br']['pdfGeneratorEditorRichTextInitialText']}
-                            initialData={templateData?.rich_text_page}
-                            allowedBlockTypeIds={props.allowedRichTextBlockIds}
-                            onStateChange={onRichTextStateChange}
-                            renderCustomContent={renderCustomContent} 
-                            handleUnmanagedContent={unmanaged} 
-                            onOpenUnmanagedContentSelector={setIsUnmanagedFieldSelectorOpen}
-                            isUnmanagedContentSelectorOpen={isUnmanagedFieldSelectorOpen}
-                            onChangeUnmanagedContentValue={setUnmanagedFieldSelectedValue}
-                            unmanagedContentValue={unmanagedFieldSelectedValue}
-                            />
-                        </React.Fragment>
-                    )}
-                </Styled.PDFGeneratorCreatorEditorRichTextContainer>
+                {isPreviewOpen ? 
+                isLoading ? (
+                    <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                        <Spinner animation="border"/>
+                    </div>
+                ) : (
+                    <iframe 
+                    ref={previewContainerRef} 
+                    style={{
+                        width: 'calc(var(--app-width) - 40px)',
+                        overflow: 'auto', 
+                        height: 'calc(var(--app-height) - 108px)'
+                    }}
+                    />
+                ) : (
+                    <Styled.PDFGeneratorCreatorEditorRichTextContainer>
+                        {isLoading ? (
+                            <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                                <Spinner animation="border"/>
+                            </div>
+                        ) : (
+                            <div ref={documentRef}>
+                                <RichText 
+                                initialText={strings['pt-br']['pdfGeneratorEditorRichTextInitialText']}
+                                initialData={templateData?.rich_text_page}
+                                allowedBlockTypeIds={props.allowedRichTextBlockIds}
+                                onStateChange={onRichTextStateChange}
+                                renderCustomContent={renderCustomContent} 
+                                handleUnmanagedContent={unmanaged} 
+                                onOpenUnmanagedContentSelector={setIsUnmanagedFieldSelectorOpen}
+                                isUnmanagedContentSelectorOpen={isUnmanagedFieldSelectorOpen}
+                                onChangeUnmanagedContentValue={setUnmanagedFieldSelectedValue}
+                                unmanagedContentValue={unmanagedFieldSelectedValue}
+                                />
+                            </div>
+                        )}
+                    </Styled.PDFGeneratorCreatorEditorRichTextContainer>
+                )}
             </div>
         )
     }

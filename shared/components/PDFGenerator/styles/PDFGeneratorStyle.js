@@ -35,7 +35,7 @@ styled.div`
     width: 100%;
     display: flex;
     flex-direction: row;
-    direction: rtl;
+    justify-content: space-between;
     margin-bottom: 10px;
 `
 :
@@ -46,6 +46,21 @@ styled(View)`
     justify-content: space-between;
     padding: 10px;
 `
+// ------------------------------------------------------------------------------------------
+export const PDFGeneratorEditorTemplatePreviewButton = process.env['APP'] === 'web' ? 
+styled.button`
+    margin-right: 5px;
+    border-radius: 5px;
+    border: 0;
+    background-color: transparent;
+    color: #0dbf7e;
+
+    &:hover {
+        color: #17242D;
+    }
+`
+:
+styled(View)``
 // ------------------------------------------------------------------------------------------
 export const PDFGeneratorEditorTemplateCancelButton = process.env['APP'] === 'web' ?
 styled.button`

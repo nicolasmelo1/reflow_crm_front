@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 export const NotificationConfigurationContainer = process.env['APP'] === 'web' ?
 styled.div`
     overflow-y: auto;
-    height: calc(var(--app-height) - 112px);
+    height: calc(var(--app-height) - var(--app-navbar-height) - 45px);
 
     scrollbar-color: #bfbfbf transparent;
     scrollbar-width: thin;

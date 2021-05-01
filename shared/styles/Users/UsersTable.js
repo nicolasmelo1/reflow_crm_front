@@ -3,10 +3,10 @@ import styled from 'styled-components'
 import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
-styled.table`
+styled.div`
     width: 100%;
     overflow: auto;
-    max-height: calc(var(--app-height) - 120px);
+    max-height: calc(var(--app-height) - var(--app-navbar-height) - 50px);
 
     scrollbar-color: #bfbfbf transparent;
     scrollbar-width: thin;

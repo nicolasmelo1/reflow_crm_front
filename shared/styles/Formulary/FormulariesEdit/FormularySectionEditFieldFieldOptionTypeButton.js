@@ -4,17 +4,17 @@ import { TouchableOpacity } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.button`
-    width: 100%;
-    border-radius: 5px;
-    border: 1px solid #17242D;
-    padding: 5px 0;
-    background-color: #17242D;
-    color: #f2f2f2;
+    display: flex;
+    flex-direction: row; 
+    align-items: center;
+    color: ${props => props.isSelected ? '#0dbf7e' : '#6a7074'};
+    min-width: 200px;
+    background-color: transparent;
+    border: 0;
 
     &:hover {
-        background-color: #f2f2f2;
+        font-weight: bold;
         color: #17242D;
-        border: 1px solid #bfbfbf;
     }
 `
 :

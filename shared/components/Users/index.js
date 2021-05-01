@@ -349,64 +349,66 @@ class Users extends React.Component {
                     {strings['pt-br']['userConfigurationAddNewUserButtonLabel']}
                 </UsersAddNewUserButton>
                 <UsersTable>
-                    <thead>
-                        <tr>
-                            <UsersTableHeadItem isFirstColumn={true}>
-                                <UsersTableHeadText>
-                                    {strings['pt-br']['userConfigurationTableEmailColumnHeaderLabel']}
-                                </UsersTableHeadText>
-                            </UsersTableHeadItem>
-                            <UsersTableHeadItem>
-                                <UsersTableHeadText>
-                                    {strings['pt-br']['userConfigurationTableNameColumnHeaderLabel']}
-                                </UsersTableHeadText>
-                            </UsersTableHeadItem>
-                            <UsersTableHeadItem>
-                                <UsersTableHeadText>
-                                    {strings['pt-br']['userConfigurationTableProfileColumnHeaderLabel']}
-                                </UsersTableHeadText>
-                            </UsersTableHeadItem>
-                            <UsersTableHeadItem>
-                                <UsersTableHeadText isEditOrDeleteColumn={true}>
-                                    {strings['pt-br']['userConfigurationTableEditColumnHeaderLabel']}
-                                </UsersTableHeadText>
-                            </UsersTableHeadItem>
-                            <UsersTableHeadItem isLastColumn={true}>
-                                <UsersTableHeadText isEditOrDeleteColumn={true}>
-                                    {strings['pt-br']['userConfigurationTableDeleteColumnHeaderLabel']}
-                                </UsersTableHeadText>
-                            </UsersTableHeadItem>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.props.users.update.map((user, index) => (
-                            <tr key={index}>
-                                <UsersTableContent>
-                                    {user.email}
-                                </UsersTableContent>
-                                <UsersTableContent>
-                                    {this.getFullName(user.first_name, user.last_name)}
-                                </UsersTableContent>
-                                <UsersTableContent>
-                                    {types('pt-br', 'profile_type', this.getProfileNameFromId(user.profile))}
-                                </UsersTableContent>
-                                <UsersTableContent>
-                                    {this.state.isLoading ? (
-                                        <Spinner animation="border" size="sm"/>
-                                    ) : (
-                                        <UsersEditIcon icon={'pencil-alt'} onClick={e => this.onOpenFormulary(user)}/>
-                                    )}
-                                </UsersTableContent>
-                                <UsersTableContent>
-                                    {this.state.isLoading ? (
-                                        <Spinner animation="border" size="sm"/>
-                                    ) : (
-                                        <UsersTrashIcon icon={'trash'} onClick={e=> this.onClickRemove(user.id)}/>
-                                    )}
-                                </UsersTableContent>
+                    <table style={{width: '100%'}}>
+                        <thead>
+                            <tr>
+                                <UsersTableHeadItem isFirstColumn={true}>
+                                    <UsersTableHeadText>
+                                        {strings['pt-br']['userConfigurationTableEmailColumnHeaderLabel']}
+                                    </UsersTableHeadText>
+                                </UsersTableHeadItem>
+                                <UsersTableHeadItem>
+                                    <UsersTableHeadText>
+                                        {strings['pt-br']['userConfigurationTableNameColumnHeaderLabel']}
+                                    </UsersTableHeadText>
+                                </UsersTableHeadItem>
+                                <UsersTableHeadItem>
+                                    <UsersTableHeadText>
+                                        {strings['pt-br']['userConfigurationTableProfileColumnHeaderLabel']}
+                                    </UsersTableHeadText>
+                                </UsersTableHeadItem>
+                                <UsersTableHeadItem>
+                                    <UsersTableHeadText isEditOrDeleteColumn={true}>
+                                        {strings['pt-br']['userConfigurationTableEditColumnHeaderLabel']}
+                                    </UsersTableHeadText>
+                                </UsersTableHeadItem>
+                                <UsersTableHeadItem isLastColumn={true}>
+                                    <UsersTableHeadText isEditOrDeleteColumn={true}>
+                                        {strings['pt-br']['userConfigurationTableDeleteColumnHeaderLabel']}
+                                    </UsersTableHeadText>
+                                </UsersTableHeadItem>
                             </tr>
-                        ))}
-                    </tbody>
+                        </thead>
+                        <tbody>
+                            {this.props.users.update.map((user, index) => (
+                                <tr key={index}>
+                                    <UsersTableContent>
+                                        {user.email}
+                                    </UsersTableContent>
+                                    <UsersTableContent>
+                                        {this.getFullName(user.first_name, user.last_name)}
+                                    </UsersTableContent>
+                                    <UsersTableContent>
+                                        {types('pt-br', 'profile_type', this.getProfileNameFromId(user.profile))}
+                                    </UsersTableContent>
+                                    <UsersTableContent>
+                                        {this.state.isLoading ? (
+                                            <Spinner animation="border" size="sm"/>
+                                        ) : (
+                                            <UsersEditIcon icon={'pencil-alt'} onClick={e => this.onOpenFormulary(user)}/>
+                                        )}
+                                    </UsersTableContent>
+                                    <UsersTableContent>
+                                        {this.state.isLoading ? (
+                                            <Spinner animation="border" size="sm"/>
+                                        ) : (
+                                            <UsersTrashIcon icon={'trash'} onClick={e=> this.onClickRemove(user.id)}/>
+                                        )}
+                                    </UsersTableContent>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </UsersTable>
                 <UsersForm 
                 cancelToken={this.cancelToken}

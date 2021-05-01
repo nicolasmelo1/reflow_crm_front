@@ -1,7 +1,59 @@
 import formatNumber from './formatNumber'
 import dynamicImport from './dynamicImport'
 
-const Chart = dynamicImport('chart.js', '')
+let ChartModule = dynamicImport('chart.js', '')
+ChartModule = ChartModule ? ChartModule : {}
+
+const Chart = ChartModule?.Chart
+const ArcElement = ChartModule?.ArcElement
+const LineElement = ChartModule?.LineElement
+const BarElement = ChartModule?.BarElement
+const PointElement = ChartModule?.PointElement
+const BarController = ChartModule?.BarController
+const BubbleController = ChartModule?.BubbleController
+const DoughnutController = ChartModule?.DoughnutController
+const LineController = ChartModule?.LineController
+const PieController = ChartModule?.PieController
+const PolarAreaController = ChartModule?.PolarAreaController
+const RadarController = ChartModule?.RadarController
+const ScatterController = ChartModule?.ScatterController
+const CategoryScale = ChartModule?.CategoryScale
+const LinearScale = ChartModule?.LinearScale
+const LogarithmicScale = ChartModule?.LogarithmicScale
+const RadialLinearScale = ChartModule?.RadialLinearScale
+const TimeScale = ChartModule?.TimeScale
+const TimeSeriesScale = ChartModule?.TimeSeriesScale
+const Decimation = ChartModule?.Decimation
+const Filler = ChartModule?.Filler
+const Legend = ChartModule?.Legend
+const Title = ChartModule?.Title
+const Tooltip = ChartModule?.Tooltip
+
+Chart.register(
+    ArcElement,
+    LineElement,
+    BarElement,
+    PointElement,
+    BarController,
+    BubbleController,
+    DoughnutController,
+    LineController,
+    PieController,
+    PolarAreaController,
+    RadarController,
+    ScatterController,
+    CategoryScale,
+    LinearScale,
+    LogarithmicScale,
+    RadialLinearScale,
+    TimeScale,
+    TimeSeriesScale,
+    Decimation,
+    Filler,
+    Legend,
+    Title,
+    Tooltip
+)
 
 const chart = (context, type, labels, values, numberFormat=null, maintainAspectRatio=true) => {
     let possibleColors = [
@@ -84,8 +136,10 @@ const chart = (context, type, labels, values, numberFormat=null, maintainAspectR
     const options = {
         line: {
             ...defaultOptions,
-            legend: {
-                display: false
+            plugins: {
+                legend: {
+                    display: false
+                }
             },
             elements: {
                 line: {
@@ -114,8 +168,10 @@ const chart = (context, type, labels, values, numberFormat=null, maintainAspectR
         }, 
         bar: {
             ...defaultOptions,
-            legend: {
-                display: false
+            plugins: {
+                legend: {
+                    display: false
+                }
             },
             scales: {
                 yAxes: [{
@@ -141,6 +197,7 @@ const chart = (context, type, labels, values, numberFormat=null, maintainAspectR
             ...defaultOptions,
         }
     }
+
     return new Chart(
         context,
         { 

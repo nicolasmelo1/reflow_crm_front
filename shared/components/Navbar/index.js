@@ -23,6 +23,7 @@ const Router = dynamicImport('next/router')
 class Navbar extends React.Component {
     constructor(props) {
         super(props)
+        this.navbarContainer = React.createRef()
         this.CancelToken = axios.CancelToken
         this.source = null
         this.state = {
@@ -139,6 +140,11 @@ class Navbar extends React.Component {
     }
     
     componentDidUpdate = (prevProps) => {
+        if (process.env['APP'] === 'web') {
+            if (this.navbarContainer.current && typeof document !== 'undefined') {
+                document.documentElement.style.setProperty('--app-navbar-height', `${this.navbarContainer.current.clientHeight}px`)
+            }
+        }
         if (
             this.props.navbar.isInHomeScreen && 
             this.props.sidebar.initial.length > 0 &&
@@ -175,8 +181,9 @@ class Navbar extends React.Component {
 
     renderWeb = () => {
         return (
-            <Styled.NavbarContainer>
-                <Styled.NavbarLogo src={!['', null].includes(this.props.company.logo_image_url) ? this.props.company.logo_image_url : '/complete_logo.png'}/>
+            <Styled.NavbarContainer ref={this.navbarContainer}>
+                <Styled.NavbarLogo 
+                src={!['', null].includes(this.props.company.logo_image_url) ? this.props.company.logo_image_url : '/complete_logo.png'}/>
                 {this.isFreeTrial() && isAdmin(this.props.login.types?.defaults?.profile_type, this.props.login.user) ? (
                     <Styled.NavbarFreeTrialAlertButton onClick={e=> {this.handleBilling()}}>
                         <Styled.NavbarFreeTrialAlertText isBold={true}>

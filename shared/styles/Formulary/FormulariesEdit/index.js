@@ -32,6 +32,9 @@ import FormularySectionEditFieldFormFieldNumberExplanationContainer from './Form
 import FormularySectionEditFieldFormFieldNumberExplanationDescription from './FormularySectionEditFieldFormFieldNumberExplanationDescription'
 import FormularySectionEditFieldFormFieldNumberExplanationLabel from './FormularySectionEditFieldFormFieldNumberExplanationLabel'
 import FormularySectionEditFieldAddDefaultValueButton from './FormularySectionEditFieldAddDefaultValueButton'
+import FormularySectionEditFieldFieldOptionIconContainer from './FormularySectionEditFieldFieldOptionIconContainer'
+import FormularySectionEditFieldFieldOptionTypeButton from './FormularySectionEditFieldFieldOptionTypeButton'
+import FormularySectionEditFieldFieldTypeButton from './FormularySectionEditFieldFieldTypeButton'
 
 export default {
     AddNewSectionButton: FormularySectionEditAddNewButton,
@@ -65,6 +68,9 @@ export default {
     ToggleConditional: {
         Input: FormularySectionEditToggleConditionalInput
     },
+    FieldTypeButton: FormularySectionEditFieldFieldTypeButton,
+    FieldTypeOptionButton: FormularySectionEditFieldFieldOptionTypeButton,
+    FieldTypeOptionIconContainer: FormularySectionEditFieldFieldOptionIconContainer,
     FieldFormAddDefaultValueButton: FormularySectionEditFieldAddDefaultValueButton,
     FieldFormularyContainer: FormularySectionEditFieldFormularyContainer,
     FieldFormFieldContainer: FormularySectionEditFieldFormFieldContainer,

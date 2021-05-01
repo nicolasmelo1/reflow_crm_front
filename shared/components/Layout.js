@@ -37,6 +37,7 @@ import {
     faFont,
     faImage,
     faList,
+    faPaperclip,
     faTable,
     faFilter, 
     faSortAmountDown, 
@@ -51,6 +52,9 @@ import {
     faTimes,
     faTimesCircle,
     faCheck,
+    faCheckDouble,
+    faUserCheck,
+    faStopwatch,
     faAlignLeft,
     faAlignCenter,
     faAlignRight
@@ -59,6 +63,7 @@ import {
 const Router = dynamicImport('next/router')
 
 library.add(
+    faPaperclip,
     faInfoCircle,
     faTasks,
     faArrowDown, 
@@ -94,6 +99,9 @@ library.add(
     faTimes,
     faTimesCircle,
     faCheck,
+    faCheckDouble,
+    faStopwatch,
+    faUserCheck,
     faAlignLeft,
     faAlignCenter,
     faAlignRight

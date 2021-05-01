@@ -37,7 +37,7 @@ export default styled(({isOpen, height,...rest}) => <div {...rest}/>)`
             width:80vw; 
             float: right; 
             border-radius: 10px 0 0 0; 
-            height: ${props.isOpen ? `80vh` : '0'};
+            height: ${props.isOpen ? `calc(var(--app-height) - var(--app-navbar-height) - 90px)` : '0'};
         ` : ''} 
     }
 `

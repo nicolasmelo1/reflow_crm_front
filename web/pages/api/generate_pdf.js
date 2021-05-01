@@ -32,7 +32,9 @@ export default async function handler(req, res) {
                 browsers --
                 res.setHeader('Content-Type', 'application/pdf')
                 res.status(200).send(pdf)
-            } catch {
+            } catch (e) {
+                console.log('[ERROR IN PDF GENERATION]')
+                console.log(e)
                 browsers --
                 res.setHeader('Content-Type', 'application/json')
                 res.status(400).json({

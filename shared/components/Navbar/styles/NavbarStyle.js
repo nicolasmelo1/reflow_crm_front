@@ -24,8 +24,7 @@ styled(Text)``
 export const NavbarLogo = process.env['APP'] === 'web' ? 
 styled.img`
     object-fit: cover;
-    height: 30px;
-    max-width: 103.75px;
+    width:150px;
 `
 : 
 styled(Image)``
@@ -56,7 +55,7 @@ styled.div`
         z-index: 30;
         background-color: #fff;
         width: 100%;
-        height: ${props=> props.isOpen ? 'calc(var(--app-height) - 65px)': '0'};
+        height: ${props=> props.isOpen ? 'calc(var(--app-height) - var(--app-navbar-height))': '0'};
         transition: height 0.3s ease-in-out;
     }
     @media(min-width: 830px) {

@@ -121,7 +121,7 @@ const FormularySectionEdit = (props) => {
             date_configuration_date_format_type: (props.types.data.field_date_format_type && props.types.data.field_date_format_type.filter(dateFormat=> dateFormat.type === 'date').length > 0) ? props.types.data.field_date_format_type.filter(dateFormat=> dateFormat.type=== 'date')[0].id : 1,
             period_configuration_period_interval_type: (props.types.data.field_period_interval_type && props.types.data.field_period_interval_type.filter(periodFormat=> periodFormat.type === 'date').length > 0) ? props.types.data.field_period_interval_type.filter(periodFormat=> periodFormat.type === 'date')[0].id : 4,
             number_configuration_number_format_type: (props.types.data.field_number_format_type && props.types.data.field_number_format_type.filter(numberFormat=> numberFormat.type === 'number').length > 0) ? props.types.data.field_number_format_type.filter(numberFormat=> numberFormat.type === 'number')[0].id : 1,
-            type: (props.types.data.field_type && props.types.data.field_type.filter(fieldType=> fieldType.type === 'text').lenght > 0) ? props.types.data.field_type.filter(fieldType=> fieldType.type === 'text')[0].id : 2,
+            type: null
         }
         props.section.form_fields.push(defaultFieldData)
         props.onUpdateFormularySettingsState()

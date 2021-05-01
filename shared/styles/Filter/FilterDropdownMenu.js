@@ -8,7 +8,7 @@ const Dropdown = dynamicImport('react-bootstrap', 'Dropdown')
 export default process.env['APP'] === 'web' && Dropdown ?
 styled(Dropdown.Menu)`
     overflow-y: auto;
-    max-height: calc(calc(var(--app-height) - 50px) / 2);
+    max-height: calc(var(--app-height) - var(--app-navbar-height) - 200px);
 
     scrollbar-color: #bfbfbf transparent;
     scrollbar-width: thin;

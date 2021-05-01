@@ -12,11 +12,11 @@ styled(Dropdown.Menu)`
     overflow: auto;
 
     @media(max-width: 640px) {
-        max-height: calc(var(--app-height) - 231px);
+        height: calc(var(--app-height) - var(--app-navbar-height) - 215px);
     };
 
     @media(min-width: 640px) {
-        max-height: calc(var(--app-height) - 191px);
+        max-height: calc(var(--app-height) - var(--app-navbar-height) - 175px);
     };
 
     scrollbar-color: #bfbfbf transparent;

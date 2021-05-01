@@ -9,7 +9,7 @@ styled.div`
     border-radius: .25rem;
     padding: 10px;
     z-index: 1;
-    height: 200px;
+    height: 140px;
     position: sticky;
     ${props => props.hasValues !== 1 ? `
         left: 0;

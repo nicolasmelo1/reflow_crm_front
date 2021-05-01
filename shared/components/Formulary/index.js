@@ -499,7 +499,7 @@ class Formulary extends React.Component {
         // we can only edit the form if the form you are in is not an embbeded or in preview, 
         // and if it is not a connected formulary.
         return this.state.buildData && this.state.buildData.group_id && this.state.buildData.id &&
-                this.props.type === 'full' && !this.isInConnectedFormulary() && 
+                this.props.type === 'full' && !this.isInConnectedFormulary() && !this.state.isEditingShare &&
                 isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user)
     }
     // ------------------------------------------------------------------------------------------

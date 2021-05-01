@@ -41,7 +41,6 @@ const Number = (props) => {
 
     const getFormulaOccurences = (formulaText) => {
         const occurrences = (formulaText.match(/{{(\w+)?}}/g) || []).map(variable=> {
-            console.log(variable)
             return variable.replace('{{', '').replace('}}', '')
         })
         return occurrences
@@ -67,8 +66,6 @@ const Number = (props) => {
             counter++
 
         }
-
-        console.log(backendText.join(''))
 
         return {
             userText: userText.join(''),
@@ -99,7 +96,6 @@ const Number = (props) => {
         props.onUpdateField(props.field)
     }
 
-    
     const onChangeFormula = (data) => {
         const occurences = getFormulaOccurences(data)
         const backendText = formatFormula(data, occurences).backendText

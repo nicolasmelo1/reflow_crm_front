@@ -13,13 +13,13 @@ styled.div`
     @media(min-width: 640px) {
         flex-direction: row;
         justify-content: flex-start;
-        height: calc(var(--app-height) - 180px);
+        height: calc(var(--app-height) - var(--app-navbar-height) - 117px);
     }
 
-    @media(max-width: 640px) {
+    @media(max-width: 641px) {
         justify-content: center;
         align-items: center;
-        height: calc(var(--app-height) - 240px);
+        height: calc(var(--app-height) - var(--app-navbar-height) - 167px);
     };
 
     scrollbar-color: #bfbfbf transparent;

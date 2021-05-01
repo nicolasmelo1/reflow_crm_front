@@ -43,6 +43,7 @@ export default styled(({isInitial, isSectionConditional, ...rest}) => <label {..
     border: ${props=> getBorder(props)};
     text-align: center;
     height: 100%;
+    font-size: 11px;
     padding:5px;
     cursor: pointer;
     border-radius: 10px;

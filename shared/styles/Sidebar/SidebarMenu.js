@@ -6,8 +6,8 @@ import { Animated, View, Easing, Dimensions } from 'react-native'
 export default process.env['APP'] === 'web' ?
 styled(({sidebarIsOpen, ...rest}) => <nav {...rest}/>)`
     justify-content: center;
-    background: #17242D;
-    height: calc(var(--app-height) - 71px);
+    background-color: #17242D;
+    height: calc(var(--app-height) - var(--app-navbar-height));
     overflow-y: auto;
     text-align: auto;
     padding: 0 0 2rem 0;
