@@ -15,39 +15,26 @@ export default async function handler(req, res) {
             browsers ++
             const browser = await puppeteer.launch({ headless: true, args: ['--disable-dev-shm-usage', '--no-sandbox'] })
             console.log('Launched Browser')
-            try {
-                const page = await browser.newPage()
-                console.log('Launched page')
+            const page = await browser.newPage()
+            console.log('Launched page')
 
-                await page.setDefaultNavigationTimeout(20000)
-                await page.setContent(req.body.html, {waitUntil: 'networkidle0'})
-                await page.emulateMediaType('screen')
-                console.log('Builded html')
+            await page.setContent(req.body.html, {waitUntil: 'networkidle0'})
+            await page.emulateMediaType('screen')
+            console.log('Builded html')
 
-                const pdf = await page.pdf({
-                    width:'794px', height: '1123px',
-                    margin: {
-                        top: '35px',
-                        left: '35px',
-                        right: '35px',
-                        bottom: '35px'
-                    }
-                })
-                await browser.close()
-                browsers --
-                res.setHeader('Content-Type', 'application/pdf')
-                res.status(200).send(pdf)
-            } catch (e) {
-                await browser.close()
-                console.log('[ERROR IN PDF GENERATION]')
-                console.log(e)
-                browsers --
-                res.setHeader('Content-Type', 'application/json')
-                res.status(400).json({
-                    status: 'error',
-                    reason: 'unexpected'
-                })
-            }   
+            const pdf = await page.pdf({
+                width:'794px', height: '1123px',
+                margin: {
+                    top: '35px',
+                    left: '35px',
+                    right: '35px',
+                    bottom: '35px'
+                }
+            })
+            await browser.close()
+            browsers --
+            res.setHeader('Content-Type', 'application/pdf')
+            res.status(200).send(pdf)   
         } else {
             console.log('OH NO, TOO MUCH TO HANDLE')
 
