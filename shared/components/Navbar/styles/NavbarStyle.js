@@ -24,7 +24,7 @@ styled(Text)``
 export const NavbarLogo = process.env['APP'] === 'web' ? 
 styled.img`
     object-fit: cover;
-    width:150px;
+    width: 110px;
 `
 : 
 styled(Image)``

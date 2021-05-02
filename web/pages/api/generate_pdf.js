@@ -10,9 +10,9 @@ export default async function handler(req, res) {
     if (req.method === 'POST') {
         if (browsers <= maximumNumberOfBrowsers) {
             browsers ++
+            const browser = await puppeteer.launch({ headless: true, args: ['--disable-dev-shm-usage', '--no-sandbox'] })
 
             try {
-                const browser = await puppeteer.launch({ headless: true, args: ['--disable-dev-shm-usage', '--no-sandbox'] })
                 const page = await browser.newPage()
 
                 await page.setDefaultNavigationTimeout(90000)
@@ -33,6 +33,7 @@ export default async function handler(req, res) {
                 res.setHeader('Content-Type', 'application/pdf')
                 res.status(200).send(pdf)
             } catch (e) {
+                await browser.close()
                 console.log('[ERROR IN PDF GENERATION]')
                 console.log(e)
                 browsers --
