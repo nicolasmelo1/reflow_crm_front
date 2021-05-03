@@ -13,7 +13,7 @@ export default async function handler(req, res) {
         console.log(maximumNumberOfBrowsers)
         if (browsers <= maximumNumberOfBrowsers) {
             browsers ++
-            const browser = await puppeteer.launch({ headless: false, args: ['--disable-gpu', '--disable-dev-shm-usage', '--no-sandbox'] })
+            const browser = await puppeteer.launch({ headless: true, args: ['--disable-gpu', '--disable-dev-shm-usage', '--no-sandbox'] })
             console.log('Launched Browser')
             const page = await browser.newPage()
             console.log('Launched page')
