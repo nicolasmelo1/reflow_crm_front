@@ -162,6 +162,9 @@ const PDFGeneratorReaderDownloader = (props) => {
                         link.click()
                         link.remove()
                         setIsDownloadingFile(false)
+                    }).catch(error => {
+                        props.onAddNotification(strings['pt-br']['pdfGeneratorDownloaderUnknownErrorMessage'], 'error')
+                        setIsDownloadingFile(false)
                     })
                 } else {
                     props.onAddNotification(strings['pt-br']['pdfGeneratorDownloaderErrorMessage'], 'error')
