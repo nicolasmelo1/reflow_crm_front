@@ -7,7 +7,6 @@ import Option from './Option'
 import Connection from './Connection'
 import Datetime from './Datetime'
 import Fields from '../Fields'
-import Select from '../../Utils/Select'
 import { FormulariesEdit }  from '../../../styles/Formulary'
 import { types, strings } from '../../../utils/constants'
 import deepCopy from '../../../utils/deepCopy'
@@ -498,6 +497,8 @@ const FormularyFieldEdit = (props) => {
                 types={props.types}
                 />
             )
+        } else {
+            return null
         }
     }
     // ------------------------------------------------------------------------------------------

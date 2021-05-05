@@ -762,6 +762,7 @@ class RichText extends React.Component {
             <RichTextContainer className={'rich-text-container'} height={this.props.height}>
                 {this.state.activeBlock !== null && this.props.isEditable !== false ? (
                     <Toolbar
+                    isToolbarFixed={this.props.isToolbarFixed === true}
                     isBlockActive={true}
                     {...this.getToolbarProps()}
                     />
