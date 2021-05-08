@@ -386,6 +386,7 @@ const strings = {
         pdfGeneratorReaderDownloaderMultipleFieldsSeparatorButtonLabel: 'Ok',
         pdfGeneratorReaderDownloaderGoBackButtonLabel: 'Voltar',
         pdfGeneratorReaderDownloaderDownloadButtonLabel: 'Baixar',
+        pdfGeneratorDownloaderUnknownErrorMessage: 'Aconteceu um erro inesperado ao gerar o pdf',
         pdfGeneratorDownloaderErrorMessage: 'A empresa chegou no limite de downloads de PDFs, fale com o administrador',
         templateConfigurationAddNewCardLabel: 'Adicionar Novo',
         templateConfigurationLoadMoreCardLabel: 'Carregar mais',

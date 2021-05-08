@@ -22,7 +22,6 @@ const onGetUserData = (source) => {
     }
 }
 
-
 const onGetFormularyAndFieldOptions = (source) => {
     return (dispatch) => {
         return agent.http.USERS.getFormularyAndFieldOptions(source).then(response => {

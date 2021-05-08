@@ -312,6 +312,7 @@ class Users extends React.Component {
                     />
                 </UsersTable>
                 <UsersForm
+                userOptions={this.props.users.update}
                 cancelToken={this.cancelToken}
                 onAddNotification={this.props.onAddNotification}
                 onGetUsersConfiguration={this.props.onGetUsersConfiguration}
@@ -412,6 +413,7 @@ class Users extends React.Component {
                 </UsersTable>
                 <UsersForm 
                 cancelToken={this.cancelToken}
+                userOptions={this.props.users.update}
                 onAddNotification={this.props.onAddNotification}
                 onGetUsersConfiguration={this.props.onGetUsersConfiguration}
                 formulariesAndFieldPermissionsOptions={this.props.users.formulariesAndFieldPermissionsOptions}

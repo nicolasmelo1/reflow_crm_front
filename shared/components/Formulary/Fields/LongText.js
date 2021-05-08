@@ -1,26 +1,40 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { TextInput } from 'react-native'
 import { Field } from '../../../styles/Formulary'
-
+import deepCopy from '../../../utils/deepCopy'
 
 const LongText = (props) => {
-    const onChange = (e) => {
-        e.preventDefault();
-        const newValue = props.singleValueFieldsHelper(e.target.value)
+    const fieldValueRef = React.useRef({})
+    const [stringValue, setStringValue] = useState('')
+
+    const changeInitialData = (initialValue) => {
+        setStringValue(initialValue)
+    }
+
+    const onChange = (text) => {
+        const newValue = props.singleValueFieldsHelper(text)
         props.setValues(newValue)
     }
 
-    const fieldValue = (props.values.length === 0) ? '': props.values[0].value
+    useEffect(() => {
+        if (props.values.length > 0 && JSON.stringify(props.values) !== JSON.stringify(fieldValueRef.current)) {
+            changeInitialData(props.values[0].value)
+            fieldValueRef.current = deepCopy(props.values)
+        }
+    }, [props.values])
 
     const renderMobile = () => {
         return (
-            <TextInput multiline={true} value={fieldValue}/>
+            <TextInput multiline={true} value={stringValue}/>
         )
     }
 
     const renderWeb = () => {
         return (
-            <Field.Text className="form-control" as="textarea" value={fieldValue} onChange={e=> {onChange(e)}} autoComplete={'whathever'}/>
+            <Field.Text className="form-control" as="textarea" 
+            value={stringValue} 
+            onChange={e=> {onChange(e.target.value)}} 
+            autoComplete={'whathever'}/>
         ) 
     }
 

@@ -76,6 +76,7 @@ const UsersForm = (props) => {
     })))
     const [templatesUserHaveAccess, setTemplatesUserHaveAccess] = useState([])
     const [formulariesUserHaveAccess, setFormulariesUserHaveAccess] = useState([])
+    const [userOptionsUserHaveAccess, setUserOptionsUserHaveAccess] = useState({})
     const [optionsUserHaveAccess, setOptionsUserHaveAccess] = useState([])
     const [userId, setUserId] = useState(null)
     const [name, setName] = useState('')
@@ -134,6 +135,22 @@ const UsersForm = (props) => {
     }
     
     /**
+     * Returns the field type name by the field type id
+     * 
+     * @param {BigInteger} fieldTypeId - The field type id.
+     * 
+     * @returns {String} - Returns the field type name, is it a user, a multi_option, a option, a user and so on 
+     */
+    const getFieldTypeName = (fieldTypeId) => {
+        const fieldType = props.types.data.field_type.filter(fieldType => fieldType.id === fieldTypeId)
+        if (fieldType.length > 0) {
+            return fieldType[0].type
+        } else {
+            return ''
+        }
+    }
+
+    /**
      * Changes the name of the user and validates if the name he has typed is valid in real time while he's typing
      * 
      * @param {String} value - The name of the user
@@ -161,6 +178,23 @@ const UsersForm = (props) => {
     const onChangeProfile = (data) => {
         onValidate('profile', data)
         setProfileId(data.length > 0 ? data[0]: null)
+    }
+
+    const onSelectUserOptionPermission = (userId, fieldId) => {
+        if (Object.keys(userOptionsUserHaveAccess).includes(fieldId.toString())) {
+            if (userOptionsUserHaveAccess[fieldId].includes(userId)) {
+                const indexToRemove = userOptionsUserHaveAccess[fieldId].indexOf(userId)
+                userOptionsUserHaveAccess[fieldId].splice(indexToRemove, 1)
+                if (userOptionsUserHaveAccess[fieldId].length === 0) {
+                    delete userOptionsUserHaveAccess[fieldId]
+                }
+            } else {
+                userOptionsUserHaveAccess[fieldId].push(userId)
+            }
+        } else {
+            userOptionsUserHaveAccess[fieldId] = [userId]
+        }
+        setUserOptionsUserHaveAccess({...userOptionsUserHaveAccess})
     }
 
     /**
@@ -195,18 +229,16 @@ const UsersForm = (props) => {
             const indexToRemove = formulariesUserHaveAccess.indexOf(id)
             const templateToRemove = props.formulariesAndFieldPermissionsOptions.filter(template=> template.form_group.map(form => form.id).includes(id))
             const formToRemove = templateToRemove[0].form_group.filter(form=> form.id === id)
-            const optionsToRemove = [].concat.apply(
-                [],
-                formToRemove[0].form_fields.map(field => 
-                    [].concat.apply(
-                        [], 
-                        field.field_option.map(option=> option.id)
-                    )
-                )
-            )
+
+            let optionsToRemove = []
+            formToRemove[0].form_fields.forEach(field => {
+                delete userOptionsUserHaveAccess[field.id]
+                field.field_option.forEach(option => optionsToRemove.push(option.id))
+            })
 
             const filteredSelectedOptionIds = optionsUserHaveAccess.filter(optionId => !optionsToRemove.includes(optionId))  
 
+            setUserOptionsUserHaveAccess({...userOptionsUserHaveAccess})
             setOptionsUserHaveAccess([...filteredSelectedOptionIds])
                       
             formulariesUserHaveAccess.splice(indexToRemove, 1)
@@ -235,23 +267,17 @@ const UsersForm = (props) => {
             const templateToRemove = props.formulariesAndFieldPermissionsOptions.filter(template=> template.id === id)
             const formIdsToRemove = templateToRemove[0].form_group.map(form => form.id)
             // reference on why i do [].concat.apply https://stackoverflow.com/questions/10865025/merge-flatten-an-array-of-arrays
-            const optionsToRemove = [].concat.apply(
-                [], 
-                templateToRemove[0].form_group.map(form => 
-                    [].concat.apply(
-                        [],
-                        form.form_fields.map(field => 
-                            [].concat.apply(
-                                [], 
-                                field.field_option.map(option=> option.id)
-                            )
-                        )
-                    )
-                )
-            )
+            let optionsToRemove = []
+            templateToRemove[0].form_group.forEach(form => {
+                form.form_fields.forEach(field => {
+                    delete userOptionsUserHaveAccess[field.id]
+                    field.field_option.forEach(option => optionsToRemove.push(option.id))
+                })
+            })
             const filteredSelectedOptionIds = optionsUserHaveAccess.filter(optionId => !optionsToRemove.includes(optionId))                        
             const filteredSelectedFormIds = formulariesUserHaveAccess.filter(formId => !formIdsToRemove.includes(formId))
             
+            setUserOptionsUserHaveAccess({...userOptionsUserHaveAccess})
             setOptionsUserHaveAccess([...filteredSelectedOptionIds])
             setFormulariesUserHaveAccess([...filteredSelectedFormIds])
             
@@ -285,8 +311,13 @@ const UsersForm = (props) => {
             first_name: name.split(' ')[0],
             last_name: name.split(' ').slice(1).join(' '),
             profile: profileId,
-            option_accessed_by_user: optionsUserHaveAccess.map(optionAccessedBy => ({field_option_id: optionAccessedBy})),
-            form_accessed_by_user: formulariesUserHaveAccess.map(formularyAccessedBy => ({form_id: formularyAccessedBy})),
+            user_accessed_by_user: [].concat.apply([], Object.keys(userOptionsUserHaveAccess).map(fieldId => 
+                userOptionsUserHaveAccess[fieldId].map(userAccessedById => 
+                    ({ field_id: parseInt(fieldId), user_option_id: userAccessedById })
+                )
+            )),
+            option_accessed_by_user: optionsUserHaveAccess.map(optionAccessedById => ({field_option_id: optionAccessedById})),
+            form_accessed_by_user: formulariesUserHaveAccess.map(formularyAccessedById => ({form_id: formularyAccessedById})),
             change_password_url: (process.env['APP']=== 'web') ? window.location.origin + paths.changepassword().asUrl + '?temp_pass={}' : 
                                   FRONT_END_HOST + paths.changepassword().asUrl + '?temp_pass={}'
         }
@@ -332,11 +363,22 @@ const UsersForm = (props) => {
         if (props.isOpen) {
             const formularyIdsAccessedByUser = props.userData.form_accessed_by_user.map(formAccessedBy => formAccessedBy.form_id)
             const optionIdsAccessedByUser = props.userData.option_accessed_by_user.map(optionAccessedBy => optionAccessedBy.field_option_id)
+            let userIdsAccessedByUserByField = {}
+            for (let i=0; i<props.userData.user_accessed_by_user.length; i++) {
+                const fieldId = props.userData.user_accessed_by_user[i].field_id
+                const userId = props.userData.user_accessed_by_user[i].user_option_id
+                if (userIdsAccessedByUserByField[fieldId]) {
+                    userIdsAccessedByUserByField[fieldId].push(userId)
+                } else {
+                    userIdsAccessedByUserByField[fieldId] = [userId]
+                }
+            }
             const userSelectedTemplates = props.formulariesAndFieldPermissionsOptions
                                             .filter(template => template.form_group.filter(form=> formularyIdsAccessedByUser.includes(form.id)).length > 0)
                                             .map(template => template.id)
             setTemplatesUserHaveAccess([...userSelectedTemplates])
             setOptionsUserHaveAccess([...optionIdsAccessedByUser])
+            setUserOptionsUserHaveAccess({...userIdsAccessedByUserByField})
             setFormulariesUserHaveAccess([...formularyIdsAccessedByUser])
             setName(!['', null].includes(props.userData.last_name) ? `${props.userData.first_name} ${props.userData.last_name}` : `${props.userData.first_name}`)
             setEmail(`${props.userData.email}`)
@@ -634,14 +676,15 @@ const UsersForm = (props) => {
                                             </UsersFormularyPermissionFormularyTitle>
                                         </UsersFormularyPermissionFormularyContainer>
                                     </UsersFormularyPermissionSelectionButton>
-                                    {formulariesUserHaveAccess.includes(formulary.id) ? formulary.form_fields.map((field, index) => (
-                                        <div key={index}>
+                                    {formulariesUserHaveAccess.includes(formulary.id) ? formulary.form_fields.map(field => (
+                                        <div key={field.id}>
                                             <UsersFormularyPermissionFieldContainer>
                                                 <UsersFormularyPermissionFieldTitle>
                                                     {field.label_name}
                                                 </UsersFormularyPermissionFieldTitle>
                                             </UsersFormularyPermissionFieldContainer>
-                                            {field.field_option.map(option => (
+                                            {getFieldTypeName(field.type) !== 'user' ?
+                                            field.field_option.map(option => (
                                                 <UsersFormularyPermissionSelectionButton 
                                                 key={option.id} 
                                                 isSelected={optionsUserHaveAccess.includes(option.id)}
@@ -655,6 +698,24 @@ const UsersForm = (props) => {
                                                         />
                                                         <UsersFormularyPermissionOptionTitle>
                                                             {option.option}
+                                                        </UsersFormularyPermissionOptionTitle>
+                                                    </UsersFormularyPermissionOptionContainer>
+                                                </UsersFormularyPermissionSelectionButton>
+                                            )) : 
+                                            props.userOptions.filter(userOption => userOption.id !== null).map(userOption => (
+                                                <UsersFormularyPermissionSelectionButton 
+                                                key={userOption.id} 
+                                                isSelected={(userOptionsUserHaveAccess[field.id] || []).includes(userOption.id)}
+                                                onClick={e => onSelectUserOptionPermission(userOption.id, field.id)}
+                                                style={{ padding: '5px 0'}}
+                                                >
+                                                    <UsersFormularyPermissionOptionContainer>
+                                                        <UsersFormularyPermissionsIcon 
+                                                        icon={((userOptionsUserHaveAccess[field.id] || []).includes(userOption.id)) ? 'check' : 'times'}
+                                                        isSelected={(userOptionsUserHaveAccess[field.id] || []).includes(userOption.id)}
+                                                        />
+                                                        <UsersFormularyPermissionOptionTitle>
+                                                            {`${userOption.first_name} ${userOption.last_name}`}
                                                         </UsersFormularyPermissionOptionTitle>
                                                     </UsersFormularyPermissionOptionContainer>
                                                 </UsersFormularyPermissionSelectionButton>

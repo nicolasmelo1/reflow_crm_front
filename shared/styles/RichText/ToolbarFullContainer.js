@@ -29,10 +29,15 @@ const Options = (props) => {
 export default process.env['APP'] === 'web' ?
 styled.div`
     width: ${props => props.width}px;
-    position: fixed;
+    ${props => props.isToolbarFixed ? `
+        position: fixed;
+        transform: translate3d(0, -55px, 0);
+    `: `
+        position: sticky;
+        top: 0;
+    `}
     z-index: 10;
     white-space: nowrap;
-    transform: translate3d(0, -55px, 0);
 `
 :
 styled(Options)`

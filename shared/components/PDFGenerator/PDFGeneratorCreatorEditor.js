@@ -315,6 +315,7 @@ const PDFGeneratorCreatorEditor = (props) => {
                         ) : (
                             <div ref={documentRef}>
                                 <RichText 
+                                isToolbarFixed={true}
                                 initialText={strings['pt-br']['pdfGeneratorEditorRichTextInitialText']}
                                 initialData={templateData?.rich_text_page}
                                 allowedBlockTypeIds={props.allowedRichTextBlockIds}
