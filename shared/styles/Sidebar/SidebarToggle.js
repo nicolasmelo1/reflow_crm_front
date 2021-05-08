@@ -25,11 +25,11 @@ styled(({sidebarIsOpen, ...rest}) => <button {...rest}/>)`
         z-index: 10;
     }
 
-    @media(min-width: 320px) {
-        left: ${({ sidebarIsOpen }) => sidebarIsOpen ? '310px' : '0'};
+    @media(min-width: 420px) {
+        left: ${({ sidebarIsOpen }) => sidebarIsOpen ? '310px' : '60px'};
     }
-    @media(max-width: 320px) {
-        left: ${({ sidebarIsOpen }) => sidebarIsOpen ? '270px' : '0'};
+    @media(max-width: 420px) {
+        left: ${({ sidebarIsOpen }) => sidebarIsOpen ? 'calc(var(--app-width) - 40px)' : '0'};
     }
 `
 :

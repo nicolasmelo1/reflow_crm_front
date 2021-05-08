@@ -3,11 +3,25 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import SidebarGroupsContainer from '../../styles/Sidebar/SidebarGroupsContainer'
 import { Text } from 'react-native'
 import SidebarForm from './SidebarForm' // not implemented in RN
-import { SidebarAccordionToggle, SidebarCardHeader, SidebarAccordion, SidebarCard } from '../../styles/Sidebar' // not implemented in RN
+import { 
+    SidebarAccordionToggle, 
+    SidebarCardHeader, 
+    SidebarAccordion, 
+    SidebarCard 
+} from '../../styles/Sidebar' // not implemented in RN
 
 
 const SidebarGroup = (props) => {
     const [isFormulariesOpen, setIsFormulariesOpen] = useState(false)
+
+    const getFirstLetterBetweenSpacesOfString = (string) => {
+        const stringSplittedSpaces = string.split(' ')
+        let newString = ''
+        stringSplittedSpaces.forEach(word => {
+            newString = newString + word.charAt(0)
+        })
+        return newString
+    }
 
     const doesGroupContainsSelectedFormulary = (formGroup) => {
         return formGroup.filter(formulary => formulary.form_name === props.selectedFormulary).length > 0
@@ -27,19 +41,21 @@ const SidebarGroup = (props) => {
         return (
             <div>
                 <SidebarCard>
-                    <button 
-                    style={{ border: 0, backgroundColor: 'transparent', width: '100%', margin: 0, padding: 0}} 
+                    <SidebarAccordionToggle 
+                    isSelected={doesGroupContainsSelectedFormulary(props.group.form_group)}
                     onClick={e => {setIsFormulariesOpen(!isFormulariesOpen)}}
                     >
-                        <SidebarCardHeader>
-                            <SidebarAccordionToggle isSelected={doesGroupContainsSelectedFormulary(props.group.form_group)}>
-                                {props.group.name}&nbsp;<FontAwesomeIcon icon={isFormulariesOpen ? 'chevron-up' : 'chevron-down' }/>
-                            </SidebarAccordionToggle>
-                        </SidebarCardHeader>
-                    </button>
+                        {props.sidebarIsOpen ? props.group.name : getFirstLetterBetweenSpacesOfString(props.group.name)}&nbsp;
+                        <FontAwesomeIcon icon={isFormulariesOpen ? 'chevron-up' : 'chevron-down' }/>
+                    </SidebarAccordionToggle>
                 </SidebarCard>
                 {isFormulariesOpen ? (
-                    <SidebarForm forms={props.group.form_group} selectedFormulary={props.selectedFormulary}/>
+                    <SidebarForm
+                    forms={props.group.form_group} 
+                    sidebarIsOpen={props.sidebarIsOpen}
+                    getFirstLetterBetweenSpacesOfString={getFirstLetterBetweenSpacesOfString}
+                    selectedFormulary={props.selectedFormulary}
+                    />
                 ) : ''}
             </div>
         )

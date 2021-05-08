@@ -294,7 +294,13 @@ class Layout extends React.Component {
                         ) : (
                             <div id="main-container">
                                 {this.props.hideNavBar ? '' : <Navbar onDeauthenticate={this.props.onDeauthenticate} />}
-                                {this.props.showSideBar ? <Sidebar sidebarIsOpen={this.state.sidebarIsOpen} setSidebarIsOpen={this.setSidebarIsOpen} setAddTemplates={this.setAddTemplates}/> : ''}
+                                {this.props.showSideBar ? (
+                                    <Sidebar 
+                                    sidebarIsOpen={this.state.sidebarIsOpen} 
+                                    setSidebarIsOpen={this.setSidebarIsOpen} 
+                                    setAddTemplates={this.setAddTemplates}
+                                    />
+                                ) : ''}
                                 <ContentContainer 
                                 sidebarIsOpen={this.state.sidebarIsOpen} 
                                 showSideBar={this.props.showSideBar} 

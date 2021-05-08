@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, Text, TouchableOpacity } from 'react-native'
 import axios from 'axios'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import SidebarGroup from './SidebarGroup'
 import SidebarGroupEdit from './SidebarGroupEdit'
 import actions from '../../redux/actions'
@@ -18,9 +19,6 @@ import {
     SidebarAddNewTemplateButton 
 } from '../../styles/Sidebar' 
 
-const Col = dynamicImport('react-bootstrap', 'Col')
-const Row = dynamicImport('react-bootstrap', 'Row')
-
 /*** 
  * This is the sidebar of management pages, like kanban, listing and others, this side bar right now is only rendered in those pages.
  * It's important to notice the constructor, we make a request while constructing the component. 
@@ -35,10 +33,19 @@ class Sidebar extends React.Component {
         }
     }
 
-    enterEditMode = (e) => {
-        e.preventDefault()
+    onChangeSidebarIsOpen = () => {
+        if (this.state.isEditing) {
+            this.setState(state => ({...state, isEditing: !state.isEditing}))
+        }
+        this.props.setSidebarIsOpen()
+    }
+
+    enterEditMode = () => {
         this.setState(state => {
             if (!state.isEditing){
+                if (this.props.sidebarIsOpen === false) {
+                    this.props.setSidebarIsOpen()
+                }
                 this.props.onGetUpdateForms()
             } else {
                 this.props.onGetForms()
@@ -91,7 +98,7 @@ class Sidebar extends React.Component {
                 <SidebarToggleContainer>
                     <View style={{ flexDirection: 'row', width:'100%', justifyContent:'space-between'}}>
                         <SidebarToggle activeOpacity={0.8} onPress={e=> {
-                            this.props.setSidebarIsOpen(e)
+                            this.props.setSidebarIsOpen()
                         }}>
                             <Text style={{color: '#0dbf7e', alignSelf:'center'}}>{(this.props.sidebarIsOpen) ? '<<<': '>>>'}</Text>
                         </SidebarToggle>
@@ -104,45 +111,68 @@ class Sidebar extends React.Component {
 
     renderWeb() {
         return (
-            <Row style={{ margin: '0'}}>
-                <Col style={{ padding: '0'}}>
-                    <SidebarToggle className="sidebar-toogle" onClick={e=>this.props.setSidebarIsOpen(e)} sidebarIsOpen={this.props.sidebarIsOpen}>
-                        {(this.props.sidebarIsOpen) ? '<<<': '>>>'}
-                    </SidebarToggle>
-                    <SidebarMenu sidebarIsOpen={this.props.sidebarIsOpen} >
-                        {isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user) ? (
-                            <div style={{ borderBottom: '1px solid #444' }}>
-                                <SidebarEditTemplateButton onClick={e => this.enterEditMode(e)}>{(this.state.isEditing) ? strings['pt-br']['goBack']: strings['pt-br']['sidebarEditTemplateButtonLabel']}</SidebarEditTemplateButton>
-                                { (this.state.isEditing) ? null: <SidebarAddNewTemplateButton onClick={e => this.props.setAddTemplates(true) }>{strings['pt-br']['sidebarAddNewTemplateButtonLabel']}</SidebarAddNewTemplateButton>}
-                            </div>
-                        ) : null}
-                        { (this.state.isEditing) ? (
-                            <SidebarGroupEdit 
-                            companyId={this.props.login.companyId}
-                            groups={this.props.sidebar.update}
-                            onRemoveGroup={this.props.onRemoveGroup}
-                            onUpdateGroup={this.props.onUpdateGroup}
-                            onChangeGroupState={this.props.onChangeGroupState}
-                            onCreateOrUpdateForm={this.props.onCreateOrUpdateForm}
-                            onCreateFormulary={this.props.onCreateFormulary}
-                            onUpdateFormulary={this.props.onUpdateFormulary}
-                            onAddNewForm={this.props.onAddNewForm}
-                            onRemoveFormulary={this.props.onRemoveFormulary}
-                            />
-                        ): (
-                            <div>
-                                {(this.props.sidebar.initial) ? this.props.sidebar.initial.map((group, index) => (
-                                    <SidebarGroup
-                                    key={group.id}
-                                    group={group}
-                                    selectedFormulary={this.props.login.primaryForm}
-                                    />
-                                )) : ''}
-                            </div>
-                        )}
-                    </SidebarMenu>
-                </Col>
-            </Row>
+            <div>
+                <SidebarToggle 
+                className="sidebar-toogle" 
+                onClick={e=> this.onChangeSidebarIsOpen()} 
+                sidebarIsOpen={this.props.sidebarIsOpen}
+                >
+                    {(this.props.sidebarIsOpen) ? '<<<': '>>>'}
+                </SidebarToggle>
+                <SidebarMenu sidebarIsOpen={this.props.sidebarIsOpen} >
+                    {isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user) ? (
+                        <div 
+                        style={{ 
+                            display: 'flex',
+                            flexDirection: this.props.sidebarIsOpen ? 'row' : 'column',
+                            borderBottom: '1px solid #444' 
+                        }}>
+                            <SidebarEditTemplateButton 
+                            sidebarIsOpen={this.props.sidebarIsOpen}
+                            onClick={e => this.enterEditMode(e)}
+                            >
+                                {this.props.sidebarIsOpen ? 
+                                    this.state.isEditing ? strings['pt-br']['goBack']: strings['pt-br']['sidebarEditTemplateButtonLabel'] :
+                                    this.state.isEditing ? <FontAwesomeIcon icon={'chevron-left'}/> : <FontAwesomeIcon icon={'pencil-alt'}/>
+                                }
+                            </SidebarEditTemplateButton>
+                            {(this.state.isEditing) ? null: (
+                                <SidebarAddNewTemplateButton 
+                                sidebarIsOpen={this.props.sidebarIsOpen}
+                                onClick={e => this.props.setAddTemplates(true)}
+                                >
+                                    {this.props.sidebarIsOpen ? strings['pt-br']['sidebarAddNewTemplateButtonLabel'] :  <FontAwesomeIcon icon={'plus-circle'}/> }
+                                </SidebarAddNewTemplateButton>
+                            )}
+                        </div>
+                    ) : null}
+                    { (this.state.isEditing) ? (
+                        <SidebarGroupEdit 
+                        companyId={this.props.login.companyId}
+                        groups={this.props.sidebar.update}
+                        onRemoveGroup={this.props.onRemoveGroup}
+                        onUpdateGroup={this.props.onUpdateGroup}
+                        onChangeGroupState={this.props.onChangeGroupState}
+                        onCreateOrUpdateForm={this.props.onCreateOrUpdateForm}
+                        onCreateFormulary={this.props.onCreateFormulary}
+                        onUpdateFormulary={this.props.onUpdateFormulary}
+                        onAddNewForm={this.props.onAddNewForm}
+                        onRemoveFormulary={this.props.onRemoveFormulary}
+                        />
+                    ): (
+                        <div>
+                            {(this.props.sidebar.initial) ? this.props.sidebar.initial.map(group => (
+                                <SidebarGroup
+                                key={group.id}
+                                group={group}
+                                sidebarIsOpen={this.props.sidebarIsOpen}
+                                selectedFormulary={this.props.login.primaryForm}
+                                />
+                            )) : ''}
+                        </div>
+                    )}
+                </SidebarMenu>
+            </div>
         )
     }
 
