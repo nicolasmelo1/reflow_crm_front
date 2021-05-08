@@ -175,25 +175,28 @@ const Attachment = (props) => {
      * 
      * @param {File} file 
      */
-    const addFile = async (file) => {        
-        const attachmentValues = props.values.map(value => value.value)
-        const isNotAcceptedFile = uploadedFileNames.some(fileName => fileName === file.name) || props.values.some(value => value.value === file.name)
-        setIsUploading(true)
-        if (!isNotAcceptedFile && props.onAddFile) {
-            try {
-                const draftStringId = await props.onAddFile(file.name, props.field.id, file)
-                if (draftStringId !== '') {
-                    const formValues = props.multipleValueFieldHelper(attachmentValues.concat(draftStringId))
-                    uploadedFileNames.push(file.name)
-                    props.setValues([...formValues])
-                    setUploadedFileNames([...uploadedFileNames])
+    const addFile = async (files) => {     
+        setIsUploading(true)   
+        const promises = Array.from(files).map(async file => {
+            const attachmentValues = props.values.map(value => value.value)
+            const isNotAcceptedFile = uploadedFileNames.some(fileName => fileName === file.name) || props.values.some(value => value.value === file.name)
+            if (!isNotAcceptedFile && props.onAddFile) {
+                try {
+                    const draftStringId = await props.onAddFile(file.name, props.field.id, file)
+                    if (draftStringId !== '') {
+                        const formValues = props.multipleValueFieldHelper(attachmentValues.concat(draftStringId))
+                        uploadedFileNames.push(file.name)
+                        props.setValues([...formValues])
+                        setUploadedFileNames([...uploadedFileNames])
 
+                    }
                 }
+                catch {}
+            } else {
+                setShowAlert(true)
             }
-            catch {}
-        } else {
-            setShowAlert(true)
-        }
+        })
+        await Promise.all(promises)
         setIsUploading(false)
     }
     // ------------------------------------------------------------------------------------------
@@ -240,7 +243,7 @@ const Attachment = (props) => {
             onDrop={e=> {
                 preventDefaultAndStopPropagationOfEventWeb(e)
                 setIsDraggingOver(false)
-                addFile(e.dataTransfer.files[0])
+                addFile(e.dataTransfer.files)
             }}
             >
                 <Alert 
@@ -278,7 +281,7 @@ const Attachment = (props) => {
                                     <Field.Attachment.Input type="file" 
                                     onChange={e => {        
                                         e.preventDefault()
-                                        addFile(e.target.files[0]) 
+                                        addFile(e.target.files) 
                                         e.target.value = null
                                     }}
                                     />
