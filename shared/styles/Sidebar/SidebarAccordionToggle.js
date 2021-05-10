@@ -14,6 +14,11 @@ styled.button`
     font-weight: ${props => props.isSelected ? "bold" : "normal"};
     width: 100%;
     padding: 10px;
+    ${props => props.sidebarIsOpen ? `
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    ` : ''}
 `
 :
 null

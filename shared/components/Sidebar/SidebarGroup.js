@@ -54,10 +54,11 @@ const SidebarGroup = (props) => {
                         text={props.group.name}
                         >
                             <SidebarAccordionToggle 
+                            sidebarIsOpen={true}
                             isSelected={doesGroupContainsSelectedFormulary(props.group.form_group)}
                             onClick={e => {setIsFormulariesOpen(!isFormulariesOpen)}}
                             >
-                                {getFirstLetterBetweenSpacesOfString(props.group.name)}&nbsp;
+                                {getFirstLetterBetweenSpacesOfString(props.group.name)}
                                 <FontAwesomeIcon icon={isFormulariesOpen ? 'chevron-up' : 'chevron-down' }/>
                             </SidebarAccordionToggle>
                         </Overlay>
