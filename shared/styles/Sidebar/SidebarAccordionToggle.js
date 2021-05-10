@@ -16,7 +16,7 @@ styled.button`
     padding: 10px;
     ${props => props.sidebarIsOpen ? `
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         align-items: center;
     ` : ''}
 `
