@@ -47,7 +47,7 @@ const Header = (props) => {
             <style>
                 {fonts.map(font => font)}
             </style>
-            <script src="https://fast.conpass.io/S97nHXnbeCE.js"/>
+            <script type="text/javascript" src="/stonly/index.js"/>
             <script async src="https://www.googletagmanager.com/gtag/js?id=UA-144919276-1"/>
             <script type="text/javascript" src="/google/analytics/index.js"/>
             <script type="text/javascript" src="/google/tagmanager/index.js"/>

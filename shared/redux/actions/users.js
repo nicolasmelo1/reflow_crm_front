@@ -1,21 +1,11 @@
 import { SET_USER_FORMULARIES_AND_FIELD_OPTIONS, SET_USER_UPDATE_DATA, SET_USER } from '../types';
 import agent from '../../utils/agent'
-import initializeConpass from '../../utils/conpass' 
 
 
 const onGetUserData = (source) => {
     return (dispatch) => {
         return agent.http.USERS.getUserData(source).then(response => {
             if (response && response.status === 200) {
-                initializeConpass(
-                    `${response.data.data.first_name} ${response.data.data.last_name}`, 
-                    response.data.data.email, {
-                        id: response.data.data.id,
-                        is_superuser: response.data.data.is_superuser,
-                        company: response.data.data.company,
-                        profile: response.data.data.profile
-                    }
-                )
                 dispatch({ type: SET_USER, payload: response.data.data })
             }
         })

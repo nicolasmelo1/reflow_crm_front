@@ -4,7 +4,10 @@ import { Text } from 'react-native'
 
 export default process.env['APP'] === 'web' ? 
 styled.button`
-    padding: 5px 10px;
+    diplay: flex;
+    justify-content: center;
+    align-items: center;
+    padding: ${props => props.sidebarIsOpen ? '5px 10px': '8px 10px'};
     background-color: #0dbf7e;
     border-radius: 20px;
     border: 0;

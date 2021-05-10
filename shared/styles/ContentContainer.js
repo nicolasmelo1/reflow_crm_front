@@ -14,8 +14,22 @@ const getPadding = (props) => {
 export default process.env['APP'] === 'web' ? 
 styled.div`
     padding: ${props => getPadding(props)};
-    max-width: 100%;    
     height: ${props => props.hideNavBar ? 'var(--app-height)' : 'calc(var(--app-height) - var(--app-navbar-height))'};
+    
+    @media(min-width: 420px) {
+        position: absolute;
+        ${props => props.showSidebar ? `
+            width: calc(var(--app-width) - 60px);
+            left: 60px;
+        `: `
+            width: var(--app-width);
+        `}
+        transition: width 0.3s ease-in-out, left 0.3s ease-in-out;
+    }
+    @media(max-width: 420px) {
+        width: var(--app-width);
+    }
+
 `
 :
 styled(View)`

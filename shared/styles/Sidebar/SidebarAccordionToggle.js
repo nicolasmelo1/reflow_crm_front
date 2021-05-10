@@ -12,7 +12,8 @@ styled.button`
     border-bottom: 1px solid #444;
     color: ${props => props.isSelected ? "#0dbf7e" : "#fff"};
     font-weight: ${props => props.isSelected ? "bold" : "normal"};
-    width: 100%
+    width: 100%;
+    padding: 10px;
 `
 :
 null
