@@ -5,10 +5,9 @@ import { Text } from 'react-native'
 import SidebarForm from './SidebarForm' // not implemented in RN
 import { 
     SidebarAccordionToggle, 
-    SidebarCardHeader, 
-    SidebarAccordion, 
     SidebarCard 
 } from '../../styles/Sidebar' // not implemented in RN
+import Overlay from '../../styles/Overlay'
 
 
 const SidebarGroup = (props) => {
@@ -41,13 +40,28 @@ const SidebarGroup = (props) => {
         return (
             <div>
                 <SidebarCard>
-                    <SidebarAccordionToggle 
-                    isSelected={doesGroupContainsSelectedFormulary(props.group.form_group)}
-                    onClick={e => {setIsFormulariesOpen(!isFormulariesOpen)}}
-                    >
-                        {props.sidebarIsOpen ? props.group.name : getFirstLetterBetweenSpacesOfString(props.group.name)}&nbsp;
-                        <FontAwesomeIcon icon={isFormulariesOpen ? 'chevron-up' : 'chevron-down' }/>
-                    </SidebarAccordionToggle>
+                    {props.sidebarIsOpen ? (
+                        <SidebarAccordionToggle 
+                        isSelected={doesGroupContainsSelectedFormulary(props.group.form_group)}
+                        onClick={e => {setIsFormulariesOpen(!isFormulariesOpen)}}
+                        >
+                            {props.group.name}&nbsp;
+                            <FontAwesomeIcon icon={isFormulariesOpen ? 'chevron-up' : 'chevron-down' }/>
+                        </SidebarAccordionToggle>
+                    ) : (
+                        <Overlay
+                        placement={'right'}
+                        text={props.group.name}
+                        >
+                            <SidebarAccordionToggle 
+                            isSelected={doesGroupContainsSelectedFormulary(props.group.form_group)}
+                            onClick={e => {setIsFormulariesOpen(!isFormulariesOpen)}}
+                            >
+                                {getFirstLetterBetweenSpacesOfString(props.group.name)}&nbsp;
+                                <FontAwesomeIcon icon={isFormulariesOpen ? 'chevron-up' : 'chevron-down' }/>
+                            </SidebarAccordionToggle>
+                        </Overlay>
+                    )}
                 </SidebarCard>
                 {isFormulariesOpen ? (
                     <SidebarForm

@@ -302,6 +302,7 @@ class Layout extends React.Component {
                                     />
                                 ) : ''}
                                 <ContentContainer 
+                                showSidebar={this.props.showSideBar}
                                 sidebarIsOpen={this.state.sidebarIsOpen} 
                                 showSideBar={this.props.showSideBar} 
                                 hideNavBar={this.props.hideNavBar}

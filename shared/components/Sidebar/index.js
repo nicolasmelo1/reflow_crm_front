@@ -18,6 +18,7 @@ import {
     SidebarEditTemplateButton, 
     SidebarAddNewTemplateButton 
 } from '../../styles/Sidebar' 
+import Overlay from '../../styles/Overlay'
 
 /*** 
  * This is the sidebar of management pages, like kanban, listing and others, this side bar right now is only rendered in those pages.
@@ -127,22 +128,45 @@ class Sidebar extends React.Component {
                             flexDirection: this.props.sidebarIsOpen ? 'row' : 'column',
                             borderBottom: '1px solid #444' 
                         }}>
-                            <SidebarEditTemplateButton 
-                            sidebarIsOpen={this.props.sidebarIsOpen}
-                            onClick={e => this.enterEditMode(e)}
-                            >
-                                {this.props.sidebarIsOpen ? 
-                                    this.state.isEditing ? strings['pt-br']['goBack']: strings['pt-br']['sidebarEditTemplateButtonLabel'] :
-                                    this.state.isEditing ? <FontAwesomeIcon icon={'chevron-left'}/> : <FontAwesomeIcon icon={'pencil-alt'}/>
-                                }
-                            </SidebarEditTemplateButton>
-                            {(this.state.isEditing) ? null: (
+                            {this.props.sidebarIsOpen ? (
+                                <SidebarEditTemplateButton 
+                                sidebarIsOpen={this.props.sidebarIsOpen}
+                                onClick={e => this.enterEditMode(e)}
+                                >
+                                    {this.state.isEditing ? strings['pt-br']['goBack']: strings['pt-br']['sidebarEditTemplateButtonLabel']}
+                                </SidebarEditTemplateButton>
+                            ) : (
+                                <Overlay 
+                                placement={'right'}
+                                text={this.state.isEditing ? strings['pt-br']['goBack']: strings['pt-br']['sidebarEditTemplateButtonLabel']}
+                                >
+                                    <SidebarEditTemplateButton 
+                                    sidebarIsOpen={this.props.sidebarIsOpen}
+                                    onClick={e => this.enterEditMode(e)}
+                                    >
+                                        {this.state.isEditing ? <FontAwesomeIcon icon={'chevron-left'}/> : <FontAwesomeIcon icon={'pencil-alt'}/>}
+                                    </SidebarEditTemplateButton>
+                                </Overlay>
+                            )}
+                            {(this.state.isEditing) ? null: this.props.sidebarIsOpen ? (
                                 <SidebarAddNewTemplateButton 
                                 sidebarIsOpen={this.props.sidebarIsOpen}
                                 onClick={e => this.props.setAddTemplates(true)}
                                 >
-                                    {this.props.sidebarIsOpen ? strings['pt-br']['sidebarAddNewTemplateButtonLabel'] :  <FontAwesomeIcon icon={'plus-circle'}/> }
+                                    {strings['pt-br']['sidebarAddNewTemplateButtonLabel']}
                                 </SidebarAddNewTemplateButton>
+                            ) : (
+                                <Overlay 
+                                placement={'right'}
+                                text={strings['pt-br']['sidebarAddNewTemplateButtonLabel']}
+                                >
+                                    <SidebarAddNewTemplateButton 
+                                    sidebarIsOpen={this.props.sidebarIsOpen}
+                                    onClick={e => this.props.setAddTemplates(true)}
+                                    >
+                                        <FontAwesomeIcon icon={'plus-circle'}/>
+                                    </SidebarAddNewTemplateButton>
+                                </Overlay>
                             )}
                         </div>
                     ) : null}

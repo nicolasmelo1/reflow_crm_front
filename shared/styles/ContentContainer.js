@@ -18,8 +18,12 @@ styled.div`
     
     @media(min-width: 420px) {
         position: absolute;
-        width: calc(var(--app-width) - 60px);
-        left: 60px;
+        ${props => props.showSidebar ? `
+            width: calc(var(--app-width) - 60px);
+            left: 60px;
+        `: `
+            width: var(--app-width);
+        `}
         transition: width 0.3s ease-in-out, left 0.3s ease-in-out;
     }
     @media(max-width: 420px) {
