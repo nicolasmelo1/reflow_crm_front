@@ -137,6 +137,9 @@ class Navbar extends React.Component {
         this.props.onGetNewNotifications(this.source)
         this.props.onGetCompanyData(this.source)
         this.props.onGetUserData(this.source)
+        if (this.navbarContainer.current && typeof document !== 'undefined') {
+            document.documentElement.style.setProperty('--app-navbar-height', `${this.navbarContainer.current.clientHeight}px`)
+        }
     }
     
     componentDidUpdate = (prevProps) => {
