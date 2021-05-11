@@ -26,7 +26,7 @@ styled(({sidebarIsOpen, ...rest}) => <button {...rest}/>)`
     }
 
     @media(min-width: 420px) {
-        left: ${({ sidebarIsOpen }) => sidebarIsOpen ? '310px' : '60px'};
+        left: ${({ sidebarIsOpen }) => sidebarIsOpen ? '295px' : '60px'};
     }
     @media(max-width: 420px) {
         left: ${({ sidebarIsOpen }) => sidebarIsOpen ? 'calc(var(--app-width) - 40px)' : '0'};

@@ -30,7 +30,9 @@ class MyDocument extends Document {
         return (
             <Html style={{ overflow: 'hidden' }} lang="pt-BR">
                 <Head />
-                <body>
+                <body style={{
+                    fontSize: '15px'
+                }}>
                     <Main />
                     <NextScript />
                 </body>

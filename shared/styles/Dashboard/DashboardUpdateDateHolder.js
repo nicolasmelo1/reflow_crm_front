@@ -7,7 +7,7 @@ styled.div`
     text-align: center;
     margin: 5px 0 0 0;
     
-    @media(max-width: 640px) {
+    @media(max-width: 740px) {
         order: 3;
     }
 `

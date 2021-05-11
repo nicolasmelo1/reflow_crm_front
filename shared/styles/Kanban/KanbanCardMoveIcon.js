@@ -7,7 +7,7 @@ styled(FontAwesomeIcon)`
     color: #bfbfbf;
     cursor: grab;
 
-    @media(max-width: 640px) {
+    @media(max-width: 740px) {
         font-size: 22px;
     }
 

@@ -7,7 +7,7 @@ styled.div`
     vertical-align: top;
     padding: 10px;
 
-    @media(min-width: 640px) {
+    @media(min-width: 740px) {
         width: 50%;
         display: inline-block;
     }

@@ -1,12 +1,8 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { View } from 'react-native'
 import dynamicImport from '../../utils/dynamicImport'
 import { strings } from '../../utils/constants'
-import { 
-    ListingColumnSelectButton, 
-    ListingColumnSelectItemsContainer, 
-    ListingColumnSelectItems, 
-    ListingColumnSelectContainer 
-} from '../../styles/Listing'
+import Styled from './styles'
 
 const Dropdown = dynamicImport('react-bootstrap', 'Dropdown')
 
@@ -24,37 +20,69 @@ const Dropdown = dynamicImport('react-bootstrap', 'Dropdown')
  * the state on the redux store. 
  */
 const ListingColumnSelect = (props) => {
+    const columnSelectButtonContainerRef = React.useRef()
+    const [isOpen, setIsOpen] = useState(false)
 
-    const onToggleSelect = (e, index) => {
-        e.preventDefault()
+    const onToggleSelect = (index) => {
         props.fieldHeaders[index].is_selected = !props.fieldHeaders[index].is_selected
         props.onUpdateHeader(props.fieldHeaders)
         props.onUpdateSelected(props.fieldHeaders, props.formName)
     }
 
-    return (
-        <ListingColumnSelectContainer>
-            <Dropdown.Toggle as={ListingColumnSelectButton}>
-                {strings['pt-br']['listingColumnSelectButtonLabel']}
-            </Dropdown.Toggle>
+    const onClickOutside = (e) => {
+        if (process.env['APP'] === 'web') {
+            if (columnSelectButtonContainerRef.current && !columnSelectButtonContainerRef.current.contains(e.target)) {
+                setIsOpen(false)
+            }
+        }
+    }
 
-            <ListingColumnSelectItemsContainer>
-                {props.fieldHeaders.map(function (data, index) {
-                    return (
-                        <ListingColumnSelectItems
-                            as="button"
-                            eventKey={index}
-                            onClick={e => onToggleSelect(e, index)}
-                            active={data.is_selected}
-                            key={index}
-                        >
-                            {data.field.label_name}
-                        </ListingColumnSelectItems>
-                    )
-                })}
-            </ListingColumnSelectItemsContainer>
-        </ListingColumnSelectContainer>
-    )
+    useEffect(() => {
+        if (process.env['APP'] === 'web') {
+            document.addEventListener('mousedown', onClickOutside)
+        }
+
+        return () => {
+            if (process.env['APP'] === 'web') {
+                document.removeEventListener('mousedown', onClickOutside)
+            }
+        }
+    }, [])
+
+    const renderMobile = () => {
+        return (
+            <View></View>
+        )
+    }
+
+    const renderWeb = () => {
+        return (
+            <Styled.ListingColumnSelectContainer ref={columnSelectButtonContainerRef}>
+                <Styled.ListingColumnSelectButton
+                onClick={(e) => setIsOpen(!isOpen)}
+                >
+                    {strings['pt-br']['listingColumnSelectButtonLabel']}
+                </Styled.ListingColumnSelectButton>
+                <div style={{position: 'relative'}}>
+                    {isOpen ? (
+                        <Styled.ListingColumnSelectItemsContainer>
+                            {props.fieldHeaders.map((fieldHeader, index) => (
+                                <Styled.ListingColumnSelectItems
+                                    onClick={e => onToggleSelect(index)}
+                                    isSelected={fieldHeader.is_selected}
+                                    key={index}
+                                >
+                                    {fieldHeader.field.label_name}
+                                </Styled.ListingColumnSelectItems>
+                            ))}
+                        </Styled.ListingColumnSelectItemsContainer>
+                    ) : ''}
+                </div>
+            </Styled.ListingColumnSelectContainer>
+        )
+    }
+
+    return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 
 export default ListingColumnSelect;

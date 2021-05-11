@@ -10,7 +10,7 @@ styled.div`
     flex-wrap: wrap;
     overflow-y: auto;
 
-    @media(min-width: 640px) {
+    @media(min-width: 740px) {
         flex-direction: row;
         justify-content: flex-start;
         height: calc(var(--app-height) - var(--app-navbar-height) - 117px);

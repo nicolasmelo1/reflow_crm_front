@@ -9,11 +9,11 @@ styled.div`
     float: right;
     margin: 0;
 
-    @media(min-width: 640px) {
+    @media(min-width: 740px) {
         width: 200px;
         margin: 0;
     }
-    @media(max-width: 640px) {
+    @media(max-width: 740px) {
         width: 100%;
         margin: 5px 0 0 0;
         order: 2;

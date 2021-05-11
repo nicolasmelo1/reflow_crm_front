@@ -70,7 +70,8 @@ class Users extends React.Component {
             last_name: '',
             profile: null,
             option_accessed_by_user: [],
-            form_accessed_by_user: []
+            form_accessed_by_user: [],
+            user_accessed_by_user: []
         }
     }
 

@@ -1,22 +1,14 @@
 import React from 'react'
 import axios from 'axios'
 import { connect } from 'react-redux'
+import { View } from 'react-native'
 import ListingTable from './ListingTable'
 import ListingExtract from './ListingExtract'
 import ListingColumnSelect from './ListingColumnSelect'
 import Filter from '../Filter'
 import actions from '../../redux/actions'
-import dynamicImport from '../../utils/dynamicImport'
-import { 
-    ListingFilterAndExtractContainer, 
-    ListingFilterContainer, 
-    ListingFilterIcon, 
-    ListingFilterAndExtractButton, 
-    ListingButtonsContainer 
-} from '../../styles/Listing'
+import Styled from './styles'
 
-const Col = dynamicImport('react-bootstrap', 'Col')
-const Row = dynamicImport('react-bootstrap', 'Row')
 /**
  * This component render all of the listing logic, like the table, the totals, filters and extract
  * 
@@ -148,11 +140,18 @@ class Listing extends React.Component {
             this.source.cancel()
         }
     }
-    render() {
+
+    renderMobile = () => {
+        return (
+            <View></View>
+        )
+    }
+
+    renderWeb = () => {
         return (
             <div>
-                <Row style={{margin: '5px -15px'}}>
-                    <ListingButtonsContainer>
+                <Styled.ListingTopToolbarContainer>
+                    <div style={{width: '100%'}}>
                         <Filter
                         isLoading={this.state.isLoadingData}
                         fields={(this.props.list.field_headers && this.props.list.field_headers) ? 
@@ -160,10 +159,10 @@ class Listing extends React.Component {
                         params={this.getParams(this.state.params.page)} 
                         onFilter={this.onFilter}
                         types={this.props.types}
-                        container={ListingFilterAndExtractContainer}
-                        filterButton={ListingFilterAndExtractButton}
-                        filterContainer={ListingFilterContainer}
-                        filterButtonIcon={<ListingFilterIcon icon="filter"/>}
+                        container={Styled.ListingFilterAndExtractContainer}
+                        filterButton={Styled.ListingFilterAndExtractButton}
+                        filterContainer={Styled.ListingFilterContainer}
+                        filterButtonIcon={<Styled.ListingFilterIcon icon="filter"/>}
                         />
                         <ListingExtract 
                         onAddNotification={this.props.onAddNotification}
@@ -173,35 +172,36 @@ class Listing extends React.Component {
                         onGetExportedData={this.props.onGetExportedData} 
                         formName={this.props.router.form}
                         />
-                    </ListingButtonsContainer>
-                    <ListingButtonsContainer>
+                    </div>
+                    <div style={{width: '100%'}}>
                         <ListingColumnSelect
                         fieldHeaders={this.props.list.field_headers} 
                         onUpdateHeader={this.props.onUpdateHeader}
                         onUpdateSelected={this.props.onUpdateSelected}
                         formName={this.props.router.form}
                         />
-                    </ListingButtonsContainer>
-                </Row>
-                <Row>
-                    <Col>
-                        <ListingTable 
-                        isLoadingData={this.state.isLoadingData}
-                        setIsLoadingData={this.setIsLoadingData}
-                        page={this.state.params.page} 
-                        onRemoveData={this.props.onRemoveData}
-                        onSort={this.onSort} 
-                        setPageParam={this.setPageParam}
-                        getParams={this.getParams}
-                        fieldHeaders={this.props.list.field_headers} 
-                        data={this.props.list.data.data}
-                        pagination={this.props.list.data.pagination} 
-                        setFormularyId={this.props.setFormularyId}
-                        />
-                    </Col>
-                </Row>
+                    </div>
+                </Styled.ListingTopToolbarContainer>
+                <ListingTable 
+                isLoadingData={this.state.isLoadingData}
+                setIsLoadingData={this.setIsLoadingData}
+                page={this.state.params.page} 
+                onRemoveData={this.props.onRemoveData}
+                onSort={this.onSort} 
+                setPageParam={this.setPageParam}
+                getParams={this.getParams}
+                fieldHeaders={this.props.list.field_headers} 
+                data={this.props.list.data.data}
+                pagination={this.props.list.data.pagination} 
+                setFormularyId={this.props.setFormularyId}
+                />
+                
             </div>
         )
+    }
+
+    render() {
+        return process.env['APP'] === 'web' ? this.renderWeb() : this.renderMobile()
     }
 }
 

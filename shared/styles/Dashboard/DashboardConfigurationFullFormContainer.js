@@ -29,10 +29,10 @@ styled.div`
         background-color: transparent;
     }
     
-    @media(max-width: 640px) {
+    @media(max-width: 740px) {
         overflow: auto;
     }
-    @media(min-width: 640px) {
+    @media(min-width: 740px) {
         overflow: hidden;
     }
 `

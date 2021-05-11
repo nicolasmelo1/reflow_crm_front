@@ -3,11 +3,7 @@ import ListingTableContent from './ListingTableContent'
 import ListingTableHeader from './ListingTableHeader'
 import mobilecheck from '../../utils/mobilecheck'
 import dynamicImport from '../../utils/dynamicImport'
-import { 
-    ListingScrollWrapper,
-    ListingTableContainer, 
-    ListingTableLoaderContainer 
-} from '../../styles/Listing'
+import Styled from './styles'
 
 const Table = dynamicImport('react-bootstrap', 'Table')
 const Spinner = dynamicImport('react-bootstrap', 'Spinner')
@@ -91,14 +87,14 @@ const ListingTable = (props) => {
     return (
         <div>
             {!isMobile ? (
-                <ListingScrollWrapper
+                <Styled.ListingScrollWrapper
                 ref={scrollWrapperRef} 
                 onScroll={(e) => onScrollerScroll(e.target)}
                 >
                     <div style={{ height:'20px'}} ref={scrollRef}></div>
-                </ListingScrollWrapper>
+                </Styled.ListingScrollWrapper>
             ): ''}
-            <ListingTableContainer ref={tableRef} onScroll={(e) => onScrollTable(e.target)} isMobile={isMobile}>
+            <Styled.ListingTableContainer ref={tableRef} onScroll={(e) => onScrollTable(e.target)} isMobile={isMobile}>
                 <Table>
                     <ListingTableHeader 
                     isLoadingData={props.isLoadingData}
@@ -112,11 +108,11 @@ const ListingTable = (props) => {
                 </Table>
                 
                 {hasFiredRequestForNewPage ? (
-                    <ListingTableLoaderContainer>
+                    <Styled.ListingTableLoaderContainer>
                         <Spinner animation="border" />
-                    </ListingTableLoaderContainer>
+                    </Styled.ListingTableLoaderContainer>
                 ): ''}
-            </ListingTableContainer>
+            </Styled.ListingTableContainer>
         </div>
     )
 }

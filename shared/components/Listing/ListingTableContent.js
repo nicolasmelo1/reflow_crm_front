@@ -3,12 +3,7 @@ import dynamicImport from '../../utils/dynamicImport'
 import { strings } from '../../utils/constants'
 import Alert from '../Utils/Alert'
 import PopoverContent from '../../styles/PopoverContent'
-import { 
-    ListingEditButtonIcon, 
-    ListingDeleteButtonIcon, 
-    ListingTableContentElement, 
-    ListingTableContentPopoverElement 
-} from '../../styles/Listing'
+import Styled from './styles'
 
 const OverlayTrigger = dynamicImport('react-bootstrap', 'OverlayTrigger')
 const Popover = dynamicImport('react-bootstrap', 'Popover')
@@ -19,9 +14,9 @@ const PopoverWithContent = React.forwardRef((props, ref) => {
         <Popover ref={ref} {...props}>
             <PopoverContent>
                 {props.elements ? props.elements.map((element, index) => (
-                    <ListingTableContentPopoverElement key={index} hasBorderBottom={index < props.elements.length-1}>
+                    <Styled.ListingTableContentPopoverElement key={index} hasBorderBottom={index < props.elements.length-1}>
                         {element.value}
-                    </ListingTableContentPopoverElement>
+                    </Styled.ListingTableContentPopoverElement>
                 )): ''}
             </PopoverContent>
         </Popover>
@@ -56,9 +51,9 @@ const TableContentElement = (props) => {
         delay={{ show: 250, hide: 100 }}
         overlay={<PopoverWithContent elements={props.elements}/>}
         >
-            <ListingTableContentElement>
+            <Styled.ListingTableContentElement>
                 {getElementValue()}
-            </ListingTableContentElement>
+            </Styled.ListingTableContentElement>
         </OverlayTrigger>
     )
 }
@@ -105,15 +100,15 @@ const ListingTableContent = (props) => {
             </tr>
             {props.data.map((data, dataIndex) => (
                 <tr key={data.id}>
-                    <ListingTableContentElement isTableButton={true}>
-                        <ListingEditButtonIcon icon="pencil-alt" onClick={e=> {props.setFormularyId(data.id)}}/>
-                    </ListingTableContentElement>
-                    <ListingTableContentElement isTableButton={true}>
-                        <ListingDeleteButtonIcon icon="trash" onClick={e=> {
+                    <Styled.ListingTableContentElement isTableButton={true}>
+                        <Styled.ListingEditButtonIcon icon="pencil-alt" onClick={e=> {props.setFormularyId(data.id)}}/>
+                    </Styled.ListingTableContentElement>
+                    <Styled.ListingTableContentElement isTableButton={true}>
+                        <Styled.ListingDeleteButtonIcon icon="trash" onClick={e=> {
                             setFormularyIdToRemove(data.id)
                             setShowAlert(true)
                         }}/>
-                    </ListingTableContentElement>
+                    </Styled.ListingTableContentElement>
                     {props.fieldHeaders.filter(head => head.is_selected).map((head, headIndex) => {
                         const elements = (data) ? data.dynamic_form_value.filter(data => data.field_name == head.field.name): []
                         return (

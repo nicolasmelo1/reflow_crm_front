@@ -8,12 +8,12 @@ styled.div`
     border-radius: 10px;
     padding: 10px;
 
-    @media(max-width: 640px) {
+    @media(max-width: 740px) {
         width: 100%;
         margin-bottom: 10px
     }
 
-    @media(min-width: 640px) {
+    @media(min-width: 740px) {
         width: 50%;
         display: inline-block;
     }

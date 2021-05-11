@@ -17,7 +17,7 @@ styled.button`
         height: calc(var(--app-height) - var(--app-navbar-height) - 200px);
     }
 
-    @media(max-width: 640px) {
+    @media(max-width: 740px) {
         height: calc(var(--app-height) - var(--app-navbar-height) - 240px);
     }
 

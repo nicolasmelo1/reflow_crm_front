@@ -39,7 +39,7 @@ styled(({sidebarIsOpen, ...rest}) => <nav {...rest}/>)`
     }
 
     @media(min-width: 420px) {
-        width: ${({ sidebarIsOpen }) => sidebarIsOpen ? '310px' : '60px'};
+        width: ${({ sidebarIsOpen }) => sidebarIsOpen ? '295px' : '60px'};
     }
     @media(max-width: 420px) {
         width: ${({ sidebarIsOpen }) => sidebarIsOpen ? 'calc(var(--app-width) - 40px)' : '0'};

@@ -12,11 +12,11 @@ styled.div`
     padding: 10px;
     box-shadow: 0 4px 20px 0 black;
     right: 0;
-    @media(max-width: 640px) {
+    @media(max-width: 740px) {
         width: 100%;
     };
 
-    @media(min-width: 640px) {
+    @media(min-width: 740px) {
         width: 80vw;
     }
 `

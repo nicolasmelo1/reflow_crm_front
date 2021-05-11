@@ -6,12 +6,12 @@ export default process.env['APP'] === 'web' ?
 styled.div`
     display: flex;
 
-    @media(min-width: 640px) {
+    @media(min-width: 740px) {
         flex-direction: row;
         justify-content: space-between;
     }
 
-    @media(max-width: 640px) {
+    @media(max-width: 740px) {
         overflow: ${props => props.hideTopButtons ? 'hidden' : 'none'};
         max-height: ${props => props.hideTopButtons ? '0': '300px'};
         transition: max-height 0.3s ease-in-out;

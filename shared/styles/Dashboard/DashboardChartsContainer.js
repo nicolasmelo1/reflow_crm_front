@@ -24,11 +24,11 @@ styled.div`
         background-color: transparent;
     }
 
-    @media(min-width: 640px) {
+    @media(min-width: 740px) {
         height: calc(var(--app-height) - var(--app-navbar-height) - 130px);
     }
 
-    @media(max-width: 640px) {
+    @media(max-width: 740px) {
         height: calc(var(--app-height) - var(--app-navbar-height) - 207px);
     }
     `

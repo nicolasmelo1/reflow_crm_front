@@ -6,15 +6,7 @@ import { strings } from '../../utils/constants'
 import sleep from '../../utils/sleep'
 import dynamicImport from '../../utils/dynamicImport'
 import { stringToJsDateFormat, jsDateToStringFormat } from '../../utils/dates'
-import { 
-    ListingFilterAndExtractContainer, 
-    ListingFilterAndExtractButton, 
-    ListingExtractContainer, 
-    ListingExtractUpdateDateTitle, 
-    ListingExtractUpdateDateInput, 
-    ListingExtractButtons, 
-    ListingExtractUpdateDateContainer
-} from '../../styles/Listing'
+import Styled from './styles'
 
 const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 
@@ -126,42 +118,42 @@ const ListingExtract = (props) => {
     ]
 
     return (
-        <ListingFilterAndExtractContainer hasLeftMargin={true} ref={dropdownRef}>
-            <ListingFilterAndExtractButton onClick={e => {onToggleExtract(e)}}>
+        <Styled.ListingFilterAndExtractContainer hasLeftMargin={true} ref={dropdownRef}>
+            <Styled.ListingFilterAndExtractButton onClick={e => {onToggleExtract(e)}}>
                 {strings['pt-br']['listingExtractButtonLabel']}
-            </ListingFilterAndExtractButton>
+            </Styled.ListingFilterAndExtractButton>
             {isOpen ? ( 
-                <ListingExtractContainer>
+                <Styled.ListingExtractContainer>
                     <div>
-                        <ListingExtractUpdateDateTitle>{strings['pt-br']['listingExtractUpdateDateLabel']}</ListingExtractUpdateDateTitle>
-                        <ListingExtractUpdateDateContainer ref={inputRef}>
-                            <ListingExtractUpdateDateInput type="text" value={value} readOnly={true}/><FontAwesomeIcon icon="chevron-down"/>
-                        </ListingExtractUpdateDateContainer>
+                        <Styled.ListingExtractUpdateDateTitle>{strings['pt-br']['listingExtractUpdateDateLabel']}</Styled.ListingExtractUpdateDateTitle>
+                        <Styled.ListingExtractUpdateDateContainer ref={inputRef}>
+                            <Styled.ListingExtractUpdateDateInput type="text" value={value} readOnly={true}/><FontAwesomeIcon icon="chevron-down"/>
+                        </Styled.ListingExtractUpdateDateContainer>
                         <DateRangePicker input={inputRef} 
                         closeWhenSelected={true}
                         onChange={onChangeUpdateDate} 
                         initialDays={initialDays}
                         />
-                        <ListingExtractButtons onClick={e=> {isExtracting ? null : onExtract('csv')}}>
+                        <Styled.ListingExtractButtons onClick={e=> {isExtracting ? null : onExtract('csv')}}>
                             {isExtracting ? (
                                 <Spinner animation="border" size="sm"/>
                             ) : (
                                 <FontAwesomeIcon icon="arrow-down"/>
                             )}
                             {strings['pt-br']['listingExtractCSVButtonLabel']}
-                        </ListingExtractButtons>
-                        <ListingExtractButtons onClick={e=> {isExtracting ? null : onExtract('xlsx')}}>
+                        </Styled.ListingExtractButtons>
+                        <Styled.ListingExtractButtons onClick={e=> {isExtracting ? null : onExtract('xlsx')}}>
                             {isExtracting ? (
                                 <Spinner animation="border" size="sm"/>
                             ) : (
                                 <FontAwesomeIcon icon="arrow-down"/>
                             )}
                             {strings['pt-br']['listingExtractXLSXButtonLabel']}
-                        </ListingExtractButtons>
+                        </Styled.ListingExtractButtons>
                     </div>
-                </ListingExtractContainer>
+                </Styled.ListingExtractContainer>
             ) : ''}
-        </ListingFilterAndExtractContainer>
+        </Styled.ListingFilterAndExtractContainer>
     )
 }
 

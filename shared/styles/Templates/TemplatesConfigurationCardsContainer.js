@@ -9,12 +9,12 @@ styled.div`
     justify-content: flex-start;
     flex-wrap: wrap;
     
-    @media(min-width: 640px) {
+    @media(min-width: 740px) {
         flex-direction: row;
         justify-content: flex-start;
     }
 
-    @media(max-width: 640px) {
+    @media(max-width: 740px) {
         justify-content: center;
         align-items: center;
     }

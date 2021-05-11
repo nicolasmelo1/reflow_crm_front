@@ -13,7 +13,7 @@ styled.input`
     cursor: pointer;
     min-width: 200px;
 
-    @media(max-width: 640px) {
+    @media(max-width: 740px) {
         width: 100%;
     }
 `

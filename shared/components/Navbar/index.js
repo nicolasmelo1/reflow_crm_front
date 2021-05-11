@@ -137,17 +137,9 @@ class Navbar extends React.Component {
         this.props.onGetNewNotifications(this.source)
         this.props.onGetCompanyData(this.source)
         this.props.onGetUserData(this.source)
-        if (this.navbarContainer.current && typeof document !== 'undefined') {
-            document.documentElement.style.setProperty('--app-navbar-height', `${this.navbarContainer.current.clientHeight}px`)
-        }
     }
     
     componentDidUpdate = (prevProps) => {
-        if (process.env['APP'] === 'web') {
-            if (this.navbarContainer.current && typeof document !== 'undefined') {
-                document.documentElement.style.setProperty('--app-navbar-height', `${this.navbarContainer.current.clientHeight}px`)
-            }
-        }
         if (
             this.props.navbar.isInHomeScreen && 
             this.props.sidebar.initial.length > 0 &&
@@ -186,6 +178,11 @@ class Navbar extends React.Component {
         return (
             <Styled.NavbarContainer ref={this.navbarContainer}>
                 <Styled.NavbarLogo 
+                onLoad={(e)=> {
+                    if (process.env['APP'] === 'web' && this.navbarContainer.current && typeof document !== 'undefined') {
+                        document.documentElement.style.setProperty('--app-navbar-height', `${this.navbarContainer.current.clientHeight}px`)
+                    }
+                }}
                 src={!['', null].includes(this.props.company.logo_image_url) ? this.props.company.logo_image_url : '/complete_logo.png'}/>
                 {this.isFreeTrial() && isAdmin(this.props.login.types?.defaults?.profile_type, this.props.login.user) ? (
                     <Styled.NavbarFreeTrialAlertButton onClick={e=> {this.handleBilling()}}>

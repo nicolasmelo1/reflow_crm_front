@@ -9,7 +9,7 @@ styled.p`
     overflow: hidden;
     word-break: break-word;
     word-wrap: break-word;
-    font-size: ${props => props.isTitle ? '17px' : '15px'};
+    font-size: ${props => props.isTitle ? '15px' : '13px'};
     color: ${props => props.isTitle ? '#0dbf7e' : '#6a7074'};
     font-weight: ${props => props.isTitle ? 'bold': 'normal'};
     padding: 0 5px;

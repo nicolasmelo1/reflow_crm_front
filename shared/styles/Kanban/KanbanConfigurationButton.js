@@ -17,10 +17,10 @@ styled.button`
         border: 1px solid #0dbf7e;
     }
 
-    @media(min-width: 640px) {
+    @media(min-width: 740px) {
         width: auto;
     }
-    @media(max-width: 640px) {
+    @media(max-width: 740px) {
         width: 100%;
     }
 ` 

@@ -1,17 +1,37 @@
 import React, { useState, useEffect } from 'react'
 import dynamicImport from '../../utils/dynamicImport'
-import { strings } from '../../utils/constants'
-import { 
-    ListingTableHeaderContainer, 
-    ListingTableHeaderElement, 
-    ListingTableHeaderElementDragger, 
-    ListingTableHeaderElementParagraph,
-    ListingTableHeaderElementIconContainer,
-    ListingTableHeaderElementIconSpinner
-} from '../../styles/Listing'
+import { strings, types } from '../../utils/constants'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import Styled from './styles'
 
-const Spinner = dynamicImport('react-bootstrap', 'Spinner')
+const OverlayTrigger = dynamicImport('react-bootstrap', 'OverlayTrigger')
+const Popover = dynamicImport('react-bootstrap', 'Popover')
 
+const PopoverWithConditionalSectionInformation = React.forwardRef(({conditionals, ...rest}, ref) => {
+    return (
+        <Popover ref={ref} {...rest}>
+            <Popover.Content style={{whiteSpace: 'pre-line'}}>
+                <Styled.ListingTableHeaderConditionalPopoverTextTitle>
+                    {strings['pt-br']['listingHeaderConditionalFieldColumnPopoverTitle']}
+                </Styled.ListingTableHeaderConditionalPopoverTextTitle>
+                <span>
+                    <small>
+                        {strings['pt-br']['listingHeaderConditionalFieldColumnPopoverWhenTheField']}
+                    </small>
+                    <Styled.ListingTableHeaderConditionalPopoverTextVariable>
+                        {`${conditionals.conditional_field_label_name} `}
+                    </Styled.ListingTableHeaderConditionalPopoverTextVariable>
+                    <small>
+                        {strings['pt-br']['listingHeaderConditionalFieldColumnPopoverIsConditionalValue'].replace('{}', types('pt-br', 'conditional_type', conditionals.conditional_type))}
+                    </small>
+                    <Styled.ListingTableHeaderConditionalPopoverTextVariable>
+                        {conditionals.conditional_value}
+                    </Styled.ListingTableHeaderConditionalPopoverTextVariable>
+                </span>
+            </Popover.Content>
+        </Popover>
+    )
+})
 /**
  * Renders the header of the table and most of the table header logic.
  * 
@@ -87,44 +107,58 @@ const ListingTableHead = (props) => {
     return (
         <thead>
             <tr>
-                <ListingTableHeaderContainer>
-                    <ListingTableHeaderElement isTableButton={true} isFirstColumn={true}>
-                        <ListingTableHeaderElementParagraph>
+                <Styled.ListingTableHeaderContainer>
+                    <Styled.ListingTableHeaderElement isTableButton={true} isFirstColumn={true}>
+                        <Styled.ListingTableHeaderElementParagraph>
                             {strings['pt-br']['listingHeaderEditLabel']}
-                        </ListingTableHeaderElementParagraph>
-                        <ListingTableHeaderElementIconContainer isTableButton={true} isFirstColumn={props.fieldHeaders.length === 0}/>
-                    </ListingTableHeaderElement>
-                </ListingTableHeaderContainer>
-                <ListingTableHeaderContainer>
-                    <ListingTableHeaderElement isTableButton={true}>
-                        <ListingTableHeaderElementParagraph>
+                        </Styled.ListingTableHeaderElementParagraph>
+                        <Styled.ListingTableHeaderElementIconContainer isTableButton={true} isFirstColumn={props.fieldHeaders.length === 0}/>
+                    </Styled.ListingTableHeaderElement>
+                </Styled.ListingTableHeaderContainer>
+                <Styled.ListingTableHeaderContainer>
+                    <Styled.ListingTableHeaderElement isTableButton={true}>
+                        <Styled.ListingTableHeaderElementParagraph>
                             {strings['pt-br']['listingHeaderDeleteLabel']}
-                        </ListingTableHeaderElementParagraph>
-                        <ListingTableHeaderElementIconContainer isTableButton={true}/>
-                    </ListingTableHeaderElement>
-                </ListingTableHeaderContainer>
-                {props.fieldHeaders.map(function (header_field, index) {
-                    if (header_field.is_selected) {
+                        </Styled.ListingTableHeaderElementParagraph>
+                        <Styled.ListingTableHeaderElementIconContainer isTableButton={true}/>
+                    </Styled.ListingTableHeaderElement>
+                </Styled.ListingTableHeaderContainer>
+                {props.fieldHeaders.map((field, index)=> {
+                    if (field.is_selected) {
                         return (
-                            <ListingTableHeaderContainer key={index}>
-                                <ListingTableHeaderElement isLastColumn={index === props.fieldHeaders.length - 1}>
-                                    <div>
-                                        <ListingTableHeaderElementParagraph>
-                                            {header_field.field.label_name}
-                                        </ListingTableHeaderElementParagraph>
+                            <Styled.ListingTableHeaderContainer key={field.id}>
+                                <Styled.ListingTableHeaderElement isLastColumn={index === props.fieldHeaders.length - 1}>
+                                    <div style={{display: 'flex', flexDirection: 'column'}}>
+                                        <Styled.ListingTableHeaderElementParagraph>
+                                            {field.field.label_name}
+                                            {field.field.conditional !== null ? (
+                                                <React.Fragment>
+                                                    &nbsp;
+                                                    <OverlayTrigger 
+                                                    trigger={['hover', 'focus']} 
+                                                    placement="auto" 
+                                                    rootClose={true}
+                                                    delay={{ show: 250, hide: 100 }} 
+                                                    overlay={<PopoverWithConditionalSectionInformation conditionals={field.field.conditional}/>}
+                                                    >        
+                                                        <FontAwesomeIcon icon={'link'}/>
+                                                    </OverlayTrigger>
+                                                </React.Fragment>
+                                            ) : ''}
+                                        </Styled.ListingTableHeaderElementParagraph>
                                     </div>
-                                    <ListingTableHeaderElementIconContainer onClick={e=> {props.isLoadingData ? null : onSortTable(header_field.field.name, sort[header_field.field.name])}}>
+                                    <Styled.ListingTableHeaderElementIconContainer onClick={e=> {props.isLoadingData ? null : onSortTable(header_field.field.name, sort[header_field.field.name])}}>
                                         {props.isLoadingData ? (
-                                            <ListingTableHeaderElementIconSpinner animation="border" size="sm"/>
+                                            <Styled.ListingTableHeaderElementIconSpinner animation="border" size="sm"/>
                                         ) : (
                                             <img 
-                                            style={{width: '20px', height: sort[header_field.field.name] && sort[header_field.field.name] !== 'none' ? '20px': '2px', margin: 'auto', display: 'block', filter:'invert(59%) sepia(26%) saturate(1229%) hue-rotate(107deg) brightness(94%) contrast(100%)'}} 
-                                            src={sort[header_field.field.name] && sort[header_field.field.name] !== 'none' ? `/${sort[header_field.field.name]}.png` : '/line.png'}/>
+                                            style={{width: '20px', height: sort[field.field.name] && sort[field.field.name] !== 'none' ? '20px': '2px', margin: 'auto', display: 'block', filter:'invert(59%) sepia(26%) saturate(1229%) hue-rotate(107deg) brightness(94%) contrast(100%)'}} 
+                                            src={sort[field.field.name] && sort[field.field.name] !== 'none' ? `/${sort[field.field.name]}.png` : '/line.png'}/>
                                         )}
-                                    </ListingTableHeaderElementIconContainer>
-                                    <ListingTableHeaderElementDragger onMouseDown={e=> {onMouseDown(e)}}/>
-                                </ListingTableHeaderElement>
-                            </ListingTableHeaderContainer>
+                                    </Styled.ListingTableHeaderElementIconContainer>
+                                    <Styled.ListingTableHeaderElementDragger onMouseDown={e=> {onMouseDown(e)}}/>
+                                </Styled.ListingTableHeaderElement>
+                            </Styled.ListingTableHeaderContainer>
                         )
                     }
                 })}

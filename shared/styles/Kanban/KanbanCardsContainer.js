@@ -28,12 +28,12 @@ styled.div`
         width: 100%;
     }
 
-    @media(max-width: 640px) {
+    @media(max-width: 740px) {
         max-height: calc(100vh - 327px);
         min-height: calc(100vh - 327px)
 
     }
-    @media(min-width: 640px) {
+    @media(min-width: 740px) {
         max-height: calc(100vh - 254px);
         min-height: calc(100vh - 254px)
     }
