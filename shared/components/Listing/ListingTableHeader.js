@@ -104,67 +104,104 @@ const ListingTableHead = (props) => {
         props.defineScrollWidth()
     }, [props.fieldHeaders])
 
-    return (
-        <thead>
-            <tr>
-                <Styled.ListingTableHeaderContainer>
-                    <Styled.ListingTableHeaderElement isTableButton={true} isFirstColumn={true}>
-                        <Styled.ListingTableHeaderElementParagraph>
-                            {strings['pt-br']['listingHeaderEditLabel']}
-                        </Styled.ListingTableHeaderElementParagraph>
-                        <Styled.ListingTableHeaderElementIconContainer isTableButton={true} isFirstColumn={props.fieldHeaders.length === 0}/>
-                    </Styled.ListingTableHeaderElement>
-                </Styled.ListingTableHeaderContainer>
-                <Styled.ListingTableHeaderContainer>
-                    <Styled.ListingTableHeaderElement isTableButton={true}>
-                        <Styled.ListingTableHeaderElementParagraph>
-                            {strings['pt-br']['listingHeaderDeleteLabel']}
-                        </Styled.ListingTableHeaderElementParagraph>
-                        <Styled.ListingTableHeaderElementIconContainer isTableButton={true}/>
-                    </Styled.ListingTableHeaderElement>
-                </Styled.ListingTableHeaderContainer>
-                {props.fieldHeaders.map((field, index)=> {
-                    if (field.is_selected) {
-                        return (
-                            <Styled.ListingTableHeaderContainer key={field.id}>
-                                <Styled.ListingTableHeaderElement isLastColumn={index === props.fieldHeaders.length - 1}>
-                                    <div style={{display: 'flex', flexDirection: 'column'}}>
-                                        <Styled.ListingTableHeaderElementParagraph>
-                                            {field.field.label_name}
-                                            {field.field.conditional !== null ? (
-                                                <React.Fragment>
-                                                    &nbsp;
-                                                    <OverlayTrigger 
-                                                    trigger={['hover', 'focus']} 
-                                                    placement="auto" 
-                                                    rootClose={true}
-                                                    delay={{ show: 250, hide: 100 }} 
-                                                    overlay={<PopoverWithConditionalSectionInformation conditionals={field.field.conditional}/>}
-                                                    >        
-                                                        <FontAwesomeIcon icon={'link'}/>
-                                                    </OverlayTrigger>
-                                                </React.Fragment>
-                                            ) : ''}
-                                        </Styled.ListingTableHeaderElementParagraph>
-                                    </div>
-                                    <Styled.ListingTableHeaderElementIconContainer onClick={e=> {props.isLoadingData ? null : onSortTable(header_field.field.name, sort[header_field.field.name])}}>
-                                        {props.isLoadingData ? (
-                                            <Styled.ListingTableHeaderElementIconSpinner animation="border" size="sm"/>
-                                        ) : (
-                                            <img 
-                                            style={{width: '20px', height: sort[field.field.name] && sort[field.field.name] !== 'none' ? '20px': '2px', margin: 'auto', display: 'block', filter:'invert(59%) sepia(26%) saturate(1229%) hue-rotate(107deg) brightness(94%) contrast(100%)'}} 
-                                            src={sort[field.field.name] && sort[field.field.name] !== 'none' ? `/${sort[field.field.name]}.png` : '/line.png'}/>
-                                        )}
-                                    </Styled.ListingTableHeaderElementIconContainer>
-                                    <Styled.ListingTableHeaderElementDragger onMouseDown={e=> {onMouseDown(e)}}/>
-                                </Styled.ListingTableHeaderElement>
-                            </Styled.ListingTableHeaderContainer>
-                        )
-                    }
-                })}
-            </tr>
-        </thead>
-    )
+    const renderMobile = () => {
+        return (
+            <View></View>
+        )
+    }
+
+    const renderWeb = () => {
+        return (
+            <thead>
+                <tr>
+                    <Styled.ListingTableHeaderContainer>
+                        <Styled.ListingTableHeaderElement 
+                        isTableButton={true} 
+                        isFirstColumn={true}
+                        >
+                            <Styled.ListingTableHeaderElementParagraph>
+                                {strings['pt-br']['listingHeaderEditLabel']}
+                            </Styled.ListingTableHeaderElementParagraph>
+                            <Styled.ListingTableHeaderElementIconContainer 
+                            isTableButton={true} 
+                            isFirstColumn={props.fieldHeaders.length === 0}
+                            />
+                        </Styled.ListingTableHeaderElement>
+                    </Styled.ListingTableHeaderContainer>
+                    <Styled.ListingTableHeaderContainer>
+                        <Styled.ListingTableHeaderElement 
+                        isTableButton={true}
+                        >
+                            <Styled.ListingTableHeaderElementParagraph>
+                                {strings['pt-br']['listingHeaderDeleteLabel']}
+                            </Styled.ListingTableHeaderElementParagraph>
+                            <Styled.ListingTableHeaderElementIconContainer 
+                            isTableButton={true}
+                            />
+                        </Styled.ListingTableHeaderElement>
+                    </Styled.ListingTableHeaderContainer>
+                    {props.fieldHeaders.map((field, index)=> {
+                        if (field.is_selected) {
+                            return (
+                                <Styled.ListingTableHeaderContainer 
+                                key={field.id}
+                                >
+                                    <Styled.ListingTableHeaderElement 
+                                    isLastColumn={index === props.fieldHeaders.length - 1}
+                                    >
+                                        <div style={{display: 'flex', flexDirection: 'column'}}>
+                                            <Styled.ListingTableHeaderElementParagraph>
+                                                {field.field.label_name}
+                                                {field.field.conditional !== null ? (
+                                                    <React.Fragment>
+                                                        &nbsp;
+                                                        <OverlayTrigger 
+                                                        trigger={['hover', 'focus']} 
+                                                        placement="auto" 
+                                                        rootClose={true}
+                                                        delay={{ show: 250, hide: 100 }} 
+                                                        overlay={<PopoverWithConditionalSectionInformation 
+                                                            conditionals={field.field.conditional}
+                                                            />}
+                                                        >        
+                                                            <FontAwesomeIcon icon={'link'}/>
+                                                        </OverlayTrigger>
+                                                    </React.Fragment>
+                                                ) : ''}
+                                            </Styled.ListingTableHeaderElementParagraph>
+                                        </div>
+                                        <Styled.ListingTableHeaderElementIconContainer 
+                                        onClick={e=> {props.isLoadingData ? null : onSortTable(header_field.field.name, sort[header_field.field.name])}}
+                                        >
+                                            {props.isLoadingData ? (
+                                                <Styled.ListingTableHeaderElementIconSpinner 
+                                                animation="border"
+                                                 size="sm"/>
+                                            ) : (
+                                                <img 
+                                                style={{
+                                                    width: '20px', 
+                                                    height: sort[field.field.name] && sort[field.field.name] !== 'none' ? '20px': '2px', 
+                                                    margin: 'auto', 
+                                                    display: 'block', 
+                                                    filter:'invert(59%) sepia(26%) saturate(1229%) hue-rotate(107deg) brightness(94%) contrast(100%)'
+                                                }} 
+                                                src={sort[field.field.name] && sort[field.field.name] !== 'none' ? `/${sort[field.field.name]}.png` : '/line.png'}
+                                                />
+                                            )}
+                                        </Styled.ListingTableHeaderElementIconContainer>
+                                        <Styled.ListingTableHeaderElementDragger onMouseDown={e=> {onMouseDown(e)}}/>
+                                    </Styled.ListingTableHeaderElement>
+                                </Styled.ListingTableHeaderContainer>
+                            )
+                        }
+                    })}
+                </tr>
+            </thead>
+        )
+    }
+
+    return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 
 export default ListingTableHead;

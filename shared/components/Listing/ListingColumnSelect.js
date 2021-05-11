@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
-import dynamicImport from '../../utils/dynamicImport'
 import { strings } from '../../utils/constants'
 import Styled from './styles'
-
-const Dropdown = dynamicImport('react-bootstrap', 'Dropdown')
 
 /**
  * This component contains the user selected columns button login, the button can be found

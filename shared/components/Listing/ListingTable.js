@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { View } from 'react-native'
 import ListingTableContent from './ListingTableContent'
 import ListingTableHeader from './ListingTableHeader'
 import mobilecheck from '../../utils/mobilecheck'
@@ -84,37 +85,57 @@ const ListingTable = (props) => {
         paginationRef.current = props.pagination
     }, [props.pagination])
 
-    return (
-        <div>
-            {!isMobile ? (
-                <Styled.ListingScrollWrapper
-                ref={scrollWrapperRef} 
-                onScroll={(e) => onScrollerScroll(e.target)}
-                >
-                    <div style={{ height:'20px'}} ref={scrollRef}></div>
-                </Styled.ListingScrollWrapper>
-            ): ''}
-            <Styled.ListingTableContainer ref={tableRef} onScroll={(e) => onScrollTable(e.target)} isMobile={isMobile}>
-                <Table>
-                    <ListingTableHeader 
-                    isLoadingData={props.isLoadingData}
-                    setIsLoadingData={props.setIsLoadingData}
-                    fieldHeaders={props.fieldHeaders} 
-                    getParams={props.getParams} 
-                    onSort={props.onSort} 
-                    defineScrollWidth={defineScrollWidth}
-                    />
-                    <ListingTableContent fieldHeaders={props.fieldHeaders} pagination={props.pagination} data={data} setFormularyId={props.setFormularyId} onRemoveData={props.onRemoveData}/>
-                </Table>
-                
-                {hasFiredRequestForNewPage ? (
-                    <Styled.ListingTableLoaderContainer>
-                        <Spinner animation="border" />
-                    </Styled.ListingTableLoaderContainer>
+    const renderMobile = () => {
+        return (
+            <View></View>
+        )
+    }
+
+    const renderWeb = () => {
+        return (
+            <div>
+                {!isMobile ? (
+                    <Styled.ListingScrollWrapper
+                    ref={scrollWrapperRef} 
+                    onScroll={(e) => onScrollerScroll(e.target)}
+                    >
+                        <div style={{ height:'20px'}} ref={scrollRef}></div>
+                    </Styled.ListingScrollWrapper>
                 ): ''}
-            </Styled.ListingTableContainer>
-        </div>
-    )
+                <Styled.ListingTableContainer 
+                ref={tableRef} 
+                onScroll={(e) => onScrollTable(e.target)} 
+                isMobile={isMobile}
+                >
+                    <Table>
+                        <ListingTableHeader 
+                        isLoadingData={props.isLoadingData}
+                        setIsLoadingData={props.setIsLoadingData}
+                        fieldHeaders={props.fieldHeaders} 
+                        getParams={props.getParams} 
+                        onSort={props.onSort} 
+                        defineScrollWidth={defineScrollWidth}
+                        />
+                        <ListingTableContent 
+                        fieldHeaders={props.fieldHeaders} 
+                        pagination={props.pagination} 
+                        data={data} 
+                        setFormularyId={props.setFormularyId} 
+                        onRemoveData={props.onRemoveData}
+                        />
+                    </Table>
+                    
+                    {hasFiredRequestForNewPage ? (
+                        <Styled.ListingTableLoaderContainer>
+                            <Spinner animation="border" />
+                        </Styled.ListingTableLoaderContainer>
+                    ): ''}
+                </Styled.ListingTableContainer>
+            </div>
+        )
+    }
+
+    return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 
 export default ListingTable

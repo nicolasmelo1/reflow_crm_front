@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 import moment from 'moment'
+import { View } from 'react-native'
 import DateRangePicker from '../Utils/DateRangePicker'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { strings } from '../../utils/constants'
@@ -117,44 +118,73 @@ const ListingExtract = (props) => {
         updateDates.endDate !== '' ? stringToJsDateFormat(updateDates.endDate, props.dateFormat.split(' ')[0]) : ''
     ]
 
-    return (
-        <Styled.ListingFilterAndExtractContainer hasLeftMargin={true} ref={dropdownRef}>
-            <Styled.ListingFilterAndExtractButton onClick={e => {onToggleExtract(e)}}>
-                {strings['pt-br']['listingExtractButtonLabel']}
-            </Styled.ListingFilterAndExtractButton>
-            {isOpen ? ( 
-                <Styled.ListingExtractContainer>
-                    <div>
-                        <Styled.ListingExtractUpdateDateTitle>{strings['pt-br']['listingExtractUpdateDateLabel']}</Styled.ListingExtractUpdateDateTitle>
-                        <Styled.ListingExtractUpdateDateContainer ref={inputRef}>
-                            <Styled.ListingExtractUpdateDateInput type="text" value={value} readOnly={true}/><FontAwesomeIcon icon="chevron-down"/>
-                        </Styled.ListingExtractUpdateDateContainer>
-                        <DateRangePicker input={inputRef} 
-                        closeWhenSelected={true}
-                        onChange={onChangeUpdateDate} 
-                        initialDays={initialDays}
-                        />
-                        <Styled.ListingExtractButtons onClick={e=> {isExtracting ? null : onExtract('csv')}}>
-                            {isExtracting ? (
-                                <Spinner animation="border" size="sm"/>
-                            ) : (
-                                <FontAwesomeIcon icon="arrow-down"/>
-                            )}
-                            {strings['pt-br']['listingExtractCSVButtonLabel']}
-                        </Styled.ListingExtractButtons>
-                        <Styled.ListingExtractButtons onClick={e=> {isExtracting ? null : onExtract('xlsx')}}>
-                            {isExtracting ? (
-                                <Spinner animation="border" size="sm"/>
-                            ) : (
-                                <FontAwesomeIcon icon="arrow-down"/>
-                            )}
-                            {strings['pt-br']['listingExtractXLSXButtonLabel']}
-                        </Styled.ListingExtractButtons>
-                    </div>
-                </Styled.ListingExtractContainer>
-            ) : ''}
-        </Styled.ListingFilterAndExtractContainer>
-    )
+    const renderMobile = () => {
+        return (
+            <View></View>
+        )
+    }
+
+    const renderWeb = () => {
+        return (
+            <Styled.ListingFilterAndExtractContainer 
+            ref={dropdownRef}
+            hasLeftMargin={true}
+            >
+                <Styled.ListingFilterAndExtractButton 
+                onClick={e => {onToggleExtract(e)}}
+                >
+                    {strings['pt-br']['listingExtractButtonLabel']}
+                </Styled.ListingFilterAndExtractButton>
+                {isOpen ? ( 
+                    <Styled.ListingExtractContainer>
+                        <div>
+                            <Styled.ListingExtractUpdateDateTitle>
+                                {strings['pt-br']['listingExtractUpdateDateLabel']}
+                            </Styled.ListingExtractUpdateDateTitle>
+                            <Styled.ListingExtractUpdateDateContainer 
+                            ref={inputRef}
+                            >
+                                <Styled.ListingExtractUpdateDateInput 
+                                type="text" 
+                                value={value} 
+                                readOnly={true}
+                                />
+                                <FontAwesomeIcon icon="chevron-down"/>
+                            </Styled.ListingExtractUpdateDateContainer>
+                            <DateRangePicker 
+                            input={inputRef} 
+                            closeWhenSelected={true}
+                            onChange={onChangeUpdateDate} 
+                            initialDays={initialDays}
+                            />
+                            <Styled.ListingExtractButtons 
+                            onClick={e=> {isExtracting ? null : onExtract('csv')}}
+                            >
+                                {isExtracting ? (
+                                    <Spinner animation="border" size="sm"/>
+                                ) : (
+                                    <FontAwesomeIcon icon="arrow-down"/>
+                                )}
+                                {strings['pt-br']['listingExtractCSVButtonLabel']}
+                            </Styled.ListingExtractButtons>
+                            <Styled.ListingExtractButtons 
+                            onClick={e=> {isExtracting ? null : onExtract('xlsx')}}
+                            >
+                                {isExtracting ? (
+                                    <Spinner animation="border" size="sm"/>
+                                ) : (
+                                    <FontAwesomeIcon icon="arrow-down"/>
+                                )}
+                                {strings['pt-br']['listingExtractXLSXButtonLabel']}
+                            </Styled.ListingExtractButtons>
+                        </div>
+                    </Styled.ListingExtractContainer>
+                ) : ''}
+            </Styled.ListingFilterAndExtractContainer>
+        )
+    }
+
+    return process.env['APP'] === 'web' ? renderWeb() : renderMobile()
 }
 
-export default ListingExtract;
+export default ListingExtract
