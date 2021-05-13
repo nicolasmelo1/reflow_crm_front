@@ -14,6 +14,7 @@ const LongText = (props) => {
     const onChange = (text) => {
         const newValue = props.singleValueFieldsHelper(text)
         props.setValues(newValue)
+        setStringValue(text)
     }
 
     useEffect(() => {

@@ -140,19 +140,19 @@ const ListingTableHead = (props) => {
                             />
                         </Styled.ListingTableHeaderElement>
                     </Styled.ListingTableHeaderContainer>
-                    {props.fieldHeaders.map((field, index)=> {
-                        if (field.is_selected) {
+                    {props.fieldHeaders.map((fieldHeader, index)=> {
+                        if (fieldHeader.is_selected) {
                             return (
                                 <Styled.ListingTableHeaderContainer 
-                                key={field.id}
+                                key={fieldHeader.id}
                                 >
                                     <Styled.ListingTableHeaderElement 
                                     isLastColumn={index === props.fieldHeaders.length - 1}
                                     >
                                         <div style={{display: 'flex', flexDirection: 'column'}}>
                                             <Styled.ListingTableHeaderElementParagraph>
-                                                {field.field.label_name}
-                                                {field.field.conditional !== null ? (
+                                                {fieldHeader.field.label_name}
+                                                {fieldHeader.field.conditional !== null ? (
                                                     <React.Fragment>
                                                         &nbsp;
                                                         <OverlayTrigger 
@@ -161,7 +161,7 @@ const ListingTableHead = (props) => {
                                                         rootClose={true}
                                                         delay={{ show: 250, hide: 100 }} 
                                                         overlay={<PopoverWithConditionalSectionInformation 
-                                                            conditionals={field.field.conditional}
+                                                            conditionals={fieldHeader.field.conditional}
                                                             />}
                                                         >        
                                                             <FontAwesomeIcon icon={'link'}/>
@@ -171,7 +171,7 @@ const ListingTableHead = (props) => {
                                             </Styled.ListingTableHeaderElementParagraph>
                                         </div>
                                         <Styled.ListingTableHeaderElementIconContainer 
-                                        onClick={e=> {props.isLoadingData ? null : onSortTable(header_field.field.name, sort[header_field.field.name])}}
+                                        onClick={e=> {props.isLoadingData ? null : onSortTable(fieldHeader.field.name, sort[fieldHeader.field.name])}}
                                         >
                                             {props.isLoadingData ? (
                                                 <Styled.ListingTableHeaderElementIconSpinner 
@@ -181,12 +181,12 @@ const ListingTableHead = (props) => {
                                                 <img 
                                                 style={{
                                                     width: '20px', 
-                                                    height: sort[field.field.name] && sort[field.field.name] !== 'none' ? '20px': '2px', 
+                                                    height: sort[fieldHeader.field.name] && sort[fieldHeader.field.name] !== 'none' ? '20px': '2px', 
                                                     margin: 'auto', 
                                                     display: 'block', 
                                                     filter:'invert(59%) sepia(26%) saturate(1229%) hue-rotate(107deg) brightness(94%) contrast(100%)'
                                                 }} 
-                                                src={sort[field.field.name] && sort[field.field.name] !== 'none' ? `/${sort[field.field.name]}.png` : '/line.png'}
+                                                src={sort[fieldHeader.field.name] && sort[fieldHeader.field.name] !== 'none' ? `/${sort[fieldHeader.field.name]}.png` : '/line.png'}
                                                 />
                                             )}
                                         </Styled.ListingTableHeaderElementIconContainer>
