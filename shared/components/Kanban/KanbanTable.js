@@ -69,10 +69,10 @@ const KanbanTable = (props) => {
             const widthToMoveRight = kanbanHolderRef.current.offsetWidth - totalWidth;
             
             if (itemXPosition < widthToMoveLeft) {
-                kanbanHolderRef.current.scrollLeft -= 5;
+                kanbanHolderRef.current.scrollLeft -= 3;
             } 
             if (itemXPosition > widthToMoveRight) {
-                kanbanHolderRef.current.scrollLeft += 5;
+                kanbanHolderRef.current.scrollLeft += 3;
             }
             setShownDimensions(props.collapsedDimensions, props.dimensionPhases, kanbanHolderRef.current.scrollLeft, kanbanHolderRef.current.offsetWidth)
         }

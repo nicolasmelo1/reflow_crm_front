@@ -277,7 +277,7 @@ const KanbanDimension = (props) => {
                     
                     setCardIdsInLoadingState([cardData.id])
                     props.onMoveKanbanCardBetweenDimensions(newData, props.formName, data).then(response=> {
-                        if (response && response.data.error && response.data.error.reason.includes('required_field')) {
+                        if (response && response.status === 400) {
                             props.setFormularyDefaultData([newData])
                             props.setFormularyId(cardData.id)
                         }

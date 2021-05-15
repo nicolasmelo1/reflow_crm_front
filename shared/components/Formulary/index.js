@@ -14,6 +14,7 @@ import { strings, paths } from '../../utils/constants'
 import dynamicImport from '../../utils/dynamicImport'
 import isAdmin from '../../utils/isAdmin'
 import { Formularies } from '../../styles/Formulary'
+import generateUUID from '../../utils/generateUUID'
 
 const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 const Router = dynamicImport('next/router')
@@ -75,6 +76,7 @@ class Formulary extends React.Component {
                 isAuxOriginalInitial: false,
                 data: {
                     id: null,
+                    uuid: generateUUID(),
                     depends_on_dynamic_form: []
                 }
             },
@@ -134,24 +136,32 @@ class Formulary extends React.Component {
      * @param {Array<Object>} sectionsData - The depends_on_dynamic_form array
      * @returns 
      */
-    setFilledData = (id, sectionsData) => (this._ismounted) ? this.setState(state => 
+    setFilledData = (id, uuid, sectionsData) => (this._ismounted) ? this.setState(state => 
         state.filled.data = {
             id: id,
+            uuid: uuid,
             depends_on_dynamic_form: [...sectionsData]
         }) : null
     // ------------------------------------------------------------------------------------------     
-    setFilledDataAndBuildData = (id, hasBuiltInitial, isAuxOriginalInitial, filledSectionsData, buildData) => (this._ismounted) ? this.setState(state=> ({
-            ...state,
-            filled: {
-                hasBuiltInitial: hasBuiltInitial,
-                isAuxOriginalInitial: isAuxOriginalInitial,
-                data: {
-                    id: id,
-                    depends_on_dynamic_form: [...filledSectionsData]
-                }
-            }, 
-            buildData: buildData
-        })) : null
+    setFilledDataAndBuildData = (id, uuid, hasBuiltInitial, isAuxOriginalInitial, filledSectionsData, buildData) => {
+        uuid = uuid !== null ? uuid : generateUUID()
+
+        if (this._ismounted) {
+            this.setState(state=> ({
+                ...state,
+                filled: {
+                    hasBuiltInitial: hasBuiltInitial,
+                    isAuxOriginalInitial: isAuxOriginalInitial,
+                    data: {
+                        id: id,
+                        uuid: uuid,
+                        depends_on_dynamic_form: [...filledSectionsData]
+                    }
+                }, 
+                buildData: buildData
+            }))
+        }
+    }
     
     // ------------------------------------------------------------------------------------------
     resetAuxOriginalInitial = (newAuxOriginalInitial, newAuxOriginalInitialIndex) => (this._ismounted) ? this.setState(state => ({
@@ -178,7 +188,7 @@ class Formulary extends React.Component {
     onGoToOrLeaveEditing = () => {
         if (this.state.isEditing) {
             this.props.setFormularySettingsHasBeenUpdated()
-            this.setFilledDataAndBuildData(null, false, false, [], {})
+            this.setFilledDataAndBuildData(null, null, false, false, [], {})
             this.onLoadFormulary(this.props.formName, this.props.formularyId)
         }
         this.setIsEditing(!this.state.isEditing)
@@ -264,6 +274,7 @@ class Formulary extends React.Component {
         if (this.state.isEditingShare) {
             this.setFilledDataAndBuildData(
                 this.state.filled.data.id, 
+                this.state.filled.data.uuid,
                 false, 
                 false, 
                 this.state.filled.data.depends_on_dynamic_form, 
@@ -345,6 +356,7 @@ class Formulary extends React.Component {
                 hasBuiltInitial: false,
                 data: {
                     id: null,
+                    uuid: generateUUID(),
                     depends_on_dynamic_form: []
                 }
             }
@@ -353,6 +365,7 @@ class Formulary extends React.Component {
         this.setErrors({})
         this.setFilledDataAndBuildData(
             filled.data.id, 
+            filled.data.uuid,
             filled.hasBuiltInitial,
             filled.isAuxOriginalInitial,
             filled.data.depends_on_dynamic_form, 
@@ -409,6 +422,7 @@ class Formulary extends React.Component {
         if (forceUpdateState && this._ismounted) {
             this.setFilledDataAndBuildData(
                 this.state.filled.data.id, 
+                this.state.filled.data.uuid,
                 false,
                 this.state.filled.isAuxOriginalInitial,
                 this.state.filled.data.depends_on_dynamic_form, 
@@ -450,8 +464,9 @@ class Formulary extends React.Component {
                 if (formId) {
                     this.props.onGetFormularyData(formName, formId, this.props.formularyDefaultData).then(data=> {
                         const id = data.id ? data.id : null
+                        const uuid = data.uuid ? data.uuid : null
                         const sectionsData = data.depends_on_dynamic_form ? data.depends_on_dynamic_form : []
-                        this.setFilledDataAndBuildData(id, false, false, sectionsData, formularyBuildData)
+                        this.setFilledDataAndBuildData(id, uuid,  false, false, sectionsData, formularyBuildData)
                     })
                 } else {
                     this.onFullResetFormulary(formularyBuildData)
@@ -559,6 +574,8 @@ class Formulary extends React.Component {
             this.source = this.CancelToken.source()
             this.props.onGetFormularyData(this.props.formName, this.props.formularyId, this.props.formularyDefaultData).then(data=> {
                 const id = data.id ? data.id : null
+                const uuid = data.uuid ? data.uuid : null
+
                 const sectionsData = data.depends_on_dynamic_form ? data.depends_on_dynamic_form : []
                 // need to set hasBuiltInitial to false in order to update in the sections
                 this.onFullResetFormulary(this.state.buildData, {
@@ -566,6 +583,7 @@ class Formulary extends React.Component {
                     isAuxOriginalInitial: false,
                     data: {
                         id: id,
+                        uuid: uuid,
                         depends_on_dynamic_form: sectionsData
                     }
                 })

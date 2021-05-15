@@ -16,11 +16,13 @@ const LongText = (props) => {
         props.setValues(newValue)
         setStringValue(text)
     }
-
+    
     useEffect(() => {
         if (props.values.length > 0 && JSON.stringify(props.values) !== JSON.stringify(fieldValueRef.current)) {
             changeInitialData(props.values[0].value)
             fieldValueRef.current = deepCopy(props.values)
+        } else {
+            setStringValue('')
         }
     }, [props.values])
 

@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import FormularySection from './FormularySection'
 import { Formularies } from '../../styles/Formulary'
 import { strings } from '../../utils/constants'
-
+import generateUUID from '../../utils/generateUUID'
 
 /**
  * This component controls all sections and contains all sections data. It is one of the main components from the formulary.
@@ -37,13 +37,14 @@ const FormularySections = (props) => {
         return {
             id: null,
             form_id: sectionId.toString(),
+            uuid: generateUUID(),
             dynamic_form_value: []
         }
     }
     // ------------------------------------------------------------------------------------------
     const onChangeSectionData = (sectionsData, conditionals=conditionalSections) => {
         const newSectionsData = toggleConditionals(sectionsData, conditionals)
-        props.setFilledData(props.data.id, [...newSectionsData])
+        props.setFilledData(props.data.id, props.data.uuid, [...newSectionsData])
     }
     // ------------------------------------------------------------------------------------------
     const toggleConditionals = (sectionsData, conditionals) => {
@@ -51,24 +52,6 @@ const FormularySections = (props) => {
         let formValues = sectionsData.map(sectionData=> sectionData.dynamic_form_value)
         formValues = [].concat(...formValues)
 
-        const getConditionalsToToggle = (conditionalToValidateIndex, conditionalsToToggle=[]) => {
-            const conditionalSection = conditionals[conditionalToValidateIndex]
-            
-            const filteredFormValues = formValues.filter(formValue => conditionalSection.conditional_on_field_name === formValue.field_name)
-            conditionalsToToggle.push(
-                {
-                    id: conditionalSection.id,
-                    form_type: conditionalSection.form_type,
-                    show: filteredFormValues.some(formValue => {
-                        // IMPORTANT: for new conditional types you might want to change this
-                        switch (conditionalSection.conditional_type_type) {
-                            case 'equal':
-                                return formValue.value === conditionalSection.conditional_value
-                        }
-                    })
-                }
-            )
-        }
         // for conditionals we run through all sections formvalues, filter the conditionals with the field and checks if the value
         // matches the conditional value telling if it is to show the conditional or not
         let conditionalsToToggle = conditionals.map(conditionalSection => {
@@ -155,7 +138,7 @@ const FormularySections = (props) => {
             }
         })
         newSectionsData = toggleConditionals(sectionsData, conditionals)
-        props.setFilledData(props.data.id, newSectionsData)
+        props.setFilledData(props.data.id, props.data.uuid, newSectionsData)
     }
     // ------------------------------------------------------------------------------------------
     function buildInitialData(conditionals) {
@@ -163,14 +146,13 @@ const FormularySections = (props) => {
         onChangeSectionData(newSectionsData, conditionals)
     }
     // ------------------------------------------------------------------------------------------
-    const addSection = (e, section) => {
-        e.preventDefault()
+    const addSection = (section) => {
         if (section.form_type === 'multi-form') {
             props.data.depends_on_dynamic_form.splice(0,0, addNewSectionsData(section.id))
         } else {
             props.data.depends_on_dynamic_form.push(addNewSectionsData(section.id))
         }
-        props.setFilledData(props.data.id, [...props.data.depends_on_dynamic_form])
+        props.setFilledData(props.data.id, props.data.uuid, [...props.data.depends_on_dynamic_form])
     }
     // ------------------------------------------------------------------------------------------
     const updateSection = (newData, sectionId, sectionDataIndex) => {
@@ -242,7 +224,7 @@ const FormularySections = (props) => {
                              </Formularies.TitleLabel>
                         ) : ''}
                         {section.form_type==='multi-form' ? (
-                            <Formularies.MultiForm.AddButton onClick={e=>addSection(e, section)}>
+                            <Formularies.MultiForm.AddButton onClick={e => addSection(section)}>
                                 {strings['pt-br']['formularyMultiFormAddButtonLabel']}
                             </Formularies.MultiForm.AddButton>
                         ): ''} 
@@ -256,7 +238,7 @@ const FormularySections = (props) => {
                             types={props.types}
                             errors={props.errors}
                             onChangeFormulary={props.onChangeFormulary}
-                            key={(sectionData.id) ? sectionData.id: index} 
+                            key={section.uuid} 
                             sectionData={sectionData} 
                             updateSection={updateSection}
                             onAddFile={props.onAddFile}
