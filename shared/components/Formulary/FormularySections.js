@@ -228,27 +228,29 @@ const FormularySections = (props) => {
                                 {strings['pt-br']['formularyMultiFormAddButtonLabel']}
                             </Formularies.MultiForm.AddButton>
                         ): ''} 
-                        {props.data.depends_on_dynamic_form.filter(sectionData=> section.id.toString() === sectionData.form_id.toString()).map((sectionData, index) => (
-                            <FormularySection 
-                            formName={props.formName}
-                            isSectionConditional={section.conditional_value !== null}
-                            formularyDataId={props.data.id}
-                            isFormOpen={props.isFormOpen}
-                            type={props.type}
-                            types={props.types}
-                            errors={props.errors}
-                            onChangeFormulary={props.onChangeFormulary}
-                            key={section.uuid} 
-                            sectionData={sectionData} 
-                            updateSection={updateSection}
-                            onAddFile={props.onAddFile}
-                            draftToFileReference={props.draftToFileReference}
-                            sectionDataIndex={index} 
-                            section={section} 
-                            fields={section.form_fields}
-                            removeSection={section.form_type==='multi-form' ? removeSection: null}
-                            />
-                        ))}
+                        {props.data.depends_on_dynamic_form.filter(sectionData=> section.id.toString() === sectionData.form_id.toString()).map((sectionData, index) => {
+                            return (
+                                <FormularySection 
+                                key={sectionData.uuid} 
+                                formName={props.formName}
+                                isSectionConditional={section.conditional_value !== null}
+                                formularyDataId={props.data.id}
+                                isFormOpen={props.isFormOpen}
+                                type={props.type}
+                                types={props.types}
+                                errors={props.errors}
+                                onChangeFormulary={props.onChangeFormulary}
+                                sectionData={sectionData} 
+                                updateSection={updateSection}
+                                onAddFile={props.onAddFile}
+                                draftToFileReference={props.draftToFileReference}
+                                sectionDataIndex={index} 
+                                section={section} 
+                                fields={section.form_fields}
+                                removeSection={section.form_type==='multi-form' ? removeSection: null}
+                                />
+                            )
+                        })}
                     </Formularies.SectionContainer>            
                 ))}
             </div>
