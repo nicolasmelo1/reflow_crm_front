@@ -93,6 +93,10 @@ const Table = (props) => {
         props.addToolbar({...props.toolbarProps})
     }
     // ------------------------------------------------------------------------------------------
+    const getContextBlocks = () => {
+        return props.block.rich_text_depends_on_blocks
+    }
+    // ------------------------------------------------------------------------------------------
     /**
      * The special options of the table block
      * 
@@ -453,7 +457,7 @@ const Table = (props) => {
      * @param {String} blockUUID - The uuid of the block that is being deleted
      */
     const onDeleteChildrenBlock = (blockUUID) => {
-        if (props.contextBlocks.length > 1) {
+        if (props.getContextBlocks().length > 1) {
             const indexOfBlockInTable = props.block.rich_text_depends_on_blocks.findIndex(block => block.uuid === blockUUID)
             const newBlock = createEmptyTextBlock(indexOfBlockInTable)
             props.block.rich_text_depends_on_blocks.splice(indexOfBlockInTable, 1, newBlock)
@@ -662,7 +666,7 @@ const Table = (props) => {
                                         onDeleteBlock={onDeleteChildrenBlock}
                                         onRemoveCurrent={() => null}
                                         onRemoveAfter={() => null}
-                                        contextBlocks={props.block.rich_text_depends_on_blocks} 
+                                        getContextBlocks={getContextBlocks}
                                         onEnter={null}
                                         />   
                                     </BlockTableCell>

@@ -498,6 +498,10 @@ class RichText extends React.Component {
         }      
     }
     // ------------------------------------------------------------------------------------------
+    getContextBlocks = () => {
+        return this.state.data.rich_text_page_blocks
+    }
+    // ------------------------------------------------------------------------------------------
     /**
      * Used for setting the initial data to the 'data' state inside of this component. 
      * 
@@ -729,7 +733,7 @@ class RichText extends React.Component {
                         updateBlocks={this.updateBlocks} 
                         setArrowNavigation={this.setArrowNavigation}
                         arrowNavigation={this.state.arrowNavigation}
-                        contextBlocks={this.state.data.rich_text_page_blocks}
+                        getContextBlocks={this.getContextBlocks}
                         renderCustomContent={this.props.renderCustomContent}
                         getAligmentTypeIdByName={this.getAligmentTypeIdByName}
                         getBlockTypeNameById={this.getBlockTypeNameById}
@@ -784,7 +788,7 @@ class RichText extends React.Component {
                         updateBlocks={this.updateBlocks} 
                         setArrowNavigation={this.setArrowNavigation}
                         arrowNavigation={this.state.arrowNavigation}
-                        contextBlocks={this.state.data.rich_text_page_blocks}
+                        getContextBlocks={this.getContextBlocks}
                         renderCustomContent={this.props.renderCustomContent}
                         getAligmentTypeIdByName={this.getAligmentTypeIdByName}
                         getBlockTypeNameById={this.getBlockTypeNameById}

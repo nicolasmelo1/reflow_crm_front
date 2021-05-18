@@ -4,9 +4,11 @@ import deepCopy from '../../../utils/deepCopy'
 import generateUUID from '../../../utils/generateUUID'
 import BlockSelector from '../BlockSelector'
 import isEqual from '../../../utils/isEqual'
+import delay from '../../../utils/delay'
 
 // TODO: NEED TO RESET THIS
 let previousBlockProps = {}
+const makeDelay = delay(1000)
 
 /**
  * This is the Block, the main block, the parent block of all blocks.
@@ -128,6 +130,10 @@ const Block = (props) => {
         }
     }
     // ------------------------------------------------------------------------------------------
+    const getContextBlocks = () => {
+        return props.getContextBlocks() 
+    }
+    // ------------------------------------------------------------------------------------------
     /**
      * Opens the selection of possible blocks that a user can select.
      */
@@ -231,12 +237,13 @@ const Block = (props) => {
      * of child blocks in your parent block.
      */
     const onDeleteBlock = () => {
+        const contextBlocks = getContextBlocks()
         if (props.onDeleteBlock) {
             props.onDeleteBlock(props.block.uuid)
         } else {
-            if (props.contextBlocks.length > 1) {
-                const indexOfBlockInContext = props.contextBlocks.findIndex(block => block.uuid === props.block.uuid)
-                props.contextBlocks.splice(indexOfBlockInContext, 1)
+            if (contextBlocks.length > 1) {
+                const indexOfBlockInContext = contextBlocks.findIndex(block => block.uuid === props.block.uuid)
+                contextBlocks.splice(indexOfBlockInContext, 1)
                 props.updateBlocks(null)
             }
         }
@@ -247,6 +254,8 @@ const Block = (props) => {
      * the next one.
      */
     const onDuplicateBlock = () => {
+        const contextBlocks = getContextBlocks()
+
         const duplicateBlock = (blockToDuplicate) => {
             let block = deepCopy(blockToDuplicate)
             block.uuid = generateUUID()
@@ -269,8 +278,8 @@ const Block = (props) => {
             props.onDuplicateBlock(props.block.uuid)
         } else {
             const block = duplicateBlock(props.block)
-            const indexOfBlockInContext = props.contextBlocks.findIndex(block => block.uuid === props.block.uuid)
-            props.contextBlocks.splice(indexOfBlockInContext + 1, 0, block)
+            const indexOfBlockInContext = contextBlocks.findIndex(block => block.uuid === props.block.uuid)
+            contextBlocks.splice(indexOfBlockInContext + 1, 0, block)
             props.updateBlocks(null)
         }
     }
@@ -329,6 +338,7 @@ const Block = (props) => {
                         onDuplicateBlock: onDuplicateBlock
                     }
                 }}
+                getContextBlocks={getContextBlocks}
                 addToolbar={addToolbar}
                 imageFile={imageFile}
                 customBlockOptions={customBlockOptions}
@@ -361,27 +371,17 @@ const Block = (props) => {
 const areEqual = (prevProps, nextProps) => {
     let areThemEqual = true
     if (Object.keys(previousBlockProps).includes(prevProps.block.uuid)) prevProps = previousBlockProps[prevProps.block.uuid]
-    const childrenBlocksUUIDs = nextProps.block.rich_text_depends_on_blocks.map(block => block.uuid)
     // This might seem confusing at first, but nextProps or prevProps will be referencing the SAME block.uuid, the activeBlock on the otherhand will always
     // change, so we need to check if THIS BLOCK IS or WAS the activeBlock, the others can remain untouched.
-    if (nextProps.block.uuid === prevProps.activeBlock || nextProps.block.uuid === nextProps.activeBlock || childrenBlocksUUIDs.includes(nextProps.activeBlock)) {
-        for (let key of Object.keys(prevProps)) {
-            // This is a special case, we only update if the uuids have changed or if the length had changed
-            if (key === 'contextBlocks') {
-                const prevPropsBlocksUUID = prevProps[key].map(block => block.uuid)
-                const nextPropsBlocksUUID = nextProps[key].map(block => block.uuid)
-                if (!isEqual(nextPropsBlocksUUID, prevPropsBlocksUUID)){
-                    areThemEqual = false
-                    break
-                }
-            } else if (Object.prototype.toString.call(prevProps[key]) === '[object Function]' && prevProps[key] !== null && nextProps[key] !== null && prevProps[key].toString() !== nextProps[key].toString())  {
-                areThemEqual = false
-                break
-            } else if (JSON.stringify(prevProps[key]) !== JSON.stringify(nextProps[key])) {
-                areThemEqual = false
-                break
-            }   
-        }
+    for (let key of Object.keys(prevProps)) {
+        // This is a special case, we only update if the uuids have changed or if the length had changed
+        if (Object.prototype.toString.call(prevProps[key]) === '[object Function]' && prevProps[key] !== null && nextProps[key] !== null && prevProps[key].toString() !== nextProps[key].toString())  {
+            areThemEqual = false
+            break
+        } else if (JSON.stringify(prevProps[key]) !== JSON.stringify(nextProps[key])) {
+            areThemEqual = false
+            break
+        }   
     }
     previousBlockProps[nextProps.block.uuid] = deepCopy(nextProps)
     return areThemEqual
