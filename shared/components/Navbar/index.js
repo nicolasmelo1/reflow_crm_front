@@ -180,7 +180,9 @@ class Navbar extends React.Component {
                 <Styled.NavbarLogo 
                 onLoad={(e)=> {
                     if (process.env['APP'] === 'web' && this.navbarContainer.current && typeof document !== 'undefined') {
-                        document.documentElement.style.setProperty('--app-navbar-height', `${this.navbarContainer.current.clientHeight}px`)
+                        setTimeout(() => {
+                            document.documentElement.style.setProperty('--app-navbar-height', `${this.navbarContainer.current.clientHeight}px`)
+                        }, 500)
                     }
                 }}
                 src={!['', null].includes(this.props.company.logo_image_url) ? this.props.company.logo_image_url : '/complete_logo.png'}/>

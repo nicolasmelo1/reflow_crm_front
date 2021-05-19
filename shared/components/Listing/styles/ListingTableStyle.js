@@ -12,7 +12,7 @@ styled.div`
     width: 100%;
     overflow-y: hidden;
     overflow-x: scroll;
-    height: 20px;
+    height: 10px;
 
     scrollbar-color: #bfbfbf transparent;
     scrollbar-width: thin;

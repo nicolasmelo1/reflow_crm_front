@@ -93,7 +93,7 @@ const ListingTable = (props) => {
 
     const renderWeb = () => {
         return (
-            <div>
+            <div style={{paddingTop: '5px'}}>
                 {!isMobile ? (
                     <Styled.ListingScrollWrapper
                     ref={scrollWrapperRef} 
