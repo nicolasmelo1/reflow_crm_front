@@ -64,11 +64,11 @@ const onGetListingData = (source, params, formName) => {
     }
 }
 
-const onGetExportedData = (fileId) => {
+const onGetExportedData = (formName, fileId) => {
     return async (_) => {
-        let response = await agent.http.LISTING.getHasExportedData(fileId) 
+        let response = await agent.http.LISTING.getHasExportedData(formName, fileId) 
         if (response.data.status === 'ok') {
-            agent.http.LISTING.getHasExportedData(fileId, true)
+            agent.http.LISTING.getHasExportedData(formName, fileId, true)
         }
         return response
     }
