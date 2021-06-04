@@ -225,12 +225,33 @@ class Login extends React.Component {
                 <Styled.LoginLogo src="/complete_logo.png" showLogo={this.state.showLogo} slideLogo={this.state.slideLogo }/>
                 <Styled.LoginFormContainer showForm={this.state.showForm}>
                     <Styled.LoginLabel>{strings['pt-br']['loginEmailLabel']}</Styled.LoginLabel>
-                    <Styled.LoginInput type={'text'} name={'email'} ref={this.emailRef} value={this.state.email} onChange={e => this.setState({ email: e.target.value, emailError: '' })} error={![null, undefined, ''].includes(this.state.emailError)}/>
-                    <Styled.LoginFieldError>{![null, undefined, ''].includes(this.state.emailError) ? this.state.emailError : ''}</Styled.LoginFieldError>
-                    <Styled.LoginLabel>{strings['pt-br']['loginPassLabel']}</Styled.LoginLabel>
+                    <Styled.LoginInput 
+                    type={'text'} 
+                    name={'email'} 
+                    ref={this.emailRef} 
+                    value={this.state.email} 
+                    onChange={e => this.setState({ email: e.target.value, emailError: '' })} 
+                    error={![null, undefined, ''].includes(this.state.emailError)}
+                    />
+                    <Styled.LoginFieldError>
+                        {![null, undefined, ''].includes(this.state.emailError) ? this.state.emailError : ''}
+                    </Styled.LoginFieldError>
+                    <Styled.LoginLabel>
+                        {strings['pt-br']['loginPassLabel']}
+                    </Styled.LoginLabel>
                     <Styled.LoginInputContainer>
-                        <Styled.LoginInput ref={this.passwordRef} name={'password'} type={this.state.visualizePassword ? 'text' : 'password'} value={this.state.password} onChange={e => this.setState({ password: e.target.value })}/>
-                        <Styled.LoginVisualizePasswordIcon icon={this.state.visualizePassword ? 'eye-slash' : 'eye'} onClick={e=> this.setState(state => ({...state, visualizePassword: !state.visualizePassword}))}/>
+                        <Styled.LoginInput 
+                        ref={this.passwordRef} 
+                        name={'password'} 
+                        autocomplete={'current-password'}
+                        type={this.state.visualizePassword ? 'text' : 'password'} 
+                        value={this.state.password} 
+                        onChange={e => this.setState({ password: e.target.value })}
+                        />
+                        <Styled.LoginVisualizePasswordIcon 
+                        icon={this.state.visualizePassword ? 'eye-slash' : 'eye'} 
+                        onClick={e=> this.setState(state => ({...state, visualizePassword: !state.visualizePassword}))}
+                        />
                     </Styled.LoginInputContainer>
                     <Styled.LoginForgotPassword onClick={e=> this.onClickForgotPassword()}>{strings['pt-br']['loginRedefinePasswordButtonLabel']}</Styled.LoginForgotPassword>
                     <Styled.LoginButton type="submit" onClick={e => {

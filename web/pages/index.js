@@ -21,6 +21,8 @@ class Index extends React.Component {
     componentDidMount() {
         if (this.checkIfLogged() && !['', null, undefined].includes(this.props.login.primaryForm)) {
             Router.push(paths.home().asUrl, paths.home(this.props.login.primaryForm).asUrl, {shallow: true})
+        } else {
+            Router.push(paths.login().asUrl, paths.login().asUrl, {shallow: true})
         }
     }
     

@@ -42,7 +42,7 @@ styled(({sidebarIsOpen, ...rest}) => <nav {...rest}/>)`
         width: ${({ sidebarIsOpen }) => sidebarIsOpen ? '295px' : '60px'};
     }
     @media(max-width: 420px) {
-        width: ${({ sidebarIsOpen }) => sidebarIsOpen ? 'calc(var(--app-width) - 40px)' : '0'};
+        width: ${({ sidebarIsOpen }) => sidebarIsOpen ? 'calc(var(--app-width) - 50px)' : '0'};
     }
 `
 :

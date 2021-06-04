@@ -447,6 +447,7 @@ const strings = {
         fieldTypeId: 'Id',
         fieldTypeUser: 'Usuário',
         fieldTypePeriod: 'Período',
+        fieldTypeFormula: 'Formula',
         periodFormatTypeSecond: 'Segundo',
         periodFormatTypeMinute: 'Minuto',
         periodFormatTypeHour: 'Hora',

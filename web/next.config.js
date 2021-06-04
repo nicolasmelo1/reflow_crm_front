@@ -2,7 +2,6 @@ const path = require('path')
 const withOffline = require('next-offline')
 
 
-
 // some configurations are for monorepo to work, you might want to read this:
 // https://medium.com/@agungsurya/create-a-monorepo-of-react-native-and-nextjs-8b93df280343
 module.exports = withOffline({
@@ -73,7 +72,7 @@ module.exports = withOffline({
         })
 
         config.module.exprContextCritical = false
-
+        
         return config
     }
 })

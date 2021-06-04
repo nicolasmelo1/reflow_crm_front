@@ -56,6 +56,7 @@ import {
     faCheckDouble,
     faUserCheck,
     faStopwatch,
+    faRobot,
     faAlignLeft,
     faAlignCenter,
     faAlignRight
@@ -103,6 +104,7 @@ library.add(
     faCheck,
     faCheckDouble,
     faStopwatch,
+    faRobot,
     faUserCheck,
     faAlignLeft,
     faAlignCenter,
@@ -209,9 +211,9 @@ class Layout extends React.Component {
         }
     }
 
-    setLogout = (data) => {
+    setLogout = (isToLogout) => {
         const currentUrl = Router.pathname
-        if (data && pathsAsArray.filter(path => path.loginOnly === true).map(path => path.asUrl).includes(currentUrl).length > 0) {
+        if (isToLogout && pathsAsArray.filter(path => path.loginOnly === true).map(path => path.asUrl).includes(currentUrl)) {
             if (process.env['APP'] === 'web') {
                 Router.push(paths.login().asUrl, paths.login().asUrl,{ shallow: true })
             } else {

@@ -32,7 +32,8 @@ const types = (lang, type, key) => {
             multi_option: strings[lang]['fieldTypeMultiOption'],
             id: strings[lang]['fieldTypeId'],
             user: strings[lang]['fieldTypeUser'],
-            period: strings[lang]['fieldTypePeriod']
+            period: strings[lang]['fieldTypePeriod'],
+            formula: strings[lang]['fieldTypeFormula']
         },
         date_configuration_date_format_type: {
             date: strings[lang]['dateFormatTypeDate'],

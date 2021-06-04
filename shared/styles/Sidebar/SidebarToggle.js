@@ -29,7 +29,7 @@ styled(({sidebarIsOpen, ...rest}) => <button {...rest}/>)`
         left: ${({ sidebarIsOpen }) => sidebarIsOpen ? '295px' : '60px'};
     }
     @media(max-width: 420px) {
-        left: ${({ sidebarIsOpen }) => sidebarIsOpen ? 'calc(var(--app-width) - 40px)' : '0'};
+        left: ${({ sidebarIsOpen }) => sidebarIsOpen ? 'calc(var(--app-width) - 50px)' : '0'};
     }
 `
 :

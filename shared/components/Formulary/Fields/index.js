@@ -8,6 +8,7 @@ import Email from './Email'
 import User from './User'
 import Period from './Period'
 import Option from './Option'
+import Formula from './Formula'
 import MultiOption from './MultiOption'
 import Attachment from './Attachment'
 import Id from './Id'
@@ -90,6 +91,8 @@ const Fields = (props) => {
                 return LongText
             case "form":
                 return Form
+            case "formula":
+                return Formula
         }
     }
 

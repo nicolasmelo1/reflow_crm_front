@@ -3,6 +3,7 @@ import { View } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import Number from './Number'
 import Period from './Period'
+import Formula from './Formula'
 import Option from './Option'
 import Connection from './Connection'
 import Datetime from './Datetime'
@@ -444,6 +445,12 @@ const FormularyFieldEdit = (props) => {
                         <FontAwesomeIcon icon={'stopwatch'}/>
                     </FormulariesEdit.FieldTypeOptionIconContainer>
                 )
+            case 'formula':
+                return (
+                    <FormulariesEdit.FieldTypeOptionIconContainer>
+                        f(x)
+                    </FormulariesEdit.FieldTypeOptionIconContainer>
+                )
                 
         }
         return ''
@@ -495,6 +502,17 @@ const FormularyFieldEdit = (props) => {
                 field={props.field}
                 onUpdateField={onUpdateField}
                 types={props.types}
+                />
+            )
+        } else if (fieldType === 'formula') {
+            return (
+                <Formula
+                field={props.field}
+                onUpdateField={onUpdateField}
+                types={props.types}
+                retrieveFormularyData={props.retrieveFormularyData}
+                formId={props.formId}
+                onTestFormularySettingsFormulaField={props.onTestFormularySettingsFormulaField}
                 />
             )
         } else {
