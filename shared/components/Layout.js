@@ -287,6 +287,7 @@ class Layout extends React.Component {
     }
 
     renderWeb = () => {
+        console.log(this.props.showSideBar)
         return (
             <div>
                 {this.state.tokenLoaded ? (
@@ -306,7 +307,6 @@ class Layout extends React.Component {
                                     />
                                 ) : ''}
                                 <ContentContainer 
-                                showSidebar={this.props.showSideBar}
                                 sidebarIsOpen={this.state.sidebarIsOpen} 
                                 showSideBar={this.props.showSideBar} 
                                 hideNavBar={this.props.hideNavBar}

@@ -18,7 +18,7 @@ styled.div`
     
     @media(min-width: 420px) {
         position: absolute;
-        ${props => props.showSidebar ? `
+        ${props => props.showSideBar ? `
             width: calc(var(--app-width) - 60px);
             left: 60px;
         `: `

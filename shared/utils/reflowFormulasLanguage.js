@@ -6,6 +6,7 @@ import { EditorState, basicSetup } from "@codemirror/basic-setup"
 import { EditorView, keymap } from "@codemirror/view"
 import { defaultTabBinding } from "@codemirror/commands"
 
+
 const reflowLanguage = (context) => {
     // To understand this you might need to understand the codemirror parser
     // Example with explanation: https://codemirror.net/6/examples/lang-package/
@@ -210,6 +211,7 @@ const editorStyle = () => {
 
     return [editorViewReflowTheme, editorSyntaxHighlightTheme]
 }
+
 
 const initializeEditor = (parent, context, dispatchCallback=null, editorState={}) => {
     const reflowLang = reflowLanguage(context)
