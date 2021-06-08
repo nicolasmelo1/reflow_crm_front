@@ -51,14 +51,14 @@ const Formula = (props) => {
 
         let variableIndex = 0
         let formattedFormula = []
-        let splittedFormula = props.field.formula_configuration.split(/{{(\w+)?}}/g)
+        let splittedFormula = props.field.formula_configuration.split(/{{\w*?}}/g)
         for(let i=0; i<splittedFormula.length; i++) {
             if (splittedFormula[i] !== undefined) {
-                let text = splittedFormula[i]
-                if (splittedFormula[i] === '' && props.field.field_formula_variables[variableIndex]) {
-                    text = `{{${fieldNameByFieldId(props.field.field_formula_variables[variableIndex].variable_id)}}}`
-                    variableIndex++
-                }
+                formattedFormula.push(splittedFormula[i])
+            }
+            if (props.field.field_formula_variables[variableIndex]) {
+                const text = `{{${fieldNameByFieldId(props.field.field_formula_variables[variableIndex].variable_id)}}}`
+                variableIndex++
                 formattedFormula.push(text)
             }
         }
@@ -90,8 +90,17 @@ const Formula = (props) => {
         return formularyFields
     }
     
+    /**
+     * This retrieves the formula occurrences, in other words, 
+     * this retrieves all of the variables Field instances id, sometimes the variable can contain
+     * the name or the id of the field. So what we do is ALWAYS retrieve the field.
+     * 
+     * @param {String} formulaText - The text of the formula.
+     * 
+     * @returns {Array<String>} - Array of strings where each string is an integer or an empty string.
+     */
     const getFormulaOccurences = (formulaText) => {
-        const occurrences = (formulaText.match(/{{(\w+)?}}/g) || []).map(variable=> {
+        const occurrences = (formulaText.match(/{{(\w+)?}}/g) || []).map((variable, index) => {
             variable = variable.replace('{{', '').replace('}}', '') 
 
             const occurrence = fieldIdByFieldName(variable)
@@ -101,6 +110,11 @@ const Formula = (props) => {
         return occurrences
     }
 
+    /**
+     * This changes the formula variables objects
+     * 
+     * @param {Array<BigInteger>} occurrences - A array of Integers where each integer is a Field intance id.
+     */
     const changeFormulaVariables = (occurrences) => {
         props.field.field_formula_variables = []
         for(let i=0; i<occurrences.length; i++) {
@@ -110,6 +124,12 @@ const Formula = (props) => {
         }
     }
 
+    /**
+     * Used when the user changes the formula variable in the select.
+     * 
+     * @param {BigInteger} index - The index of the variable, is it the first variable to change? The second? and so on
+     * @param {Array<BigIntegers>} data - The selected field instance id. 
+     */
     const onChangeFormulaVariable = (index, data) => {
         let occurences = getFormulaOccurences(props.field.formula_configuration)
         occurences[index] = data.length > 0 ? data[0] : null
@@ -147,7 +167,7 @@ const Formula = (props) => {
                 Formula
                 <div ref={textEditorRef}></div>
                 {props.field.field_formula_variables.map((fieldFormulaVariable, index) => {
-                        const initialFormulaVariablesOptions = formularyFields.filter(field => field.value.toString() === fieldFormulaVariable.variable_id.toString())
+                        const initialFormulaVariablesOptions = formularyFields.filter(field => field.value === fieldFormulaVariable.variable_id)
                         return (
                             <FormulariesEdit.SelectorContainer key={index}>
                                 <Select 
