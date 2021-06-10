@@ -181,7 +181,9 @@ class Navbar extends React.Component {
                 onLoad={(e)=> {
                     if (process.env['APP'] === 'web' && this.navbarContainer.current && typeof document !== 'undefined') {
                         setTimeout(() => {
-                            document.documentElement.style.setProperty('--app-navbar-height', `${this.navbarContainer.current.clientHeight}px`)
+                            if (this.navbarContainer.current) {
+                                document.documentElement.style.setProperty('--app-navbar-height', `${this.navbarContainer.current.clientHeight}px`)                                
+                            }
                         }, 500)
                     }
                 }}

@@ -146,6 +146,7 @@ const Number = (props) => {
                         />
                     </FormulariesEdit.SelectorContainer>
                 </FormulariesEdit.FieldFormFieldContainer>
+                {/*
                 <FormulariesEdit.FieldFormFieldContainer>
                     <FormulariesEdit.FieldFormLabel>
                         {strings['pt-br']['formularyEditFieldNumberFormulaLabel']}
@@ -185,6 +186,7 @@ const Number = (props) => {
                         )
                     })}
                 </FormulariesEdit.FieldFormFieldContainer>
+                */}
             </div>
         )
     }

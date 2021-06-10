@@ -10,6 +10,7 @@ import initializeEditor from '../../../utils/reflowFormulasLanguage'
  * @param {Type} props - {go in detail about every prop it recieves}
  */
 const Formula = (props) => {
+    const documentLengthRef = React.useRef(0)
     const textEditorRef = React.useRef()
     const editorRef = React.useRef()
     const formularyFields = getFormularyFields()
@@ -63,11 +64,12 @@ const Formula = (props) => {
             }
         }
 
+        props.field.formula_configuration = formattedFormula.join('')
         editorRef.current = initializeEditor(
             textEditorRef.current, 
             context, 
             dispatch, 
-            {doc: formattedFormula.join('')}
+            {doc: props.field.formula_configuration}
         )
     }
 
@@ -131,22 +133,30 @@ const Formula = (props) => {
      * @param {Array<BigIntegers>} data - The selected field instance id. 
      */
     const onChangeFormulaVariable = (index, data) => {
-        let occurences = getFormulaOccurences(props.field.formula_configuration)
-        occurences[index] = data.length > 0 ? data[0] : null
-        changeFormulaVariables(occurences)
+        let occurrences = getFormulaOccurences(props.field.formula_configuration)
+        occurrences[index] = data.length > 0 ? data[0] : null
+        changeFormulaVariables(occurrences)
         createEditor()
         props.onUpdateField(props.field)
     }
 
-
+    /**
+     * When the user types any key in the keyboard the codemirror lib always fires a callback called dispatch with a transaction object.
+     * This dispatch is also fired when the user selects a text, or even clicks the editor to start typing. Because of that
+     * what we need to do is ALWAYS verify the length of the hole document. If it has changed this means a text was either deleted added.
+     * So when this happens what we do is get all of the occurrences (all of the {{}}) and attach them to the variables.
+     * 
+     * @returns {Function} - the dispatch on codemirror works like a callback, so we run a function that returns a function to be called anytime.
+     */
     const dispatch = () => {
         return (transaction) => {
-            if (transaction.effects.length > 0 && transaction?.state?.doc) {
+            if (documentLengthRef.current !== transaction.state.doc.length && transaction?.state?.doc) {
                 props.field.formula_configuration = transaction?.state?.doc.text.join('\n')
                 const occurrences = getFormulaOccurences(props.field.formula_configuration)
                 changeFormulaVariables(occurrences)
                 props.onUpdateField(props.field)
             }
+            documentLengthRef.current = transaction.state.doc.length
             editorRef.current.update([transaction])
         } 
     }
@@ -164,20 +174,24 @@ const Formula = (props) => {
     const renderWeb = () => {
         return (
             <div>
-                Formula
-                <div ref={textEditorRef}></div>
-                {props.field.field_formula_variables.map((fieldFormulaVariable, index) => {
-                        const initialFormulaVariablesOptions = formularyFields.filter(field => field.value === fieldFormulaVariable.variable_id)
-                        return (
-                            <FormulariesEdit.SelectorContainer key={index}>
-                                <Select 
-                                    options={formularyFields} 
-                                    initialValues={initialFormulaVariablesOptions} 
-                                    onChange={(data) => onChangeFormulaVariable(index, data)} 
-                                />
-                            </FormulariesEdit.SelectorContainer>
-                        )
-                    })}
+                <FormulariesEdit.FieldFormFieldContainer>
+                    <FormulariesEdit.FieldFormLabel>
+                        {strings['pt-br']['formularyEditFieldFormulaTypeEditorLabel']}
+                    </FormulariesEdit.FieldFormLabel>
+                    <div ref={textEditorRef}/>
+                    {props.field.field_formula_variables.map((fieldFormulaVariable, index) => {
+                            const initialFormulaVariablesOptions = formularyFields.filter(field => field.value === fieldFormulaVariable.variable_id)
+                            return (
+                                <FormulariesEdit.SelectorContainer key={index}>
+                                    <Select 
+                                        options={formularyFields} 
+                                        initialValues={initialFormulaVariablesOptions} 
+                                        onChange={(data) => onChangeFormulaVariable(index, data)} 
+                                    />
+                                </FormulariesEdit.SelectorContainer>
+                            )
+                        })}
+                </FormulariesEdit.FieldFormFieldContainer>
             </div>
         )
     }

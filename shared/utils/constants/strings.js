@@ -159,6 +159,7 @@ const strings = {
         formularyEditFieldDatetimeAutoUpdateCheckboxLabel: 'Data automatica ao editar',
         formularyEditFieldPeriodTypeSelectorLabel: 'Formatação de periodo',
         formularyEditFieldNumberTypeSelectorLabel: 'Formatação do número',
+        formularyEditFieldFormulaTypeEditorLabel: 'Editor de Formula',
         formularyEditFieldNumberFormulaLabel: 'Formula',
         formularyEditFieldFormulaExplanationLabel: 'Referência',
         formularyEditFieldFormulaExplanationDescription1: ' - Utilize variáveis DESTE formulario usando a tag {{}}',

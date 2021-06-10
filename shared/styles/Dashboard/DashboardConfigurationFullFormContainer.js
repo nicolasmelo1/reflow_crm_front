@@ -7,7 +7,6 @@ styled.div`
     position: absolute;
     padding: ${props => props.isOpen ? '0 10px' : '0' };
     bottom: ${props => props.isOpen ? '0' : 'calc(0px - var(--app-height))' };
-    left: 0;
     height: var(--app-height);
     width: var(--app-width);
     background-color: #fff;
@@ -27,6 +26,13 @@ styled.div`
         width: 8px;
         height: 8px;
         background-color: transparent;
+    }
+
+    @media(min-width: 420px) {
+        left: -60px;
+    }
+    @media(max-width: 420px) {
+        left: 0;
     }
     
     @media(max-width: 740px) {

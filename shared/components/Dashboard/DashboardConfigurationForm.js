@@ -64,6 +64,23 @@ const DashboardConfigurationForm = (props) => {
     const [numberFormatTypeOptions, setNumberFormatTypeOptions] = useState([])
     const formattedAggregationTypeOtions = aggregationTypeByFieldValueType()
 
+    // ------------------------------------------------------------------------------------------
+    /**
+     * Handy function used to retrieve the fieldTypeName of the field based on it's id
+     * 
+     * @param {BigInteger} fieldTypeId - The id of the fieldType you want to retrieve the name for
+     * 
+     * @returns {String} - Returns the name of the field.
+     */
+    function getFieldTypeNameByFieldTypeId(fieldTypeId) {
+        const fieldType = props.types.data.field_type.filter(fieldType => fieldType.id === fieldTypeId)
+        if (fieldType.length > 0) {
+            return fieldType[0].type
+        } else {
+            return ''
+        }
+    }
+    // ------------------------------------------------------------------------------------------
     const onChangeDashboardName = (data) => {
         dashboardConfigurationData.name = data
         setDashboardConfigurationData({...dashboardConfigurationData})
@@ -132,7 +149,7 @@ const DashboardConfigurationForm = (props) => {
     function aggregationTypeByFieldValueType() {
         const selectedFieldValue = props.fieldOptions.filter(fieldOption => fieldOption.id === dashboardConfigurationData.value_field)
         if (selectedFieldValue.length > 0) {
-            if (selectedFieldValue[0].field_type !== 'number') {
+            if (getFieldTypeNameByFieldTypeId(selectedFieldValue[0].type) !== 'number') {
                 return aggregationTypeOptions.filter(aggregationTypeOption => ['count'].includes(aggregationTypeOption.name))
             }
         }
