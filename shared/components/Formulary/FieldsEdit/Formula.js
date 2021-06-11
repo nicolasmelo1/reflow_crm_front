@@ -50,6 +50,10 @@ const Formula = (props) => {
             editorRef.current.destroy()	
 		} 
 
+        if (props.field.formula_configuration === null) {
+            props.field.formula_configuration = ''
+        }
+
         let variableIndex = 0
         let formattedFormula = []
         let splittedFormula = props.field.formula_configuration.split(/{{\w*?}}/g)
