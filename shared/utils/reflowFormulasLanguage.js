@@ -75,7 +75,7 @@ const reflowLanguage = (context) => {
             
             Number { {{numberFloat}} }
 
-            ReflowVariable { '\{\{' (std.asciiLetter+|std.digit+)? '\}\}' } 
+            ReflowVariable { '\{\{' ((std.asciiLetter+|std.digit+|_)+)? '\}\}' } 
 
             IdentifierChar { std.asciiLetter | $[_\u{a1}-\u{10ffff}] }
             Word { IdentifierChar (std.digit | IdentifierChar)* }
