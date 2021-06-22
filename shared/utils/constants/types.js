@@ -57,6 +57,7 @@ const types = (lang, type, key) => {
         },
         number_configuration_number_format_type: {
             number: strings[lang]['numberFormatTypeNumber'],
+            integer: strings[lang]['numberFormatTypeInteger'],
             currency: strings[lang]['numberFormatTypeCurrency'],
             percentage: strings[lang]['numberFormatTypePercentage'],
         },

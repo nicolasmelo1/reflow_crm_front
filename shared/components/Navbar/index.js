@@ -121,6 +121,16 @@ class Navbar extends React.Component {
         return configDropdown
     }
 
+    updateNavbarHeightWeb = () => {
+        if (process.env['APP'] === 'web' && this.navbarContainer.current && typeof document !== 'undefined') {
+            setTimeout(() => {
+                if (this.navbarContainer.current) {
+                    document.documentElement.style.setProperty('--app-navbar-height', `${this.navbarContainer.current.clientHeight}px`)                                
+                }
+            }, 500)
+        }
+    }
+
     getToolsDropdown = () => {
         let toolsDropdown = [
             {
@@ -137,6 +147,7 @@ class Navbar extends React.Component {
         this.props.onGetNewNotifications(this.source)
         this.props.onGetCompanyData(this.source)
         this.props.onGetUserData(this.source)
+        this.updateNavbarHeightWeb()
     }
     
     componentDidUpdate = (prevProps) => {
@@ -179,13 +190,7 @@ class Navbar extends React.Component {
             <Styled.NavbarContainer ref={this.navbarContainer}>
                 <Styled.NavbarLogo 
                 onLoad={(e)=> {
-                    if (process.env['APP'] === 'web' && this.navbarContainer.current && typeof document !== 'undefined') {
-                        setTimeout(() => {
-                            if (this.navbarContainer.current) {
-                                document.documentElement.style.setProperty('--app-navbar-height', `${this.navbarContainer.current.clientHeight}px`)                                
-                            }
-                        }, 500)
-                    }
+                    this.updateNavbarHeightWeb()
                 }}
                 src={!['', null].includes(this.props.company.logo_image_url) ? this.props.company.logo_image_url : '/complete_logo.png'}/>
                 {this.isFreeTrial() && isAdmin(this.props.login.types?.defaults?.profile_type, this.props.login.user) ? (

@@ -464,6 +464,7 @@ const strings = {
         dateFormatTypeDate: 'Data',
         dateFormatTypeDatetime: 'Data e Hora',
         numberFormatTypeNumber: 'Número',
+        numberFormatTypeInteger: 'Inteiro',
         numberFormatTypeCurrency: 'Monetário',
         numberFormatTypePercentage: 'Porcentagem',
         dataTypeKanban: 'Kanban',

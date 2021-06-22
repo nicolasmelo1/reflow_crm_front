@@ -30,6 +30,8 @@ const reflowLanguage = (context) => {
             String |
             VariableName |
             kw<"{{null}}"> |
+            kw<"and"> |
+            kw<"or"> |    
             Boolean
         }
 
@@ -75,7 +77,7 @@ const reflowLanguage = (context) => {
             
             Number { {{numberFloat}} }
 
-            ReflowVariable { '\{\{' ((std.asciiLetter+|std.digit+|_)+)? '\}\}' } 
+            ReflowVariable { "{{" ((std.asciiLetter|std.digit|"_")+)? "}}" } 
 
             IdentifierChar { std.asciiLetter | $[_\u{a1}-\u{10ffff}] }
             Word { IdentifierChar (std.digit | IdentifierChar)* }
@@ -115,7 +117,7 @@ const reflowLanguage = (context) => {
                 "FunctionDeclaration/VariableDefinition": t.function(t.definition(t.variableName)),
                 "( )": t.paren,
                 ReflowVariable: t.propertyName,
-                "if else do end": t.controlKeyword,
+                "if else do end and or": t.controlKeyword,
                 "function": t.definitionKeyword,
                 Operators: t.operatorKeyword
             }),
