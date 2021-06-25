@@ -388,7 +388,7 @@ const Text = (props) => {
      * 
      * When compositionStart is fired we update a ref to signal that a composition is taking place, with this ref we prevent the onInput event from being fired and updating 
      * the state.
-     * So with thisn restriction, just when the composition ends, we update the text with the new insertedText. And then we also update the ref to signal that the 
+     * So with this restriction, just when the composition ends, we update the text with the new insertedText. And then we also update the ref to signal that the 
      * composition has just ended and is not taking place anymore.
      * 
      * @param {String} insertedText - The text that was inserted with the accent.

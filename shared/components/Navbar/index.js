@@ -59,7 +59,11 @@ class Navbar extends React.Component {
     }
 
     handlePDFTempalte = () => {
-        Router.push(paths.pdfTemplatesSettings().asUrl, paths.pdfTemplatesSettings(this.props.login.primaryForm).asUrl, { shallow: true })
+        Router.push(
+            paths.pdfTemplatesSettings().asUrl, 
+            paths.pdfTemplatesSettings(this.props.login.primaryForm).asUrl, 
+            { shallow: true }
+        )
     }
 
     freeTrialRemainingDays = () => {
@@ -125,7 +129,10 @@ class Navbar extends React.Component {
         if (process.env['APP'] === 'web' && this.navbarContainer.current && typeof document !== 'undefined') {
             setTimeout(() => {
                 if (this.navbarContainer.current) {
-                    document.documentElement.style.setProperty('--app-navbar-height', `${this.navbarContainer.current.clientHeight}px`)                                
+                    document.documentElement.style.setProperty(
+                        '--app-navbar-height', 
+                        `${this.navbarContainer.current.clientHeight}px`
+                    )                                
                 }
             }, 500)
         }
@@ -187,15 +194,22 @@ class Navbar extends React.Component {
 
     renderWeb = () => {
         return (
-            <Styled.NavbarContainer ref={this.navbarContainer}>
+            <Styled.NavbarContainer 
+            ref={this.navbarContainer}
+            >
                 <Styled.NavbarLogo 
                 onLoad={(e)=> {
                     this.updateNavbarHeightWeb()
                 }}
-                src={!['', null].includes(this.props.company.logo_image_url) ? this.props.company.logo_image_url : '/complete_logo.png'}/>
+                src={!['', null].includes(this.props.company.logo_image_url) ? this.props.company.logo_image_url : '/complete_logo.png'}
+                />
                 {this.isFreeTrial() && isAdmin(this.props.login.types?.defaults?.profile_type, this.props.login.user) ? (
-                    <Styled.NavbarFreeTrialAlertButton onClick={e=> {this.handleBilling()}}>
-                        <Styled.NavbarFreeTrialAlertText isBold={true}>
+                    <Styled.NavbarFreeTrialAlertButton 
+                    onClick={e=> {this.handleBilling()}}
+                    >
+                        <Styled.NavbarFreeTrialAlertText 
+                        isBold={true
+                        }>
                             {`${this.freeTrialRemainingDays()}`}
                         </Styled.NavbarFreeTrialAlertText>
                         <Styled.NavbarFreeTrialAlertText>
@@ -206,17 +220,42 @@ class Navbar extends React.Component {
                         </Styled.NavbarFreeTrialAlertText>
                     </Styled.NavbarFreeTrialAlertButton>
                 ) : ''}
-                <Styled.NavbarToggleButton onClick={e=> {this.setIsOpen(!this.state.isOpen)}}>
-                    <FontAwesomeIcon icon={this.state.isOpen ? 'times' : 'bars'}/>
+                <Styled.NavbarToggleButton 
+                onClick={e=> {this.setIsOpen(!this.state.isOpen)}}
+                >
+                    <FontAwesomeIcon 
+                    icon={this.state.isOpen ? 'times' : 'bars'}
+                    />
                 </Styled.NavbarToggleButton>
-                <Styled.NavbarItemsContainer isOpen={this.state.isOpen}>
+                <Styled.NavbarItemsContainer 
+                isOpen={this.state.isOpen}
+                >
                     {(this.props.navbar.isInHomeScreen && this.state.homeFormularyData !== null) ? (
-                        <NavbarDropdown icon='tasks' label={this.state.homeFormularyData.label_name} items={this.getToolsDropdown()}/>
+                        <NavbarDropdown 
+                        icon='tasks' 
+                        label={this.state.homeFormularyData.label_name} 
+                        items={this.getToolsDropdown()}
+                        />
                     ) : (
-                        <NavbarLink link={paths.home(this.props.login.primaryForm).asUrl} slug={paths.home().asUrl} icon='tasks' label={strings['pt-br']['headerGestaoLabel']}/>
+                        <NavbarLink 
+                        link={paths.home(this.props.login.primaryForm).asUrl} 
+                        slug={paths.home().asUrl} 
+                        icon='tasks' 
+                        label={strings['pt-br']['headerGestaoLabel']}
+                        />
                     )}
-                    <NavbarLink badge={this.props.notificationBadge > 0 ? this.props.notificationBadge : null} link={paths.notifications().asUrl} slug={paths.notifications().asUrl} icon='bell' label={strings['pt-br']['headerNotificationLabel']}/>
-                    <NavbarDropdown icon='cog' label={strings['pt-br']['headerSettingsLabel']} items={this.getConfigDropdown()}/>
+                    <NavbarLink 
+                    badge={this.props.notificationBadge > 0 ? this.props.notificationBadge : null} 
+                    link={paths.notifications().asUrl} 
+                    slug={paths.notifications().asUrl} 
+                    icon='bell' 
+                    label={strings['pt-br']['headerNotificationLabel']}
+                    />
+                    <NavbarDropdown 
+                    icon='cog' 
+                    label={strings['pt-br']['headerSettingsLabel']} 
+                    items={this.getConfigDropdown()}
+                    />
                 </Styled.NavbarItemsContainer>
             </Styled.NavbarContainer>
         )

@@ -183,7 +183,8 @@ const getHighestAndLowestBiggerContents = (inputElement) => {
         if (highest === null || (contentLineHeight > highestLineHeight && contentNodeRect.y <= highest.getBoundingClientRect().y)) {
             highest = contentNode
         }
-        if (lowest === null || ((contentNodeRect.y + contentNode.offsetHeight > lowest.getBoundingClientRect().y + lowest.offsetHeight) || (contentLineHeight > lowestLineHeight && contentNodeRect.y + contentNode.offsetHeight >= lowest.getBoundingClientRect().y + lowest.offsetHeight))) {
+        if (lowest === null || ((contentNodeRect.y + contentNode.offsetHeight > lowest.getBoundingClientRect().y + lowest.offsetHeight) || 
+                (contentLineHeight > lowestLineHeight && contentNodeRect.y + contentNode.offsetHeight >= lowest.getBoundingClientRect().y + lowest.offsetHeight))) {
             lowest = contentNode
         }
     })

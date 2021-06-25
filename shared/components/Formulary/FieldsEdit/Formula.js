@@ -1,19 +1,69 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
+import axios from 'axios'
 import { strings } from '../../../utils/constants'
 import { FormulariesEdit } from '../../../styles/Formulary'
 import Select from '../../Utils/Select'
+import delay from '../../../utils/delay'
 import initializeEditor from '../../../utils/reflowFormulasLanguage'
 
+
+const makeDelay = delay(1000)
+
 /**
- * {Description of your component, what does it do}
+ * This is the Formula component, this is used to handle formulas in reflow, formulas is actually our own
+ * programming language that we've created specifically for this use case.
+ * We had an idea to make it run on the front-end but there is a problem: The user can make api requests.
+ * What if the api has a rate limiting? If we make a request every second or everytime the user types 
+ * we will probably reach that rate limit.
+ * 
+ * Okay, okay, we can add a delay on it, so when the user stops typing for n seconds we run. Which is something that
+ * actually solves the problem.
+ * 
+ * BUT, remember that we need to run the formula again on the backend. 
+ * 
+ * WHY? Because we want to enable formulas to run only on apis. Imagine we are only working with apis, how do we run the formula
+ * if we don't have a front-end?
+ * Yeah, some people sometimes need to use stuff without front-ends. So we need to always validate the formula when he save.
+ * 
+ * date.now() would be the date that he saves the formulary.
+ * 
+ * So since we run stuff on the backend and on the front-end you understand what the problem is?
+ * No? It's the same basically. If we run on the front-end but achieve the rate limiting on the backend the result will not be displayed.
+ * 
+ * It's better to not show the result while the user types than just not display the actual result. One is a bug the other is actually
+ * a feature (for real).
+ * 
  * @param {Type} props - {go in detail about every prop it recieves}
  */
 const Formula = (props) => {
+    const [formulaInvalidError, setFormulaInvalidError] = useState(true)
+    const [isFormulaInvalid, setIsFormulaInvalid] = useState(false)
+    const sourceRef = React.useRef()
     const documentLengthRef = React.useRef(0)
     const textEditorRef = React.useRef()
     const editorRef = React.useRef()
     const formularyFields = getFormularyFields()
+
+    /**
+     * Tests the formula to see if it is valid or not, if the formula is not valid we can't save, othewise we save.
+     * 
+     * @param {String} text - The actual formula to test
+     */
+    const testFormula = (text) => {
+        makeDelay(() => {
+            if (text !== '') {
+                props.onTestFormularySettingsFormulaField(sourceRef.current, props.formId, text).then(response => {
+                    if (response && response.status !== 200) {
+                        setFormulaInvalidError(response.data.error)
+                        setIsFormulaInvalid(true)
+                    } else {
+                        setIsFormulaInvalid(false)
+                    }
+                })
+            }
+        })
+    }
 
     const fieldIdByFieldName = (fieldName) => {
         for (let i=0; i<formularyFields.length; i++) {
@@ -141,6 +191,7 @@ const Formula = (props) => {
         occurrences[index] = data.length > 0 ? data[0] : null
         changeFormulaVariables(occurrences)
         createEditor()
+        testFormula(props.field.formula_configuration)
         props.onUpdateField(props.field)
     }
 
@@ -158,6 +209,7 @@ const Formula = (props) => {
                 props.field.formula_configuration = transaction?.state?.doc.text.join('\n')
                 const occurrences = getFormulaOccurences(props.field.formula_configuration)
                 changeFormulaVariables(occurrences)
+                testFormula(props.field.formula_configuration)
                 props.onUpdateField(props.field)
             }
             documentLengthRef.current = transaction.state.doc.length
@@ -166,7 +218,20 @@ const Formula = (props) => {
     }
     
     useEffect(() => {
+        sourceRef.current = axios.CancelToken.source()
+
+        if (!['', null, undefined].includes(props.field.formula_configuration)) {
+            testFormula(props.field.formula_configuration)
+        } else {
+            setIsFormulaInvalid(false)
+        }
         createEditor()
+
+        return () => {
+            if (sourceRef.current) {
+                sourceRef.current.cancel()
+            }
+        }
     }, [])
     
     const renderMobile = () => {
@@ -182,19 +247,33 @@ const Formula = (props) => {
                     <FormulariesEdit.FieldFormLabel>
                         {strings['pt-br']['formularyEditFieldFormulaTypeEditorLabel']}
                     </FormulariesEdit.FieldFormLabel>
-                    <div ref={textEditorRef}/>
+                    {isFormulaInvalid ? (
+                        <div>
+                            <small style={{color: 'red'}}>
+                                {'Formula não é válida'}
+                            </small>
+                        </div>
+                    ) : ''}
+                    <div style={{border: isFormulaInvalid ? '1px solid red': ''}} ref={textEditorRef}/>
                     {props.field.field_formula_variables.map((fieldFormulaVariable, index) => {
-                            const initialFormulaVariablesOptions = formularyFields.filter(field => field.value === fieldFormulaVariable.variable_id)
-                            return (
-                                <FormulariesEdit.SelectorContainer key={index}>
-                                    <Select 
-                                        options={formularyFields} 
-                                        initialValues={initialFormulaVariablesOptions} 
-                                        onChange={(data) => onChangeFormulaVariable(index, data)} 
-                                    />
-                                </FormulariesEdit.SelectorContainer>
-                            )
-                        })}
+                        const initialFormulaVariablesOptions = formularyFields.filter(field => field.value === fieldFormulaVariable.variable_id)
+                        return (
+                            <FormulariesEdit.SelectorContainer key={index}>
+                                <Select 
+                                    options={formularyFields} 
+                                    initialValues={initialFormulaVariablesOptions} 
+                                    onChange={(data) => onChangeFormulaVariable(index, data)} 
+                                />
+                            </FormulariesEdit.SelectorContainer>
+                        )
+                    })}
+                    {isFormulaInvalid ? (
+                        <div>
+                            <small style={{color: 'red'}}>
+                                {formulaInvalidError}
+                            </small>
+                        </div>
+                    ) : ''}
                 </FormulariesEdit.FieldFormFieldContainer>
             </div>
         )
