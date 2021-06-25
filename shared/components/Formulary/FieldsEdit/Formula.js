@@ -6,6 +6,7 @@ import { FormulariesEdit } from '../../../styles/Formulary'
 import Select from '../../Utils/Select'
 import delay from '../../../utils/delay'
 import initializeEditor from '../../../utils/reflowFormulasLanguage'
+import generateUUID from '../../../utils/generateUUID'
 
 
 const makeDelay = delay(1000)
@@ -65,6 +66,13 @@ const Formula = (props) => {
         })
     }
 
+    /**
+     * retrieves the field_id by a field_name
+     * 
+     * @param {String} fieldName - The field name you want to find the fieldId for.
+     * 
+     * @returns {<BigInteger, String>} - Returns a empty string if not find or a integer
+     */
     const fieldIdByFieldName = (fieldName) => {
         for (let i=0; i<formularyFields.length; i++) {
             if (fieldName === formularyFields[i].name) {
@@ -172,12 +180,21 @@ const Formula = (props) => {
      * @param {Array<BigInteger>} occurrences - A array of Integers where each integer is a Field intance id.
      */
     const changeFormulaVariables = (occurrences) => {
-        props.field.field_formula_variables = []
+        const newFormulaVariables = []
+
         for(let i=0; i<occurrences.length; i++) {
-            props.field.field_formula_variables.push(
-                {variable_id: occurrences[i]}
+            let uuid = generateUUID()
+            if (props.field.field_formula_variables[i]) {
+                uuid = props.field.field_formula_variables[i].uuid
+            }
+            newFormulaVariables.push(
+                {
+                    uuid: uuid,
+                    variable_id: occurrences[i]
+                }
             )
         }
+        props.field.field_formula_variables = newFormulaVariables
     }
 
     /**
