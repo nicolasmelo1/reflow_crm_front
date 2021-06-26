@@ -59,8 +59,8 @@ const FORMULARY = {
     getFormularySettingsDefaultAttachmentFile: async (formId, fieldId, fileName) => {
         return await appendTokenInUrlByQueryParam(`${API_ROOT}formulary/${companyId}/settings/fields/${formId}/${fieldId}/defaults/${fileName}/`)
     }, 
-    testFormularyFormulaField: async (source, formId, text) => {
-        return await requests.get(`formula/${companyId}/${formId}/`, { text: text }, {}, source)
+    testFormularyFormulaField: async (body, formId) => {
+        return await requests.post(`formula/${companyId}/${formId}/`, body)
     },
     getFormularySettingsConnectionFieldOptions: async (source, formId) => {
         return await requests.get(`formulary/${companyId}/settings/fields/${formId}/form/field_options/`, {}, {}, source)

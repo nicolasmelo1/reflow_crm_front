@@ -48,13 +48,18 @@ const Formula = (props) => {
 
     /**
      * Tests the formula to see if it is valid or not, if the formula is not valid we can't save, othewise we save.
-     * 
-     * @param {String} text - The actual formula to test
      */
-    const testFormula = (text) => {
+    const testFormula = () => {
         makeDelay(() => {
-            if (text !== '') {
-                props.onTestFormularySettingsFormulaField(sourceRef.current, props.formId, text).then(response => {
+            if (props.field.formula_configuration !== '') {
+                const data = {
+                    formula: props.field.formula_configuration, 
+                    variable_ids: props.field.field_formula_variables.map(formulaVariable => formulaVariable.variable_id)
+                }
+                props.onTestFormularySettingsFormulaField(
+                    data, 
+                    props.formId
+                ).then(response => {
                     if (response && response.status !== 200) {
                         setFormulaInvalidError(response.data.error)
                         setIsFormulaInvalid(true)
@@ -200,12 +205,20 @@ const Formula = (props) => {
     /**
      * Used when the user changes the formula variable in the select.
      * 
-     * @param {BigInteger} index - The index of the variable, is it the first variable to change? The second? and so on
+     * @param {Object} fieldFormulaVariable - {
+     *      variable_id: The variable_id can be either a string or a integer,
+     *      uuid: The variable uuid
+     * } - This is the object of the formulaVariable, we recieve it from the backend and send it back. It has a uuid
+     * and a variable_id, the first is a unique uuid of the variable, to identify which variable we are modifying, the second is
+     * the actual field_id we selected as variable.
      * @param {Array<BigIntegers>} data - The selected field instance id. 
      */
-    const onChangeFormulaVariable = (index, data) => {
+    const onChangeFormulaVariable = (fieldFormulaVariable, data) => {
+        const formulaVariableIndex = props.field.field_formula_variables.findIndex(
+            formulaVariable => formulaVariable.uuid === fieldFormulaVariable.uuid
+        )
         let occurrences = getFormulaOccurences(props.field.formula_configuration)
-        occurrences[index] = data.length > 0 ? data[0] : null
+        occurrences[formulaVariableIndex] = data.length > 0 ? data[0] : null
         changeFormulaVariables(occurrences)
         createEditor()
         testFormula(props.field.formula_configuration)
@@ -272,14 +285,14 @@ const Formula = (props) => {
                         </div>
                     ) : ''}
                     <div style={{border: isFormulaInvalid ? '1px solid red': ''}} ref={textEditorRef}/>
-                    {props.field.field_formula_variables.map((fieldFormulaVariable, index) => {
+                    {props.field.field_formula_variables.map(fieldFormulaVariable => {
                         const initialFormulaVariablesOptions = formularyFields.filter(field => field.value === fieldFormulaVariable.variable_id)
                         return (
-                            <FormulariesEdit.SelectorContainer key={index}>
+                            <FormulariesEdit.SelectorContainer key={fieldFormulaVariable.uuid}>
                                 <Select 
                                     options={formularyFields} 
                                     initialValues={initialFormulaVariablesOptions} 
-                                    onChange={(data) => onChangeFormulaVariable(index, data)} 
+                                    onChange={(data) => onChangeFormulaVariable(fieldFormulaVariable, data)} 
                                 />
                             </FormulariesEdit.SelectorContainer>
                         )

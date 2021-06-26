@@ -117,9 +117,9 @@ const onRemoveFormularySettingsField = (formId, fieldId) => {
     }
 }
 
-const onTestFormularySettingsFormulaField = (source, formId, text) => {
+const onTestFormularySettingsFormulaField = (body, formId) => {
     return (_) => {
-        return agent.http.FORMULARY.testFormularyFormulaField(source, formId, text)
+        return agent.http.FORMULARY.testFormularyFormulaField(body, formId)
     }
 }
 
