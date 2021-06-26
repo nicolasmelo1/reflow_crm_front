@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
-import axios from 'axios'
 import { strings } from '../../../utils/constants'
 import { FormulariesEdit } from '../../../styles/Formulary'
 import Select from '../../Utils/Select'
@@ -40,7 +39,6 @@ const makeDelay = delay(1000)
 const Formula = (props) => {
     const [formulaInvalidError, setFormulaInvalidError] = useState(true)
     const [isFormulaInvalid, setIsFormulaInvalid] = useState(false)
-    const sourceRef = React.useRef()
     const documentLengthRef = React.useRef(0)
     const textEditorRef = React.useRef()
     const editorRef = React.useRef()
@@ -248,20 +246,12 @@ const Formula = (props) => {
     }
     
     useEffect(() => {
-        sourceRef.current = axios.CancelToken.source()
-
         if (!['', null, undefined].includes(props.field.formula_configuration)) {
             testFormula(props.field.formula_configuration)
         } else {
             setIsFormulaInvalid(false)
         }
         createEditor()
-
-        return () => {
-            if (sourceRef.current) {
-                sourceRef.current.cancel()
-            }
-        }
     }, [])
     
     const renderMobile = () => {
