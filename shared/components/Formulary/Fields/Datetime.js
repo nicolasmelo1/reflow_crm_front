@@ -68,6 +68,12 @@ const Datetime = (props) => {
     // ------------------------------------------------------------------------------------------
     /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
+        if (props.values.length > 1) {
+            props.singleValueFieldsHelper(props.values[0].value)
+        }
+    }, [props.values])
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    useEffect(() => {
         if (props.field.date_configuration_date_format_type !== null && props.types.data.field_date_format_type !== null) {
             const format = props.types.data.field_date_format_type.filter(dateFormatType => dateFormatType.id === props.field.date_configuration_date_format_type)
             if (format && format.length > 0) {

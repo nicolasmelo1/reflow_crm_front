@@ -16,6 +16,12 @@ const Option = (props) => {
     const fieldValue =  (props.values.length === 0) ? []: [{ value: props.values[0].value, label: props.values[0].value }]
 
     useEffect(() => {
+        if (props.values.length > 1) {
+            props.singleValueFieldsHelper(props.values[0].value)
+        }
+    }, [props.values])
+
+    useEffect(() => {
         setOptions(props.field.field_option.map(option => { return {value: option.option, label: option.option} }))
     }, [props.field.field_option])
 

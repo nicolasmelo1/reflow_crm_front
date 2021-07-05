@@ -1,10 +1,17 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View } from 'react-native'
 import { strings } from '../../../utils/constants'
 import Field from '../../../styles/Formulary/Field'
 
 
 const Id = (props) => {
+
+    useEffect(() => {
+        if (props.values.length > 1) {
+            props.singleValueFieldsHelper(props.values[0].value)
+        }
+    }, [props.values])
+
     const renderMobile = () => {
         return (
             <View>

@@ -200,9 +200,22 @@ const FormularyFieldEdit = (props) => {
      * @param {String} newValue - The new value to change the old value to
      */
     const onUpdateDefaultFieldValue = (__, oldValue, newValue) => {
+        let hasPassedFirstDefaultValue = false
+        // This function only changes singleFormValue, so if the field has two values (it was a multi_option before and now it is a option) we remove the
+        // options it had before and fix with only one
+        props.field.field_default_field_values = props.field.field_default_field_values.filter(_ => {
+            if (hasPassedFirstDefaultValue === false) {
+                hasPassedFirstDefaultValue = true
+                return true
+            } else {
+                return false
+            }
+        })
+
         for (let i = 0; i<props.field.field_default_field_values.length; i++) {
             if (props.field.field_default_field_values[i].value === oldValue) {
                 props.field.field_default_field_values[i].value = newValue
+                break
             }
         }
         onUpdateField(props.field)
@@ -658,6 +671,7 @@ const FormularyFieldEdit = (props) => {
                             <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', marginTop: '10px'}}>
                                 {props.types.data.field_type.map(fieldType => (
                                     <FormulariesEdit.FieldTypeOptionButton 
+                                    key={fieldType.id}
                                     isSelected={fieldType.id === props.field.type}
                                     onClick={(e) => onChangeFieldType(fieldType.id)}>
                                         {getIconByFieldTypeName(fieldType.type)}

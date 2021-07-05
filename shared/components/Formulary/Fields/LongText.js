@@ -18,6 +18,12 @@ const LongText = (props) => {
     }
     
     useEffect(() => {
+        if (props.values.length > 1) {
+            props.singleValueFieldsHelper(props.values[0].value)
+        }
+    }, [props.values])
+    
+    useEffect(() => {
         if (props.values.length > 0 && JSON.stringify(props.values) !== JSON.stringify(fieldValueRef.current)) {
             changeInitialData(props.values[0].value)
             fieldValueRef.current = deepCopy(props.values)

@@ -44,9 +44,26 @@ const FormularySection = (props) => {
         props.updateSection(props.sectionData, props.section.id, props.sectionDataIndex)
     }
 
-    const updateFieldFormValue = (field_name, old_value, new_value) => {
-        const indexToUpdate = props.sectionData.dynamic_form_value.findIndex(sectionFormValue=> sectionFormValue.field_name === field_name && sectionFormValue.value === old_value)
-        props.sectionData.dynamic_form_value[indexToUpdate].value = new_value
+    const updateFieldFormValue = (fieldName, oldValue, newValue) => {
+        let hasPassedFirstFormValue = false
+        
+        // This function only changes singleFormValue, so if the field has two values (it was a multi_option before and now it is a option) we remove the
+        // options it had before and fix with only one
+        props.sectionData.dynamic_form_value = props.sectionData.dynamic_form_value.filter(dynamicFormValue => {
+            if (dynamicFormValue.field_name === fieldName) {
+                if (hasPassedFirstFormValue === false) {
+                    hasPassedFirstFormValue = true
+                    return true
+                } else {
+                    return false
+                }
+            } else {
+                return true
+            }
+        })
+
+        const indexToUpdate = props.sectionData.dynamic_form_value.findIndex(dynamicFormValue=> dynamicFormValue.field_name === fieldName && dynamicFormValue.value === oldValue)
+        props.sectionData.dynamic_form_value[indexToUpdate].value = newValue
         props.updateSection(props.sectionData, props.section.id, props.sectionDataIndex)
     }
 

@@ -16,6 +16,12 @@ const User = (props) => {
         props.setValues(newValue)
     }
     
+    useEffect(() => {
+        if (props.values.length > 1) {
+            props.singleValueFieldsHelper(props.values[0].value)
+        }
+    }, [props.values])
+    
     /** 
      * Calls the function just once and never more. To load the options data.
      * Refer here: https://github.com/facebook/react/issues/14326#issuecomment-441680293 

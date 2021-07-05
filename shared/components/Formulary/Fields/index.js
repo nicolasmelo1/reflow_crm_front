@@ -211,7 +211,7 @@ const Fields = (props) => {
                 isUploadingDefaultAttachmentsRef.current = false
             }
         }
-
+            
         if (props.fieldFormValues.length === 0 && props.formularyDataId === null && props.isFormOpen) {
             if (getCurrentFieldTypeName() !== 'attachment') {
                 // Be cautious, the order of this conditional is important (what condition comes first and what comes second)
@@ -228,7 +228,6 @@ const Fields = (props) => {
                 }
             }
         }
-        
     }, [props.fieldFormValues])
 
     const renderMobile = () => {

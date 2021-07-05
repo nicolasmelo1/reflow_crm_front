@@ -37,6 +37,12 @@ const Number = (props) => {
         props.setValues(newValue)
     }
 
+    useEffect(() => {
+        if (props.values.length > 1) {
+            props.singleValueFieldsHelper(props.values[0].value)
+        }
+    }, [props.values])
+    
     useEffect (() => {
         if (document.activeElement === input.current) {
             input.current.selectionStart = elementSelectionStart

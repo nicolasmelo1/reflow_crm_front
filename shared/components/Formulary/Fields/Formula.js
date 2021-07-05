@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View } from 'react-native'
 import Id from './Id'
 
@@ -8,6 +8,12 @@ import Id from './Id'
  */
 const Formula = (props) => {
     const fieldValue = (props.values.length === 0) ? '': props.values[0].value
+
+    useEffect(() => {
+        if (props.values.length > 1) {
+            props.singleValueFieldsHelper(props.values[0].value)
+        }
+    }, [props.values])
 
     const renderMobile = () => {
         return (
