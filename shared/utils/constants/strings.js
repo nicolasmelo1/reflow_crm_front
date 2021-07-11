@@ -463,7 +463,7 @@ const strings = {
         periodFormatTypeMonths: 'Meses',
         dateFormatTypeDate: 'Data',
         dateFormatTypeDatetime: 'Data e Hora',
-        numberFormatTypeNumber: 'Número',
+        numberFormatTypeNumber: 'Dinâmico',
         numberFormatTypeInteger: 'Inteiro',
         numberFormatTypeCurrency: 'Monetário',
         numberFormatTypePercentage: 'Porcentagem',
