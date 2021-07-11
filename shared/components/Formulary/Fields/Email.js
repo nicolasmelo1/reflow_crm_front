@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { TextInput } from 'react-native'
 import { Field } from '../../../styles/Formulary'
 
