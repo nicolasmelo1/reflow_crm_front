@@ -13,6 +13,7 @@ styled.button`
     border: 1px solid #0dbf7e;
     margin: 10px;
     color: #f2f2f2;
+    ${props => props.sidebarIsOpen ? '' : 'width: 40px;'}
 
     &:hover {
         border: 1px solid #fff;

@@ -121,7 +121,10 @@ const SidebarFormEdit = (props) => {
             }}
             onAcceptButtonLabel={strings['pt-br']['sidebarDeleteFormularyAlertAcceptButtonLabel']}
             />
-            <SidebarAddButton text={strings['pt-br']['addNewFormButtonLabel']} onClick={e => { onAddNewForm() }} />
+            <SidebarAddButton 
+            text={strings['pt-br']['addNewFormButtonLabel']} 
+            onClick={e => { onAddNewForm() }}
+            />
             {props.forms.map((form, index) => {
                 return (
                     <SidebarFormItem key={index} className="form-container" onDragOver={e => { onDragOver(e) }} onDrop={e => { onDrop(e, index) }}>

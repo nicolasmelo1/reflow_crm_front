@@ -230,6 +230,30 @@ class Navbar extends React.Component {
                 <Styled.NavbarItemsContainer 
                 isOpen={this.state.isOpen}
                 >
+                    <Styled.NavbarItemsContainerHeader>
+                        <img
+                            style={{
+                                width: '110px',
+                                marginBottom: '15px'
+                            }}
+                            src={!['', null].includes(this.props.company.logo_image_url) ? this.props.company.logo_image_url : '/complete_logo.png'}
+                        />
+                        <div 
+                        style={{ 
+                            top: '10px',
+                            right: '10px',
+                            position: 'absolute'
+                        }}
+                        >
+                            <Styled.NavbarToggleButton 
+                            onClick={e=> {this.setIsOpen(!this.state.isOpen)}}
+                            >
+                                <FontAwesomeIcon 
+                                icon={this.state.isOpen ? 'times' : 'bars'}
+                                />
+                            </Styled.NavbarToggleButton>
+                        </div>
+                    </Styled.NavbarItemsContainerHeader>
                     {(this.props.navbar.isInHomeScreen && this.state.homeFormularyData !== null) ? (
                         <NavbarDropdown 
                         icon='tasks' 

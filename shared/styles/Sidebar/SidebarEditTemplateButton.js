@@ -12,6 +12,9 @@ styled.button`
     border-radius: 20px;
     border: 0;
     margin: 10px;
+    ${props => props.sidebarIsOpen ? '' : 'width: 40px;'}
+
+
     &:hover {
         background-color: #fff;
         color: #0dbf7e

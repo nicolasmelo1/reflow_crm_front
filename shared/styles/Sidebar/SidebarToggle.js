@@ -4,32 +4,34 @@ import { TouchableOpacity } from 'react-native'
 
 export default process.env['APP'] === 'web' ? 
 styled(({sidebarIsOpen, ...rest}) => <button {...rest}/>)`
-    position: absolute;
     transition: left 0.3s ease-in-out;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     font-weight: bold;
     height: 2rem;
-    background: #17242D;
-    border-radius: 0 20px 20px 0;
     border: none;
     cursor: pointer;
     color: #0dbf7e;
-
-    @media(max-width: 420px) {
-        z-index: 4;
-    }
+    z-index: 10;
 
     @media(min-width: 420px) {
-        z-index: 10;
-    }
-
-    @media(min-width: 420px) {
+        margin: 13px 0 10px 12px;
+        background-color: #ffffff10;
+        border-radius: 10px;
         left: ${({ sidebarIsOpen }) => sidebarIsOpen ? '295px' : '60px'};
     }
+    
     @media(max-width: 420px) {
+        top: var(--app-navbar-height);
+        background-color: #17242D;
+        position: fixed;
+        border-radius: 0 20px 20px 0;
         left: ${({ sidebarIsOpen }) => sidebarIsOpen ? 'calc(var(--app-width) - 50px)' : '0'};
+    }
+
+    &:hover {
+        background-color: #000;
     }
 `
 :

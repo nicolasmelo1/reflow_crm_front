@@ -9,11 +9,11 @@ styled.button`
     border-radius: 0;
     border-left: 0;
     border-right: 0;
-    border-bottom: 1px solid #444;
-    color: ${props => props.isSelected ? "#0dbf7e" : "#fff"};
+    color: ${props => props.isSelected ? "#0dbf7e" : "#ffffff70"};
     font-weight: ${props => props.isSelected ? "bold" : "normal"};
     width: 100%;
     padding: 10px;
+
     ${props => props.sidebarIsOpen ? `
         display: flex;
         flex-direction: column;

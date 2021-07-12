@@ -4,12 +4,13 @@ import { TouchableOpacity } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.button`
-    color: ${props => props.isSelected ? '#0dbf7e !important' : '#bfbfbf !important'};
+    color: ${props => props.isSelected ? '#0dbf7e !important' : '#ffffff70 !important'};
     width: 100%;
     border: 0;
     background-color: transparent;
     text-align: left;
-    
+    text-overflow: ellipsis;
+
     &:hover {
         color: #0dbf7e !important;
     }

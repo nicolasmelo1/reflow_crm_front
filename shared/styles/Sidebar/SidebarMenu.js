@@ -6,12 +6,13 @@ import { Animated, View, Easing, Dimensions } from 'react-native'
 export default process.env['APP'] === 'web' ?
 styled(({sidebarIsOpen, ...rest}) => <nav {...rest}/>)`
     background-color: #17242D;
-    height: calc(var(--app-height) - var(--app-navbar-height));
+    height: var(--app-height);
     overflow-y: auto;
     text-align: auto;
     padding: 0 0 2rem 0;
     position: absolute;
-    top: calc(var(--app-navbar-height));
+    border-radius: 0 15px 15px 0;
+    top: 0;
     transition: width 0.3s ease-in-out;
 
     scrollbar-color: #bfbfbf transparent;

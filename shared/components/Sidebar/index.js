@@ -113,20 +113,20 @@ class Sidebar extends React.Component {
     renderWeb() {
         return (
             <div>
-                <SidebarToggle 
-                className="sidebar-toogle" 
-                onClick={e=> this.onChangeSidebarIsOpen()} 
-                sidebarIsOpen={this.props.sidebarIsOpen}
-                >
-                    {(this.props.sidebarIsOpen) ? '<<<': '>>>'}
-                </SidebarToggle>
                 <SidebarMenu sidebarIsOpen={this.props.sidebarIsOpen} >
+                    <SidebarToggle 
+                    className="sidebar-toogle" 
+                    onClick={e=> this.onChangeSidebarIsOpen()} 
+                    sidebarIsOpen={this.props.sidebarIsOpen}
+                    >
+                        {(this.props.sidebarIsOpen) ? '<<<': '>>>'}
+                    </SidebarToggle>
                     {isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user) ? (
                         <div 
                         style={{ 
                             display: 'flex',
                             flexDirection: this.props.sidebarIsOpen ? 'row' : 'column',
-                            borderBottom: '1px solid #444' 
+                            borderBottom: '1px solid black' 
                         }}>
                             {this.props.sidebarIsOpen ? (
                                 <SidebarEditTemplateButton 

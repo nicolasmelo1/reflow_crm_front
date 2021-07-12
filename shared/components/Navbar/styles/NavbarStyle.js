@@ -25,6 +25,10 @@ export const NavbarLogo = process.env['APP'] === 'web' ?
 styled.img`
     object-fit: cover;
     width: 110px;
+    
+    @media(min-width: 420px) {
+        margin-left: 75px;
+    }
 `
 : 
 styled(Image)``
@@ -55,11 +59,27 @@ styled.div`
         z-index: 30;
         background-color: #fff;
         width: 100%;
-        height: ${props=> props.isOpen ? 'calc(var(--app-height) - var(--app-navbar-height))': '0'};
+        height: ${props=> props.isOpen ? 'calc(var(--app-height))': '0'};
         transition: height 0.3s ease-in-out;
     }
     @media(min-width: 830px) {
         float: right;
+    }
+`
+:
+styled(View)``
+// ------------------------------------------------------------------------------------------
+export const NavbarItemsContainerHeader = process.env['APP'] === 'web' ? 
+styled.div`
+    @media(max-width: 829px) {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+    }
+
+    @media(min-width: 830px) {
+        display: none;
     }
 `
 :

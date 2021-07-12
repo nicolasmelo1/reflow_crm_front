@@ -33,7 +33,9 @@ null
 
 const SidebarAddButton = (props) => {
     const renderMobile = () => (
-        <StyledButtonContainer onPress={props.onClick}>
+        <StyledButtonContainer
+        onPress={props.onClick}
+        >
             <StyledButtonText>{props.text}</StyledButtonText>
             <div>
                 <StyledPlusIcon width="15" height="15" viewBox="0 0 52 52">
@@ -44,7 +46,9 @@ const SidebarAddButton = (props) => {
         </StyledButtonContainer>
     )
     const renderWeb = () => (
-        <StyledButtonContainer onClick={props.onClick}>
+        <StyledButtonContainer 
+        onClick={props.onClick}
+        >
             <StyledButtonText>{props.text}</StyledButtonText>
             <div>
                 <StyledPlusIcon width="15" height="15" viewBox="0 0 52 52">
