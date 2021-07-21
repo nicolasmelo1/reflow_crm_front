@@ -22,6 +22,7 @@ const reflowLanguage = (context) => {
         expression {
             FunctionCall |
             FunctionDeclaration |
+            ModuleDeclaration |
             IfStatement |
             Block |
             Operators |
@@ -30,6 +31,7 @@ const reflowLanguage = (context) => {
             String |
             VariableName |
             kw<"{{null}}"> |
+            kw<"in"> |
             kw<"and"> |
             kw<"or"> |    
             Boolean
@@ -46,9 +48,14 @@ const reflowLanguage = (context) => {
         Block {
             kw<"do"> expression* kw<"end">
         }
+        
+        ModuleDeclaration {
+            kw<"module"> VariableDefinition
+            ParameterDefinitionList?
+        }
 
         FunctionDeclaration {
-            kw<"function"> VariableDefinition
+            kw<"function"> VariableDefinition?
             ParameterDefinitionList
             Block
         }
@@ -117,8 +124,8 @@ const reflowLanguage = (context) => {
                 "FunctionDeclaration/VariableDefinition": t.function(t.definition(t.variableName)),
                 "( )": t.paren,
                 ReflowVariable: t.propertyName,
-                "if else do end and or": t.controlKeyword,
-                "function": t.definitionKeyword,
+                "if else do end and or in": t.controlKeyword,
+                "function module": t.definitionKeyword,
                 Operators: t.operatorKeyword
             }),
             indentNodeProp.add({

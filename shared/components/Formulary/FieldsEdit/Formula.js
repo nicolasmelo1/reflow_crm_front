@@ -39,6 +39,7 @@ const makeDelay = delay(1000)
 const Formula = (props) => {
     const [formulaInvalidError, setFormulaInvalidError] = useState(true)
     const [isFormulaInvalid, setIsFormulaInvalid] = useState(false)
+    const [result, setResult] = useState('')
     const documentLengthRef = React.useRef(0)
     const textEditorRef = React.useRef()
     const editorRef = React.useRef()
@@ -59,9 +60,13 @@ const Formula = (props) => {
                     props.formId
                 ).then(response => {
                     if (response && response.status !== 200) {
+                        setResult('')
                         setFormulaInvalidError(response.data.error)
                         setIsFormulaInvalid(true)
                     } else {
+                        if (response.data?.data?.result) {
+                            setResult(response.data?.data?.result)
+                        }
                         setIsFormulaInvalid(false)
                     }
                 })
@@ -291,6 +296,16 @@ const Formula = (props) => {
                         <div>
                             <small style={{color: 'red'}}>
                                 {formulaInvalidError}
+                            </small>
+                        </div>
+                    ) : ''}
+                    {result !== '' ? (
+                        <div>
+                            <small>
+                                Resultado: 
+                            </small>
+                            <small style={{color: 'green'}}>
+                                {result}
                             </small>
                         </div>
                     ) : ''}
