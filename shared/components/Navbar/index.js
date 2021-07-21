@@ -198,6 +198,7 @@ class Navbar extends React.Component {
             ref={this.navbarContainer}
             >
                 <Styled.NavbarLogo 
+                showSideBar={this.props.showSideBar}
                 onLoad={(e)=> {
                     this.updateNavbarHeightWeb()
                 }}

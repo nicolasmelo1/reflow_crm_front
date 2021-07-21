@@ -27,7 +27,7 @@ styled.img`
     width: 110px;
     
     @media(min-width: 420px) {
-        margin-left: 75px;
+        margin-left: ${props=> props.showSideBar ? '75px': '0'};
     }
 `
 : 
