@@ -4,7 +4,7 @@ import { strings } from '../../../utils/constants'
 import { FormulariesEdit } from '../../../styles/Formulary'
 import Select from '../../Utils/Select'
 import delay from '../../../utils/delay'
-import initializeEditor from '../../../utils/reflowFormulasLanguage'
+import { initializeEditor, lexer } from '../../../utils/flowLanguage'
 import generateUUID from '../../../utils/generateUUID'
 
 
@@ -45,14 +45,39 @@ const Formula = (props) => {
     const editorRef = React.useRef()
     const formularyFields = getFormularyFields()
 
+    const translatedContext = lexer.contextFactory(
+        strings['pt-br']['formularyEditFieldFormulaDecimalPointCharacter'],
+        strings['pt-br']['formularyEditFieldFormulaPositionalArgumentSeparator'], 
+        strings['pt-br']['formularyEditFieldFormulaBlockKeywordsDo'], 
+        strings['pt-br']['formularyEditFieldFormulaBlockKeywordsEnd'], 
+        strings['pt-br']['formularyEditFieldFormulaIfKeywordsIf'],
+        strings['pt-br']['formularyEditFieldFormulaIfKeywordsElse'],
+        strings['pt-br']['formularyEditFieldFormulaBooleanKeywordsTrue'],
+        strings['pt-br']['formularyEditFieldFormulaBooleanKeywordsFalse'],
+        strings['pt-br']['formularyEditFieldFormulaNullKeyword'],
+        strings['pt-br']['formularyEditFieldFormulaModuleKeyword'],
+        strings['pt-br']['formularyEditFieldFormulaFunctionKeyword'],
+        strings['pt-br']['formularyEditFieldFormulaConjunctionKeyword'],
+        strings['pt-br']['formularyEditFieldFormulaDisjunctionKeyword'],
+        strings['pt-br']['formularyEditFieldFormulaInversionKeyword'],
+        strings['pt-br']['formularyEditFieldFormulaIncludeKeyword']
+    )
+
+    const translateFormula = (formula, translateBack=false) => {
+        if (translateBack) {
+            return lexer.lexerAndSubstitute(formula, translatedContext, lexer.contextFactory())
+        } else {
+            return lexer.lexerAndSubstitute(formula, lexer.contextFactory(), translatedContext)
+        }
+    }
     /**
      * Tests the formula to see if it is valid or not, if the formula is not valid we can't save, othewise we save.
      */
-    const testFormula = () => {
+    const testFormula = (formula) => {
         makeDelay(() => {
-            if (props.field.formula_configuration !== '') {
+            if (formula !== '') {
                 const data = {
-                    formula: props.field.formula_configuration, 
+                    formula: formula, 
                     variable_ids: props.field.field_formula_variables.map(formulaVariable => formulaVariable.variable_id)
                 }
                 props.onTestFormularySettingsFormulaField(
@@ -106,10 +131,10 @@ const Formula = (props) => {
 				false: 'False'
 			},
 			number: {
-				float: '(std.digit+ ("," std.digit+)?) '
+				float: '(std.digit+ ("." std.digit+)?) '
 			},
 			null: 'None',
-			positionalArgumentSeparator: ';'
+			positionalArgumentSeparator: ','
 		} 
 
         if (editorRef.current) {
@@ -137,9 +162,9 @@ const Formula = (props) => {
         props.field.formula_configuration = formattedFormula.join('')
         editorRef.current = initializeEditor(
             textEditorRef.current, 
-            context, 
+            translatedContext, 
             dispatch, 
-            {doc: props.field.formula_configuration}
+            {doc: translateFormula(props.field.formula_configuration)}
         )
     }
 
@@ -224,7 +249,7 @@ const Formula = (props) => {
         occurrences[formulaVariableIndex] = data.length > 0 ? data[0] : null
         changeFormulaVariables(occurrences)
         createEditor()
-        testFormula(props.field.formula_configuration)
+        testFormula(translateFormula(props.field.formula_configuration, true))
         props.onUpdateField(props.field)
     }
 
@@ -239,10 +264,10 @@ const Formula = (props) => {
     const dispatch = () => {
         return (transaction) => {
             if (documentLengthRef.current !== transaction.state.doc.length && transaction?.state?.doc) {
-                props.field.formula_configuration = transaction?.state?.doc.text.join('\n')
+                props.field.formula_configuration = translateFormula(transaction?.state?.doc.text.join('\n'), true)
                 const occurrences = getFormulaOccurences(props.field.formula_configuration)
                 changeFormulaVariables(occurrences)
-                testFormula(props.field.formula_configuration)
+                testFormula(props.field.formula_configuration, true)
                 props.onUpdateField(props.field)
             }
             documentLengthRef.current = transaction.state.doc.length
@@ -302,7 +327,7 @@ const Formula = (props) => {
                     {result !== '' ? (
                         <div>
                             <small>
-                                Resultado: 
+                                Resultado:&nbsp;
                             </small>
                             <small style={{color: 'green'}}>
                                 {result}
