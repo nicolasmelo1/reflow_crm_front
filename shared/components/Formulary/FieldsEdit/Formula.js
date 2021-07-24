@@ -125,18 +125,6 @@ const Formula = (props) => {
     }
 
     const createEditor = () => {
-        const context = {
-			boolean: {
-				true: 'True',
-				false: 'False'
-			},
-			number: {
-				float: '(std.digit+ ("." std.digit+)?) '
-			},
-			null: 'None',
-			positionalArgumentSeparator: ','
-		} 
-
         if (editorRef.current) {
             editorRef.current.destroy()	
 		} 
