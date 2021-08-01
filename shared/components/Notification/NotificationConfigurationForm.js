@@ -434,7 +434,7 @@ const NotificationConfigurationForm = (props) => {
                                                 <Styled.NotificationConfigurationFormFieldContainer>
                                                     <Styled.NotificationConfigurationFormSaveButton onPress={e=> {onSubmit()}}>
                                                         <Text style={{ color: '#f2f2f2'}}>
-                                                            {strings['pt-br']['Styled.NotificationConfigurationFormSaveButtonLabel']}
+                                                            {strings['pt-br']['notificationConfigurationFormSaveButtonLabel']}
                                                         </Text>
                                                     </Styled.NotificationConfigurationFormSaveButton>
                                                 </Styled.NotificationConfigurationFormFieldContainer>
@@ -577,7 +577,7 @@ const NotificationConfigurationForm = (props) => {
                                                 </Styled.NotificationConfigurationFormFieldContainer>
                                                 <Styled.NotificationConfigurationFormFieldContainer>
                                                     <Styled.NotificationConfigurationFormSaveButton onClick={e=> {onSubmit()}}>
-                                                        {strings['pt-br']['Styled.NotificationConfigurationFormSaveButtonLabel']}
+                                                        {strings['pt-br']['notificationConfigurationFormSaveButtonLabel']}
                                                     </Styled.NotificationConfigurationFormSaveButton>
                                                 </Styled.NotificationConfigurationFormFieldContainer>
                                             </div>

@@ -39,13 +39,7 @@ const onGetNewNotifications = (source) => {
         const response = await agent.http.NOTIFICATION.getNewNotifications(source)
         if (response && response.status === 200) {
             dispatch({ type: SET_NOTIFICATION_BADGE, payload: response.data.data })
-
         }
-        agent.websocket.NOTIFICATION.recieveNotificationBadge({
-            callback: (data) => {
-                dispatch({ type: SET_NOTIFICATION_BADGE, payload: data.data })
-            }
-        })
     }
 }
 
