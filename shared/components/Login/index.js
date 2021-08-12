@@ -108,7 +108,10 @@ class Login extends React.Component {
         this.state.email = (this.state.email == '' && this.emailRef.current && this.emailRef.current.value ) ? this.emailRef.current.value : this.state.email
         this.state.password = (this.state.password == '' && this.passwordRef.current && this.passwordRef.current.value ) ? this.passwordRef.current.value : this.state.password
         this.setIsVerifing(true)
-        this.props.onAuthenticate({ email: this.state.email, password: this.state.password}).then(response => {
+        this.props.onAuthenticate({ 
+            email: this.state.email, 
+            password: this.state.password
+        }).then(response => {
             if (!response) {
                 this.setIsVerifing(false)
                 this.props.onAddNotification(strings['pt-br']['loginUnknownLoginError'],'error')

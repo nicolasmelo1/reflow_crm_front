@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import actions from '../../redux/actions'
 import dynamicImport from '../../utils/dynamicImport'
 import { numberUnmasker } from '../../utils/numberMasker'
+import getReflowVisitorId from '../../utils/getReflowVisitorId'
 import { strings, paths, errors } from '../../utils/constants'
 import FirstStepForm from './FirstStepForm'
 import SecondStepForm from './SecondStepForm'
@@ -155,7 +156,8 @@ class Onboarding extends React.Component {
             user_first_name: this.state.name.split(' ')[0],
             user_last_name: this.state.name.split(' ').slice(1).join(' '),
             user_email: this.state.email,
-            user_password: this.state.password
+            user_password: this.state.password,
+            user_visitor_id: getReflowVisitorId()
         }
 
         this.props.onCreateUserAndCompany(data).then(response => {

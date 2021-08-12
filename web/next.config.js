@@ -41,6 +41,9 @@ module.exports = withOffline({
         ]
     },
     env: {
+        // This is defined in the reflow_tracking application to trach users before they become users of reflow, so make a
+        // double check there to see if it's set up correctly.
+        REFLOW_VISITOR_ID_COOKIE_KEY: 'reflow_visitor_id',
         REGISTER_SW_IN_DEV_MODE: false,
         VINDI_PUBLIC_API: process.env.VINDI_PUBLIC_API ? process.env.VINDI_PUBLIC_API : 'https://sandbox-app.vindi.com.br/api/v1/public/payment_profiles',
         VINDI_PUBLIC_API_KEY: process.env.VINDI_PUBLIC_API_KEY ? process.env.VINDI_PUBLIC_API_KEY :  'uNZqO8kJbVRIRSiBEsbyWRGtpTGLd432AxXHYltw_Ow',
