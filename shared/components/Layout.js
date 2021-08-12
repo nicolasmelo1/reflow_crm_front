@@ -7,7 +7,6 @@ import Navbar from './Navbar'
 import Notify from './Notify'
 import Templates from './Templates'
 import actions from '../redux/actions'
-import getReflowVisitorId from '../utils/getReflowVisitorId'
 import dynamicImport from '../utils/dynamicImport'
 import agent from '../utils/agent'
 import { pathsAsArray } from '../utils/constants/paths'
@@ -288,7 +287,6 @@ class Layout extends React.Component {
     }
 
     renderWeb = () => {
-        console.log(getReflowVisitorId())
         return (
             <div>
                 {this.state.tokenLoaded ? (
