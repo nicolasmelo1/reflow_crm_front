@@ -62,14 +62,7 @@ const Formula = (props) => {
         strings['pt-br']['formularyEditFieldFormulaInversionKeyword'],
         strings['pt-br']['formularyEditFieldFormulaIncludeKeyword']
     )
-
-    const translateFormula = (formula, translateBack=false) => {
-        if (translateBack) {
-            return lexer.lexerAndSubstitute(formula, translatedContext, lexer.contextFactory())
-        } else {
-            return lexer.lexerAndSubstitute(formula, lexer.contextFactory(), translatedContext)
-        }
-    }
+    
     /**
      * Tests the formula to see if it is valid or not, if the formula is not valid we can't save, othewise we save.
      */
@@ -152,7 +145,7 @@ const Formula = (props) => {
             textEditorRef.current, 
             translatedContext, 
             dispatch, 
-            {doc: translateFormula(props.field.formula_configuration)}
+            {doc: props.field.formula_configuration}
         )
     }
 
@@ -237,7 +230,7 @@ const Formula = (props) => {
         occurrences[formulaVariableIndex] = data.length > 0 ? data[0] : null
         changeFormulaVariables(occurrences)
         createEditor()
-        testFormula(translateFormula(props.field.formula_configuration, true))
+        testFormula(props.field.formula_configuration)
         props.onUpdateField(props.field)
     }
 
@@ -252,7 +245,7 @@ const Formula = (props) => {
     const dispatch = () => {
         return (transaction) => {
             if (documentLengthRef.current !== transaction.state.doc.length && transaction?.state?.doc) {
-                props.field.formula_configuration = translateFormula(transaction?.state?.doc.text.join('\n'), true)
+                props.field.formula_configuration = transaction?.state?.doc.text.join('\n')
                 const occurrences = getFormulaOccurences(props.field.formula_configuration)
                 changeFormulaVariables(occurrences)
                 testFormula(props.field.formula_configuration, true)
