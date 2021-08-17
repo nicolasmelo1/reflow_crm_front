@@ -201,7 +201,11 @@ class Onboarding extends React.Component {
     }
     // ------------------------------------------------------------------------------------------
     /////////////////////////////////////////////////////////////////////////////////////////////
-    // most of the logic here is just for showing a simple but nice animation when the user first opens the formulary.
+    /**
+     * most of the logic here is just for showing a simple but nice animation when the user first opens the formulary.
+     * 
+     * Also sends an event that the user started filling the onboarding.
+     */
     componentDidMount = () => {
         agent.http.ANALYTICS.trackUserStartedOnboarding(this.visitorId)
         this._ismounted = true
