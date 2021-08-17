@@ -134,22 +134,28 @@ class Socket {
      * try.
      */
     async reconnect() {
+        let ignoreTimeout = false
         if (this.socketHost !== '') {
             await this.getUrl()
-            this.registeredSocket = new WebSocket(this.socketHost)
-
-            setTimeout(() => {
-                if (this.registeredSocket.readyState !== 1) {
-                    if (process.env.NODE_ENV !== 'production') console.log('Could not connect to server, trying again...')
-                    this.registeredSocket.close()
-                    this.reconnect()
-                } else {
-                    if (process.env.NODE_ENV !== 'production') console.log('Reconnected.')
-                    this.onClose()
-                    this.onRecieve()
-                    this.appStateChanged()
-                }
-            }, 10000);
+            try {
+                this.registeredSocket = new WebSocket(this.socketHost)
+            } catch {
+                ignoreTimeout = true
+            }
+            if (ignoreTimeout === false) {
+                setTimeout(() => {
+                    if (this.registeredSocket.readyState !== 1) {
+                        if (process.env.NODE_ENV !== 'production') console.log('Could not connect to server, trying again...')
+                        this.registeredSocket.close()
+                        this.reconnect()
+                    } else {
+                        if (process.env.NODE_ENV !== 'production') console.log('Reconnected.')
+                        this.onClose()
+                        this.onRecieve()
+                        this.appStateChanged()
+                    }
+                }, 10000)
+            }
         }
     }
     // ------------------------------------------------------------------------------------------

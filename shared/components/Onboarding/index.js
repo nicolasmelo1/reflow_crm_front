@@ -2,6 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux';
 import actions from '../../redux/actions'
 import dynamicImport from '../../utils/dynamicImport'
+import generateUUID from '../../utils/generateUUID'
+import agent from '../../utils/agent'
 import { numberUnmasker } from '../../utils/numberMasker'
 import getReflowVisitorId from '../../utils/getReflowVisitorId'
 import { strings, paths, errors } from '../../utils/constants'
@@ -30,6 +32,10 @@ class Onboarding extends React.Component {
     constructor(props) {
         super(props)
         
+        this.visitorId = getReflowVisitorId()
+        if (['', null, undefined].includes(this.visitorId)) {
+            this.visitorId = generateUUID()
+        }
         this.formularySteps = ['set-email', 'set-password']
         this.errorMessages = {
             name: strings['pt-br']['onboardingNameAndLastNameError'],
@@ -157,7 +163,7 @@ class Onboarding extends React.Component {
             user_last_name: this.state.name.split(' ').slice(1).join(' '),
             user_email: this.state.email,
             user_password: this.state.password,
-            user_visitor_id: getReflowVisitorId()
+            user_visitor_id: this.visitorId
         }
 
         this.props.onCreateUserAndCompany(data).then(response => {
@@ -197,6 +203,7 @@ class Onboarding extends React.Component {
     /////////////////////////////////////////////////////////////////////////////////////////////
     // most of the logic here is just for showing a simple but nice animation when the user first opens the formulary.
     componentDidMount = () => {
+        agent.http.ANALYTICS.trackUserStartedOnboarding(this.visitorId)
         this._ismounted = true
         if (process.env['APP'] === 'web') {
             setTimeout(() => {

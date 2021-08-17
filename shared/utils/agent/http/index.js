@@ -14,6 +14,7 @@ import USERS from './users'
 import RICH_TEXT from './rich_text'
 import PDF_GENERATOR from './pdf_generator'
 import DRAFT from './draft'
+import ANALYTICS from './analytics'
 
 export default {
     CHANGE_PASSWORD,
@@ -31,5 +32,6 @@ export default {
     USERS,
     RICH_TEXT,
     PDF_GENERATOR,
-    DRAFT
+    DRAFT,
+    ANALYTICS
 }
