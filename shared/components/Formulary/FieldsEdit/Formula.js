@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { strings } from '../../../utils/constants'
 import { FormulariesEdit } from '../../../styles/Formulary'
 import Select from '../../Utils/Select'
 import delay from '../../../utils/delay'
+import dynamicImport from '../../../utils/dynamicImport'
 import { initializeEditor, lexer } from '../../../utils/flowLanguage'
 import generateUUID from '../../../utils/generateUUID'
 
 
-const makeDelay = delay(1000)
+const Spinner = dynamicImport('react-bootstrap', 'Spinner')
+
+const makeDelay = delay(5000)
 
 /**
  * This is the Formula component, this is used to handle formulas in reflow, formulas is actually our own
@@ -38,12 +42,20 @@ const makeDelay = delay(1000)
  */
 const Formula = (props) => {
     const [formulaInvalidError, setFormulaInvalidError] = useState(true)
+    const [isAutomaticEvaluation, _setIsAutomaticEvaluation] = useState(true)
     const [isFormulaInvalid, setIsFormulaInvalid] = useState(false)
+    const [isTestingFormula, setIsTestingFormula] = useState(false)
     const [result, setResult] = useState('')
     const documentLengthRef = React.useRef(0)
+    const isAutomaticEvaluationRef = React.useRef(isAutomaticEvaluation)
     const textEditorRef = React.useRef()
     const editorRef = React.useRef()
     const formularyFields = getFormularyFields()
+
+    const setIsAutomaticEvaluation = (data) => {
+        isAutomaticEvaluationRef.current = data
+        _setIsAutomaticEvaluation(data)
+    }
 
     const translatedContext = lexer.contextFactory(
         strings['pt-br']['formularyEditFieldFormulaDecimalPointCharacter'],
@@ -67,29 +79,42 @@ const Formula = (props) => {
      * Tests the formula to see if it is valid or not, if the formula is not valid we can't save, othewise we save.
      */
     const testFormula = (formula) => {
-        makeDelay(() => {
+        const testTheFormula = (formula) => {
             if (formula !== '') {
                 const data = {
                     formula: formula, 
                     variable_ids: props.field.field_formula_variables.map(formulaVariable => formulaVariable.variable_id)
                 }
+                setIsTestingFormula(true)
                 props.onTestFormularySettingsFormulaField(
                     data, 
                     props.formId
                 ).then(response => {
                     if (response && response.status !== 200) {
+                        setIsTestingFormula(false)
                         setResult('')
                         setFormulaInvalidError(response.data.error)
                         setIsFormulaInvalid(true)
                     } else {
                         if (response.data?.data?.result) {
+                            setIsTestingFormula(false)
                             setResult(response.data?.data?.result)
                         }
+                        setIsTestingFormula(false)
                         setIsFormulaInvalid(false)
                     }
                 })
+            } else {
+                setIsFormulaInvalid(false)
+                setResult('')
+                setIsTestingFormula(false)
             }
-        })
+        }
+        if (isAutomaticEvaluationRef.current) {
+            makeDelay(() => {testTheFormula(formula)})
+        } else {
+            testTheFormula(formula)
+        }
     }
 
     /**
@@ -230,7 +255,9 @@ const Formula = (props) => {
         occurrences[formulaVariableIndex] = data.length > 0 ? data[0] : null
         changeFormulaVariables(occurrences)
         createEditor()
-        testFormula(props.field.formula_configuration)
+        if (isAutomaticEvaluationRef.current) {
+            testFormula(props.field.formula_configuration)
+        }
         props.onUpdateField(props.field)
     }
 
@@ -248,16 +275,22 @@ const Formula = (props) => {
                 props.field.formula_configuration = transaction?.state?.doc.text.join('\n')
                 const occurrences = getFormulaOccurences(props.field.formula_configuration)
                 changeFormulaVariables(occurrences)
-                testFormula(props.field.formula_configuration, true)
+                if (isAutomaticEvaluationRef.current) {
+                    testFormula(props.field.formula_configuration, true)
+                    if (props.field.formula_configuration !== '') {
+                        setIsTestingFormula(true)
+                    }
+                }
                 props.onUpdateField(props.field)
             }
+            
             documentLengthRef.current = transaction.state.doc.length
             editorRef.current.update([transaction])
         } 
     }
     
     useEffect(() => {
-        if (!['', null, undefined].includes(props.field.formula_configuration)) {
+        if (!['', null, undefined].includes(props.field.formula_configuration) && isAutomaticEvaluation) {
             testFormula(props.field.formula_configuration)
         } else {
             setIsFormulaInvalid(false)
@@ -276,8 +309,22 @@ const Formula = (props) => {
             <div>
                 <FormulariesEdit.FieldFormFieldContainer>
                     <FormulariesEdit.FieldFormLabel>
-                        {strings['pt-br']['formularyEditFieldFormulaTypeEditorLabel']}
+                        {strings['pt-br']['formularyEditFieldFormulaTypeEditorLabel']} 
+                        {isAutomaticEvaluation === false ? (
+                            <button
+                            style={{border: 0, color: '#0dbf7e'}} 
+                            onClick={(e) => {isTestingFormula ? null : testFormula(props.field.formula_configuration)}}
+                            >
+                                {'Testar'}&nbsp;<FontAwesomeIcon icon="play"/>
+                            </button>
+                        ) : ''} 
                     </FormulariesEdit.FieldFormLabel>
+                    <div style={{color: '#00000050'}} >
+                        <small>
+                            <input type="checkbox" checked={isAutomaticEvaluation} onChange={(e) => {setIsAutomaticEvaluation(!isAutomaticEvaluation)}}/> {'Teste automático'}
+                        </small>
+                    </div>
+
                     {isFormulaInvalid ? (
                         <div>
                             <small style={{color: 'red'}}>
@@ -298,23 +345,29 @@ const Formula = (props) => {
                             </FormulariesEdit.SelectorContainer>
                         )
                     })}
-                    {isFormulaInvalid ? (
+                    {isTestingFormula ? (
+                        <Spinner animation="border" size="sm"/>
+                    ) : (
                         <div>
-                            <small style={{color: 'red'}}>
-                                {formulaInvalidError}
-                            </small>
+                            {isFormulaInvalid ? (
+                                <div>
+                                    <small style={{color: 'red', whiteSpace: 'pre-wrap'}}>
+                                        {formulaInvalidError}
+                                    </small>
+                                </div>
+                            ) : ''}
+                            {result !== '' ? (
+                                <div>
+                                    <small>
+                                        Resultado:&nbsp;
+                                    </small>
+                                    <small style={{color: 'green'}}>
+                                        {result}
+                                    </small>
+                                </div>
+                            ) : ''}
                         </div>
-                    ) : ''}
-                    {result !== '' ? (
-                        <div>
-                            <small>
-                                Resultado:&nbsp;
-                            </small>
-                            <small style={{color: 'green'}}>
-                                {result}
-                            </small>
-                        </div>
-                    ) : ''}
+                    )}
                 </FormulariesEdit.FieldFormFieldContainer>
             </div>
         )

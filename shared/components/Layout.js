@@ -16,6 +16,7 @@ import ContentContainer from '../styles/ContentContainer'
 import Body from '../styles/Body'
 import isAdmin from '../utils/isAdmin'
 import { 
+    faPlay,
     faInfoCircle,
     faTasks,
     faBorderAll,
@@ -65,6 +66,7 @@ import {
 const Router = dynamicImport('next/router')
 
 library.add(
+    faPlay,
     faPaperclip,
     faInfoCircle,
     faTasks,
