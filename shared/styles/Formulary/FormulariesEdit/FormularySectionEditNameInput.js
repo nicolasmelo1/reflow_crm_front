@@ -5,7 +5,7 @@ import { Text } from 'react-native'
 export default process.env['APP'] === 'web' ?
 styled.input`
     border: 0;
-    border-bottom: 2px solid ${props => props.isConditional ? '#0dbf7e': '#17242D'};
+    border-bottom: 2px solid ${props => props.errors ? 'red' : props.isConditional ? '#0dbf7e': '#17242D'};
     color: #fff;
     width: 100%;
     font-weight: bold;
@@ -14,7 +14,9 @@ styled.input`
     padding: 10px 10px;
 
     &:focus {
-        border-bottom: 2px solid ${props => props.isConditional ? '#f2f2f2': '#0dbf7e'};
+        border-bottom: 2px solid ${props => props.errors ? 'red' : props.isConditional ? 
+            '#f2f2f2': '#0dbf7e'
+        };
 
         outline: none;
     }

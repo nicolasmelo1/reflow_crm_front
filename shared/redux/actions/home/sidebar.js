@@ -33,7 +33,7 @@ const onChangeGroupState = (groupsData) => {
 
 const onUpdateGroup = (body) => {
     return async (_) => {
-        agent.http.SIDEBAR.updateGroup(body, body.id)
+        return agent.http.SIDEBAR.updateGroup(body, body.id)
     }
 } 
 
@@ -48,29 +48,15 @@ const onRemoveGroup = (groupId) => {
  * FORMS *
  *       *
  *********/
-const onCreateFormulary = (body, groupIndex, formIndex) => {
-    return (dispatch, getState) => {
-        let stateData = getState().home.sidebar.update
-        if (body.id !== -1) {
-            agent.http.SIDEBAR.createForm(body).then(response=> {
-                if(response.status === 200) {
-                    stateData[groupIndex].form_group[formIndex] = response.data.data
-                } else {
-                    stateData[groupIndex].form_group[formIndex].id = null
-                }
-                dispatch({ type: UPDATE_GROUPS, payload: stateData })
-            })
-        } 
-        if (body.id === null) {
-            stateData[groupIndex].form_group[formIndex].id = -1
-            dispatch({ type: UPDATE_GROUPS, payload: stateData })
-        }
+const onCreateFormulary = (body) => {
+    return (_) => {
+        return agent.http.SIDEBAR.createForm(body)
     }
 }
 
 const onUpdateFormulary = (body, formId) => {
     return (_) => {
-        agent.http.SIDEBAR.updateForm(body, formId)
+        return agent.http.SIDEBAR.updateForm(body, formId)
     }
 }
 

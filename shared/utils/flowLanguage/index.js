@@ -149,20 +149,21 @@ const flowLanguage = (context) => {
         ]
     })
 
-    const indentOnInput = `/^\s*(${context.blockKeywords.do}|${context.blockKeywords.end})$/`
+    const indentOnInput = `/^\s*([\\}\\]\\)]|${context.blockKeywords.end})$/`
 
     const exampleLanguage = LezerLanguage.define({
         parser: parserWithMetadata,
         languageData: {
+            closeBrackets: {brackets: ["(", "[", "{", "`", '"']},
             indentOnInput: new RegExp(indentOnInput),
         }
       })
 
     const exampleCompletion = exampleLanguage.data.of({
         autocomplete: completeFromList([
-            {label: "False", type: "constant"},
-            {label: "True", type: "constant"},
-            {label: "None", type: "constant"},
+            {label: context.booleanKeywords.true, type: "constant"},
+            {label: context.booleanKeywords.false, type: "constant"},
+            {label: context.nullKeyword, type: "constant"},
             {label: "do end", type: "keyword"},
             {label: "if condition do \n    code_here\nend", type: "function"},
             {label: "function functionName() do \n    code_here\nend", type: "function"},

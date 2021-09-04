@@ -1,5 +1,4 @@
 import React, { useState, useEffect, memo } from 'react'
-import { useSelector } from 'react-redux'
 import { View } from 'react-native'
 import FormularyFieldEdit from './FieldsEdit'
 import FormularySectionEditForm from './FormularySectionEditForm'
@@ -68,6 +67,7 @@ const makeDelay = delay(1000)
 const FormularySectionEdit = (props) => {
     const isMountedRef = React.useRef(false)
     const isMovingSectionRef = React.useRef(false)
+    const [errors, setErrors] = useState({})
     const [openedSection, setOpenedSection] = useState(false)
     const [isConditional, setIsConditional] = useState(false)
     const [showAlert, setShowAlert] = useState(false)
@@ -81,6 +81,7 @@ const FormularySectionEdit = (props) => {
     const onChangeSectionName = (sectionLabelName) => {
         props.section.label_name = sectionLabelName
         onUpdateSection(props.section)
+        setErrors({})
     }
     // ------------------------------------------------------------------------------------------
     /**
@@ -150,19 +151,34 @@ const FormularySectionEdit = (props) => {
      * Submit to the backend in real time the changes in the section, if the section is created adds the id to the section,
      * if not just update the section with the data that you inserted here. It's important to understand that this must respect 
      * a delay of certain seconds.
+     * 
+     * @param {Object} sectionData - check `onAddNewSection` function in the FormularySectionsEdit for reference of the data recieved
      */
     const onSubmitSectionChanges = (sectionData) => {
+        const handleErrors = (response) => {
+            if (response.data.status === 'error' && response.data.error !== null && response.data.error.reason && response.data.error.detail) {
+                if (response.data.error.reason.includes('must_be_unique') && response.data.error.detail.includes('label_name')) {
+                    const errors = {}
+                    errors[sectionData.uuid] = 'must_be_unique'
+                    setErrors(errors)
+                }
+            }
+        }
+
         makeDelay(() => {
             // makes a copy of the section
             const bodyToUpload = deepCopy(sectionData)
             if (![null, -1].includes(bodyToUpload.id)) {
-                props.onUpdateFormularySettingsSection(bodyToUpload, props.formId, bodyToUpload.id)
+                props.onUpdateFormularySettingsSection(bodyToUpload, props.formId, bodyToUpload.id).then(response => {
+                    handleErrors(response)
+                })
             } else {
                 props.onCreateFormularySettingsSection(bodyToUpload, props.formId).then(response => {
                     if (response && response.status === 200 && response.data.data !== null && isMountedRef.current) {
                         props.section.id = response.data.data.id
                         props.onUpdateFormularySettingsState()
                     }
+                    handleErrors(response)
                 })
             }
         })
@@ -350,7 +366,7 @@ const FormularySectionEdit = (props) => {
                             {props.section.show_label_name ? null : (
                                 <div style={{ padding: '0 10px'}}>
                                     <small style={{ margin: 0, color: '#ffffff90'}}>
-                                        {'O titulo dessa seção está oculto'}
+                                        {strings['pt-br']['formularyEditSectionHiddenTitleLabel']}
                                     </small>
                                 </div>
                             )}
@@ -360,7 +376,13 @@ const FormularySectionEdit = (props) => {
                             placeholder={strings['pt-br']['formularyEditSectionPlaceholderLabel']} 
                             onChange={e=> {onChangeSectionName(e.target.value)}} 
                             isConditional={isConditional}
+                            errors={errors[props.section.uuid] && errors[props.section.uuid] === 'must_be_unique'}
                             />
+                            {errors[props.section.uuid] && errors[props.section.uuid] === 'must_be_unique' ? (
+                                <small style={{color: 'red', padding: '0 10px'}}>
+                                    {strings['pt-br']['formularyEditSectionMustBeUniqueErrorLabel']}
+                                </small>
+                            ): ''}
                         </React.Fragment>
                     ) : (
                         <FormulariesEdit.Section.DisabledLabel 

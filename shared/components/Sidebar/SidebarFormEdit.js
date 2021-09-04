@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { strings } from '../../utils/constants'
+import delay from '../../utils/delay'
 import Alert from '../Utils/Alert'
 import { 
     SidebarCardBody, 
@@ -12,9 +13,14 @@ import {
 } from '../../styles/Sidebar'
 
 
+const makeDelay = delay(1000)
+
+
 const SidebarFormEdit = (props) => {
+    const [errors, setErrors] = useState({})
     const [formularyIndexToRemove, setFormularyIndexToRemove] = useState(null)
     const [showAlert, setShowAlert] = useState(false)
+    const isMounted = React.useRef()
 
     const onAddNewForm = () => {
         const groups = JSON.parse(JSON.stringify(props.groups))
@@ -29,20 +35,56 @@ const SidebarFormEdit = (props) => {
         props.onChangeGroupState(groups)
     }
 
+    /**
+     * This is used to update in real time what the user types preventing him to save. For the user everything works in real time,
+     * behind the curtains we will be waiting for him to finish typing before we update.
+     * 
+     * @param {BigInteger} formIndex - The order of the formulary
+     * @param {Object} newFormData -
+     */
     const onChangeForm = (formIndex, newFormData) => {
-        const groups = JSON.parse(JSON.stringify(props.groups))
-        groups[props.groupIndex].form_group[formIndex] = newFormData
-        if (![null, -1].includes(newFormData.id)) {
-            props.onUpdateFormulary(newFormData, newFormData.id)
-            props.onChangeGroupState(groups)
-        } else {
-            props.onCreateFormulary(newFormData, props.groupIndex, formIndex)
+        const handleErrors = (response) => {
+            if (response.data.status === 'error' && response.data.error !== null && response.data.error.reason && response.data.error.detail) {
+                if (response.data.error.reason.includes('must_be_unique') && response.data.error.detail.includes('label_name')) {
+                    const errors = {}
+                    errors[formIndex] = 'must_be_unique'
+                    setErrors(errors)
+                }
+            }
         }
+
+        const groups = JSON.parse(JSON.stringify(props.groups))
+
+        makeDelay(() => {
+            if (![null, -1].includes(newFormData.id)) {
+                props.onUpdateFormulary(newFormData, newFormData.id).then(response => {
+                    handleErrors(response)
+                })
+            } else if (newFormData.id !== -1) {
+                newFormData.id = -1
+                groups[props.groupIndex].form_group[formIndex] = newFormData
+                props.onChangeGroupState(groups)
+                newFormData.id = null
+                props.onCreateFormulary(newFormData).then(response => {
+                    if (response.status === 200 && response.data.data !== null && isMounted.current) {
+                        newFormData.id = response.data.data.id
+                    } else {
+                        newFormData.id = null
+                    }
+                    handleErrors(response)
+                    groups[props.groupIndex].form_group[formIndex] = newFormData
+                    props.onChangeGroupState(groups)
+                })
+            }
+        })
+        groups[props.groupIndex].form_group[formIndex] = newFormData
+        props.onChangeGroupState(groups)
     }
 
     const onChangeFormName = (index, value) => {
         props.groups[props.groupIndex].form_group[index].label_name = value
         onChangeForm(index, props.groups[props.groupIndex].form_group[index])
+        setErrors({})
     }
 
     const onDisableForm = (index) => {
@@ -68,6 +110,7 @@ const SidebarFormEdit = (props) => {
         e.dataTransfer.setDragImage(formContainer, elementRect.width - elementRect.left - (elementRect.right - elementRect.width), 20)
         e.dataTransfer.setData('formToMoveIndex', index.toString())
         e.dataTransfer.setData('formToMoveGroupIndex', props.groupIndex.toString())
+        setErrors({})
     }
 
     const onDrag = (e) => {
@@ -98,12 +141,17 @@ const SidebarFormEdit = (props) => {
         newArrayWithoutMoved[props.groupIndex].form_group.splice(index, 0, movedElement)
         const groups = props.reorder(newArrayWithoutMoved)
         const newFormData = groups[props.groupIndex].form_group[index]
-        if (newFormData.id) {
-            props.onUpdateFormulary(newFormData, newFormData.id)
-        }
+
+        onChangeForm(index, newFormData)
         props.onChangeGroupState(groups)        
     }
 
+    useEffect(() => {
+        isMounted.current = true
+        return () => {
+            isMounted.current = false
+        }
+    }, [])
 
     return (
         <SidebarCardBody>
@@ -138,10 +186,24 @@ const SidebarFormEdit = (props) => {
                                 <SidebarIcons size="sm" type="form" icon="arrows-alt" />
                             </div>
                         </SidebarIconsContainer>
-                        {(form.enabled) ?
-                            (<SidebarFormInput value={form.label_name} onChange={e => { onChangeFormName(index,  e.target.value) }} />) :
-                            (<SidebarDisabledFormLabel eventKey="0">{strings['pt-br']['disabledFormLabel']}</SidebarDisabledFormLabel>)
-                        }
+                        {form.enabled ? (
+                                <div style={{ display: 'flex', flexDirection: 'column'}}>
+                                    <SidebarFormInput 
+                                    value={form.label_name} 
+                                    onChange={e => { onChangeFormName(index,  e.target.value) }} 
+                                    errors={errors[index] && errors[index] === 'must_be_unique'}
+                                    />
+                                    {errors[index] && errors[index] === 'must_be_unique' ? (
+                                        <small style={{color: 'red'}}>
+                                            {strings['pt-br']['mustBeUniqueFormErrorLabel']}
+                                        </small>
+                                    ): ''}
+                                </div>
+                        ) : (
+                            <SidebarDisabledFormLabel eventKey="0">
+                                {strings['pt-br']['disabledFormLabel']}
+                            </SidebarDisabledFormLabel>
+                        )}
                     </SidebarFormItem>
                 )
             })}

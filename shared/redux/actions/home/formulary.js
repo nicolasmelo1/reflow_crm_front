@@ -87,9 +87,7 @@ const onCreateFormularySettingsSection = (body, formId) => {
 
 const onUpdateFormularySettingsSection = (body, formId, sectionId) => {
     return (_) => {
-        makeDelay(() => {
-            agent.http.FORMULARY.updateFormularySettingsSection(body, formId, sectionId)
-        })
+        return agent.http.FORMULARY.updateFormularySettingsSection(body, formId, sectionId)
     }
 }
 

@@ -18,7 +18,7 @@ const useRouter = dynamicImport('next/router', 'useRouter')
 
 const SidebarGroupEdit = (props) => {
     const isMoving = React.useRef(false)
-
+    const [errors, setErrors] = useState({})
     const [formularyIndexToRemove, setFormularyIndexToRemove] = useState(null)
     const [showAlert, setShowAlert] = useState(false)
     const [isDragging,  setIsDragging] = useState(false)
@@ -44,12 +44,26 @@ const SidebarGroupEdit = (props) => {
         })
     }
 
+    const onSubmitChanges = (data) => {
+        props.onUpdateGroup(data).then(response => {
+            if (response.data.status === 'error' && response.data.error && response.data.error.reason && response.data.error.detail) {
+                if (response.data.error.reason.includes('must_be_unique') && response.data.error.detail.includes('label_name')) {
+                    const errors = {}
+                    errors[data.id] = 'must_be_unique'
+                    setErrors(errors)
+                }
+            } 
+        })
+
+    }
+
     const onChangeGroupName = (index, value) => {
         props.groups[index].name = value
         const data = JSON.parse(JSON.stringify(props.groups[index]))
         const groups = JSON.parse(JSON.stringify(props.groups))
-        props.onUpdateGroup(data)
+        onSubmitChanges(data)
         props.onChangeGroupState(groups)
+        setErrors({})
     }
 
     const onRemoveGroup = (index) => {
@@ -65,7 +79,7 @@ const SidebarGroupEdit = (props) => {
         props.groups[index].enabled = !props.groups[index].enabled
         const data = JSON.parse(JSON.stringify(props.groups[index]))
         const groups = JSON.parse(JSON.stringify(props.groups))
-        props.onUpdateGroup(data)
+        onSubmitChanges(data)
         props.onChangeGroupState(groups)
     }
 
@@ -116,7 +130,7 @@ const SidebarGroupEdit = (props) => {
         newArrayWithoutMoved.splice(targetGroupIndex, 0, props.groups[movedGroupIndex])
         const groups = reorder(newArrayWithoutMoved)
         const movedGroup = groups[targetGroupIndex]
-        props.onUpdateGroup(movedGroup)
+        onSubmitChanges(movedGroup)
         props.onChangeGroupState(groups)
     }
 
@@ -152,9 +166,23 @@ const SidebarGroupEdit = (props) => {
                                         <SidebarIcons icon="arrows-alt" />
                                     </div>
                                 </SidebarIconsContainer> 
-                                { (group.enabled) ? 
-                                    (<SidebarGroupInput value={group.name} onChange={e=>{onChangeGroupName(index, e.target.value)}}/>) :
-                                    (<SidebarDisabledGroupLabel eventKey="0">{strings['pt-br']['disabledGroupLabel']}</SidebarDisabledGroupLabel>)
+                                {group.enabled ? (
+                                    <div>
+                                        <SidebarGroupInput 
+                                        value={group.name} 
+                                        onChange={e=>{onChangeGroupName(index, e.target.value)}}
+                                        />
+                                        {errors[group.id] && errors[group.id] === 'must_be_unique' ? (
+                                            <small style={{color: 'red'}}>
+                                                {strings['pt-br']['mustBeUniqueFormErrorLabel']}
+                                            </small>
+                                        ): ''}
+                                    </div>
+                                ) : (
+                                    <SidebarDisabledGroupLabel eventKey="0">
+                                        {strings['pt-br']['disabledGroupLabel']}
+                                    </SidebarDisabledGroupLabel>
+                                )
                                 }
                             </div>          
                         </SidebarCardHeader>
