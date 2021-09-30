@@ -9,7 +9,7 @@ styled.div`
     top: 0;
     left: 0;
     height: var(--app-height);
-    width: 100vw
+    width: var(--app-width);
 `
 :
 styled(SafeAreaView)`

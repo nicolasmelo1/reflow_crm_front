@@ -85,6 +85,8 @@ const ImageBlock = (props) => {
     }
     // ------------------------------------------------------------------------------------------
     /**
+     * MOBILE ONLY
+     * 
      * Ask permission to access the camera roll
      * You can see it here: https://docs.expo.io/versions/latest/sdk/imagepicker/
      */
@@ -97,6 +99,13 @@ const ImageBlock = (props) => {
         }
     }
     // ------------------------------------------------------------------------------------------
+    /**
+     * MOBILE ONLY 
+     * 
+     * Picks an image on the user's phone.
+     * 
+     * @returns {(String | null)} - Returns the uri string or null
+     */
     const pickImageOnMobile = async () => {
         try {
             const result = await ImagePicker.launchImageLibraryAsync({

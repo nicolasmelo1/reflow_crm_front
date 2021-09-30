@@ -15,6 +15,8 @@ import RICH_TEXT from './rich_text'
 import PDF_GENERATOR from './pdf_generator'
 import DRAFT from './draft'
 import ANALYTICS from './analytics'
+import AUTOMATION from './automation'
+
 
 export default {
     CHANGE_PASSWORD,
@@ -33,5 +35,6 @@ export default {
     RICH_TEXT,
     PDF_GENERATOR,
     DRAFT,
-    ANALYTICS
+    ANALYTICS,
+    AUTOMATION
 }

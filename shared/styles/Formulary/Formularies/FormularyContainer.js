@@ -7,7 +7,7 @@ styled.div`
     ${props => props.display === 'bottom' ? 
     `
         position: fixed;
-        width: 100vw;
+        width: var(--app-width);
         left:0; 
         bottom: 0; 
         z-index:5;

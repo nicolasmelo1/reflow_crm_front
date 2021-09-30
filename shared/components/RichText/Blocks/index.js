@@ -130,6 +130,19 @@ const Block = (props) => {
         }
     }
     // ------------------------------------------------------------------------------------------
+    /**
+     * This is calling props.getContextBlocks right?
+     * 
+     * But since a Block can be inside another block, the getContextBlocks on this case will call the parent
+     * block definition of 'getContextBlocks'
+     * 
+     * For example: 
+     * If you are writing a text in the page, the context blocks will call the RichText implementation
+     * of `getContextBlocks` but if this text block is inside a table, the Table component should implement
+     * it's own `getContextBlocks` function and pass it to all of it's children.
+     * 
+     * @returns {Object} - The object of the context where the children is defined.
+     */
     const getContextBlocks = () => {
         return props.getContextBlocks() 
     }

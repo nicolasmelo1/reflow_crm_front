@@ -87,7 +87,15 @@ styled(View)``
 // ------------------------------------------------------------------------------------------
 export const NavbarContainer = process.env['APP'] === 'web' ?
 styled.nav`
-    padding: 13px 10px;
+    @media(max-width: 419px) {
+        padding: 10px 10px 5px 10px;
+    }
+
+    @media(min-width: 420px) {
+        padding: 13px 10px;
+    }
+
+    width: var(--app-width);
     position: relative;
     display: flex;
     justify-content: space-between;

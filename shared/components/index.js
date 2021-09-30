@@ -1,4 +1,5 @@
 import Formulary from './Formulary'
+import Automation from './Automation'
 import FormularyPublic from './Formulary/FormularyPublic'
 import Layout from './Layout'
 import Notify from './Notify'
@@ -13,6 +14,7 @@ import Company from './Company'
 import Templates from './Templates'
 import PDFGenerator from './PDFGenerator'
 
+export { Automation }
 export { PDFGenerator }
 export { Templates }
 export { Company }

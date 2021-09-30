@@ -1,9 +1,9 @@
 import styled from 'styled-components'
 import { View } from 'react-native'
 
-const getPadding = (props) => {
+const getPaddingMobile = (props) => {
     if (props.showSideBar) {
-        return '30px 20px 0 20px'
+        return '35px 20px 0 20px'
     } else if (props.isNotLogged) {
         return '0'
     } else {
@@ -11,12 +11,22 @@ const getPadding = (props) => {
     }
 }
 
+const getPaddingDesktop = (props) => {
+    if (props.showSideBar) {
+        return '0px 20px 0 20px'
+    } else if (props.isNotLogged) {
+        return '0'
+    } else {
+        return '0px 20px 0 20px'
+    }
+}
+
 export default process.env['APP'] === 'web' ? 
 styled.div`
-    padding: ${props => getPadding(props)};
     height: ${props => props.hideNavBar ? 'var(--app-height)' : 'calc(var(--app-height) - var(--app-navbar-height))'};
     
     @media(min-width: 420px) {
+        padding: ${props => getPaddingDesktop(props)};
         position: absolute;
         ${props => props.showSideBar ? `
             width: calc(var(--app-width) - 60px);
@@ -24,9 +34,9 @@ styled.div`
         `: `
             width: var(--app-width);
         `}
-        transition: width 0.3s ease-in-out, left 0.3s ease-in-out;
     }
     @media(max-width: 420px) {
+        padding: ${props => getPaddingMobile(props)};
         width: var(--app-width);
     }
 

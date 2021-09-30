@@ -5,6 +5,7 @@ import formulary from './formulary'
 import kanban from './kanban'
 import dashboard from './dashboard'
 import filter from './filter'
+import automation from './automation'
 
 export default combineReducers({
     filter,
@@ -12,5 +13,6 @@ export default combineReducers({
     sidebar,
     formulary,
     list,
-    kanban
+    kanban,
+    automation
 })

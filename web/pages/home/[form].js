@@ -4,7 +4,7 @@ import { Row, Col } from 'react-bootstrap'
 import Router, { withRouter } from 'next/router'
 import actions from '@shared/redux/actions'
 import Header from '../../components/Header'
-import { Layout, Formulary, Listing, Kanban, Error404, Dashboard } from '@shared/components'
+import { Layout, Formulary, Listing, Kanban, Error404, Dashboard, Automation } from '@shared/components'
 import { DataTypeHeaderAnchor, DataTypeHeaderContainer } from '@shared/styles/Data'
 import { strings, types, paths } from '@shared/utils/constants';
 
@@ -13,7 +13,6 @@ import { strings, types, paths } from '@shared/utils/constants';
  * 
  */
 class Data extends React.Component {
-
     constructor(props) {
         super(props)
 
@@ -21,6 +20,7 @@ class Data extends React.Component {
         // what it metters for us is if it has changed it's value. If the value has changed it means the formulary
         // has been updated, we use this to get new data on listing, kanban or whataver visualization the user is in.
         this.state = {
+            isInAutomation: false,
             fullPageFormulary: false, 
             formularyId: null,
             formularyDefaultData: [],
@@ -75,6 +75,15 @@ class Data extends React.Component {
         })
     }
 
+    setIsInAutomation = () => {
+        this.setState(state => {
+            return {
+                ...state,
+                isInAutomation: !this.state.isInAutomation
+            }
+        })
+    }
+
     openFormularyId = (value) => {
         this.setFormularyId(value)
         this.props.onOpenFormulary(true)
@@ -97,7 +106,7 @@ class Data extends React.Component {
         return  this.props.types && this.props.types.defaults ? this.props.types.defaults.data_type.filter(dataType => dataType.id === dataTypeId) : 'listing'
     }
 
-
+    
     setVisualization = (dataTypeId) => {
         this.props.user.data_type = dataTypeId
         this.props.onUpdateUser({...this.props.user})
@@ -159,14 +168,47 @@ class Data extends React.Component {
         const formNames =  this.props.sidebar ? [].concat.apply([],this.props.sidebar.map(group => group.form_group.map(form => ({ name: form.form_name, label: form.label_name })))) : []
         const currentForm = formNames.filter(form=> form.name === this.props.router.query.form)
         const title = (currentForm.length > 0) ? strings['pt-br']['managementPageTitle'].replace('{}', currentForm[0].label) : 'Não conseguimos encontrar a página / Reflow'
+        const isToShowSidebar = this.state.isInAutomation ? false : true
         return (
-            <Layout title={title} showSideBar={true} header={<Header title={title}/>}>
+            <Layout title={title} showSideBar={isToShowSidebar} header={<Header title={title}/>}>
                 {!formNames.map(form=> form.name).includes(this.props.router.query.form) ? (
                     <Error404/>
                 ) : (
                     <div>
-                        <Row>
-                            <Col>
+                        <div style={{
+                            display: 'flex',
+                            width: '100%',
+                            justifyContent: 'flex-end'
+                        }}>
+                            <button
+                            onClick={(e) => this.setIsInAutomation()}
+                            style={{
+                                border: '0',
+                                color: '#17242D',
+                                fontWeight: 'bold',
+                                borderRadius: '20px',
+                                backgroundColor: 'transparent'
+
+                            }}>
+                                {'Painéis'}
+                            </button>
+                            <button
+                            onClick={(e) => this.setIsInAutomation()}
+                            style={{
+                                border: '0',
+                                color: this.state.isInAutomation ? '#0dbf7e' : '#17242D',
+                                fontWeight: 'bold',
+                                borderRadius: '20px',
+                                backgroundColor: 'transparent'
+
+                            }}>
+                                {'Automações'}
+                            </button>
+                        </div>
+                        {this.state.isInAutomation ? (
+                            <Automation/>
+                        ) : (
+                            <React.Fragment>
                                 <DataTypeHeaderContainer>
                                     {this.props.types && this.props.types.defaults && this.props.types.defaults.data_type ? this.props.types.defaults.data_type.map(dataType => (
                                         <DataTypeHeaderAnchor 
@@ -178,20 +220,20 @@ class Data extends React.Component {
                                         </DataTypeHeaderAnchor> 
                                     )) : ''}
                                 </DataTypeHeaderContainer>
-                            </Col>
-                        </Row>
-                        <Formulary 
-                        display='bottom'
-                        type='full'
-                        formName={this.props.router.query.form} 
-                        formularyId={this.state.formularyId} 
-                        setFormularyId={this.setFormularyId} 
-                        setFormularySettingsHasBeenUpdated={this.setFormularySettingsHasBeenUpdated}
-                        setFormularyDefaultData={this.setFormularyDefaultData}
-                        formularyDefaultData={this.state.formularyDefaultData}
-                        onOpenOrCloseFormulary={this.props.onOpenFormulary}
-                        />
-                        {this.renderVisualization()}
+                                <Formulary 
+                                display='bottom'
+                                type='full'
+                                formName={this.props.router.query.form} 
+                                formularyId={this.state.formularyId} 
+                                setFormularyId={this.setFormularyId} 
+                                setFormularySettingsHasBeenUpdated={this.setFormularySettingsHasBeenUpdated}
+                                setFormularyDefaultData={this.setFormularyDefaultData}
+                                formularyDefaultData={this.state.formularyDefaultData}
+                                onOpenOrCloseFormulary={this.props.onOpenFormulary}
+                                />
+                                {this.renderVisualization()}
+                            </React.Fragment>
+                        )}
                     </div>
                 )}
             </Layout>

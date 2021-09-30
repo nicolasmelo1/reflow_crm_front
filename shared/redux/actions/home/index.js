@@ -4,6 +4,7 @@ import kanban from './kanban'
 import formulary from './formulary'
 import dashboard from './dashboard'
 import filter from './filter'
+import automation from './automation'
 
 export default {
     ...filter,
@@ -11,5 +12,6 @@ export default {
     ...sidebar,
     ...formulary,
     ...list,
-    ...kanban
+    ...kanban,
+    ...automation
 }

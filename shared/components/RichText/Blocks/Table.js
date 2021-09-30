@@ -20,8 +20,8 @@ import {
  * and is a specific way of organizing other blocks. This means that to use this block we actually need other 
  * children blocks. In the specific case of the table every cell of the table is obligatory an empty text block.
  * 
- * This means that on every cell of the table we have just a normal text block and all of his power. If you see slate
- * or even Quill in Clickup, none of them offers this much flexibility to their tables.
+ * This means that on every cell of the table we have just a normal text block and all of his power. If you see Slate.js
+ * or even Quill.js which is used in Clickup, none of them offers this much flexibility to their tables.
  * 
  * The number of rows and the number of columns are calculated by counting the number of elements of 
  * `props.block.table_option.text_table_option_row_dimensions` and `props.block.table_option.text_table_option_column_dimensions`
@@ -126,7 +126,7 @@ const Table = (props) => {
     /**
      * Every cell of the table is initialy a normal Text block. This way we do not need to redo any funcionality 
      * for the table to be able to write, handle arrow navigation and add images. So when adding a new table, when adding 
-     * a new row or column we will always use this function.
+     * a new row or column we will always use this function to create an empty text block in each new cell.
      * 
      * @param {BigInteger} order - The order of the block.
      * 
@@ -155,9 +155,21 @@ const Table = (props) => {
      * 
      * Suppose we have a block with 2 columns and 2 rows and want to find the row of blockIndex = 2
      * 
+     * |-----|-----|
+     * |  0  |  1  |  // Row 0
+     * |-----|-----|
+     * |  2  |  3  |  // Row 1
+     * |-----|-----|
+     * 
      * 2/2 = 1 -> Math.floor(1) -> 1
      * 
      * Now 3 columns and 2 rows 
+     * 
+     * |-----|-----|-----|
+     * |  0  |  1  |  2  |  // Row 0
+     * |-----|-----|-----|
+     * |  3  |  4  |  5  |  // Row 1
+     * |-----|-----|-----|
      * 
      * 2/3 = 0,6666 -> Math.floor(0,6666) -> 0
      * 
