@@ -1,6 +1,8 @@
 import React from 'react'
-import { TouchableOpacity, View, Text } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity } from 'react-native'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import styled from 'styled-components'
+
 
 export const AutomationCreationInputFormularyContainer = process.env['APP'] === 'web' ? 
 styled.div`
@@ -57,8 +59,99 @@ styled(Text)``
 
 export const AutomationCreationInputFormularyFormContainer = process.env['APP'] === 'web' ? 
 styled.div`
-    padding-top: 30px;
     width: 50%
 `
 :
+styled(View)``
+
+export const AutomationCreationInputFormularyMultiSectionAddButton = process.env['APP'] === 'web' ? 
+styled.button`
+    border: 0;
+    background-color: #0dbf7e;
+    border-radius: 5px;
+    padding: 5px 0;
+    width: 100%;
+    margin-bottom: 10px;
+    color: #17242D;
+
+    &:hover {
+        background-color: #17242D;
+        color: #0dbf7e;
+    }
+`
+:
+styled(TouchableOpacity)``
+
+
+export const AutomationCreationInputFormularyMultiSectionContainer = process.env['APP'] === 'web' ? 
+styled.div`
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    margin-left: -10px;
+    margin-right: -10px;
+    margin-bottom: 10px;
+    padding: 10px;
+`
+:
+styled(View)``
+
+export const AutomationCreationInputFormularyMultiSectionHeader = process.env['APP'] === 'web' ? 
+styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+`
+:
+styled(View)``
+
+export const AutomationCreationInputFormularyMultiSectionTitle = process.env['APP'] === 'web' ? 
+styled.h2`
+    margin-top: 30px;
+    text-align: center;
+    font-weight: normal;
+    letter-spacing: 0.5px;
+    text-shadow: -1px -1px 0 #17242D, 1px -1px 0 #17242D, -1px 1px 0 #17242D, 1px 1px 0 #17242D;
+    border-bottom: 1px solid #f2f2f2;
+`
+:
 styled(Text)``
+
+export const AutomationCreationInputFormularyMultiSectionHeaderDeleteButton = process.env['APP'] === 'web' ? 
+styled.button`
+    background-color: transparent;
+    border: 0;
+    border-radius: 5px;
+
+    &:hover {
+        background-color: #fff
+    }
+`
+:
+styled(TouchableOpacity)``
+
+export const AutomationCreationInputFormularyMultiSectionHeaderDeleteButtonIcon = styled(FontAwesomeIcon)`
+    color: red;
+`
+
+export const AutomationCreationInputFormularyFieldLabel = process.env['APP'] === 'web' ? 
+styled.p`
+    margin-bottom: 5px;
+    font-weight: bold
+`
+:
+styled(Text)``
+
+export const AutomationCreationInputFormularyFieldTextInput = process.env['APP'] === 'web' ? 
+styled.input`
+    width: 100%;
+    border: 2px solid #bfbfbf;
+    border-radius: 5px;
+    line-height: 1.5;
+    font-size: 1rem;
+    padding: 8px;
+    height: 41px;
+`
+:
+styled(TextInput)``
+
+

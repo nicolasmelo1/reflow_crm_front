@@ -38,7 +38,8 @@ const Select = (props) => {
             <div
             style={{
                 border: '2px solid #bfbfbf',
-                borderRadius: '5px'
+                borderRadius: '5px',
+                height: '41px'
             }}
             >
                 <SelectUtils

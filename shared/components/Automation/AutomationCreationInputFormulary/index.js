@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
 import axios from 'axios'
 import generateUUID from '../../../utils/generateUUID'
-import { Select } from '../../Utils'
 import Field from './Fields'
 import Styled from '../styles'
 
@@ -195,7 +194,14 @@ const AutomationCreationInputFormulary = (props) => {
                 inputFormularyData.formulary_record_sections.push(sectionData)
             }
         }
-        console.log(inputFormularyData)
+        setInputFormularyData({...inputFormularyData})
+    }
+
+    const onRemoveMultiSection = (sectionRecordUUID) => {
+        const indexOfSectionRecord = inputFormularyData.formulary_record_sections.findIndex(sectionRecord => sectionRecord.uuid === sectionRecordUUID)
+        if (indexOfSectionRecord !== -1) {
+            inputFormularyData.formulary_record_sections.splice(indexOfSectionRecord, 1)
+        }
         setInputFormularyData({...inputFormularyData})
     }
 
@@ -245,9 +251,9 @@ const AutomationCreationInputFormulary = (props) => {
                                 <div
                                 key={formularySection.id}
                                 >
-                                    <h2>
+                                    <Styled.AutomationCreationInputFormularyMultiSectionTitle>
                                         {formularySection.name}
-                                    </h2>
+                                    </Styled.AutomationCreationInputFormularyMultiSectionTitle>
                                     {formularySection.section_fields.map(sectionField => (
                                         <div key={sectionField.id}>
                                             <Field
@@ -264,16 +270,27 @@ const AutomationCreationInputFormulary = (props) => {
                         } else {
                             return (
                                 <div key={formularySection.id}>
-                                    <h2>
+                                    <Styled.AutomationCreationInputFormularyMultiSectionTitle>
                                         {formularySection.name}
-                                    </h2>
-                                    <button 
+                                    </Styled.AutomationCreationInputFormularyMultiSectionTitle>
+                                    <Styled.AutomationCreationInputFormularyMultiSectionAddButton 
                                     onClick={(e) => createNewMultiSectionRecord(formularySection.id)}
                                     >
                                         {'Adicionar'}
-                                    </button>
+                                    </Styled.AutomationCreationInputFormularyMultiSectionAddButton>
                                     {sectionRecordsOfSectionId(formularySection.id).map(sectionRecord => (
-                                        <div key={sectionRecord.uuid}>
+                                        <Styled.AutomationCreationInputFormularyMultiSectionContainer 
+                                        key={sectionRecord.uuid}
+                                        >   
+                                            <Styled.AutomationCreationInputFormularyMultiSectionHeader>
+                                                <Styled.AutomationCreationInputFormularyMultiSectionHeaderDeleteButton
+                                                onClick={(e) => onRemoveMultiSection(sectionRecord.uuid)}
+                                                >
+                                                    <Styled.AutomationCreationInputFormularyMultiSectionHeaderDeleteButtonIcon 
+                                                    icon={'trash'}
+                                                    />
+                                                </Styled.AutomationCreationInputFormularyMultiSectionHeaderDeleteButton>
+                                            </Styled.AutomationCreationInputFormularyMultiSectionHeader>
                                             {formularySection.section_fields.map(sectionField => (
                                                 <div key={sectionField.id}>
                                                     <Field
@@ -285,7 +302,7 @@ const AutomationCreationInputFormulary = (props) => {
                                                     /> 
                                                 </div>
                                             ))}
-                                        </div>
+                                        </Styled.AutomationCreationInputFormularyMultiSectionContainer >
                                     ))}
                                 </div>
                             )

@@ -5,6 +5,7 @@ import Dynamic from './Dynamic'
 import Number from './Number'
 import Select from './Select'
 import Text from './Text'
+import Styled from '../../styles'
 
 /**
  * {Description of your component, what does it do}
@@ -21,13 +22,9 @@ const Field = (props) => {
     const renderWeb = () => {
         return (
             <div>
-                <p 
-                style={{
-                    fontWeight: 'bold'
-                }}
-                >
+                <Styled.AutomationCreationInputFormularyFieldLabel>
                     {props.field.name}
-                </p>
+                </Styled.AutomationCreationInputFormularyFieldLabel>
                 {(function (){
                     switch (props.fieldTypeName) {
                         case 'text':

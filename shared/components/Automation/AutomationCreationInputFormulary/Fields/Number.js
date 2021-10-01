@@ -1,5 +1,7 @@
 import React from 'react'
 import { View } from 'react-native'
+import Styled from '../../styles'
+
 
 /**
  * {Description of your component, what does it do}
@@ -14,7 +16,9 @@ const Number = (props) => {
 
     const renderWeb = () => {
         return (
-            <div>Number</div>
+            <Styled.AutomationCreationInputFormularyFieldTextInput 
+            type="text"
+            />
         )
     }
 
