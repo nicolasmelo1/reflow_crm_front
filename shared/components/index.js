@@ -13,6 +13,7 @@ import Users from './Users'
 import Company from './Company'
 import Templates from './Templates'
 import PDFGenerator from './PDFGenerator'
+import APIDocumentation from './Documentation/APIDocumentation'
 
 export { Automation }
 export { PDFGenerator }
@@ -29,3 +30,4 @@ export { FormularyPublic }
 export { Formulary }
 export { Layout }
 export { Notify }
+export { APIDocumentation }

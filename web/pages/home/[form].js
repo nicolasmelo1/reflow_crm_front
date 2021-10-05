@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { Row, Col } from 'react-bootstrap'
 import Router, { withRouter } from 'next/router'
 import actions from '@shared/redux/actions'
 import Header from '../../components/Header'
@@ -175,7 +174,6 @@ class Data extends React.Component {
                     <Error404/>
                 ) : (
                     <div>
-                        {/*
                         <div style={{
                             display: 'flex',
                             width: '100%',
@@ -205,7 +203,7 @@ class Data extends React.Component {
                             }}>
                                 {'Automações'}
                             </button>
-                        </div>*/}
+                        </div>
                         {this.state.isInAutomation ? (
                             <Automation/>
                         ) : (

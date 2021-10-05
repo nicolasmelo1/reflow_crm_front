@@ -34,6 +34,7 @@ class MyDocument extends Document {
                 <body style={{
                     fontSize: '15px'
                 }}>
+                    <script src="https://cdn.jsdelivr.net/npm/redoc@latest/bundles/redoc.standalone.js"/>
                     <Main />
                     <NextScript />
                 </body>

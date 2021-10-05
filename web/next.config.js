@@ -52,6 +52,8 @@ module.exports = withOffline({
         APP: 'web'
     },
     webpack: (config, { defaultLoaders }) => {
+        // especifically for redoc https://github.com/Redocly/redoc/issues/1575
+        // Fixes npm packages that depend on `fs` module
         config.resolve = {
             ...config.resolve,
             alias: {

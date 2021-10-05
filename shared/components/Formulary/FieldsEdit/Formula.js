@@ -315,7 +315,7 @@ const Formula = (props) => {
                             style={{border: 0, color: '#0dbf7e'}} 
                             onClick={(e) => {isTestingFormula ? null : testFormula(props.field.formula_configuration)}}
                             >
-                                {'Testar'}&nbsp;<FontAwesomeIcon icon="play"/>
+                                {strings['pt-br']['formularyEditFieldFormulaTestFormulaButtonLabel']}&nbsp;<FontAwesomeIcon icon="play"/>
                             </button>
                         ) : ''} 
                     </FormulariesEdit.FieldFormLabel>
@@ -328,7 +328,7 @@ const Formula = (props) => {
                     {isFormulaInvalid ? (
                         <div>
                             <small style={{color: 'red'}}>
-                                {'Formula não é válida'}
+                                {strings['pt-br']['formularyEditFieldFormulaTestFormulaNotValidError']}
                             </small>
                         </div>
                     ) : ''}
@@ -359,7 +359,7 @@ const Formula = (props) => {
                             {result !== '' ? (
                                 <div>
                                     <small>
-                                        Resultado:&nbsp;
+                                        {strings['pt-br']['formularyEditFieldFormulaTestFormulaResult']}&nbsp;
                                     </small>
                                     <small style={{color: 'green'}}>
                                         {result}
