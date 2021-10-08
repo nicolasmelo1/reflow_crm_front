@@ -48,6 +48,7 @@ const dynamicImport = (module, alias='default') => {
         try {
             // update here to add new packages for web
             const packages = {
+                'reduxConnect': require('../../../web/utils/redux'),
                 'react-bootstrap': require('react-bootstrap'),
                 'credit-card-type': require('credit-card-type'),
                 'chart.js': require('chart.js'),

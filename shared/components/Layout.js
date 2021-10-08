@@ -1,5 +1,4 @@
 import React from 'react'
-import { connect } from 'react-redux'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { TouchableWithoutFeedback, Keyboard, SafeAreaView, Platform, View } from 'react-native'
 import Sidebar from './Sidebar'
@@ -63,6 +62,7 @@ import {
     faAlignRight
 } from '@fortawesome/free-solid-svg-icons'
 
+const connect = dynamicImport('reduxConnect', 'default')
 const Router = dynamicImport('next/router')
 
 library.add(
@@ -162,7 +162,7 @@ class Layout extends React.Component {
     }
 
     setCompanyId = () => {
-        if (this.props?.login?.companyId) {
+        if (this.props?.login?.companyId !== undefined) {
             agent.setCompanyId(this.props.login.companyId)
         } else {
             agent.setCompanyId(this.props.companyId)
@@ -333,4 +333,4 @@ class Layout extends React.Component {
     }
 }
 
-export default connect(state => ({ login: state.login }), actions)(Layout);
+export default connect(state => ({ login: state.login }), actions)(Layout)

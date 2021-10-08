@@ -51,9 +51,7 @@ module.exports = withOffline({
         API_HOST: process.env.API_HOST,
         APP: 'web'
     },
-    webpack: (config, { defaultLoaders }) => {
-        // especifically for redoc https://github.com/Redocly/redoc/issues/1575
-        // Fixes npm packages that depend on `fs` module
+    webpack: (config, { defaultLoaders }) => { 
         config.resolve = {
             ...config.resolve,
             alias: {
@@ -75,10 +73,9 @@ module.exports = withOffline({
             use: defaultLoaders.babel,
             include: [path.resolve(__dirname, '..', 'shared')]
         })
-
-        config.module.exprContextCritical = false
         
         return config
-    }
+    },
+    webpack5: true
 })
   

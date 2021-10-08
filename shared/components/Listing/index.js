@@ -1,13 +1,16 @@
 import React from 'react'
 import axios from 'axios'
-import { connect } from 'react-redux'
 import { View } from 'react-native'
 import ListingTable from './ListingTable'
 import ListingExtract from './ListingExtract'
 import ListingColumnSelect from './ListingColumnSelect'
 import Filter from '../Filter'
 import actions from '../../redux/actions'
+import dynamicImport from '../../utils/dynamicImport'
 import Styled from './styles'
+
+
+const connect = dynamicImport('reduxConnect', 'default')
 
 /**
  * This component render all of the listing logic, like the table, the totals, filters and extract

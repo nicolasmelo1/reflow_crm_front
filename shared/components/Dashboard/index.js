@@ -1,6 +1,5 @@
 import React from 'react'
 import { View, Text, FlatList, ScrollView } from 'react-native'
-import { connect } from 'react-redux'
 import axios from 'axios'
 import moment from 'moment'
 import DashboardConfiguration from './DashboardConfiguration'
@@ -10,6 +9,7 @@ import DateRangePicker from '../Utils/DateRangePicker'
 import Chart from './Chart'
 import { strings } from '../../utils/constants'
 import { stringToJsDateFormat } from '../../utils/dates'
+import dynamicImport from '../../utils/dynamicImport'
 import { 
     DashboardChartsContainer,
     DashboardChartContainer,
@@ -29,7 +29,7 @@ import {
     DashboardUpdateDateDateRangeContainer
  } from '../../styles/Dashboard'
 
-
+ const connect = dynamicImport('reduxConnect', 'default')
 /**
  * Main component for Dashboards. This component is responsible for loading charts and displaying the values to the user
  * and also for creating each chart individually.

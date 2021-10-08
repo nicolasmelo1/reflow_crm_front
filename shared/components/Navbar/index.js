@@ -1,5 +1,4 @@
 import React from 'react'
-import { connect } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import axios from 'axios'
 import NavbarLink from './NavbarLink' 
@@ -11,6 +10,7 @@ import isAdmin from '../../utils/isAdmin'
 import isEqual from '../../utils/isEqual'
 import Styled from './styles'
 
+const connect = dynamicImport('reduxConnect', 'default')
 const Router = dynamicImport('next/router')
 
 /** 

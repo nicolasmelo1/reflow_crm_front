@@ -1,5 +1,4 @@
 import React from 'react'
-import { connect } from 'react-redux';
 import actions from '../../redux/actions'
 import dynamicImport from '../../utils/dynamicImport'
 import generateUUID from '../../utils/generateUUID'
@@ -11,6 +10,7 @@ import FirstStepForm from './FirstStepForm'
 import SecondStepForm from './SecondStepForm'
 import Styled from './styles'
 
+const connect = dynamicImport('reduxConnect', 'default')
 const Router = dynamicImport('next/router')
 
 /**

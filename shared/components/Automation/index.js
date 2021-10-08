@@ -1,10 +1,12 @@
 import React from 'react'
 import { View } from 'react-native'
-import { connect } from 'react-redux'
 import axios from 'axios'
 import actions from '../../redux/actions'
 import AutomationCreationForm from './AutomationCreationForm'
+import dynamicImport from '../../utils/dynamicImport'
 import Styled from './styles'
+
+const connect = dynamicImport('reduxConnect', 'default')
 
 /**
  * This is responsible for handling the automation part in reflow

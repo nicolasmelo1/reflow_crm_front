@@ -1,11 +1,12 @@
 import React from 'react'
-import { connect } from 'react-redux'
 import axios from 'axios'
 import { View } from 'react-native'
 import actions from '../../redux/actions'
 import PDFGeneratorCreator from './PDFGeneratorCreator'
 import PDFGeneratorReader from './PDFGeneratorReader'
+import dynamicImport from '../../utils/dynamicImport'
 
+const connect = dynamicImport('reduxConnect', 'default')
 
 /**
  * This view is responsible for rendering pdf templates. We have two possible states here:

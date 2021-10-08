@@ -3,10 +3,10 @@ import { Modal, Text, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import dynamicImport from '../../utils/dynamicImport'
 import { strings, paths } from '../../utils/constants'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { connect } from 'react-redux';
 import actions from '../../redux/actions'
 import Styled from './styles'
 
+const connect = dynamicImport('reduxConnect', 'default')
 const Router = dynamicImport('next/router')
 
 /**

@@ -92,6 +92,7 @@ const formEncodeData = (appendToKey='', body=null, files = []) => {
  * but as the values we injected.
  */
 const setCompanyId = (_companyId) => {
+    console.log(_companyId)
     companyId = _companyId
 }
 // ------------------------------------------------------------------------------------------

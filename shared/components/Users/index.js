@@ -1,7 +1,6 @@
 import React from 'react'
 import { View, Text, ScrollView, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native'
 import axios from 'axios'
-import { connect } from 'react-redux'
 import UsersForm from './UsersForm'
 import { types, strings } from '../../utils/constants'
 import dynamicImport from '../../utils/dynamicImport'
@@ -17,6 +16,7 @@ import {
     UsersAddNewUserButton
 } from '../../styles/Users'
 
+const connect = dynamicImport('reduxConnect', 'default')
 const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 
 /**

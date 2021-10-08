@@ -1,9 +1,10 @@
 import React from 'react'
 import NotifyNotification from '../styles/NotifyNotification'
 import actions from '../redux/actions'
-import { connect } from 'react-redux'
 import { Text, View } from 'react-native'
+import dynamicImport from '../utils/dynamicImport'
 
+const connect = dynamicImport('reduxConnect', 'default')
 
 /*** 
  * Really simple component to create notifications on the page you are in.

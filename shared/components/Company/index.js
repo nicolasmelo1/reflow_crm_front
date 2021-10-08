@@ -2,13 +2,12 @@ import React from 'react'
 import { ActivityIndicator, TouchableOpacity } from 'react-native'
 import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { connect } from 'react-redux'
 import actions from '../../redux/actions'
 import dynamicImport from '../../utils/dynamicImport'
 import { strings } from '../../utils/constants'
 import Styled from './styles'
 
-
+const connect = dynamicImport('reduxConnect', 'default')
 const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 
 /**

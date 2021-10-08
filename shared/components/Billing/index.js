@@ -1,7 +1,6 @@
 import React from 'react'
 import { View } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { connect } from 'react-redux'
 import axios from 'axios'
 import { VINDI_PUBLIC_API, VINDI_PUBLIC_API_KEY } from '../../config'
 import dynamicImport from '../../utils/dynamicImport'
@@ -20,6 +19,7 @@ import {
     BillingExpandableCardError
 } from '../../styles/Billing'
 
+const connect = dynamicImport('reduxConnect', 'default')
 const creditCardType = dynamicImport('credit-card-type', '')
 const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 

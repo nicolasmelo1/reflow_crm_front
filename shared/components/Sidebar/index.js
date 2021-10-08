@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import SidebarGroup from './SidebarGroup'
 import SidebarGroupEdit from './SidebarGroupEdit'
 import actions from '../../redux/actions'
-import { connect } from 'react-redux'
 import dynamicImport from '../../utils/dynamicImport'
 import { strings } from '../../utils/constants'
 import isAdmin from '../../utils/isAdmin'
@@ -19,6 +18,8 @@ import {
     SidebarAddNewTemplateButton 
 } from '../../styles/Sidebar' 
 import Overlay from '../../styles/Overlay'
+
+const connect = dynamicImport('reduxConnect', 'default')
 
 /*** 
  * This is the sidebar of management pages, like kanban, listing and others, this side bar right now is only rendered in those pages.

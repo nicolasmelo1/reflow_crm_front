@@ -1,7 +1,6 @@
 import React from 'react'
-import { View, KeyboardAvoidingView, Keyboard } from 'react-native'
+import { KeyboardAvoidingView, Keyboard } from 'react-native'
 import axios from 'axios'
-import { connect } from 'react-redux'
 import generateUUID from '../../utils/generateUUID'
 import isEqual from '../../utils/isEqual'
 import deepCopy from '../../utils/deepCopy'
@@ -14,8 +13,10 @@ import {
     RichTextContainer,
     RichTextBlocksContainer
 } from '../../styles/RichText'
+import dynamicImport from '../../utils/dynamicImport'
 
 const makeDelay = delay(150)
+const connect = dynamicImport('reduxConnect', 'default')
 
 /**
  * This is the main component of the RichText. This component represents the page of our own rich text.

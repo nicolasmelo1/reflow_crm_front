@@ -1,13 +1,17 @@
 import * as lexer from './lexer'
 
-import { buildParser } from 'lezer-generator'
-import { LanguageSupport,LezerLanguage, foldNodeProp, foldInside, indentNodeProp, delimitedIndent } from "@codemirror/language"
-import { HighlightStyle, styleTags, tags as t } from "@codemirror/highlight"
+import { buildParser } from '@lezer/generator'
+import { 
+    LanguageSupport, 
+    LRLanguage, 
+    foldNodeProp, 
+    foldInside, 
+    indentNodeProp, 
+    delimitedIndent 
+} from "@codemirror/language"
+import { styleTags, tags as t } from "@codemirror/highlight"
 import { completeFromList } from "@codemirror/autocomplete"
-import { EditorState, basicSetup } from "@codemirror/basic-setup"
-import { EditorView, keymap } from "@codemirror/view"
-import { defaultTabBinding } from "@codemirror/commands"
-
+import initializeCodeEditor from '../codeEditor'
 
 const flowLanguage = (context) => {
     // To understand this you might need to understand the codemirror parser
@@ -137,22 +141,21 @@ const flowLanguage = (context) => {
     styles[definitionKeywords] = t.definitionKeyword
 
 
-    const parserWithMetadata = parser.configure({
-        props: [
-            styleTags(styles),
-            indentNodeProp.add({
-                Block: delimitedIndent({closing: context.blockKeywords.end}),
-            }),
-            foldNodeProp.add({
-                "Block": foldInside
-            }),
-        ]
-    })
-
     const indentOnInput = `/^\s*([\\}\\]\\)]|${context.blockKeywords.end})$/`
 
-    const exampleLanguage = LezerLanguage.define({
-        parser: parserWithMetadata,
+    console.log(styles)
+    const exampleLanguage = LRLanguage.define({
+        parser: parser.configure({
+            props: [
+                indentNodeProp.add({
+                    Block: delimitedIndent({closing: context.blockKeywords.end}),
+                }),
+                foldNodeProp.add({
+                    "Block": foldInside
+                }),
+                styleTags(styles)
+            ]
+        }),
         languageData: {
             closeBrackets: {brackets: ["(", "[", "{", "`", '"']},
             indentOnInput: new RegExp(indentOnInput),
@@ -172,76 +175,20 @@ const flowLanguage = (context) => {
     return new LanguageSupport(exampleLanguage, [exampleCompletion])
 }
 
-const editorStyle = () => {
-    const editorViewReflowTheme = EditorView.theme({
-        "&": {
-          color: "white",
-          backgroundColor: "#034"
-        },
-        ".cm-content": {
-          caretColor: "#0e9"
-        },
-        "&.cm-focused": {
-            outline: 'none !important',
-        },
-        "&.cm-focused .cm-cursor": {
-          borderLeftColor: "#0e9"
-        },
-        "&.cm-focused .cm-selectionBackground, ::selection": {
-            outline: 'none',
-              backgroundColor: "#074"
-        },
-        ".cm-gutters": {
-          backgroundColor: "#045",
-          color: "#ddd",
-          border: "none"
-        }
-    }, {dark: true})
-
-    const editorSyntaxHighlightTheme = HighlightStyle.define([
-        {
-            tag: t.operatorKeyword,
-            color: '#1E90FF'
-        },
-        {
-            tag: t.propertyName,
-            color: '#ff7c7c'
-        },
-        {
-            tag: t.controlKeyword,
-            color: '#0dbf7e'
-        },
-        {
-            tag: t.definitionKeyword,
-            color: '#0dbf7e'
-        },
-        {
-            tag: t.null,
-            color: 'orange'
-        },
-        {
-            tag: t.bool,
-            color: '#eaa0ff'
-        },
-        {
-            tag: t.string,
-            color: '#bbffaf'
-        },
-        {
-            tag: t.number,
-            color: '#afb0ff'
-        },
-    ])
-
-    return [editorViewReflowTheme, editorSyntaxHighlightTheme]
-}
 
 
-const initializeEditor = (parent, context, dispatchCallback=null, editorState={}) => {
+const initializeEditor = (code, parent, context, dispatchCallback=null) => {
     const flowLang = flowLanguage(context)
-    const reflowTheme = editorStyle()
+    const editor = initializeCodeEditor({
+        parent: parent,
+        dispatchCallback: dispatchCallback,
+        languagePack: flowLang,
+        code: code
+    })
+    
+    /*const reflowTheme = editorStyle()
     const state = {
-        extensions: [basicSetup, keymap.of([defaultTabBinding]), flowLang, reflowTheme],
+        extensions: [basicSetup, keymap.of([indentWithTab]), flowLang, reflowTheme],
         ...editorState
     }
     
@@ -257,7 +204,7 @@ const initializeEditor = (parent, context, dispatchCallback=null, editorState={}
             state: EditorState.create(state),
             parent: parent
         })
-    }
+    }*/
 
     return editor
 }

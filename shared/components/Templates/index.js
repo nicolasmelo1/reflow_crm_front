@@ -1,11 +1,13 @@
 import React from 'react'
 import { View } from 'react-native'
 import axios from 'axios'
-import { connect } from 'react-redux'
 import actions from '../../redux/actions'
 import TemplateSelect from './TemplateSelect'
 import TemplateConfiguration from './TemplateConfiguration'
+import dynamicImport from '../../utils/dynamicImport'
 
+
+const connect = dynamicImport('reduxConnect', 'default')
 
 /**
  * This component is responsible for showing a list of templates to the user. The user NEVER creates templates from 0, he does not create groups.

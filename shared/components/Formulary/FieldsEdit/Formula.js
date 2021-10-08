@@ -167,10 +167,10 @@ const Formula = (props) => {
 
         props.field.formula_configuration = formattedFormula.join('')
         editorRef.current = initializeEditor(
+            props.field.formula_configuration,
             textEditorRef.current, 
             translatedContext, 
             dispatch, 
-            {doc: props.field.formula_configuration}
         )
     }
 

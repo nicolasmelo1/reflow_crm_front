@@ -1,13 +1,15 @@
 import React from 'react'
 import actions from '../../redux/actions'
-import { connect } from 'react-redux'
 import axios from 'axios'
 import { View, Text } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import NotificationRecieved from './NotificationRecieved'
 import NotificationsConfiguration from './NotificationsConfiguration'
 import { strings } from '../../utils/constants'
+import dynamicImport from '../../utils/dynamicImport'
 import Styled from './styles'
+
+const connect = dynamicImport('reduxConnect', 'default')
 
 /**
  * This component is responsible for loading the notifications on the screen for the user.

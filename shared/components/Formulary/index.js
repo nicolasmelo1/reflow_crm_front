@@ -1,7 +1,6 @@
 import React from 'react'
 import axios from 'axios'
 import { View } from 'react-native'
-import { connect } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import FormularyPublicEdit from './FormularyPublicEdit'
 import FormularyToolbar from './FormularyToolbar'
@@ -16,6 +15,7 @@ import isAdmin from '../../utils/isAdmin'
 import { Formularies } from '../../styles/Formulary'
 import generateUUID from '../../utils/generateUUID'
 
+const connect = dynamicImport('reduxConnect', 'default')
 const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 const Router = dynamicImport('next/router')
 
