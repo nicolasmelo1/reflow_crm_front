@@ -32,7 +32,7 @@ const Field = (props) => {
                 setExampleCode(`"foo"\n"bar"`)
             }
         } else if (props.fieldTypeName === 'attachment') {
-            setExampleCode(`// send a request to '/${props.formName}/attachment' with \n// the actual file the response will be a string, use this string here.\n\n"ZHJhZnQtMQ=="\n"ZHJhZnQtMg=="`)
+            setExampleCode(`"ZHJhZnQtMQ=="\n"ZHJhZnQtMg=="`)
         } else if (props.fieldTypeName === 'number') {
             if (props.lastValues.length > 0) {
                 setExampleCode(`${props.lastValues.map(lastValue=> `${lastValue}`).join('\n')}`)
