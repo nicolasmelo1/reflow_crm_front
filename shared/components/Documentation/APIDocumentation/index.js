@@ -1,71 +1,14 @@
 import React, { useEffect } from 'react'
 import { View } from 'react-native'
 import actions from '../../../redux/actions'
-import { types } from '../../../utils/constants'
+import agent from '../../../utils/agent'
 import dynamicImport from '../../../utils/dynamicImport'
+import Fields from './Fields'
 import Styled from './styles'
-import initializeCodeEditor from '../../../utils/codeEditor'
-import { javascript } from "@codemirror/lang-javascript"
+
 
 const connect = dynamicImport('reduxConnect', 'default')
 
-
-const Code = (props) => {
-    const editorRef = React.useRef()
-    const textEditorRef = React.useRef()
-
-    useEffect(() => {
-        editorRef.current = initializeCodeEditor({
-            languagePack: javascript({jsx: true}), 
-            parent:textEditorRef.current, 
-            code:`
-import React from "react"
-import { connect } from 'react-redux'
-import Router, { withRouter } from 'next/router'
-import Header from '../../../components/Header'
-import actions from '@shared/redux/actions'
-import { Layout, APIDocumentation } from '@shared/components'
-
-// COmentario
-/**
- * @param {String} teste - asdadasd
- */
-class APIDocumentationPage extends React.Component {
-    render() {
-        return (
-            <Layout 
-            showSideBar={false} 
-            header={<Header title={'API Documentation'}/>}
-            >
-                <APIDocumentation
-                formName={this.props.router.query.form} 
-                />
-            </Layout>
-        )
-    }
-}
-
-
-export default withRouter(APIDocumentationPage)
-        `})
-
-        return () => {
-            editorRef.current.destroy()
-        }
-    }, [])
-
-    return(
-        <div 
-        ref={textEditorRef}
-        style={{
-            padding: '5px',
-            borderRadius: '10px',
-            backgroundColor: '#17242D',
-            width: '100%'
-        }}
-        />
-    )
-}
 
 /**
  * This component is the documentation for the api. We wanted to go to a more simple approach like
@@ -83,6 +26,7 @@ class APIDocumentation extends React.Component {
         this.authenticationRef = React.createRef()
         this.tableRef = React.createRef()
         this.state = {
+            formularyValues: [],
             formularyData: {
                 depends_on_form: []
             }
@@ -101,6 +45,13 @@ class APIDocumentation extends React.Component {
         }))
     }
 
+    setFormularyValues = (formularyValues) => {
+        this.setState(state => ({
+            ...state,
+            formularyValues: formularyValues
+        }))
+    }
+
     getFieldTypeNameByFieldTypeId(fieldTypeId) {
         if (this.fieldTypeNameByFieldTypeId[fieldTypeId]) {
             return this.fieldTypeNameByFieldTypeId[fieldTypeId]
@@ -115,10 +66,24 @@ class APIDocumentation extends React.Component {
         }
     }
 
+    getLastValuesOfFieldId(fieldId) {
+        for (const formularyValue of this.state.formularyValues) {
+            if (formularyValue.field_id === fieldId) {
+                return formularyValue.last_values
+            }
+        } 
+        return []
+    }
+
     componentDidMount() {
         this.props.onGetBuildFormulary(this.source, this.props.formName).then(formularyBuildData => {
             if (formularyBuildData) {
                 this.setFormularyData(formularyBuildData)
+            }
+        })
+        agent.http.DOCUMENTATION.getlastValuesOfFormulary(this.source, this.props.formName).then(response => {
+            if (response && response.status === 200) {
+                this.setFormularyValues(response.data.data)
             }
         })
     }
@@ -159,7 +124,7 @@ class APIDocumentation extends React.Component {
                     overflow: 'auto',
                     padding: '10px',
                     borderRadius: '5px',
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
+                    boxShadow: '4px 4px 12px rgba(56, 66, 95, 0.08)',
                 }}
                 >   
                     <Styled.APIDocumentationSection>
@@ -279,30 +244,13 @@ class APIDocumentation extends React.Component {
                                         </Styled.APIDocumentationSectionAndFieldsTableRowCell>
                                     </Styled.APIDocumentationSectionAndFieldsTableHeaderRow>
                                     {section.form_fields.map(field => (
-                                        <React.Fragment
+                                        <Fields
                                         key={field.id}
-                                        >
-                                            <Styled.APIDocumentationSectionAndFieldsTableRow>
-                                                <Styled.APIDocumentationSectionAndFieldsTableRowCell>
-                                                    <p>
-                                                        {field.label_name}
-                                                    </p>
-                                                </Styled.APIDocumentationSectionAndFieldsTableRowCell>
-                                                <Styled.APIDocumentationSectionAndFieldsTableRowCell>
-                                                    <p>
-                                                        {types('pt-br', 'field_type', this.getFieldTypeNameByFieldTypeId(field.type))}
-                                                    </p>
-                                                </Styled.APIDocumentationSectionAndFieldsTableRowCell>
-                                                <Styled.APIDocumentationSectionAndFieldsTableRowCell>
-                                                    <p>
-                                                        {'String'}
-                                                    </p>
-                                                </Styled.APIDocumentationSectionAndFieldsTableRowCell>
-                                            </Styled.APIDocumentationSectionAndFieldsTableRow>
-                                            <Styled.APIDocumentationSectionAndFieldsTableRow>
-                                                <Code/>
-                                            </Styled.APIDocumentationSectionAndFieldsTableRow>
-                                        </React.Fragment>
+                                        field={field}
+                                        formName={this.props.formName}
+                                        lastValues={this.getLastValuesOfFieldId(field.id)}
+                                        fieldTypeName={this.getFieldTypeNameByFieldTypeId(field.type)}
+                                        />
                                     ))}
                                 </div>
                             </div>

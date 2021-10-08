@@ -16,7 +16,7 @@ import PDF_GENERATOR from './pdf_generator'
 import DRAFT from './draft'
 import ANALYTICS from './analytics'
 import AUTOMATION from './automation'
-
+import DOCUMENTATION from './documentation'
 
 export default {
     CHANGE_PASSWORD,
@@ -36,5 +36,6 @@ export default {
     PDF_GENERATOR,
     DRAFT,
     ANALYTICS,
-    AUTOMATION
+    AUTOMATION,
+    DOCUMENTATION
 }

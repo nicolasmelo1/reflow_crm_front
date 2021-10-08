@@ -22,7 +22,7 @@ const FORMULARY = {
         const duplicateUrl = (duplicate) ? '?duplicate=duplicate' : ''
         return await requests.put(`data/${companyId}/${formName}/${formId}/${duplicateUrl}`, body)
     },
-    getFormularyFormFieldOptions: async (source, formName, fieldId, page, search=null, valueId=null) => {
+    getFormularyFormFieldOptions: async (source, formName, fieldId, page=1, search=null, valueId=null) => {
         let params = { page: page }
         if (search) {
             params.search = search

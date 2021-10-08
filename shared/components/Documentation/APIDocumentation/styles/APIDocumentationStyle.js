@@ -23,7 +23,7 @@ styled.nav`
     margin: 0 10px;
     border-radius: 5px;
     padding: 10px !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    box-shadow: 4px 4px 12px rgba(56, 66, 95, 0.08);
     height: 100%;
     padding: 10px 0;
 `
@@ -76,7 +76,7 @@ styled.div`
     display: flex;
     flex-direction: row;
     width: 100%;
-    justify-content: space-between
+    justify-content: space-between;
 `
 :
 styled(View)``

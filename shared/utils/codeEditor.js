@@ -1,7 +1,8 @@
-import {basicSetup, EditorState} from "@codemirror/basic-setup"
-import { HighlightStyle, tags as t } from "@codemirror/highlight"
-import { indentWithTab } from "@codemirror/commands"
-import { EditorView, keymap } from "@codemirror/view"
+import { basicSetup, EditorState } from '@codemirror/basic-setup'
+import { Compartment } from '@codemirror/state'
+import { HighlightStyle, tags as t } from '@codemirror/highlight'
+import { indentWithTab } from '@codemirror/commands'
+import { EditorView, keymap } from '@codemirror/view'
 
 
 const editorViewTheme = EditorView.theme({
