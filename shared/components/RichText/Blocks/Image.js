@@ -207,6 +207,7 @@ const ImageBlock = (props) => {
         }
         setIsUploading(true)
         props.onUploadFileToDraft(file).then(async draftStringId => {
+            props.block.image_option.file_image_uuid = generateUUID()
             props.block.image_option.file_name = draftStringId
             const imageUrl = await agent.http.DRAFT.getDraftFile(draftStringId)
             setImageUrl(imageUrl)
