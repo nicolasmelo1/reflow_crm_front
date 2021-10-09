@@ -207,6 +207,8 @@ const ImageBlock = (props) => {
         }
         setIsUploading(true)
         props.onUploadFileToDraft(file).then(async draftStringId => {
+            // When uploading a image we ALWAYS need to regenerate the file_image_uuid because if we do not do that
+            // the backend will understand that we have duplicated the file, which is not true.
             props.block.image_option.file_image_uuid = generateUUID()
             props.block.image_option.file_name = draftStringId
             const imageUrl = await agent.http.DRAFT.getDraftFile(draftStringId)
