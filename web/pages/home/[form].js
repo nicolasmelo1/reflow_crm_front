@@ -174,6 +174,7 @@ class Data extends React.Component {
                     <Error404/>
                 ) : (
                     <div>
+                        {/*
                         <div style={{
                             display: 'flex',
                             width: '100%',
@@ -204,6 +205,7 @@ class Data extends React.Component {
                                 {'Automações'}
                             </button>
                         </div>
+                        */}
                         {this.state.isInAutomation ? (
                             <Automation/>
                         ) : (
