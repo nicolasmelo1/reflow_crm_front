@@ -13,7 +13,8 @@ const Code = (props) => {
         editorRef.current = initializeCodeEditor({
             languagePack: props.languagePack, 
             parent:textEditorRef.current, 
-            code: props.code
+            code: props.code,
+            editable: false
         })
 
         return () => {
@@ -30,7 +31,8 @@ const Code = (props) => {
         editorRef.current = initializeCodeEditor({
             languagePack: props.languagePack, 
             parent:textEditorRef.current, 
-            code: props.code
+            code: props.code,
+            editable: false
         })
     }, [props.code])
 

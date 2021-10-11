@@ -25,9 +25,6 @@ const editorViewTheme = EditorView.theme({
     },
     '.cm-activeLine': {
         backgroundColor: "transparent"
-    },
-    ".cm-gutters": {
-        display: 'none'
     }
 }, {dark: true})
 
@@ -146,7 +143,7 @@ const initializeCodeEditor = ({parent, code, languagePack, editable=true, dispat
         [editorViewTheme, syntaxHighlightTheme]
     ]
 
-    if (editable) {
+    if (editable === false) {
         extensions = [...extensions, EditorView.editable.of(false)]
     }
 
