@@ -45,12 +45,12 @@ const Formula = (props) => {
     const [isAutomaticEvaluation, _setIsAutomaticEvaluation] = useState(true)
     const [isFormulaInvalid, setIsFormulaInvalid] = useState(false)
     const [isTestingFormula, setIsTestingFormula] = useState(false)
+    const [formularyFields, setFormularyFields] = useState(getFormularyFields())
     const [result, setResult] = useState('')
     const documentLengthRef = React.useRef(0)
     const isAutomaticEvaluationRef = React.useRef(isAutomaticEvaluation)
     const textEditorRef = React.useRef()
     const editorRef = React.useRef()
-    const formularyFields = getFormularyFields()
 
     const setIsAutomaticEvaluation = (data) => {
         isAutomaticEvaluationRef.current = data
@@ -180,13 +180,11 @@ const Formula = (props) => {
         if (formularyData.depends_on_form) {
             formularyData.depends_on_form.forEach(section => {
                 section.form_fields.forEach(field => {
-                    if (field.id !== null && field.uuid !== props.field.uuid) {
-                        formularyFields.push({
-                            value: field.id,
-                            label: field.label_name,
-                            name: field.name
-                        })
-                    }
+                    formularyFields.push({
+                        value: field.id,
+                        label: field.label_name,
+                        name: field.name
+                    })
                 })
             })
         }
@@ -297,7 +295,12 @@ const Formula = (props) => {
         }
         createEditor()
     }, [])
-    
+
+    useEffect(() => {
+        setFormularyFields([...getFormularyFields()])
+        createEditor()
+    }, [props.field.name, props.field.label_name])
+
     const renderMobile = () => {
         return (
             <View></View>
