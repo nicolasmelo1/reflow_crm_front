@@ -51,6 +51,7 @@ const flowLanguage = (context) => {
         ParameterDefinitionList { 
             "(" ParameterCommaSeparator<Parameter>? ")" 
         }
+        
         ParameterCommaSeparator<expression> { 
             expression ("${context.positionalArgumentSeparator}" expression)* "${context.positionalArgumentSeparator}"?  
         }
@@ -143,7 +144,6 @@ const flowLanguage = (context) => {
 
     const indentOnInput = `/^\s*([\\}\\]\\)]|${context.blockKeywords.end})$/`
 
-    console.log(styles)
     const exampleLanguage = LRLanguage.define({
         parser: parser.configure({
             props: [

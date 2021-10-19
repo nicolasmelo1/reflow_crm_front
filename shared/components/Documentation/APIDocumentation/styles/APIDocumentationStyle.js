@@ -84,7 +84,7 @@ styled(View)``
 export const APIDocumentationSectionAndFieldsTableRowCell = process.env['APP'] === 'web' ?
 styled.div`
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     width: calc(100% / 3);
     height: 100%;
     padding: 0;

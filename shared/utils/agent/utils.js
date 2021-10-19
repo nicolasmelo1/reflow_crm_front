@@ -7,7 +7,7 @@ if (process.env['APP'] !== 'web') {
     AsyncStorage = require('react-native').AsyncStorage
 }
 
-const API_ROOT = API;
+const API_ROOT = API
 let companyId = null
 let logoutFunctionForView = null
 let permissionsHandlerForView = null
@@ -92,7 +92,6 @@ const formEncodeData = (appendToKey='', body=null, files = []) => {
  * but as the values we injected.
  */
 const setCompanyId = (_companyId) => {
-    console.log(_companyId)
     companyId = _companyId
 }
 // ------------------------------------------------------------------------------------------

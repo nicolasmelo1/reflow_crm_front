@@ -5,6 +5,7 @@
             "module-resolver", {
                 "root": [".."],
                 "alias": {
+                    "@web": ".",
                     "@shared": "../shared"
                 }
             }

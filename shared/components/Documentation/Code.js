@@ -32,7 +32,8 @@ const Code = (props) => {
             languagePack: props.languagePack, 
             parent:textEditorRef.current, 
             code: props.code,
-            editable: false
+            removeLineCounter: true,
+            editable: true
         })
     }, [props.code])
 

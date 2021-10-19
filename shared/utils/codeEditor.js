@@ -5,28 +5,38 @@ import { indentWithTab } from '@codemirror/commands'
 import { EditorView, keymap } from '@codemirror/view'
 
 
-const editorViewTheme = EditorView.theme({
-    "&": {
-        color: "white",
-        backgroundColor: "#17242D"
-    },
-    ".cm-content": {
-        caretColor: "#0e9"
-    },
-    "&.cm-focused": {
-        outline: 'none !important',
-    },
-    "&.cm-focused .cm-cursor": {
-        borderLeftColor: "#0e9"
-    },
-    "&.cm-focused .cm-selectionBackground, ::selection": {
-        outline: 'none',
-        backgroundColor: "transparent"
-    },
-    '.cm-activeLine': {
-        backgroundColor: "transparent"
+const getDefaultTheming = ({removeLineCounter=false} = {}) => {
+    const editorDefaultTheme = {
+        "&": {
+            color: "white",
+            backgroundColor: "#17242D"
+        },
+        ".cm-content": {
+            caretColor: "#0e9"
+        },
+        "&.cm-focused": {
+            outline: 'none !important',
+        },
+        "&.cm-focused .cm-cursor": {
+            borderLeftColor: "#0e9"
+        },
+        "&.cm-focused .cm-selectionBackground, ::selection": {
+            outline: 'none',
+            backgroundColor: "#0dbf7e20"
+        },
+        '.cm-activeLine': {
+            backgroundColor: "transparent"
+        }
     }
-}, {dark: true})
+
+    if (removeLineCounter === true) {
+        editorDefaultTheme['.cm-gutters'] = {
+            display: 'none'
+        }
+    }
+    return EditorView.theme(editorDefaultTheme, {dark: true})
+}
+
 
 const syntaxHighlightTheme = HighlightStyle.define([
     {
@@ -135,12 +145,12 @@ const syntaxHighlightTheme = HighlightStyle.define([
     }
 ])
 
-const initializeCodeEditor = ({parent, code, languagePack, editable=true, dispatchCallback=null} = {}) => {
+const initializeCodeEditor = ({parent, code, languagePack, editable=true, dispatchCallback=null, removeLineCounter=false} = {}) => {
     let extensions = [
         languagePack, 
         basicSetup,
         keymap.of([indentWithTab]),
-        [editorViewTheme, syntaxHighlightTheme]
+        [getDefaultTheming({removeLineCounter: removeLineCounter}), syntaxHighlightTheme]
     ]
 
     if (editable === false) {

@@ -247,6 +247,7 @@ class APIDocumentation extends React.Component {
                                         <Fields
                                         key={field.id}
                                         field={field}
+                                        types={this.props.types}
                                         formName={this.props.formName}
                                         lastValues={this.getLastValuesOfFieldId(field.id)}
                                         fieldTypeName={this.getFieldTypeNameByFieldTypeId(field.type)}
