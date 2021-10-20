@@ -162,10 +162,10 @@ class Layout extends React.Component {
     }
 
     setCompanyId = () => {
-        if (![null, undefined].includes(this.props?.login?.companyId)) {
-            agent.setCompanyId(this.props.login.companyId)
-        } else {
+        if (this.props.companyId) {
             agent.setCompanyId(this.props.companyId)
+        } else if (![null, undefined].includes(this.props?.login?.companyId)) {
+            agent.setCompanyId(this.props.login.companyId)
         }
     }
 
