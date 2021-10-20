@@ -12,14 +12,7 @@ styled.img`
     transition: top 1s ease-in-out, opacity 0.9s ease-in-out;
     width: 30%;
     max-width: 200px;
-
-    @media(min-height: 711px) {
-        top: ${props => props.slideLogo ? '10px': '48%'};
-    }
-
-    @media(max-height: 711px) {
-        top: ${props => props.slideLogo ? props.step === 0 ? '-45px' : '10px' : '48%'};
-    }
+    top: ${props => props.slideLogo ? props.step === 0 ? '10px' : '10px' : '48%'};
 `
 :
 styled(Image)`
