@@ -3,7 +3,7 @@ import { companyId } from '../utils'
 
 const USERS = {
     getUserData: async (source) => {
-        return await requests.get(`authentication/user/`, {}, {}, source)
+        return await requests.get(`authentication/${companyId}/user/`, {}, {}, source)
     },
     getFormularyAndFieldOptions: async (source) => {
         return await requests.get(`authentication/settings/${companyId}/users/formulary_options/`, {}, {}, source)
@@ -21,7 +21,7 @@ const USERS = {
         return await requests.delete(`authentication/settings/${companyId}/users/${userId}/`)
     },
     updateVisualizationType: async (visualizationTypeId) => {
-        return await requests.put(`authentication/user/visualization_type/${visualizationTypeId}/`, {})
+        return await requests.put(`authentication/${companyId}/user/visualization_type/${visualizationTypeId}/`, {})
     }
 }
 

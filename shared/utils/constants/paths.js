@@ -97,6 +97,20 @@ const paths = {
             }
         }
     },
+    apiDocumentation() {
+        return { 
+            asUrl: '/documentation/api/eventos',
+            adminOnly: false,
+            webOnly: false,
+            loginOnly: true,
+            asReactNavigationPath: {
+                root: 'documentation',
+                nested: {
+                    screen: 'api',
+                }
+            }
+        }
+    },
     notifications() {
         return { 
             asUrl: '/notifications',

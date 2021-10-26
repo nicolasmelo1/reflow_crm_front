@@ -37,6 +37,10 @@ class Navbar extends React.Component {
         this.setState(state=> state.isOpen = isOpen)
     }
 
+    handleApiDocumentation = () => {
+        Router.push(paths.apiDocumentation().asUrl, paths.apiDocumentation().asUrl,{ shallow: true })
+    }
+
     handleLogout = (e) => {
         Router.push(paths.login().asUrl, paths.login().asUrl,{ shallow: true })
         this.props.onDeauthenticate()
@@ -84,15 +88,16 @@ class Navbar extends React.Component {
     }
 
     getConfigDropdown = () => {
-        let configDropdown = [
+        let defaultConfigDropdown = [
             {
                 label: strings['pt-br']['headerLogoutLabel'],
                 href: '#',
                 onClick: this.handleLogout
             }
         ]
+
         if (isAdmin(this.props.login.types?.defaults?.profile_type, this.props.login.user)) {
-            configDropdown =  [
+            defaultConfigDropdown = [
                 {
                     label: strings['pt-br']['headerCompanyLabel'],
                     href: '#',
@@ -108,21 +113,26 @@ class Navbar extends React.Component {
                     href:'#',
                     onClick: this.handleUsers
                 },
-                {
-                    label: strings['pt-br']['headerLogoutLabel'],
-                    href: '#',
-                    onClick: this.handleLogout
-                }
+                ...defaultConfigDropdown,
             ]
             if (this.props.login.user.username === 'reflow@reflow.com.br') {
-                configDropdown.splice(0, 0, {
+                defaultConfigDropdown.splice(0, 0, {
                     label: strings['pt-br']['headerTemplateLabel'],
                     href: '#',
                     onClick: this.handleTemplates
                 })
             }
         } 
-        return configDropdown
+
+        if (this.props.login.user?.has_api_access_key) {
+            defaultConfigDropdown.splice(0, 0, {
+                label: strings['pt-br']['headerApiDocumentationLabel'],
+                href: '#',
+                onClick: this.handleApiDocumentation
+            })
+        }
+
+        return defaultConfigDropdown
     }
 
     updateNavbarHeightWeb = () => {
@@ -153,7 +163,7 @@ class Navbar extends React.Component {
         this.source = this.CancelToken.source()
         this.props.onGetNewNotifications(this.source)
         this.props.onGetCompanyData(this.source)
-        this.props.onGetUserData(this.source)
+        this.props.onGetUserData(this.source, this.props.login.company_id)
         this.updateNavbarHeightWeb()
     }
     

@@ -270,7 +270,14 @@ const Formula = (props) => {
     const dispatch = () => {
         return (transaction) => {
             if (documentLengthRef.current !== transaction.state.doc.length && transaction?.state?.doc) {
-                props.field.formula_configuration = transaction?.state?.doc.text.join('\n')
+                let text = []
+                let leaves = []
+                if (transaction?.state?.doc.name === 'TextLeaf') leaves = [transaction.state.doc]
+                else if (transaction.state.doc.name === 'TextNode') leaves = transaction.state.doc.children
+                leaves.forEach(leaf => {
+                    text = [text,...leaf.text]
+                })
+                props.field.formula_configuration = text.join('\n')
                 const occurrences = getFormulaOccurences(props.field.formula_configuration)
                 changeFormulaVariables(occurrences)
                 if (isAutomaticEvaluationRef.current) {

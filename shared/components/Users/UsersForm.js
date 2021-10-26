@@ -78,6 +78,7 @@ const UsersForm = (props) => {
     const [formulariesUserHaveAccess, setFormulariesUserHaveAccess] = useState([])
     const [userOptionsUserHaveAccess, setUserOptionsUserHaveAccess] = useState({})
     const [optionsUserHaveAccess, setOptionsUserHaveAccess] = useState([])
+    const [hasDeveloperAccess, setHasDeveloperAccess] = useState(false)
     const [userId, setUserId] = useState(null)
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
@@ -311,6 +312,7 @@ const UsersForm = (props) => {
             first_name: name.split(' ')[0],
             last_name: name.split(' ').slice(1).join(' '),
             profile: profileId,
+            has_api_access_key: hasDeveloperAccess,
             user_accessed_by_user: [].concat.apply([], Object.keys(userOptionsUserHaveAccess).map(fieldId => 
                 userOptionsUserHaveAccess[fieldId].map(userAccessedById => 
                     ({ field_id: parseInt(fieldId), user_option_id: userAccessedById })
@@ -380,6 +382,7 @@ const UsersForm = (props) => {
             setOptionsUserHaveAccess([...optionIdsAccessedByUser])
             setUserOptionsUserHaveAccess({...userIdsAccessedByUserByField})
             setFormulariesUserHaveAccess([...formularyIdsAccessedByUser])
+            setHasDeveloperAccess(props.userData.has_api_access_key)
             setName(!['', null].includes(props.userData.last_name) ? `${props.userData.first_name} ${props.userData.last_name}` : `${props.userData.first_name}`)
             setEmail(`${props.userData.email}`)
             setUserId(props.userData.id)
@@ -584,6 +587,16 @@ const UsersForm = (props) => {
                     </UsersFormularyGoBackButton>
                 </div>
                 <UsersFormularyFieldsAndPermissionContainer>
+                    {/*<UsersFormularyFieldContainer>
+                        <UsersFormularyFieldLabel>
+                            <input 
+                            type={'checkbox'} 
+                            checked={hasDeveloperAccess}
+                            onChange={(e) => setHasDeveloperAccess(!hasDeveloperAccess)}
+                            />
+                            &nbsp;{strings['pt-br']['userConfigurationFormularyDeveloperAccessLabel']}
+                        </UsersFormularyFieldLabel>
+                    </UsersFormularyFieldContainer>*/}
                     <UsersFormularyFieldContainer>
                         <UsersFormularyFieldLabel>
                             {strings['pt-br']['userConfigurationFormularyNameLabel']}

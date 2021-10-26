@@ -83,11 +83,12 @@ class Socket {
     onRecieve() {
         this.getUrl()
         if (this.registeredSocket !== null) {
-            this.registeredSocket.onmessage = (e) => {
-                [...Object.values(this.callbacks)].forEach(({ callback, argument }) => {
+            function recieveMessage(e) {
+                Array.from(Object.values(this.callbacks)).forEach(({ callback, argument }) => {
                     callback({ data: JSON.parse(e.data), ...argument})
                 })
             }
+            this.registeredSocket.onmessage = recieveMessage.bind(this)
         }
     }
     // ------------------------------------------------------------------------------------------

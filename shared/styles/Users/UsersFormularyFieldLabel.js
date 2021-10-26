@@ -6,7 +6,8 @@ export default process.env['APP'] === 'web' ?
 styled.label`
     margin: 0;
     padding: 0; 
-    font-weight: bold
+    font-weight: bold;
+    user-select: none;
 `
 :
 styled(Text)`
