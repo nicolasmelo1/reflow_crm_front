@@ -201,6 +201,7 @@ const Formula = (props) => {
      * @returns {Array<String>} - Array of strings where each string is an integer or an empty string.
      */
     const getFormulaOccurences = (formulaText) => {
+        console.log(formulaText)
         const occurrences = (formulaText.match(/{{(\w+)?}}/g) || []).map((variable, index) => {
             variable = variable.replace('{{', '').replace('}}', '') 
 
@@ -272,10 +273,11 @@ const Formula = (props) => {
             if (documentLengthRef.current !== transaction.state.doc.length && transaction?.state?.doc) {
                 let text = []
                 let leaves = []
-                if (transaction?.state?.doc.name === 'TextLeaf') leaves = [transaction.state.doc]
-                else if (transaction.state.doc.name === 'TextNode') leaves = transaction.state.doc.children
+
+                if (transaction?.state?.doc.constructor.name === 'TextLeaf') leaves = [transaction.state.doc]
+                else if (transaction.state.doc.constructor.name === 'TextNode') leaves = transaction.state.doc.children
                 leaves.forEach(leaf => {
-                    text = [text,...leaf.text]
+                    text = [...text,...leaf.text]
                 })
                 props.field.formula_configuration = text.join('\n')
                 const occurrences = getFormulaOccurences(props.field.formula_configuration)
