@@ -279,6 +279,9 @@ const Formula = (props) => {
                 leaves.forEach(leaf => {
                     text = [...text,...leaf.text]
                 })
+                console.log(transaction.state.doc.constructor.name)
+                console.log(text)
+                console.log(text.join('\n'))
                 props.field.formula_configuration = text.join('\n')
                 const occurrences = getFormulaOccurences(props.field.formula_configuration)
                 changeFormulaVariables(occurrences)
