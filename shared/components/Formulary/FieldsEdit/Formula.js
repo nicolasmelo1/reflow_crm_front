@@ -274,14 +274,12 @@ const Formula = (props) => {
                 let text = []
                 let leaves = []
 
-                if (transaction?.state?.doc.constructor.name === 'TextLeaf') leaves = [transaction.state.doc]
-                else if (transaction.state.doc.constructor.name === 'TextNode') leaves = transaction.state.doc.children
+                if (transaction.state.doc?.children) leaves = transaction.state.doc.children
+                else leaves = [transaction.state.doc]
+                
                 leaves.forEach(leaf => {
                     text = [...text,...leaf.text]
                 })
-                console.log(transaction.state.doc.constructor.name)
-                console.log(text)
-                console.log(text.join('\n'))
                 props.field.formula_configuration = text.join('\n')
                 const occurrences = getFormulaOccurences(props.field.formula_configuration)
                 changeFormulaVariables(occurrences)
