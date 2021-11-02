@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:16
 
 WORKDIR /code
 ADD package.json /code/
