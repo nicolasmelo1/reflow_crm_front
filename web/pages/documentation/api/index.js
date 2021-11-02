@@ -5,7 +5,6 @@ import Header from '../../../components/Header'
 import actions from '@shared/redux/actions'
 import { Layout, APIDocumentation } from '@shared/components'
 
-// COmentario
 /**
  * @param {String} teste - asdadasd
  */

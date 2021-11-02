@@ -99,7 +99,7 @@ const paths = {
     },
     apiDocumentation() {
         return { 
-            asUrl: '/documentation/api/eventos',
+            asUrl: '/documentation/api',
             adminOnly: false,
             webOnly: false,
             loginOnly: true,

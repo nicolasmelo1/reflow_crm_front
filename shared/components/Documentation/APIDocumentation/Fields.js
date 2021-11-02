@@ -2,17 +2,15 @@ import React, { useState, useEffect } from 'react'
 import { View } from 'react-native'
 import axios from 'axios'
 import { javascript } from "@codemirror/lang-javascript"
-import { python } from '@codemirror/lang-python'
-import {StreamLanguage} from "@codemirror/stream-parser"
-import {shell} from "@codemirror/legacy-modes/mode/shell"
-import { types } from '../../../utils/constants'
+import { types, strings } from '../../../utils/constants'
 import Code from '../Code'
 import agent from '../../../utils/agent'
 import Styled from './styles'
 
 
 /**
- * Handles all the configuration needed for each field
+ * This will handle the `sectionAndFields` part of the API documentation.
+ * It will display all of the fields with a description and examples so it's easy to follow along.
  * 
  * @param {Type} props - {go in detail about every prop it recieves}
  */
@@ -44,7 +42,6 @@ const Field = (props) => {
     }
     // ------------------------------------------------------------------------------------------
     function getDescription() {
-        props.types.data
         if (['text', 'email'].includes(props.fieldTypeName)) {
             return {
                 type: 'string',
@@ -250,7 +247,7 @@ const Field = (props) => {
                             width: '100%'
                         }}>
                             <p style={{color: '#bfbfbf', padding: '0 10px'}}>
-                                {'Valores de exemplo'}
+                                {strings['pt-br']['apiDocumentationSectionsAndFieldsFieldExampleValuesLabel']}
                             </p>
                             <Code
                             code={exampleCode}

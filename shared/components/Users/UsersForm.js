@@ -587,7 +587,7 @@ const UsersForm = (props) => {
                     </UsersFormularyGoBackButton>
                 </div>
                 <UsersFormularyFieldsAndPermissionContainer>
-                    {/*<UsersFormularyFieldContainer>
+                    <UsersFormularyFieldContainer>
                         <UsersFormularyFieldLabel>
                             <input 
                             type={'checkbox'} 
@@ -596,7 +596,7 @@ const UsersForm = (props) => {
                             />
                             &nbsp;{strings['pt-br']['userConfigurationFormularyDeveloperAccessLabel']}
                         </UsersFormularyFieldLabel>
-                    </UsersFormularyFieldContainer>*/}
+                    </UsersFormularyFieldContainer>
                     <UsersFormularyFieldContainer>
                         <UsersFormularyFieldLabel>
                             {strings['pt-br']['userConfigurationFormularyNameLabel']}

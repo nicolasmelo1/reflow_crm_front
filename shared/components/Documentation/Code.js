@@ -33,7 +33,7 @@ const Code = (props) => {
             parent:textEditorRef.current, 
             code: props.code,
             removeLineCounter: true,
-            editable: true
+            editable: false
         })
     }, [props.code])
 

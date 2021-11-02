@@ -448,6 +448,74 @@ const strings = {
         filterAddNewFilterButtonLabel: 'Adicionar outro filtro',
         alertCancelButtonLabel: 'Cancelar',
         alertOkButtonLabel: 'Ok',
+        apiDocumentationIntroductionTitle: 'Introdução',
+        apiDocumentationIntroductionDescription1: `A API da {reflow} oferece e providência um jeito fácil de integrar os dados de sua {reflow} com qualquer sistema externo. `+
+        `A API segue a semântica (REST)[https://pt.wikipedia.org/wiki/REST], usa o formato (JSON)[https://pt.wikipedia.org/wiki/JSON] para transacionar informações, `+ 
+        `e depende de métodos e códigos se status HTTP para sinalizar e realizar ações.`,
+        apiDocumentationIntroductionDescription2: `A documentação da API abaixo é gerada automaticamente especificamente para a sua empresa. Nós recomendamos que você utilize `+
+        `(a_interface_gráfica)[] da {reflow} e adicione alguns registros de exemplo para cada tabela. Esses registros serão usados como exemplo na documentação gerada abaixo.`,
+        apiDocumentationIntroductionDescription3: `Abaixo estão os dados que você irá utilizar para interagir com a API:`, 
+        apiDocumentationIntroductionCompanyIdLabel: `O id da sua empresa é: `,
+        apiDocumentationIntroductionAccessTokenLabel: `Seu token de acesso é: `,
+        apiDocumentationIntroductionGenerateNewAccessTokenLabel: 'Gerar novo token',
+        apiDocumentationIntroductionImportantInformation: 'Informação importante: ',
+        apiDocumentationIntroductionImportantInformation1: `Se você ou algum usuário fizer alterações em um campo de alguma das páginas, a interface da API vai mudar de acordo `+
+        `com essas mudanças. Portanto, tente manter sempre o controle das mudanças feitas em suas páginas. Caso mudanças sejam feitas, certifique-se que o modelo e estrutura da API ` +
+        `estejam de acordo com o novo modelo.`,
+        apiDocumentationRateLimitingTitle: 'Limite de requisições',
+        apiDocumentationRateLimitingDescription1: `A API da {reflow} oferece um limite de requisições para cada usuário de 4 requisições a cada 10 segundos. Se você exceder esse limite você irá ` + 
+        `receber um código de status HTTP _429_ e terá que aguardar 10 segundos para realizar novas requisições.`, 
+        apiDocumentationRateLimitingDescription2: `Até o momento esse limite é igual para todos e não há maneiras de solicitar um aumento desse número. Caso isso não funcione para você ainda sim, converse ` +
+        `com nossa equipe e podemos avaliar soluções para resolver o seu problema.`,
+        apiDocumentationAuthenticationTitle: 'Autenticação',
+        apiDocumentationAuthenticationDescription1: `A {reflow} usa uma autenticação simples por token. Você pode gerenciar esse token nessa mesma página na introdução.`,
+        apiDocumentationAuthenticationDescriptionIsAdmin: `O seu token é criado automaticamente pois você é o administrador principal do sistema, você não pode retirar o acesso de si mesmo mas você pode, a ` +
+        `qualquer momento, solicitar um novo token nessa página caso o mesmo tenha sido comprometido.`,
+        apiDocumentationAuthenticationDescriptionIsNotAdmin: `O seu acesso a API é gerenciado pelos administradores da empresa, a qualquer momento eles podem retirar seu acesso caso ` +
+        `considerem necessário.`, 
+        apiDocumentationAuthenticationImportantInformation: `Seu acesso a API carrega os mesmos prilégios as do seu usuário. Tendo isso em mente, garanta a segurança do seu token de acesso. Nunca passe para ` +
+        `pessoas estranhas e/ou em quem você não confia, nunca compartilhe e em caso de comprometimento, certifique-se sempre de gerar um novo token.`,
+        apiDocumentationAuthenticationDescription2: `Existem dois jeitos de se autenticar para interagir com a API: \n` +
+        `1 - Via headers, passando o token no header {Authorization} com o valor _Bearer:_{}_ \n` +
+        `2 - Via (query_string)[https://en.wikipedia.org/wiki/Query_string], passando {api_key} em sua requisição. Geralmente é um método menos seguro que o anterior mas que permite outros casos de uso.`,
+        apiDocumentationAuthenticationExampleHeaderParams: 'Exemplo passando o token nos headers',
+        apiDocumentationAuthenticationExampleQueryStringParams: 'Exemplo passando o token via query string',
+        apiDocumentationTemplatesPartTitle: 'Templates',
+        apiDocumentationPagesTitle: 'Página {}',
+        apiDocumentationSectionsAndFieldsTitle: 'Seções e campos',
+        apiDocumentationSectionsAndFieldsSectionName: 'Nome da seção',
+        apiDocumentationSectionsAndFieldsSectionType: 'Tipo da seção',
+        apiDocumentationSectionsAndFieldsSectionDescription: 'Descrição',
+        apiDocumentationSectionsAndFieldsSectionUniqueTypeLabel: 'Objeto',
+        apiDocumentationSectionsAndFieldsSectionMultiTypeLabel: 'Array',
+        apiDocumentationSectionsAndFieldsSectionUniqueTypeDescription: 'Uma seção unica é um objeto e armazena os campos apenas uma vez',
+        apiDocumentationSectionsAndFieldsSectionMultiTypeDescription: 'Uma seção multipla armazena o conjunto de campos abaixo multiplas vezes',
+        apiDocumentationSectionsAndFieldsFieldName: 'Nome do campo',
+        apiDocumentationSectionsAndFieldsFieldType: 'Tipo do campo',
+        apiDocumentationSectionsAndFieldsFieldDescription: 'Descrição',
+        apiDocumentationSectionsAndFieldsFieldExampleValuesLabel: 'Valores de Exemplo',
+        apiDocumentationCreateRecordsTitle: 'Criar registros',
+        apiDocumentationTheFieldsPlural: `Os campos `,
+        apiDocumentationTheFieldsSingular: `O campo `,
+        apiDocumentationPluralVerb: 'são',
+        apiDocumentationAnd: 'e',
+        apiDocumentationSingularVerb: 'é',
+        apiDocumentationCreateRecordsDescription1: `Para criar registros, você precisa fazer um request do tipo POST para a url {} passando os dados que você deseja adicionar.`,
+        apiDocumentationCreateRecordsDescription2: `O corpo da requisição irá conter os dados para criar um e apenas um registro, no nível superior do seu objeto json (as primeiras chaves) ` +
+        `deverão conter o nome de todas as seções do seu formulário. Cada uma das primeiras chaves serão o nome das suas seções. Atualmente permitimos 2 tipos de seções em nossos formulários: ` +
+        `seções múltiplas e seções únicas. Uma seção única, como definido no tópico 'seções e campos' acima, irá conter apenas uma cópia do seu registro enquanto uma seção múltipla irá conter ser ` +
+        `um array contendo N instâncias de um mesmo objeto seguindo o padrão dos campos definidos.`,
+        apiDocumentationCreateRecordsDescription3: `Dentro de cada uma das seções você irá inserir o nome de cada um dos campos que você deseja enviar na requisição seguido pelos seus valores. `+
+        `Alguns campos podem conter mais de um valor, então é permitido adicionar um array de valores no seu campo.`,
+        apiDocumentationCreateRecordsAttachments1: ` do tipo anexo. Para adicionar anexos você deverá usar a nossa API para a criação de rascunhos. Rascunhos são arquivos temporários `+
+        `que salvamos em nosso servidor a fim de tornar a experiência do usuário usando o software mais fluída.`,
+        apiDocumentationCreateRecordsAttachments2: `Para enviar um anexo você deve fazer uma requisição do tipo POST para a url {} contendo o seu arquivo. Essa requisição deverá ter o tipo de codificação ` +
+        `multipart/form-data contendo o nome do seu arquivo como chave. Você pode enviar um e apenas um arquivo por vez. Ao enviar a requisição você irá receber um texto como resposta, utilize esse texto ` +
+        `como valor em sua requisição.`,
+        apiDocumentationCreateRecordsUsers1: ` do tipo usuário. Campos do tipo usuários podem receber tanto o id quanto o email do usuário como valor.`,
+        apiDocumentationCreateRecordsConnection1: ` do tipo conexão. Para adicionar um valor em campos conectados você deve passar o id do registro ao qual você deseja conectar. Atualmente você `+ 
+        `não pode ver o id dos registros criados de maneira fácil e rápida, porém você pode entrar em contato com o suporte a qualquer momento e iremos auxiliá-lo a resolver o problema.`,
+        apiDocumentationCreateRecordsAutomaticFields: ` tem seus valores gerados dinamicamente, você pode até setar os valores mas eles serão ignorados quando o registro for salvo e processado.`,
         groupTypeEmpty: 'Outros',
         groupTypeSales: 'Vendas',
         groupTypeDevelopment: 'T.I.',

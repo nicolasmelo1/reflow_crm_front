@@ -11,6 +11,9 @@ const getDefaultTheming = ({removeLineCounter=false} = {}) => {
             color: "white",
             backgroundColor: "#17242D"
         },
+        ".cm-selectionMatch": {
+            backgroundColor: "#bfbfbf20"
+        },
         ".cm-content": {
             caretColor: "#0e9"
         },

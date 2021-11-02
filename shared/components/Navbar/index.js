@@ -124,7 +124,7 @@ class Navbar extends React.Component {
             }
         } 
 
-        if (this.props.login.user?.has_api_access_key) {
+        if (!['', null, undefined].includes(this.props.login.user?.api_access_key)) {
             defaultConfigDropdown.splice(0, 0, {
                 label: strings['pt-br']['headerApiDocumentationLabel'],
                 href: '#',
