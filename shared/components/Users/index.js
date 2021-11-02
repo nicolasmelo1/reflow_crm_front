@@ -68,6 +68,7 @@ class Users extends React.Component {
             email: '',
             first_name: '',
             last_name: '',
+            has_api_access_key: false,
             profile: null,
             option_accessed_by_user: [],
             form_accessed_by_user: [],
