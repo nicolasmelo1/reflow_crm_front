@@ -18,14 +18,23 @@ const connect = dynamicImport('reduxConnect', 'default')
 
 /**
  * This component is the documentation for the api. We wanted to go to a more simple approach like
- * Redoc and so on but next had a really hard time working with it. And also React Native does not support redoc.
- * So we went to a more obscure approach
+ * Redoc and so on but next.js had a really hard time working with it. And also React Native does not support redoc.
+ * So we went to a more obscure approach and created our own documentation engine/page.
+ * 
+ * It's really similar to redoc or swagger like openAPI with some small tweaks and changes.
  * 
  * @param {Type} props - {go in detail about every prop it recieves}
  */
 class APIDocumentation extends React.Component {
     constructor(props) {
         super(props)
+        this.domain = window.location.origin
+        this.urls = {
+            exampleInHeaders: `${this.domain}/api/v0/{companyId}/{firstPageNameToUseAsExample}`,
+            exampleInQueryString: `${this.domain}/api/v0/{companyId}/{firstPageNameToUseAsExample}?api_key={apiKey}`,
+            createRecord: `${this.domain}/api/v0/{companyId}/{pageName}`,
+            createDraft: `${this.domain}/api/v0/{companyId}/draft`
+        }
         this.variableRegex = /\{(\w+)\}/
         this.linkRegex = /\((\w+)\)\[(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*))\]/
         this.fieldTypeNameByFieldTypeId = {}
@@ -217,9 +226,7 @@ class APIDocumentation extends React.Component {
      */
     isFieldAutomaticGenerated = (field) => {
         if (field !== undefined) {
-            console.log(field)
             const fieldTypeName = this.getFieldTypeNameByFieldTypeId(field.type)
-            console.log(fieldTypeName)
             if (fieldTypeName === 'date' && (field.date_configuration_auto_create || field.date_configuration_auto_update)) {
                 return true
             } else if (fieldTypeName === 'formula') {
@@ -231,10 +238,20 @@ class APIDocumentation extends React.Component {
         return false
     }
 
+    /**
+     * Retrieves the last values inserted by each fieldId. To make the documentation alive we want to retrieve the
+     * last values inserted in the records.
+     * 
+     * @param {number} templateId - The id of the template to get the last values inserted for.
+     * @param {number} formularyId - The id of the formulary where the field is at
+     * @param {number} fieldId - The id of the field to get the last values inserted for.
+     * 
+     * @return {Array<object>} - The last values inserted for the field.
+     */
     getLastValuesOfFieldId = (templateId, formularyId, fieldId) => {
-        const filteredFormularies = this.state.templates[templateId].formularies.filter(formulary => formulary.formularyData.id === formularyId)
-        if (filteredFormularies !== undefined && filteredFormularies.length > 0) {
-            for (const formularyValue of filteredFormularies[0].formularyValues) {
+        const filteredFormulary = this.state.templates[templateId].formularies[formularyId]
+        if (filteredFormulary !== undefined) {
+            for (const formularyValue of filteredFormulary.formularyValues) {
                 if (formularyValue.field_id === fieldId) {
                     return formularyValue.last_values
                 }
@@ -243,12 +260,64 @@ class APIDocumentation extends React.Component {
         return []
     }
 
-    onRenewAccessKey() {
+    /**
+     * Retrieve the structure of the API call to show in the example. The example respects the last values
+     * inserted by the user inside of reflow in each formulary.
+     * 
+     * @param {number} templateId - The id of the template where this field is from.
+     * @param {number} formularyId - The id of the formulary where this field is from.
+     * 
+     * @returns {string} - The structure of the API call. THis is a JSON string prettified.
+     * Reference: https://stackoverflow.com/a/7220510
+     */
+    getStructureOfTheApiCall = (templateId, formularyId) => {
+        let structure = {}
+        const filteredFormulary = this.state.templates[templateId].formularies[formularyId]
+        if (filteredFormulary !== undefined) {
+            for (const section of filteredFormulary.formularyData.depends_on_form) {
+                let sectionData = {}
+                for (const field of section.form_fields) {
+                    if (!this.isFieldAutomaticGenerated(field)) {
+                        const fieldType = this.getFieldTypeNameByFieldTypeId(field.type)
+                        const lastValuesOfField = this.getLastValuesOfFieldId(templateId, formularyId, field.id)
+                        if (fieldType === 'multi_option') {
+                            sectionData[field.label_name] = field.field_option.map(option => option.option)
+                        } else if (fieldType === 'option') {
+                            sectionData[field.label_name] = field.field_option.length > 0 ? field.field_option[0].option : ''
+                        } else if (fieldType === 'attachment') {
+                            sectionData[field.label_name] = "ZHJhZnQtMQ=="
+                        } else if (fieldType === 'form') {
+                            try {
+                                sectionData[field.label_name] = parseInt(lastValuesOfField)
+                            } catch (e) {}
+                        } else {
+                            sectionData[field.label_name] = lastValuesOfField.length > 0 ? lastValuesOfField[0]: '' 
+                            if (sectionData[field.label_name] === '') {
+                                delete sectionData[field.label_name]
+                            }
+                        }
+                    }
+                }
+                if (Object.keys(sectionData).length > 0) {
+                    if (section.form_type === 'form') {
+                        structure[section.label_name] = sectionData
+                    } else {
+                        structure[section.label_name] = [sectionData]
+                    }
+                }
+            }
+        }
+        return JSON.stringify(structure, null, 4)
+    }
+
+    onRenewAccessKey = () => {
         console.log('pass')
     }
 
     /**
      * Renders the paragraphs formatted with the text for so it display colors, links and so on.
+     * 
+     * @param {string} text - The text to format
      */
     getTextFormatted = (text) => {
         const emptyUrlRegex = /\(([A-zÀ-ú]+)\)\[\]/
@@ -280,7 +349,7 @@ class APIDocumentation extends React.Component {
                         {matched[1]}
                     </Styled.APIDocumentationReflowVariableText>
                 )
-            } else if (word.charAt(0) === '_' && word.charAt(word.length-1) === '_') {
+            } else if (word.charAt(0) === '_' && (word.charAt(word.length-1) === '_' || word.charAt(word.length-2) === '_')) {
                 return (
                     <Styled.APIDocumentationStatusCodeText 
                     key={index}
@@ -288,6 +357,34 @@ class APIDocumentation extends React.Component {
                         {word.replaceAll('_', ' ')}
                     </Styled.APIDocumentationStatusCodeText>
                 )
+            } else if (word.charAt(0) === '*' && (word.charAt(word.length-1) === '*' || word.charAt(word.length-2) === '*')) {
+                return (
+                    <Styled.APIDocumentationStatusBoldText 
+                    key={index}
+                    >
+                        {word.replaceAll('_', ' ').replaceAll('*', '')}
+                    </Styled.APIDocumentationStatusBoldText>
+                )
+            } else if (word.charAt(0) === '#' && (word.charAt(word.length-1) === '#' || word.charAt(word.length-2) === '#')) {
+                const color = Styled.getRandomColor()
+                const formatedWord =  word.replaceAll('_', ' ').replaceAll('#', '')
+                return (
+                    <Styled.APIDocumentationStatusVariableText 
+                    color={color}
+                    key={index}
+                    >
+                        {word.charAt(word.length-2) === '#' ? `${formatedWord} `: formatedWord}
+                    </Styled.APIDocumentationStatusVariableText>
+                )
+            } else if (word.charAt(0) === '!' && (word.charAt(word.length-1) === '!' || word.charAt(word.length-2) === '!')) {
+                const formatedWord =  word.replaceAll('_', ' ').replaceAll('!', '')
+                return (
+                    <Styled.APIDocumentationStatusItalicText 
+                    key={index}
+                    >
+                        {word.charAt(word.length-2) === '!' ? `${formatedWord} `: formatedWord}
+                    </Styled.APIDocumentationStatusItalicText>
+                ) 
             } else {
                 return(
                     <span key={index}>
@@ -342,17 +439,17 @@ class APIDocumentation extends React.Component {
                 for (const template of response.data.data) {
                     templateData[template.id] = {
                         name: template.name,
-                        formularies: []
+                        formularies: {}
                     }
                     for (const formulary of template.form_group) {
                         const lastValuesOfFormularyResponse = await agent.http.DOCUMENTATION.getlastValuesOfFormulary(this.source, formulary.form_name)
                         const formularyBuildData = await this.props.onGetBuildFormulary(this.source, formulary.form_name)
                         if (formularyBuildData) {
                             if (this.state.firstPageNameToUseAsExample === '') this.setFirstPageNameToUseAsExample(formularyBuildData.form_name)
-                            templateData[template.id].formularies.push({
+                            templateData[template.id].formularies[formularyBuildData.id] = {
                                 formularyData: formularyBuildData,
                                 formularyValues: lastValuesOfFormularyResponse.data.data
-                            })
+                            }
                         }
                     }
                 }
@@ -418,9 +515,9 @@ class APIDocumentation extends React.Component {
                                 {template.name}
                             </Styled.APIDocumentationNavigationButton>
                             {this.state.openTemplateIds.includes(templateId) ? 
-                                template.formularies.map(formulary => (
+                                Object.entries(template.formularies).map(([formularyId, formulary]) => (
                                     <React.Fragment
-                                    key={formulary.formularyData.id}
+                                    key={formularyId}
                                     >
                                         <Styled.APIDocumentationSubmenuNavigationButton
                                         onClick={(e) => {
@@ -541,7 +638,7 @@ class APIDocumentation extends React.Component {
                                 {strings['pt-br']['apiDocumentationAuthenticationExampleHeaderParams']}
                             </p>
                             <Code
-                            code={`$ curl ${window.location.origin}/api/v0/${this.props.companyId}/${this.state.firstPageNameToUseAsExample} \\\n` +
+                            code={`$ curl ${this.urls.exampleInHeaders.replace('{companyId}', this.props.companyId).replace('{firstPageNameToUseAsExample}', this.state.firstPageNameToUseAsExample)} \\\n` +
                             `-H "Authorization: Bearer ${this.props.apiAccessKey}"`}
                             languagePack={StreamLanguage.define(shell)}
                             />
@@ -549,7 +646,7 @@ class APIDocumentation extends React.Component {
                                 {strings['pt-br']['apiDocumentationAuthenticationExampleQueryStringParams']}
                             </p>
                             <Code
-                            code={`$ curl ${window.location.origin}/api/v0/${this.props.companyId}/${this.state.firstPageNameToUseAsExample}?api_key=${this.props.apiAccessKey}`}
+                            code={`$ curl ${this.urls.exampleInHeaders.replace('{companyId}', this.props.companyId).replace('{firstPageNameToUseAsExample}', this.state.firstPageNameToUseAsExample).replace('{apiKey}', this.props.apiAccessKey)}`}
                             languagePack={StreamLanguage.define(shell)}
                             />
                         </Styled.APIDocumentationCodeContainer>
@@ -562,9 +659,9 @@ class APIDocumentation extends React.Component {
                             >
                                 {template.name}
                             </Styled.APIDocumentationHeader>
-                            {template.formularies.map(formulary => (
+                            {Object.entries(template.formularies).map(([formularyId, formulary]) => (
                                 <Styled.APIDocumentationSection 
-                                key={formulary.formularyData.id}
+                                key={formularyId}
                                 >
                                     <h2
                                     ref={this.createAndRetrievePageRef(formulary.formularyData.id)}
@@ -666,11 +763,16 @@ class APIDocumentation extends React.Component {
                                         {strings['pt-br']['apiDocumentationCreateRecordsTitle']}
                                     </h4>
                                     <CreateRecords
+                                    urls={this.urls}
+                                    companyId={this.props.companyId}
+                                    apiAccessKey={this.props.apiAccessKey}
+                                    getTextFormatted={this.getTextFormatted}
                                     formularyId={formulary.formularyData.id}
                                     templateId={templateId}
                                     sections={formulary.formularyData.depends_on_form}
                                     types={this.props.types}
                                     formName={formulary.formularyData.form_name}
+                                    getStructureOfTheApiCall={this.getStructureOfTheApiCall}
                                     getLastValuesOfFieldId={this.getLastValuesOfFieldId}
                                     getFieldTypeNameByFieldTypeId={this.getFieldTypeNameByFieldTypeId}
                                     isFieldAutomaticGenerated={this.isFieldAutomaticGenerated}

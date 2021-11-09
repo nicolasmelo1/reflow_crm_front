@@ -2,6 +2,32 @@ import React from 'react'
 import styled from 'styled-components'
 import { TouchableOpacity, View } from 'react-native'
 
+
+const possibleColors = [
+    '#B1DDF1',
+    '#9F87AF',
+    '#88527F',
+    '#7785AC', 
+    '#FFC2B4', 
+    '#0DBF7E', 
+    '#17242D',
+    '#F08700',
+    '#CBA328',
+    '#EF767A',
+    '#8797AF',
+    '#F49F0A',
+    '#646536', 
+    '#82204A', 
+    '#FFE0B5',
+    '#8B687F',
+    '#D81159'
+]
+
+export const getRandomColor = () => {
+    const randomIndex = Math.floor(Math.random() * possibleColors.length)
+    return possibleColors[randomIndex]
+}
+
 export const APIDocumentationContainer = process.env['APP'] === 'web' ?
 styled.div`
     display: flex;
@@ -96,8 +122,6 @@ styled.section`
 :
 styled(View)``
 
-
-
 export const APIDocumentationSectionAndFieldsTableHeaderRow = process.env['APP'] === 'web' ? 
 styled.div`
     display: flex;
@@ -175,7 +199,32 @@ styled(Text)``
 
 export const APIDocumentationStatusCodeText = process.env['APP'] === 'web' ?
 styled.span`
-    color: red
+    color: red;
+    border-radius: 5px;
+    padding: 2px;
+    background-color: #f2f2f2
+`
+:
+styled(Text)``
+
+export const APIDocumentationStatusBoldText = process.env['APP'] === 'web' ?
+styled.span`
+    font-weight: bold
+`
+:
+styled(Text)``
+
+export const APIDocumentationStatusItalicText = process.env['APP'] === 'web' ?
+styled.span`
+    font-style: italic
+`
+:
+styled(Text)``
+
+export const APIDocumentationStatusVariableText = process.env['APP'] === 'web' ?
+styled.span`
+    color: ${props => props.color};
+    font-weight: bold;
 `
 :
 styled(Text)``

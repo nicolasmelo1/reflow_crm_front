@@ -13,7 +13,7 @@ class APIDocumentationPage extends React.Component {
         return (
             <Layout 
             showSideBar={false} 
-            header={<Header title={'API Documentation'}/>}
+            header={<Header title={'Documentação da API (Beta)'}/>}
             >
                 <APIDocumentation
                 formName={this.props.router.query.form} 

@@ -109,7 +109,7 @@ const strings = {
         headerNotificationLabel: 'Notificações',
         headerHelpLabel: 'Ajuda',
         headerLogoutLabel: 'Logout',
-        headerApiDocumentationLabel: 'Documentação da API',
+        headerApiDocumentationLabel: 'Documentação da API (Beta)',
         headerHomePdfGeneratorTools: 'Gerador de PDF',
         formularySaveButtonLabel: 'Salvar',
         formularyDuplicateButtonLabel: 'Duplicar',
@@ -500,17 +500,17 @@ const strings = {
         apiDocumentationPluralVerb: 'são',
         apiDocumentationAnd: 'e',
         apiDocumentationSingularVerb: 'é',
-        apiDocumentationCreateRecordsDescription1: `Para criar registros, você precisa fazer um request do tipo POST para a url {} passando os dados que você deseja adicionar.`,
+        apiDocumentationCreateRecordsDescription1: `Para criar registros, você precisa fazer um request do tipo *POST* para a url {} passando os dados que você deseja adicionar.`,
         apiDocumentationCreateRecordsDescription2: `O corpo da requisição irá conter os dados para criar um e apenas um registro, no nível superior do seu objeto json (as primeiras chaves) ` +
         `deverão conter o nome de todas as seções do seu formulário. Cada uma das primeiras chaves serão o nome das suas seções. Atualmente permitimos 2 tipos de seções em nossos formulários: ` +
-        `seções múltiplas e seções únicas. Uma seção única, como definido no tópico 'seções e campos' acima, irá conter apenas uma cópia do seu registro enquanto uma seção múltipla irá conter ser ` +
+        `*seções_múltiplas* e *seções_únicas*. Uma seção única, como definido no tópico 'seções e campos' acima, irá conter apenas uma cópia do seu registro. Uma seção múltipla por outro lado irá ser ` +
         `um array contendo N instâncias de um mesmo objeto seguindo o padrão dos campos definidos.`,
         apiDocumentationCreateRecordsDescription3: `Dentro de cada uma das seções você irá inserir o nome de cada um dos campos que você deseja enviar na requisição seguido pelos seus valores. `+
         `Alguns campos podem conter mais de um valor, então é permitido adicionar um array de valores no seu campo.`,
         apiDocumentationCreateRecordsAttachments1: ` do tipo anexo. Para adicionar anexos você deverá usar a nossa API para a criação de rascunhos. Rascunhos são arquivos temporários `+
         `que salvamos em nosso servidor a fim de tornar a experiência do usuário usando o software mais fluída.`,
-        apiDocumentationCreateRecordsAttachments2: `Para enviar um anexo você deve fazer uma requisição do tipo POST para a url {} contendo o seu arquivo. Essa requisição deverá ter o tipo de codificação ` +
-        `multipart/form-data contendo o nome do seu arquivo como chave. Você pode enviar um e apenas um arquivo por vez. Ao enviar a requisição você irá receber um texto como resposta, utilize esse texto ` +
+        apiDocumentationCreateRecordsAttachments2: `Para enviar um anexo você deve fazer uma requisição do tipo *POST* para a url {} contendo o seu arquivo. Essa requisição deverá ter o tipo de codificação ` +
+        `*multipart/form-data* contendo !files! como chave. Você pode enviar um e apenas um arquivo por vez. Ao enviar a requisição você irá receber um json contendo um texto como resposta, utilize esse texto ` +
         `como valor em sua requisição.`,
         apiDocumentationCreateRecordsUsers1: ` do tipo usuário. Campos do tipo usuários podem receber tanto o id quanto o email do usuário como valor.`,
         apiDocumentationCreateRecordsConnection1: ` do tipo conexão. Para adicionar um valor em campos conectados você deve passar o id do registro ao qual você deseja conectar. Atualmente você `+ 

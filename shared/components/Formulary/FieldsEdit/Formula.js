@@ -201,7 +201,6 @@ const Formula = (props) => {
      * @returns {Array<String>} - Array of strings where each string is an integer or an empty string.
      */
     const getFormulaOccurences = (formulaText) => {
-        console.log(formulaText)
         const occurrences = (formulaText.match(/{{(\w+)?}}/g) || []).map((variable, index) => {
             variable = variable.replace('{{', '').replace('}}', '') 
 
