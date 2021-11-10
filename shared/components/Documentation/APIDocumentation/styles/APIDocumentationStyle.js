@@ -34,6 +34,7 @@ styled.div`
     flex-direction: row;
     height: 100%;
     background-color: #fff;
+    width: 100%;
     margin-left: -20px;
     margin-right: -20px
 `
@@ -51,7 +52,8 @@ styled.nav`
     padding: 10px !important;
     box-shadow: 4px 4px 12px rgba(56, 66, 95, 0.08);
     height: 100%;
-    width: 500px;
+    min-width: 100px;
+    max-width: calc(var(--app-width)/4);
     padding: 10px 0;
     overflow-y: auto;
 `

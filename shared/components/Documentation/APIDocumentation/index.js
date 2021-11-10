@@ -441,7 +441,7 @@ class APIDocumentation extends React.Component {
                         name: template.name,
                         formularies: {}
                     }
-                    for (const formulary of template.form_group) {
+                    template.form_group.forEach(async formulary => {
                         const lastValuesOfFormularyResponse = await agent.http.DOCUMENTATION.getlastValuesOfFormulary(this.source, formulary.form_name)
                         const formularyBuildData = await this.props.onGetBuildFormulary(this.source, formulary.form_name)
                         if (formularyBuildData) {
@@ -451,7 +451,7 @@ class APIDocumentation extends React.Component {
                                 formularyValues: lastValuesOfFormularyResponse.data.data
                             }
                         }
-                    }
+                    })
                 }
                 this.setState(state => ({
                     ...state,
