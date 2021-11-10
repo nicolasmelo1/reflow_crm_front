@@ -4,6 +4,7 @@ import { TouchableWithoutFeedback, Keyboard, SafeAreaView, Platform, View } from
 import Sidebar from './Sidebar'
 import Navbar from './Navbar'
 import Notify from './Notify'
+import Survey from './Survey'
 import Templates from './Templates'
 import actions from '../redux/actions'
 import dynamicImport from '../utils/dynamicImport'
@@ -131,12 +132,19 @@ class Layout extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            surveyId: null,
             addTemplates: (this.props.addTemplates) ? this.props.addTemplates : false,
             tokenLoaded: false,
             sidebarIsOpen: false
         }
     }
 
+    setSurveyId = (surveyId) => {
+        this.setState(state => ({ 
+            ...this.state,
+            surveyId: surveyId
+        }))
+    }
     setSidebarIsOpen = () => (this._ismounted) ? this.setState(state => state.sidebarIsOpen = !state.sidebarIsOpen) : null
     setAddTemplates = (data) => (this._ismounted) ? this.setState(state => state.addTemplates = data) : null
 
@@ -166,6 +174,17 @@ class Layout extends React.Component {
             agent.setCompanyId(this.props.companyId)
         } else if (![null, undefined].includes(this.props?.login?.companyId)) {
             agent.setCompanyId(this.props.login.companyId)
+        }
+    }
+
+    setupSurveyWebhook = () => {
+        if (this.props.login?.user?.id) {
+            agent.websocket.ANALYTICS.recieveIsToOpenSurvey({
+                userId: this.props.login.user.id,
+                callback: (data) => {
+                    this.setSurveyId(data.data.survey_id)
+                }
+            })
         }
     }
 
@@ -235,6 +254,7 @@ class Layout extends React.Component {
         this.checkIfUserInAdminUrl()
         this.setCompanyId()
         this.setPublicAccessKey()
+        this.setupSurveyWebhook()
         agent.setLogout(this.setLogout)
         agent.setPermissionsHandler(this.permissionsHandler)
         this.props.getDataTypes()
@@ -289,10 +309,17 @@ class Layout extends React.Component {
     }
 
     renderWeb = () => {
+        console.log(this.state.surveyId)
         return (
             <div>
                 {this.state.tokenLoaded ? (
                     <Body>   
+                        {this.state.surveyId !== null ? (
+                            <Survey 
+                            surveyId={this.state.surveyId}
+                            onCloseSurvey={() => this.setSurveyId(null)}
+                            />
+                        ) : ''}
                         {this.props.header}
                         <Notify/> 
                         {(this.state.addTemplates || this.props.addTemplates) && isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user) ? (

@@ -516,6 +516,7 @@ const strings = {
         apiDocumentationCreateRecordsConnection1: ` do tipo conexão. Para adicionar um valor em campos conectados você deve passar o id do registro ao qual você deseja conectar. Atualmente você `+ 
         `não pode ver o id dos registros criados de maneira fácil e rápida, porém você pode entrar em contato com o suporte a qualquer momento e iremos auxiliá-lo a resolver o problema.`,
         apiDocumentationCreateRecordsAutomaticFields: ` tem seus valores gerados dinamicamente, você pode até setar os valores mas eles serão ignorados quando o registro for salvo e processado.`,
+        surveySubmitButtonLabel: 'Enviar',
         groupTypeEmpty: 'Outros',
         groupTypeSales: 'Vendas',
         groupTypeDevelopment: 'T.I.',
