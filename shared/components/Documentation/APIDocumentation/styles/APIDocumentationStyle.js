@@ -170,7 +170,7 @@ styled.div`
     overflow: auto;
     padding: 10px;
     border-radius: 5px;
-    box-shadow: 4px 4px 12px rgba(56, 66, 95, 0.08)
+    box-shadow: 4px 4px 12px rgba(56, 66, 95, 0.08);
     wodth: 100%;
 `
 :
