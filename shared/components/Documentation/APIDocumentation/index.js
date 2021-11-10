@@ -388,7 +388,7 @@ class APIDocumentation extends React.Component {
             } else {
                 return(
                     <span key={index}>
-                        {` ${word} `}
+                        {` ${word}`}
                     </span>
                 )            
             }
@@ -422,7 +422,7 @@ class APIDocumentation extends React.Component {
             } else {
                 return(
                     <span key={index}>
-                        {` ${word} `}
+                        {` ${word}`}
                     </span>
                 )
             }
