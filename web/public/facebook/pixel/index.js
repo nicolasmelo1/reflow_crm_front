@@ -1,4 +1,4 @@
-/*!function (f, b, e, v, n, t, s) {
+!function (f, b, e, v, n, t, s) {
     if (f.fbq) return;
     n = f.fbq = function () {
         n.callMethod ?
@@ -11,4 +11,4 @@
 }(window, document, 'script',
     'https://connect.facebook.net/en_US/fbevents.js');
 fbq('init', '2589444744604499');
-fbq('track', 'PageView');*/
+fbq('track', 'PageView');

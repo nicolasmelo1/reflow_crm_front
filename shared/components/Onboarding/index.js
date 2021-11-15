@@ -188,6 +188,7 @@ class Onboarding extends React.Component {
                     window.lintrk('track', { 
                         conversion_id: 6503801 
                     })
+                    fbq('track', 'CompleteRegistration')
                 }
                 this.logUserIn()
             }
