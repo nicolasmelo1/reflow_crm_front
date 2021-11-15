@@ -3,5 +3,7 @@ module.exports = {
     BEARER: "Client",
     VINDI_PUBLIC_API: process.env.VINDI_PUBLIC_API ? process.env.VINDI_PUBLIC_API : 'https://sandbox-app.vindi.com.br/api/v1/public/payment_profiles',
     VINDI_PUBLIC_API_KEY: process.env.VINDI_PUBLIC_API_KEY ? process.env.VINDI_PUBLIC_API_KEY :  'uNZqO8kJbVRIRSiBEsbyWRGtpTGLd432AxXHYltw_Ow',
-    FRONT_END_HOST: process.env.FRONT_END_HOST ? process.env.FRONT_END_HOST : 'http://localhost:3000/'
+    FRONT_END_HOST: process.env.FRONT_END_HOST ? process.env.FRONT_END_HOST : 'http://localhost:3000/',
+    DEFAULT_DATE_FIELD_FORMAT: 'YYYY-MM-DD HH:MM:ss',
+    DEFAULT_BASE_NUMBER_FIELD_FORMAT: 100000000
 }

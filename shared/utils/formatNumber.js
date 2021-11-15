@@ -10,14 +10,14 @@ const formatNumber = (value, numberFormat) => {
     let negative = value
     // remove any suffixes and prefixes of the negative number we just want the negative signal: '-'
     if (numberFormat.suffix) {
-        let regexSufix = new RegExp(`(\\${numberFormat.suffix})$`,"m");
+        let regexSufix = new RegExp(`(\\${numberFormat.suffix})$`,"m")
         negative = value.replace(regexSufix,'')
     } 
     if (numberFormat.prefix){
-        let regexPrefix = new RegExp(`(^\\${numberFormat.prefix})`,"m");
+        let regexPrefix = new RegExp(`(^\\${numberFormat.prefix})`,"m")
         negative = negative.replace(regexPrefix,'')
     }
-    negative = (negative.charAt(0) == '-') ? '-': '';
+    negative = (negative.charAt(0) == '-') ? '-': ''
 
     // add decimals and validate decimals
     let valueWithDecimal = value

@@ -9,6 +9,7 @@ import { strings, paths, errors } from '../../utils/constants'
 import FirstStepForm from './FirstStepForm'
 import SecondStepForm from './SecondStepForm'
 import Styled from './styles'
+import SpreadsheetUploader from './SpreadsheetUploader'
 
 const connect = dynamicImport('reduxConnect', 'default')
 const Router = dynamicImport('next/router')
@@ -36,7 +37,7 @@ class Onboarding extends React.Component {
         if (['', null, undefined].includes(this.visitorId)) {
             this.visitorId = generateUUID()
         }
-        this.formularySteps = ['set-email', 'set-password']
+        this.formularySteps = ['set-email', 'set-password', 'spreadsheet-uploader']
         this.errorMessages = {
             name: strings['pt-br']['onboardingNameAndLastNameError'],
             phone: strings['pt-br']['onboardingPhoneError'],
@@ -125,9 +126,9 @@ class Onboarding extends React.Component {
             case 'phone':
                 return ![null, undefined, ''].includes(value) && numberUnmasker(value, this.getPhoneNumberMask(value)).length >= 10
             case 'email':
-                return ![null, undefined, ''].includes(value) && /@[A-z\-]+\./g.test(value)
+                return ![null, undefined, ''].includes(value) && /@[A-z\-\_]+\./g.test(value)
             case 'confirmEmail':
-                return ![null, undefined, ''].includes(value) && /@[A-z\-]+\./g.test(value) && this.state.email === value
+                return ![null, undefined, ''].includes(value) && /@[A-z\-\_]+\./g.test(value) && this.state.email === value
             case 'confirmPassword':
                 return ![null, undefined, ''].includes(value) && this.state.password === value
             case 'numberOfEmployees':
@@ -165,7 +166,7 @@ class Onboarding extends React.Component {
         const data = {
             partner: this.props.partner ? this.props.partner : null,
             shared_by: this.props.sharedBy ? this.props.sharedBy : null,
-            discount_coupon: this.props.discount_coupon ? this.props.discount_coupon : null,
+            discount_coupon: this.props.discountCoupon ? this.props.discountCoupon : null,
             company_name: this.state.companyName,
             company_number_of_employees: this.state.numberOfEmployees,
             company_sector: this.state.companySector,
@@ -183,10 +184,42 @@ class Onboarding extends React.Component {
             } else if (!response) {
                 this.props.onAddNotification(strings['pt-br']['onboardingUnknownError'], 'error')
             } else {
+                this.logUserIn()
+            }
+        })
+    }
+
+    /**
+     * 
+     */
+    logUserIn = () => {
+        this.props.onAuthenticate({ 
+            email: this.state.email, 
+            password: this.state.password
+        }).then(response => {
+            if (response && response.status === 200) {
+                // force types to be defines when logging in.
+                this.props.getDataTypes().then(_ => {
+                    // we set it here because of React: Next.js always constructs the Layout component, so 
+                    // it always pass on the constructor part, React Native on the other hand usually don't.
+                    agent.setCompanyId(this.props.login.companyId)
+                    
+                    if (!['', null, undefined].includes(this.props.login.primaryForm)) {
+                        if (process.env['APP'] === 'web') {
+                            Router.push(paths.home().asUrl, paths.home(this.props.login.primaryForm).asUrl, { shallow: true })
+                        } else {
+                            this.props.setIsAuthenticated(true)
+                        }
+                    } else {
+                        this.props.setAddTemplates(true)
+                    }  
+                })
+            } else {
                 this.redirectToLogin()
             }
         })
     }
+
     // ------------------------------------------------------------------------------------------
     /**
      * Function used for redirection the user back to the login page.
@@ -324,7 +357,7 @@ class Onboarding extends React.Component {
                     redirectToLogin={this.redirectToLogin}
                     setStep={this.setStep}
                     />
-                ) : (
+                ) : this.formularySteps[this.state.step] === 'set-password' ? (
                     <SecondStepForm
                     showForm={this.state.showForm}
                     onValidate={this.onValidate}
@@ -336,6 +369,10 @@ class Onboarding extends React.Component {
                     setConfirmPassword={this.setConfirmPassword}
                     onSubmitForm={this.onSubmitForm}
                     />
+                ) : (
+                    <SpreadsheetUploader
+                    setStep={this.setStep}
+                    />
                 )}
             </Styled.OnboardingContainer>
         )
@@ -346,4 +383,4 @@ class Onboarding extends React.Component {
     }
 }
 
-export default connect(state => ({ }), actions)(Onboarding);
+export default connect(state => ({ login: state.login }), actions)(Onboarding)

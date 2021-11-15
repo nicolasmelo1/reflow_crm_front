@@ -4,6 +4,7 @@ import Layout from '@shared/components/Layout'
 import { strings } from '@shared/utils/constants'
 import Header from '../../components/Header'
 
+
 class LoginPage extends React.Component {
     constructor(props) {
         super(props)

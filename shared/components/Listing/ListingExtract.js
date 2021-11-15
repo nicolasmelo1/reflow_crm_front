@@ -33,8 +33,8 @@ const Spinner = dynamicImport('react-bootstrap', 'Spinner')
  * the generated file after the file is ready.
  */
 const ListingExtract = (props) => {
-    const start = moment().subtract(59, 'days').toDate();
-    const end = moment().toDate();    
+    const start = moment().subtract(59, 'days').toDate()
+    const end = moment().toDate()
     const [updateDates, setUpdateDates] = useState({
         startDate: jsDateToStringFormat(start, props.dateFormat.split(' ')[0]),
         endDate: jsDateToStringFormat(end, props.dateFormat.split(' ')[0])

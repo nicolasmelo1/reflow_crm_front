@@ -34,9 +34,18 @@ class MyDocument extends Document {
                 <body style={{
                     fontSize: '15px'
                 }}>
-                    <script src="https://cdn.jsdelivr.net/npm/redoc@latest/bundles/redoc.standalone.js"/>
                     <Main />
                     <NextScript />
+                    <script type="text/javascript" src="/linkedin/insighttag.js"/>
+                    <noscript>
+                        <img 
+                        height="1" 
+                        width="1" 
+                        style="display:none;" 
+                        alt="" 
+                        src="https://px.ads.linkedin.com/collect/?pid=4029201&fmt=gif"
+                        />
+                    </noscript>
                 </body>
             </Html>
         )

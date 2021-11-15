@@ -309,7 +309,6 @@ class Layout extends React.Component {
     }
 
     renderWeb = () => {
-        console.log(this.state.surveyId)
         return (
             <div>
                 {this.state.tokenLoaded ? (
