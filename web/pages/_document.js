@@ -36,12 +36,13 @@ class MyDocument extends Document {
                 }}>
                     <Main />
                     <NextScript />
-                    <script type="text/javascript" src="/linkedin/insighttag.js"/>
+                    <script type="text/javascript" src="/linkedin/insighttag/setup.js"/>
+                    <script type="text/javascript" src="/linkedin/insighttag/initialize.js"/>
                     <noscript>
                         <img 
                         height="1" 
                         width="1" 
-                        style="display:none;" 
+                        style={{display:"none"}} 
                         alt="" 
                         src="https://px.ads.linkedin.com/collect/?pid=4029201&fmt=gif"
                         />

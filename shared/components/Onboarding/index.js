@@ -184,6 +184,11 @@ class Onboarding extends React.Component {
             } else if (!response) {
                 this.props.onAddNotification(strings['pt-br']['onboardingUnknownError'], 'error')
             } else {
+                if (process.env['APP'] === 'web' && window.lintrk) {
+                    window.lintrk('track', { 
+                        conversion_id: 6503801 
+                    })
+                }
                 this.logUserIn()
             }
         })

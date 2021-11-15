@@ -26,9 +26,9 @@ const makeDelay = delay(1000)
 const PopoverWithAditionalInformation = React.forwardRef(({additionalInformation, ...rest}, ref) => {
     return (
         <Popover ref={ref} {...rest}>
-            <Popover.Content style={{whiteSpace: 'pre-line'}}>
+            <Popover.Body style={{whiteSpace: 'pre-line'}}>
                 {additionalInformation}
-            </Popover.Content>
+            </Popover.Body>
         </Popover>
     )
 })

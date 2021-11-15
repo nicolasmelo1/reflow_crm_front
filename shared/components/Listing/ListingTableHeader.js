@@ -10,7 +10,7 @@ const Popover = dynamicImport('react-bootstrap', 'Popover')
 const PopoverWithConditionalSectionInformation = React.forwardRef(({conditionals, ...rest}, ref) => {
     return (
         <Popover ref={ref} {...rest}>
-            <Popover.Content style={{whiteSpace: 'pre-line'}}>
+            <Popover.Body style={{whiteSpace: 'pre-line'}}>
                 <Styled.ListingTableHeaderConditionalPopoverTextTitle>
                     {strings['pt-br']['listingHeaderConditionalFieldColumnPopoverTitle']}
                 </Styled.ListingTableHeaderConditionalPopoverTextTitle>
@@ -28,7 +28,7 @@ const PopoverWithConditionalSectionInformation = React.forwardRef(({conditionals
                         {conditionals.conditional_value}
                     </Styled.ListingTableHeaderConditionalPopoverTextVariable>
                 </span>
-            </Popover.Content>
+            </Popover.Body>
         </Popover>
     )
 })

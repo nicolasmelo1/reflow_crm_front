@@ -6,7 +6,7 @@ import dynamicImport from '../utils/dynamicImport'
 const Popover = dynamicImport('react-bootstrap', 'Popover')
 
 export default process.env['APP'] === 'web' && Popover ?
-styled(Popover.Content)`
+styled(Popover.Body)`
     overflow: auto;
     max-height: calc(var(--app-height) - var(--app-navbar-height));
     
