@@ -167,6 +167,7 @@ styled(Text)``
 
 export const APIDocumentationSectionsContainer = process.env['APP'] === 'web' ?
 styled.div`
+    overscroll-behavior: none;
     overflow: auto;
     padding: 10px;
     border-radius: 5px;

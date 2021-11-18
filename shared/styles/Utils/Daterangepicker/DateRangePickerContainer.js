@@ -10,6 +10,7 @@ styled.div`
     box-shadow: 0 4px 20px 0 black;
     ${props => props.maximumHeight ? `height: ${props.maximumHeight}px;` : ''}
     overflow: auto;
+    overscroll-behavior: none;
     text-align: center;
     left: 0;
     right: 0;

@@ -9,6 +9,7 @@ styled.div`
     border-radius: 5px; 
     z-index: 2;
     overflow: auto;
+    overscroll-behavior: none;
     padding: 5px;
     position: absolute;
     width: calc(100% - 20px);

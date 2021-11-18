@@ -91,6 +91,7 @@ styled.div`
     opacity: ${props => props.showForm ? '1': '0'};
     transition: opacity 1s ease-in-out; 
     max-height: calc(var(--app-height) - 80px);
+    overscroll-behavior: none;
     overflow: auto;
 
     scrollbar-color: #bfbfbf transparent;

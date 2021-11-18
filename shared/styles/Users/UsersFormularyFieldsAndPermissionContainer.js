@@ -5,6 +5,7 @@ import { ScrollView } from 'react-native'
 export default process.env['APP'] === 'web' ?
 styled.div`
     overflow: auto;
+    overscroll-behavior: none;
     height: calc(var(--app-height) - 45px );
 
     scrollbar-color: #bfbfbf transparent;

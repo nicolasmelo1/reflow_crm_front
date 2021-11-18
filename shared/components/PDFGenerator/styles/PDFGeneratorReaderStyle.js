@@ -9,6 +9,7 @@ styled.div`
     width: 100%;
     flex-direction: row;
     justify-content: space-between;
+    padding-top: 5px;
     padding-bottom: 5px;
     border-bottom: 1px solid #bfbfbf;
 `

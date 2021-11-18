@@ -7,6 +7,7 @@ styled.div`
     display: flex;
     padding: 0 10px;
     overflow: auto;
+    overscroll-behavior: none;
 
     @media(max-width: 492px) {
         flex-direction: column;

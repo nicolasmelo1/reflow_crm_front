@@ -8,6 +8,7 @@ styled.div`
     overflow: auto;
     position: relative;
     width: calc(var(--app-width) - 40px);
+    overscroll-behavior: none;
 
     scrollbar-color: #bfbfbf transparent;
     scrollbar-width: thin;

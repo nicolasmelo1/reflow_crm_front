@@ -83,17 +83,21 @@ class RepresentationService {
     } 
 
     async representation(value) {
-        if (value && value !== '') {
+        if (value !== undefined && value !== null && value !== '') {
             const methodName = `_representation${this.fieldTypeName.charAt(0).toUpperCase() + this.fieldTypeName.slice(1)}`
             if (this[methodName] !== undefined) {
                 return this[methodName](value)
             }
         }
-        return ''
+        return (value !== undefined && value !== null) ? value : ''
     }
 
     async _representationDate(value) {
-        value = moment(value, config.DEFAULT_DATE_FIELD_FORMAT).format(this.dateFormatType.format)
+        if (value instanceof Date) {
+            value = moment(value).format(pythonFormatToMomentJSFormat(this.dateFormatType.format))
+        } else {
+            value = moment(value, config.DEFAULT_DATE_FIELD_FORMAT).format(pythonFormatToMomentJSFormat(this.dateFormatType.format))
+        }
         if (value !== 'Invalid Date') {
             return value
         } else {
@@ -102,7 +106,7 @@ class RepresentationService {
     }
 
     async _representationNumber(value) {
-        console.log(value)
+        value = value.toString()
         const isNegative = value.charAt(0) === '-'
         const precision = this.numberFormatType.precision
         const base = this.numberFormatType.base
@@ -135,10 +139,8 @@ class RepresentationService {
         let [integerPartOfNumber, decimalPartOfNumber] = valueAsArrayDividedByDecimalSeparator
         if (decimalPartOfNumber === undefined) decimalPartOfNumber = ''
         // Add thousand separator
-        integerPartOfNumber = integerPartOfNumber.split("").reverse().join("").replace(/(.{3})/g, `$1${thousandSeparator}`).split("").reverse().join("")
-        if (thousandSeparator !== null) {
-            let regexWithThousandSeparator = new RegExp(`^(\\${thousandSeparator})`, 'g');
-            integerPartOfNumber = integerPartOfNumber.replace(regexWithThousandSeparator, '')
+        if (thousandSeparator !== null && thousandSeparator !== '') {
+            integerPartOfNumber = integerPartOfNumber.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, thousandSeparator)
         }
         if (decimalPartOfNumber !== undefined) {
             decimalPartOfNumber = decimalPartOfNumber.slice(0, precision.toString().length - 1)
@@ -151,11 +153,16 @@ class RepresentationService {
                     value = integerPartOfNumber
                 }
             } else {
-                value = value.replace('.', decimalSeparator)
+                if (![undefined, null, ''].includes(decimalPartOfNumber)) {
+                    value = [integerPartOfNumber, decimalPartOfNumber].join(decimalSeparator)
+                } else {
+                    value = integerPartOfNumber
+                }
             }
         } else {
             value = integerPartOfNumber
         }
+       
         return prefix + ((isNegative) ? '-' : '') + value + suffix
     }
 }

@@ -28,8 +28,9 @@ class MyDocument extends Document {
     }
 
     render() {
+        // overscrollBehaviour reference: https://stackoverflow.com/a/56071966
         return (
-            <Html style={{ overflow: 'hidden' }} lang="pt-BR">
+            <Html style={{ overflow: 'hidden', overscrollBehavior: 'none' }} lang="pt-BR">
                 <Head />
                 <body style={{
                     fontSize: '15px'

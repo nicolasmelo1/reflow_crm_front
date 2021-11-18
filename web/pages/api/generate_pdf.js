@@ -10,7 +10,14 @@ export default async function handler(req, res) {
     if (req.method === 'POST') {
         if (browsers <= maximumNumberOfBrowsers) {
             browsers ++
-            const browser = await puppeteer.launch({ headless: true, args: ['--disable-gpu', '--disable-dev-shm-usage', '--no-sandbox'] })
+            let launchOptions = { 
+                headless: true, 
+                args: ['--disable-gpu', '--disable-dev-shm-usage', '--no-sandbox'] 
+            }
+            if (process.env['PUPPETEER_SKIP_CHROMIUM_DOWNLOAD'] === 'true') {
+                launchOptions.executablePath = 'google-chrome-stable'
+            }
+            const browser = await puppeteer.launch(launchOptions)
             const page = await browser.newPage()
 
             await page.setContent(req.body.html, {waitUntil: 'networkidle0'})
@@ -37,4 +44,4 @@ export default async function handler(req, res) {
             })
         }
     }
-  }
+}

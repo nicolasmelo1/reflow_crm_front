@@ -5,6 +5,9 @@ ADD package.json /code/
 ADD merge.js /code/
 ADD web/package.json /code/web/
 
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+
+
 RUN npm run install:web
 
 # THIS IS FOR PUPPETEER TO WORK, REFER TO: https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md#running-puppeteer-in-docker
@@ -19,6 +22,20 @@ RUN apt-get update \
     && apt-get install -y google-chrome-stable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 \
       --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
+
+
+RUN npm init -y &&  \
+    npm i puppeteer \
+    # Add user so we don't need --no-sandbox.
+    # same layer as npm install to keep re-chowned files from using up several hundred MBs more space
+    && groupadd -r pptruser && useradd -r -g pptruser -G audio,video pptruser \
+    && mkdir -p /home/pptruser/Downloads \
+    && chown -R pptruser:pptruser /home/pptruser \
+    && chown -R pptruser:pptruser /node_modules \
+    && chown -R pptruser:pptruser /package.json \
+    && chown -R pptruser:pptruser /package-lock.json
+
+USER pptruser
 
 COPY . /code
 EXPOSE 3000

@@ -11,11 +11,11 @@ styled.div`
     z-index: 5;
     height: var(--app-height);
     width: var(--app-width);
-    overflow: hidden;
     background-color: #fff;
     transition: bottom 0.3s ease-in-out, padding 0.3s ease-in-out;
     transform: translate3d(0,0,0);
     overflow: auto;
+    overscroll-behavior: none;
 
     scrollbar-color: #bfbfbf transparent;
     scrollbar-width: thin;

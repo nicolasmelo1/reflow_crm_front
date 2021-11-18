@@ -189,6 +189,7 @@ styled.div`
     position: absolute;
     z-index: 5;
     padding: 0 !important;
+    overscroll-behavior: none;
     overflow: auto;
     margin-top: 5px;
     border-radius: 5px;

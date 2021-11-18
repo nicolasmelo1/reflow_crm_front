@@ -8,6 +8,7 @@ styled.div`
     border: 1px solid #f2f2f2;
     border-radius: 4px;
     overflow: auto;
+    overscroll-behavior: none;
     width: 100%;
     background-color: white;
     display: flex;

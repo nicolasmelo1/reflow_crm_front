@@ -10,6 +10,7 @@ styled.h2`
     color: #0dbf7e;
     overflow: auto;
     white-space: nowrap;
+    overscroll-behavior: none;
 
     scrollbar-color: #bfbfbf transparent;
     scrollbar-width: thin;

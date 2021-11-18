@@ -302,6 +302,7 @@ const PDFGeneratorCreatorEditor = (props) => {
                     ref={previewContainerRef} 
                     style={{
                         width: 'calc(var(--app-width) - 40px)',
+                        overscrollBehavior: 'none',
                         overflow: 'auto', 
                         height: 'calc(var(--app-height) - 108px)'
                     }}

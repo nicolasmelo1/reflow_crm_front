@@ -7,6 +7,7 @@ styled.div`
     background-color: #fff;
     border-radius: 5px;
     padding: 10px;
+    overscroll-behavior: none;
     overflow: auto;
     height: calc(var(--app-height) - var(--app-navbar-height) - 178px);
     position: relative;

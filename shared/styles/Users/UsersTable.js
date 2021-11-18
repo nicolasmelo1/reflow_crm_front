@@ -6,6 +6,7 @@ export default process.env['APP'] === 'web' ?
 styled.div`
     width: 100%;
     overflow: auto;
+    overscroll-behavior: none;
     max-height: calc(var(--app-height) - var(--app-navbar-height) - 50px);
 
     scrollbar-color: #bfbfbf transparent;

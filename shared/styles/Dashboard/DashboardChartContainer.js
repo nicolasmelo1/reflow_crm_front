@@ -7,6 +7,7 @@ styled.div`
     padding-bottom: 20px;
     margin-bottom: 20px;
     overflow: auto; 
+    overscroll-behavior: none;
     
     scrollbar-color: #bfbfbf transparent;
     scrollbar-width: thin;

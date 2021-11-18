@@ -377,6 +377,7 @@ class Onboarding extends React.Component {
                     />
                 ) : (
                     <SpreadsheetUploader
+                    types={this.props?.login?.types}
                     setStep={this.setStep}
                     />
                 )}
