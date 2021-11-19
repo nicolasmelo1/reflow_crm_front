@@ -1,11 +1,11 @@
 version: '3.3'
 services:
   reflow_web_front:
+    platform: linux/x86_64 
     build: .
-    command: npm run web:dev
+    command: bash -c "npm run web:build && npm run web:start"
     environment:
       - CONFIG=development
-      - API_HOST=https://reflow-server-to-front-staging.xpdufpbcds.us-east-1.elasticbeanstalk.com/
     volumes:
       - .:/code
     ports:
