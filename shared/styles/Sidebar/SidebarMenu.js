@@ -5,7 +5,7 @@ import { Animated, View, Easing, Dimensions } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled(({sidebarIsOpen, ...rest}) => <nav {...rest}/>)`
-    background-color: #17242D;
+    background-color: #20253F;
     height: var(--app-height);
     overflow-y: auto;
     text-align: auto;
@@ -47,7 +47,7 @@ styled(({sidebarIsOpen, ...rest}) => <nav {...rest}/>)`
 `
 :
 styled(({...rest}) => <View {...rest}/>)`
-    background-color: #17242D;
+    background-color: #20253F;
     text-align: auto;
     padding: 0 0 2px 0;
     align-self:stretch;

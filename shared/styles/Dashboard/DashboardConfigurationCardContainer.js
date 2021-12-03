@@ -4,7 +4,7 @@ import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
-    border: 1px solid  ${props => props.isOpen ? '#0dbf7e' : '#17242D'};
+    border: 1px solid  ${props => props.isOpen ? '#0dbf7e' : '#20253F'};
     padding: 5px;
     background-color: ${props => props.isOpen ? '#0dbf7e': '#fff'};
     margin: 5px;

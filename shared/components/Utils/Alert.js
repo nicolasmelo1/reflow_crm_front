@@ -23,12 +23,13 @@ import {
  * Why i use this here you might ask? Because this is a RISKY operation, you should stop everything and see that you
  * are doing something that is probably dumb and they might don't want to do.
  * 
- * @param {Boolean} show - This is a obligatory props, we use this to open and to close the formulary.
- * @param {Function} onHide - This is a callback for when you close the alert. You probably will use this to update your props.
- * @param {String} alertTitle - The title of your alert.
- * @param {String} alertMessage - The message, or content of your alert.
- * @param {Function} onAccept - (optional) - If it is set we are gonna display a "OK" button, so the user can accept this alert.
- * @param {String} onAcceptButtonLabel - (optional) - if `onAccept` is defined, you can edit the `ok` button with a new label.
+ * @param {object} props - The props this component recieves.
+ * @param {Boolean} props.show - This is a obligatory props, we use this to open and to close the formulary.
+ * @param {Function} props.onHide - This is a callback for when you close the alert. You probably will use this to update your props.
+ * @param {String} props.alertTitle - The title of your alert.
+ * @param {String} props.alertMessage - The message, or content of your alert.
+ * @param {Function} props.onAccept - (optional) - If it is set we are gonna display a "OK" button, so the user can accept this alert.
+ * @param {String} props.onAcceptButtonLabel - (optional) - if `onAccept` is defined, you can edit the `ok` button with a new label.
  */
 const Alerts = (props) => {
     const _isMounted = React.useRef(null)
@@ -36,10 +37,16 @@ const Alerts = (props) => {
 
     /**
      * When we close the alert, we call onHide after 3 miliseconds so it shows a nice animation. of it fading and going up.
+     * 
+     * Also since we have the same logic when we click the "OK" button and when we call the "cancel" botton. We will only call
+     * the props.onHide callback if the user clicked the "cancel" button, otherwise we will call the `props.onAccept` callback.
+     * 
+     * @param {boolean} isClickingAccept - If the user clicked the "OK" button, we will call the `props.onAccept` callback only and
+     * we ignore the onHide callback.
      */
-    const onClose = () => {
+    const onClose = (isClickingAccept=false) => {
         setTimeout(() => {
-            if (_isMounted.current) {
+            if (_isMounted.current && isClickingAccept === false) {
                 props.onHide()
             }
         }, 300)
@@ -114,7 +121,7 @@ const Alerts = (props) => {
                             </AlertCancelButton>
                             {props.onAccept ? (
                                 <AlertOkButton onClick={e=> {
-                                    onClose()
+                                    onClose(true)
                                     props.onAccept()
                                 }}>
                                     <AlertOkText>

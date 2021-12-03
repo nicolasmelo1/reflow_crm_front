@@ -22,6 +22,9 @@ const USERS = {
     },
     updateVisualizationType: async (visualizationTypeId) => {
         return await requests.put(`authentication/${companyId}/user/visualization_type/${visualizationTypeId}/`, {})
+    },
+    bulkCreateUsers: async (body) => {
+        return await requests.post(`authentication/settings/${companyId}/users/bulk_create/`, body)
     }
 }
 

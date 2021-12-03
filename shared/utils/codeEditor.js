@@ -9,7 +9,7 @@ const getDefaultTheming = ({removeLineCounter=false} = {}) => {
     const editorDefaultTheme = {
         "&": {
             color: "white",
-            backgroundColor: "#17242D"
+            backgroundColor: "#20253F"
         },
         ".cm-selectionMatch": {
             backgroundColor: "#bfbfbf20"

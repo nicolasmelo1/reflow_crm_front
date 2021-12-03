@@ -4,7 +4,7 @@ import { Text } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.h2`
-    color: ${props => props.isConditional ? '#f2f2f2' : '#17242D'};
+    color: ${props => props.isConditional ? '#f2f2f2' : '#20253F'};
     padding: 0 10px;
 `
 :

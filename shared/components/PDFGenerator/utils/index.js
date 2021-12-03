@@ -24,10 +24,10 @@ const retrieveHTMLWithContentToDownload = (contentHTMLElementObject) => {
                             -webkit-print-color-adjust: exact;
                         }
                     </style>
-                    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"/>
+                    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet"/>
                     ${styles}
                 </head>
-                <body style="font-family: Roboto !important;">
+                <body style="font-family: Montserrat !important;">
                     ${contentHTMLElementObject.innerHTML.toString()}
                 </body>
             </html>

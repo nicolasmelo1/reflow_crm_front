@@ -6,7 +6,7 @@ export default process.env['APP'] === 'web' ?
 styled.button`
     border: 0;
     background-color: transparent;
-    color: #17242D
+    color: #20253F
 `
 :
 styled(View)``

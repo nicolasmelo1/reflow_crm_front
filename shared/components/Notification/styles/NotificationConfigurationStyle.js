@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 // ------------------------------------------------------------------------------------------
 export const NotificationConfigurationCard = process.env['APP'] === 'web' ?
 styled.div`
-    border: ${props => props.formIsOpen ? '#1px solid #0dbf7e' : '1px solid #17242D'};
+    border: ${props => props.formIsOpen ? '#1px solid #0dbf7e' : '1px solid #20253F'};
     padding: 5px;
     background-color: ${props => props.formIsOpen ? '#0dbf7e' : 'transparent'};
     margin-top: 5px;
@@ -18,7 +18,7 @@ styled.div`
 styled(TouchableOpacity)`
     background-color: ${props => props.formIsOpen ? '#0dbf7e' : 'transparent'};
     border-bottom-width: 1px;
-    border-bottom-color: ${props => props.formIsOpen ? '#0dbf7e': '#17242D'};
+    border-bottom-color: ${props => props.formIsOpen ? '#0dbf7e': '#20253F'};
     padding: 5px;
     min-height: 50px;
     flex-direction: row;
@@ -29,7 +29,7 @@ styled(TouchableOpacity)`
 export const NotificationConfigurationCardText = process.env['APP'] === 'web' ?
 styled.h2`
     margin: 0;
-    color: ${props => props.formIsOpen || props.isNew ? '#17242D' : '#0dbf7e'};
+    color: ${props => props.formIsOpen || props.isNew ? '#20253F' : '#0dbf7e'};
     user-select: none;
     justify-content: space-between;
     align-items: center;
@@ -40,18 +40,18 @@ styled(Text)`
     margin: 0;
     font-size: 20px;
     max-width: 85%;
-    color: ${props => props.formIsOpen || props.isNew ? '#17242D' : '#0dbf7e'};
+    color: ${props => props.formIsOpen || props.isNew ? '#20253F' : '#0dbf7e'};
 `
 // ------------------------------------------------------------------------------------------
 export const NotificationConfigurationCardIcon = process.env['APP'] === 'web' ?
 styled(FontAwesomeIcon)`
     font-size: 20px;
     margin: 0 10px;
-    color: #17242D
+    color: #20253F
 `
 :
 styled(FontAwesomeIcon)`
     font-size: 20px;
-    color: #17242D
+    color: #20253F
 `
 // ------------------------------------------------------------------------------------------

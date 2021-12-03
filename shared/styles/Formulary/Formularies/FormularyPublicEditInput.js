@@ -6,7 +6,7 @@ export default process.env['APP'] === 'web' ?
 styled.textarea`
     border: 0;
     background-color: white !important;
-    color: #17242D;
+    color: #20253F;
     border: 2px solid #f2f2f2;
     display: block;
     width: 100%;
@@ -20,9 +20,9 @@ styled.textarea`
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 
     &:focus {
-        color: #17242D;
+        color: #20253F;
         background-color: white;
-        border: 2px solid #17242D;
+        border: 2px solid #20253F;
         box-shadow: none;
         outline: 0;
     }

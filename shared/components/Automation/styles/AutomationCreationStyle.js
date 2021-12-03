@@ -57,7 +57,7 @@ styled.div`
     justify-content: space-between;
     align-items: center;
     padding: 20px 50px;
-    background-color: #17242D;
+    background-color: #20253F;
     width: 510px;
     font-size: 40px;
     font-weight: bold;
@@ -87,7 +87,7 @@ styled.button`
     background-color: #fff;
     font-size: 20px;
     font-weight: bold;
-    color: #17242D;
+    color: #20253F;
 `
 :
 styled(TouchableOpacity)``

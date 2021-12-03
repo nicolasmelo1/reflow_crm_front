@@ -7,7 +7,7 @@ const Button = dynamicImport('react-bootstrap', 'Button')
 
 export default process.env['APP'] === 'web' ?
 styled(Button)`
-    background-color: #17242D;
+    background-color: #20253F;
     border: 0;
     width: 100%;
     padding: 5px 5px;

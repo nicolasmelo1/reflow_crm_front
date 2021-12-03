@@ -73,7 +73,7 @@ class Notification extends React.Component {
                                 {strings['pt-br']['notificationRecievedTitleLabel']}
                             </Styled.NotificationTitle>
                             <Styled.NotificationButton onPress={e=> {this.setIsEditing(true)}}>
-                                <FontAwesomeIcon size={ 24 } icon={'cog'} style={{ color: '#17242D'}}/>
+                                <FontAwesomeIcon size={ 24 } icon={'cog'} style={{ color: '#20253F'}}/>
                             </Styled.NotificationButton>
                         </Styled.NotificationHeader>
                         <NotificationRecieved

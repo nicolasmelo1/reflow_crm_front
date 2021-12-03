@@ -7,13 +7,13 @@ styled.p`
     white-space: normal;
     font-weight: bold;
     font-size: 12px;
-    color: #17242D;
+    color: #20253F;
     margin-bottom: 15px;
 `
 :
 styled(Text)`
     font-weight: bold;
-    color: #17242D;
+    color: #20253F;
     font-size: 12px;
     margin-bottom: 15px;
 `

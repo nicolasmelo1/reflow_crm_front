@@ -7,7 +7,7 @@ styled.div`
     border: 0;
     background-color: transparent;
     border-radius: 2px;
-    color: #17242D;
+    color: #20253F;
     padding: 0 5px;
     display: flex;
     align-items: center;

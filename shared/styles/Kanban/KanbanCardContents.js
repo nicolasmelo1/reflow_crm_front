@@ -4,13 +4,13 @@ import { Text } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.p`
-    margin: ${props => props.isTitle ? '0 0 10px 0' : '0'};
+    margin: ${props => props.isTitle ? '0 0 5px 0' : '0'};
     text-overflow: ellipsis;
     overflow: hidden;
     word-break: break-word;
     word-wrap: break-word;
-    font-size: ${props => props.isTitle ? '15px' : '13px'};
-    color: ${props => props.isTitle ? '#0dbf7e' : '#6a7074'};
+    font-size 13px;
+    color: ${props => props.isTitle ? '#20253F' : '#6a7074'};
     font-weight: ${props => props.isTitle ? 'bold': 'normal'};
     padding: 0 5px;
 

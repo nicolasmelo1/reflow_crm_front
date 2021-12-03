@@ -4,7 +4,7 @@ import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
-    background-color: #17242D;
+    background-color: #20253F;
     padding: 10px 10px 10px 10px; 
     margin: 0 3px
 `

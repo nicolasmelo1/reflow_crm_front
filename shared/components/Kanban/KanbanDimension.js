@@ -361,7 +361,7 @@ const KanbanDimension = (props) => {
                                     e.stopPropagation()
                                     onDrop(e, index)
                                 }}
-                                style={{
+                                style={{                                    
                                     maxWidth: props.collapsedDimensions.includes(dimensionOrder.id) ? 70 : props.dimensionsWidth, 
                                     minWidth: props.collapsedDimensions.includes(dimensionOrder.id) ? 70 : props.dimensionsWidth,
                                 }}
@@ -408,11 +408,13 @@ const KanbanDimension = (props) => {
                                                     strings['pt-br']['kanbanOverlayDimensionPhaseConfirmEditionButtonText'] : 
                                                     strings['pt-br']['kanbanOverlayDimensionPhaseEditButtonText']
                                                 }>
-                                                    <KanbanDimensionEditIcon 
-                                                    isEditing={isEditingDimensionIndex === index}
-                                                    icon={isEditingDimensionIndex === index ? 'check' : 'pencil-alt'} 
-                                                    onClick={e => onToggleEditMode(isEditingDimensionIndex === index ? null : index)}
-                                                    />
+                                                    <div>
+                                                        <KanbanDimensionEditIcon 
+                                                        isEditing={isEditingDimensionIndex === index}
+                                                        icon={isEditingDimensionIndex === index ? 'check' : 'pencil-alt'} 
+                                                        onClick={e => onToggleEditMode(isEditingDimensionIndex === index ? null : index)}
+                                                        />
+                                                    </div>
                                                 </Overlay>  
                                                 <div 
                                                 draggable="true" 
@@ -426,8 +428,14 @@ const KanbanDimension = (props) => {
                                                     e.stopPropagation()
                                                     cleanDimensionColors(e.currentTarget, false)
                                                 }} >
-                                                    <Overlay text={strings['pt-br']['kanbanOverlayDimensionPhaseMoveButtonText']}>
-                                                        <KanbanDimensionMoveIcon icon="bars"/>
+                                                    <Overlay 
+                                                    text={strings['pt-br']['kanbanOverlayDimensionPhaseMoveButtonText']}
+                                                    >
+                                                        <div>
+                                                            <KanbanDimensionMoveIcon 
+                                                            icon="bars"
+                                                            />
+                                                        </div>
                                                     </Overlay>  
                                                 </div>
                                             </div>

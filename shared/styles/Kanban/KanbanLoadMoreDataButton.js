@@ -9,7 +9,7 @@ styled.button`
     width: 100%;
     border: 0;
     background-color: transparent;
-    color: #17242D;
+    color: #20253F;
 
     &:hover {
         color: #0dbf7e

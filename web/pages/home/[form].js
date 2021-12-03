@@ -4,7 +4,7 @@ import Router, { withRouter } from 'next/router'
 import actions from '@shared/redux/actions'
 import Header from '../../components/Header'
 import { Layout, Formulary, Listing, Kanban, Error404, Dashboard, Automation } from '@shared/components'
-import { DataTypeHeaderAnchor, DataTypeHeaderContainer } from '@shared/styles/Data'
+import { DataTypeHeaderAnchor, DataTypeHeaderContainer, DataTypeHeaderSeparator } from '@shared/styles/Data'
 import { strings, types, paths } from '@shared/utils/constants';
 
 
@@ -184,7 +184,7 @@ class Data extends React.Component {
                             onClick={(e) => this.setIsInAutomation()}
                             style={{
                                 border: '0',
-                                color: '#17242D',
+                                color: '#20253F',
                                 fontWeight: 'bold',
                                 borderRadius: '20px',
                                 backgroundColor: 'transparent'
@@ -196,7 +196,7 @@ class Data extends React.Component {
                             onClick={(e) => this.setIsInAutomation()}
                             style={{
                                 border: '0',
-                                color: this.state.isInAutomation ? '#0dbf7e' : '#17242D',
+                                color: this.state.isInAutomation ? '#0dbf7e' : '#20253F',
                                 fontWeight: 'bold',
                                 borderRadius: '20px',
                                 backgroundColor: 'transparent'
@@ -221,6 +221,7 @@ class Data extends React.Component {
                                         </DataTypeHeaderAnchor> 
                                     )) : ''}
                                 </DataTypeHeaderContainer>
+                                <DataTypeHeaderSeparator/>
                                 <Formulary 
                                 display='bottom'
                                 type='full'

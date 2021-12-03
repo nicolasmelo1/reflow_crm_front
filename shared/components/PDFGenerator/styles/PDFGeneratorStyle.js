@@ -7,12 +7,12 @@ export const PDFGeneratorGetMoreTemplatesButton = process.env['APP'] === 'web' ?
 styled.button`
     border: 0;
     background-color: #0dbf7e;
-    color: #17242D;
+    color: #20253F;
     padding: 5px 15px;
     border-radius: 5px;
 
     &:hover {
-        background-color: #17242D;
+        background-color: #20253F;
         color: #0dbf7e;
     }
 `
@@ -56,7 +56,7 @@ styled.button`
     color: #0dbf7e;
 
     &:hover {
-        color: #17242D;
+        color: #20253F;
     }
 `
 :
@@ -72,8 +72,8 @@ styled.button`
     color: #0dbf7e;
 
     &:hover {
-        color: #17242D;
-        border: 1px solid #17242D;
+        color: #20253F;
+        border: 1px solid #20253F;
     }
 `
 :

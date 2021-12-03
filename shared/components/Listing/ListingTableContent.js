@@ -51,7 +51,9 @@ const TableContentElement = (props) => {
         delay={{ show: 250, hide: 100 }}
         overlay={<PopoverWithContent elements={props.elements}/>}
         >
-            <Styled.ListingTableContentElement>
+            <Styled.ListingTableContentElement
+            isEven={props.isEven}
+            >
                 {getElementValue()}
             </Styled.ListingTableContentElement>
         </OverlayTrigger>
@@ -100,10 +102,16 @@ const ListingTableContent = (props) => {
             </tr>
             {props.data.map((data, dataIndex) => (
                 <tr key={data.id}>
-                    <Styled.ListingTableContentElement isTableButton={true}>
+                    <Styled.ListingTableContentElement 
+                    isEven={dataIndex % 2 === 0}
+                    isTableButton={true}
+                    >
                         <Styled.ListingEditButtonIcon icon="pencil-alt" onClick={e=> {props.setFormularyId(data.id)}}/>
                     </Styled.ListingTableContentElement>
-                    <Styled.ListingTableContentElement isTableButton={true}>
+                    <Styled.ListingTableContentElement 
+                    isEven={dataIndex % 2 === 0}
+                    isTableButton={true}
+                    >
                         <Styled.ListingDeleteButtonIcon icon="trash" onClick={e=> {
                             setFormularyIdToRemove(data.id)
                             setShowAlert(true)
@@ -112,7 +120,11 @@ const ListingTableContent = (props) => {
                     {props.fieldHeaders.filter(head => head.is_selected).map((head, headIndex) => {
                         const elements = (data) ? data.dynamic_form_value.filter(data => data.field_name == head.field.name): []
                         return (
-                            <TableContentElement key={dataIndex+headIndex} elements={elements}/>
+                            <TableContentElement 
+                            key={dataIndex+headIndex} 
+                            isEven={dataIndex % 2 === 0}
+                            elements={elements}
+                            />
                         )
                     })}
                 </tr>

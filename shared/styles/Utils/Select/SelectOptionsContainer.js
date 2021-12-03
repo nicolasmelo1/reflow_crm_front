@@ -5,7 +5,7 @@ import { ScrollView } from 'react-native'
 export default process.env['APP'] === 'web' ? 
 styled(React.forwardRef(({optionBackgroundColor, maximumHeight, optionColor, ...rest}, ref) => <div {...rest} ref={ref}/>))`
     width: 100%; 
-    background-color: ${props => props.optionBackgroundColor ? props.optionBackgroundColor: '#17242D'};
+    background-color: ${props => props.optionBackgroundColor ? props.optionBackgroundColor: '#20253F'};
     color: ${props => props.optionColor ? props.optionColor: '#f2f2f2'};
     overflow-y: auto;
     
@@ -37,7 +37,7 @@ styled(React.forwardRef(({optionBackgroundColor, maximumHeight, optionColor, ...
 :
 styled(React.forwardRef(({optionBackgroundColor, optionColor, ...rest}, ref) => <ScrollView {...rest} ref={ref}/>))`
     width: 100%; 
-    background-color: ${props => props.optionBackgroundColor ? props.optionBackgroundColor: '#17242D'};
+    background-color: ${props => props.optionBackgroundColor ? props.optionBackgroundColor: '#20253F'};
     color: ${props => props.optionColor ? props.optionColor: '#f2f2f2'};
     height: 93%;
 `

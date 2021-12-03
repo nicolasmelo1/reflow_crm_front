@@ -17,7 +17,7 @@ styled.button`
     user-select: none;
     
     &:hover {
-        background-color: #17242D !important;
+        background-color: #20253F !important;
     };
 
     @media(max-width: 390px) {

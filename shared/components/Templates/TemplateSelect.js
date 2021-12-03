@@ -215,11 +215,12 @@ const TemplateSelect = (props) => {
                 onGetTemplateFormulary={props.onGetTemplateFormulary}
                 />
                 <TemplatesHeader>
-                    {props.groups.length > 0 ? (
-                        <TemplatesGoBackButton onClick={e=>props.setAddTemplates(false)}>
-                            <FontAwesomeIcon icon={'chevron-left'} />&nbsp;{strings['pt-br']['templateGoBackButtonLabel']}
-                        </TemplatesGoBackButton>
-                    ) : ''}
+                    <TemplatesGoBackButton onClick={e=>{
+                        console.log(props.setAddTemplates)
+                        props.setAddTemplates(false)
+                    }}>
+                        <FontAwesomeIcon icon={'chevron-left'} />&nbsp;{strings['pt-br']['templateGoBackButtonLabel']}
+                    </TemplatesGoBackButton>
                 </TemplatesHeader>
                 <TemplatesContentContainer>
                     <TemplatesTemplateTypeSelectionContainer>

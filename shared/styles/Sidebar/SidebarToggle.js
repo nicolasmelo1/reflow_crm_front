@@ -24,7 +24,7 @@ styled(({sidebarIsOpen, ...rest}) => <button {...rest}/>)`
     
     @media(max-width: 420px) {
         top: var(--app-navbar-height);
-        background-color: #17242D;
+        background-color: #20253F;
         position: fixed;
         border-radius: 0 20px 20px 0;
         left: ${({ sidebarIsOpen }) => sidebarIsOpen ? 'calc(var(--app-width) - 50px)' : '0'};
@@ -36,7 +36,7 @@ styled(({sidebarIsOpen, ...rest}) => <button {...rest}/>)`
 `
 :
 styled(({sidebarIsOpen, ...rest}) => <TouchableOpacity {...rest}/>)`
-    background-color: #17242D;
+    background-color: #20253F;
     justify-content: center;
     border-bottom-right-radius: 20px;
     border-top-right-radius: 20px;

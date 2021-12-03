@@ -10,7 +10,7 @@ const getBackgroundColor = (props) => {
 }
 
 const getBorderAndBackgroundColor = (isDarkBackground) => {
-    return isDarkBackground ? '#fff': '#17242D'
+    return isDarkBackground ? '#fff': '#20253F'
 }
 
 export default process.env['APP'] === 'web' ?  

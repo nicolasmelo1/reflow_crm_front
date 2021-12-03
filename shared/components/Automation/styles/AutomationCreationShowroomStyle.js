@@ -20,7 +20,7 @@ styled.input`
     font-size: 20px;
     font-weight: bold;
     padding: 20px;
-    border: 2px solid #17242D;
+    border: 2px solid #20253F;
     border-radius: 20px;
     margin-bottom: 10px;
     outline: none;

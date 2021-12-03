@@ -10,7 +10,7 @@ styled.button`
     height: 50px;
     border-bottom: 1px solid #f2f2f2; 
     background-color: transparent;
-    color: #17242D;
+    color: #20253F;
     border-left: 0; 
     border-top:0; 
     border-right: 0;

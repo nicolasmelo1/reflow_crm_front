@@ -6,7 +6,7 @@ export default process.env['APP'] === 'web' ?
 styled.label`
     display: inline-block;
     margin: 0;
-    color: ${props => props.isConditional ? '#f2f2f2': '#17242D'};
+    color: ${props => props.isConditional ? '#f2f2f2': '#20253F'};
     font-weight: 600;
 `
 :

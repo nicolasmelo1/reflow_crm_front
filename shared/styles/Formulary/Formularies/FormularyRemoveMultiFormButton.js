@@ -10,7 +10,7 @@ styled.button`
     border: 0;
 
     &:hover {
-        color: #17242D;
+        color: #20253F;
     }
 `
 :

@@ -39,21 +39,23 @@ styled(View)``
 // ------------------------------------------------------------------------------------------
 export const ListingFilterAndExtractButton = process.env['APP'] === 'web' ?
 styled.button`
-    background-color: transparent;
-    border: 1px solid #17242D;
+    font-size: 13px;
+    box-shadow: 2px 2px 16px rgba(190, 205, 226, 0.4), -8px -8px 16px rgba(255, 255, 255, 0.1);
+    background-color: #fff;
+    border: 0;
     width: 100%;
     padding: 5px 5px;
     text-align: center;
-    color: #17242D;
-    border-radius: 50px;
+    color: #20253F;
+    border-radius: 4px;
 
     &:hover {
-        background-color: #0dbf7e;
-        border: 1px solid #0dbf7e;
+        box-shadow: inset 2px 2px 4px rgba(190, 205, 226, 0.4), inset -8px -8px 4px rgba(255, 255, 255, 0.1);
+        background-color: #0dbf7350;
     }
     &:active {
-        background-color: #0dbf7e !important;
-        border: 1px solid #0dbf7e;
+        box-shadow: inset 2px 2px 4px rgba(190, 205, 226, 0.4), inset -8px -8px 4px rgba(255, 255, 255, 0.1);
+        background-color: #0dbf7350;
     }
 `
 :
@@ -64,10 +66,11 @@ styled.div`
     position: absolute;
     max-width: 600px;
     z-index: 10;
-    background-color: #17242D;
+    margin-top: 10px;
+    background-color: #fff;
     border-radius: 5px; 
     padding: 10px;
-    box-shadow: 0 4px 20px 0 black;
+    box-shadow: 2px 2px 16px rgba(190, 205, 226, 0.4), -8px -8px 16px rgba(255, 255, 255, 0.1);
 
     @media(max-width: 420px) {
         width: 92vw;
@@ -82,14 +85,14 @@ styled(View)``
 // ------------------------------------------------------------------------------------------
 export const ListingFilterIcon = styled(FontAwesomeIcon)`
     width: 24px;
-    color: #17242D;
+    color: #20253F;
 `
 // ------------------------------------------------------------------------------------------
 export const ListingExtractContainer = process.env['APP'] === 'web' ?
 styled.div`
     position: absolute;
     z-index: 10;
-    background-color: #17242D;
+    background-color: #20253F;
     border-radius: 5px; 
     padding: 10px;
     box-shadow: 0 4px 20px 0 black;
@@ -137,7 +140,7 @@ styled.button`
     &:hover{
         border-radius: 5px;
         background-color: #fff;
-        color: #17242D;
+        color: #20253F;
     }
 `
 :
@@ -156,24 +159,25 @@ styled(View)``
 // ------------------------------------------------------------------------------------------
 export const ListingColumnSelectButton = process.env['APP'] === 'web' ? 
 styled.button`
-    border: 1px solid #17242D;
-    background-color: #fff !important;
-    margin: 0;
+    background-color: #0dbf7e;
+    border: 0;
+    width: 100%;
+    color: #fff;
+    font-weight: bold;
     padding: 5px 10px;
-    color: #17242D;
-    border-radius: 50px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
+    border-radius: 4px;
+    box-shadow: 2px 2px 16px rgba(190, 205, 226, 0.4), -8px -8px 16px rgba(255, 255, 255, 0.1);
+    font-size: 13px;
 
     &:hover {
-        background-color: #0dbf7e !important;
-        border: 1px solid #0dbf7e;
+        color: #20253F;
+        box-shadow: inset 2px 2px 4px rgba(190, 205, 226, 0.4), inset -8px -8px 4px rgba(255, 255, 255, 0.1);
+        background-color: #0dbf7e50;
     }
     &:active {
-        background-color: #0dbf7e !important;
-        border: 1px solid #0dbf7e;
+        color: #20253F;
+        box-shadow: inset 2px 2px 4px rgba(190, 205, 226, 0.4), inset -8px -8px 4px rgba(255, 255, 255, 0.1);
+        background-color: #0dbf7e50;
     }
 
     @media(max-width: 740px) {
@@ -223,8 +227,8 @@ styled(View)``
 // ------------------------------------------------------------------------------------------
 export const ListingColumnSelectItems = process.env['APP'] === 'web' ?
 styled.div`
-    background-color: ${props => props.isSelected ? '#17242D' : '#f2f2f2'} !important;
-    color: ${props => props.isSelected ? '#f2f2f2' : '#17242D'};
+    background-color: ${props => props.isSelected ? '#20253F' : '#f2f2f2'} !important;
+    color: ${props => props.isSelected ? '#f2f2f2' : '#20253F'};
     border: 0;
     display: block;
     width: 100%;

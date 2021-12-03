@@ -10,6 +10,7 @@ import FirstStepForm from './FirstStepForm'
 import SecondStepForm from './SecondStepForm'
 import Styled from './styles'
 import SpreadsheetUploader from './SpreadsheetUploader'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 
 const connect = dynamicImport('reduxConnect', 'default')
 const Router = dynamicImport('next/router')
@@ -48,10 +49,11 @@ class Onboarding extends React.Component {
         }
         
         this.state = {
+            showFileUploader: false,
             slideLogo: false,
             showLogo: false,
             showForm: false,
-            step: 0,
+            step: this.props.step !== undefined ? this.props.step : 0,
             errors: {},
             name: '',
             phone: '',
@@ -217,7 +219,7 @@ class Onboarding extends React.Component {
                             this.props.setIsAuthenticated(true)
                         }
                     } else {
-                        this.props.setAddTemplates(true)
+                        this.setStep(2)
                     }  
                 })
             } else {
@@ -328,9 +330,8 @@ class Onboarding extends React.Component {
             <Styled.OnboardingContainer step={this.state.step}>
                 <div
                 style={{ 
-                    backgroundColor: '#fff', 
+                    backgroundColor: 'transparent', 
                     width: '100%', 
-                    height: '80px', 
                     display: 'flex', 
                     flexDirection: 'center', 
                     justifyContent: 'center'
@@ -376,10 +377,32 @@ class Onboarding extends React.Component {
                     onSubmitForm={this.onSubmitForm}
                     />
                 ) : (
-                    <SpreadsheetUploader
-                    types={this.props?.login?.types}
-                    setStep={this.setStep}
-                    />
+                    <Styled.OnboardingFormFormContainer showForm={this.state.showForm}>
+                        {this.state.showFileUploader ? (
+                            <SpreadsheetUploader
+                            onBulkCreateFormulary={this.props.onBulkCreateFormulary}
+                            types={this.props?.login?.types}
+                            setStep={this.setStep}
+                            />
+                        ) : (
+                            <Styled.OnboardingSelectTemplateOrUploaderContainer>
+                                <Styled.OnboardingSelectTemplateOrUploaderButton
+                                onClick={(e) => this.setState(state => ({ ...state, showFileUploader: true}))}
+                                >
+                                    {strings['pt-br']['onboardingSelectFileButtonLabel']}
+                                    <br/>
+                                    <FontAwesomeIcon icon={'file-excel'} size="lg"/>
+                                </Styled.OnboardingSelectTemplateOrUploaderButton>
+                                <Styled.OnboardingSelectTemplateOrUploaderButton
+                                onClick={(e) => this.props.setAddTemplates(true)}
+                                >
+                                    {strings['pt-br']['onboardingSelectTemplateButtonLabel']}
+                                    <br/>
+                                    <FontAwesomeIcon icon={'shapes'} size="lg"/>
+                                </Styled.OnboardingSelectTemplateOrUploaderButton>
+                            </Styled.OnboardingSelectTemplateOrUploaderContainer>
+                        )}
+                    </Styled.OnboardingFormFormContainer>
                 )}
             </Styled.OnboardingContainer>
         )

@@ -12,7 +12,7 @@ styled.button`
     justify-content: space-between;
     align-items: center;
     user-select: none;
-    color: #17242D;
+    color: #20253F;
     width: 100%;
 `
 :

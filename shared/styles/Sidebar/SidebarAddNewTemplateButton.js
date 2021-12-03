@@ -7,12 +7,14 @@ styled.button`
     ${props => props.sidebarIsOpen ? 'padding: 5px 10px': 'padding: 10px 10px'};
     display: flex;
     justify-content: center;
+    font-size: 13px;
     align-items: center;
     background-color: transparent;
     border-radius: 20px;
     border: 1px solid #0dbf7e;
     margin: 10px;
     color: #f2f2f2;
+    ${props => props.sidebarIsOpen ? '' : 'height: 40px;'}
     ${props => props.sidebarIsOpen ? '' : 'width: 40px;'}
 
     &:hover {

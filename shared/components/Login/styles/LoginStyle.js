@@ -8,16 +8,23 @@ export const LoginOnboardingButton = process.env['APP'] === 'web' ?
 styled.button`
     margin-top: 10px;
     color: #0dbf7e;
-    background-color: #f2f2f2;
-    border-radius: 20px;
+    font-weight: bold;
+    background-color: transparent;
+    border-radius: 4px;
     border: 1px solid #0dbf7e;
     width: 100%;
     padding: 5px;   
+
+    &:hover {
+        color: #20253F;
+        box-shadow: inset 2px 2px 4px rgba(190, 205, 226, 0.4), inset -8px -8px 4px rgba(255, 255, 255, 0.1);
+        background-color: #0dbf7e50;
+    }
 `
 :
 styled(TouchableOpacity)`
-    background-color: #f2f2f2;
-    border-radius: 20px;
+    background-color: transparent;
+    border-radius: 4px;
     border: 1px solid #0dbf7e;
     margin: 5px 0;
     padding: 10px;
@@ -45,12 +52,12 @@ styled.input`
     display: block;
     width: 100%; 
     border-radius: 5px;
-    color: #17242D;
-    border: 1px solid ${props => props.error ? 'red': '#17242D'};
+    color: #20253F;
+    border: 1px solid ${props => props.error ? 'red': '#20253F'};
     padding: .375rem .75rem;
     
     &:focus {
-        color: #17242D;
+        color: #20253F;
         border: 1px solid #0dbf7e;
         box-shadow: none;
         outline: 0;
@@ -59,9 +66,9 @@ styled.input`
 :
 styled(TextInput)`
     width: ${props => props.isPassword ? '80%' : '100%'}; 
-    border-radius: 5px;
-    color: #17242D;
-    border: 1px solid ${props => props.error ? 'red': props.isFocused ? '#0dbf7e' : '#17242D'};
+    border-radius: 4px;
+    color: #20253F;
+    border: 1px solid ${props => props.error ? 'red': props.isFocused ? '#0dbf7e' : '#20253F'};
     padding: 10px;
     background-color: #fff;
 `
@@ -69,15 +76,22 @@ styled(TextInput)`
 export const LoginButton = process.env['APP'] === 'web' ?
 styled.button`
     background-color: #0dbf7e;
-    border-radius: 20px;
+    font-weight: bold;
+    border-radius: 4px;
     border: 0;
     width: 100%;
     padding: 5px;   
+
+    &:hover {
+        color: #20253F;
+        box-shadow: inset 2px 2px 4px rgba(190, 205, 226, 0.4), inset -8px -8px 4px rgba(255, 255, 255, 0.1);
+        background-color: #0dbf7e50;
+    }
 `
 :
 styled(TouchableOpacity)`
     background-color: #0dbf7e;
-    border-radius: 20px;
+    border-radius: 4px;
     margin: 5px 0;
     padding: 10px;
     align-items: center;
@@ -120,7 +134,8 @@ const Form = (props) => {
 
 export const LoginFormContainer = process.env['APP'] === 'web' ?
 styled.div`
-    background-color: #f2f2f2;
+    background-color: #fff;
+    box-shadow: 4px 4px 12px rgb(56 66 95 / 0.08);
     border-radius: 20px;
     padding: 20px;
     display: flex;

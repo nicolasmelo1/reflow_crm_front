@@ -14,7 +14,7 @@ styled.button`
 
     &:hover {
         font-weight: bold;
-        color: #17242D;
+        color: #20253F;
     }
 `
 :

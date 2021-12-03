@@ -6,7 +6,7 @@ export default process.env['APP'] === 'web' ?
 styled.input`
     border: 0;
     background-color: white !important;
-    color: #17242D;
+    color: #20253F;
     border: 2px solid ${props=> props.errors ? 'red': '#f2f2f2'};
     display: block;
     width: 100%;
@@ -21,9 +21,9 @@ styled.input`
 
 
     &:focus {
-        color: #17242D;
+        color: #20253F;
         background-color: white;
-        border: 2px solid #17242D;
+        border: 2px solid #20253F;
         box-shadow: none;
         outline: 0;
     }

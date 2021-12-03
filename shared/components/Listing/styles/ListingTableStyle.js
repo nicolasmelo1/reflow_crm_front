@@ -38,7 +38,8 @@ styled.div`
     overflow-x: auto;
     overflow-y: auto;
     position: relative;
-    
+    box-shadow: 2px 2px 16px rgba(190, 205, 226, 0.4), -8px -8px 16px rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
     scrollbar-color: #bfbfbf transparent;
     scrollbar-width: thin;
     
@@ -55,10 +56,10 @@ styled.div`
     }
 
     @media(max-width: 420px) {
-        max-height: calc(var(--app-height) - var(--app-navbar-height) - ${props=> props.isMobile ? '210px' : '230px'});
+        max-height: calc(var(--app-height) - var(--app-navbar-height) - ${props=> props.isMobile ? '200px' : '220px'});
     }
     @media(min-width: 420px) {
-        max-height: calc(var(--app-height) - var(--app-navbar-height) - ${props=> props.isMobile ? '130px' : '150px'})
+        max-height: calc(var(--app-height) - var(--app-navbar-height) - ${props=> props.isMobile ? '150px' : '170px'})
     }
 `
 :
@@ -91,11 +92,13 @@ export const ListingTableContentElement = process.env['APP'] === 'web' ?
 styled.td`
     text-align: ${props=> props.isTableButton ? 'center': ' left'} !important;
     ${props=> props.isTableButton ? '': 'cursor: pointer;'}
+    ${props=> props.isEven ? 'background-color: #F8F9F9;' : ''}
     max-height: 20px;
     overflow: hidden;
     max-width: 50px;
-    color: #6a7074;
-    font-size: 15px;
+    font-weight: 500;
+    color: #20253F;
+    font-size: 13px;
     border: 1px solid #f2f2f2 !important;
     text-overflow: ellipsis; 
     white-space: nowrap
@@ -123,11 +126,11 @@ styled(View)``
 // ------------------------------------------------------------------------------------------
 export const ListingTableHeaderElement = process.env['APP'] === 'web' ?
 styled.div`
-    color: ${props=> props.isTableButton ? '#0dbf7e': '#f2f2f2'} !important;
-    border: 1px solid #fff;
+    color: ${props=> props.isTableButton ? '#0dbf7e': '#6a7074'} !important;
+    border: 1px solid #f2f2f2;
     border-radius: ${props => props.isFirstColumn ? '10px 0 0 0' : props.isLastColumn ? '0 10px 0 0' : '0'};
     height: ${props=> props.isTableButton ? '': '100%'};
-    background-color: #17242D;
+    background-color: #fff;
     text-align: ${props=> props.isTableButton ? 'center': 'left'};
     position: relative;
     user-select: none;
@@ -180,7 +183,7 @@ styled(ActivityIndicator)``
 // ------------------------------------------------------------------------------------------
 export const ListingTableHeaderConditionalPopoverTextTitle = process.env['APP'] === 'web' ?
 styled.p`
-    color: #17242D;
+    color: #20253F;
     font-weight: bold;
     margin-bottom: 5px
 `

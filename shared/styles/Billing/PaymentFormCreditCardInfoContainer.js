@@ -8,7 +8,7 @@ styled.div`
     background-color: #fff;
     border-radius: 5px;
     padding: 10px;
-    border: 1px solid #17242D;
+    border: 1px solid #20253F;
     display: flex;
     flex-direction: row; 
     justify-content: space-between

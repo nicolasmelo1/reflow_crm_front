@@ -209,6 +209,7 @@ const KanbanCards = (props) => {
                                 <small>
                                     {strings['pt-br']['kanbanWaitingForDataInKanbanDimensionPhase']}
                                 </small>
+                                {' '}
                                 <Spinner animation="border" size="sm"/>
                             </React.Fragment>
                         ) : ''}

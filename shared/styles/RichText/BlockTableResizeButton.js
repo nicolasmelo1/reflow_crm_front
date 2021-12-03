@@ -75,7 +75,7 @@ styled.button`
     background-color: transparent;
 
     &:hover {
-        background-color: #17242D;
+        background-color: #20253F;
     }
 `
 :

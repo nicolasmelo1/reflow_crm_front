@@ -243,7 +243,7 @@ const Field = (props) => {
                         <div style={{
                             padding: '5px',
                             borderRadius: '10px',
-                            backgroundColor: '#17242D',
+                            backgroundColor: '#20253F',
                             width: '100%'
                         }}>
                             <p style={{color: '#bfbfbf', padding: '0 10px'}}>

@@ -12,7 +12,7 @@ styled.div`
     right: 0;
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 3px 6px #17242D;
+    box-shadow: 0 3px 6px #20253F;
     display: inline-block;
     background-color: #fff;
 `
@@ -24,6 +24,6 @@ styled(View)`
     top: 0;
     right: 0;
     border-radius: 10px;
-    border: #17242D;
+    border: #20253F;
     background-color: #fff;
 `

@@ -7,7 +7,7 @@ process.env['APP'] === 'web' ?
 styled.div`
     padding: 15px; 
     margin-bottom: 10px;
-    background-color: #17242D;
+    background-color: #20253F;
     margin: -10px -10px 10px -10px;
 `
 :

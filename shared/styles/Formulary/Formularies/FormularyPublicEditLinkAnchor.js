@@ -14,7 +14,7 @@ styled.a`
     margin-left: 10px;
     
     &:hover {
-        color: #17242D50;
+        color: #20253F50;
         text-decoration: underline;
     }
 `

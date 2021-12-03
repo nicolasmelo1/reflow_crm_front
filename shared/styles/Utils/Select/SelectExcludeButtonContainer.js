@@ -9,7 +9,7 @@ styled.div`
     border-radius: 100%;
     color: #fff;
     &:hover {
-        color: #17242D;
+        color: #20253F;
         background-color: #bfbfbf
     }
 `

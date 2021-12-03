@@ -12,7 +12,7 @@ styled.textarea`
     &:focus {
         color: #6a7074;
         background-color: white;
-        border: 1px solid #17242D;
+        border: 1px solid #20253F;
         box-shadow: none;
         outline: 0;
     }

@@ -5,13 +5,13 @@ export default process.env['APP'] === 'web' ?
 styled.div`
     position: absolute;
     padding: 5px;
-    background: #17242D;
+    background: #20253F;
     width: 234px;
     height: 320px;
     box-shadow: 10px 10px 40px rgba(0,0,0,0.2);
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 4px 20px 0 #17242D; 
+    box-shadow: 0 4px 20px 0 #20253F; 
     z-index: 6;
     transform: translate3d(0px, ${props=> props.translate.toString()}px, 0px)
 `

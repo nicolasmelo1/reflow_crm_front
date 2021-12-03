@@ -72,10 +72,10 @@ styled.button`
     padding: 5px 0;
     width: 100%;
     margin-bottom: 10px;
-    color: #17242D;
+    color: #20253F;
 
     &:hover {
-        background-color: #17242D;
+        background-color: #20253F;
         color: #0dbf7e;
     }
 `
@@ -110,7 +110,7 @@ styled.h2`
     text-align: center;
     font-weight: normal;
     letter-spacing: 0.5px;
-    text-shadow: -1px -1px 0 #17242D, 1px -1px 0 #17242D, -1px 1px 0 #17242D, 1px 1px 0 #17242D;
+    text-shadow: -1px -1px 0 #20253F, 1px -1px 0 #20253F, -1px 1px 0 #20253F, 1px 1px 0 #20253F;
     border-bottom: 1px solid #f2f2f2;
 `
 :

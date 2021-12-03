@@ -227,7 +227,7 @@ const FormularySectionEditForm = (props) => {
                                 options={conditionalFieldOptions} 
                                 initialValues={conditionalFieldOptions.filter(fieldOption => fieldOption.value === props.section.conditional_on_field)} 
                                 onChange={onChangeConditionalField} 
-                                optionColor={'#17242D'}
+                                optionColor={'#20253F'}
                                 optionBackgroundColor={'#f2f2f2'}
                                 optionDividerColor={'#0dbf7e'} 
                                 />
@@ -240,7 +240,7 @@ const FormularySectionEditForm = (props) => {
                                 options={conditionalTypesOptions} 
                                 initialValues={conditionalTypesOptions.filter(conditionalType => conditionalType.value === props.section.conditional_type)} 
                                 onChange={onChangeConditionalType} 
-                                optionColor={'#17242D'}
+                                optionColor={'#20253F'}
                                 optionBackgroundColor={'#f2f2f2'}
                                 optionDividerColor={'#0dbf7e'} 
                                 />

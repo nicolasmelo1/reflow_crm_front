@@ -161,7 +161,7 @@ const TemplatePreview = (props) => {
                             </TemplatesPreviewDescriptionText>
                             <TemplatesPreviewDescriptionUseButton onPress={e=> {(!isSubmitting) ? onClickUseButton() : null}}>
                                 {(isSubmitting) ? (
-                                    <ActivityIndicator color="#17242D"/>
+                                    <ActivityIndicator color="#20253F"/>
                                 ) : (
                                     <Text>
                                         {strings['pt-br']['templateUseButtonLabel']}

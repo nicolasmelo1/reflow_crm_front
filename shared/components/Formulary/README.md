@@ -67,7 +67,6 @@ THIS IS THE data recieved from the __HOW__ to build the formulary. Looking at th
                       "decimal_separator": null,
                       "order": 1
                   },
-                  "number_configuration_mask": null,
                   "formula_configuration": "{{261}}+100",
                   "name": "calculo",
                   "label_name": "Calculo",

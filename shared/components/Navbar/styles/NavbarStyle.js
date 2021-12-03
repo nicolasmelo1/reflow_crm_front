@@ -102,6 +102,8 @@ styled.nav`
     align-items: center;
     user-select: none;
     app-region: drag;
+    box-shadow: 2px 2px 8px rgba(190, 205, 226, 0.4), -8px -8px 16px rgba(255, 255, 255, 0.1);
+    z-index: 1;
 `
 :
 styled(View)``

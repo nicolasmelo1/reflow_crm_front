@@ -6,7 +6,7 @@ export default process.env['APP'] === 'web' ?
 styled.div`
     border: 0;
     background-color: white !important;
-    color: #17242D;
+    color: #20253F;
     border: 1px solid ${props=> props.errors ? 'red': '#0dbf7e'};
     display: block;
     width: 100%;

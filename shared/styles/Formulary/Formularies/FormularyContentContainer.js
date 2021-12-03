@@ -2,8 +2,9 @@ import styled from 'styled-components'
 
 export default styled(({isOpen, height,...rest}) => <div {...rest}/>)`
     ${props => props.display === 'bottom' ? `
-        box-shadow: -5px 5px 20px #17242D;
+        box-shadow: -5px 5px 20px #20253F;
     `: ''}    
+    font-size: 15px;
     background-color: ${props => props.display !== 'bottom' ? '#fff': '#f2f2f2'}; 
     overflow-y: auto; 
     display: block;

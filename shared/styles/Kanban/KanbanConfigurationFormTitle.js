@@ -5,7 +5,7 @@ import { Text } from 'react-native'
 export default process.env['APP'] === 'web' ?
 styled.h2`
     margin: 0;
-    color: #17242D
+    color: #20253F
 `
 :
 styled(Text)``

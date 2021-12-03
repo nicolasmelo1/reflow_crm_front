@@ -45,6 +45,8 @@ import {
     faEye, 
     faEyeSlash,
     faChevronLeft, 
+    faShapes,
+    faFileExcel,
     faLink,
     faChevronRight, 
     faChevronUp, 
@@ -97,6 +99,8 @@ library.add(
     faEye, 
     faEyeSlash,
     faChevronLeft, 
+    faShapes,
+    faFileExcel,
     faChevronRight, 
     faChevronUp, 
     faChevronDown, 
@@ -270,7 +274,7 @@ class Layout extends React.Component {
             <View>
                 <Notify/> 
                 {(this.state.addTemplates || this.props.addTemplates) && isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user) ? (
-                    <Templates setAddTemplates={this.setAddTemplates}/>
+                    <Templates setAddTemplates={this.props.setAddTemplates ? this.props.setAddTemplates : this.setAddTemplates}/>
                 ) : (
                     <SafeAreaView style={{ height: '100%', backgroundColor:'#fff'}}>
                         {this.props.showSideBar ?
@@ -322,7 +326,7 @@ class Layout extends React.Component {
                         {this.props.header}
                         <Notify/> 
                         {(this.state.addTemplates || this.props.addTemplates) && isAdmin(this.props.login?.types?.defaults?.profile_type, this.props.login?.user) ? (
-                            <Templates setAddTemplates={this.setAddTemplates}/>
+                            <Templates setAddTemplates={this.props.setAddTemplates ? this.props.setAddTemplates : this.setAddTemplates}/>
                         ) : (
                             <div id="main-container">
                                 {this.props.hideNavBar ? '' : (

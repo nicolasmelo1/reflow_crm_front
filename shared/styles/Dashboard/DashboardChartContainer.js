@@ -37,5 +37,5 @@ styled(View)`
     height: 500px;
     padding: 10px 0;
     border-bottom-width: 1px;
-    border-bottom-color: #17242D;
+    border-bottom-color: #20253F;
 `

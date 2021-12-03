@@ -85,7 +85,7 @@ const BlockSelector = (props) => {
                             onPress={(e) => {props.changeBlockType(blockOption.id)}}
                             >
                                 <BlockSelectorIcon size={ 24 } style={{color: '#0dbf7e'}} icon={iconByBlockName(blockOption.name)}/>
-                                <Text style={{ color: '#17242D', fontSize: 24 }}>{' ' + types('pt-br', 'block_type', blockOption.name)}</Text>
+                                <Text style={{ color: '#20253F', fontSize: 24 }}>{' ' + types('pt-br', 'block_type', blockOption.name)}</Text>
                             </BlockSelectorButton>
                         ))}
                     </BlockSelectorContainer>

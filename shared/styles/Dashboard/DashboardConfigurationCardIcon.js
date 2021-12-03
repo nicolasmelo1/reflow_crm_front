@@ -6,5 +6,5 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 export default styled(FontAwesomeIcon)`
     font-size: 20px;
     margin: 10px;
-    color: #17242D
+    color: #20253F
 `

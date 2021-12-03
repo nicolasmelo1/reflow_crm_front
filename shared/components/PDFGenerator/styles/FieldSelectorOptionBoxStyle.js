@@ -52,7 +52,7 @@ export const FieldOptionsButtons = process.env['APP'] === 'web' ? styled.button`
     display: block;
     border: 0;
     background-color: transparent;
-    color: #17242D;
+    color: #20253F;
     width: 100%;
     text-align: left;
     padding: 5px;

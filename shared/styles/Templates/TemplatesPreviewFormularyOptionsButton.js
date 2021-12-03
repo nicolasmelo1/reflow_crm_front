@@ -17,7 +17,7 @@ styled(TouchableOpacity)`
     align-items: center;
     margin-top: 10px;
     padding: 15px 5px;
-    border: ${props => props.isSelected ? '0' : '1px solid #17242D'};
-    background-color: ${props => props.isSelected ? '#17242D' : 'transparent'};
+    border: ${props => props.isSelected ? '0' : '1px solid #20253F'};
+    background-color: ${props => props.isSelected ? '#20253F' : 'transparent'};
     border-radius: 20px;
 `

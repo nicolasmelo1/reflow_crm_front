@@ -59,7 +59,7 @@ const chart = (context, type, labels, values, numberFormat=null, maintainAspectR
     let possibleColors = [
         '#f2f2f2',
         '#0DBF7E',
-        '#17242D',
+        '#20253F',
         '#bfbfbf', 
         '#856A5D', 
         '#CCC9E7', 

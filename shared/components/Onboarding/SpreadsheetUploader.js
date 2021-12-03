@@ -2,39 +2,62 @@ import React, { useState, useEffect } from 'react'
 import { View } from 'react-native'
 import XLSX from 'xlsx'
 import axios from 'axios'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import Alert from '../Utils/Alert'
+import SimplifiedUserModal from '../Users/SimplifiedUserModal'
+import { strings, paths } from '../../utils/constants'
 import generateUUID from '../../utils/generateUUID'
 import validateEmail from '../../utils/validateEmail'
+import dynamicImport from '../../utils/dynamicImport'
+import agent from '../../utils/agent'
 import { FRONT_END_HOST, DEFAULT_BASE_NUMBER_FIELD_FORMAT } from '../../config'
 import RepresentationService from '../../services/representation'
+import Styled from './styles'
+
+const Router = dynamicImport('next/router')
+
 /**
- * {Description of your component, what does it do}
+ * SpreadsheetUploader will be responsible for uploading a spreadsheet and bulk creating the formulary data. 
+ * _ This component will be responsible to bulk create first the formulary
+ * _ Then it will bulk create the formulary data.
+ * _ Then it will bulk create the users. 
+ * 
  * @param {Type} props - {go in detail about every prop it recieves}
  */
 const SpreadsheetUploader = (props) => {
+    const sourceRef = React.useRef()
     const filesToUpload = React.useRef()
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [isDraggingOver, setIsDraggingOver] = useState(false)
+    /** @type {Array<object>} - Each item is a field and each field holds the options as well as the field data.*/
+    const [possibleUsers, setPossibleUsers] = useState([])
+    const [openedDropdownAtFieldIndex, setOpenedDropdownAtFieldIndex] = useState(null)
+    const [showAddNewUsers, setShowAddNewUsers] = useState(false)
+    const [showAlert, setShowAlert] = useState(false)
+    const [users, setUsers] = useState([])
     const [pages, setPages] = useState([])
     const [names, setNames] = useState([])
+    const [selectedPageIndex, setSelectedPageIndex] = useState(0)
+
+    const possibleFieldTypes = [
+        `date`, 'dateAndHour', 'numberDynamic', 'numberInteger', 
+        'numberCurrency', 'numberPercentage', 'text', 'email', 
+        'textArea', 'option', 'user'
+    ]
+
+    const getFieldTypeLabel = (fieldTypeName) => {
+        return strings['pt-br'][`spreadsheetUploader${fieldTypeName.charAt(0).toUpperCase() + fieldTypeName.slice(1)}FieldType`]
+    }
 
     const createAFieldTypesMatcher = () => {
-        const createFieldTypeData = () => {
-            return {
+        let response = {}
+        possibleFieldTypes.forEach(fieldType => {
+            response[fieldType] = {
                 count: 0,
                 values: []
             }
-        }
-        return {
-            date: createFieldTypeData(),
-            dateAndHour: createFieldTypeData(),
-            numberDynamic: createFieldTypeData(),
-            numberInteger: createFieldTypeData(),
-            numberCurrency: createFieldTypeData(),
-            numberPercentage: createFieldTypeData(),
-            text: createFieldTypeData(),
-            email: createFieldTypeData(),
-            textArea: createFieldTypeData(),
-            option: createFieldTypeData(),
-            user: createFieldTypeData()
-        }
+        })
+        return response
     }
 
     /**
@@ -127,6 +150,11 @@ const SpreadsheetUploader = (props) => {
         return null
     }
 
+    /**
+     * Retrieves the field_type name from a given field_type id.
+     * 
+     * @param {number} id - The id of the field_type to get the name for.
+     */
     const getFieldTypeNameById = (id) => {
         if (props.types?.data?.field_type) {
             let fieldTypes = props.types.data.field_type.filter(fieldType => fieldType.id === id)
@@ -137,6 +165,13 @@ const SpreadsheetUploader = (props) => {
         return ''
     }
 
+    /**
+     * Retrives the field_number_format_type object from the given numberConfigurationTypeId.
+     * 
+     * @param {number} id - The id of the field_number_format_type object to retrieve.
+     * 
+     * @returns {Object} - The field_number_format_type object.
+     */
     const getNumberConfigurationTypeById = (id) => {
         if (props.types?.data?.field_number_format_type) {
             const numberConfigurationTypes = props.types.data.field_number_format_type.filter(numberConfigurationType => numberConfigurationType.id === id)
@@ -166,33 +201,28 @@ const SpreadsheetUploader = (props) => {
         return {}
     }
 
-    const createNewFields = (fieldName, fieldTypeName, order, fieldOptions=[]) => {
+    const createNewField = (fieldName, fieldTypeName, fieldOptions=[]) => {
+        /**
+         * @typedef {{
+         * fieldTypeName: string,
+         * field_option: Array<{{option: string}}>,
+         * uuid: string,
+         * label_name: string,
+         * required: boolean,
+         * date_configuration_date_format_type: number | null,
+         * period_configuration_period_interval_type: number | null,
+         * number_configuration_number_format_type: number | null,
+         * type: number
+         * }} FieldData - The data of the field that we will send to the server.
+         */
         return {
-            id: null,
-            field_option: fieldTypeName === 'option' ? fieldOptions : [],
-            field_default_field_values: [],
-            form_field_as_option : null,
-            name: '',
+            fieldTypeName: fieldTypeName,
+            field_option: fieldTypeName === 'option' ? fieldOptions.map(fieldOption => ({ option: fieldOption.toString() })) : [],
             uuid: generateUUID(),
-            form: null,
-            number_configuration_mask: '9',
-            formula_configuration: null,
-            field_formula_variables: [],
-            is_long_text_rich_text: false,
             label_name: fieldName.charAt(0).toUpperCase() + fieldName.slice(1),
-            placeholder: '',
             required: false,
-            order: order,
-            is_unique: false,
-            field_is_hidden: false,
-            label_is_hidden: false,
-            date_configuration_auto_create: false,
-            date_configuration_auto_update:	false,
-            number_configuration_allow_negative: true,
-            number_configuration_allow_zero: true,
-            enabled: true,
             date_configuration_date_format_type: getDateConfigurationTypeIdByName(fieldTypeName),
-            period_configuration_period_interval_type: 4,
+            period_configuration_period_interval_type: null,
             number_configuration_number_format_type: getNumberConfigurationTypeIdByName(fieldTypeName),
             type: getFieldTypeIdByName(fieldTypeName),
         }
@@ -207,7 +237,7 @@ const SpreadsheetUploader = (props) => {
      */
     const createNewPageData = (pageName) => {
         return {
-            pageName: pageName,
+            pageName: pageName.charAt(0).toUpperCase() + pageName.slice(1),
             fields: [],
             data: []
         }
@@ -228,7 +258,7 @@ const SpreadsheetUploader = (props) => {
      * 
      * @return {{winner: fieldTypeWinner, data: fieldTypeData}} - The new fieldTypeData that will be the winner.
      */
-    const upgradeFieldType = (fieldTypeWinner, fieldTypeData) => {
+    const upgradeFieldType = (headerIndex, fieldTypeWinner, fieldTypeData) => {
         const isAUser = (value) => {
             const userName = value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
             const firstName = userName.split(' ')[0]
@@ -238,6 +268,10 @@ const SpreadsheetUploader = (props) => {
             const valuesAsSet = new Set(fieldTypeData.values)
             if (valuesAsSet.size < 15 && valuesAsSet.size > 0) {
                 if ([...valuesAsSet].every(value => isAUser(value))) {
+                    possibleUsers.push({
+                        headerIndex: headerIndex, 
+                        data: [...valuesAsSet]
+                    })
                     return {
                         winner: 'user',
                         data: [...valuesAsSet]
@@ -307,7 +341,15 @@ const SpreadsheetUploader = (props) => {
 
     /**
      * Get the data from the field and create a new field object. The new field object will be added to the `fields` array of the page.
-     * This field object will be the 
+     * This field object will hold the configuration of the number, the date, the period or any other configurations it needs.
+     * 
+     * @param {Array<[any]>} data - This is a 2d array of the data from the column the first dimension of this array is each line
+     * and then each array on each line will represent each column.
+     * @param {string} headerName - The name of the header of the column. We will use this as the name of the field.
+     * @param {number} headerIndex - The index of the header of the column. We will use this as the index of the field.
+     * 
+     * @returns {[Array<any>, FieldData]} - Returns an array where the first value is an array of any value type and the second is the actual
+     * field data
      */
     const evaluateField = async (data, headerName, headerIndex) => {
         let fieldValues = []
@@ -330,8 +372,8 @@ const SpreadsheetUploader = (props) => {
                 lastWinnerCount = count
             }
         }
-        let winnerData = upgradeFieldType(fieldTypeWinner, fieldTypes[fieldTypeWinner])
-        return [fieldValues, createNewFields(headerName, winnerData.winner, headerIndex, winnerData.data)]
+        let winnerData = upgradeFieldType(headerIndex, fieldTypeWinner, fieldTypes[fieldTypeWinner])
+        return [fieldValues, createNewField(headerName, winnerData.winner, winnerData.data)]
     }
 
     /**
@@ -339,7 +381,7 @@ const SpreadsheetUploader = (props) => {
      * 
      * @param {array} values - The values of the field to get the representation of.
      * @param {object} fieldData - The data of the field to get the representation of. The data of the field is
-     * an object exactly like the structure of `createNewFields` function.
+     * an object exactly like the structure of `createNewField` function.
      */
     const evaluateFieldValues = async (values, fieldData) => {
         let newValues = []
@@ -358,7 +400,14 @@ const SpreadsheetUploader = (props) => {
             )
 
             if (fieldTypeName === 'number') newValues.push(await representationService.representation(value * DEFAULT_BASE_NUMBER_FIELD_FORMAT))
-            else newValues.push(await representationService.representation(value))
+            else if (fieldTypeName === 'user' && users.length > 0) {
+                for (const user of users) {
+                    if (value.startsWith(user.fullName)) {
+                        newValues.push(user.id.toString())
+                    }
+                }
+                newValues.push('')
+            } else newValues.push(await representationService.representation(value))
         }
         return newValues
     }
@@ -375,10 +424,11 @@ const SpreadsheetUploader = (props) => {
         const headers = data[0]
         let headerIndex = 0
         for (const header of headers) {
-            let [values, fieldData] = await evaluateField(data, header, headerIndex)
-            values = await evaluateFieldValues(values, fieldData)
+            const [rawValues, fieldData] = await evaluateField(data, header, headerIndex)
+            const values = await evaluateFieldValues(rawValues, fieldData)
             page.fields.push({
                 values,
+                rawValues,
                 fieldData
             })
             headerIndex++
@@ -392,9 +442,49 @@ const SpreadsheetUploader = (props) => {
             const worksheet = workbook.Sheets[pageName]
             const data = XLSX.utils.sheet_to_json(worksheet, { header: 1 })
             await evaluateFields(data, pageData)
-            possiblePages.push(pageData)
+            if (pageData.fields.length > 0) possiblePages.push(pageData)
         }
         setPages([...possiblePages])
+        if (possibleUsers.length > 0) {
+            setShowAlert(true)
+            setPossibleUsers([...possibleUsers])
+        }
+    }
+
+    /**
+     * Function used for submiting the formulary with it's fields and it's data.
+     * 
+     * @param {Array<PageData>} pages - An array of page data.
+     */
+    const onSubmitFormulary = () => {
+        const getUserActualValue = (value) => {
+            for (const user of users) {
+                if (user.fullName.startsWith(value)) {
+                    return user.id.toString()
+                }
+            }
+            return ''
+        }
+        const data = {
+            name: 'Novo Grupo',
+            formularies: pages.map(page => ({
+                name: page.pageName,
+                section_name: page.pageName,
+                fields: page.fields.map(({fieldData: {fieldTypeName, ...rest}}) => rest),
+                // Reference: https://stackoverflow.com/a/10284006
+                data: page.fields[0].values.map((_, index) => ({
+                    data_by_each_field: page.fields.map(field => ({
+                        field_name: field.fieldData.label_name,
+                        value: field.fieldData.fieldTypeName !== 'user' ? field.values[index] : getUserActualValue(field.values[index])
+                    }))
+                }))
+            }))
+        }
+        props.onBulkCreateFormulary(data).then(response => {
+            if (response && response.status === 200) {
+                Router.push(paths.home().asUrl, paths.home(response.data.data.primary_form).asUrl, { shallow: true })
+            }
+        })
     }
 
     const loadWorkbook = (arrayBuffer) => {
@@ -406,6 +496,144 @@ const SpreadsheetUploader = (props) => {
         })
         handleWorkbookPages(workbook)
     }    
+
+    /**
+     * Removes a column from the field after the 
+     */
+    const onRemoveColumn = (fieldIndex) => {
+        let newPages = [...pages]
+        newPages[selectedPageIndex].fields = newPages[selectedPageIndex].fields.filter((_, i) => i !== fieldIndex)
+        if (newPages[selectedPageIndex].fields.length === 0) {
+            newPages = newPages.filter((_, i) => i !== selectedPageIndex)
+            if (selectedPageIndex !== 0) {
+                setSelectedPageIndex(selectedPageIndex - 1)
+            }
+        }
+        setPages([...newPages])
+    }
+
+    /**
+     * Used when the user changes the type of the column.
+     * 
+     * @param {number} fieldIndex - The index of the field that the user is changing the type of.
+     * @param {string} fieldTypeName - The name of the field type that the user is changing the type of.
+     */
+    const onChangeColumn = (fieldIndex, newFieldType) => {
+        let newPages = [...pages]
+        const originalField = newPages[selectedPageIndex].fields[fieldIndex]
+        let newFieldData = null
+        if (newFieldType === 'option') {
+            const valuesAsSet = new Set(originalField.rawValues)
+            const options = [...valuesAsSet].map(value => value.toString())
+            newFieldData = createNewField(originalField.fieldData.label_name, newFieldType, options)
+        } else if (newFieldType === 'user') {
+            // when the user selects a user field type, we add this to the `possibleUsers` array
+            // and opens the popup to create the users in the platform.
+            const valuesAsSet = new Set(originalField.rawValues)
+            const userOptions = [...valuesAsSet].map(value => value.toString())
+            possibleUsers.push({
+                headerIndex: fieldIndex, 
+                data: userOptions
+            })
+            newFieldData = createNewField(originalField.fieldData.label_name, newFieldType, userOptions)
+            setPossibleUsers([...possibleUsers])
+            setShowAddNewUsers(true)
+        } else {
+            newFieldData = createNewField(originalField.fieldData.label_name, newFieldType)
+        }
+        evaluateFieldValues(originalField.rawValues, newFieldData).then(newValues => {
+            newPages[selectedPageIndex].fields[fieldIndex].fieldData = newFieldData 
+            newPages[selectedPageIndex].fields[fieldIndex].values = newValues 
+            setPages([...newPages])            
+        })
+    }
+
+    /**
+     * Removes the possible user column at the the given index, and then updates it to a the `option` field type.
+     * 
+     * If `possibleUsers` list is empty then we remove the alert, otherwise we show it again so the user can select if the other
+     * possible column is a user column.
+     * 
+     * @param {number} fieldIndex - The index of the field that is a possible user column.
+     */
+    const onRemovePossibleUserColumn = (fieldIndex) => {
+        if (showAlert === true) {
+            setShowAlert(false)
+            possibleUsers.splice(0, 1)
+            onChangeColumn(fieldIndex, 'option')
+            if (possibleUsers.length !== 0) {
+                setShowAlert(true)
+            }
+            setPossibleUsers([...possibleUsers])
+        }
+    }
+
+    /**
+     * Callback for when the user clicks to accept to add the users now on the alert.
+     * When the user uploads a new file we automatically see if there are names on the list, if there are, 
+     * we show an alert asking him if he wants to add the users now. If he wants then we remove all
+     * the possible user column and stick to one only. All the other columns will be converted
+     * to a `option` field type.
+     * 
+     * Then we remove the alert and show the modal to add the users in his company.
+     * 
+     * @param {number} fieldIndex - The index of the column that is a possible user column.
+     */
+    const onAcceptPossibleUserColumn = (fieldIndex) => {
+        for (let i=0; i<pages[selectedPageIndex].fields.length; i++) {
+            if (i !== fieldIndex && pages[selectedPageIndex].fields[i].fieldData.fieldTypeName === 'user') {
+                onChangeColumn(i, 'option')
+            }
+        }
+        setShowAlert(false)
+        setShowAddNewUsers(true)
+        setPossibleUsers([possibleUsers[0]])
+    }
+
+    /**
+     * Callback for when the user clicks the "x" button at the top on the user modal.
+     * 
+     * When the user don't want to add the users of his company, we convert the possible user column to an option field.
+     * we also remove the modal.
+     */
+    const onCloseSetUsersModal = () => {
+        setShowAddNewUsers(false)
+        onChangeColumn(possibleUsers[0].headerIndex, 'option')
+        setPossibleUsers([])
+    }
+
+    const onSubmitUsers = (response) => {
+        setShowAddNewUsers(false)
+        if (response && response.status === 200) {
+            agent.http.USERS.getUsersConfiguration(sourceRef.current).then(response => {
+                if (response && response.status === 200) {
+                    const usersInCompany = []
+                    for (const user of response.data.data) {
+                        const fullName = user.first_name + ' ' + user.last_name
+                        usersInCompany.push({
+                            id: user.id,
+                            fullName: fullName,
+                            email: user.email
+                        })
+                    }
+                    setUsers(usersInCompany)
+                    setPossibleUsers([])
+                }
+            })
+        }
+    }
+
+    /**
+     * Changes from one page to the other, a page is nothing more that many worksheets in a workbook.
+     * 
+     * Each page is each worksheet in the workbook.
+     * 
+     * @param {number} index - The index of the page that the user is changing to.
+     */
+    const onChangePage = (index) => {
+        setSelectedPageIndex(index)
+        setOpenedDropdownAtFieldIndex(null)
+    }
 
     const onUploadFile = (files) => {
         if (names.length === 0 && files.length > 0) {
@@ -422,7 +650,20 @@ const SpreadsheetUploader = (props) => {
         }
     }
 
+    /**
+     * When the user drops the 
+     */
+    const onDrop = (e) => {
+        e.preventDefault()
+
+        if (e.dataTransfer.items && e.dataTransfer.items[0] && e.dataTransfer.items[0].kind === 'file') {
+            const file = e.dataTransfer.items[0].getAsFile()
+            onUploadFile([file])
+        }
+    }
+
     useEffect(() => {
+        sourceRef.current = axios.CancelToken.source()
         // we retrieved all of the names from brazil and appended it to a single json file. This json file is stored in our frontend public repository.
         // By doing this we can automatically convert a field type to a user field type and prompt the user for adding the users of this file.
         axios.get(`${FRONT_END_HOST}/utils/names.json`).then(response => {
@@ -431,6 +672,12 @@ const SpreadsheetUploader = (props) => {
                 onUploadFile([filesToUpload.current])
             }
         })
+
+        return () => {
+            if (sourceRef.current) {
+                sourceRef.current.cancel()
+            }
+        }
     }, [])
 
     const renderMobile = () => {
@@ -440,80 +687,163 @@ const SpreadsheetUploader = (props) => {
     }
 
     const renderWeb = () => {
-        console.log(pages)
         return (
-            <div>
+            <Styled.SpreadsheetUploaderContainer>
+                {showAddNewUsers ? (
+                    <SimplifiedUserModal
+                    callbackOnSubmit={onSubmitUsers}
+                    onCloseModal={onCloseSetUsersModal}
+                    userFullnamesOrEmails={possibleUsers[0].data.map(value => ([value, '']))}
+                    />
+                ) : ''}
+                <Alert 
+                alertTitle={strings['pt-br']['spreadsheetUploaderAlertToAddNewUsersTitle']} 
+                alertMessage={strings['pt-br']['spreadsheetUploaderAlertToAddNewUsersMessage'].replace('{}', possibleUsers.length > 0 ? pages[selectedPageIndex].fields[possibleUsers[0].headerIndex].fieldData.label_name : '')} 
+                show={showAlert} 
+                onHide={() => onRemovePossibleUserColumn(possibleUsers[0].headerIndex)} 
+                onAccept={() => onAcceptPossibleUserColumn(possibleUsers[0].headerIndex)}
+                onAcceptButtonLabel={strings['pt-br']['spreadsheetUploaderAlertToAddNewUsersAcceptButtonLabel']}
+                />
                 {pages.length > 0 ? (
                     <div>
-                        {pages.map((page, index) => (
-                            <div key={index}>
-                                <h1>{page.name}</h1>
-                                <div>
-                                    <div
-                                    style={{ 
-                                        display: 'flex',
-                                        flexDirection: 'row',
-                                        justifyContent: 'space-between',
-                                        overflow: 'auto',
-                                        maxHeight: '50vh',
-                                        maxWidth: 'var(--app-width)'
-                                    }}
+                        <Styled.SpreadsheetUploaderTitle>
+                            {strings['pt-br']['spreadsheetUploaderTitleWhenSelectingFieldTypes']}
+                        </Styled.SpreadsheetUploaderTitle>
+                        <Styled.SpreadsheetUploaderFormularySelectionContainer>
+                            {pages.map((page, index) => (
+                                <Styled.SpreadsheetUploaderFormularySelectionButton
+                                key={index}
+                                isSelected={selectedPageIndex === index}
+                                onClick={(e) => onChangePage(index)}
+                                >
+                                    <Styled.SpreadsheetUploaderFormularySelectionButtonLabel
+                                    isSelected={selectedPageIndex === index}
                                     >
-                                        {page.fields.map((field, index) => (
-                                            <div
-                                            key={index}
-                                            style={{
-                                                display: 'flex',
-                                                flexDirection: 'column'
-                                            }}
+                                        {page.pageName}
+                                    </Styled.SpreadsheetUploaderFormularySelectionButtonLabel>
+                                </Styled.SpreadsheetUploaderFormularySelectionButton>
+                            ))}
+                        </Styled.SpreadsheetUploaderFormularySelectionContainer>
+                        <Styled.SpreadsheetUploaderTableContainer>
+                            <Styled.SpreadsheetUploaderTableHeaderContainer>
+                                {pages[selectedPageIndex].fields.map((field, index) => (
+                                    <Styled.SpreadsheetUploaderTableHeaderWrapper
+                                    key={index}
+                                    >
+                                        <Styled.SpreadsheetUploaderFieldTypeDropdown
+                                        index={index}
+                                        isLastColumn={index === pages[selectedPageIndex].fields.length - 1}
+                                        >
+                                            <Styled.SpreadsheetUploaderFieldTypeDropdownButton
+                                            onClick={(e) => openedDropdownAtFieldIndex === index ? setOpenedDropdownAtFieldIndex(null) : setOpenedDropdownAtFieldIndex(index)}
                                             >
-                                                <div
-                                                style={{
-                                                    padding: '10px',
-                                                    backgroundColor: '#17242D',
-                                                    borderLeft: index !== 0 ? '1px solid #fff': 'none',
-                                                }}
-                                                >
-                                                    <p 
-                                                    style={{
-                                                        color: '#0dbf7e',
-                                                        margin: 0,
-                                                    }}
-                                                    >
-                                                        {field.fieldData.label_name}
-                                                    </p>
-                                                </div>
-                                                {field.values.map((value, valueIndex) => (
-                                                    <div
-                                                    key={`${index}${valueIndex}`}
-                                                    style={{
-                                                        textOverflow: 'ellipsis',
-                                                        width: '100%',
-                                                        height: '20px',
-                                                        whiteSpace: 'nowrap',
-                                                    }}
-                                                    >
-                                                        <p 
-                                                        style={{
-                                                            color: '#0dbf7e',
-                                                            margin: 0,
-                                                        }}
-                                                        >
-                                                            {value}
-                                                        </p>
-                                                    </div>
-                                                ))}
-                                            </div>
+                                                {getFieldTypeLabel(field.fieldData.fieldTypeName)}
+                                                <FontAwesomeIcon icon={'chevron-down'}/>
+                                            </Styled.SpreadsheetUploaderFieldTypeDropdownButton>
+                                            {openedDropdownAtFieldIndex === index ? (
+                                                <Styled.SpreadsheetUploaderFieldTypeDropdownContainerWrapper>
+                                                    <Styled.SpreadsheetUploaderFieldTypeDropdownContainer>
+                                                        {possibleFieldTypes.map(fieldType => (
+                                                            <div
+                                                            key={fieldType}
+                                                            >
+                                                                <Styled.SpreadsheetUploaderFieldTypeDropdownMenuButton 
+                                                                onClick={(e) => {
+                                                                    setOpenedDropdownAtFieldIndex(null)
+                                                                    onChangeColumn(index, fieldType)
+                                                                }}
+                                                                >
+                                                                    {getFieldTypeLabel(fieldType)}
+                                                                </Styled.SpreadsheetUploaderFieldTypeDropdownMenuButton>
+                                                            </div>
+                                                        ))}
+                                                    </Styled.SpreadsheetUploaderFieldTypeDropdownContainer>
+                                                </Styled.SpreadsheetUploaderFieldTypeDropdownContainerWrapper>
+                                            ) : ''}
+                                        </Styled.SpreadsheetUploaderFieldTypeDropdown>
+                                        <Styled.SpreadsheetUploaderTableHeader
+                                        index={index}
+                                        isLastColumn={index === pages[selectedPageIndex].fields.length - 1}
+                                        >
+                                            <Styled.SpreadsheetUploaderTableHeaderLabel>
+                                                {field.fieldData.label_name}
+                                            </Styled.SpreadsheetUploaderTableHeaderLabel>
+                                            <Styled.SpreadsheetUploaderTableHeaderTrashIconButton
+                                            onClick={(e) => onRemoveColumn(index)}
+                                            >
+                                                <Styled.SpreadsheetUploaderTableHeaderTrashIcon icon={'trash'}/>
+                                            </Styled.SpreadsheetUploaderTableHeaderTrashIconButton>
+                                        </Styled.SpreadsheetUploaderTableHeader>
+                                    </Styled.SpreadsheetUploaderTableHeaderWrapper>
+                                ))}
+                            </Styled.SpreadsheetUploaderTableHeaderContainer>
+                            <Styled.SpreadsheetUploaderTableContentContainer>
+                                {pages[selectedPageIndex].fields.map((field, index) => (
+                                    <Styled.SpreadsheetUploaderTableRow
+                                    key={index}
+                                    >
+                                        {field.values.map((value, valueIndex) => (
+                                            <Styled.SpreadsheetUploaderTableContent
+                                            key={`${index}${valueIndex}`}
+                                            isEven={valueIndex % 2 === 0}
+                                            >
+                                                <Styled.SpreadsheetUploaderTableContentLabel>
+                                                    {value}
+                                                </Styled.SpreadsheetUploaderTableContentLabel>
+                                            </Styled.SpreadsheetUploaderTableContent>
                                         ))}
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
+                                    </Styled.SpreadsheetUploaderTableRow>
+                                ))}
+                            </Styled.SpreadsheetUploaderTableContentContainer>
+                        </Styled.SpreadsheetUploaderTableContainer>
+                        <Styled.SpreadsheetUploaderBottomButtonsContainer>
+                            <Styled.SpreadsheetUploaderBottomButton
+                            onClick={(e) => onSubmitFormulary()}
+                            >
+                                {strings['pt-br']['spreadsheetUploaderSubmitButtonLabel']}
+                            </Styled.SpreadsheetUploaderBottomButton>
+                        </Styled.SpreadsheetUploaderBottomButtonsContainer>
                     </div>
                 ) : (
-                    <input type={'file'} value={''} onChange={(e) => onUploadFile(e.target.files)}/>
+                    <Styled.SpreadsheetUploaderClickAndDropContainer
+                    isDraggingOver={isDraggingOver}
+                    onDragOver={(e) => {
+                        e.preventDefault()
+                        setIsDraggingOver(true)
+                    }}
+                    onDragLeave={(e) => {
+                        e.preventDefault()
+                        setIsDraggingOver(false)
+                    }}
+                    onDrop={(e) => onDrop(e)}
+                    >
+                        
+                        {isDraggingOver ? (
+                            <div>
+                                <FontAwesomeIcon icon={'arrow-down'}/>
+                                <p>
+                                    {'Solte o arquivo aqui'}
+                                </p>
+                            </div>
+                        ) : (
+                            <Styled.SpreadsheetUploaderClickAndDropButtonContainer>
+                                <FontAwesomeIcon icon={'arrow-down'}/>
+                                <p>
+                                    Clique ou arraste o arquivo aqui
+                                </p>
+                                <input
+                                style={{
+                                    display: 'none'
+                                }}
+                                type={'file'} 
+                                value={''} 
+                                onChange={(e) => onUploadFile(e.target.files)}
+                                />
+                            </Styled.SpreadsheetUploaderClickAndDropButtonContainer>
+                        )}
+                    </Styled.SpreadsheetUploaderClickAndDropContainer>
                 )}
-            </div>
+            </Styled.SpreadsheetUploaderContainer>
         )
     }
 

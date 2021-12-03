@@ -5,7 +5,7 @@ export default process.env['APP'] === 'web' ?
 styled.input`
     border: 0;
     background-color: white !important;
-    color: #17242D;
+    color: #20253F;
     border: 1px solid ${props=> props.errors ? 'red': '#f2f2f2'};
     display: block;
     width: 100%;

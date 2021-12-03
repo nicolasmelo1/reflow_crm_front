@@ -40,7 +40,7 @@ styled.div`
     padding: 10px;
     width: 100%;
     background-color: #f2f2f2;
-    color: #17242D !important;
+    color: #20253F !important;
     border-radius: 5px;
     text-align: center;
 `
@@ -66,7 +66,7 @@ styled.button`
     border: 0;
     margin: 5px 0;
     background-color: ${props => props.selected ? '#0dbf7e' : '#0dbf7e30'};
-    color: #17242D;
+    color: #20253F;
     font-weight: ${props => props.selected ? 'bold' : 'normal'};
     border-radius: 5px;
     text-align: left;
@@ -189,7 +189,7 @@ styled(View)``
 export const SurveyLikertHeaderLabel = process.env['APP'] === 'web' ?
 styled.span`
     font-weight: bold;
-    color: #17242D;
+    color: #20253F;
 `
 :
 styled(Text)``

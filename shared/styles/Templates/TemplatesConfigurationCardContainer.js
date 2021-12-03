@@ -6,7 +6,7 @@ export default process.env['APP'] === 'web' ?
 styled.div`
     height: 200px;
     width: 200px;
-    border: 1px solid #17242D;
+    border: 1px solid #20253F;
     background-color: #fff;
     border-radius: 5px;
     cursor: pointer;
@@ -32,7 +32,7 @@ styled.div`
 styled(View)`
     height: 200px;
     width: 200px;
-    border: 1px solid #17242D;
+    border: 1px solid #20253F;
     background-color: #fff;
     border-radius: 5px;
     text-align: center;

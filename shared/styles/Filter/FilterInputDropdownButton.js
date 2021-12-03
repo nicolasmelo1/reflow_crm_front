@@ -4,11 +4,13 @@ import { TouchableOpacity } from 'react-native'
 
 const StyledButton = process.env['APP'] === 'web' ? styled.button`
     background-color: #0dbf7e;
+    font-size: 13px;
     color: black;
     border: 0;
     border-radius: 0;
+    
     &:hover {
-        background-color: #fff;
+        background-color: #0dbf7e50;
         color: black;
     }
     &:active{

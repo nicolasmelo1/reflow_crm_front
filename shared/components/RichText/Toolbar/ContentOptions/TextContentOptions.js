@@ -54,7 +54,7 @@ const TextContentOptions = (props) => {
     const textColors = [
         '', 
         '#0dbf7e', 
-        '#17242D', 
+        '#20253F', 
         '#bfbfbf', 
         '#444444', 
         '#ff5ac4', 
@@ -73,7 +73,7 @@ const TextContentOptions = (props) => {
     const markerColors = [
         '',
         '#0dbf7e50', 
-        '#17242D50', 
+        '#20253F50', 
         '#bfbfbf50', 
         '#44444450', 
         '#ff5ac450', 
@@ -156,25 +156,25 @@ const TextContentOptions = (props) => {
                 isBold={props.stateOfSelection.isBold}
                 onPress={(e) => props.onChangeSelectionState('bold', !props.stateOfSelection.isBold, '')}
                 >
-                    <Text style={{color: props.stateOfSelection.isBold ? '#0dbf7e': '#17242D'}}>{'B'}</Text>
+                    <Text style={{color: props.stateOfSelection.isBold ? '#0dbf7e': '#20253F'}}>{'B'}</Text>
                 </TextContentOptionBoldButton>
                 <TextContentOptionItalicButton 
                 isItalic={props.stateOfSelection.isItalic}
                 onPress={(e) => props.onChangeSelectionState('italic', !props.stateOfSelection.isItalic, '')} 
                 >
-                    <Text style={{fontStyle: 'italic', color: props.stateOfSelection.isItalic ? '#0dbf7e': '#17242D'}}>{'I'}</Text>
+                    <Text style={{fontStyle: 'italic', color: props.stateOfSelection.isItalic ? '#0dbf7e': '#20253F'}}>{'I'}</Text>
                 </TextContentOptionItalicButton>
                 <TextContentOptionUnderlineButton
                 isUnderline={props.stateOfSelection.isUnderline}
                 onPress={(e) => props.onChangeSelectionState('underline', !props.stateOfSelection.isUnderline, '')}
                 >
-                    <Text style={{color: props.stateOfSelection.isUnderline ? '#0dbf7e': '#17242D'}}>{'U'}</Text>
+                    <Text style={{color: props.stateOfSelection.isUnderline ? '#0dbf7e': '#20253F'}}>{'U'}</Text>
                 </TextContentOptionUnderlineButton>
                 <TextContentOptionCodeButton
                 isCode={props.stateOfSelection.isCode}
                 onPress={(e) => props.onChangeSelectionState('code', !props.stateOfSelection.isCode, '')}
                 >
-                    <Text style={{color: props.stateOfSelection.isCode ? '#0dbf7e': '#17242D'}}>{'<>'}</Text>
+                    <Text style={{color: props.stateOfSelection.isCode ? '#0dbf7e': '#20253F'}}>{'<>'}</Text>
                 </TextContentOptionCodeButton>
                 <TextContentOptionFontSizeContainer>
                     <TextContentOptionFontSizeButton

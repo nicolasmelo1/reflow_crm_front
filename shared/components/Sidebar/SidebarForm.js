@@ -17,7 +17,9 @@ const SidebarForm = (props) => {
         <SidebarCardBody>
             {props.forms.map((form, index)=> {
                 return (
-                    <SidebarFormItem key={index}>
+                    <SidebarFormItem 
+                    isSelected={form.form_name === props.selectedFormulary}
+                    key={index}>
                         {props.sidebarIsOpen ? (
                             <SidebarFormButton 
                             onClick={(e) => onClickToGoToFormulary(form.form_name)}

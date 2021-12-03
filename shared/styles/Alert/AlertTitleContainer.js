@@ -7,7 +7,7 @@ styled.div`
     padding: 10px;
     width: 100%;
     background-color: #f2f2f2;
-    color: #17242D !important;
+    color: #20253F !important;
     border-radius: 5px;
     text-align: center;
 `

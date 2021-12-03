@@ -4,7 +4,7 @@ import { Text } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.label`
-    color: #17242D;
+    color: #20253F;
     display: block;
     margin: 0px;
     font-weight: bold;

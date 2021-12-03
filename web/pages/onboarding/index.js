@@ -10,20 +10,27 @@ class OnboardingPage extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            onboardingStep: 0,
             addTemplates: false
         }
     }
 
-    setAddTemplates = (data) => this.setState(state => state.addTemplates = data)
+    setAddTemplates = (data) => this.setState(state => ({
+        ...state,
+        addTemplates: data,
+        onboardingStep: data ? 0 : 2
+    }))
 
     render() {
         return (
             <Layout 
+            setAddTemplates={this.setAddTemplates}
             addTemplates={this.state.addTemplates} 
             hideNavBar={true} 
             isNotLogged={true} 
             header={<Header title={strings['pt-br']['onboardingPageTitle']}/>}>
                 <Onboarding 
+                step={this.state.onboardingStep}
                 setAddTemplates={this.setAddTemplates}
                 partner={this.props.router?.query?.partner} 
                 sharedBy={this.props.router?.query?.shared_by}

@@ -10,7 +10,7 @@ styled.button`
     border: 0;
     background-color: #0dbf7e;
     border-radius: 40px;
-    color: #17242D;
+    color: #20253F;
 `
 :
 styled(TouchableOpacity)`
@@ -20,5 +20,5 @@ styled(TouchableOpacity)`
     background-color: #0dbf7e;
     border-radius: 40px;
     align-items: center;
-    color: #17242D;
+    color: #20253F;
 `

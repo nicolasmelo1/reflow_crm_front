@@ -34,7 +34,7 @@ export const CompanyFormularyFieldInput = process.env['APP'] === 'web' ?
 styled.input`
     border: 0;
     background-color: white !important;
-    color: #17242D;
+    color: #20253F;
     border: 2px solid ${props=> props.errors ? 'red': '#f2f2f2'};
     display: block;
     width: 100%;
@@ -48,9 +48,9 @@ styled.input`
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 
     &:focus {
-        color: #17242D;
+        color: #20253F;
         background-color: white;
-        border: 2px solid #17242D;
+        border: 2px solid #20253F;
         box-shadow: none;
         outline: 0;
     }
@@ -61,7 +61,7 @@ styled(TextInput)`
     border-radius: 4px;
     padding: 5px;
     min-height: 30px;
-    color: #17242D;
+    color: #20253F;
     border: 1px solid ${props=> props.errors ? 'red': '#0dbf7e'};
 `
 // ------------------------------------------------------------------------------------------
@@ -112,13 +112,13 @@ styled(TouchableOpacity)`
 export const CompanyFormularySaveButtonText = process.env['APP'] === 'web' ?
 styled.p`
     margin: 0;
-    color: #17242D;
+    color: #20253F;
     width: 100%;
     text-align: center;
 `
 :
 styled(Text)`
-    color: #17242D;
+    color: #20253F;
 `
 // ------------------------------------------------------------------------------------------
 export const CompanyFormularyLogoContainer = process.env['APP'] === 'web' ?
@@ -136,7 +136,7 @@ styled.small`
     top: 50%;
     transform: translate(0,-50%);
     text-align:center;
-    color: #17242D;
+    color: #20253F;
     font-weight: bold;
     background-color: #fff;
     margin: 0;

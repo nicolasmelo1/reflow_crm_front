@@ -13,7 +13,7 @@ styled.div`
 :
 styled(View)`
     background-color: #f2f2f2;
-    border-bottom-color: #17242D;
+    border-bottom-color: #20253F;
     border-bottom-width: 1px;
     padding: 5px 0;
 `
@@ -64,7 +64,7 @@ styled(Text)`
 // ------------------------------------------------------------------------------------------
 export const NotificationConfigurationFormFieldLabel = process.env['APP'] === 'web' ? 
 styled.label`
-    color: ${props => props.isVariable ? '#f2f2f2': '#17242D'};
+    color: ${props => props.isVariable ? '#f2f2f2': '#20253F'};
     display: block;
     margin: 0;
     font-weight: bold;
@@ -72,7 +72,7 @@ styled.label`
 `
 :
 styled(Text)`
-    color: ${props => props.isVariable ? '#f2f2f2': '#17242D'};
+    color: ${props => props.isVariable ? '#f2f2f2': '#20253F'};
     font-weight: bold;
 `
 // ------------------------------------------------------------------------------------------
@@ -90,7 +90,7 @@ export const NotificationConfigurationFormFieldInput = process.env['APP'] === 'w
 styled.input`
     border: 0;
     background-color: white !important;
-    color: #17242D;
+    color: #20253F;
     border: 2px solid ${props=> props.errors ? 'red': '#f2f2f2'};
     display: block;
     width: 100%;
@@ -105,9 +105,9 @@ styled.input`
 
 
     &:focus {
-        color: #17242D;
+        color: #20253F;
         background-color: white;
-        border: 2px solid #17242D;
+        border: 2px solid #20253F;
         box-shadow: none;
         outline: 0;
     }
@@ -118,7 +118,7 @@ styled(TextInput)`
     border-radius: 4px;
     padding: 5px;
     min-height: 30px;
-    color: #17242D;
+    color: #20253F;
     border: 1px solid #f2f2f2;
 `
 // ------------------------------------------------------------------------------------------
@@ -134,9 +134,9 @@ styled(View)`
 export const NotificationConfigurationFormSelectContainer = process.env['APP'] === 'web' ? 
 styled(React.forwardRef(({isOpen, errors, ...rest}, ref) => <div {...rest} ref={ref}/>))`
     background-color: white;
-    color: #17242D;
-    border: 2px solid ${props=>props.isOpen ? '#17242D': props.errors ? 'red': '#f2f2f2'};
-    caret-color: #17242D;
+    color: #20253F;
+    border: 2px solid ${props=>props.isOpen ? '#20253F': props.errors ? 'red': '#f2f2f2'};
+    caret-color: #20253F;
     border-radius: .25rem;
     outline: none !important
 `
@@ -150,12 +150,12 @@ styled(React.forwardRef(({errors, ...rest}, ref) => <View {...rest} ref={ref}/>)
 // ------------------------------------------------------------------------------------------
 export const NotificationConfigurationFormVariableContainer = process.env['APP'] === 'web' ?
 styled.div`
-    background-color: #17242D;
+    background-color: #20253F;
     padding: 10px;
 `
 :
 styled(View)`
-    background-color: #17242D;
+    background-color: #20253F;
     padding: 10px;
 `
 // ------------------------------------------------------------------------------------------
@@ -164,10 +164,10 @@ styled.button`
     width: 100%;
     padding: 5px;
     color: #f2f2f2;
-    border: 1px solid #17242D;
+    border: 1px solid #20253F;
     margin: 5px 0;
     border-radius: 20px;
-    background-color: #17242D;
+    background-color: #20253F;
 
     &:hover {
         color: #0dbf7e;
@@ -178,10 +178,10 @@ styled(TouchableOpacity)`
     width: 100%;
     padding: 5px;
     color: #f2f2f2;
-    border: 1px solid #17242D;
+    border: 1px solid #20253F;
     margin: 5px 0;
     border-radius: 20px;
-    background-color: #17242D;
+    background-color: #20253F;
     align-items: center;
 `
 // ------------------------------------------------------------------------------------------

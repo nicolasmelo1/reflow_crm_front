@@ -12,8 +12,8 @@ styled.span`
 :
 styled(Text)`
     font-size: 15px;
-    font-family: Roboto-Regular;
-    color: ${props => props.isVariable ? '#0dbf7e' : '#17242D'};
+    font-family: Montserrat-Regular;
+    color: ${props => props.isVariable ? '#0dbf7e' : '#20253F'};
     font-weight: ${props => props.isVariable ? 'bold' : 'normal'};
 `
 // ------------------------------------------------------------------------------------------
@@ -24,7 +24,7 @@ styled.small`
 :
 styled(Text)`
     font-size: 14px;
-    font-family: Roboto-Regular;
+    font-family: Montserrat-Regular;
     color: #bfbfbf;
     font-size: 10px 
 `
@@ -55,7 +55,7 @@ styled(ScrollView)`
 // ------------------------------------------------------------------------------------------
 export const NotificationCard = process.env['APP'] === 'web' ? 
 styled.div`
-    border: 1px solid #17242D;
+    border: 1px solid #20253F;
     border-radius: 5px;
     margin-bottom: 10px; 
     padding: 5px;
@@ -66,7 +66,7 @@ styled.div`
 styled(TouchableOpacity)`
     padding: 10px;
     border-bottom-width: 1px;
-    border-bottom-color: #17242D;
+    border-bottom-color: #20253F;
     min-height: 50px;
     background-color: ${props => props.hasRead ? 'transparent': '#fff'}
 `

@@ -10,12 +10,12 @@ styled.button`
     border-radius: 5px;
     color: #f2f2f2;
     padding: 3px;
-    background-color: #17242D;
-    border: 1px solid #17242D;
+    background-color: #20253F;
+    border: 1px solid #20253F;
 
     &:hover {
         background-color: #f2f2f2;
-        color: #17242D;
+        color: #20253F;
         border: 1px solid #bfbfbf;
     }
 `

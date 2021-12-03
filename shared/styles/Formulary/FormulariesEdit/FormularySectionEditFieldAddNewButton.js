@@ -23,14 +23,14 @@ const StyledButtonText = process.env['APP'] === 'web' ?
 styled.p`
     margin: 0;
     padding: 0;
-    color: #17242D
+    color: #20253F
 `
 :
 styled(Text)``
 
 const StyledPlusIcon = process.env['APP'] === 'web' ?
 styled.svg`
-    fill: #17242D
+    fill: #20253F
 `
 :
 null

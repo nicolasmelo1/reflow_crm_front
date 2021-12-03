@@ -208,7 +208,7 @@ class Company extends React.Component {
                     this.state.isSubmitting ? null: this.onSubmit()
                 }}>
                     {this.state.isSubmitting ? (
-                        <ActivityIndicator color="#17242D"/>
+                        <ActivityIndicator color="#20253F"/>
                     ) : this.state.showAllGoodIcon ? (
                         <FontAwesomeIcon icon="check"/>
                     ) : (

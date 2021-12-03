@@ -8,7 +8,8 @@ const Form = dynamicImport('react-bootstrap', 'Form')
 export default process.env['APP'] === 'web' && Form ?
 styled(Form.Control)`
     min-width: 100px;
-    border-radius: 0 !important;
+    border-radius:  !important;
+    font-size: 13px;
 
     &:focus {
         color: #495057;
@@ -25,6 +26,6 @@ styled(TextInput)`
     border-radius: 4px;
     padding: 5px;
     min-height: 30px;
-    color: #17242D;
+    color: #20253F;
     border: 1px solid #0dbf7e;
 `

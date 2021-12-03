@@ -7,11 +7,11 @@ styled.button`
     border-radius: 5px;
     border: 0;
     background-color: #0dbf7e;
-    color: #17242D;
+    color: #20253F;
     padding: 5px 10px;
 
     &:hover {
-        background-color: #17242D;
+        background-color: #20253F;
         color: #0dbf7e;
     }
 `

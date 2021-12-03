@@ -346,7 +346,7 @@ const ImageBlock = (props) => {
                                             isSelected={activeImageType.imageFile}
                                             onPress={(e) => setActiveImageType({imageFile:true, imageLink: false})}
                                             >
-                                                <Text style={{color: activeImageType.imageFile ? '#0dbf7e': '#17242D'}}>
+                                                <Text style={{color: activeImageType.imageFile ? '#0dbf7e': '#20253F'}}>
                                                     {strings['pt-br']['richTextImageBlockSelectFileTypeButtonLabel']}
                                                 </Text>
                                             </BlockImageSelectImageTypeButton>
@@ -354,7 +354,7 @@ const ImageBlock = (props) => {
                                             isSelected={activeImageType.imageLink}
                                             onPress={(e) => setActiveImageType({imageFile:false, imageLink: true})}
                                             >
-                                                <Text style={{color: activeImageType.imageLink ? '#0dbf7e': '#17242D'}}>
+                                                <Text style={{color: activeImageType.imageLink ? '#0dbf7e': '#20253F'}}>
                                                     {strings['pt-br']['richTextImageBlockSelectLinkTypeButtonLabel']}
                                                 </Text>
                                             </BlockImageSelectImageTypeButton>

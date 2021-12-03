@@ -5,7 +5,7 @@ const getBackgroundColor = (props) => {
         if (props.isSectionConditional) {
             return '#fff'
         } else {
-            return '#17242D'
+            return '#20253F'
         }
     } else {
         return 'transparent'
@@ -17,7 +17,7 @@ const getBoxShadow = (props) => {
         if (props.isSectionConditional) {
             return '#f2f2f2 0px 3px 3px -2px, #f2f2f2 0px 3px 4px 0px, #f2f2f2 0px 1px 8px 0px'
         } else {
-            return '#17242D 0px 3px 3px -2px, #17242D 0px 3px 4px 0px, #17242D 0px 1px 8px 0px'
+            return '#20253F 0px 3px 3px -2px, #20253F 0px 3px 4px 0px, #20253F 0px 1px 8px 0px'
         }
     } else {
         return '0'
@@ -28,7 +28,7 @@ const getBoxShadow = (props) => {
 const getBorder = (props) => {
     if (props.isInitial) {
         if (props.isSectionConditional) {
-            return '1px solid #17242D'
+            return '1px solid #20253F'
         } else {
             return '1px solid #fff'
         }

@@ -5,7 +5,7 @@ import { View } from 'react-native'
 export default process.env['APP'] === 'web' ?
 styled.div`
     overflow-x: auto;
-    background-color: ${props => props.isSectionConditional ? '#17242D' : '#fff'};
+    background-color: ${props => props.isSectionConditional ? '#20253F' : '#fff'};
     white-space: nowrap;
 
     scrollbar-color: #bfbfbf transparent;

@@ -5,7 +5,7 @@ import { TouchableOpacity } from 'react-native'
 export default process.env['APP'] === 'web' ?
 styled.button`
     background-color: transparent;
-    color: #17242D;
+    color: #20253F;
     border: 0;
 `
 :

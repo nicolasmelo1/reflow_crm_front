@@ -105,7 +105,6 @@ const FormularySectionEdit = (props) => {
             name: '',
             uuid: uuid,
             form: props.section.id,
-            number_configuration_mask: '9',
             formula_configuration: null,
             field_formula_variables: [],
             is_long_text_rich_text: false,

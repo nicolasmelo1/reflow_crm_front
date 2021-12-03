@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 export default process.env['APP'] === 'web' ?
 styled.button`
-    background-color: transparent;
+    background-color: ${props => props.isSelected ? "#00000030" : "transparent"};;
     padding: 10px;
     border-width: 0;
     border-radius: 0;

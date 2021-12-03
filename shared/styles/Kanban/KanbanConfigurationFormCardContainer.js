@@ -4,7 +4,7 @@ import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
-    box-shadow: 0 3px 6px #17242D;
+    box-shadow: 4px 4px 12px rgb(56 66 95 / 0.08);
     border-radius: 5px;
     padding: 10px;
     display: inline-block;
@@ -12,8 +12,8 @@ styled.div`
     width: 200px;
     vertical-align: top;
     cursor: pointer;
-    color: ${props => props.isSelected ? '#f2f2f2': '#17242D'};
-    background-color: ${props => props.isSelected ? '#17242D': '#f2f2f2'};
+    color: #20253F;
+    background-color: ${props => props.isSelected ? '#f2f2f2': '#f2f2f250'};
 `
 :
 styled(View)``

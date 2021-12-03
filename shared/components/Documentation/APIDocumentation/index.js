@@ -388,7 +388,7 @@ class APIDocumentation extends React.Component {
             } else {
                 return(
                     <span key={index}>
-                        {` ${word}`}
+                        {` ${word} `}
                     </span>
                 )            
             }
@@ -623,7 +623,7 @@ class APIDocumentation extends React.Component {
                             strings['pt-br']['apiDocumentationAuthenticationDescriptionIsAdmin']
                             : strings['pt-br']['apiDocumentationAuthenticationDescriptionIsNotAdmin']}
                         </p>
-                        <p style={{fontWeight: 'bold', color: '#17242D'}}>
+                        <p style={{fontWeight: 'bold', color: '#20253F'}}>
                             {strings['pt-br']['apiDocumentationAuthenticationImportantInformation']}
                         </p>
                         <p

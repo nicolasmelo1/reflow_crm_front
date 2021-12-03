@@ -63,7 +63,7 @@ styled(Text)`
 // ------------------------------------------------------------------------------------------
 export const NotificationConfigurationGoBackButton = process.env['APP'] === 'web' ?
 styled.button`
-    color: #17242D;
+    color: #20253F;
     font-size: 20px;
     background-color: transparent;
     border: 0;

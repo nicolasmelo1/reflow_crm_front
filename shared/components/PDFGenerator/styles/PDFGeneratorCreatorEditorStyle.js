@@ -23,8 +23,8 @@ styled.button`
     color: #0dbf7e;
 
     &:hover {
-        color: #17242D;
-        border: 1px solid #17242D;
+        color: #20253F;
+        border: 1px solid #20253F;
     }
 `
 :
@@ -43,13 +43,13 @@ styled.button`
     padding: 5px 15px;
     border-radius: 5px;
     margin-right: 5px;
-    color: ${props => props.isValid ? '#17242D' : '#bfbfbf'};
+    color: ${props => props.isValid ? '#20253F' : '#bfbfbf'};
 
     ${props => props.isValid ? `
         &:hover {
             color: #0dbf7e;
-            border: 1px solid #17242D;
-            background-color: #17242D;
+            border: 1px solid #20253F;
+            background-color: #20253F;
         }
     ` : ''}
 `

@@ -4,7 +4,7 @@ import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
-    box-shadow: 0 3px 6px #17242D;
+    box-shadow: 0 3px 6px #20253F;
     border-radius: 10px;
     padding: 10px;
 

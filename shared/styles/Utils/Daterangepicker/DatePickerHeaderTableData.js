@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 export default process.env['APP'] === 'web' ?  
 styled.th`
-    color: #17242D;
+    color: #20253F;
     text-align: center
 `
 :

@@ -38,7 +38,7 @@ const TableBlockOptions = (props) => {
         '', 
         '#ffffff',
         '#0dbf7e', 
-        '#17242D', 
+        '#20253F', 
         '#bfbfbf', 
         '#444444', 
         '#ff5ac4', 

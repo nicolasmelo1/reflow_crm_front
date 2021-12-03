@@ -6,7 +6,7 @@ export default process.env['APP'] === 'web' ?
 styled.div`
     height: 200px;
     width: 200px;
-    border: 1px dashed #17242D;
+    border: 1px dashed #20253F;
     background-color: transparent;
     border-radius: 5px;
     cursor: pointer;

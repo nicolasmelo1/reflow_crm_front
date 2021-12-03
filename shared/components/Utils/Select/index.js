@@ -22,9 +22,9 @@ import isPromise from '../../../utils/isPromise'
  * container.
  * @param {string} searchValueColor - (optional) - set color to search value, that the user types to search
  * @param {String} optionColor - (optional) - default to #f2f2f2
- * @param {String} optionBackgroundColor - (optional) - default to #17242D
+ * @param {String} optionBackgroundColor - (optional) - default to #20253F
  * @param {String} optionDividerColor - (optional) - default to #fff
- * @param {String} optionOnHoverColor - (optional) - default to #17242D
+ * @param {String} optionOnHoverColor - (optional) - default to #20253F
  * @param {String} optionOnHoverBackgroundColor - (optional) - default to #bfbfbf
  * @param {React.Component} label - (optional) - Instead of a simple text, display a custom label, if you do this, please define a onFilter
  * function

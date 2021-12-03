@@ -10,6 +10,7 @@ export const NavbarLinkLabel = process.env['APP'] === 'web' ?
 styled.p`
     font-weight: 400;
     display: inline-block;
+    font-size: 13px;
     margin:0;
     user-select: none;
 `
@@ -19,7 +20,7 @@ styled(Text)``
 export const NavbarLinkAnchor = process.env['APP'] === 'web' ? 
 styled.a`
     padding: 10px;
-    color: #17242D;
+    color: #20253F;
     &:hover {
         color: #0dbf7e;
     }

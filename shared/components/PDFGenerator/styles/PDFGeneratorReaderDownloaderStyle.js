@@ -74,14 +74,14 @@ styled(View)``
 // ------------------------------------------------------------------------------------------
 export const PDFGeneratorReaderDownloaderMultipleFieldsSeparatorLabel = process.env['APP'] === 'web' ?
 styled.small`
-    color: #17242D;
+    color: #20253F;
 `
 :
 styled(Text)``
 // ------------------------------------------------------------------------------------------
 export const PDFGeneratorReaderDownloaderMultipleFieldsSeparatorInput = process.env['APP'] === 'web' ?
 styled.input`
-    border: 1px solid #17242D;
+    border: 1px solid #20253F;
     border-radius: 5px;
     margin: 5px 0;
     
@@ -123,10 +123,10 @@ styled.button`
     background-color: #0dbf7e;
     border: 0;
     border-radius: 5px;
-    color: #17242D;
+    color: #20253F;
 
     &:hover {
-        background-color: #17242D;
+        background-color: #20253F;
         color: #0dbf7e;
     }
 `
@@ -137,7 +137,7 @@ export const PDFGeneratorReaderDownloaderGoBackButton = process.env['APP'] === '
 styled.button`
     border: 0;
     background-color: transparent;
-    color: #17242D;
+    color: #20253F;
 
     &:hover {
         color: #0dbf7e;
@@ -148,8 +148,8 @@ styled(TouchableOpacity)``
 // ------------------------------------------------------------------------------------------
 export const PDFGeneratorReaderDownloaderDownloadButton = process.env['APP'] === 'web' ?
 styled.button`
-    border: 1px solid #17242D;
-    background-color: #17242D;
+    border: 1px solid #20253F;
+    background-color: #20253F;
     color: #0dbf7e;
     border-radius: 5px;
     padding: 5px 10px;
@@ -157,7 +157,7 @@ styled.button`
     &:hover {
         border: 1px solid #0dbf7e;
         background-color: #0dbf7e;
-        color: #17242D;
+        color: #20253F;
     }  
 `
 :

@@ -24,5 +24,5 @@ styled(TouchableOpacity)`
     height: 40px;
     border-radius: 5px;
     border-width: 1px;
-    border-color: #17242D;
+    border-color: #20253F;
 `

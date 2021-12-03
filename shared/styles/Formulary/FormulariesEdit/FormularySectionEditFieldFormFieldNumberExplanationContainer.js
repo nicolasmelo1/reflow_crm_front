@@ -6,7 +6,7 @@ export default process.env['APP'] === 'web' ?
 styled.div`
     position: absolute;
     overflow-y: auto;
-    background-color: #17242D;
+    background-color: #20253F;
     color: #f2f2f2;
     width: 100%;
     max-height: 150px;

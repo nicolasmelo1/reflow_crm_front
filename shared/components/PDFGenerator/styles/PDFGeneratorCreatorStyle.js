@@ -20,7 +20,7 @@ export const PDFGeneratorCreatorGoBackButton = process.env['APP'] === 'web' ?
 styled.button`
     border: 0;
     background-color: transparent;
-    color: #17242D;
+    color: #20253F;
 
     &:hover {
         color: #0dbf7e;
@@ -33,12 +33,12 @@ export const PDFGeneratorCreatorCreateNewButton = process.env['APP'] === 'web' ?
 styled.button`
     border: 0;
     background-color: #0dbf7e;
-    color: #17242D;
+    color: #20253F;
     padding: 5px 15px;
     border-radius: 5px;
     
     &:hover {
-        background-color: #17242D;
+        background-color: #20253F;
         color: #0dbf7e;
     }
 `
@@ -89,7 +89,7 @@ styled.button`
     color: #0dbf7e;
 
     &:hover {
-        color: #17242D;
+        color: #20253F;
         background-color: #0dbf7e;
     }
 `

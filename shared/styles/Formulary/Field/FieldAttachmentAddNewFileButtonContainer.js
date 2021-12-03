@@ -17,7 +17,7 @@ styled.div`
     border-right: ${props => props.hasValues ? '1px solid #f2f2f2': '0'};
     width: ${props => props.hasValues ? '150px': ''};
     display: ${props => props.hasValues ? 'inline-block' : ''};
-    background-color: ${props => props.isSectionConditional ? '#17242D' : props.isDragging ? '#bfbfbf' : '#fff'};
+    background-color: ${props => props.isSectionConditional ? '#20253F' : props.isDragging ? '#bfbfbf' : '#fff'};
 `
 :
 styled(View)``

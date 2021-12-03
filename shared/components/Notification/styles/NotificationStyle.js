@@ -21,7 +21,7 @@ styled.button`
     float: right;
     border: none;
     background-color: transparent;
-    color: #17242D;
+    color: #20253F;
     &:hover {
         color: #0dbf7e;
     }
@@ -43,7 +43,7 @@ styled.h2`
 :
 styled(Text)`
     color: #0dbf7e;
-    font-family: Roboto-Bold;
+    font-family: Montserrat-Bold;
     font-size: 30px;
 `
 // ------------------------------------------------------------------------------------------

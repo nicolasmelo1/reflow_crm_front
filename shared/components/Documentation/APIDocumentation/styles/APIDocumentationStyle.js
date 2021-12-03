@@ -10,7 +10,7 @@ const possibleColors = [
     '#7785AC', 
     '#FFC2B4', 
     '#0DBF7E', 
-    '#17242D',
+    '#20253F',
     '#F08700',
     '#CBA328',
     '#EF767A',
@@ -33,7 +33,7 @@ styled.div`
     display: flex;
     flex-direction: row;
     height: 100%;
-    background-color: #fff;
+    background-color: transparent;
     width: 100%;
     margin-left: -20px;
     margin-right: -20px
@@ -110,7 +110,7 @@ styled(View)``
 export const APIDocumentationHeader = process.env['APP'] === 'web' ? 
 styled.h1`
     font-weight: bold;
-    color: #17242D;
+    color: #20253F;
     margin-bottom: 10px
 `
 :
@@ -170,6 +170,7 @@ styled.div`
     overscroll-behavior: none;
     overflow: auto;
     padding: 10px;
+    background-color: #fff;
     border-radius: 5px;
     box-shadow: 4px 4px 12px rgba(56, 66, 95, 0.08);
     width: 100%;
@@ -195,7 +196,7 @@ styled(Text)``
 
 export const APIDocumentationAccessKeyVaraible = process.env['APP'] === 'web' ?
 styled.span`
-    color: #17242D;
+    color: #20253F;
     font-weight: bold
 `
 :
@@ -255,6 +256,7 @@ styled(Text)``
 
 export const APIDocumentationCodeContainer = process.env['APP'] === 'web' ?
 styled.div`
+    font-size: 15px;
     padding: 5px;
     border-radius: 10px;
     background-color: rgb(23, 36, 45);

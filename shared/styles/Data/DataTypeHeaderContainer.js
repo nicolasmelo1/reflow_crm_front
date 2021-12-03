@@ -6,7 +6,7 @@ export default process.env['APP'] === 'web' ?
 styled.div`
     overflow: auto;
     white-space: nowrap;
-
+    
     scrollbar-color: #bfbfbf transparent;
     scrollbar-width: thin;
     

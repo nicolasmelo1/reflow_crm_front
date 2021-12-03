@@ -47,8 +47,9 @@ export const NavbarDropdownItem = process.env['APP'] === 'web' ?
 styled.a`
     display: block;
     text-decoration: none;
-    color: #17242D;
+    color: #20253F;
     padding: 5px;
+    font-size: 13px;
 
     &:hover {
         text-decoration: none;
@@ -75,7 +76,7 @@ styled(TouchableOpacity)``
 // ------------------------------------------------------------------------------------------
 export const NavbarDropdownButton = process.env['APP'] === 'web' ?
 styled.a`
-    color: ${props=> props.isOpen ? '#0dbf7e' : '#17242D'} !important;
+    color: ${props=> props.isOpen ? '#0dbf7e' : '#20253F'} !important;
     &:hover {
         color: #0dbf7e !important;
     }

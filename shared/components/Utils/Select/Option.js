@@ -13,7 +13,7 @@ import { View, Text } from 'react-native';
  * - `value`: the internal value, usually unique
  * - `selected`: usually `false` to tell if the user has selected this so we can delete
  * @param {String} optionDividerColor - (optional) - default to #fff
- * @param {String} optionOnHoverColor - (optional) - default to #17242D
+ * @param {String} optionOnHoverColor - (optional) - default to #20253F
  * @param {String} optionOnHoverBackgroundColor - (optional) - default to #bfbfbf
  * @param {Boolean} multiple - Explained in Select component
  * @param {String} placeholder - Text to show in the placeholder of the input when no option is selected.
