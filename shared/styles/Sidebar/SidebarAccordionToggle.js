@@ -11,6 +11,7 @@ styled.button`
     border-right: 0;
     color: ${props => props.isSelected ? "#0dbf7e" : "#ffffff70"};
     font-weight: ${props => props.isSelected ? "bold" : "normal"};
+    font-size: 13px;
     width: 100%;
     padding: 10px;
 

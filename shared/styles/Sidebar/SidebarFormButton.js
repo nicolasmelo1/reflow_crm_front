@@ -7,6 +7,7 @@ styled.button`
     color: ${props => props.isSelected ? '#0dbf7e !important' : '#ffffff70 !important'};
     width: 100%;
     border: 0;
+    font-size: 13px;    
     background-color: transparent;
     text-align: left;
     text-overflow: ellipsis;

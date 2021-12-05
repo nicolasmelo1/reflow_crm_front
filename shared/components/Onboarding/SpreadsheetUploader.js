@@ -480,11 +480,11 @@ const SpreadsheetUploader = (props) => {
                 }))
             }))
         }
+        setIsSubmitting(true)
         props.onBulkCreateFormulary(data).then(response => {
-            if (response && response.status === 200) {
-                Router.push(paths.home().asUrl, paths.home(response.data.data.primary_form).asUrl, { shallow: true })
-            }
-        })
+            props.onSubmitData(response)
+            setIsSubmitting(false)
+        }).catch(_ => setIsSubmitting(false))
     }
 
     const loadWorkbook = (arrayBuffer) => {
@@ -649,9 +649,43 @@ const SpreadsheetUploader = (props) => {
             }
         }
     }
+    /**
+     * This will create an example spreadsheet for the user to be inspired and understand how he should format the sheet. This way it will be kinda obvious how he needs
+     * to format the spreadsheet to be able to upload it in reflow.
+     * 
+     * Reference: https://redstapler.co/sheetjs-tutorial-create-xlsx/
+     * And: https://marian-caikovski.medium.com/create-an-xlsx-file-in-a-browser-df52f40961d0
+     */
+    const onDownloadExampleSpreadsheet = () => {
+        if (process.env['APP'] === 'web') {
+            const workbook = XLSX.utils.book_new()
+            workbook.Props = {
+                Title: strings['pt-br']['spreadsheetUploaderExampleSheetTitleLabel'],
+                Subject: strings['pt-br']['spreadsheetUploaderExampleSheetSubjectLabel'],
+                Author: 'reflow',
+                CreatedDate: new Date()
+            }
+            workbook.SheetNames.push(strings['pt-br']['spreadsheetUploaderExampleSheetWorksheetName'])
+            const exampleData = [
+                [strings['pt-br']['spreadsheetUploaderExampleSheetClientNameColumn'], 
+                strings['pt-br']['spreadsheetUploaderExampleSheetClosingDateColumn'],
+                strings['pt-br']['spreadsheetUploaderExampleSheetTotalColumn'], 
+                strings['pt-br']['spreadsheetUploaderExampleSheetStatusColumn'], 
+                strings['pt-br']['spreadsheetUploaderExampleSheetNotesColumn']], 
+                ['Nicolas Leal', new Date(2019, 7, 11), 50000, strings['pt-br']['spreadsheetUploaderExampleSheetStatusColumnPending'], strings['pt-br']['spreadsheetUploaderExampleSheetNotesColumnExampleLabel']],
+                ['Lucas Melo', new Date(2020, 1, 7), 50000, strings['pt-br']['spreadsheetUploaderExampleSheetStatusColumnClosed'], strings['pt-br']['spreadsheetUploaderExampleSheetNotesColumnExampleLabel']],
+                ['Felipe Veloso', new Date(2020, 8, 19), 20000, strings['pt-br']['spreadsheetUploaderExampleSheetStatusColumnPending'], strings['pt-br']['spreadsheetUploaderExampleSheetNotesColumnExampleLabel']],
+            ]
+            const worksheet = XLSX.utils.aoa_to_sheet(exampleData)
+            workbook.Sheets[strings['pt-br']['spreadsheetUploaderExampleSheetWorksheetName']] = worksheet
+            XLSX.writeFile(workbook, `${strings['pt-br']['spreadsheetUploaderExampleSheetFileName']}.xlsx`)
+        }
+    }
 
     /**
-     * When the user drops the 
+     * When the user drops the file in the dropzone for the file we just get the file and then activate the onUploadFile function.
+     * 
+     * @param {Event} event - The event that is triggered when the user drops the file in the dropzone.
      */
     const onDrop = (e) => {
         e.preventDefault()
@@ -798,6 +832,7 @@ const SpreadsheetUploader = (props) => {
                         </Styled.SpreadsheetUploaderTableContainer>
                         <Styled.SpreadsheetUploaderBottomButtonsContainer>
                             <Styled.SpreadsheetUploaderBottomButton
+                            disabled={isSubmitting}
                             onClick={(e) => onSubmitFormulary()}
                             >
                                 {strings['pt-br']['spreadsheetUploaderSubmitButtonLabel']}
@@ -822,24 +857,39 @@ const SpreadsheetUploader = (props) => {
                             <div>
                                 <FontAwesomeIcon icon={'arrow-down'}/>
                                 <p>
-                                    {'Solte o arquivo aqui'}
+                                    {strings['pt-br']['spreadsheetUploaderDropTheFilesHereLabel']}
                                 </p>
+
                             </div>
                         ) : (
-                            <Styled.SpreadsheetUploaderClickAndDropButtonContainer>
-                                <FontAwesomeIcon icon={'arrow-down'}/>
+                            <div>
+                                <Styled.SpreadsheetUploaderClickAndDropButtonContainer>
+                                    <FontAwesomeIcon icon={'arrow-down'}/>
+                                    <p
+                                    style={{
+                                        margin: 0
+                                    }}
+                                    >
+                                        {strings['pt-br']['spreadsheetUploaderClickOrDragTheFilesHereLabel']}
+                                    </p>
+                                    <input
+                                    style={{
+                                        display: 'none'
+                                    }}
+                                    type={'file'} 
+                                    value={''} 
+                                    onChange={(e) => onUploadFile(e.target.files)}
+                                    />
+                                </Styled.SpreadsheetUploaderClickAndDropButtonContainer>
                                 <p>
-                                    Clique ou arraste o arquivo aqui
+                                    ou
                                 </p>
-                                <input
-                                style={{
-                                    display: 'none'
-                                }}
-                                type={'file'} 
-                                value={''} 
-                                onChange={(e) => onUploadFile(e.target.files)}
-                                />
-                            </Styled.SpreadsheetUploaderClickAndDropButtonContainer>
+                                <Styled.SpreadsheetUploaderExampleSheetButton
+                                onClick={(e) => onDownloadExampleSpreadsheet()}
+                                >
+                                    {strings['pt-br']['spreadsheetUploaderExampleSheetDownloadButtonLabel']}
+                                </Styled.SpreadsheetUploaderExampleSheetButton>
+                            </div>
                         )}
                     </Styled.SpreadsheetUploaderClickAndDropContainer>
                 )}

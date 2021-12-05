@@ -93,7 +93,7 @@ styled.div`
     opacity: ${props => props.showForm ? '1': '0'};
     transition: opacity 1s ease-in-out; 
     margin-top: 80px;
-    max-height: calc(var(--app-height) - 80px);
+    max-height: calc(var(--app-height) - 120px);
     overscroll-behavior: none;
     overflow: auto;
 
@@ -120,6 +120,18 @@ styled(ScrollView)`
     height: 95%;
     flex-direction: column;
 `
+// ------------------------------------------------------------------------------------------
+export const OnboardingSpreadsheetUploaderLoader = process.env['APP'] === 'web' ?
+styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: calc(var(--app-width) / 2);
+    height: calc(var(--app-height) / 2);
+`
+:
+styled(View)``
 // ------------------------------------------------------------------------------------------
 export const OnboardingFormDeclarationInput = process.env['APP'] === 'web' ?
 styled.input`

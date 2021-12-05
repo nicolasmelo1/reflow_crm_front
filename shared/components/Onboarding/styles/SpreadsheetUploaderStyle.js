@@ -303,7 +303,7 @@ styled(View)``
 
 export const SpreadsheetUploaderBottomButton = process.env['APP'] === 'web' ? 
 styled.button`
-    background-color: #0dbf7e;
+    background-color: ${props => props.disabled ? '#bfbfbf70': '#0dbf7e'};
     border-radius: 4px;
     border: 0;
     padding: 5px 10px;
@@ -311,8 +311,8 @@ styled.button`
     font-weight: bold;
 
     &:hover {
-        background-color: #0dbf7e50;
-        color: #20253F;
+        background-color: ${props => props.disabled ? '#bfbfbf70': '#0dbf7e50'};
+        color: ${props => props.disabled ? '#fff': '#20253F'};
 
     }
 `
@@ -344,3 +344,31 @@ styled.label`
 `
 :
 styled(View)``
+
+
+export const SpreadsheetUploaderExampleSheetButton = process.env['APP'] === 'web' ?
+styled.button`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 0;
+    color: #fff;
+    font-weight: bold;
+    background-color: #0dbf7e;
+    border-radius: 4px;
+    padding: 10px;
+    width: 100%;
+    box-shadow: 2px 2px 16px rgba(190, 205, 226, 0.4), -8px -8px 16px rgba(255, 255, 255, 0.1);
+    font-size: 13px;
+
+    &:hover {
+        box-shadow: inset 2px 2px 4px rgba(190, 205, 226, 0.4), inset -8px -8px 4px rgba(255, 255, 255, 0.1);
+        background-color: #0dbf7e50;
+    }
+    &:active {
+        box-shadow: inset 2px 2px 4px rgba(190, 205, 226, 0.4), inset -8px -8px 4px rgba(255, 255, 255, 0.1);
+        background-color: #0dbf7e50;
+    }
+`
+:
+styled(TouchableOpacity)``

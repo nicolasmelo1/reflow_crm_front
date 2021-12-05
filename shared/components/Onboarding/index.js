@@ -14,6 +14,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 
 const connect = dynamicImport('reduxConnect', 'default')
 const Router = dynamicImport('next/router')
+const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 
 /**
  * This component handles the onboarding of a new user. It is important to understand that right now the onboarding formulary consists of 2 simple steps: 
@@ -49,6 +50,7 @@ class Onboarding extends React.Component {
         }
         
         this.state = {
+            isUploadingDataFromSpreadsheet: true,
             showFileUploader: false,
             slideLogo: false,
             showLogo: false,
@@ -67,6 +69,8 @@ class Onboarding extends React.Component {
             confirmPassword: '',
         }
     }
+    // ------------------------------------------------------------------------------------------
+    setIsUploadingDataFromSpreadsheet = (isUploadingDataFromSpreadsheet) => this.setState(state => ({...state, isUploadingDataFromSpreadsheet}))
     // ------------------------------------------------------------------------------------------
     setSlideLogo = (data) => this.setState(state => state.slideLogo = data)
     // ------------------------------------------------------------------------------------------
@@ -196,9 +200,25 @@ class Onboarding extends React.Component {
             }
         })
     }
-
+    // ------------------------------------------------------------------------------------------
     /**
+     * After the spreadsheet has been uploaded we will have a delay before redirecting the user and until he can start using the app.
      * 
+     * @param {import('axios').AxiosResponse} response - The response from the backend.
+     */
+    afterSpreadsheetHasBeenSubmitted = (response) => {
+        if (response && response.status === 200) {
+            console.log('teste')
+            this.setIsUploadingDataFromSpreadsheet(true)
+            setTimeout(() => {
+                this.setIsUploadingDataFromSpreadsheet(false)
+                Router.push(paths.home().asUrl, paths.home(response.data.data.primary_form).asUrl, { shallow: true })  
+            }, 10000)
+        }
+    }
+    // ------------------------------------------------------------------------------------------
+    /**
+     * This will log the user into the platform itself so the user will be already logged in when he continue after the step 1.
      */
     logUserIn = () => {
         this.props.onAuthenticate({ 
@@ -378,12 +398,26 @@ class Onboarding extends React.Component {
                     />
                 ) : (
                     <Styled.OnboardingFormFormContainer showForm={this.state.showForm}>
-                        {this.state.showFileUploader ? (
+                        {this.state.showFileUploader && this.state.isUploadingDataFromSpreadsheet === false ? (
                             <SpreadsheetUploader
                             onBulkCreateFormulary={this.props.onBulkCreateFormulary}
                             types={this.props?.login?.types}
                             setStep={this.setStep}
+                            onSubmitData={this.afterSpreadsheetHasBeenSubmitted}
                             />
+                        ) : this.state.isUploadingDataFromSpreadsheet ? (
+                            <Styled.OnboardingSpreadsheetUploaderLoader>
+                                <p>
+                                    {strings['pt-br']['onboardingSpreadsheetUploaderLoaderLabel']}
+                                </p>
+                                <Spinner 
+                                animation={'border'} 
+                                size={'lg'}
+                                style={{
+                                    color: '#0dbf7e'
+                                }}
+                                />
+                            </Styled.OnboardingSpreadsheetUploaderLoader>
                         ) : (
                             <Styled.OnboardingSelectTemplateOrUploaderContainer>
                                 <Styled.OnboardingSelectTemplateOrUploaderButton
