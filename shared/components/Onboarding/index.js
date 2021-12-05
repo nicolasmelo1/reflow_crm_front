@@ -50,7 +50,7 @@ class Onboarding extends React.Component {
         }
         
         this.state = {
-            isUploadingDataFromSpreadsheet: true,
+            isUploadingDataFromSpreadsheet: false,
             showFileUploader: false,
             slideLogo: false,
             showLogo: false,
