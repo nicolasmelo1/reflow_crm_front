@@ -466,7 +466,7 @@ const SpreadsheetUploader = (props) => {
             return ''
         }
         const data = {
-            name: 'Novo Grupo',
+            name: strings['pt-br']['spreadsheetUploaderNewGroupName'],
             formularies: pages.map(page => ({
                 name: page.pageName,
                 section_name: page.pageName,
@@ -882,7 +882,7 @@ const SpreadsheetUploader = (props) => {
                                     />
                                 </Styled.SpreadsheetUploaderClickAndDropButtonContainer>
                                 <p>
-                                    ou
+                                    {strings['pt-br']['spreadsheetUploaderOr']}
                                 </p>
                                 <Styled.SpreadsheetUploaderExampleSheetButton
                                 onClick={(e) => onDownloadExampleSpreadsheet()}
