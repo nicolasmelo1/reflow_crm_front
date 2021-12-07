@@ -14,8 +14,6 @@ import { FRONT_END_HOST, DEFAULT_BASE_NUMBER_FIELD_FORMAT } from '../../config'
 import RepresentationService from '../../services/representation'
 import Styled from './styles'
 
-const Router = dynamicImport('next/router')
-
 /**
  * SpreadsheetUploader will be responsible for uploading a spreadsheet and bulk creating the formulary data. 
  * _ This component will be responsible to bulk create first the formulary
@@ -34,10 +32,12 @@ const SpreadsheetUploader = (props) => {
     const [openedDropdownAtFieldIndex, setOpenedDropdownAtFieldIndex] = useState(null)
     const [showAddNewUsers, setShowAddNewUsers] = useState(false)
     const [showAlert, setShowAlert] = useState(false)
+    const [showAlertForInvalidFile, setShowAlertForInvalidFile] = useState(false)
     const [users, setUsers] = useState([])
     const [pages, setPages] = useState([])
     const [names, setNames] = useState([])
     const [selectedPageIndex, setSelectedPageIndex] = useState(0)
+
 
     const possibleFieldTypes = [
         `date`, 'dateAndHour', 'numberDynamic', 'numberInteger', 
@@ -232,14 +232,12 @@ const SpreadsheetUploader = (props) => {
      * @typedef {{
      *   pageName: string, 
      *   fields: array, 
-     *   data: array
      * }} PageData - All of the data needed to create the pages.
      */
     const createNewPageData = (pageName) => {
         return {
             pageName: pageName.charAt(0).toUpperCase() + pageName.slice(1),
             fields: [],
-            data: []
         }
     }
 
@@ -408,6 +406,7 @@ const SpreadsheetUploader = (props) => {
                 }
                 newValues.push('')
             } else newValues.push(await representationService.representation(value))
+            
         }
         return newValues
     }
@@ -640,12 +639,17 @@ const SpreadsheetUploader = (props) => {
             filesToUpload.current = files[0]
         } else {
             if (files.length > 0 && ![undefined, null].includes(files[0])) {
-                const reader = new FileReader()
-                reader.onload = (e) => {
-                    loadWorkbook(e.target.result)
+                if (files[0].name.split('.').pop() === 'xlsx') {              
+                    const reader = new FileReader()
+                    reader.onload = (e) => {
+                        loadWorkbook(e.target.result)
+                    }
+                    reader.readAsArrayBuffer(files[0])
+                    filesToUpload.current = null
+                } else {
+                    setIsDraggingOver(false)
+                    setShowAlertForInvalidFile(true)
                 }
-                reader.readAsArrayBuffer(files[0])
-                filesToUpload.current = null
             }
         }
     }
@@ -737,6 +741,12 @@ const SpreadsheetUploader = (props) => {
                 onHide={() => onRemovePossibleUserColumn(possibleUsers[0].headerIndex)} 
                 onAccept={() => onAcceptPossibleUserColumn(possibleUsers[0].headerIndex)}
                 onAcceptButtonLabel={strings['pt-br']['spreadsheetUploaderAlertToAddNewUsersAcceptButtonLabel']}
+                />
+                <Alert 
+                alertTitle={strings['pt-br']['spreadsheetUploaderAlertInvalidFileTypeTitle']} 
+                alertMessage={strings['pt-br']['spreadsheetUploaderAlertInvalidFileTypeMessage']} 
+                show={showAlertForInvalidFile} 
+                onHide={() => setShowAlertForInvalidFile(false)} 
                 />
                 {pages.length > 0 ? (
                     <div>

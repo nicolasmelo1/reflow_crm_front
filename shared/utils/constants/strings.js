@@ -80,6 +80,8 @@ const strings = {
         spreadsheetUploaderAlertToAddNewUsersTitle: 'Dúvida 🤔',
         spreadsheetUploaderAlertToAddNewUsersMessage: 'Deseja adicionar as pessoas do campo {} agora?',
         spreadsheetUploaderAlertToAddNewUsersAcceptButtonLabel: 'Sim',
+        spreadsheetUploaderAlertInvalidFileTypeTitle: "Não é um arquivo válido",
+        spreadsheetUploaderAlertInvalidFileTypeMessage: "O arquivo que você está tentando enviar não é um arquivo válido. Apenas arquivos '.xlsx' são válidos. \nPor favor, faça o download da planilha de exemplo e tente novamente.",
         spreadsheetUploaderTitleWhenSelectingFieldTypes: 'Selecione o tipo dos campos',
         spreadsheetUploaderDropTheFilesHereLabel: 'Solte o arquivo aqui',
         spreadsheetUploaderClickOrDragTheFilesHereLabel: 'Clique ou arraste os arquivos aqui',

@@ -212,6 +212,7 @@ export const SpreadsheetUploaderTableHeaderLabel = process.env['APP'] === 'web' 
     font-size: 15px;
     text-overflow: ellipsis;
     overflow: hidden;
+    height: 20px;
 `
 :
 styled(Text)``
@@ -340,7 +341,8 @@ styled.label`
     align-items: center;
     flex-direction: column;
     width: 100%;
-    height: 100%
+    height: 100%;
+    user-select: none;
 `
 :
 styled(View)``
@@ -352,9 +354,9 @@ styled.button`
     justify-content: center;
     align-items: center;
     border: 0;
-    color: #fff;
+    color: #20253F;
     font-weight: bold;
-    background-color: #0dbf7e;
+    background-color: #fff;
     border-radius: 4px;
     padding: 10px;
     width: 100%;
