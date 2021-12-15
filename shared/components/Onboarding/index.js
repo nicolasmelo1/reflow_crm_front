@@ -11,6 +11,7 @@ import SecondStepForm from './SecondStepForm'
 import Styled from './styles'
 import SpreadsheetUploader from './SpreadsheetUploader'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { trackOpenedOnboarding, trackFinishedOnboardingProcess } from '../../utils/track'
 
 const connect = dynamicImport('reduxConnect', 'default')
 const Router = dynamicImport('next/router')
@@ -190,12 +191,7 @@ class Onboarding extends React.Component {
             } else if (!response) {
                 this.props.onAddNotification(strings['pt-br']['onboardingUnknownError'], 'error')
             } else {
-                if (process.env['APP'] === 'web' && window.lintrk && process.env.NODE_ENV==='production') {
-                    window.lintrk('track', { 
-                        conversion_id: 6503801 
-                    })
-                    fbq('track', 'CompleteRegistration')
-                }
+                trackFinishedOnboardingProcess()
                 this.logUserIn()
             }
         })
@@ -278,9 +274,7 @@ class Onboarding extends React.Component {
      * Also sends an event that the user started filling the onboarding.
      */
     componentDidMount = () => {
-        if (process.env['APP'] === 'web' && process.env.NODE_ENV==='production') {
-            fbq('track', 'Lead')
-        }
+        trackOpenedOnboarding()
         agent.http.ANALYTICS.trackUserStartedOnboarding(this.visitorId)
         this._ismounted = true
         if (process.env['APP'] === 'web') {
