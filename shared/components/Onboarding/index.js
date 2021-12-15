@@ -190,7 +190,7 @@ class Onboarding extends React.Component {
             } else if (!response) {
                 this.props.onAddNotification(strings['pt-br']['onboardingUnknownError'], 'error')
             } else {
-                if (process.env['APP'] === 'web' && window.lintrk) {
+                if (process.env['APP'] === 'web' && window.lintrk && process.env.NODE_ENV==='production') {
                     window.lintrk('track', { 
                         conversion_id: 6503801 
                     })
@@ -208,7 +208,6 @@ class Onboarding extends React.Component {
      */
     afterSpreadsheetHasBeenSubmitted = (response) => {
         if (response && response.status === 200) {
-            console.log('teste')
             this.setIsUploadingDataFromSpreadsheet(true)
             setTimeout(() => {
                 this.setIsUploadingDataFromSpreadsheet(false)
@@ -279,6 +278,9 @@ class Onboarding extends React.Component {
      * Also sends an event that the user started filling the onboarding.
      */
     componentDidMount = () => {
+        if (process.env['APP'] === 'web' && process.env.NODE_ENV==='production') {
+            fbq('track', 'Lead')
+        }
         agent.http.ANALYTICS.trackUserStartedOnboarding(this.visitorId)
         this._ismounted = true
         if (process.env['APP'] === 'web') {
