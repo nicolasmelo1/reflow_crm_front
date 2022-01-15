@@ -17,6 +17,9 @@ const BILLING = {
     },
     getTotals: async (body) => {
         return await requests.post(`billing/${companyId}/settings/totals/`, body)
+    },
+    getPlans: async (source) => {
+        return await requests.get(`billing/plans`, {}, {}, source)
     }
 }
 

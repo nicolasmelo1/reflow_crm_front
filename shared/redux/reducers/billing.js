@@ -2,7 +2,10 @@ import { SET_BILLING_COMPANY_DATA, SET_BILLING_PAYMENT_DATA, SET_BILLING_CHARGES
 
 
 const initialState = {
-    chargesData: [],
+    chargesData: {
+        planId: null,
+        data: [],
+    },
     paymentData: {
         gateway_token: '',
         company_invoice_emails: [{email: ''}],
@@ -43,9 +46,12 @@ const billingReducer = (state = initialState, action) => {
                 }
             }
         case SET_BILLING_CHARGES_DATA:
+            console.log(action.payload)
             return {
                 ...state,
-                chargesData: action.payload
+                chargesData: {
+                    ...action.payload
+                }
             }
         default:
             return state

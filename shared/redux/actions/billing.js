@@ -29,8 +29,13 @@ const onGetPaymentData = (source) => {
                     country: response.data.data.country,
                     city: response.data.data.city
                 }
-    
-                const chargesPayload = response.data.data.company.current_company_charges
+                
+                const chargesPayload = {
+                    planId: response.data.data.plan_id,
+                    data: response.data.data.company.current_company_charges
+                }
+
+                console.log(chargesPayload)
                 
                 dispatch({ type: SET_BILLING_PAYMENT_DATA, payload: paymentPayload })
                 dispatch({ type: SET_BILLING_COMPANY_DATA, payload: companyPayload })
@@ -55,13 +60,15 @@ const onGetTotals = (body) => {
 const onUpdatePaymentData = (gatewayToken=null) => {
     return (_, getState) => {
         const { company_invoice_emails,...paymentData } = getState().billing.paymentData
+        const state = getState()
         const body = {
             ...paymentData,
-            ...getState().billing.companyData,
+            ...state.billing.companyData,
             gateway_token: gatewayToken,
+            plan_id: state.billing.chargesData.planId,
             company: {
                 company_invoice_emails: company_invoice_emails,
-                current_company_charges: getState().billing.chargesData
+                current_company_charges: state.billing.chargesData.data
             }
         }
         return agent.http.BILLING.updatePaymentData(body)

@@ -257,7 +257,6 @@ const KanbanTable = (props) => {
                         isAlertShown={isAlertShown}
                         setIsAlertShown={setIsAlertShown}
                         formName={props.formName}
-                        cancelToken={props.cancelToken}
                         dimensionsWidth={dimensionsWidth} 
                         defaultKanbanCard={props.defaultKanbanCard}
                         defaultDimension={props.defaultDimension}

@@ -17,6 +17,7 @@ import DRAFT from './draft'
 import ANALYTICS from './analytics'
 import AUTOMATION from './automation'
 import DOCUMENTATION from './documentation'
+import INTEGRATION from './integration'
 
 export default {
     CHANGE_PASSWORD,
@@ -37,5 +38,6 @@ export default {
     DRAFT,
     ANALYTICS,
     AUTOMATION,
-    DOCUMENTATION
+    DOCUMENTATION,
+    INTEGRATION
 }

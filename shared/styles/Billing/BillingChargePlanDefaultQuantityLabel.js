@@ -4,10 +4,10 @@ import { Text } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.p`
-    width: 100%; 
-    text-align: center; 
-    color: #0dbf7e; 
-    font-weight: bold
+    font-weight: bold;
+    width: calc((100% / 2) - 70px);
+    margin: 0 0 0 10px;
+    text-align: right
 `
 :
 styled(Text)``

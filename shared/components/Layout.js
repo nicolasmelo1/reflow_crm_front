@@ -279,7 +279,6 @@ class Layout extends React.Component {
                     <SafeAreaView style={{ height: '100%', backgroundColor:'#fff'}}>
                         {this.props.showSideBar ?
                             <Sidebar 
-                            setAddTemplates={this.state.setAddTemplates}
                             sidebarIsOpen={this.state.sidebarIsOpen} 
                             setSidebarIsOpen={this.setSidebarIsOpen} 
                             children={this.props.children} 

@@ -44,7 +44,7 @@ const SidebarFormEdit = (props) => {
      */
     const onChangeForm = (formIndex, newFormData) => {
         const handleErrors = (response) => {
-            if (response.data.status === 'error' && response.data.error !== null && response.data.error.reason && response.data.error.detail) {
+            if (response.data.status === 'error' && response.data.error !== null && response.data.error?.reason && response.data.error?.detail) {
                 if (response.data.error.reason.includes('must_be_unique') && response.data.error.detail.includes('label_name')) {
                     const errors = {}
                     errors[formIndex] = 'must_be_unique'

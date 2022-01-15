@@ -8,7 +8,7 @@ import delay from '../../../utils/delay'
 import dynamicImport from '../../../utils/dynamicImport'
 import { initializeEditor, lexer } from '../../../utils/flowLanguage'
 import generateUUID from '../../../utils/generateUUID'
-
+import integrations from '../../../utils/integrations'
 
 const Spinner = dynamicImport('react-bootstrap', 'Spinner')
 
@@ -99,6 +99,15 @@ const Formula = (props) => {
                         if (response.data?.data?.result) {
                             setIsTestingFormula(false)
                             setResult(response.data?.data?.result)
+                        }
+                        if (response.data?.data?.integrations_to_authenticate) {
+                            const initializedIntegrations = integrations()
+                            response.data?.data?.integrations_to_authenticate.map(integrationService => 
+                                initializedIntegrations.addIntegrationToAuthenticate(
+                                    integrationService.service_name
+                                )
+                            )
+                            initializedIntegrations.authenticateOnIntegrations()
                         }
                         setIsTestingFormula(false)
                         setIsFormulaInvalid(false)

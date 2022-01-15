@@ -98,9 +98,13 @@ const types = (lang, type, key) => {
         individual_charge_value_type: {
             per_gb: strings[lang]['individualChargeValueTypePerGB'],
             per_user: strings[lang]['individualChargeValueTypePerUser'],
-            per_chart_company: strings[lang]['individualChargeValueTypePerChartCompany'],
-            per_chart_user: strings[lang]['individualChargeValueTypePerChartUser'],
-            per_pdf_download: strings[lang]['individualChargeValueTypePerPDFDownload']
+            per_chart_for_each_page: strings[lang]['individualChargeValueTypePerChartForEachPage'],
+            per_pdf_download: strings[lang]['individualChargeValueTypePerPDFDownload'],
+            per_notification: strings[lang]['individualChargeValueTypePerNotification'],
+            per_page: strings[lang]['individualChargeValueTypePerPage'],
+            per_formula_fields: strings[lang]['individualChargeValueTypePerFormulaFields'],
+            per_api_calls: strings[lang]['individualChargeValueTypePerAPICalls'],
+            per_access: strings[lang]['individualChargeValueTypePerAccess'],
         },
         profile_type: {
             admin: strings[lang]['profileTypeAdmin'],

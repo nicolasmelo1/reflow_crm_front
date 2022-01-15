@@ -214,7 +214,7 @@ const paths = {
                 }
             }
         }
-    },
+    }
 }
 
 const pathsAsArray = Object.getOwnPropertyNames(paths).map(functionName => paths[functionName]())

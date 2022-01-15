@@ -18,6 +18,7 @@ import {
     BillingExpandableCardIcon,
     BillingExpandableCardError
 } from '../../styles/Billing'
+import agent from '../../utils/agent'
 
 const connect = dynamicImport('reduxConnect', 'default')
 const creditCardType = dynamicImport('credit-card-type', '')
@@ -43,9 +44,10 @@ class Billing extends React.Component {
             showAllGoodIcon: false,
             isSubmitting: false,
             addressOptions: [],
+            plans: [],
             isCompanyFormOpen: false,
-            isChargeFormOpen: false, 
-            isPaymentFormOpen: false,
+            isChargeFormOpen: true, 
+            isPaymentFormOpen: true,
             companyDataFormErrors: {},
             chargeDataFormErrors: {},
             paymentDataFormErrors: {},
@@ -60,6 +62,7 @@ class Billing extends React.Component {
             }
         }
     }
+    setPlans = (plans) => this.setState(state => ({ ...state, plans: plans }))
     setShowAllGoodIcon = () => this.setState(state => ({...state, showAllGoodIcon: !state.showAllGoodIcon }))
     setIsSubmitting = () => this.setState(state => ({ ...state, isSubmitting: !state.isSubmitting }))
 
@@ -230,6 +233,11 @@ class Billing extends React.Component {
         // the hole payment data. Nothing much actually.
         this._ismounted = true
         this.source = this.cancelToken.source()
+        agent.http.BILLING.getPlans(this.source).then(response => {
+            if (response && response.status === 200) {
+                this.setPlans(response.data.data)
+            }
+        })
         this.props.onGetPaymentData(this.source)
         this.props.onGetAddressOptions(this.source).then(response => {
             if (response && response.status === 200) {
@@ -289,6 +297,7 @@ class Billing extends React.Component {
                 </BillingExpandableCardButtons>
                 {this.state.isChargeFormOpen ? (
                     <ChargeForm
+                    plans={this.state.plans}
                     chargeDataFormErrors={this.state.chargeDataFormErrors}
                     setChargeDataFormErrors={this.setChargeDataFormErrors}
                     onChangeChargeData={this.props.onChangeChargeData}
