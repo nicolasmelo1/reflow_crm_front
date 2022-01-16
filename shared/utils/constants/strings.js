@@ -9,6 +9,7 @@ const strings = {
         notificationBrowserPermissionAlertMessage: 'Deseja receber notificações da plataforma Reflow?',
         notificationBrowserPermissionAlertOkButton: 'Aceito!',
         indexPageTitle: 'Reflow',
+        integrationPageTitle: 'Integração',
         permissionNotPermittedError: 'EI! Você não deveria ter acesso a isso! Se quiser acessar esse conteúdo peça para o administrador da sua empresa.',
         permissionInvalidBillingError: 'Parece que você não tem permissão para realizar essa ação, peça ao administrador para alterar as configurações de pagamento.',
         permissionFreeTrialEndedError: 'Como tudo na vida, seu período de testes chegou ao fim. Contate o administrador para alterar as informações de pagamento e continuar usando a Reflow.',

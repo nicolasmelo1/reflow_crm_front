@@ -382,7 +382,7 @@ const Formula = (props) => {
                                     <small>
                                         {strings['pt-br']['formularyEditFieldFormulaTestFormulaResult']}&nbsp;
                                     </small>
-                                    <small style={{color: 'green'}}>
+                                    <small style={{color: 'green', whiteSpace: 'pre_wrap'}}>
                                         {result}
                                     </small>
                                 </div>
