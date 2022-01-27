@@ -13,7 +13,7 @@ const APIController = {
                     status: 'error',
                     error: {
                         reason: e.response.data.error.reason,
-                        description: e.response?.data?.error?.description
+                        description: e.response?.data?.error?.description !== undefined ? e.response.data.error.description : null
                     }
                 })
             } else if (e.response?.data?.reason) {
