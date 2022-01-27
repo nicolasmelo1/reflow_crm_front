@@ -12,7 +12,8 @@ const APIController = {
                 res.status(e.response.status).json({
                     status: 'error',
                     error: {
-                        reason: e.response.data.error.reason
+                        reason: e.response.data.error.reason,
+                        description: e.response?.data?.error?.description
                     }
                 })
             } else if (e.response?.data?.reason) {

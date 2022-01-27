@@ -67,12 +67,6 @@ const ChargeForm = (props) => {
     const isMountedRef = React.useRef()
     const isGettingChargeDataRef = React.useRef(isGettingChargeData)
     const currencyPrefix = '$'
-    const additionalInformationByIndividualChargeName = {
-        per_gb: strings['pt-br']['billingChargePerGbAdditionalInformation'],
-        per_pdf_download: strings['pt-br']['billingChargePerPDFDownloadAdditionalInformation'],
-        per_chart_user: strings['pt-br']['billingChargePerChartUserAdditionalInformation'],
-        per_chart_company: strings['pt-br']['billingChargePerChartCompanyAdditionalInformation']
-    }
 
     // creating a ref to the state is the only way we can get the state changes in the eventHandler function,
     // so we can use it for the mousedown eventListenet function
@@ -106,7 +100,7 @@ const ChargeForm = (props) => {
      */
     const onChangePlan = (planId) => {
         if (props.chargesData.planId !== planId) {
-            retrieveplansPermissionsByPlanIdRef()
+            retrievePlansPermissionsByPlanIdRef()
             plansPermissionsByPlanIdRef.current[planId].forEach(planPermission => {
                 let doesIndividualValueExistsInChargeData = false
                 for (const chargeData of props.chargesData.data) {
@@ -125,7 +119,6 @@ const ChargeForm = (props) => {
                     })
                 }
             })
-            
             props.onChangeChargeData({planId: planId, data: [...props.chargesData.data]})
         }
     }
@@ -134,7 +127,7 @@ const ChargeForm = (props) => {
      * This is used to cache the plans permissions for each planId. This way it becomes a lot easier to retrieve
      * the values when we need them.
      */
-    const retrieveplansPermissionsByPlanIdRef = () => {
+    const retrievePlansPermissionsByPlanIdRef = () => {
         if ([null, undefined].includes(plansPermissionsByPlanIdRef.current)) {
             plansPermissionsByPlanIdRef.current = {}
             for (const plan of props.plans) {
@@ -156,7 +149,7 @@ const ChargeForm = (props) => {
      * @returns {number} - The default quantity to retrieve for the given planId.
      */
     const getDefaultQuantity = (planId, individualChargeValueTypeId) => {
-        retrieveplansPermissionsByPlanIdRef()
+        retrievePlansPermissionsByPlanIdRef()
         const planPermissions = plansPermissionsByPlanIdRef.current[planId]
         for (const planPermission of planPermissions) {
             if (planPermission.individual_charge_value_type_id === individualChargeValueTypeId) {

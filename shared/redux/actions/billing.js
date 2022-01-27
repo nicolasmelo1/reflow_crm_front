@@ -102,6 +102,7 @@ const onChangeCompanyData = (data) => {
 
 const onChangeChargeData = (data) => {
     return (dispatch) => {
+        console.log(data)
         dispatch({ type: SET_BILLING_CHARGES_DATA, payload: data })
     }
 }

@@ -185,8 +185,10 @@ class Survey extends React.Component {
                                     {this.isQuestionInLikertScale(question.id) ? (
                                         <Styled.SurveyLikertContainer>
                                             <Styled.SurveyLikertHeadersContainer>
-                                                {question.survey_question_options.map(questionOption => (
-                                                    <Styled.SurveyLikertHeaderLabel>
+                                                {question.survey_question_options.map((questionOption, index) => (
+                                                    <Styled.SurveyLikertHeaderLabel
+                                                    key={index}
+                                                    >
                                                         {questionOption.option}
                                                     </Styled.SurveyLikertHeaderLabel>
                                                 ))}
@@ -198,6 +200,7 @@ class Survey extends React.Component {
                                                         )
                                                 ).map((_, index) => (
                                                     <Styled.SurveyLikertScaleButtons
+                                                    key={index}
                                                     selected={this.isQuestionAnswer(question.id, (index+1).toString())}
                                                     onClick={() => this.onAnswerQuestion(question.id, (index+1).toString())}
                                                     >
