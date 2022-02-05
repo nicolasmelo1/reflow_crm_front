@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 // ------------------------------------------------------------------------------------------
 export const NavbarDropdownContentContainer = process.env['APP'] === 'web' ? 
 styled.div`
-    float: none;
     margin-top: 5px;
 
     @media(max-width: 829px) {
@@ -35,6 +34,7 @@ styled.div`
     @media(max-width: 829px) {
         display: block;
         text-align: center;
+        width: 100%;
     }
     @media(min-width: 830px) {
         float: left;
@@ -43,17 +43,21 @@ styled.div`
 :
 styled(View)``
 // ------------------------------------------------------------------------------------------
-export const NavbarDropdownItem = process.env['APP'] === 'web' ? 
-styled.a`
+export const NavbarDropdownItemButton = process.env['APP'] === 'web' ? 
+styled.button`
     display: block;
     text-decoration: none;
     color: #20253F;
     padding: 5px;
     font-size: 13px;
-
+    border-left: 0;
+    border-right: 0;
+    border-top: 0;
+    text-align: left;
+    
     &:hover {
         text-decoration: none;
-        color: #0dbf7e
+        color: #0dbf7e;
     }
 
     @media(max-width: 829px) {
@@ -62,11 +66,10 @@ styled.a`
         text-align: center;
         background-color: #f2f2f2;
         border-bottom: 1px solid #fff;
-        &:first-child {
-            border-top: 1px solid #fff;
-        }
     }
+    
     @media(min-width: 830px) {
+        background-color: transparent;
         border-bottom: 1px solid #f2f2f2;
         float: none;
     }
@@ -75,14 +78,29 @@ styled.a`
 styled(TouchableOpacity)``
 // ------------------------------------------------------------------------------------------
 export const NavbarDropdownButton = process.env['APP'] === 'web' ?
-styled.a`
-    color: ${props=> props.isOpen ? '#0dbf7e' : '#20253F'} !important;
+styled.button`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    cursor: pointer;
+    background-color: transparent;
+    border: 0;
+    color: ${props=> props.isOpen ? '#0dbfe' : '#20253F'};
+
     &:hover {
-        color: #0dbf7e !important;
+        color: ${props=> props.isOpen ? '#0dbf7e' : '#20253F'} !important;
     }
-`
+` 
 :
 styled(TouchableOpacity)``
+// ------------------------------------------------------------------------------------------
+export const NavbarDropdown = process.env['APP'] === 'web' ?
+styled.div`
+    display: flex;
+    flex-direction: column;
+`
+:
+styled(View)``
 // ------------------------------------------------------------------------------------------
 export const NavbarDropdownArrowIcon = styled(FontAwesomeIcon)`
     margin: 0 0 0 10px;

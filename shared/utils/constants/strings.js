@@ -147,6 +147,7 @@ const strings = {
         headerUsersLabel: 'Usuários',
         headerNotificationLabel: 'Notificações',
         headerHelpLabel: 'Ajuda',
+        headerEditProfileLabel: 'Editar Perfil',
         headerLogoutLabel: 'Logout',
         headerApiDocumentationLabel: 'Documentação da API (Beta)',
         headerHomePdfGeneratorTools: 'Gerador de PDF',
