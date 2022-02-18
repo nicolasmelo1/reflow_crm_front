@@ -121,21 +121,35 @@ styled.nav`
 styled(View)``
 // ------------------------------------------------------------------------------------------
 export const NavbarUserImageButton = process.env['APP'] === 'web' ?
-styled.button`
-    @media(max-width: 829px) {
-
-    }
-
+styled.div`
     @media(min-width: 830px) {
         position: relative;
         float: left;
     }
 
+    cursor: pointer;
     border: 0;
+    border-radius: 50%;
     background-color: transparent;
 `
 :
 styled(TouchableOpacity)``
+// ------------------------------------------------------------------------------------------
+export const NavbarUserImageWrapper = process.env['APP'] === 'web' ?
+styled.div`
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: transparent;
+    user-select: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    border: 1px solid #bfbfbf;
+`
+:
+styled(View)``
 // ------------------------------------------------------------------------------------------
 export const NavbarUserDropdownContainer = process.env['APP'] === 'web' ?
 styled.div`

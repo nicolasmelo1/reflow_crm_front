@@ -358,7 +358,12 @@ class Dashboard extends React.Component {
                                         <DashboardChartTitle>
                                             {chart.name}
                                         </DashboardChartTitle>
-                                        <div style={{ marginTop: '40px'}}>
+                                        <div 
+                                        style={{ 
+                                            marginTop: '40px',
+                                            width: '100%'
+                                        }}
+                                        >
                                             <Chart
                                             maintainAspectRatio={false}
                                             numberFormat={this.props.login.types?.data?.field_number_format_type.filter(numberFormatType => numberFormatType.id === chart.number_format_type)[0]}

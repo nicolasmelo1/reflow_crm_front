@@ -214,6 +214,18 @@ const paths = {
                 }
             }
         }
+    },
+    profile() {
+        return {
+            asUrl: '/settings/profile',
+            adminOnly: false,
+            webOnly: false,
+            loginOnly: true,
+            asReactNavigationPath: {
+                root: '',
+                nested: {}
+            }
+        }
     }
 }
 

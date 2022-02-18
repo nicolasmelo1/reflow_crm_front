@@ -2,7 +2,6 @@ import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import axios from 'axios'
 import NavbarLink from './NavbarLink' 
-import NavbarDropdown from './NavbarDropdown'
 import { strings, paths } from '../../utils/constants'
 import actions from '../../redux/actions'
 import dynamicImport from '../../utils/dynamicImport'
@@ -42,9 +41,14 @@ class Navbar extends React.Component {
     setIsOpen = (isOpen) => this.setState(state => ({...state, isOpen}))
     setIsProfileMenuOpen = (isProfileMenuOpen) => this.setState(state=> ({ ...state, isProfileMenuOpen }))
     setIsSettingsMenuOpen = (isSettingsMenuOpen) => this.setState(state=> ({ ...state, isSettingsMenuOpen }))
-    
+    setIsHomeMenuOpen = (isHomeMenuOpen) => this.setState(state=> ({ ...state, isHomeMenuOpen }))
+
     handleApiDocumentation = () => {
         Router.push(paths.apiDocumentation().asUrl, paths.apiDocumentation().asUrl,{ shallow: true })
+    }
+
+    handleProfile = () => {
+        Router.push(paths.profile().asUrl, paths.profile().asUrl,{ shallow: true })
     }
 
     handleLogout = () => {
@@ -68,7 +72,7 @@ class Navbar extends React.Component {
         Router.push(paths.company().asUrl, paths.company().asUrl, { shallow: true })
     }
 
-    handlePDFTempalte = () => {
+    handlePDFTemplate = () => {
         Router.push(
             paths.pdfTemplatesSettings().asUrl, 
             paths.pdfTemplatesSettings(this.props.login.primaryForm).asUrl, 
@@ -93,48 +97,6 @@ class Navbar extends React.Component {
         return false
     }
 
-    getConfigDropdown = () => {
-        let defaultConfigDropdown = []
-
-        if (isAdmin(this.props.login.types?.defaults?.profile_type, this.props.login.user)) {
-            defaultConfigDropdown = [
-                {
-                    label: strings['pt-br']['headerCompanyLabel'],
-                    href: '#',
-                    onClick: this.handleCompany
-                },
-                {
-                    label: strings['pt-br']['headerBillingLabel'],
-                    href: '#',
-                    onClick: this.handleBilling
-                },
-                {
-                    label: strings['pt-br']['headerUsersLabel'],
-                    href:'#',
-                    onClick: this.handleUsers
-                },
-                ...defaultConfigDropdown,
-            ]
-            if (this.props.login.user.username === 'reflow@reflow.com.br') {
-                defaultConfigDropdown.splice(0, 0, {
-                    label: strings['pt-br']['headerTemplateLabel'],
-                    href: '#',
-                    onClick: this.handleTemplates
-                })
-            }
-        } 
-
-        if (!['', null, undefined].includes(this.props.login.user?.api_access_key)) {
-            defaultConfigDropdown.splice(0, 0, {
-                label: strings['pt-br']['headerApiDocumentationLabel'],
-                href: '#',
-                onClick: this.handleApiDocumentation
-            })
-        }
-
-        return defaultConfigDropdown
-    }
-
     updateNavbarHeightWeb = () => {
         if (process.env['APP'] === 'web' && this.navbarContainer.current && typeof document !== 'undefined') {
             setTimeout(() => {
@@ -148,22 +110,13 @@ class Navbar extends React.Component {
         }
     }
 
-    getToolsDropdown = () => {
-        let toolsDropdown = [
-            {
-                label: strings['pt-br']['headerHomePdfGeneratorTools'],
-                href: '#',
-                onClick: this.handlePDFTempalte
-            }
-        ]
-        return toolsDropdown
-    }
-
     webCloseDropdownWhenClickOutsideWeb = (e) => {
         if (this.profileDropdownButtonRef.current && !this.profileDropdownButtonRef.current.contains(e.target)) this.setIsProfileMenuOpen(false)
         if (this.settingsDropdownButtonRef.current && !this.settingsDropdownButtonRef.current.contains(e.target)) this.setIsSettingsMenuOpen(false)
+        if (this.homeDropdownButtonRef.current && !this.homeDropdownButtonRef.current.contains(e.target)) this.setIsHomeMenuOpen(false)
     }
 
+    isProfileImageDefined = () => ![null, undefined, ''].includes(this.props?.login?.user?.profile_image_url)
 
     componentDidMount = () => {
         this.source = this.CancelToken.source()
@@ -278,62 +231,34 @@ class Navbar extends React.Component {
                     </Styled.NavbarItemsContainerHeader>
                     {(this.props.navbar.isInHomeScreen && this.state.homeFormularyData !== null) ? (
                         <Styled.NavbarDropdownContainer
-                        ref={this.settingsDropdownButtonRef}
+                        ref={this.homeDropdownButtonRef}
                         >
                             <Styled.NavbarDropdown 
-                            onClick={() => this.setIsSettingsMenuOpen(!this.state.isSettingsMenuOpen)}
+                            onClick={() => this.setIsHomeMenuOpen(!this.state.isHomeMenuOpen)}
                             >
                                 <Styled.NavbarDropdownButton
-                                isOpen={this.state.isSettingsMenuOpen} 
+                                isOpen={this.state.isHomeMenuOpen} 
                                 >
                                     <Styled.NavbarLinkIconContainer>
                                         <Styled.NavbarLinkIcon 
-                                        icon={'cog'}
+                                        icon={'tasks'}
                                         />
                                     </Styled.NavbarLinkIconContainer>
                                     <Styled.NavbarLinkLabel>
-                                        {strings['pt-br']['headerSettingsLabel']}
+                                        {this.state.homeFormularyData.label_name}
                                     </Styled.NavbarLinkLabel>
                                     <Styled.NavbarDropdownArrowIcon 
-                                    icon={this.state.isSettingsMenuOpen ? 'chevron-up' : 'chevron-down'} 
+                                    icon={this.state.isHomeMenuOpen ? 'chevron-up' : 'chevron-down'} 
                                     />
                                 </Styled.NavbarDropdownButton>
                                 <div style={{ position: 'relative' }}>
-                                    {this.state.isSettingsMenuOpen === true ? (
+                                    {this.state.isHomeMenuOpen === true ? (
                                         <Styled.NavbarDropdownContentContainer>
-                                            {!['', null, undefined].includes(this.props.login.user?.api_access_key) ? (
-                                                <Styled.NavbarDropdownItemButton
-                                                onClick={() => this.handleApiDocumentation()}
-                                                >
-                                                    {strings['pt-br']['headerApiDocumentationLabel']}
-                                                </Styled.NavbarDropdownItemButton>
-                                            ) : ''}
-                                            {this.props.login.user.username === 'reflow@reflow.com.br' ? (
-                                                <Styled.NavbarDropdownItemButton
-                                                onClick={() => this.handleTemplates()}
-                                                >
-                                                    {strings['pt-br']['headerTemplateLabel']}
-                                                </Styled.NavbarDropdownItemButton>
-                                            ) : ''}
-                                            {isAdmin(this.props.login.types?.defaults?.profile_type, this.props.login.user) ? (
-                                                <React.Fragment>
-                                                    <Styled.NavbarDropdownItemButton
-                                                    onClick={() => this.handleCompany()}
-                                                    >
-                                                        {strings['pt-br']['headerCompanyLabel']}
-                                                    </Styled.NavbarDropdownItemButton>
-                                                    <Styled.NavbarDropdownItemButton
-                                                    onClick={() => this.handleBilling()}
-                                                    >
-                                                        {strings['pt-br']['headerBillingLabel']}
-                                                    </Styled.NavbarDropdownItemButton>
-                                                    <Styled.NavbarDropdownItemButton
-                                                    onClick={() => this.handleUsers()}
-                                                    >
-                                                        {strings['pt-br']['headerUsersLabel']}
-                                                    </Styled.NavbarDropdownItemButton>
-                                                </React.Fragment>
-                                            ) : ''}
+                                            <Styled.NavbarDropdownItemButton
+                                            onClick={() => this.handlePDFTemplate()}
+                                            >
+                                                {strings['pt-br']['headerHomePdfGeneratorTools']}
+                                            </Styled.NavbarDropdownItemButton>
                                         </Styled.NavbarDropdownContentContainer>
                                     ) : ''}
                                 </div>
@@ -385,7 +310,7 @@ class Navbar extends React.Component {
                                                 {strings['pt-br']['headerApiDocumentationLabel']}
                                             </Styled.NavbarDropdownItemButton>
                                         ) : ''}
-                                        {this.props.login.user.username === 'reflow@reflow.com.br' ? (
+                                        {this?.props?.login?.user?.username === 'reflow@reflow.com.br' ? (
                                             <Styled.NavbarDropdownItemButton
                                             onClick={() => this.handleTemplates()}
                                             >
@@ -420,16 +345,25 @@ class Navbar extends React.Component {
                     ref={this.profileDropdownButtonRef}
                     onClick={() => this.setIsProfileMenuOpen(!this.state.isProfileMenuOpen)}
                     >
-                        <div
-                        style={{ 
-                            width: 50, 
-                            height: 50, 
-                            backgroundColor: 'black', 
-                            borderRadius: 5 }}
-                        />
+                        <Styled.NavbarUserImageWrapper>
+                            {this.isProfileImageDefined() === true ? (
+                                <img 
+                                draggable={false} 
+                                src={this.props.login.user.profile_image_url}
+                                />
+                            ) : (
+                                <FontAwesomeIcon 
+                                style={{ color: '#bfbfbf'}}
+                                icon={'user'}
+                                size='2x'
+                                />
+                            )}
+                        </Styled.NavbarUserImageWrapper>
                         {this.state.isProfileMenuOpen ? (
                             <Styled.NavbarUserDropdownContainer>
-                                <Styled.NavbarUserDropdownButton>
+                                <Styled.NavbarUserDropdownButton
+                                onClick={() => this.handleProfile()}
+                                >
                                     {strings['pt-br']['headerEditProfileLabel']}
                                 </Styled.NavbarUserDropdownButton>
                                 <Styled.NavbarUserDropdownButton

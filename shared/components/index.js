@@ -1,33 +1,17 @@
-import Formulary from './Formulary'
-import Automation from './Automation'
-import FormularyPublic from './Formulary/FormularyPublic'
-import Layout from './Layout'
-import Notify from './Notify'
-import Listing from './Listing'
-import Kanban from './Kanban'
-import Notification from './Notification'
-import Error404 from './Error404'
-import Dashboard from './Dashboard'
-import Billing from './Billing'
-import Users from './Users'
-import Company from './Company'
-import Templates from './Templates'
-import PDFGenerator from './PDFGenerator'
-import APIDocumentation from './Documentation/APIDocumentation'
-
-export { Automation }
-export { PDFGenerator }
-export { Templates }
-export { Company }
-export { Users }
-export { Billing }
-export { Dashboard }
-export { Notification }
-export { Error404 }
-export { Kanban }
-export { Listing }
-export { FormularyPublic }
-export { Formulary }
-export { Layout }
-export { Notify }
-export { APIDocumentation }
+export { default as Profile } from './Profile'
+export { default as Automation } from './Automation'
+export { default as PDFGenerator } from './PDFGenerator'
+export { default as Templates } from './Templates'
+export { default as Company } from './Company'
+export { default as Users } from './Users'
+export { default as Billing } from './Billing'  
+export { default as Dashboard } from './Dashboard'
+export { default as Notification } from './Notification'
+export { default as Error404 } from './Error404'
+export { default as Kanban } from './Kanban'
+export { default as Listing } from './Listing'
+export { default as FormularyPublic } from './Formulary/FormularyPublic'
+export { default as Formulary } from './Formulary'
+export { default as Layout } from './Layout'
+export { default as Notify } from './Notify'
+export { default as APIDocumentation } from './Documentation/APIDocumentation'

@@ -4,7 +4,7 @@ import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
-    position: relative;
+    width: 100%;
     ${props => props.maintainAspectRatio === false ? `
         min-width: 500px;
         min-height: 450px;

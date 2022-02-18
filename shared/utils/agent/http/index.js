@@ -18,6 +18,7 @@ import ANALYTICS from './analytics'
 import AUTOMATION from './automation'
 import DOCUMENTATION from './documentation'
 import INTEGRATION from './integration'
+import PROFILE from './profile'
 
 export default {
     CHANGE_PASSWORD,
@@ -39,5 +40,6 @@ export default {
     ANALYTICS,
     AUTOMATION,
     DOCUMENTATION,
-    INTEGRATION
+    INTEGRATION,
+    PROFILE
 }

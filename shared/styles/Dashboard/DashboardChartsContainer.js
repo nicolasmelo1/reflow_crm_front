@@ -4,11 +4,13 @@ import { View } from 'react-native'
 
 export default process.env['APP'] === 'web' ?
 styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     padding-bottom: 50px;
     overflow: auto;
     position: relative;
-    width: calc(var(--app-width) - 40px);
-    overscroll-behavior: none;
+    width: 100%;
 
     scrollbar-color: #bfbfbf transparent;
     scrollbar-width: thin;

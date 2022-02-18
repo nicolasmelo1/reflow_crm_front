@@ -1,13 +1,9 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import Layout from '@shared/components/Layout'
 import { Button, Modal, View, SafeAreaView, TouchableOpacity, Text } from 'react-native'
-import { connect } from 'react-redux'
 import actions from '@shared/redux/actions'
 import { withAuthenticationContext, withHomeToolsMenuContext } from '../contexts'
 import Dashboard from '@shared/components/Dashboard'
-import { paths } from '@shared/utils/constants'
-
-import * as Linking from 'expo-linking'
 
 class Data extends React.Component {
     constructor (props) {
