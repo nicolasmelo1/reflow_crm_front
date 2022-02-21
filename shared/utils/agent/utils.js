@@ -43,7 +43,7 @@ const setHeader = (token) => {
  * 
  * @param {String} url - The url you want to append the token to
  * 
- * @returns {String} - The url with the token appendend
+ * @returns {Promise<String>} - The url with the token appendend
  */
 const appendTokenInUrlByQueryParam = async (url) => {
     if (publicAccessKey === null) {

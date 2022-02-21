@@ -33,6 +33,7 @@ const FORMULARY = {
         return await requests.get(`formulary/${companyId}/${formName}/${fieldId}/form/options/`, params, {}, source)
     },
     getAttachmentFile: async (formName, formularyId, fieldId, fileName) => {
+        fileName = encodeURIComponent(fileName)
         return await appendTokenInUrlByQueryParam(`${API_ROOT}data/${companyId}/${formName}/${formularyId}/${fieldId}/${fileName}/`)
     },
     getFormularySettingsData: async (source, formId) => {
