@@ -13,7 +13,7 @@ styled(({sidebarIsOpen, ...rest}) => <nav {...rest}/>)`
     position: absolute;
     border-radius: 0 15px 15px 0;
     top: 0;
-    transition: width 0.3s ease-in-out;
+    transition: width 0.3s ease-in-out, z-index 0.3s ease-in-out;
 
     scrollbar-color: #bfbfbf transparent;
     scrollbar-width: thin;
@@ -29,9 +29,9 @@ styled(({sidebarIsOpen, ...rest}) => <nav {...rest}/>)`
         height: 8px;
         background-color: transparent;
     }
-    
+
     @media(max-width: 420px) {
-        z-index: 4;
+        ${props => props.sidebarIsOpen ? 'z-index: 4;' : ''};
     }
 
     @media(min-width: 420px) {

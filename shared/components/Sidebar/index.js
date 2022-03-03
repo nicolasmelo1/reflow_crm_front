@@ -76,10 +76,14 @@ class Sidebar extends React.Component {
     
     renderMobile() {
         return (
-            <SidebarContainer sidebarIsOpen={this.props.sidebarIsOpen}>
+            <SidebarContainer 
+            sidebarIsOpen={this.props.sidebarIsOpen}
+            >
                 <SidebarMenu>
                     <View style={{ height: 40 }}>
-                        <SidebarTopButtonsContainer horizontal={true}>
+                        <SidebarTopButtonsContainer 
+                        horizontal={true}
+                        >
                             <TouchableOpacity onPress={e => this.enterEditMode(e)} style={{padding: 10}}>
                                 <SidebarEditTemplateButton>
                                     {(this.state.isEditing) ? strings['pt-br']['goBack']: strings['pt-br']['sidebarEditTemplateButtonLabel']}
@@ -114,7 +118,9 @@ class Sidebar extends React.Component {
     renderWeb() {
         return (
             <div>
-                <SidebarMenu sidebarIsOpen={this.props.sidebarIsOpen} >
+                <SidebarMenu 
+                sidebarIsOpen={this.props.sidebarIsOpen}
+                >
                     <SidebarToggle 
                     className="sidebar-toogle" 
                     onClick={e=> this.onChangeSidebarIsOpen()} 
