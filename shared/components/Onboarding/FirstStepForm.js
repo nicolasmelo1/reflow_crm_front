@@ -32,10 +32,6 @@ import Styled from './styles'
  * @param {Function} setConfirmEmail - Function for changing the `confirmEmail` state.
  * @param {String} companyName - This is the company name state, it is not obligatory since our user sometimes are not company or don't want to type the company name
  * @param {Function} setCompanyName - Function for changing the `companyName` state.
- * @param {String} numberOfEmployees - The number of employess of the company.
- * @param {Function} setNumberOfEmployees - Function for changing the `numberOfEmployees` state.
- * @param {String} companySector - The sector of the company, does it handle insurance? is it a startup? is it an industry?
- * @param {Function} setCompanySector - Function for changing the `companySector` state.
  * @param {Boolean} declarationChecked - This is just for showing if the declaration of terms of usage and privacy policy has been read and checked. This
  * firms with the user a legal contract.
  * @param {Function} setDeclarationChecked - Function for changing the `declarationChecked` state.
@@ -135,7 +131,6 @@ const FirstStepForm = (props) => {
                         setConfirmEmailIsFocused(false)
                         props.onValidate('confirmEmail', e.nativeEvent.text)
                     }}
-                    onBlur={e => {props.onValidate('confirmEmail',e.nativeEvent.text)}}
                 />
                 <Styled.OnboardingFormError>{props.errors.hasOwnProperty('confirmEmail') ? props.errors['confirmEmail'] : ''}</Styled.OnboardingFormError>
                 <Styled.OnboardingFormLabel>{strings['pt-br']['onboardingCompanyNameLabel']}</Styled.OnboardingFormLabel>
@@ -258,30 +253,6 @@ const FirstStepForm = (props) => {
                 <Styled.OnboardingFormNonRequiredFieldMessage>
                     {strings['pt-br']['onboardingNoCompanyNameMessage']}
                 </Styled.OnboardingFormNonRequiredFieldMessage>
-                <Styled.OnboardingFormLabel>
-                    {'Número de funcionários'}
-                </Styled.OnboardingFormLabel>
-                <Styled.OnboardingFormInput 
-                error={props.errors.hasOwnProperty('numberOfEmployees')} 
-                type='text' 
-                value={props.numberOfEmployees} 
-                onChange={e=> {
-                    props.onValidate('numberOfEmployees', e.target.value)
-                    props.setNumberOfEmployees(e.target.value)
-                }}
-                onBlur={e => {props.onValidate('numberOfEmployees', e.target.value)}}
-                />
-                <Styled.OnboardingFormError>
-                    {props.errors.hasOwnProperty('numberOfEmployees') ? props.errors['numberOfEmployees'] : ''}
-                </Styled.OnboardingFormError>
-                <Styled.OnboardingFormLabel>
-                    {'Setor da empresa'}
-                </Styled.OnboardingFormLabel>
-                <Styled.OnboardingFormInput 
-                type='text' 
-                value={props.companySector} 
-                onChange={e=> {props.setCompanySector(e.target.value)}}
-                />
                 <Styled.OnboardingFormDeclarationLabel>
                     <Styled.OnboardingFormDeclarationInput 
                     type="checkbox" 

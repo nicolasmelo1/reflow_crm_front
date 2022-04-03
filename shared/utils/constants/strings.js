@@ -59,7 +59,6 @@ const strings = {
         onboardingPasswordLabel: 'Senha',
         onboardingConfirmPasswordLabel: 'Confirme sua senha',
         onboardingConfirmPasswordError: 'As senhas devem ser iguais',
-        onboardingInvalidNumberOfEmployees: 'Insira um número válido',
         onboardingShowPasswordLabel: 'Visualizar senha',
         onboardingHidePasswordLabel: 'Esconder senha',
         onboardingGobackButtonLabel: 'Voltar',

@@ -47,7 +47,6 @@ class Onboarding extends React.Component {
             email: strings['pt-br']['onboardingEmailError'],
             confirmEmail: strings['pt-br']['onboardingConfirmEmailError'],
             confirmPassword: strings['pt-br']['onboardingConfirmPasswordError'],
-            numberOfEmployees: strings['pt-br']['onboardingInvalidNumberOfEmployees'],
         }
         
         this.state = {
@@ -63,8 +62,6 @@ class Onboarding extends React.Component {
             email: '',
             confirmEmail: '',
             companyName: '',
-            numberOfEmployees: 0,
-            companySector: '',
             declarationChecked: false,
             password: '',
             confirmPassword: '',
@@ -92,10 +89,6 @@ class Onboarding extends React.Component {
     setConfirmEmail = (data) => this.setState(state => ({...state, confirmEmail: data}))
     // ------------------------------------------------------------------------------------------
     setCompanyName = (data) => this.setState(state => ({...state, companyName: data}))
-    // ------------------------------------------------------------------------------------------
-    setNumberOfEmployees = (data) => this.setState(state => ({...state, numberOfEmployees: data}))
-    // ------------------------------------------------------------------------------------------
-    setCompanySector = (data) => this.setState(state => ({...state, companySector: data}))
     // ------------------------------------------------------------------------------------------
     setDeclarationChecked = (data) => this.setState(state => ({...state, declarationChecked: data}))
     // ------------------------------------------------------------------------------------------
@@ -138,8 +131,6 @@ class Onboarding extends React.Component {
                 return ![null, undefined, ''].includes(value) && /@[A-z\-\_]+\./g.test(value) && this.state.email === value
             case 'confirmPassword':
                 return ![null, undefined, ''].includes(value) && this.state.password === value
-            case 'numberOfEmployees':
-                return /^[0-9]*$/.test(value)
             default:
                 return true
         }
@@ -175,8 +166,6 @@ class Onboarding extends React.Component {
             shared_by: this.props.sharedBy ? this.props.sharedBy : null,
             discount_coupon: this.props.discountCoupon ? this.props.discountCoupon : null,
             company_name: this.state.companyName,
-            company_number_of_employees: this.state.numberOfEmployees,
-            company_sector: this.state.companySector,
             user_phone: this.state.phone,
             user_first_name: this.state.name.split(' ')[0],
             user_last_name: this.state.name.split(' ').slice(1).join(' '),
@@ -315,10 +304,6 @@ class Onboarding extends React.Component {
                     setConfirmEmail={this.setConfirmEmail}
                     companyName={this.state.companyName}
                     setCompanyName={this.setCompanyName}
-                    numberOfEmployees={this.state.numberOfEmployees}
-                    setNumberOfEmployees={this.setNumberOfEmployees}
-                    companySector={this.state.companySector}
-                    setCompanySector={this.setCompanySector}
                     declarationChecked={this.state.declarationChecked}
                     setDeclarationChecked={this.setDeclarationChecked}
                     redirectToLogin={this.redirectToLogin}
@@ -371,10 +356,6 @@ class Onboarding extends React.Component {
                     setConfirmEmail={this.setConfirmEmail}
                     companyName={this.state.companyName}
                     setCompanyName={this.setCompanyName}
-                    numberOfEmployees={this.state.numberOfEmployees}
-                    setNumberOfEmployees={this.setNumberOfEmployees}
-                    companySector={this.state.companySector}
-                    setCompanySector={this.setCompanySector}
                     declarationChecked={this.state.declarationChecked}
                     setDeclarationChecked={this.setDeclarationChecked}
                     redirectToLogin={this.redirectToLogin}
