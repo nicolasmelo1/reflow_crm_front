@@ -31,7 +31,12 @@ class MyDocument extends Document {
         // overscrollBehaviour reference: https://stackoverflow.com/a/56071966
         return (
             <Html style={{ overflow: 'hidden', overscrollBehavior: 'none' }} lang="pt-BR">
-                <Head />
+                <Head>
+                    <link rel="stylesheet" href="/bulma/css/bulma.min.css" />
+                    <link rel="stylesheet" href="/bootstrap/css/bootstrap-grid.min.css"/>
+                    <link rel="stylesheet" href="/bootstrap/css/bootstrap-reboot.min.css"/>
+                    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css"/>
+                </Head>
                 <body style={{
                     fontSize: '15px'
                 }}>

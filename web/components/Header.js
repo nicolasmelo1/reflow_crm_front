@@ -1,4 +1,5 @@
-import Head from 'next/head';
+import Head from 'next/head'
+import Script from 'next/script'
 import fonts from './styles/fonts'
 import React from 'react'
 /*** 
@@ -39,20 +40,16 @@ const Header = (props) => {
             <link rel="icon" type="image/png" sizes="96x96" href="/pwa/images/icons/favicon-96x96.png"/>
             <link rel="icon" type="image/png" sizes="16x16" href="/pwa/images/icons/favicon-16x16.png"/>
             <link rel="manifest" href="/pwa/manifest.json"/>
-            <script type="text/javascript" src="/dragdroptouch/js/dragdroptouch.js"/>
-            <link rel="stylesheet" href="/bulma/css/bulma.min.css" />
-            <link rel="stylesheet" href="/bootstrap/css/bootstrap-grid.min.css"/>
-            <link rel="stylesheet" href="/bootstrap/css/bootstrap-reboot.min.css"/>
-            <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css"/>
+            <Script src="/dragdroptouch/js/dragdroptouch.js"/>
             <style>
                 {fonts.map(font => font)}
             </style>
-            <script type="text/javascript" src="/hotjar/index.js"/>
-            <script type="text/javascript" src="/stonly/index.js"/>
-            <script async src="https://www.googletagmanager.com/gtag/js?id=UA-144919276-1"/>
-            <script type="text/javascript" src="/google/analytics/index.js"/>
-            <script type="text/javascript" src="/google/tagmanager/index.js"/>
-            <script type="text/javascript" src="/facebook/pixel/index.js"/>
+            <Script src="/hotjar/index.js"/>
+            <Script src="/stonly/index.js"/>
+            <Script async src="https://www.googletagmanager.com/gtag/js?id=UA-144919276-1"/>
+            <Script src="/google/analytics/index.js"/>
+            <Script src="/google/tagmanager/index.js"/>
+            <Script src="/facebook/pixel/index.js"/>
             <noscript>
                 <img 
                 height="1" 

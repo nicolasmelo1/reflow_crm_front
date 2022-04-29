@@ -55,7 +55,7 @@ class Onboarding extends React.Component {
             slideLogo: false,
             showLogo: false,
             showForm: false,
-            step: 2,//this.props.step !== undefined ? this.props.step : 0,
+            step: this.props.step !== undefined ? this.props.step : 0,
             errors: {},
             name: '',
             phone: '',
