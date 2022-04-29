@@ -78,7 +78,7 @@ const strings = {
         spreadsheetUploaderEmailFieldType: 'E-mail',
         spreadsheetUploaderNewGroupName: 'Novo Grupo',
         spreadsheetUploaderAlertToAddNewUsersTitle: 'Dúvida 🤔',
-        spreadsheetUploaderAlertToAddNewUsersMessage: 'Deseja adicionar as pessoas do campo {} agora?',
+        spreadsheetUploaderAlertToAddNewUsersMessage: 'Deseja adicionar as pessoas da página {} do campo {} agora?',
         spreadsheetUploaderAlertToAddNewUsersAcceptButtonLabel: 'Sim',
         spreadsheetUploaderAlertInvalidFileTypeTitle: "Não é um arquivo válido",
         spreadsheetUploaderAlertInvalidFileTypeMessage: "O arquivo que você está tentando enviar não é um arquivo válido. Apenas arquivos '.xlsx' são válidos. \nPor favor, faça o download da planilha de exemplo e tente novamente.",

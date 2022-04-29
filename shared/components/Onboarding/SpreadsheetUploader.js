@@ -253,10 +253,11 @@ const SpreadsheetUploader = (props) => {
      * @param {object} fieldTypeData - The fieldTypeData is the object from each key returned in `createFieldTypeData` function.
      * @param {number} fieldTypeData.count - The number of times the fieldTypeWinner is found in the fieldTypeData.values array.
      * @param {array} fieldTypeData.values - The array of values that are found in the fieldTypeWinner.
+     * @param {number} pageIndex - The index of the page in the array that we are evaluating the fields for.
      * 
      * @return {{winner: fieldTypeWinner, data: fieldTypeData}} - The new fieldTypeData that will be the winner.
      */
-    const upgradeFieldType = (headerIndex, fieldTypeWinner, fieldTypeData) => {
+    const upgradeFieldType = (headerIndex, fieldTypeWinner, fieldTypeData, pageIndex) => {
         const isAUser = (value) => {
             const userName = value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
             const firstName = userName.split(' ')[0]
@@ -267,6 +268,7 @@ const SpreadsheetUploader = (props) => {
             if (valuesAsSet.size < 15 && valuesAsSet.size > 0) {
                 if ([...valuesAsSet].every(value => isAUser(value))) {
                     possibleUsers.push({
+                        pageIndex: pageIndex,
                         headerIndex: headerIndex, 
                         data: [...valuesAsSet]
                     })
@@ -345,11 +347,12 @@ const SpreadsheetUploader = (props) => {
      * and then each array on each line will represent each column.
      * @param {string} headerName - The name of the header of the column. We will use this as the name of the field.
      * @param {number} headerIndex - The index of the header of the column. We will use this as the index of the field.
+     * @param {number} pageIndex - The index of the page in the array that we are evaluating the fields for.
      * 
-     * @returns {[Array<any>, FieldData]} - Returns an array where the first value is an array of any value type and the second is the actual
+     * @returns {Promise<Array<Array<any>, FieldData>>} - Returns an array where the first value is an array of any value type and the second is the actual
      * field data
      */
-    const evaluateField = async (data, headerName, headerIndex) => {
+    const evaluateField = async (data, headerName, headerIndex, pageIndex) => {
         let fieldValues = []
         let fieldTypes = createAFieldTypesMatcher()
         // loop ignoring the headers
@@ -370,7 +373,7 @@ const SpreadsheetUploader = (props) => {
                 lastWinnerCount = count
             }
         }
-        let winnerData = upgradeFieldType(headerIndex, fieldTypeWinner, fieldTypes[fieldTypeWinner])
+        let winnerData = upgradeFieldType(headerIndex, fieldTypeWinner, fieldTypes[fieldTypeWinner], pageIndex)
         return [fieldValues, createNewField(headerName, winnerData.winner, winnerData.data)]
     }
 
@@ -418,12 +421,13 @@ const SpreadsheetUploader = (props) => {
      * @param {Array<Array<*>>} data - An 2D array that represents each row and column of the sheets.
      * @param {PageData} page - This object is created using the `createNewPageData()` function and then used here.
      * We update the .fields
+     * @param {number} pageIndex - The index of the page in the array that we are evaluating the fields for.
      */
-    const evaluateFields = async (data, page) => {
+    const evaluateFields = async (data, page, pageIndex) => {
         const headers = data[0]
         let headerIndex = 0
         for (const header of headers) {
-            const [rawValues, fieldData] = await evaluateField(data, header, headerIndex)
+            const [rawValues, fieldData] = await evaluateField(data, header, headerIndex, pageIndex)
             const values = await evaluateFieldValues(rawValues, fieldData)
             page.fields.push({
                 values,
@@ -436,11 +440,12 @@ const SpreadsheetUploader = (props) => {
 
     const handleWorkbookPages = async (workbook) => {
         const possiblePages = []
-        for (const pageName of workbook.SheetNames) {
+        for (let i=0; i<workbook.SheetNames.length; i++) {
+            const pageName = workbook.SheetNames[i]
             let pageData = createNewPageData(pageName)
             const worksheet = workbook.Sheets[pageName]
             const data = XLSX.utils.sheet_to_json(worksheet, { header: 1 })
-            await evaluateFields(data, pageData)
+            await evaluateFields(data, pageData, i)
             if (pageData.fields.length > 0) possiblePages.push(pageData)
         }
         setPages([...possiblePages])
@@ -531,6 +536,7 @@ const SpreadsheetUploader = (props) => {
             const valuesAsSet = new Set(originalField.rawValues)
             const userOptions = [...valuesAsSet].map(value => value.toString())
             possibleUsers.push({
+                pageIndex: selectedPageIndex,
                 headerIndex: fieldIndex, 
                 data: userOptions
             })
@@ -586,7 +592,7 @@ const SpreadsheetUploader = (props) => {
         }
         setShowAlert(false)
         setShowAddNewUsers(true)
-        setPossibleUsers([possibleUsers[0]])
+        setPossibleUsers([...possibleUsers])
     }
 
     /**
@@ -736,7 +742,10 @@ const SpreadsheetUploader = (props) => {
                 ) : ''}
                 <Alert 
                 alertTitle={strings['pt-br']['spreadsheetUploaderAlertToAddNewUsersTitle']} 
-                alertMessage={strings['pt-br']['spreadsheetUploaderAlertToAddNewUsersMessage'].replace('{}', possibleUsers.length > 0 ? pages[selectedPageIndex].fields[possibleUsers[0].headerIndex].fieldData.label_name : '')} 
+                alertMessage={strings['pt-br']['spreadsheetUploaderAlertToAddNewUsersMessage']
+                    .replace('{}', possibleUsers.length > 0 ? pages[possibleUsers[0].pageIndex].pageName : '' )
+                    .replace('{}', possibleUsers.length > 0 ?
+                    pages[possibleUsers[0].pageIndex]?.fields[possibleUsers[0].headerIndex]?.fieldData?.label_name : '')} 
                 show={showAlert} 
                 onHide={() => onRemovePossibleUserColumn(possibleUsers[0].headerIndex)} 
                 onAccept={() => onAcceptPossibleUserColumn(possibleUsers[0].headerIndex)}
