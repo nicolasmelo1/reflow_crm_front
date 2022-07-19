@@ -271,7 +271,7 @@ const FormularySectionEdit = (props) => {
     }, [])
     /////////////////////////////////////////////////////////////////////////////////////////////
     useEffect(()=>{
-        setIsConditional(props.section.conditional_on_field !== null || props.section.conditional_value !== null || props.section.conditional_type !== null)
+        setIsConditional(props.section?.conditional_on_field !== null || props.section?.conditional_value !== null || props.section?.conditional_type !== null)
     }, [props.section])
     /////////////////////////////////////////////////////////////////////////////////////////////
     //########################################################################################//

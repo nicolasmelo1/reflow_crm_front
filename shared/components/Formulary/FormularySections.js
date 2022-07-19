@@ -78,7 +78,12 @@ const FormularySections = (props) => {
         // in the chain, so a conditional inside a conditional, inside a conditional should work as expected
         const getConditionalParent = (sectionId) => {
             const conditionalToToggleOfParent = conditionalsToToggle.filter(conditionalToFilter => conditionalToFilter.id === sectionId)
-            if (conditionalToToggleOfParent.length > 0 && !['', null].includes(conditionalToToggleOfParent[0].conditional_set_from_section.conditional_value) && conditionalToToggleOfParent[0].show) {
+            if (
+                conditionalToToggleOfParent.length > 0 && 
+                !['', null].includes(conditionalToToggleOfParent[0].conditional_set_from_section) && 
+                !['', null].includes(conditionalToToggleOfParent[0].conditional_set_from_section.conditional_value) && 
+                conditionalToToggleOfParent[0].show
+            ) {
                 return getConditionalParent(conditionalToToggleOfParent[0].conditional_set_from_section.id)
             } else {
                 return conditionalToToggleOfParent
